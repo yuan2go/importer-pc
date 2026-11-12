@@ -83,6 +83,8 @@ public static partial class WindowsDeploymentSetup
     {
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Checking);
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        var originalDataRoot = original is null ? null : (Current(application) ?? throw new InvalidDataException("缺少原安装登记。")).DataRoot;
+        using var installationOwnership = originalDataRoot is null ? null : new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), application, originalDataRoot, execution?.Token ?? default);
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         if (Wire.FileHash(Registration(application)) != expectedHash) throw new InvalidOperationException("部署登记变化；重新检查维护计划");
         var location = Current(application) ?? throw new InvalidDataException("No authoritative deployment");
@@ -118,6 +120,7 @@ public static partial class WindowsDeploymentSetup
             {
                 Status = "Completed",
                 RequestIdentity = InstallationRequestIdentity(original),
+                Request = original,
                 inspection.ChangePlanIdentity,
                 Location = location,
                 inspection.Previous,

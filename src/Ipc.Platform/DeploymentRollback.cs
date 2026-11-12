@@ -6,7 +6,10 @@ namespace Ipc.Platform;
 public sealed record DeploymentRollbackPlan(string Identity, string OperationId, string ExpectedRegistrationHash,
     DeploymentLocation Current, DeploymentLocation? Target, bool Allowed, string Reason,
     string? CurrentVersion = null, string? TargetVersion = null, string? TargetInventoryIdentity = null);
-public sealed record DeploymentRollbackReceipt(string OperationId, string Status, string Detail, string? OperationFile = null);
+public sealed record DeploymentRollbackReceipt(string OperationId, string Status, string Detail, string? OperationFile = null)
+{
+    public bool ClosedWithoutCommit { get; init; }
+}
 internal sealed record DeploymentRollbackRecord(int SchemaVersion, string Status, DateTimeOffset At,
     DeploymentRollbackPlan Plan, DeploymentLocation Target, string? ErrorCode = null);
 
@@ -63,6 +66,8 @@ public static partial class WindowsDeploymentSetup
                 return Denied("上一版本不属于本站安装或数据根。");
             _ = TrustedProgramRoots.RequireBoundary(current.ReleaseRoot);
             _ = TrustedProgramRoots.RequireBoundary(target.ReleaseRoot);
+            if (!Directory.Exists(target.ReleaseRoot) || target.MaintenanceRoot is null || !Directory.Exists(target.MaintenanceRoot) || !File.Exists(target.InventoryFile))
+                return Denied("上一部署的程序或维护缓存已清理、缺失或不可读，不能回滚。安全库存回执不能代替运行文件。");
             var currentMedia = DeploymentMedia.Inspect(current.ReleaseRoot, application);
             var targetMedia = DeploymentMedia.Inspect(target.ReleaseRoot, application);
             if (currentMedia.SourceCommit != current.SourceCommit || targetMedia.SourceCommit != target.SourceCommit)
@@ -79,9 +84,18 @@ public static partial class WindowsDeploymentSetup
             var reason = DeploymentRuntimeCompatibility.Incompatibility(left.Compatibility, right.Compatibility) ??
                 DeploymentRuntimeCompatibility.Incompatibility(currentDesktop.Compatibility, targetDesktop.Compatibility);
             if (reason is not null) return Denied(reason);
-            if (ReleaseVersionPolicy.Compare(right.Release.BusinessVersion!, left.Release.BusinessVersion!) >= 0)
+            if (!RollbackVersionAllowed(application, left.Release, right.Release))
                 return Denied("保留版本不是较早版本；较新版本请使用更新入口。");
-            _ = InstalledInventory(target);
+            var cache = RequireMaintenanceCache(target);
+            var cachedMedia = DeploymentMedia.Inspect(cache, application);
+            using (var inventory = System.Text.Json.JsonDocument.Parse(File.ReadAllText(target.InventoryFile!)))
+            {
+                _ = ValidateInstalledInventory(target, inventory.RootElement.GetRawText());
+                var expected = inventory.RootElement.GetProperty("Files");
+                if (cachedMedia.SourceCommit != target.SourceCommit || cachedMedia.Files.Count != expected.EnumerateObject().Count() ||
+                    cachedMedia.Files.Any(f => !expected.TryGetProperty(f.Key, out var value) || !string.Equals(value.GetString(), f.Value, StringComparison.OrdinalIgnoreCase)))
+                    return Denied("上一部署的维护缓存不完整或不属于原安装；库存安全归档不能代替可运行程序。");
+            }
             var targetIdentity = Wire.Hash(Wire.Encode(targetMedia.Files.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray()));
             var identity = Wire.Hash(Wire.Encode(new { operationId, beforeHash, target.ReleaseRoot, target.SourceCommit, targetIdentity }));
             return new(identity, operationId, beforeHash, current, target, true,
@@ -91,6 +105,11 @@ public static partial class WindowsDeploymentSetup
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidOperationException)
         { return Denied("暂不能回退：" + WindowsInstallationError.Safe(error.Message)); }
     }
+
+    internal static bool RollbackVersionAllowed(string application, ApplicationRelease current, ApplicationRelease target) =>
+        application == "sportmaster" && current.BusinessVersion == "1.0.0" && target.BusinessVersion == "1.0.0"
+            ? current.SourceCommit != target.SourceCommit
+            : ReleaseVersionPolicy.Compare(target.BusinessVersion!, current.BusinessVersion!) < 0;
 
     // Caller owns the application's offline lease and verified complete backup.
     [SupportedOSPlatform("windows")]
@@ -108,6 +127,7 @@ public static partial class WindowsDeploymentSetup
         var after = actual.Target! with
         {
             ConfigurationDirectory = actual.Current.ConfigurationDirectory,
+            RestoreHandoffHash = actual.Current.RestoreHandoffHash,
             Shortcuts = actual.Current.Shortcuts,
             Recovery = actual.Current.Recovery,
             PreviousDeployment = actual.Current with { PreviousDeployment = null },
@@ -215,15 +235,19 @@ public static partial class WindowsDeploymentSetup
         }
     }
 
-    public static string? LastRollbackOperation(string application)
+    public static string? RollbackOperationToInspect(string application)
     {
         var directory = Path.Combine(MachineRoot, "deployments");
         if (!Directory.Exists(directory)) return null;
         var records = Directory.EnumerateFiles(directory, application + ".rollback-*.json").Take(1025).ToArray();
         if (records.Length > 1024) throw new InvalidDataException("版本切换记录超过核对预算。");
         var removed = RemovedRollbackOperations(application);
-        return records.Where(file => !removed.Contains(file)).Select(file => ReadRollback(application, Path.GetFileNameWithoutExtension(file)[(application.Length + ".rollback-".Length)..]))
-            .OrderByDescending(r => r.At).FirstOrDefault()?.Plan.OperationId;
+        var current = Current(application);
+        var original = records.Where(file => !removed.Contains(file))
+            .Select(file => ReadRollback(application, Path.GetFileNameWithoutExtension(file)[(application.Length + ".rollback-".Length)..]))
+            .Where(r => r.Status is not ("Completed" or "NotCommitted") || current?.LifecycleOperation == RollbackFile(application, r.Plan.OperationId)).ToArray();
+        if (original.Length > 1) throw new InstallationOutcomeUnknownException("存在多个相关原回滚，不能选择其中一个重做，请核对原记录。");
+        return original.SingleOrDefault()?.Plan.OperationId;
     }
 
     [SupportedOSPlatform("windows")]
@@ -252,6 +276,6 @@ public static partial class WindowsDeploymentSetup
             "NotCommitted" => "取得独占核对权后确认原登记未切换；原版本仍有效。",
             "CommittedNeedsSystemRepair" => "程序登记已切换，须修复原系统入口；不要再次回退。",
             _ => "原记录与当前登记不一致，请保留原件联系实施人员。"
-        }, file);
+        }, file) { ClosedWithoutCommit = status == "NotCommitted" && (repair || record.Status == "NotCommitted") };
     }
 }

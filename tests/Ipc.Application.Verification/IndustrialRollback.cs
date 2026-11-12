@@ -16,6 +16,9 @@ static class IndustrialRollback
         var release = new ApplicationRelease(2, "sportmaster", new string('a', 40), [], [], files, "1.2.0", CompatibilitySha256: new string('c', 64));
         var compatibility = new DeploymentRuntimeCompatibility(1, 12, 3, 2, 3, 1, 4, "1.0.0", release.CompatibilitySha256!, DeploymentRuntimeCompatibility.DependencyHash(files));
         compatibility.Validate(release);
+        var currentSmBuild = release with { BusinessVersion = "1.0.0" };
+        Check(WindowsDeploymentSetup.RollbackVersionAllowed("sportmaster", currentSmBuild, currentSmBuild with { SourceCommit = new string('b', 40) }), "two fixed 1.0.0 SM builds may switch back to the registered previous source");
+        Check(!WindowsDeploymentSetup.RollbackVersionAllowed("sportmaster", currentSmBuild, currentSmBuild), "the same source is not a second program rollback");
         Check(DeploymentRuntimeCompatibility.DependencyHash(files) == Wire.Hash("native/vendor.dll\t" + new string('B', 64)), "dependency identity excludes own source-varying binaries but binds actual SDK bytes");
         Check(DeploymentRuntimeCompatibility.Incompatibility(compatibility, compatibility) is null, "identical current readers/protocols allow program-only rollback");
         foreach (var incompatible in new[] { compatibility with { DataFormat = 11 }, compatibility with { ConfigurationSchema = 2 },
@@ -85,13 +88,17 @@ static class IndustrialRollback
         Check(!WindowsDeploymentSetup.RemovalSupersedesRollback("sportmaster", "other-operation", Removed("RemovedDataRetained", removedTarget)), "another operation removal cannot resolve original rollback");
         Check(!WindowsDeploymentSetup.RemovalSupersedesRollback("sportmaster", "synthetic-original-rollback", Removed("RemovedDataRetained", removedTarget with { SourceCommit = "" })), "unidentified removal cannot resolve original rollback");
 
-        foreach (var unknown in new[] { false, true })
+        foreach (var scenario in new[] { "settled", "resident-unknown", "historical-unknown" })
         {
-            await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "sqlite-" + unknown), deferred: true);
+            var unknown = scenario != "settled";
+            var retainedUnknown = scenario == "historical-unknown";
+            await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "sqlite-" + scenario), deferred: true);
             await h.StartAsync();
             if (unknown) h.Peer.Mode = "malformed";
             var admitted = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTHETIC-ROLLBACK-" + unknown), default);
             await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(admitted.OperationId!))?.Wcs?.State == (unknown ? StageState.Unknown : StageState.Accepted));
+            if (!unknown || retainedUnknown) await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
+            if (retainedUnknown) await CameraRoundHarness.Until(async () => (await h.App.HistoryAsync()).Items.Any(i => i.Operation.Id == admitted.OperationId && i.Archived));
             await h.App.DisposeAsync();
             var directory = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster");
             var database = Path.Combine(directory, "sportmaster.db"); var originalHash = Wire.FileHash(database);
@@ -99,10 +106,10 @@ static class IndustrialRollback
             {
                 MaintenanceWorkspace = () => { var path = Path.Combine(root, "snapshot-" + Wire.Id()); Directory.CreateDirectory(path); return path; }
             };
-            var backup = Path.Combine(root, "before-rollback-" + unknown + ".db");
+            var backup = Path.Combine(root, "before-rollback-" + scenario + ".db");
             var preview = await core.PlanChangeAsync("Rollback", backup);
-            Check(preview.Allowed != unknown, "actual SQLite original responsibility gates rollback: unknown=" + unknown);
-            if (!unknown)
+            Check(preview.Allowed == (!unknown || retainedUnknown), "actual SQLite distinguishes current execution from historical Unknown custody: " + scenario);
+            if (!unknown || retainedUnknown)
             {
                 var called = false;
                 await core.ExecuteChangeAsync(preview.Identity, "Rollback", backup, () =>

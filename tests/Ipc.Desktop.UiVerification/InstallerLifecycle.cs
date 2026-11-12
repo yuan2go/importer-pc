@@ -107,6 +107,49 @@ static partial class Program
         Descendants(close).OfType<CheckBox>().Single(c => Equals(c.Content, "完成后打开供包台")).IsChecked = false;
         Button(close, "完成").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(close);
         Check(!close.IsVisible, "unchecked completion closes without launching or reinstalling");
+        var originalRequest = new WindowsDeploymentRequest("D:/synthetic/old-extraction", "sportmaster", source, identity.User.Value,
+            installed.DataRoot, installed.ConfigurationDirectory, RunMode.Production, null, null, [], ProgramRoot: "D:/synthetic/program", Shortcuts: new(true, false), OperationId: Wire.Id());
+        var continuationCalls = 0;
+        foreach (var status in new[] { "NotCommitted", "CommittedNeedsSystemRepair", "Completed" })
+        {
+            var resumed = Make(installed); resumed.Show(); await Idle(resumed);
+            Set(resumed, "media", new DeploymentMedia("D:/synthetic/new-extraction", "sportmaster", source, []));
+            type.GetProperty("Install", flags)!.SetValue(resumed,
+                (Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, IProgress<MaintenanceProgress>, CancellationToken, Task<DeploymentLocation>>)((_, _, _, _) => throw new Exception("Continuation cannot replay installation")));
+            type.GetMethod("ApplyOriginal", flags)!.Invoke(resumed, [new InstallationContinuation(originalRequest, new(status, "synthetic persisted original", status == "NotCommitted" ? null : installed), "D:/synthetic/original-operation.json")]);
+            Render(resumed);
+            if (status == "NotCommitted")
+            {
+                type.GetProperty("ConcludeInstallation", flags)!.SetValue(resumed,
+                    (Func<WindowsDeploymentRequest, IProgress<MaintenanceProgress>, CancellationToken, Task<InstallationInspection>>)((request, _, _) =>
+                    { Check(request.OperationId == originalRequest.OperationId, "reopened precommit action retains its persisted operation ID"); continuationCalls++; return Task.FromResult(new InstallationInspection("Failed", "closed original")); }));
+                Button(resumed, "结束原次并重新审阅").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(resumed);
+                Check((int)type.GetField("step", flags)!.GetValue(resumed)! == 1 && type.GetField("reviewed", flags)!.GetValue(resumed) is null,
+                    "confirmed precommit closure returns to review without executing an installation");
+            }
+            else if (status == "CommittedNeedsSystemRepair")
+            {
+                type.GetProperty("InspectInstallation", flags)!.SetValue(resumed, (Func<WindowsDeploymentRequest, InstallationInspection>)(_ => new("CommittedNeedsSystemRepair", "original committed", installed)));
+                var repairs = 0;
+                type.GetProperty("RepairRegistration", flags)!.SetValue(resumed,
+                    (Func<WindowsDeploymentRequest, IProgress<MaintenanceProgress>, CancellationToken, Task>)((request, _, _) =>
+                    { Check(request.OperationId == originalRequest.OperationId, "system repair retains original committed installation identity"); if (++repairs == 1) throw new IOException("synthetic original system-entry repair failed"); continuationCalls++; return Task.CompletedTask; }));
+                Button(resumed, "修复开始菜单和程序入口…").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(resumed);
+                Check(resumed.IsVisible && Button(resumed, "修复开始菜单和程序入口…").IsEnabled && !(bool)type.GetProperty("CanCleanPreparation")!.GetValue(resumed)!,
+                    "failed original repair retains its window, media ownership and retry without exposing installation replay");
+                Button(resumed, "修复开始菜单和程序入口…").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(resumed);
+                Check((int)type.GetField("step", flags)!.GetValue(resumed)! == 3 && repairs == 2, "retry repairs only original system projections and reaches the completed result");
+            }
+            else
+            {
+                Check(Descendants(resumed).OfType<CheckBox>().Single(c => Equals(c.Content, "完成后打开供包台")).IsChecked == false,
+                    "reopening completed installation shows the original result without requesting an automatic launch");
+                Button(resumed, "重新检查安装选项").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(resumed);
+                Check((int)type.GetField("step", flags)!.GetValue(resumed)! == 1, "another installation requires an explicit return to current-option review");
+            }
+            CaptureInternal(evidence, "installer-continuation-" + status, resumed, lines); resumed.Close();
+        }
+        Check(continuationCalls == 2, "reopened operations perform only one original closure and one successful original repair");
         lines.Add("BOUNDARY actual WPF HWND/Dispatcher; synthetic installation and launch callbacks. Real token and protected lifecycle are separate Windows checks; no device/UAC dialog was automated.");
     }
 }

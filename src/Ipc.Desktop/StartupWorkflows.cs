@@ -155,7 +155,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     bool savingCandidate;
     string? checkedCandidateHash;
     enum RepairTask { Directory, Parameters, Review, Recovery }
-    enum RepairAction { Read, Check, SaveDraft, ContinueDraft, ExportTemplate, Import, Save, Repair, Backup, Retention, PlanRestore, ExecuteRestore, AdoptRestore, Install, Start, Previous, Next, SaveAndStart, Reload, Exit, Tools }
+    enum RepairAction { Read, Check, SaveDraft, ContinueDraft, ExportTemplate, Import, Save, Repair, Backup, Retention, PlanRestore, ExecuteRestore, AdoptRestore, Rollback, Install, Start, Previous, Next, SaveAndStart, Reload, Exit, Tools }
     readonly Dictionary<RepairAction, Button> actionButtons = [];
     readonly Dictionary<RepairTask, TabItem> taskPages = [];
     RepairTask selectedTask;
@@ -301,6 +301,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (MessageBox.Show(this, "将禁止从原目录启动，并把安装登记切换到新目录。原目录和数据不会删除。切换后需进入管理模式，核对未处理完的作业、设备和编号范围后才能生产。", "确认换机接管", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
             await Task.Run(() => maintenance.AdoptRestoreAsync(restoredBackup, restoredPreview.DataRoot, restoredPreview.BackupSha256, Wire.FileHash(registration)));
             Message("已切换到新目录，原目录不能再启动。请重新启动软件，在维护页核对交接内容；旧作业不会自动恢复或重发。");
+        });
+        Action(RepairAction.Rollback, "上一部署回滚…", () =>
+        {
+            new StartupRollbackWindow(ManagementMode) { Owner = this }.ShowDialog();
+            return Task.CompletedTask;
         });
         Action(RepairAction.Install, "安装 / 修复程序…", async () =>
         {
@@ -578,6 +583,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             RepairAction.PlanRestore => maintenance is not null && !string.IsNullOrWhiteSpace(backup) && !string.IsNullOrWhiteSpace(restoreRoot),
             RepairAction.ExecuteRestore => recovery is not null && !UnknownOutcome,
             RepairAction.AdoptRestore => restoredPreview is not null && restoredBackup is not null,
+            RepairAction.Rollback => document?.Candidate?.ApplicationId == "sportmaster",
             RepairAction.ContinueDraft => draft is not null && savedDraft is not null,
             _ => draft is not null && (!startupSaveUncertain || kind is RepairAction.SaveDraft or RepairAction.ExportTemplate)
         };
@@ -888,6 +894,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     RepairAction.Check or RepairAction.Start => selectedTask == RepairTask.Review,
                     RepairAction.SaveAndStart => selectedTask == RepairTask.Review && !SceneOnly && savedInput != Input(),
                     RepairAction.Install or RepairAction.PlanRestore => selectedTask == RepairTask.Recovery,
+                    RepairAction.Rollback => selectedTask == RepairTask.Recovery && document?.Candidate?.ApplicationId == "sportmaster",
                     RepairAction.ExecuteRestore => selectedTask == RepairTask.Recovery && recovery is not null,
                     RepairAction.AdoptRestore => selectedTask == RepairTask.Recovery && restoredPreview is not null,
                     RepairAction.Previous => !SceneOnly && selectedTask is RepairTask.Parameters or RepairTask.Review,

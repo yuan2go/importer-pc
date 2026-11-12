@@ -21,6 +21,7 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
     public bool OrdinaryStartupConfirmed { get; init; }
     public bool DeleteData { get; init; }
     public string? RemovalOperationId { get; init; }
+    public string? InstallationOperationId { get; init; }
     public int InitiatorProcessId { get; init; }
     public long InitiatorStartedTicks { get; init; }
 }
@@ -207,6 +208,8 @@ public static partial class ParcelStartupServices
         execution?.Checkpoint();
         switch (request.Action)
         {
+            case "MediaConcludeInstallation": return ContinueInstallationCore(request, repair: false, execution);
+            case "MediaRepairInstallation": return ContinueInstallationCore(request, repair: true, execution);
             case "RepairCameraDependencies":
                 if (!OperatingSystem.IsWindows() || ApplicationId != "sportmaster") throw new PlatformNotSupportedException();
                 WindowsDeploymentSetup.RepairCameraDependencies(request.ExpectedHash ?? throw new InvalidDataException("缺少原安装身份。"));
@@ -406,7 +409,7 @@ public static partial class ParcelStartupServices
         var helper = Path.Combine(directory, "Ipc.Assembly.exe");
         if (!File.Exists(helper)) helper = Path.GetFullPath(Path.Combine(directory, "..", "app", "Ipc.Assembly.exe"));
         if (request.Action == "InstallWithPreflight") helper = Path.Combine(request.Deployment!.MediaRoot, "desktop", "Ipc.Desktop.exe");
-        if (request.Action == "MediaUninstall") helper = Path.Combine(request.Deployment!.MediaRoot, "app", "Ipc.Assembly.exe");
+        if (request.Action is "MediaUninstall" or "MediaConcludeInstallation" or "MediaRepairInstallation") helper = Path.Combine(request.Deployment!.MediaRoot, "app", "Ipc.Assembly.exe");
         if (!MediaCommand(request.Action) && WindowsDeploymentSetup.Current(ApplicationId) is { } installed)
             helper = Path.Combine(installed.MaintenanceRoot ?? installed.ReleaseRoot, "app", "Ipc.Assembly.exe");
         foreach (var assembly in new[] { typeof(ParcelStartupServices).Assembly, typeof(MachineRuntimeSetup).Assembly })
@@ -474,7 +477,7 @@ public static partial class ParcelStartupServices
             { throw new InstallationOutcomeUnknownException("未取得可信维护终态。安装可能已提交，请核对安装记录后再继续。", error); }
         }
         catch (InstallationOutcomeUnknownException) { retainRequest = true; throw; }
-        catch (Win32Exception ex) when (ex.NativeErrorCode == 1223) { throw new UnauthorizedAccessException("已取消 Windows 维护授权；已有配置和数据保留，可重新操作。", ex); }
+        catch (Win32Exception ex) when (ex.NativeErrorCode == 1223) { throw new MaintenanceCancelledException("已取消 Windows 维护授权，操作尚未开始；已有配置和数据保留，可重新操作。"); }
         finally { if (!retainRequest) File.Delete(path); }
     }
     internal static void WriteInstallationProgress(TextWriter writer, WindowsInstallationStage stage)
@@ -502,7 +505,7 @@ public static partial class ParcelStartupServices
         }
         return null; // A truncated final line never proves completion.
     }
-    static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "MediaUninstall";
+    static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "MediaUninstall" or "MediaConcludeInstallation" or "MediaRepairInstallation";
     static void RequireProtectedHelper(string directory)
     {
         var file = Path.Combine(directory, "application-release.json");

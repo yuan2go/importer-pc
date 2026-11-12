@@ -59,13 +59,28 @@ static partial class Program
             var raw = (await h.App.ReadCameraReadRoundAsync(default)).HttpResponse!;
             var expected = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(raw.BodyBase64));
             var priorClipboard = Clipboard.GetDataObject();
+            var feedback = Field<TextBlock>(control, "feedback");
+            var descriptor = System.ComponentModel.DependencyPropertyDescriptor.FromProperty(TextBlock.TextProperty, typeof(TextBlock));
+            uint publishedSequence = 0;
+            EventHandler copied = (_, _) =>
+            {
+                if (feedback.Text.Contains("已复制 RCS 原始回包")) publishedSequence = ManualDebugClipboardSequence();
+            };
+            descriptor.AddValueChanged(feedback, copied);
             try
             {
                 copy.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 await Until(() => Field<TextBlock>(control, "feedback").Text.Contains("已复制 RCS 原始回包"));
-                Check(Clipboard.GetText() == expected && h.Peer.Requests.Count == 1, "copy returns the exact upstream response text and sends nothing");
+                var actual = Clipboard.GetText();
+                var observedSequence = ManualDebugClipboardSequence();
+                string Fingerprint(string text) => Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(text)));
+                // Shared Windows clipboard evidence must distinguish a wrong
+                // payload from another application replacing it after success.
+                // Record hashes only; never export unrelated clipboard content.
+                lines.Add($"CLIPBOARD expectedLength={expected.Length}; actualLength={actual.Length}; expectedSha256={Fingerprint(expected)}; actualSha256={Fingerprint(actual)}; publishedSequence={publishedSequence}; observedSequence={observedSequence}; requests={h.Peer.Requests.Count}");
+                Check(actual == expected && h.Peer.Requests.Count == 1, "copy returns the exact upstream response text and sends nothing");
             }
-            finally { if (priorClipboard is null) Clipboard.Clear(); else Clipboard.SetDataObject(priorClipboard, true); }
+            finally { descriptor.RemoveValueChanged(feedback, copied); if (priorClipboard is null) Clipboard.Clear(); else Clipboard.SetDataObject(priorClipboard, true); }
             send.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => !Field<bool>(control, "busy"));
             Check(h.Peer.Requests.Count == 1, "native original-result lookup does not send a second HTTP request");
@@ -128,6 +143,8 @@ static partial class Program
         }
         finally { window.Close(); }
     }
+    [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "GetClipboardSequenceNumber")]
+    static extern uint ManualDebugClipboardSequence();
 }
 
 // Delay only delivery of the real durable preparation result. Cancellation after

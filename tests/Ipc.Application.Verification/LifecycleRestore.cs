@@ -13,7 +13,9 @@ static class LifecycleRestore
         { try { await action(); } catch (T) { Check(true, reason); return; } throw new Exception("Expected " + typeof(T).Name + ": " + reason); }
         using var h = new RestoreHarness(workspace, root);
         var c = h.Configuration;
-        var expectedPorts = ParcelBindings.Readers(c).Select(r => r.DeviceId).Append(c.Wcs!.InstanceId).Distinct().ToArray();
+        // This factory has one capability monitor (WCS). Manual observation
+        // sources publish their own evidence and are not ICapabilityPort probes.
+        string[] expectedPorts = [c.Wcs!.InstanceId];
         var backup = Path.Combine(root, "complete.db");
         await using (var app = new ParcelRuntime(h.Launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(h.Launch)) { RuntimeIdentityPreflight = () => { } })
         {

@@ -62,8 +62,10 @@ public partial class SupplyStationWindow
             }
             catch
             {
-                await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, false, CancellationToken.None));
+                var receipt = await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, false, CancellationToken.None));
+                if (receipt.Status != "Restored") throw new InvalidOperationException("管理窗口的原资源结束尚未确认。");
                 workspaceOpened = false;
+                debug?.ConfirmWorkspaceClosed(receipt);
                 throw;
             }
         }
@@ -145,18 +147,21 @@ public partial class SupplyStationWindow
         try
         {
             await Dispatcher.Yield();
-            if (debug is not null) await debug.CloseAsync();
+            if (debug is not null) await debug.QuiesceAsync();
             await ViewModel.DrainAsync().WaitAsync(TimeSpan.FromSeconds(5));
             if (workspaceOpened && ViewModel.Application is IManagementWorkspace workspace)
             {
-                await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, false, CancellationToken.None));
+                var receipt = await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, false, CancellationToken.None));
+                if (receipt.Status != "Restored") throw new InvalidOperationException("管理窗口的原资源结束尚未确认。");
                 workspaceOpened = false;
+                debug?.ConfirmWorkspaceClosed(receipt);
             }
+            else if (debug is not null) await debug.CloseAsync();
             if (ViewModel.Application is IWorkstationAdministration service) await service.ExitManagementModeAsync();
             await ViewModel.RefreshManagementModeAsync();
             centerCloseReady = true; center.Close();
         }
-        catch (Exception) { center.ShowCloseFailure(); }
+        catch (Exception error) { center.ShowCloseFailure(ChineseInterfaceText.ParameterMessage(error.Message, "资源释放或结果核对未完成。"), Ipc.Platform.DiagnosticText.Protect(error.ToString())); }
         finally { centerClosing = false; center.SetClosing(false); }
     }
     async void Logs_Click(object sender, RoutedEventArgs e)

@@ -10,6 +10,8 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 // Window owns selection/draft only; every command and fact belongs to the shared application.
 public partial class ParcelViewModel(IParcelApplication application, string title, string flow, string presentationId = "parcel") : INotifyPropertyChanged
 {
+    string layoutDescription = "小窗口会自动使用紧凑布局。";
+    public string LayoutDescription { get => layoutDescription; set { if (layoutDescription == value) return; layoutDescription = value; Changed(); } }
     public event PropertyChangedEventHandler? PropertyChanged;
     public IParcelApplication Application => application;
     public string Title => title;

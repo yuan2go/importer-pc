@@ -11,6 +11,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 
 public partial class SupplyStationWindow
 {
+    partial void InitializeMaintenanceActions() => maintenance.CompleteBackupAsync = CreateProductBackup;
     StationStatisticsControl? statistics;
     FrameworkElement? exceptions;
     public Func<Task>? OpenMaintenanceOwnerAsync { get; set; }
@@ -37,7 +38,8 @@ public partial class SupplyStationWindow
         var body = new StackPanel();
         body.Children.Add(ProductText("备份和诊断导出在软件运行中完成；恢复备份、换机、修复及卸载需先完全停止软件。"));
         var actions = new WrapPanel();
-        actions.Children.Add(ProductButton("创建完整备份…", CreateProductBackup));
+        var backupAction = ProductButton("创建完整备份…", CreateProductBackup);
+        System.Windows.Automation.AutomationProperties.SetAutomationId(backupAction, "CompleteBackup.Diagnostic"); actions.Children.Add(backupAction);
         actions.Children.Add(ProductButton("导出诊断包…", ExportProductDiagnostics));
         cancelProductDiagnostic = new Button { Content = "取消导出", MinHeight = 44, Visibility = Visibility.Collapsed, Margin = new(0, 6, 12, 6) };
         cancelProductDiagnostic.Click += (_, _) => productDiagnosticCancellation?.Cancel(); actions.Children.Add(cancelProductDiagnostic);
@@ -48,15 +50,15 @@ public partial class SupplyStationWindow
     {
         await ViewModel.RequireManagementModeAsync();
         var dialog = new SaveFileDialog { Filter = "完整备份数据库|*.db", InitialDirectory = "D:\\", FileName = "station-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".db" };
-        if (dialog.ShowDialog(ManagementDialogOwner) != true) return;
-        if (MessageBox.Show(ManagementDialogOwner, "将暂停新供包并创建完整备份。备份完成后可检查并恢复供包。", "创建完整备份", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+        if (dialog.ShowDialog(ManagementDialogOwner) != true) { ViewModel.Message = "已取消选择备份位置；本次未改变供包状态，未创建备份。"; return; }
+        if (MessageBox.Show(ManagementDialogOwner, "将暂停新供包并创建完整备份。备份完成后可检查并恢复供包。", "创建完整备份", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
         await ViewModel.PauseAsync("创建完整备份前暂停"); await ViewModel.RefreshAsync();
         if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停尚未确认，未创建备份。");
         var receipt = await ViewModel.Application.BackupAsync(dialog.FileName);
         ViewModel.Message = receipt.Status + " · " + receipt.Reason;
         await ViewModel.RefreshAsync();
         if (receipt.Status != "BackupCreated") return;
-        if (MessageBox.Show(ManagementDialogOwner, "完整备份已完成。现在检查连接、未确认作业和存储条件，并恢复供包？", "备份完成", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+        if (MessageBox.Show(ManagementDialogOwner, "完整备份已完成。现在检查连接、未确认作业和存储条件，并恢复供包？", "备份完成", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes) return;
         await ViewModel.RequireManagementModeAsync();
         var snapshot = await ViewModel.Application.SnapshotAsync();
         var resumed = await ViewModel.Application.CommandAsync(new(Wire.Id(), snapshot.Revision, "Resume"));
@@ -84,7 +86,7 @@ public partial class SupplyStationWindow
     {
         await ViewModel.RequireManagementModeAsync();
         if (root.OpenMaintenanceOwnerAsync is null) throw new InvalidOperationException("当前版本不支持离线维护");
-        if (MessageBox.Show(ManagementDialogOwner, "将完全停止软件并关闭所有窗口，然后打开离线维护。业务数据保留。", "进入离线维护", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+        if (MessageBox.Show(ManagementDialogOwner, "将完全停止软件并关闭所有窗口，然后打开离线维护。业务数据保留。", "进入离线维护", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
         await ViewModel.PauseAsync("进入离线维护前暂停"); await ViewModel.RefreshAsync();
         if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停结果未确认，软件未停止");
         root.offlineMaintenanceRequested = true; root.Close();

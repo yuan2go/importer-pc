@@ -12,14 +12,14 @@ sealed class ParcelStartupWindow : Window
     readonly TextBlock detail = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 12, 0, 12), Text = "正在准备启动，请稍候。" };
     readonly TextBox diagnostic = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 120 };
     readonly TextBox buildIdentity = new() { Name = "StartupBuildIdentity", IsReadOnly = true, FontSize = UiTypography.Label, Margin = new Thickness(0, 0, 0, 12) };
-    readonly WrapPanel actions = new();
+    readonly WrapPanel actions = new() { HorizontalAlignment = HorizontalAlignment.Right };
     readonly List<string> completed = [];
     Func<Task>? closeAction;
     bool closing;
     public bool AllowClose { get; set; }
     public ParcelStartupWindow()
     {
-        Ipc.Application.ParcelFlow.Desktop.ProductBrand.Apply(this);
+        Ipc.Application.ParcelFlow.Desktop.ProductBrand.Apply(this); UiTypography.Apply(this);
         Title = "菜鸟供包台"; Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
         Ipc.Application.ParcelFlow.Desktop.StartupAppearance.FitToWorkArea(this);
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -34,12 +34,12 @@ sealed class ParcelStartupWindow : Window
         buildIdentity.SetResourceReference(StyleProperty, "ReadonlyValue");
         buildIdentity.SetResourceReference(ForegroundProperty, "Muted");
         System.Windows.Automation.AutomationProperties.SetName(buildIdentity, "软件版本和 Git 提交");
-        var grid = new Grid { Margin = new Thickness(24) };
-        grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        grid.RowDefinitions.Add(new() { Height = new GridLength(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        Grid.SetRow(detail, 1); Grid.SetRow(buildIdentity, 2); Grid.SetRow(diagnostic, 3); Grid.SetRow(actions, 4);
-        grid.Children.Add(title); grid.Children.Add(detail); grid.Children.Add(buildIdentity); grid.Children.Add(diagnostic); grid.Children.Add(actions); Content = grid;
+        var layout = new DockPanel { Margin = new Thickness(24) };
+        DockPanel.SetDock(actions, Dock.Bottom); layout.Children.Add(actions);
+        var body = new StackPanel(); body.Children.Add(title); body.Children.Add(detail); body.Children.Add(buildIdentity);
+        diagnostic.MaxHeight = 400; body.Children.Add(diagnostic);
+        layout.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); Content = layout;
+        System.Windows.Input.Keyboard.AddKeyDownHandler(this, (_, e) => { if (e.Key == System.Windows.Input.Key.Escape) { e.Handled = true; _ = RequestCloseAsync(); } });
         Closing += (_, e) =>
         {
             if (AllowClose) return;
@@ -71,9 +71,10 @@ sealed class ParcelStartupWindow : Window
         title.Text = "维护已结束 · 供包台未启动";
         detail.Text = "点击“启动供包台”后连接相机和 RCS；也可以直接退出。";
         diagnostic.Visibility = Visibility.Collapsed; actions.Children.Clear(); Height = 280; MinHeight = 260;
-        foreach (var (label, run) in new[] { ("启动供包台", start), ("退出", close) })
+        foreach (var (label, run, primary) in new[] { ("退出", close, false), ("启动供包台", start, true) })
         {
-            var button = new Button { Content = label, MinHeight = 44, Margin = new(0, 8, 12, 0) };
+            var button = new Button { Content = label, IsDefault = primary, MinHeight = 44, Margin = new(0, 8, 12, 0) };
+            if (primary) button.SetResourceReference(StyleProperty, "Primary");
             button.Click += async (_, _) =>
             {
                 actions.IsEnabled = false;
@@ -99,9 +100,10 @@ sealed class ParcelStartupWindow : Window
         var exit = new Button { Content = "停止并退出", MinHeight = 44 };
         exit.Click += async (_, _) => await RequestCloseAsync();
         actions.Children.Add(copy);
-        void Add(string label, Func<Task> action)
+        void Add(string label, Func<Task> action, bool primary = false)
         {
-            var button = new Button { Content = label, MinHeight = 44 };
+            var button = new Button { Content = label, MinHeight = 44, IsDefault = primary };
+            if (primary) button.SetResourceReference(StyleProperty, "Primary");
             button.Click += async (_, _) =>
             {
                 actions.IsEnabled = false;
@@ -111,6 +113,6 @@ sealed class ParcelStartupWindow : Window
             };
             actions.Children.Add(button);
         }
-        Add("重试启动", retry); Add("修改参数 / 离线维护", repair); Add("安装 / 修复", setup); actions.Children.Add(exit);
+        Add("重试启动", retry, primary: true); Add("修改参数 / 离线维护", repair); Add("安装 / 修复", setup); actions.Children.Add(exit);
     }
 }

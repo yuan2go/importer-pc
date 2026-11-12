@@ -43,7 +43,7 @@ static partial class Program
         window.Show();
         await WaitUntil(() => Descendants(window).OfType<TextBlock>().Any(x => AutomationProperties.GetAutomationId(x) == "StartupReadFailure"));
         var tasks = Descendants(window).OfType<TabControl>().Single(x => x.Name == "StartupTasks");
-        Check(tasks.Items.Cast<TabItem>().Where(t => t.Visibility == Visibility.Visible).Select(t => (string)t.Header).SequenceEqual(["1 目录与工位", "恢复与维护"]),
+        Check(tasks.Items.Cast<TabItem>().Where(t => t.Visibility == Visibility.Visible).Select(t => AutomationProperties.GetAutomationId(t)).SequenceEqual(["StartupTask.Directory", "StartupTask.Recovery"]),
             "failed reads expose directories and recovery, not empty parameter/review tabs");
         Check(!Descendants(window).OfType<ParameterSettingsControl>().Any() &&
             Descendants(window).OfType<TextBlock>().Any(x => x.Text.Contains("参数没有被清空", StringComparison.Ordinal)), "failure is explicit and never constructs a blank configuration editor");
@@ -56,6 +56,19 @@ static partial class Program
         var permission = helper.GetType("Ipc.Assembly.ParcelStartupServices", true)!.GetMethod("RequiresManagementMode", BindingFlags.NonPublic | BindingFlags.Static)!;
         Check((bool)permission.Invoke(null, ["PlanSmDb12Continuation"])! && (bool)permission.Invoke(null, ["ContinueSmDb12"])!,
             "both privileged continuation commands require the original delegated management grant");
+        var tools = Descendants(window).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.Tools");
+        tools.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        var diagnostics = tools.ContextMenu!.Items.OfType<MenuItem>().SelectMany(m => m.Items.OfType<MenuItem>()).Single(m => AutomationProperties.GetAutomationId(m) == "Startup.OpenDiagnosticDetails");
+        tools.ContextMenu.IsOpen = false;
+        _ = window.Dispatcher.BeginInvoke(new Action(() => diagnostics.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent))));
+        await WaitUntil(() => System.Windows.Application.Current.Windows.OfType<Window>().Any(w => AutomationProperties.GetAutomationId(w) == "StartupDiagnosticDetails"));
+        var details = System.Windows.Application.Current.Windows.OfType<Window>().Single(w => AutomationProperties.GetAutomationId(w) == "StartupDiagnosticDetails");
+        details.Height = 340; details.UpdateLayout();
+        var dismiss = Descendants(details).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "StartupDiagnostic.Close");
+        Check(ReferenceEquals(details.Owner, window) && dismiss.IsCancel && dismiss.IsDefault && dismiss.IsVisible &&
+            Descendants(details).OfType<TextBox>().Single().IsReadOnly, "read-failure diagnostics have an owned read-only body and a fixed cancel/default close action at low height");
+        dismiss.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await WaitUntil(() => !details.IsVisible);
+        Check(window.IsVisible && Wire.FileHash(ledger) == before, "closing diagnostics returns to the original protected failure page without altering its ledger");
         window.Close(); await WaitUntil(() => !window.IsVisible);
 
         ExtensionStore.AtomicWrite(ledger, CurrentConfigurationFixture.Create<ParcelConfiguration>(3, seed, null, "Effective", null));
@@ -102,5 +115,34 @@ static partial class Program
             Descendants(db12).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "重试正常启动")),
             "rereading current data restores SceneOnly check/start actions in the same window");
         db12.Close(); await WaitUntil(() => !db12.IsVisible);
+        var normal = (Window)Activator.CreateInstance(type, [readyLaunch, null, false])!;
+        type.GetProperty("ConfirmDiscardInputs", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(normal, (Func<bool>)(() => true));
+        normal.Show();
+        await WaitUntil(() => Descendants(normal).OfType<TabControl>().Any(x => x.Name == "StartupTasks"));
+        var navigation = Descendants(normal).OfType<TabControl>().Single(x => x.Name == "StartupTasks");
+        Check(navigation.Items.Cast<TabItem>().Select(AutomationProperties.GetAutomationId).SequenceEqual(new[] { "StartupTask.Directory", "StartupTask.Parameters", "StartupTask.Review", "StartupTask.Recovery" }), "offline tasks have explicit identities and no explanation-only page");
+        Button Action(string id) => Descendants(normal).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup." + id);
+        Action("Next").Content = "renamed navigation";
+        Action("Next").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(AutomationProperties.GetAutomationId((TabItem)navigation.SelectedItem) == "StartupTask.Parameters", "navigation executes by action identity even when its caption changes");
+        navigation.SelectedItem = navigation.Items.Cast<TabItem>().Single(t => AutomationProperties.GetAutomationId(t) == "StartupTask.Recovery"); normal.UpdateLayout();
+        Check(!Action("Next").IsVisible && !Action("Previous").IsVisible && Action("PlanRestore").IsVisible && !Action("PlanRestore").IsEnabled, "recovery is an independent task with no stuck or backward next action");
+        Check(!Descendants(normal).OfType<Button>().Any(b => Equals(b.Content, "维护操作")), "the dead maintenance toggle is removed");
+        normal.Width = 800; normal.Height = 500; normal.UpdateLayout();
+        var footer = (WrapPanel)type.BaseType!.GetField("Actions", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(normal)!;
+        Check(footer.HorizontalAlignment == HorizontalAlignment.Right && footer.Children.OfType<Button>().Where(b => b.IsVisible).All(b => b.TransformToAncestor(normal).TransformBounds(new Rect(b.RenderSize)).Bottom <= normal.ActualHeight), "offline task footer stays right aligned and visible at low height");
+        CaptureInternal(evidence, "startup-recovery-800", normal, lines);
+        var backupInput = Descendants(normal).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.RestoreBackup");
+        var destinationInput = Descendants(normal).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.RestoreDestination");
+        var missingBackup = Path.Combine(evidence, "missing-backup.db"); var target = Path.Combine(evidence, "not-restored");
+        backupInput.Text = missingBackup; destinationInput.Text = target; normal.UpdateLayout();
+        Check(Action("PlanRestore").IsEnabled && !Action("ExecuteRestore").IsVisible, "restore planning becomes available from actual paths while execution requires a verified plan");
+        Action("PlanRestore").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        var busy = type.BaseType!.GetField("Busy", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        await WaitUntil(() => busy.GetValue(normal) is false);
+        Check(normal.IsVisible && type.GetField("recovery", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(normal) is null && backupInput.Text == missingBackup && !Directory.Exists(target), "failed real restore planning preserves inputs and creates no destination or executable plan");
+        backupInput.Clear(); Check(!Action("PlanRestore").IsEnabled, "clearing a restore source withdraws the original plan action immediately");
+        normal.Close(); await WaitUntil(() => !normal.IsVisible);
+
     }
 }

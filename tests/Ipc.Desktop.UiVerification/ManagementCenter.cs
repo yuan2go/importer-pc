@@ -28,6 +28,18 @@ static partial class Program
         ExtensionStore.AtomicWrite(Path.Combine(launch.ConfigurationDirectory, "business.json"), config);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default);
+        async Task<ParcelSnapshot> WaitSnapshot(Func<ParcelSnapshot, bool> ready)
+        {
+            ParcelSnapshot current = await runtime.SnapshotAsync();
+            for (var i = 0; i < 300; i++)
+            {
+                if (ready(current)) return current;
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                await Task.Delay(25);
+                current = await runtime.SnapshotAsync();
+            }
+            throw new TimeoutException("Management fixture runtime did not settle: " + Wire.Encode(current));
+        }
         const string password = "Synthetic-Center-Only";
         await runtime.ConfigureManagementPasswordAsync(password);
         await VerifyManagementStatusOrdering(runtime, Check);
@@ -74,7 +86,8 @@ static partial class Program
             "empty feedback consumes no second row");
         CaptureInternal(evidence, "management-main-expanded", client, lines);
         var positionSnapshot = await runtime.SnapshotAsync();
-        await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, false), default);
+        var disable = await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, false), default);
+        Check(disable.Status == "Accepted", "right-position fixture disable is durably accepted: " + disable.Reason);
         await vm.RefreshAsync(); window.UpdateLayout();
         Check(vm.OperatorStatus.Contains("仅左") && Math.Abs(CenterY(workStatus) - CenterY(rcs)) <= 2,
             "single-position availability and its operating instruction stay on the same status row");
@@ -94,8 +107,14 @@ static partial class Program
         vm.Message = ""; window.UpdateLayout();
         Check(!feedbackBar.IsVisible && ((Grid)feedbackBar.Parent).RowDefinitions[1].ActualHeight == 0,
             "clearing feedback immediately returns its row height to zero");
-        positionSnapshot = await runtime.SnapshotAsync();
-        await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, true), default);
+        // Disabling schedules the real asynchronous camera release. Wait for its
+        // public completion evidence before issuing a new control command; an
+        // ignored maintenance rejection would poison later close assertions.
+        positionSnapshot = await WaitSnapshot(s => s.Positions!.Single(p => p.Id == "right").CameraConnectionSuspended &&
+            !s.BlockingReasons.Any(r => r.StartsWith("MaintenanceInProgress:", StringComparison.Ordinal)));
+        var enable = await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, true), default);
+        Check(enable.Status == "Accepted", "right-position fixture re-enable is durably accepted: " + enable.Reason);
+        await WaitSnapshot(s => s.Positions!.All(p => p.Admit && !p.CameraConnectionSuspended));
         await vm.RefreshAsync(); window.UpdateLayout();
         Click(window, "收起菜单"); window.UpdateLayout();
         Check(window.IsNavigationCollapsed && navigation.ActualWidth == 52 && !ArrowPointsLeft() && entry.IsVisible && entry.ActualHeight >= 44, "narrow collapsed rail retains the right-pointing handle and a usable management control");
@@ -214,7 +233,12 @@ static partial class Program
         Check(!guardedWindow.ViewModel.IsManagementMode && ((Border)guardedCenter.FindName("AuthorizationGate")).IsVisible &&
             (await runtime.SnapshotAsync()).Positions!.All(p => !p.Admit),
             "authorization lost during entry still opens the owned locked window instead of silently stranding paused production");
+        guardedProbe.FailCloseOnce = true;
+        Click(guardedCenter, "关闭");
+        await Until(() => guardedCenter.IsEnabled && AutomationProperties.GetItemStatus((TextBlock)guardedCenter.FindName("AuthorizationStatus")) == "CloseFailed");
+        Check(guardedCenter.IsVisible && (await runtime.SnapshotAsync()).Positions!.All(p => !p.Admit), "expired authorization and release failure retain the original window, reason and production fence");
         Click(guardedCenter, "关闭"); await Until(() => !guardedCenter.IsVisible);
+        Check(guardedProbe.ClosingOwners.Count == 2 && guardedProbe.ClosingOwners.Distinct().Count() == 1, "retry closes the same original management owner after release recovers");
         Check((await runtime.SnapshotAsync()).Positions!.All(p => p.Admit), "the locked entry window can close and restore production without another password");
         guardedWindow.Close(); await Until(() => !guardedWindow.IsVisible);
         lines.Add("Windows WPF HWND/Dispatcher, synthetic ports and data. No real SDK, customer RCS or site acceptance.");
@@ -273,11 +297,18 @@ public class ManagementStatusUiProbe : ProjectionProbe
 {
     public Func<Task<ManagementModeStatus>>? StatusRead;
     public Func<Task>? AfterOpen;
+    public bool FailCloseOnce;
+    public readonly List<string> ClosingOwners = [];
     protected override object? Invoke(MethodInfo? method, object?[]? arguments) =>
         method!.Name == nameof(IWorkstationAdministration.ManagementModeStatusAsync) && StatusRead is { } read ? read() :
         method.Name == nameof(IManagementWorkspace.SetManagementWorkspaceAsync) ? Workspace(method, arguments!) : base.Invoke(method, arguments);
     async Task<BusinessReceipt> Workspace(MethodInfo method, object?[] arguments)
     {
+        if (arguments[1] is false)
+        {
+            ClosingOwners.Add((string)arguments[0]!);
+            if (FailCloseOnce) { FailCloseOnce = false; throw new IOException("Synthetic retained workspace resource"); }
+        }
         var receipt = await (Task<BusinessReceipt>)method.Invoke(Inner, arguments)!;
         if (arguments[1] is true && AfterOpen is { } opened) await opened();
         return receipt;

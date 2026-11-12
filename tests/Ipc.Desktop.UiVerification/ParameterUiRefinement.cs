@@ -33,12 +33,12 @@ static partial class Program
         }
         var leftIp = Value(left, "device.ip"); var rightIp = Value(right, "device.ip");
         var savedLeft = leftIp.Value; var savedRight = rightIp.Value;
-        leftIp.Value = ""; rightIp.Value = ""; model.ValidateFields();
-        Check(model.Issues.Count(i => i.Path.EndsWith("/device.ip")) == 2, "identical missing-IP errors retain both camera instances");
-        model.Report(right.Role + " · device.ip: required"); model.Report(right.Role + " · device.ip: required");
-        Check(model.Issues.Count(i => i.Path == right.InstanceId + "/device.ip") == 1 && model.Issues.Count(i => i.Path == left.InstanceId + "/device.ip") == 1, "same instance/field/rule deduplicates without merging cameras");
+        leftIp.Value = "111"; rightIp.Value = "222"; model.ValidateFields();
+        Check(model.Issues.Count(i => i.Path.EndsWith("/device.ip") && i.Rule == "ipv4-format") == 2, "identical invalid-IP errors retain both camera instances");
+        model.Report(right.Role + " · device.ip: invalid value"); model.Report(right.Role + " · device.ip: invalid value");
+        Check(model.Issues.Count(i => i.Path == right.InstanceId + "/device.ip" && i.Message.EndsWith(": invalid value")) == 1 && model.Issues.Count(i => i.Path == left.InstanceId + "/device.ip" && i.Rule == "ipv4-format") == 1, "same instance/field/rule deduplicates without merging cameras");
         editor.NavigateTo(right.InstanceId + "/device.ip"); Box(right.InstanceId + "/device.ip").Text = savedRight; await Flush();
-        Check(model.Issues.All(i => i.Path != right.InstanceId + "/device.ip") && model.Issues.Any(i => i.Path == left.InstanceId + "/device.ip"), "editing a real bound input clears only its obsolete required error");
+        Check(model.Issues.All(i => i.Path != right.InstanceId + "/device.ip") && model.Issues.Any(i => i.Path == left.InstanceId + "/device.ip"), "editing a real bound input clears only its obsolete format error");
         leftIp.Value = savedLeft; await Flush();
         rightIp.Value = "111"; await Flush();
         Check(model.Issues.Single(i => i.Path == right.InstanceId + "/device.ip").Rule == "ipv4-format", "IP syntax has its own rule");
@@ -46,23 +46,23 @@ static partial class Program
         rightIp.Value = "0.0.0.0"; await Flush();
         Check(model.Issues.Single(i => i.Path == right.InstanceId + "/device.ip").Rule == "ipv4-address", "syntactically valid unspecified address has a distinct business-address rule");
         rightIp.Value = savedRight; await Flush();
-        Check(!rcs.Parameters.Any(p => p.Field.Key is "quantity" or "specified-chute" or "chute-code" or "request-id-base" or "request-id-count"), "SM exposes neither quantity nor retired allocation or chute fields");
+        Check(!rcs.Parameters.Any(p => p.Field.Key is "quantity" or "request-id-base" or "request-id-count"), "SM keeps request numbering internal and exposes no unused quantity field");
         var zone = Value(rcs, "zone-id"); var savedZone = zone.Value;
         editor.NavigateTo(rcs.InstanceId + "/left-station-code"); await Flush();
         Check(Box(rcs.InstanceId + "/left-station-code").Text == Value(rcs, "left-station-code").Value, "common station input reflects changes to the existing paired fields");
         var savedTarget = rcs.Target;
-        zone.Value = ""; rightIp.Value = "111"; rcs.Target = "http://192.0.2.1/wrong"; model.Policy.QueueCapacity = "bad"; model.ValidateFields();
+        zone.Value = ""; rightIp.Value = "111"; rcs.Target = "http://192.0.2.1/wrong"; model.Policy.ReadTimeoutMs = "bad"; model.ValidateFields();
         editor.ShowReview(); await Flush(); Capture("refine-check-errors");
         Check(Descendants(editor).OfType<Button>().Count(b => b.IsVisible && b.Content is TextBlock t && t.Text.Contains("定位字段")) >= 4, "cross-page review has actionable exact-field errors");
         var rightAction = Descendants(editor).OfType<Button>().Single(b => b.IsVisible && b.Content is TextBlock t && t.Text.Contains("右相机") && t.Text.Contains("IPv4"));
         rightAction.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Flush();
         Check(Box(right.InstanceId + "/device.ip").IsKeyboardFocused && editor.SelectedCategory == 2, "review action focuses the right camera, never the left instance");
-        zone.Value = savedZone; rightIp.Value = savedRight; rcs.Target = savedTarget; model.Policy.QueueCapacity = "64"; model.ValidateFields();
-        foreach (var (category, title, filename) in new[] { (1, "条码筛选", "barcode"), (1, "接收与等待限制", "processing"), (0, "供包台标识", "station"), (0, "数据与记录", "data"), (3, "RCS 服务", "rcs") })
+        zone.Value = savedZone; rightIp.Value = savedRight; rcs.Target = savedTarget; model.Policy.ReadTimeoutMs = "1000"; model.ValidateFields();
+        foreach (var (path, filename) in new[] { ("BarcodePattern", "barcode"), ("ReadTimeoutMs", "reading"), ("StationCode", "station"), (rcs.InstanceId + "/Target", "rcs") })
         {
-            Check(editor.ShowPage(category, title), "shared directory exposes " + title); await Flush(); Capture("refine-" + filename);
+            Check(editor.NavigateTo(path), "current directory locates " + path); await Flush(); Capture("refine-" + filename);
             var mainScrolls = Descendants(editor).OfType<ScrollViewer>().Where(s => s.IsVisible && s.Content is StackPanel && s.HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled).ToArray();
-            Check(mainScrolls.Length == 1, "one body scroll on " + title);
+            Check(mainScrolls.Length == 1, "one body scroll for " + path);
         }
         editor.NavigateTo("MinimumFreeMiB"); await Flush(); var reserve = Box("MinimumFreeMiB");
         reserve.Focus(); Check(reserve.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)), "Tab traverses from a parameter without trapping focus");

@@ -10,6 +10,7 @@ internal static class SmDispatchResources
     { if (!value) throw new InvalidOperationException(detail); Console.WriteLine("PASS SEND-RESOURCE " + detail); }
     public static async Task Run(string workspace, string root)
     {
+        await DefaultDeadlineQueuedRemoval(workspace, root);
         await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "send-congestion"), deferred: true, mode: RunMode.Simulation);
         ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config with
         { Wcs = h.Config.Wcs! with { Parameters = new(h.Config.Wcs.Parameters) { ["request-timeout-ms"] = "30000", ["heartbeat-interval-ms"] = "100" } } });
@@ -103,5 +104,38 @@ internal static class SmDispatchResources
                 "congestion, removal and stop create no extra POST, retry or false fatal storage failure");
         }
         finally { foreach (var hold in holds.Values) hold.TrySetResult(); h.Peer.BusinessGate = null; }
+    }
+    static async Task DefaultDeadlineQueuedRemoval(string workspace, string root)
+    {
+        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "default-deadline-queue"), deferred: true, mode: RunMode.Simulation);
+        await h.StartAsync();
+        await ManagementModeFixture.Authorize(h.App);
+        var seed = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-PERMIT-SEED"), default);
+        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(seed.OperationId!))?.Wcs?.State == StageState.Accepted);
+        var request = (await h.App.OperationAsync(seed.OperationId!))!.Wcs!.Request;
+        Check(new Ipc.Application.Sportmaster.SportmasterFlow().RequestTimeoutMs((await h.App.OperationAsync(seed.OperationId!))!, ParcelStage.Wcs) == 1000,
+            "omitted setting freezes the actual production request's effective deadline at 1000ms");
+        await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
+        // Occupy the real bounded resource without starting HTTP calls. The
+        // existing congestion scenario separately holds real network responses.
+        List<IWcsDispatchPermit> permits = [];
+        try
+        {
+            for (var i = 0; i < SportmasterRcsTaskService.MaximumDestinationSends; i++)
+                permits.Add(await h.Factory.Rcs.ReserveDispatchAsync(request, default));
+            var queued = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-DEFAULT-REMOVED"), default);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Rcs.DispatchProgress.LeftWaiting == 1));
+            await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Rcs.DispatchProgress.LeftWaiting == 0));
+            Check((await h.App.OperationAsync(queued.OperationId!))?.Wcs is { Attempts: 0, State: StageState.Cancelled } && h.Peer.Requests.Count == 1,
+                "1000ms default and round removal cancel the real pre-attempt wait with zero additional POSTs");
+            foreach (var permit in permits) permit.Dispose(); permits.Clear();
+            var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-DEFAULT-NEXT"), default);
+            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(next.OperationId!))?.Wcs?.State == StageState.Accepted);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Rcs.DispatchProgress.Occupied == 0));
+            Check(h.Peer.Requests.Count == 2 && !h.Peer.Requests.Any(b => b.Contains("SYNTH-DEFAULT-REMOVED", StringComparison.Ordinal)),
+                "released resources serve the other position once without reviving the ended request");
+        }
+        finally { foreach (var permit in permits) permit.Dispose(); }
     }
 }

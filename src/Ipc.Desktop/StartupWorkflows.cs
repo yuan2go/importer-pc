@@ -14,7 +14,7 @@ public abstract partial class StartupWorkflowWindow : Window
 {
     protected readonly StackPanel Body = new();
     protected readonly ContentControl WorkflowBody = new() { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
-    protected readonly WrapPanel Actions = new();
+    protected readonly WrapPanel Actions = new() { HorizontalAlignment = HorizontalAlignment.Right };
     protected ScrollViewer? InstallationOptionsScroll;
     protected readonly DockPanel FooterHost = new();
     protected readonly WrapPanel SessionActions = new() { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(12, 0, 0, 0) };
@@ -43,7 +43,7 @@ public abstract partial class StartupWorkflowWindow : Window
     protected StartupWorkflowWindow(string title, bool installation = false)
     {
         Form = Body;
-        ProductBrand.Apply(this);
+        ProductBrand.Apply(this); UiTypography.Apply(this);
         VersionLabel.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
         Title = title; FontSize = UiTypography.Body; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         SetResourceReference(BackgroundProperty, "Background"); SetResourceReference(ForegroundProperty, "Ink");
@@ -110,7 +110,7 @@ public abstract partial class StartupWorkflowWindow : Window
         if (error is MaintenanceCancelledException) { Message(error.Message); return; }
         UnknownOutcome |= error is InstallationOutcomeUnknownException;
         Status.Text = UnknownOutcome ? "上次维护操作结果未确认，请勿重复执行。\n" + ChineseInterfaceText.ParameterMessage(error.Message)
-            : "未完成：" + ChineseInterfaceText.ParameterMessage(error.Message) + "\n已有数据和配置未改动。请按原因处理后再试。";
+            : "未完成：" + ChineseInterfaceText.ParameterMessage(error.Message) + "\n请核对原回执和当前状态后再试；失败提示不表示已执行步骤被回滚。";
         Status.SetResourceReference(TextBlock.ForegroundProperty, UnknownOutcome ? "Warning" : "Danger");
     }
     protected void Message(string text) { Status.Text = text; Status.Foreground = Foreground; }
@@ -154,8 +154,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     bool SaveIsComplete => lastSaveConfirmed && !startupSaveUncertain && savedInput == Input() && draft?.DisplayPreferences?.HasChanges != true;
     bool savingCandidate;
     string? checkedCandidateHash;
-    int selectedTask;
-    bool showMaintenanceActions;
+    enum RepairTask { Directory, Parameters, Review, Recovery }
+    enum RepairAction { Read, Check, SaveDraft, ContinueDraft, ExportTemplate, Import, Save, Repair, Backup, Retention, PlanRestore, ExecuteRestore, AdoptRestore, Install, Start, Previous, Next, SaveAndStart, Reload, Exit, Tools, ContinueData }
+    readonly Dictionary<RepairAction, Button> actionButtons = [];
+    readonly Dictionary<RepairTask, TabItem> taskPages = [];
+    RepairTask selectedTask;
+    int selectedParameterCategory;
     bool authorityAllowed;
     readonly ManagementModeMenu managementMenu = new() { UnauthorizedLabel = "未授权" };
     readonly TextBlock saveState = new() { Text = "未保存", FontSize = UiTypography.Label, Foreground = Brushes.SlateGray, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 12, 0) };
@@ -163,10 +167,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     Action? refreshReview;
     internal Func<bool> ConfirmDiscardInputs { get; set; } = null!;
     IStartupMaintenance maintenance = null!;
-    bool maintenanceReleased, maintenanceClosing;
+    bool maintenanceReleased, maintenanceClosing, maintenanceReleasePending;
     StartupMaintenanceDocument? document;
     StartupConfigurationDraft? draft;
     StartupSavedDraft? savedDraft;
+    TextBox? restorePlanPreview;
     StartupRecoveryPreview? recovery;
     StartupRecoveryPreview? restoredPreview;
     string? restoredBackup;
@@ -184,7 +189,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         SelectedLaunch = launch;
         this.initialConfiguration = initialConfiguration;
         if (initialConfiguration) { StartupAppearance.Apply(this); Width = 960; Height = 656; WorkflowHeading.FontSize = UiTypography.PageTitle; WorkflowBusinessName.Text = ChineseInterfaceText.BusinessName(ParcelStartupServices.ApplicationId); WorkflowBusinessName.Visibility = Visibility.Visible; MinHeight = 360; WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; Status.Visibility = Visibility.Collapsed; }
-        ConfirmDiscardInputs = () => MessageBox.Show(this, "有未保存的输入。返回可保存为草稿；继续退出将丢弃这些输入，已保存的配置和草稿不受影响。", "有未保存的配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK;
+        ConfirmDiscardInputs = () => MessageBox.Show(this, "有未保存的输入。返回可保存为草稿；继续退出将丢弃这些输入，已保存的配置和草稿不受影响。", "有未保存的配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) == MessageBoxResult.OK;
         if (initialConfiguration) reason = "首次配置供包台";
         Message("无需先启动软件。检查和编辑不会连接设备；保存后在下次启动时生效。" + (failure is null ? "" : "\n启动诊断：" + failure));
         config = Folder("配置目录（包含 business.json）", launch.ConfigurationDirectory);
@@ -223,9 +228,9 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         administratorLogin.Click += async (_, _) => await ManagementAction();
         managementMenu.ModeActionRequested += async (_, _) => await ManagementAction();
         gateActions.Children.Insert(0, administratorLogin);
-        Action("读取所选配置", Read);
-        Action("检查并预览更改", CheckCandidate);
-        Action("保存草稿", async () =>
+        Action(RepairAction.Read, "读取所选配置", Read);
+        Action(RepairAction.Check, "检查并预览更改", CheckCandidate);
+        Action(RepairAction.SaveDraft, "保存草稿", async () =>
         {
             if (draft is null || document is null) throw new InvalidOperationException("请先读取配置");
             RequireDirectories();
@@ -234,7 +239,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Message("未完成输入已保存；下次打开可继续填写。");
             if (initialConfiguration) { Busy = false; Close(); }
         });
-        Action("继续已保存草稿", () =>
+        Action(RepairAction.ContinueDraft, "继续已保存草稿", () =>
         {
             if (savedDraft is null || draft is null) throw new InvalidOperationException("没有可继续草稿");
             if (savedDraft.BaseChanged) throw new InvalidOperationException("草稿保存后配置已被修改，草稿未自动套用。请先对比当前配置。");
@@ -242,23 +247,23 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (document?.Candidate?.ApplicationId == "sportmaster") (draft.DisplayPreferences ??= new()).Restore(savedDraft.Editor.Values);
             draft = draft.WithRestored(savedDraft.Editor); Render(false); Message("已恢复上次未完成的输入。参数有改动，请重新检查。"); return Task.CompletedTask;
         });
-        Action("导出设置模板…", () =>
+        Action(RepairAction.ExportTemplate, "导出设置模板…", () =>
         {
             if (draft is null || document?.Candidate is null) throw new InvalidOperationException("先读取配置");
             var picker = new SaveFileDialog { FileName = "site-template.json", Filter = "设置模板|*.json" };
             if (picker.ShowDialog(this) == true) { using var file = new StreamWriter(new FileStream(picker.FileName, FileMode.CreateNew)); file.Write(Wire.Encode(StartupSiteTemplates.Export(document.Candidate.ApplicationId, draft.Capture()))); Message("已导出设置模板。模板只包含通用设置，不含站点、设备、格口、密码、编号范围和业务数据。"); }
             return Task.CompletedTask;
         });
-        headerImport = Action("导入配置文件…", ImportConfiguration);
-        Action(initialConfiguration ? "保存首次配置…" : "保存配置（下次启动生效）…", SaveCandidate);
-        Action("修复未生效的配置…", async () =>
+        headerImport = Action(RepairAction.Import, "导入配置文件…", ImportConfiguration);
+        Action(RepairAction.Save, initialConfiguration ? "保存首次配置…" : "保存配置（下次启动生效）…", SaveCandidate);
+        Action(RepairAction.Repair, "修复未生效的配置…", async () =>
         {
             RequireChecked(); var candidate = RequireDraft();
-            if (MessageBox.Show(this, "原配置和记录都会保留。只有在软件已完全退出、没有未处理完的作业且新配置检查通过时，下次启动才会尝试新配置；尝试失败会继续使用原配置。", "确认修复配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
+            if (MessageBox.Show(this, "原配置和记录都会保留。只有在软件已完全退出、没有未处理完的作业且新配置检查通过时，下次启动才会尝试新配置；尝试失败会继续使用原配置。", "确认修复配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
             document = await Task.Run(() => maintenance.RepairInitialAsync(document!.ConfigurationHash, candidate, reason)); Render();
             Message("修复已保存。重新启动时会再次检查，全部通过后新配置才会生效。");
         });
-        Action("创建完整备份…", async () =>
+        Action(RepairAction.Backup, "创建完整备份…", async () =>
         {
             var picker = new SaveFileDialog { FileName = "complete-backup-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".db", Filter = "完整恢复集数据库|*.db" };
             if (picker.ShowDialog(this) != true) return;
@@ -266,30 +271,47 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 (progress, token) => maintenance.BackupAsync(picker.FileName, progress, token)); backupCatalogRoot = Path.GetDirectoryName(picker.FileName)!;
             Message("完整备份已完成。请把数据库文件和同名 .recovery 目录一起保存。");
         });
-        Action("清理过期记录…", () =>
+        Action(RepairAction.Retention, "清理过期记录…", () =>
         {
             if (maintenance is not IStartupRetentionMaintenance retention) throw new NotSupportedException("当前版本不支持清理过期记录");
             new HistoryRetentionWindow(retention, ManagementMode) { Owner = this }.ShowDialog(); return Task.CompletedTask;
         });
-        Action("换机：接管已恢复的数据目录…", async () =>
+        Action(RepairAction.PlanRestore, "检查恢复计划", async () =>
+        {
+            recovery = await RunMaintenance("检查恢复计划\n备份：" + backup + "\n目标：" + restoreRoot + "\n尚未复制或恢复文件。",
+                (progress, token) => maintenance.PlanRestoreAsync(backup, restoreRoot, progress, token), readOnly: true);
+            if (restorePlanPreview is not null) restorePlanPreview.Text = recovery.Summary + "\n目标：" + recovery.Destination;
+            Message("备份已校验，尚未恢复。请核对计划后执行恢复。");
+        });
+        Action(RepairAction.ExecuteRestore, "按计划恢复到新目录…", async () =>
+        {
+            if (!MayDiscard()) return;
+            var selected = recovery ?? throw new InvalidOperationException("先检查恢复计划。");
+            await RunMaintenance("恢复备份到新目录\n备份：" + backup + "\n目标：" + selected.Destination + "\n恢复完成后仍需检查配置才能生产。",
+                (progress, token) => maintenance.RestoreAsync(backup, selected.Destination, selected.BackupSha256, progress, token));
+            restoredPreview = selected; restoredBackup = backup; recovery = null;
+            data.Text = selected.DataRoot; await Read(true);
+            Message("备份已恢复到新目录，原目录保留。尚未启动；请核对接管条件、原请求和设备后再明确启动。");
+        });
+        Action(RepairAction.AdoptRestore, "换机：接管已恢复的数据目录…", async () =>
         {
             if (restoredPreview is null || restoredBackup is null) throw new InvalidOperationException("请先完成完整恢复，并确认新旧目录都没有正在运行的软件");
             var registration = WindowsDeploymentSetup.Registration(ParcelStartupServices.ApplicationId);
             if (!File.Exists(registration)) throw new InvalidOperationException("找不到原机的安装登记，不能接管。请联系供应商处理换机。");
-            if (MessageBox.Show(this, "将禁止从原目录启动，并把安装登记切换到新目录。原目录和数据不会删除。切换后需进入管理模式，核对未处理完的作业、设备和编号范围后才能生产。", "确认换机接管", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
+            if (MessageBox.Show(this, "将禁止从原目录启动，并把安装登记切换到新目录。原目录和数据不会删除。切换后需进入管理模式，核对未处理完的作业、设备和编号范围后才能生产。", "确认换机接管", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
             await Task.Run(() => maintenance.AdoptRestoreAsync(restoredBackup, restoredPreview.DataRoot, restoredPreview.BackupSha256, Wire.FileHash(registration)));
             Message("已切换到新目录，原目录不能再启动。请重新启动软件，在维护页核对交接内容；旧作业不会自动恢复或重发。");
         });
-        Action("安装 / 修复程序…", async () =>
+        Action(RepairAction.Install, "安装 / 修复程序…", async () =>
         {
             if (!MayDiscard()) return;
             var setup = new StartupSetupWindow(SelectedLaunch) { Owner = this }; setup.ShowDialog();
             if (setup.Launched) { ReplacementLaunched = true; Busy = false; Close(); return; }
             if (setup.Installed is { } installed) { config.Text = installed.ConfigurationDirectory; data.Text = installed.DataRoot; await Read(true); }
         });
-        Action(initialConfiguration ? "按此配置启动" : "重试正常启动", StartReviewed);
-        Action("上一步", () => { if (initialConfiguration) parameterControl?.MovePrevious(); else if (tasks is not null) tasks.SelectedIndex = Math.Max(0, tasks.SelectedIndex - 1); return Task.CompletedTask; });
-        var next = Action("下一步", async () =>
+        Action(RepairAction.Start, initialConfiguration ? "按此配置启动" : "重试正常启动", async () => { if (checkedInput != Input()) await CheckCandidate(); await StartReviewed(); });
+        Action(RepairAction.Previous, "上一步", () => { if (initialConfiguration) parameterControl?.MovePrevious(); else SelectTask(selectedTask == RepairTask.Review ? RepairTask.Parameters : RepairTask.Directory); return Task.CompletedTask; });
+        Action(RepairAction.Next, "下一步", async () =>
         {
             if (initialConfiguration)
             {
@@ -297,11 +319,10 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 saveState.Text = SaveIsComplete ? "已保存，启动时检查" : "未保存";
                 if (parameterControl.IsReviewPage) await CheckCandidate();
             }
-            else if (tasks is not null) tasks.SelectedIndex = Math.Min(3, tasks.SelectedIndex + 1);
+            else if (selectedTask == RepairTask.Directory) SelectTask(RepairTask.Parameters);
+            else { SelectTask(RepairTask.Review); await CheckCandidate(); }
         });
-        next.SetResourceReference(BackgroundProperty, "Accent"); next.SetResourceReference(ForegroundProperty, "Surface");
-        Action("维护操作", () => { showMaintenanceActions = !showMaintenanceActions; UpdateActions(); return Task.CompletedTask; });
-        Action(initialConfiguration ? "保存配置" : "保存并启动", async () =>
+        Action(RepairAction.SaveAndStart, initialConfiguration ? "保存配置" : "保存并启动", async () =>
         {
             if (!(lastSaveConfirmed && !startupSaveUncertain && document?.Candidate is { } confirmed && Wire.Encode(RequireDraft()) == Wire.Encode(confirmed))) await CheckCandidate();
             savingCandidate = true;
@@ -310,21 +331,21 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 throw new InvalidOperationException("尚未确认业务配置保存成功，请按提示操作。已填写的内容保留。");
             if (draft?.DisplayPreferences?.HasChanges == true)
                 throw new InvalidOperationException("业务配置已保存；本机偏好未全部保存，输入保留。请检查偏好文件与权限后重试，本次配置不会重复提交。" + draft.DisplayPreferences.SaveSummary);
-            if (initialConfiguration) { ConfigurationSaved = true; CompleteDialog(); }
+            if (initialConfiguration) { await ReleaseMaintenanceAsync(); ConfigurationSaved = true; CompleteDialog(); }
             else { await CheckCandidate(); await StartReviewed(); }
         });
-        if (initialConfiguration) Action("重新读取配置…", Read);
-        Action("稍后配置", () => { Busy = false; Close(); return Task.CompletedTask; });
-        Action("配置工具…", () => { OpenTools(); return Task.CompletedTask; });
+        if (initialConfiguration) Action(RepairAction.Reload, "重新读取配置…", Read);
+        Action(RepairAction.Exit, initialConfiguration ? "稍后配置" : "关闭", () => { Busy = false; Close(); return Task.CompletedTask; });
+        Action(RepairAction.Tools, "配置工具…", () => { OpenTools(); return Task.CompletedTask; });
         if (!initialConfiguration)
         {
-            var continuation = Action("检查并接续原数据…", async () =>
+            var continuation = Action(RepairAction.ContinueData, "检查并接续原数据…", async () =>
             {
                 await RequireMaintenance(); RequireDirectories();
                 Message("正在核验原数据接续条件，未启动相机或 RCS。");
                 var plan = await Task.Run(maintenance.PlanSmDb12ContinuationAsync);
                 if (!plan.Allowed) throw new InvalidOperationException(plan.Summary);
-                if (MessageBox.Show(this, plan.Summary + "\n\n接续会先保管配置和数据库原件。提交后不会自动启动供包台，继续吗？", "确认接续原数据", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK) return;
+                if (MessageBox.Show(this, plan.Summary + "\n\n接续会先保管配置和数据库原件。提交后不会自动启动供包台，继续吗？", "确认接续原数据", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
                 await RequireMaintenance();
                 document = await Task.Run(() => maintenance.ContinueSmDb12Async(plan.Identity));
                 Render();
@@ -336,13 +357,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         }
         if (initialConfiguration)
         {
-            foreach (var button in Actions.Children.OfType<Button>().ToArray())
-                if ((string)button.Content is not ("上一步" or "下一步" or "保存配置" or "完成" or "重新读取配置…" or "导入配置文件…" or "保存草稿")) Actions.Children.Remove(button);
-            var saveDraft = Actions.Children.OfType<Button>().Single(b => (string)b.Content == "保存草稿");
-            saveDraft.Content = "保存草稿并退出";
-            Actions.Children.Remove(saveDraft);
-            var draftActions = new StackPanel { Orientation = Orientation.Horizontal }; draftActions.Children.Add(saveDraft); draftActions.Children.Add(saveState);
-            DockPanel.SetDock(draftActions, Dock.Left); FooterHost.Children.Insert(0, draftActions); Actions.HorizontalAlignment = HorizontalAlignment.Right;
+            foreach (var (kind, button) in actionButtons)
+                if (kind is not (RepairAction.Previous or RepairAction.Next or RepairAction.SaveAndStart or RepairAction.Reload or RepairAction.Import or RepairAction.SaveDraft or RepairAction.Exit)) Actions.Children.Remove(button);
+            var saveDraft = actionButtons[RepairAction.SaveDraft]; saveDraft.Content = "保存草稿并退出";
+            DockPanel.SetDock(saveState, Dock.Left); FooterHost.Children.Insert(0, saveState);
+            Actions.HorizontalAlignment = HorizontalAlignment.Right;
             Actions.Children.Remove(headerImport); headerImport.Content = "导入配置"; headerImport.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, headerImport);
         }
         var editEvents = initialConfiguration ? (UIElement)WorkflowBody : Body;
@@ -360,11 +379,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             try
             {
                 await System.Windows.Threading.Dispatcher.Yield();
-                await Run(async () =>
-                {
-                    if (maintenance is not null) await maintenance.DisposeAsync();
-                    maintenanceReleased = true;
-                });
+                await Run(ReleaseMaintenanceAsync);
                 if (maintenanceReleased) Close();
             }
             finally { maintenanceClosing = false; }
@@ -480,13 +495,20 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         Render(false); savedInput = Input();
         saveState.Text = preferences?.HasChanges == true ? "业务配置已保存；本机偏好待保存" : "已保存，启动时检查";
     }
-    Task StartReviewed()
+    async Task ReleaseMaintenanceAsync()
+    {
+        if (maintenanceReleased) return;
+        maintenanceReleasePending = true;
+        if (maintenance is not null) await maintenance.DisposeAsync();
+        maintenanceReleased = true; maintenanceReleasePending = false;
+    }
+    async Task StartReviewed()
     {
         RequireChecked(); var candidate = RequireDraft();
         if ((initialConfiguration && !lastSaveConfirmed) || startupSaveUncertain || savedInput != Input() || draft?.DisplayPreferences?.HasChanges == true || Wire.Encode(candidate) != Wire.Encode(document!.Candidate))
             throw new InvalidOperationException("配置尚未保存，请先保存。");
         SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = config.Text, DataRoot = data.Text };
-        RetryRequested = true; CompleteDialog(); return Task.CompletedTask;
+        await ReleaseMaintenanceAsync(); RetryRequested = true; CompleteDialog();
     }
     async Task ImportConfiguration()
     {
@@ -496,42 +518,100 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (path is null) return;
         if (new FileInfo(path).Length > 4 * 1024 * 1024) throw new InvalidDataException("配置文件超出4兆字节限制。");
         var replacement = StartupConfigurationFiles.Import(File.ReadAllText(path), document.Candidate, draft, document.Catalog);
-        var comparison = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "导入配置预览", Width = 720, Height = 560, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var comparison = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "导入配置预览", Width = 720, Height = 560, MinWidth = 520, MinHeight = 320, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        StartupAppearance.FitToWorkArea(comparison);
         var panel = new DockPanel { Margin = new(20) };
-        var apply = new Button { Content = "应用到当前填写内容", MinHeight = 44, Margin = new(0, 12, 0, 0) };
-        DockPanel.SetDock(apply, Dock.Bottom); apply.Click += (_, _) => comparison.DialogResult = true; panel.Children.Add(apply);
+        var footer = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 12, 0, 0) };
+        var cancel = new Button { Content = "取消", IsCancel = true, IsDefault = true, MinHeight = 44, MinWidth = 100, Margin = new(0, 0, 8, 0) };
+        var apply = new Button { Content = "应用到当前填写内容", MinHeight = 44 };
+        cancel.Click += (_, _) => comparison.DialogResult = false;
+        apply.Click += (_, _) => comparison.DialogResult = true;
+        footer.Children.Add(cancel); footer.Children.Add(apply); DockPanel.SetDock(footer, Dock.Bottom); panel.Children.Add(footer);
+        comparison.Loaded += (_, _) => cancel.Focus();
         panel.Children.Add(new TextBox { Text = "只导入设置，不会保存或启动；本供包台的身份和模拟/生产用途不变。\n\n" + StartupConfigurationFiles.Describe(draft, replacement), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
-        comparison.Content = panel;
+        apply.SetResourceReference(StyleProperty, "Primary"); comparison.Content = panel;
         if (comparison.ShowDialog() == true) { await RequireMaintenance(); draft = replacement; Render(false); Message("配置已导入填写区。检查后再保存配置。"); }
     }
     void OpenTools()
     {
         var menu = new ContextMenu { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body };
-        foreach (var label in new[] { "导入配置文件…", "保存草稿", "继续已保存草稿" })
-            Add(menu.Items, label);
+        foreach (var kind in new[] { RepairAction.Import, RepairAction.SaveDraft, RepairAction.ContinueDraft }) Add(menu.Items, kind);
         menu.Items.Add(new Separator());
         var advanced = new MenuItem { Header = "备份、诊断与修复" };
-        foreach (var label in new[] { "读取所选配置", "检查并预览更改", "保存首次配置…", "按此配置启动", "导出设置模板…", "创建完整备份…", "清理过期记录…", "修复未生效的配置…", "换机：接管已恢复的数据目录…", "安装 / 修复程序…" })
-            Add(advanced.Items, label);
+        foreach (var kind in new[] { RepairAction.Read, RepairAction.Check, RepairAction.Save, RepairAction.ExportTemplate, RepairAction.Backup, RepairAction.Retention, RepairAction.Repair, RepairAction.AdoptRestore, RepairAction.Install }) Add(advanced.Items, kind);
         var diagnostic = new MenuItem { Header = "查看完整诊断…" };
-        diagnostic.Click += (_, _) => new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "启动诊断", Width = 760, Height = 520, Content = new TextBox { Text = diagnosticDetails + "\n" + Status.Text, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } }.ShowDialog();
+        System.Windows.Automation.AutomationProperties.SetAutomationId(diagnostic, "Startup.OpenDiagnosticDetails");
+        diagnostic.Click += (_, _) => ShowStartupDiagnostics();
         advanced.Items.Add(diagnostic); menu.Items.Add(advanced);
-        var tools = Actions.Children.OfType<Button>().Single(x => (string)x.Content == "配置工具…");
+        var tools = actionButtons[RepairAction.Tools];
         menu.PlacementTarget = tools; tools.ContextMenu = menu; menu.IsOpen = true;
-        void Add(ItemCollection items, string label)
+        void Add(ItemCollection items, RepairAction kind)
         {
-            var target = Actions.Children.OfType<Button>().FirstOrDefault(x => (string)x.Content == label);
-            if (target is null) return;
-            var item = new MenuItem { Header = label, IsEnabled = label != "继续已保存草稿" || savedDraft is not null };
+            if (!actionButtons.TryGetValue(kind, out var target)) return;
+            var item = new MenuItem { Header = target.Content, IsEnabled = CanExecute(kind) };
             item.Click += (_, _) => target.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); items.Add(item);
         }
     }
-    string Input() => config.Text + "\n" + data.Text + "\n" + reason + "\n" + (draft is null ? "" : Wire.Encode(draft.Capture()));
-    Button Action(string label, Func<Task> action) => base.Action(label, async () =>
+
+    void ShowStartupDiagnostics()
     {
-        if (label is not ("进入管理模式…" or "读取所选配置" or "安装 / 修复程序…" or "上一步" or "下一步" or "维护操作" or "配置工具…" or "稍后配置")) await RequireMaintenance();
-        await action();
-    }, readOnly: label is "读取所选配置" or "配置工具…" or "稍后配置");
+        var dialog = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "启动诊断",
+            Width = 760, Height = 520, MinWidth = 520, MinHeight = 320, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        StartupAppearance.FitToWorkArea(dialog);
+        System.Windows.Automation.AutomationProperties.SetAutomationId(dialog, "StartupDiagnosticDetails");
+        var content = new DockPanel { Margin = new(20) };
+        var footer = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 12, 0, 0) };
+        var close = new Button { Content = "关闭", IsCancel = true, IsDefault = true, MinHeight = 44, MinWidth = 100 };
+        System.Windows.Automation.AutomationProperties.SetAutomationId(close, "StartupDiagnostic.Close");
+        close.Click += (_, _) => dialog.Close(); footer.Children.Add(close); DockPanel.SetDock(footer, Dock.Bottom); content.Children.Add(footer);
+        content.Children.Add(new TextBox { Text = diagnosticDetails + "\n" + Status.Text, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+        dialog.Content = content; dialog.Loaded += (_, _) => close.Focus(); dialog.ShowDialog();
+    }
+    string Input() => config.Text + "\n" + data.Text + "\n" + reason + "\n" + (draft is null ? "" : Wire.Encode(draft.Capture()));
+    Button Action(RepairAction kind, string label, Func<Task> execute)
+    {
+        var readOnly = kind is RepairAction.Read or RepairAction.Reload or RepairAction.PlanRestore or RepairAction.Tools or RepairAction.Exit;
+        var button = base.Action(label, async () =>
+        {
+            if (!CanExecute(kind)) throw new InvalidOperationException("当前任务不能执行此操作，请先核对原结果或读取配置。");
+            if (kind is not (RepairAction.Read or RepairAction.Reload or RepairAction.Install or RepairAction.Previous or RepairAction.Next or RepairAction.Tools or RepairAction.Exit)) await RequireMaintenance();
+            await execute();
+        }, readOnly);
+        button.Tag = kind;
+        System.Windows.Automation.AutomationProperties.SetAutomationId(button, "Startup." + kind);
+        actionButtons.Add(kind, button); return button;
+    }
+    bool CanExecute(RepairAction kind)
+    {
+        // A failed Dispose still owns the original SDK object. Permit only
+        // retrying that cleanup or completing its already-confirmed save.
+        if (maintenanceReleasePending && kind is not (RepairAction.Read or RepairAction.Reload or RepairAction.Exit or RepairAction.Tools) &&
+            !(kind == RepairAction.SaveAndStart && SaveIsComplete) && !(kind == RepairAction.Start && savedInput == Input() && checkedInput == Input())) return false;
+        return kind switch
+        {
+            RepairAction.Read or RepairAction.Reload or RepairAction.Install or RepairAction.Tools or RepairAction.Exit => true,
+            RepairAction.Start => draft is not null && document?.NeedsSmDb12Continuation != true && !startupSaveUncertain && savedInput == Input() && draft.DisplayPreferences?.HasChanges != true,
+            RepairAction.Save or RepairAction.Repair => draft is not null && checkedInput == Input() && !startupSaveUncertain,
+            RepairAction.ContinueData => document?.NeedsSmDb12Continuation == true,
+            RepairAction.Previous or RepairAction.Next => draft is not null && document?.NeedsSmDb12Continuation != true,
+            RepairAction.PlanRestore => maintenance is not null && !string.IsNullOrWhiteSpace(backup) && !string.IsNullOrWhiteSpace(restoreRoot),
+            RepairAction.ExecuteRestore => recovery is not null && !UnknownOutcome,
+            RepairAction.AdoptRestore => restoredPreview is not null && restoredBackup is not null,
+            RepairAction.ContinueDraft => draft is not null && savedDraft is not null,
+            _ => draft is not null && document?.NeedsSmDb12Continuation != true && (!startupSaveUncertain || kind is RepairAction.SaveDraft or RepairAction.ExportTemplate)
+        };
+    }
+    void InvalidateRestorePlan()
+    {
+        var hadPlan = recovery is not null; recovery = null;
+        if (restorePlanPreview is not null) restorePlanPreview.Text = "恢复路径尚未检查，请重新检查恢复计划。";
+        if (!rendering) { if (hadPlan) Message("恢复路径已修改，原计划已撤销，请重新检查。"); UpdateActions(); }
+    }
+    void SelectTask(RepairTask task)
+    {
+        if (!taskPages.TryGetValue(task, out var page) || page.Visibility != Visibility.Visible) return;
+        selectedTask = task; tasks!.SelectedItem = page; UpdateActions();
+    }
     async Task RequireMaintenance()
     {
         RequireDirectories();
@@ -554,7 +634,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     }
     void RequireChecked()
     {
-        if (checkedInput is null || checkedInput != Input()) throw new InvalidOperationException("请检查填写内容后，再次点击“保存并启动”。");
+        if (checkedInput is null || checkedInput != Input()) throw new InvalidOperationException("检查结果尚未确认或填写内容已改变，请先检查当前配置。");
     }
     ParcelConfiguration RequireDraft()
     {
@@ -570,7 +650,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         refreshReview?.Invoke(); UpdateActions();
         // Keep a partially saved first setup visible above the scrolling form;
         // a successful business CAS must not be presented as a failed check.
-        if (initialConfiguration) Status.Visibility = lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? Visibility.Visible : Visibility.Collapsed;
+        if (initialConfiguration) Status.Visibility = maintenanceReleasePending || lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? Visibility.Visible : Visibility.Collapsed;
         var focus = focusAfterOperation; focusAfterOperation = null;
         if (focus is not null) Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, focus);
     }
@@ -578,6 +658,13 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         if (!initialConfiguration) { base.OperationFailed(error); return; }
         diagnosticDetails = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails + "\n" + error + "\n" + Status.Text);
+        if (maintenanceReleasePending)
+        {
+            saveState.Text = lastSaveConfirmed ? "配置已保存；维护资源待释放" : "维护资源待释放";
+            Message((startupSaveUncertain ? "上次保存结果仍未确认。" : lastSaveConfirmed ? "业务配置已保存。" : "原配置和填写内容保留。") +
+                "维护服务尚未释放，原服务和窗口保留。处理原因后再次完成或关闭，将重试原服务。" + ChineseInterfaceText.ParameterMessage(error.Message));
+            refreshReview?.Invoke(); return;
+        }
         saveState.Text = error is UnauthorizedAccessException ? "需要重新验证" : startupSaveUncertain ? "保存结果未确认" : lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? "业务配置已保存；本机偏好待保存" : savingCandidate ? "保存未完成" : "检查未通过";
         refreshReview?.Invoke();
     }
@@ -585,10 +672,9 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         var issue = parameterEditor?.Issues.FirstOrDefault();
         if (issue is null) return;
-        var step = issue.Category switch { "业务模块" => 0, "系统" => 1, "驱动" => 2, "组件" => 3, _ => -1 };
-        if (initialConfiguration && step >= 0) parameterControl?.SelectCategory(new[] { 1, 0, 2, 3 }[step]);
+        if (!initialConfiguration) SelectTask(RepairTask.Parameters);
         var control = parameterControl; var path = issue.Path; var expectedInput = Input();
-        if (step >= 0) focusAfterOperation = () =>
+        focusAfterOperation = () =>
         {
             // Run releases disabled controls before this focus continuation.
             // A newer edit must never be interrupted by this older validation.
@@ -648,7 +734,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (LogicalTreeHelper.GetParent(field) is Panel oldParent) oldParent.Children.Remove(field);
             Body.Children.Add(field);
         }
-        var policyStart = Body.Children.Count; var deviceStart = policyStart; var reviewStart = policyStart;
+        var policyStart = Body.Children.Count; var reviewStart = policyStart;
         ParameterSettingsControl? sharedEditor = null;
         if (replaceDraft) draft = document?.Candidate is { } candidate ? new(candidate, document.Catalog, initialConfiguration && !document.ExistingConfiguration) : null;
         if (draft is not null)
@@ -658,7 +744,6 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Body.Children.Add(new Expander { Header = "配置信息", Content = new TextBox { IsReadOnly = true, Text = $"配置校验码：{document.ConfigurationHash}\n设备列表只表示可选项，不表示已连接。启动时会完整检查运行条件。", TextWrapping = TextWrapping.Wrap }, Margin = new(0, 8, 0, 8) });
             policyStart = Body.Children.Count;
             Note("首次配置与日常设置使用相同的参数和检查规则。投递位数量和设备身份不在此修改。");
-            deviceStart = Body.Children.Count;
             parameterEditor = draft.CreateParameterEditor((p, samples) => maintenance.TestBarcodeFilterAsync(p, samples), new(config.Text, data.Text));
             if (!ReferenceEquals(observedPreferences, parameterEditor.DisplayPreferences))
             {
@@ -687,36 +772,29 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             var listBackups = new Button { Content = "读取并校验备份列表", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
             listBackups.Click += async (_, _) => await Run(async () => { await RequireMaintenance(); var selected = backupCatalogRoot; backupRows.ItemsSource = await RunMaintenance("校验备份目录\n目录：" + selected + "\n不修改任何文件。", (progress, token) => maintenance.ListBackupsAsync(selected, progress, token), readOnly: true); Message("已读取备份列表。“Verified”表示备份文件完整，可用于恢复。"); });
             Body.Children.Add(listBackups); Body.Children.Add(backupRows);
-            var backupBox = Field("完整备份数据库", backup, v => { backup = v; recovery = null; });
+            var backupBox = Field("完整备份数据库", backup, v => { backup = v; InvalidateRestorePlan(); });
+            System.Windows.Automation.AutomationProperties.SetAutomationId(backupBox, "Startup.RestoreBackup");
             backupRows.SelectionChanged += (_, _) => { if (backupRows.SelectedItem is StartupBackupItem item) { backupBox.Text = item.Path; Message(item.Status + " · " + item.Summary); } };
             var choose = new Button { Content = "选择完整备份…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
             choose.Click += (_, _) => { var selected = FilePick(this, "选择完整备份数据库", "SQLite 备份|*.db;*.sqlite;*.backup|所有文件|*.*"); if (selected is not null) backupBox.Text = selected; }; Body.Children.Add(choose);
             var destination = Folder("恢复到新目录（不覆盖原目录）", restoreRoot);
-            destination.TextChanged += (_, _) => { restoreRoot = destination.Text; recovery = null; };
-            var plan = new Button { Content = "检查恢复计划", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-            var preview = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 80 };
-            plan.Click += async (_, _) => await Run(async () => { await RequireMaintenance(); recovery = await RunMaintenance("检查恢复计划\n备份：" + backup + "\n目标：" + restoreRoot + "\n尚未复制或恢复文件。", (progress, token) => maintenance.PlanRestoreAsync(backup, restoreRoot, progress, token), readOnly: true); preview.Text = recovery.Summary + "\n目标：" + recovery.Destination; Message("备份已校验，尚未恢复。确认目标目录后执行下方恢复。"); });
-            Body.Children.Add(plan); Body.Children.Add(preview);
-            var restore = new Button { Content = "按计划恢复到新目录…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-            restore.Click += async (_, _) => await Run(async () =>
-            {
-                await RequireMaintenance(); if (!MayDiscard()) return;
-                var selected = recovery ?? throw new InvalidOperationException("先检查恢复计划");
-                await RunMaintenance("恢复备份到新目录\n备份：" + backup + "\n目标：" + selected.Destination + "\n恢复完成后仍需检查配置才能生产。",
-                    (progress, token) => maintenance.RestoreAsync(backup, selected.Destination, selected.BackupSha256, progress, token));
-                restoredPreview = selected; restoredBackup = backup;
-                data.Text = selected.DataRoot; await Read(true);
-                Message("备份已恢复到新目录，原目录保留。启动软件时会检查恢复后的作业状态。"); recovery = null;
-            }); Body.Children.Add(restore);
+            System.Windows.Automation.AutomationProperties.SetAutomationId(destination, "Startup.RestoreDestination");
+            destination.TextChanged += (_, _) => { restoreRoot = destination.Text; InvalidateRestorePlan(); };
+            restorePlanPreview = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 80,
+                Text = recovery is null ? "先选择完整备份和新的恢复目录，再检查恢复计划。检查不会恢复文件。" : recovery.Summary + "\n目标：" + recovery.Destination };
+            Body.Children.Add(restorePlanPreview);
         }
         var fields = Body.Children.Cast<UIElement>().ToArray(); Body.Children.Clear();
+        taskPages.Clear();
         tasks = initialConfiguration ? null : new TabControl { Name = "StartupTasks", Margin = new(0, 8, 0, 8) };
-        void Section(string title, string guidance, IEnumerable<UIElement> items)
+        void Section(RepairTask task, string title, string guidance, IEnumerable<UIElement> items)
         {
             var panel = new StackPanel { Margin = new(16) };
             panel.Children.Add(new TextBlock { Text = guidance, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), FontSize = UiTypography.Body });
             foreach (var item in items) panel.Children.Add(item);
-            tasks!.Items.Add(new TabItem { Header = title, Content = panel, MinHeight = 44 });
+            var page = new TabItem { Header = title, Content = panel, MinHeight = 44, Tag = task };
+            System.Windows.Automation.AutomationProperties.SetAutomationId(page, "StartupTask." + task);
+            taskPages.Add(task, page); tasks!.Items.Add(page);
         }
         if (initialConfiguration)
         {
@@ -736,7 +814,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 review.Children.Add(new Expander { Header = "配置检查诊断详情", Content = diagnostic, Margin = new(0, 16, 0, 0) });
                 refreshReview = () =>
                 {
-                    state.Text = startupSaveUncertain ? "上次保存结果未确认，暂不重复保存。" : SaveIsComplete ? "配置已保存，完成后自动检查并启动供包台。" : lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? "业务配置已保存；本机偏好尚未全部保存，请重试保存。本次不会重复提交业务配置。" : "检查填写内容并保存配置，完成后自动检查并启动。";
+                    state.Text = maintenanceReleasePending ? "维护资源尚未释放；处理原因后再次完成或关闭，原服务和保存结果保留。" : startupSaveUncertain ? "上次保存结果未确认，暂不重复保存。" : SaveIsComplete ? "配置已保存，完成后自动检查并启动供包台。" : lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? "业务配置已保存；本机偏好尚未全部保存，请重试保存。本次不会重复提交业务配置。" : "检查填写内容并保存配置，完成后自动检查并启动。";
                     diagnostic.Text = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails);
                     sections.Children.Clear();
                     foreach (var section in StartupConfigurationFiles.ReviewSections(draft!))
@@ -754,55 +832,54 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 {
                     WorkflowBusinessName.Text = sharedEditor.PageProgress + " · 相机和 RCS 可稍后配置";
                     WorkflowBusinessName.Visibility = Visibility.Visible;
-                    selectedTask = sharedEditor.SelectedCategory;
-                    if (selectedTask == 4) refreshReview?.Invoke(); UpdateActions();
+                    selectedParameterCategory = sharedEditor.SelectedCategory;
+                    if (sharedEditor.IsReviewPage) refreshReview?.Invoke(); UpdateActions();
                 };
                 sharedEditor.MaintenanceRequested += (_, _) => sharedEditor.ShowReview();
-                sharedEditor.SelectCategory(new[] { 0, 1, 2, 3, 4 }[Math.Clamp(selectedTask, 0, 4)]);
+                sharedEditor.SelectCategory(selectedParameterCategory);
                 refreshReview();
             }
         }
         else
         {
-            Section("1 目录与工位", "确认配置目录和数据目录。更改目录后需重新读取。", fields.Take(policyStart));
-            Section("2 设备与参数", "为每个投递位选择相机等设备。在此选择设备不会连接设备。", fields.Skip(deviceStart).Take(reviewStart - deviceStart));
-            Section("3 参数说明", "系统、业务模块、驱动和组件的参数都在“设备与参数”页编辑；保存和启动分两步。", fields.Skip(policyStart).Take(deviceStart - policyStart));
-            Section("4 检查与启动", "先检查配置，再保存并启动。配置未能生效时，可在“恢复与维护”中修复。", fields.Skip(reviewStart).Take(recoveryStart - reviewStart));
-            Section("恢复与维护", "备份、恢复、换机接管和程序修复都需单独确认后执行，切换到本页不会自动执行。", fields.Skip(recoveryStart));
+            Section(RepairTask.Directory, "目录与工位", "确认配置目录和数据目录。更改目录后需重新读取。", fields.Take(policyStart));
+            Section(RepairTask.Parameters, "设备与参数", "为每个投递位选择相机等设备。在此选择设备不会连接设备。", fields.Skip(policyStart).Take(reviewStart - policyStart));
+            Section(RepairTask.Review, "检查与启动", "先检查配置，再保存并启动。配置未能生效时，可在“恢复与维护”中修复。", fields.Skip(reviewStart).Take(recoveryStart - reviewStart));
+            Section(RepairTask.Recovery, "恢复与维护", "备份、恢复、换机接管和程序修复都需单独确认后执行，切换到本页不会自动执行。", fields.Skip(recoveryStart));
             if (draft is null)
             {
                 // A read failure is not an empty configuration. Keep original
                 // directories and recovery available; never offer an empty save form.
-                var failure = (StackPanel)((TabItem)tasks!.Items[0]).Content;
+                var failure = (StackPanel)taskPages[RepairTask.Directory].Content;
                 var explanation = new TextBlock { Text = "原配置未载入，参数没有被清空。请核对原目录或查看诊断；不要重新首配或覆盖原账。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 16, 0, 12) };
                 System.Windows.Automation.AutomationProperties.SetAutomationId(explanation, "StartupReadFailure");
                 failure.Children.Insert(0, explanation);
                 failure.Children.Insert(1, new Expander { Header = "读取失败诊断", Content = new TextBox { Text = document is null ? diagnosticDetails : string.Join("\n", document!.Diagnostics), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
-                for (var i = 1; i <= 3; i++) ((TabItem)tasks.Items[i]).Visibility = Visibility.Collapsed;
-                if (selectedTask is >= 1 and <= 3) selectedTask = 0;
+                foreach (var task in new[] { RepairTask.Parameters, RepairTask.Review }) taskPages[task].Visibility = Visibility.Collapsed;
+                if (selectedTask is RepairTask.Parameters or RepairTask.Review) selectedTask = RepairTask.Directory;
             }
-            if (OpenRecoveryScenario) { selectedTask = 4; OpenRecoveryScenario = false; }
-            tasks!.SelectedIndex = selectedTask;
+            if (OpenRecoveryScenario) { selectedTask = RepairTask.Recovery; OpenRecoveryScenario = false; }
+            tasks!.SelectedItem = taskPages[selectedTask];
             if (SceneOnly && draft is not null && document?.NeedsSmDb12Continuation != true)
             {
-                if (selectedTask is 1 or 2) { selectedTask = 0; tasks.SelectedIndex = 0; }
+                if (selectedTask == RepairTask.Parameters) SelectTask(RepairTask.Directory);
                 var selectedContent = new FrameworkElementFactory(typeof(ContentPresenter));
                 selectedContent.SetBinding(ContentPresenter.ContentProperty, new System.Windows.Data.Binding("SelectedContent") { RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.TemplatedParent) });
                 tasks.Template = new ControlTemplate(typeof(TabControl)) { VisualTree = selectedContent };
-                var recoveryScene = selectedTask == 4;
-                for (var tabIndex = 0; tabIndex < tasks.Items.Count; tabIndex++) ((TabItem)tasks.Items[tabIndex]).IsEnabled = recoveryScene ? tabIndex == 4 : tabIndex is 0 or 3;
+                var recoveryScene = selectedTask == RepairTask.Recovery;
+                foreach (var (task, page) in taskPages) page.IsEnabled = recoveryScene ? task == RepairTask.Recovery : task is RepairTask.Directory or RepairTask.Review;
                 var routes = new WrapPanel { Margin = new(0, 0, 0, 8) };
-                foreach (var route in recoveryScene ? new[] { ("恢复备份与换机", 4) } : new[] { ("检查目录与配置", 0), ("检查并启动", 3) })
+                foreach (var route in recoveryScene ? new[] { ("恢复备份与换机", RepairTask.Recovery) } : new[] { ("检查目录与配置", RepairTask.Directory), ("检查并启动", RepairTask.Review) })
                 {
                     var button = new Button { Content = route.Item1, MinHeight = 44, Margin = new(0, 0, 8, 0) };
-                    button.Click += (_, _) => { tasks.SelectedIndex = route.Item2; selectedTask = route.Item2; UpdateActions(); }; routes.Children.Add(button);
+                    button.Click += (_, _) => { SelectTask(route.Item2); }; routes.Children.Add(button);
                 }
                 Body.Children.Insert(0, routes);
             }
         }
         if (!initialConfiguration && tasks is not null)
         {
-            tasks.SelectionChanged += (_, e) => { if (e.OriginalSource == tasks) { selectedTask = tasks.SelectedIndex; UpdateActions(); } };
+            tasks.SelectionChanged += (_, e) => { if (e.OriginalSource == tasks) { if (tasks.SelectedItem is TabItem { Tag: RepairTask task }) selectedTask = task; UpdateActions(); } };
             Body.Children.Add(tasks);
         }
         UpdateActions(); rendering = false;
@@ -810,42 +887,48 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     }
     void UpdateActions()
     {
-        if (initialConfiguration)
+        foreach (var (kind, button) in actionButtons)
         {
-            foreach (var button in Actions.Children.OfType<Button>())
+            var visible = initialConfiguration ? draft is null ? kind is RepairAction.Reload or RepairAction.Exit : kind switch
             {
-                var label = (string)button.Content;
-                var next = label == "下一步" || label.StartsWith("继续：", StringComparison.Ordinal) || label == "检查配置";
-                if (next) button.Content = parameterControl?.NextPageTitle is { } title ? title == "检查与完成" ? "检查配置" : "继续：" + title : "下一步";
-                var confirmed = SaveIsComplete;
-                button.Visibility = next && parameterControl?.NextPageTitle is not null && !startupSaveUncertain || label == "上一步" && parameterControl?.HasPreviousPage == true || label == "保存配置" && selectedTask == 4 && !confirmed && !startupSaveUncertain || label == "完成" && selectedTask == 4 && confirmed || label == "重新读取配置…" && startupSaveUncertain ? Visibility.Visible : Visibility.Collapsed;
-                if (label is "保存配置" or "完成" or "重新读取配置…") StartupAppearance.Primary(button);
-            }
-            return;
+                RepairAction.Import or RepairAction.SaveDraft or RepairAction.Exit => true,
+                RepairAction.Previous => parameterControl?.HasPreviousPage == true,
+                RepairAction.Next => parameterControl?.NextPageTitle is not null && !startupSaveUncertain,
+                RepairAction.SaveAndStart => parameterControl?.IsReviewPage == true && !startupSaveUncertain,
+                RepairAction.Reload => startupSaveUncertain,
+                _ => false
+            } : draft is null || document?.NeedsSmDb12Continuation == true ?
+                kind is RepairAction.Read or RepairAction.Install or RepairAction.Tools or RepairAction.Exit || kind == RepairAction.ContinueData && document?.NeedsSmDb12Continuation == true || selectedTask == RepairTask.Recovery && kind is RepairAction.PlanRestore or RepairAction.ExecuteRestore :
+                kind is RepairAction.Tools or RepairAction.Exit || kind switch
+                {
+                    RepairAction.Read => selectedTask == RepairTask.Directory,
+                    RepairAction.Import => selectedTask == RepairTask.Parameters && !SceneOnly,
+                    RepairAction.SaveDraft => selectedTask == RepairTask.Parameters && !SceneOnly,
+                    RepairAction.Check or RepairAction.Start => selectedTask == RepairTask.Review,
+                    RepairAction.SaveAndStart => selectedTask == RepairTask.Review && !SceneOnly && savedInput != Input(),
+                    RepairAction.Install or RepairAction.PlanRestore => selectedTask == RepairTask.Recovery,
+                    RepairAction.ExecuteRestore => selectedTask == RepairTask.Recovery && recovery is not null,
+                    RepairAction.AdoptRestore => selectedTask == RepairTask.Recovery && restoredPreview is not null,
+                    RepairAction.Previous => !SceneOnly && selectedTask is RepairTask.Parameters or RepairTask.Review,
+                    RepairAction.Next => !SceneOnly && selectedTask is RepairTask.Directory or RepairTask.Parameters,
+                    _ => false
+                };
+            button.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            button.IsEnabled = CanExecute(kind);
+            button.IsDefault = false;
+            if (kind == RepairAction.Next) button.Content = initialConfiguration
+                ? parameterControl?.NextPageIsReview == true ? "检查配置" : "继续：" + parameterControl?.NextPageTitle
+                : selectedTask == RepairTask.Directory ? "继续填写参数" : "检查配置";
+            if (kind == RepairAction.SaveAndStart && initialConfiguration) button.Content = SaveIsComplete ? "完成并启动" : "保存配置";
+            button.IsCancel = kind == RepairAction.Exit;
         }
-        if (draft is null || document?.NeedsSmDb12Continuation == true)
+        var primary = initialConfiguration ? draft is null ? RepairAction.Reload : parameterControl?.IsReviewPage == true ? RepairAction.SaveAndStart : RepairAction.Next
+            : selectedTask switch { RepairTask.Directory => RepairAction.Read, RepairTask.Parameters => RepairAction.Next, RepairTask.Review => SceneOnly || savedInput == Input() ? RepairAction.Start : RepairAction.SaveAndStart, _ => restoredPreview is not null ? RepairAction.AdoptRestore : recovery is not null ? RepairAction.ExecuteRestore : RepairAction.PlanRestore };
+        foreach (var (kind, button) in actionButtons)
         {
-            foreach (var button in Actions.Children.OfType<Button>())
-            {
-                var label = button.Content as string;
-                var allowed = label is "读取所选配置" or "安装 / 修复程序…" or "配置工具…" || label == "检查并接续原数据…" && document?.NeedsSmDb12Continuation == true;
-                button.IsEnabled = allowed;
-                button.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
-            }
-            return;
+            if (button.Visibility != Visibility.Visible) continue;
+            button.ClearValue(StyleProperty); button.ClearValue(Button.BackgroundProperty); button.ClearValue(Button.ForegroundProperty); button.ClearValue(Button.BorderBrushProperty);
+            if (kind == primary) { button.SetResourceReference(StyleProperty, initialConfiguration ? "StartupPrimary" : "Primary"); button.IsDefault = kind is not (RepairAction.Backup or RepairAction.ContinueData or RepairAction.Install or RepairAction.ExecuteRestore or RepairAction.AdoptRestore); }
         }
-        foreach (var button in Actions.Children.OfType<Button>()) button.IsEnabled = true;
-        if (SceneOnly)
-        {
-            foreach (var button in Actions.Children.OfType<Button>())
-            {
-                var label = button.Content as string;
-                button.Visibility = selectedTask == 0 && label == "读取所选配置" || selectedTask == 3 && label is "检查并预览更改" or "重试正常启动" || selectedTask == 4 && label == "换机：接管已恢复的数据目录…" ? Visibility.Visible : Visibility.Collapsed;
-            }
-            return;
-        }
-        var groups = new[] { 0, 3, -1, 0, 4, 1, 3, 4, 4, 4, 4, -1, 4, 3, -1, -2, 4 };
-        for (var i = 0; i < Actions.Children.Count; i++)
-            Actions.Children[i].Visibility = i < groups.Length && (groups[i] == -1 || groups[i] == selectedTask || groups[i] == -2 && selectedTask < 3) ? Visibility.Visible : Visibility.Collapsed;
     }
 }

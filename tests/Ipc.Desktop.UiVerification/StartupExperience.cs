@@ -29,6 +29,7 @@ static partial class Program
         Check(first.Title.StartsWith("首次配置") && Descendants(first).OfType<TextBlock>().Where(x => x.IsVisible).All(x => !x.Text.Contains("首次工位配置")), "compact first-configuration heading uses the supply-station name");
         Check(Descendants(first).OfType<Button>().Any(x => x.IsVisible && (x.Content as string) == "导入配置"), "configuration file import is visible on step one");
         FillInitial(editor.Model!);
+        editor.Model!.CameraSerialReader = (ip, _) => Task.FromResult("SYNTH-" + ip.Replace('.', '-'));
         await VerifyParameterUiRefinement(first, editor, evidence, lines);
         await VerifyLeafNavigation(first, editor, evidence, lines);
         for (var i = 0; i < 5; i++)
@@ -60,8 +61,8 @@ static partial class Program
             "current RCS address is editable without a provider reset or station identity change");
         importedWindow.Close();
         var original = new StartupConfigurationDraft(reference, catalog);
-        var imported = StartupConfigurationFiles.Import(Wire.Encode(reference with { StationId = "other-site", QueueCapacity = 71 }), reference, original, catalog);
-        Check(imported.Build().StationId == reference.StationId && imported.Build().QueueCapacity == 71 && original.Build().QueueCapacity == reference.QueueCapacity, "preview import preserves local station identity and leaves the original draft untouched");
+        var imported = StartupConfigurationFiles.Import(Wire.Encode(reference with { StationId = "other-site", ReadTimeoutMs = 1700 }), reference, original, catalog);
+        Check(imported.Build().StationId == reference.StationId && imported.Build().EffectiveReadTimeoutMs == 1700 && original.Build().EffectiveReadTimeoutMs == reference.EffectiveReadTimeoutMs, "preview import preserves local station identity and leaves the original draft untouched");
         var template = StartupSiteTemplates.Export(reference.ApplicationId, original.Capture());
         Check(StartupConfigurationFiles.Import(Wire.Encode(template), reference, original, catalog).Build().StationId == reference.StationId, "same-build safe templates still use the existing whitelist");
         foreach (var bad in new[] { "{}", Wire.Encode(reference with { ApplicationId = "other" }), Wire.Encode(reference with { Mode = RunMode.Production }), Wire.Encode(reference with { SchemaVersion = 999 }), Wire.Encode(reference with { Reader = reference.Reader with { DeviceId = "other-device" } }) })
@@ -71,11 +72,11 @@ static partial class Program
             Check(rejected && original.Build().StationId == reference.StationId, "incompatible import is rejected without altering local input");
         }
         first.Activate(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-        editor.Model!.Policy.QueueCapacity = "bad"; Click(first, "保存配置"); await Idle(first);
+        editor.Model!.Policy.ReadTimeoutMs = "bad"; Click(first, "保存配置"); await Idle(first);
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
-        for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "QueueCapacity" && x.IsKeyboardFocused); i++) await Task.Delay(10);
-        Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "QueueCapacity" && x.IsKeyboardFocused && x.Text == "bad"), "save from the final step returns to the actual invalid field and retains the exact input; step=" + editor.SelectedCategory);
-        editor.Model!.Policy.QueueCapacity = "64"; editor.Model!.Policy.BarcodePattern = "["; editor.ShowReview();
+        for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "ReadTimeoutMs" && x.IsKeyboardFocused); i++) await Task.Delay(10);
+        Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "ReadTimeoutMs" && x.IsKeyboardFocused && x.Text == "bad"), "save from the final step returns to the actual invalid field and retains the exact input; step=" + editor.SelectedCategory);
+        editor.Model!.Policy.ReadTimeoutMs = "1000"; editor.Model!.Policy.BarcodePattern = "["; editor.ShowReview();
         first.Activate(); Click(first, "保存配置"); await Idle(first);
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
         for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "BarcodePattern" && x.IsKeyboardFocused); i++) await Task.Delay(10);
@@ -94,7 +95,7 @@ static partial class Program
         Descendants(loginWindow!).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = reauthenticationPassword; Click(loginWindow!, "进入管理模式");
         for (var i = 0; i < 100 && !LocalManagementMode.ForRoot(launch.DataRoot).Status().Authorized; i++) await Task.Delay(20);
         await Task.Delay(200); loginWindow!.Close(); await Task.Delay(1250); first.UpdateLayout();
-        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model!.Policy) && editor.Model!.Policy.QueueCapacity == "64" && !Status(first).Contains("管理模式未开启或已到期"), "reauthentication restores the same unsaved complete candidate and clears the obsolete expiry prompt without restarting configuration");
+        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model!.Policy) && editor.Model!.Policy.ReadTimeoutMs == "1000" && !Status(first).Contains("管理模式未开启或已到期"), "reauthentication restores the same unsaved complete candidate and clears the obsolete expiry prompt without restarting configuration");
         Capture("startup-session-restored", first);
         await using (var staticFactory = new Ipc.Assembly.ParcelCapabilityFactory(launch))
         {
@@ -129,12 +130,19 @@ static partial class Program
                     var candidate = (StartupMaintenanceDocument)type.GetField("document", flags)!.GetValue(success)!;
                     FillInitial(Descendants(success).OfType<ParameterSettingsControl>().Single().Model!);
                     var candidateDraft = (StartupConfigurationDraft)type.GetField("draft", flags)!.GetValue(success)!;
-                    succeeded = new(candidate with { Candidate = candidateDraft.Build() }) { LoseReceipt = receiptLost };
+                    succeeded = new(candidate with { Candidate = candidateDraft.Build() }) { LoseReceipt = receiptLost, FailDispose = !receiptLost };
                     type.GetField("maintenance", flags)!.SetValue(success, succeeded);
                     Descendants(success).OfType<ParameterSettingsControl>().Single().ShowReview();
                     Click(success, "保存配置"); await Idle(success);
-                    Check(success.IsVisible && !Retry(success) && succeeded.Saves == 1, "confirmed persistence keeps configuration open without starting runtime");
-                    Click(success, "完成");
+                    if (!receiptLost)
+                    {
+                        Check(success.IsVisible && ((TextBlock)type.BaseType!.GetField("Status", flags)!.GetValue(success)!).IsVisible && succeeded.Saves == 1 && succeeded.DisposeCalls == 1 && !(bool)type.GetProperty("ConfigurationSaved")!.GetValue(success)!,
+                            "failed SDK cleanup retains the original modal and its saved candidate without publishing completion");
+                        succeeded.FailDispose = false;
+                        Descendants(success).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.SaveAndStart").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    }
+                    // Successful cleanup closes this modal once; the owner continues
+                    // without another completion gate or a repeated business save.
                 }
                 catch (Exception error) { modalFailure = error; success.Close(); }
             };
@@ -147,8 +155,8 @@ static partial class Program
         var pending = (Window)Activator.CreateInstance(pendingType)!;
         pendingType.GetMethod("AfterMaintenance")!.Invoke(pending, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => Task.CompletedTask)]);
         pending.Show(); pending.UpdateLayout();
-        Check(Descendants(pending).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "启动供包台", "退出" }), "after offline maintenance the only choice is to start or exit");
-        Check(!Descendants(pending).OfType<TextBox>().Any(x => x.IsVisible), "the post-maintenance choice has no large empty diagnostic box");
+        Check(Descendants(pending).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "退出", "启动供包台" }), "after offline maintenance the only choice is to start or exit");
+        Check(!Descendants(pending).OfType<TextBox>().Any(x => x.IsVisible && x.Name != "StartupBuildIdentity") && Descendants(pending).OfType<TextBox>().Any(x => x.IsVisible && x.Name == "StartupBuildIdentity"), "post-maintenance keeps source identity visible without a large empty diagnostic box");
         Capture("after-maintenance", pending); pendingType.GetProperty("AllowClose")!.SetValue(pending, true); pending.Close();
         var installerType = assembly.GetType("Ipc.Desktop.StartupSetupWindow", true)!;
         var businessVersion = BusinessCompatibility.VersionOf(typeof(Ipc.Application.Sportmaster.SportmasterFlow).Assembly);
@@ -182,8 +190,13 @@ static partial class Program
         foreach (var restart in new[] { false, true })
         {
             var receipt = new WindowsRemovalReceipt(restart ? "RestartRequired" : "RemovedDataRetained", Path.Combine(evidence, "synthetic-retirement.json"), ["D:/synthetic-retained-data"], restart, [], "D:/synthetic-release");
-            var removal = (Window)Activator.CreateInstance(removalType, BindingFlags.Instance | BindingFlags.NonPublic, null, [receipt, "D:/synthetic-retained-data"], null)!;
-            removal.Show(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); removal.UpdateLayout();
+            var removal = (Window)Activator.CreateInstance(removalType)!;
+            removalType.GetProperty("RegistrationIdentity", flags)!.SetValue(removal, (Func<string>)(() => "synthetic-registration"));
+            removalType.GetProperty("RegistrationScope", flags)!.SetValue(removal, (Func<string>)(() => "synthetic-installation"));
+            removalType.GetProperty("ExecuteUninstall", flags)!.SetValue(removal,
+                (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<ProgramUninstallResult>>)((_, _, _, _) => Task.FromResult(new ProgramUninstallResult(receipt, null, false))));
+            removal.Show(); await Idle(removal);
+            Click(removal, "卸载"); await Idle(removal);
             Descendants(removal).OfType<Expander>().Single(e => Equals(e.Header, "卸载详情")).IsExpanded = true; removal.UpdateLayout();
             Check(Descendants(removal).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(restart ? new[] { "重试卸载", "关闭" } : new[] { "关闭" }) &&
                 Descendants(removal).OfType<TextBox>().Any(t => t.IsVisible && t.IsReadOnly && t.Text.Contains("程序目录")), "retired product exposes read-only receipt inventory, original inspection and close, with no repeated repair or authentication entry");

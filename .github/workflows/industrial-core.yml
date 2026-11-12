@@ -198,12 +198,17 @@ jobs:
           . ./scripts/project-environment.ps1
           $env:IPC_FROZEN_DESKTOP = Join-Path $PWD.Path 'src/Ipc.Desktop/bin/Release/net10.0-windows/Ipc.Desktop.dll'
           $failedSuites = @()
-          foreach ($suite in @('operator-ux-18', 'rcs-no-destination-ui', 'paused-workstation', 'home-centered-states', 'camera-barcode-current', 'camera-round-ui', 'manual-supply-ui', 'manual-rcs-debug-ui', 'camera-settings-feedback', 'camera-filter-preview', 'continuous-pda-input', 'startup-read-failure')) {
+          foreach ($suite in @('operator-ux-18', 'rcs-no-destination-ui', 'paused-workstation', 'home-centered-states', 'camera-barcode-current', 'camera-round-ui', 'manual-supply-ui', 'manual-rcs-debug-ui', 'camera-settings-feedback', 'camera-filter-preview', 'continuous-pda-input', 'startup-read-failure', 'debug-batch-actions', 'unsaved-window-actions', 'startup-experience', 'startup-close', 'management-center', 'management-close-read-race', 'complete-backup-ui', 'uninstall-result-actions')) {
             dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll $PWD.Path "--$suite"
             $verificationExit = $LASTEXITCODE
             $evidence = (Get-Content -LiteralPath .artifacts/WINDOWS-WPF-EVIDENCE.txt -Raw).Trim()
             $lines = @(Get-Content -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log'))
             $lines | Set-Content -LiteralPath ".artifacts/$suite.log"
+            if ($suite -in @('startup-read-failure', 'debug-batch-actions', 'unsaved-window-actions', 'startup-experience', 'startup-close', 'management-center', 'management-close-read-race', 'complete-backup-ui', 'uninstall-result-actions')) {
+              $captureDirectory = Join-Path '.artifacts/window-native' $suite
+              New-Item -ItemType Directory -Path $captureDirectory -Force | Out-Null
+              Get-ChildItem -LiteralPath $evidence -Filter '*.png' -File | Copy-Item -Destination $captureDirectory
+            }
             $lines | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
             $lines | Write-Output
             if ($verificationExit -or !@($lines | Where-Object { $_ -like 'PASS *' }).Count -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { $failedSuites += $suite }
@@ -232,6 +237,18 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --clean-storage-defaults
           exit $LASTEXITCODE
+
+      - name: Keep source-bound native window evidence
+        if: always() && matrix.business == 'Sportmaster'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sm-window-native-${{ github.run_id }}
+          include-hidden-files: true
+          path: |
+            .artifacts/*.log
+            .artifacts/window-native/
+          if-no-files-found: warn
+          retention-days: 14
 
   product-branch-evidence:
     runs-on: windows-2025

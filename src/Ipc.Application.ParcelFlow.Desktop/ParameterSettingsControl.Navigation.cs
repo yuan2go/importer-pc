@@ -20,6 +20,10 @@ public sealed partial class ParameterSettingsControl
     {
         get { var ordered = OrderedPages(); var index = currentPage is null ? -1 : Array.IndexOf(ordered, currentPage); return index >= 0 && index + 1 < ordered.Length ? ordered[index + 1].Title : null; }
     }
+    public bool NextPageIsReview
+    {
+        get { var ordered = OrderedPages(); var index = currentPage is null ? -1 : Array.IndexOf(ordered, currentPage); return index >= 0 && index + 1 < ordered.Length && ordered[index + 1].Category == 4; }
+    }
     public bool IsNavigating => navigating;
     public event EventHandler? PageValidationFailed;
     void SelectPageCore(ObjectPage? page)
@@ -38,6 +42,7 @@ public sealed partial class ParameterSettingsControl
             if (index >= FirstCategories.Length) { button.Visibility = Visibility.Collapsed; continue; }
             button.Visibility = Visibility.Visible;
             var category = FirstCategories[index];
+            System.Windows.Automation.AutomationProperties.SetAutomationId(button, "FirstSetup.Category." + category);
             button.Tag = Model?.ApplicationId == "sportmaster" ? new[] { "本站与 RCS", "左右相机", "识读规则", "检查与完成" }[index] : new[] { "本站信息", "业务规则", "左右相机", "RCS 连接", "检查与完成" }[index];
             System.Windows.Automation.AutomationProperties.SetName(button, "首次配置第" + (index + 1) + "步：" + button.Tag);
             var categoryPages = OrderedPages().Where(p => p.Category == category).ToArray();

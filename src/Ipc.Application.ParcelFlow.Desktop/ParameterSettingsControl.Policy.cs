@@ -89,7 +89,9 @@ public sealed partial class ParameterSettingsControl
         {
             backup.Body.Children.Add(Text("手动备份", true));
             backup.Body.Children.Add(Text("立即创建一份完整备份，保存到你选择的位置。"));
-            var open = new Button { Content = "立即备份…", HorizontalAlignment = HorizontalAlignment.Left };
+            var open = new Button { Content = "创建完整备份…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            if (RuntimeContext is { } backupOwner) open.SetBinding(IsEnabledProperty, new Binding(nameof(ParcelViewModel.CanStartOperation)) { Source = backupOwner });
+            AutomationProperties.SetAutomationId(open, "CompleteBackup.Settings");
             open.Click += (_, _) => BackupRequested?.Invoke(this, EventArgs.Empty); backup.Body.Children.Add(open);
         }
         backup.Body.Children.Add(Text("完整备份包括数据库文件和同名恢复文件夹，恢复时两者都需要；关闭自动备份不会删除已有备份。"));
@@ -160,7 +162,9 @@ public sealed partial class ParameterSettingsControl
         if (RuntimeContext is null && m.ApplicationId != "sportmaster") display.Body.Children.Add(saveMode);
         display.Body.Children.Add(modeStatus);
         if (m.ApplicationId == "sportmaster") AudioPreferences(display, m.DisplayPreferences!);
-        display.Body.Children.Add(Text("小窗口会自动使用紧凑布局。"));
+        var layoutStatus = Text("小窗口会自动使用紧凑布局。");
+        if (RuntimeContext is { } layoutContext) layoutStatus.SetBinding(TextBlock.TextProperty, new Binding(nameof(ParcelViewModel.LayoutDescription)) { Source = layoutContext });
+        display.Body.Children.Add(layoutStatus);
         if (DisplayPreferencesRequested is not null)
         {
             var change = new Button { Content = "切换标准 / 紧凑布局", HorizontalAlignment = HorizontalAlignment.Left };

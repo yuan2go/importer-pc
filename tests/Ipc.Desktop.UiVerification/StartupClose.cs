@@ -15,6 +15,7 @@ static partial class Program
             window.Closed += (_, _) => closed = true;
             window.Fail("Synthetic startup failure", async () => { calls++; await release.Task; window.AllowClose = true; window.Close(); }, Noop, Noop, Noop);
             window.Show(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            Check(Descendants(window).OfType<Button>().Count(b => b.IsDefault) == 1, "exactly one retry is default even when delegates are shared");
             if (titleBar) window.Close();
             else Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "停止并退出")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             window.Close(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);

@@ -47,7 +47,7 @@ static partial class Program
             var root=((Func<string>)rootField.GetValue(null)!)();
             var file=Path.Combine(root,"presentation","sportmaster.pace.json"); Directory.CreateDirectory(Path.GetDirectoryName(file)!); File.WriteAllText(file,"{broken");
             editor.ShowReview(); await Flush(); first.UpdateLayout();
-            Button Save() => Descendants(first).OfType<Button>().Single(b=>b.IsVisible && Equals(b.Content,"保存配置"));
+            Button Save() => Descendants(first).OfType<Button>().Single(b=>b.IsVisible && AutomationProperties.GetAutomationId(b)=="Startup.SaveAndStart");
             Save().RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(()=>!(bool)busy.GetValue(first)! && probe.Saves>0);
             Check(probe.RecoveredReads > 0 && first.IsVisible && (bool)type.GetField("lastSaveConfirmed",flags)!.GetValue(first)! && !(bool)type.GetField("startupSaveUncertain",flags)!.GetValue(first)! && probe.Saves==1,
@@ -62,9 +62,15 @@ static partial class Program
                 "partial save shows the actual successful and uncertain items above the scrolling form, with an accurate footer");
             CaptureInternal(evidence,"first-preference-partial",first,lines);
             File.WriteAllText(file,Wire.Encode(new { Schema=1,Compact=true }));
+            probe.FailReleaseOnce = true;
+            Save().RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(()=>!(bool)busy.GetValue(first)! && probe.ReleaseCalls == 1);
+            Check(first.IsVisible && ReferenceEquals(maintenanceField.GetValue(first),proxy) && probe.Saves==1 &&
+                Wire.FileHash(configFile)==hash && !preferences.HasChanges && !(bool)type.GetProperty("ConfigurationSaved")!.GetValue(first)!,
+                "after preferences recover, failed release keeps the same window/service and saved candidate without another CAS or false completion");
             Save().RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(()=>!first.IsVisible);
-            Check(probe.Saves==1 && Wire.FileHash(configFile)==hash && !preferences.HasChanges && PresentationPreferences.Read("sportmaster","pace")==false && (bool)type.GetProperty("ConfigurationSaved")!.GetValue(first)!,
+            Check(probe.Saves==1 && probe.ReleaseCalls==2 && Wire.FileHash(configFile)==hash && !preferences.HasChanges && PresentationPreferences.Read("sportmaster","pace")==false && (bool)type.GetProperty("ConfigurationSaved")!.GetValue(first)!,
                 "retry completes the real modal first configuration without another business save or changing its persisted bytes");
             Check(!Directory.EnumerateFiles(launch.DataRoot,"*.db",SearchOption.AllDirectories).Any(),
                 "saving first configuration/preferences does not create a business database or operate devices");
@@ -76,6 +82,8 @@ static partial class Program
     {
         public IStartupMaintenance Inner=null!;
         public int Saves, RecoveredReads;
+        public int ReleaseCalls;
+        public bool FailReleaseOnce;
         static async Task<StartupMaintenanceDocument> LoseReply(Task<StartupMaintenanceDocument> pending)
         {
             await pending;
@@ -83,6 +91,11 @@ static partial class Program
         }
         protected override object? Invoke(MethodInfo? method, object?[]? args)
         {
+            if(method!.Name == nameof(IAsyncDisposable.DisposeAsync))
+            {
+                ReleaseCalls++;
+                if(FailReleaseOnce) { FailReleaseOnce=false; return ValueTask.FromException(new IOException("Synthetic retained maintenance owner")); }
+            }
             var save = method!.Name is nameof(IStartupMaintenance.RepairInitialAsync) or nameof(IStartupMaintenance.StageAsync);
             if(save) Interlocked.Increment(ref Saves);
             if(Saves > 0 && method.Name == nameof(IStartupMaintenance.ReadAsync)) Interlocked.Increment(ref RecoveredReads);

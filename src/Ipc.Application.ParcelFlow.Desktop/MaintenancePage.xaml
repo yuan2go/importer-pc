@@ -13,7 +13,7 @@
     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
      <Menu Background="Transparent" Margin="0,0,8,0" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Body}" FontWeight="Normal">
       <MenuItem x:Name="AdvancedToggle" Header="更多工具" MinHeight="44" Padding="12,8" Foreground="{DynamicResource Ink}" SubmenuOpened="AdvancedToggle_SubmenuOpened">
-       <MenuItem Header="管理模式与密码…" Click="ManagementMode_Click"/>
+       <MenuItem x:Name="ManagementPasswordTool" Header="管理模式与密码…" Click="ManagementMode_Click"/>
        <MenuItem Header="导入设置模板…" Click="ImportTemplate_Click" IsEnabled="{Binding CanStartOperation}"/>
        <MenuItem Header="导出设置模板…" Click="ExportTemplate_Click" IsEnabled="{Binding CanStartOperation}"/>
        <Separator/>
@@ -35,7 +35,7 @@
        </MenuItem>
        <MenuItem x:Name="ConditionsTool" Header="管理模式与操作条件…" Click="AuthorizeTool_Click"/>
        <MenuItem Header="查看上次保存结果" Click="InspectSave_Click" IsEnabled="{Binding HasUnconfirmedConfigurationSubmission}"/>
-       <MenuItem Header="重新连接设备" Click="Reconnect_Click" IsEnabled="{Binding CanStartFreshOperation}"/>
+       <MenuItem Header="重新连接全部设备和服务" AutomationProperties.AutomationId="ReconnectAllDevices" Click="Reconnect_Click" IsEnabled="{Binding CanStartFreshOperation}"/>
       </MenuItem>
      </Menu>
      <Button x:Name="ViewChanges" Content="查看修改" Click="ReviewChanges_Click" Style="{StaticResource ParameterAction}" IsEnabled="{Binding CanStartOperation}" Margin="0,0,8,0"/>

@@ -11,7 +11,6 @@ public partial class SupplyStationWindow
     StackPanel? diagnosticLogDetails;
     readonly Dictionary<string, FrameworkElement> diagnosticObjects = [];
     TextBlock? selectedDiagnostic;
-    Button? backToDiagnosticSettings;
     ParameterDiagnosticTarget? diagnosticTarget;
     public void ShowPositionDiagnostics(SupplyStationPositionViewModel position)
     {
@@ -26,7 +25,6 @@ public partial class SupplyStationWindow
         diagnosticTarget = target; SetPage("diagnostics");
         selectedDiagnostic!.Text = target.Label;
         selectedDiagnostic.Visibility = Visibility.Visible;
-        backToDiagnosticSettings!.Visibility = Visibility.Visible;
         UpdateLayout();
         if (diagnosticObjects.TryGetValue(target.DeviceId ?? "shared", out var anchor)) { anchor.BringIntoView(new Rect(0, 0, 1, 1)); }
     }
@@ -38,10 +36,6 @@ public partial class SupplyStationWindow
         body.Children.Add(ProductText("设备与诊断", true));
         body.Children.Add(ProductText("状态自动更新。相机断线后自动重连；在线状态不代表本件已取得格口。"));
         selectedDiagnostic = ProductText(""); selectedDiagnostic.Visibility = diagnosticTarget is null ? Visibility.Collapsed : Visibility.Visible; body.Children.Add(selectedDiagnostic);
-        backToDiagnosticSettings = new Button { Content = "返回该设备设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-        backToDiagnosticSettings.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
-        backToDiagnosticSettings.Click += async (_, _) => await OpenOperatorSettingsAsync(diagnosticTarget?.DeviceId, diagnosticTarget?.InstanceId);
-        backToDiagnosticSettings.Visibility = diagnosticTarget is null ? Visibility.Collapsed : Visibility.Visible; body.Children.Add(backToDiagnosticSettings);
         var currentBlockers = ProductText("");
         currentBlockers.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.DiagnosticBlockers)) { Mode = BindingMode.OneWay });
         body.Children.Add(currentBlockers);

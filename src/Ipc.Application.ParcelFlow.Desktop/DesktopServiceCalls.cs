@@ -25,7 +25,14 @@ public partial class ParcelViewModel
             Task[] outstanding;
             lock (callsGate) outstanding = pendingCalls.ToArray();
             if (outstanding.Length == 0) return;
-            await Task.WhenAll(outstanding);
+            try { await Task.WhenAll(outstanding); }
+            catch (OperationCanceledException) when (outstanding.All(t => t.IsCompletedSuccessfully || t.IsCanceled))
+            {
+                // Revoking a window cancels its owned reads. Their original
+                // awaiters own the result; a settled cancellation is not a
+                // resource-release failure. Faulted or still-running calls
+                // must not pass this completion barrier.
+            }
         }
     }
 }

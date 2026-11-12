@@ -9,8 +9,18 @@ static class ReadCadenceChecks
     static RecognitionSymbol Symbol(string code) => new(code, "Code128", [new(20, 20), new(120, 20), new(120, 60), new(20, 60)], 0);
     static async Task Pause(CameraRoundHarness h)
     {
-        var snapshot = await h.App.SnapshotAsync();
-        Check((await h.App.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause", Value: "SYNTH-CADENCE"))).Status == "Persisted", "pause is committed before the observation-only load");
+        var id = Wire.Id();
+        for (var attempt = 0; attempt < 20; attempt++)
+        {
+            var snapshot = await h.App.SnapshotAsync();
+            var receipt = await h.App.CommandAsync(new(id, snapshot.Revision, "Pause", Value: "SYNTH-CADENCE"));
+            // A late receipt may advance CAS after the snapshot. Conflict means
+            // this command was not admitted; never retry an accepted/unknown result.
+            if (receipt.Status == "Conflict") continue;
+            Check(receipt.Status == "Persisted" && (await h.App.SnapshotAsync()).Paused, "pause is committed before the observation-only load; " + Wire.Encode(receipt));
+            return;
+        }
+        throw new TimeoutException("Synthetic pause did not obtain a current revision");
     }
     static Task Idle(CameraRoundHarness h, string position, long processed) => CameraRoundHarness.Until(() =>
     {

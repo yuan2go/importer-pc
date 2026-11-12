@@ -23252,9 +23252,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-SECONDARY-ENTRIES-32; original evidence retains its own SourceCommit",
-      "sha256": "ec57acfa6a70e69102317b411e55250e03e2bfd9de66f4f0dd989606361ddebd",
-      "size_bytes": 16244,
-      "git_blob": "04c9db65172261de2808adead3b9d177d6a84bdb",
+      "sha256": "06262b5a4031455aa44e3bfefcb7e1b8b652a84743ed6e3fc678ff3a24dbe41d",
+      "size_bytes": 16552,
+      "git_blob": "de02aefc3d5ac84a868f2aaafa4473810bcd2505",
       "storage_scope": "public_repository"
     },
     {

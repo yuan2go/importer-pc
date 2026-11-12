@@ -35,11 +35,11 @@ static partial class Program
         }));
         center.Show();
         var uninstall = Descendants(center).OfType<Button>().Single(b => System.Windows.Automation.AutomationProperties.GetAutomationId(b) == "Maintenance.Uninstall");
-        uninstall.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        uninstall.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
         await WaitUntil(() => uninstall.IsEnabled, "failed uninstall handoff restores the offline action");
         Check(center.IsVisible && !(bool)centerType.GetProperty("UninstallLaunched")!.GetValue(center)!, "cache launch failure retains original window and does not claim removal");
-        uninstall.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        uninstall.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        uninstall.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
+        uninstall.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
         center.Close();
         Check(center.IsVisible, "pending handoff retains original host until launch result is known");
         handoff.SetResult(42);

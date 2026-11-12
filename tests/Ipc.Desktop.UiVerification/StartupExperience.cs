@@ -194,7 +194,7 @@ static partial class Program
             removalType.GetProperty("RegistrationIdentity", flags)!.SetValue(removal, (Func<string>)(() => "synthetic-registration"));
             removalType.GetProperty("RegistrationScope", flags)!.SetValue(removal, (Func<string>)(() => "synthetic-installation"));
             removalType.GetProperty("ExecuteUninstall", flags)!.SetValue(removal,
-                (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<ProgramUninstallResult>>)((_, _, _, _) => Task.FromResult(new ProgramUninstallResult(receipt, null, false))));
+                (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<ProgramUninstallResult>>)((_, _, _, _) => Task.FromResult(new ProgramUninstallResult(receipt, null, false) { Assets = new("Completed", Path.Combine(evidence, "synthetic-assets.json"), [], []) })));
             removal.Show(); await Idle(removal);
             Click(removal, "卸载"); await Idle(removal);
             Descendants(removal).OfType<Expander>().Single(e => Equals(e.Header, "卸载详情")).IsExpanded = true; removal.UpdateLayout();

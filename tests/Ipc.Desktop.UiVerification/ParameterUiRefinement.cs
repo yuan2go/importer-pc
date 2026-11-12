@@ -37,7 +37,9 @@ static partial class Program
         Check(model.Issues.Count(i => i.Path.EndsWith("/device.ip") && i.Rule == "ipv4-format") == 2, "identical invalid-IP errors retain both camera instances");
         model.Report(right.Role + " · device.ip: invalid value"); model.Report(right.Role + " · device.ip: invalid value");
         Check(model.Issues.Count(i => i.Path == right.InstanceId + "/device.ip" && i.Message.EndsWith(": invalid value")) == 1 && model.Issues.Count(i => i.Path == left.InstanceId + "/device.ip" && i.Rule == "ipv4-format") == 1, "same instance/field/rule deduplicates without merging cameras");
-        editor.NavigateTo(right.InstanceId + "/device.ip"); Box(right.InstanceId + "/device.ip").Text = savedRight; await Flush();
+        editor.NavigateTo(right.InstanceId + "/device.ip"); await Flush();
+        Check(Box(right.InstanceId + "/device.ip").Text == rightIp.Value, "bound camera input has applied the current invalid value before editing");
+        Box(right.InstanceId + "/device.ip").Text = savedRight; await Flush();
         Check(model.Issues.All(i => i.Path != right.InstanceId + "/device.ip") && model.Issues.Any(i => i.Path == left.InstanceId + "/device.ip"), "editing a real bound input clears only its obsolete format error");
         leftIp.Value = savedLeft; await Flush();
         rightIp.Value = "111"; await Flush();

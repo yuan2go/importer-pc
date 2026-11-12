@@ -62,7 +62,7 @@ static partial class SportmasterRcs
             await Task.Delay(400);
             Check(!(await app.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Admit, "elapsed time is not evidence the old parcel left");
             var beforeRemoval = await app.SnapshotAsync();
-            Check((await app.CommandAsync(new(Wire.Id(), beforeRemoval.Revision, "ConfirmPlacementRemoval", "left", originalId))).Status == "Persisted",
+            Check((await app.CommandAsync(new(Wire.Id(), beforeRemoval.Revision, "ConfirmPlacementRemoval", "left", beforeRemoval.Positions!.Single(p => p.Id == "left").PlacementRemovalOperation))).Status == "Persisted",
                 "operator confirms removal when the reader cannot report empty frames");
             peer.Mode = "assigned"; await Scan(camera);
             var rescanned = await Wait(app, s => s.Operations.Length == 2 && s.Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 1);
@@ -73,7 +73,7 @@ static partial class SportmasterRcs
             using (var db = ReadDatabase())
             using (var query = db.CreateCommand())
             {
-                query.CommandText = "SELECT count(*) FROM parcel_audit a,json_each(a.detail,'$.OperationIds') i WHERE event='StationPlacementReleased' AND i.value=$prior";
+                query.CommandText = "SELECT count(*) FROM sm_parcel_rounds WHERE active=0 AND operation=$prior AND json_extract(body,'$.EndReason')='OperatorConfirmedRemoval'";
                 query.Parameters.AddWithValue("$prior", originalId);
                 Check((long)query.ExecuteScalar()! == 1, "the durable departure evidence identifies the original timed-out operation");
             }
@@ -96,7 +96,10 @@ static partial class SportmasterRcs
             var ready = await Wait(app, s => !s.Paused && s.Positions!.Single(p => p.Id == "left").Admit);
             Check(ready.Positions!.Single(p => p.Id == "left").CurrentOperation is null && peer.Requests.Count == 3,
                 "original inspection leaves the new shift ready without an operator resume or duplicate request");
-            await Scan(camera);
+            var position = ready.Positions!.Single(p => p.Id == "left");
+            var command = new SubmitParcelBarcode(Wire.Id(), ready.RuntimeId, ready.Configuration.Revision, "left", "000123", ParcelBarcodeInputKind.Keyboard,
+                ready.Inputs?.SingleOrDefault(i => i.PositionId == "left")?.Observation.Id, position.CurrentOperation) { ExpectedRoundId = position.CurrentRoundId };
+            Check((await app.SubmitParcelBarcodeAsync(command, default)).Status == "Admitted", "restart does not infer camera departure; a new explicit manual parcel can claim the next round");
             var final = await Wait(app, s => s.Operations.Length == 3 && s.Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 2);
             var last = final.Operations.Single(o => o.PositionId == "left" && o.Wcs?.Request.Id != recovered.Operations.Single(x => x.PositionId == "left" && x.Id != originalId).Wcs!.Request.Id && o.Id != originalId);
             Check(Persisted(last.Id).Wcs!.Request.IntegrationRequest!.RequestId > secondWireId && peer.Requests.Count == 4 && Wire.Encode(Persisted(originalId).Wcs) == originalStage,

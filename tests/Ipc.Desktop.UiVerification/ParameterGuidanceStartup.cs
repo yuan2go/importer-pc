@@ -38,7 +38,7 @@ static partial class Program
             var summaryRcs = model.Components.Single(ParameterOwnership.IsRcs);
             var originalTarget = summaryRcs.Target;
             summaryRcs.Target = "http://127.0.0.1:49828/rcs/sorter/api";
-            editor.ShowPage(0, "供包台标识"); await Flush();
+            editor.ShowPage(0, "本站与 RCS"); await Flush();
             var zoneInput = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "sportmaster.integration/zone-id");
             var originalZone = zoneInput.Text;
             zoneInput.Text = "bad"; await Flush();
@@ -53,7 +53,7 @@ static partial class Program
             // TextBlock hyperlinks are not hosted by a FlowDocument; inspect their actual Runs.
             var correction = correctionLinks.Single(link => string.Concat(link.Inlines.OfType<System.Windows.Documents.Run>().Select(run => run.Text)) == "前往修改：仓ID");
             correction.RaiseEvent(new RoutedEventArgs(System.Windows.Documents.Hyperlink.ClickEvent)); await Flush();
-            Check(editor.CurrentPageTitle == "供包台标识" && zoneInput.IsVisible && !Descendants(editor).OfType<TextBlock>().Any(t => t.Text.Contains("定位首项")),
+            Check(editor.CurrentPageTitle == "本站与 RCS" && zoneInput.IsVisible && !Descendants(editor).OfType<TextBlock>().Any(t => t.Text.Contains("定位首项")),
                 "correction link names the field and reaches its existing editor instead of exposing an internal navigation term");
             await Flush();
             Check(AutomationProperties.GetName(zoneInput) == "仓ID" && !Descendants(editor).OfType<Expander>().Any(e => Equals(e.Header, "参数说明")) &&
@@ -70,7 +70,7 @@ static partial class Program
             {
                 await SetClient(window, size.Item1, size.Item2);
                 Check(!editor.ShowPage(1, "格口请求"), "fixed-chute settings have no first-run navigation entry");
-                foreach (var (category, title) in new[] { (1, "接收与等待限制"), (0, "供包台标识"), (0, "数据与记录"), (0, "显示偏好"), (2, "左相机"), (3, "RCS 服务") })
+                foreach (var (category, title) in new[] { (0, "本站与 RCS"), (2, "左右相机"), (1, "条码筛选"), (4, "检查与完成") })
                 {
                     Check(editor.ShowPage(category, title), "existing shared directory contains " + title);
                     await Flush(); window.UpdateLayout();
@@ -78,7 +78,7 @@ static partial class Program
                     CaptureInternal(evidence, "pgs-" + title + "-" + (int)size.Item1, client, lines);
                 }
             }
-            editor.ShowPage(0, "供包台标识"); await Flush();
+            editor.ShowPage(0, "本站与 RCS"); await Flush();
             var input = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "sportmaster.integration/left-station-code");
             input.Text = "SYNTHETIC-SHARED"; await Flush();
             Check(draft.Policy.StationCode == input.Text && draft.Capabilities.Single(ParameterOwnership.IsRcs).Parameters.Where(p => p.Field.Key.EndsWith("-station-code")).All(p => p.Value == input.Text), "one real WPF input updates request and heartbeat station identities");
@@ -91,10 +91,11 @@ static partial class Program
             Check(!model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("/device.ip")), "partially filled camera identity is refused instead of silently deferred");
             serial.Value = ""; await Flush(); Check(model.ValidateFields() && draft.Readers[0].ConfigureLater, "empty camera is omitted without a configuration-state switch");
             await VerifyIndependentDeferredPreflight(evidence, window, editor, draft, model, lines);
-            editor.ShowPage(0, "显示偏好"); await Flush();
+            Check(editor.NavigateTo("WindowOpeningMode"), "first-run optional preference is reachable on completion"); await Flush();
             var modes = Descendants(editor).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t) == "WindowOpeningMode");
             modes.SelectedValue = PresentationPreferences.WindowOpeningMode.FullScreen;
-            Descendants(editor).OfType<Button>().Single(b => Equals(b.Content, "保存打开方式")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Check(draft.DisplayPreferences!.HasChanges && PresentationPreferences.ReadWindowMode("sportmaster") == PresentationPreferences.WindowOpeningMode.Window, "first-run preference is a draft until the common save");
+            editor.SaveDisplayPreferences();
             Check(PresentationPreferences.ReadWindowMode("sportmaster") == PresentationPreferences.WindowOpeningMode.FullScreen, "the visible first-run mode control persists the full-screen preference");
             var candidate = draft.Build() with { Mode = RunMode.Simulation, StationId = "pgs-wpf-" + Wire.Id() };
             Directory.CreateDirectory(launch.ConfigurationDirectory); ExtensionStore.AtomicWrite(Path.Combine(launch.ConfigurationDirectory, "business.json"), candidate);
@@ -107,12 +108,11 @@ static partial class Program
             Check(workstation.ViewModel.Snapshot!.Availability is { Admit: false, Resume: false }, "the open native workstation retains Application admission guards");
             CaptureInternal(evidence, "pgs-workstation-fullscreen", (FrameworkElement)workstation.FindName("ClientArea"), lines);
             workstation.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(workstation), Environment.TickCount, Key.Escape) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
-            await Flush(); Check(workstation.WindowStyle != WindowStyle.None && workstation.ResizeMode != ResizeMode.NoResize, "Escape returns the real HWND to an ordinary resizable window");
-            var toggle = (RoutedCommand)workstation.InputBindings.OfType<KeyBinding>().Single(b => b.Key == Key.F11).Command;
-            toggle.Execute(null, workstation); await Flush();
+            await Flush(); Check(workstation.WindowStyle == WindowStyle.None && workstation.ResizeMode == ResizeMode.NoResize, "Escape retains the saved full-screen mode");
+            workstation.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(workstation), Environment.TickCount, Key.F11) { RoutedEvent = Keyboard.PreviewKeyDownEvent }); await Flush();
             Check(workstation.WindowStyle == WindowStyle.None && workstation.WindowState == WindowState.Maximized, "F11 enters full screen through the native window command");
-            toggle.Execute(null, workstation); await Flush();
-            Check(workstation.WindowStyle != WindowStyle.None, "F11 also exits full screen without changing business state");
+            workstation.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(workstation), Environment.TickCount, Key.F11) { RoutedEvent = Keyboard.PreviewKeyDownEvent }); await Flush();
+            Check(workstation.WindowStyle == WindowStyle.None, "repeated F11 retains the saved full-screen mode");
             workstation.Close(); await Flush(); await app.StopAsync(default);
         }
         finally
@@ -161,7 +161,7 @@ static partial class Program
                         "request-id-count" => "100000",
                         _ => p.Value
                     };
-                Check(editor.ShowPage(3, "RCS 服务"), "RCS page is reachable");
+                Check(editor.ShowPage(0, "本站与 RCS"), "RCS page is reachable");
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                 Check(!Descendants(editor).OfType<CheckBox>().Any(t => AutomationProperties.GetAutomationId(t) == rcs.InstanceId + "/ConfigureLater"), "RCS deferral is represented by an empty address, without the retired checkbox");
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);

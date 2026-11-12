@@ -14,6 +14,7 @@ public sealed class StartupConfigurationDraft
     public string ResidentHistory { get => Policy.ResidentHistory; set => Policy.ResidentHistory = value; }
     public string MinimumFreeMiB { get => Policy.MinimumFreeMiB; set => Policy.MinimumFreeMiB = value; }
     public ConfigurationPolicyDraft Policy { get; }
+    public SmDisplayPreferenceDraft? DisplayPreferences { get; set; }
     public CapabilityDraft[] Capabilities { get; }
     public string QueueCapacity { get => Policy.QueueCapacity; set => Policy.QueueCapacity = value; }
     public string TimeoutMs { get => Policy.TimeoutMs; set => Policy.TimeoutMs = value; }
@@ -54,7 +55,8 @@ public sealed class StartupConfigurationDraft
         QueueCapacity = c.QueueCapacity.ToString(); TimeoutMs = c.TimeoutMs.ToString(); MaximumOperations = c.MaximumOperations.ToString();
         ResidentHistory = (c.Retention?.ResidentHistory ?? 200).ToString(); MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? 67108864) / 1048576m).ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
-    public ParameterEditorModel CreateParameterEditor(Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview, ParcelConfigurationLocations? locations = null) => new(Policy, original.ApplicationId, Readers, Capabilities, preview, original.StationId, locations);
+    public ParameterEditorModel CreateParameterEditor(Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview, ParcelConfigurationLocations? locations = null) => new(Policy, original.ApplicationId, Readers, Capabilities, preview, original.StationId, locations)
+    { DisplayPreferences = original.ApplicationId == "sportmaster" ? DisplayPreferences ??= new() : null };
     public ParcelConfiguration Build()
     {
         // Missing inventory remains visible and the exact binding is preserved for application validation.
@@ -77,11 +79,11 @@ public sealed class StartupConfigurationDraft
             DeferredConnections = DeferredConnectionIds(Readers, Capabilities),
             Reader = devices[0],
             Topology = c.Topology is null ? null : c.Topology with { Readers = devices, Positions = c.Topology.Positions.Select((p, i) => p with { ReaderDeviceId = devices[Array.FindIndex(ParcelBindings.Readers(c), r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() },
-            Weight = Policy.BuildWeight(),
-            WeightValidity = Policy.Validity,
-            QueueCapacity = ConfigurationPolicyDraft.Integer(QueueCapacity, "输入队列容量", 1, 4096),
-            TimeoutMs = ConfigurationPolicyDraft.Integer(TimeoutMs, "调用超时(ms)", 100, 30000),
-            MaximumOperations = ConfigurationPolicyDraft.Integer(MaximumOperations, "作业容量", 1, 100000),
+            Weight = c.ApplicationId == "sportmaster" ? c.Weight : Policy.BuildWeight(),
+            WeightValidity = c.ApplicationId == "sportmaster" ? c.WeightValidity : Policy.Validity,
+            QueueCapacity = c.ApplicationId == "sportmaster" ? c.QueueCapacity : ConfigurationPolicyDraft.Integer(QueueCapacity, "输入队列容量", 1, 4096),
+            TimeoutMs = c.ApplicationId == "sportmaster" ? c.TimeoutMs : ConfigurationPolicyDraft.Integer(TimeoutMs, "调用超时(ms)", 100, 30000),
+            MaximumOperations = c.ApplicationId == "sportmaster" ? c.MaximumOperations : ConfigurationPolicyDraft.Integer(MaximumOperations, "作业容量", 1, 100000),
             Login = Capabilities.Single(d => d.Role == "operator-login") is { Bound: true } login ? replacements[login.InstanceId] : null,
             Scale = Policy.WeightSource == WeightSource.Measured && Capabilities.Single(d => d.Role == "default-scale") is { Bound: true } scale ? replacements[scale.InstanceId] : null,
             Wcs = Map(c.Wcs),
@@ -109,11 +111,13 @@ public sealed class StartupConfigurationDraft
             values[prefix + "configureLater"] = draft.ConfigureLater.ToString();
             foreach (var parameter in draft.Parameters) values[prefix + "parameter." + parameter.Field.Key] = parameter.Value;
         }
+        if (original.ApplicationId == "sportmaster") (DisplayPreferences ??= new()).Capture(values);
         return new(values);
     }
     public void Restore(StartupEditorState state)
     {
         var v = state.Values;
+        if (original.ApplicationId == "sportmaster" && v.Keys.Any(k => k.StartsWith("preference.", StringComparison.Ordinal))) (DisplayPreferences ??= new()).Restore(v);
         QueueCapacity = v.GetValueOrDefault("queue", QueueCapacity); TimeoutMs = v.GetValueOrDefault("timeout", TimeoutMs); MaximumOperations = v.GetValueOrDefault("operations", MaximumOperations);
         ResidentHistory = v.GetValueOrDefault("resident", ResidentHistory); MinimumFreeMiB = v.GetValueOrDefault("reserveMiB", MinimumFreeMiB);
         foreach (var property in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite))

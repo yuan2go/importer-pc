@@ -173,7 +173,7 @@ static partial class Program
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize(runtime);
         var window = new SupplyStationWindow(runtime, null, null); window.Show();
         var vm = window.ViewModel; await vm.RefreshAsync(); await SetClient(window, 1366, 768);
-        Check(!Descendants(window).OfType<Button>().Any(b => b.Content?.ToString() is "暂停供包" or "恢复供包"), "SM header has no manual pause/resume controls");
+        Check(!Descendants(window).OfType<Button>().Any(b => b.Content?.ToString() is "暂停供包"), "SM header keeps resume under Application guards and does not expose manual pause as a safety stop");
         window.ShowPositionDiagnostics(vm.Left);
         await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
         var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
@@ -183,14 +183,14 @@ static partial class Program
         editor.NavigateTo("StationCode");
         Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "StationCode").Text = "SYNTH-SAVE-WITHOUT-PAUSE";
         vm.ConfigurationReason = "Synthetic save without manual pause";
-        Check(await vm.PrepareConfigurationReviewAsync() && !vm.Snapshot!.Paused, "edited SM settings can be reviewed while running");
+        Check(await vm.PrepareConfigurationReviewAsync() && vm.Snapshot!.Positions!.All(p => p.BlockingReasons.Any(r => r.Contains("管理中心", StringComparison.Ordinal))), "management settings are reviewed while automatic supply is paused by the management owner");
         var review = new ConfigurationSaveReviewWindow(center, vm); review.Show(); await Flush();
         Check(!Descendants(review).OfType<Button>().Any(b => b.Name == "ReviewPause" && b.IsVisible), "SM save review has no manual pause prerequisite");
         Check(Descendants(review).OfType<Button>().Single(b => b.Name == "ConfirmSaveChanges").IsEnabled, "SM review permits saving without manual pause");
         CaptureInternal(evidence, "sm-save-without-pause", review, lines); review.Close();
         await vm.SaveCapabilitiesAsync();
         await Until(() => vm.Snapshot?.Configuration.Pending?.StationCode == "SYNTH-SAVE-WITHOUT-PAUSE");
-        Check(vm.Snapshot!.Configuration.Pending?.StationCode == "SYNTH-SAVE-WITHOUT-PAUSE" && !vm.Snapshot.Paused, "native editor saves pending settings while remaining unpaused");
+        Check(vm.Snapshot!.Configuration.Pending?.StationCode == "SYNTH-SAVE-WITHOUT-PAUSE" && vm.Snapshot.Positions!.All(p => p.BlockingReasons.Any(r => r.Contains("管理中心", StringComparison.Ordinal))), "native editor saves pending settings while preserving the management pause");
         Check(vm.ConfigurationReason.Length == 0, "a confirmed save clears the note, so the next change record cannot reuse it");
         editor.ShowPage(0, "显示偏好"); center.UpdateLayout();
         Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) is "DisplayNameDraft" or "TargetEfficiencyDraft"), "SM preference page removes the unused name and target inputs");

@@ -14,6 +14,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public string ApplicationId { get; } = applicationId;
     public string StationId { get; } = stationId;
     public ParcelConfigurationLocations? Locations { get; } = locations;
+    public SmDisplayPreferenceDraft? DisplayPreferences { get; set; }
     public CapabilityDraft[] Readers { get; } = readers.Select(r => { if (applicationId == "sportmaster") r.UseSimpleCameraConfiguration(); return r; }).ToArray();
     public CapabilityDraft[] Components { get; } = components.Select(c => { if (applicationId == "sportmaster") c.UseRcsOnly(); return c; }).ToArray();
     // Daily schema-3 roles and startup bindings already own their respective candidate.
@@ -75,18 +76,9 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         return true;
     }
     public event EventHandler? ValidationChanged;
-    bool validationRequested;
-    int? validationScope;
-    IReadOnlySet<string>? validationPaths;
-    public void RevalidateAfterEdit()
-    {
-        if (validationRequested) ValidateFields(validationScope, validationPaths);
-    }
     static string WeightRangeField(string message) => message.Contains("WeightRange.MinimumWeight", StringComparison.Ordinal) ? "MinimumWeight" : "MaximumWeight";
-    public void Report(string message, bool preserveScope = false)
+    public void Report(string message)
     {
-        validationRequested = true;
-        if (!preserveScope) { validationScope = null; validationPaths = null; }
         if (message.Contains("BarcodeFilter.MultiCodeSeparator", StringComparison.Ordinal)) Issues.Add(new("业务模块", "MultiCodeSeparator", message));
         else if (message.Contains("BarcodeFilter.ExclusionPattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodeExclusionPattern", message));
         else if (message.Contains("BarcodeFilter.Pattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodePattern", message));
@@ -111,17 +103,28 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     }
     public bool ValidateFields(int? category = null, IReadOnlySet<string>? paths = null)
     {
-        validationRequested = true; validationScope = category; validationPaths = paths;
         Issues.Clear();
         void Issue(string category, string key, string message) => Issues.Add(new(category, key, message));
         void Number(string name, string value, int min, int max)
-        { try { _ = ConfigurationPolicyDraft.Integer(value, name, min, max); } catch (InvalidOperationException ex) { Issue(name is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "SessionLifetimeMs" ? "业务模块" : "系统", name, ex.Message); } }
-        Number(nameof(Policy.QueueCapacity), Policy.QueueCapacity, 1, 4096); Number(nameof(Policy.TimeoutMs), Policy.TimeoutMs, 100, 30000);
-        Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000); Number(nameof(Policy.ResidentHistory), Policy.ResidentHistory, 1, 10000);
-        Number(nameof(Policy.SessionLifetimeMs), Policy.SessionLifetimeMs, 100, 86400000);
+        { try { _ = ConfigurationPolicyDraft.Integer(value, name, min, max); } catch (InvalidOperationException ex) { Issue(name is "ReadTimeoutMs" or "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "SessionLifetimeMs" ? "业务模块" : "系统", name, ex.Message); } }
+        if (ApplicationId != "sportmaster") { Number(nameof(Policy.QueueCapacity), Policy.QueueCapacity, 1, 4096); Number(nameof(Policy.TimeoutMs), Policy.TimeoutMs, 100, 30000); }
+        if (ApplicationId != "sportmaster") Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000);
+        Number(nameof(Policy.ResidentHistory), Policy.ResidentHistory, 1, 10000);
+        if (ApplicationId == "sportmaster") Number(nameof(Policy.ReadTimeoutMs), Policy.ReadTimeoutMs, SystemParameterDefaults.MinimumReadTimeoutMs, SystemParameterDefaults.MaximumReadTimeoutMs);
+        if (ApplicationId == "sportmaster" && DisplayPreferences?.Validate() is { } preferenceError)
+            Issue("系统", Enum.IsDefined(DisplayPreferences.OpeningMode) ? "CueVolume" : "WindowOpeningMode", preferenceError);
+        if (ApplicationId != "sportmaster" && HasOperatorLogin) Number(nameof(Policy.SessionLifetimeMs), Policy.SessionLifetimeMs, 100, 86400000);
         if (Policy.DiagnosticLogDays.Length > 0) Number(nameof(Policy.DiagnosticLogDays), Policy.DiagnosticLogDays, 1, 3650);
         if (Policy.HistoryDays.Length > 0) Number(nameof(Policy.HistoryDays), Policy.HistoryDays, 7, 30);
-        if (Policy.WeightRangeEnabled)
+        if (ApplicationId == "sportmaster")
+        {
+            Number(nameof(Policy.CleanupHour), Policy.CleanupHour, 0, 23);
+            Number(nameof(Policy.CleanupMaximumBackupSets), Policy.CleanupMaximumBackupSets, 1, 100);
+            if (Policy.AutomaticHistoryCleanup && Policy.HistoryDays.Length == 0) Issue("系统", "HistoryDays", "启用自动清理须填写7～30天的已结记录清理期限。");
+            try { _ = TimeZoneInfo.FindSystemTimeZoneById(Policy.CleanupTimeZoneId); }
+            catch (Exception error) when (error is ArgumentException or TimeZoneNotFoundException or InvalidTimeZoneException) { Issue("系统", "CleanupTimeZoneId", "请选择有效的清理时区。"); }
+        }
+        if (ApplicationId != "sportmaster" && Policy.WeightRangeEnabled)
             try { _ = Policy.BuildWeightRange(); } catch (InvalidOperationException ex) { Issue("业务模块", WeightRangeField(ex.Message), ex.Message); }
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB（二进制兆字节）");
@@ -145,7 +148,10 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             var fieldCategory = ParameterOwnership.CategoryName(ParameterOwnership.ObjectCategory(draft));
             if (draft.ProviderChangePending) Issue(fieldCategory, draft.InstanceId + "/Provider", "请确认切换并重置参数，或取消切换；当前输入保留。");
             if (draft.Provider is null) { Issue(fieldCategory, draft.InstanceId, draft.ProviderIdentity); continue; }
-            var values = draft.Parameters.Where(p => p.Value.Length > 0).ToDictionary(p => p.Field.Key, p => p.Value);
+            // An untouched absent optional value stays omitted. Clearing a displayed
+            // typed default is an invalid edit, not an invisible fallback.
+            var values = draft.Parameters.Where(p => p.Value.Length > 0 || p.Field.Default is not null &&
+                p.Field.Type is "integer" or "boolean" or "choice" or "string-list").ToDictionary(p => p.Field.Key, p => p.Value);
             var isRcs = ParameterOwnership.IsRcs(draft);
             if (isRcs)
             {
@@ -220,7 +226,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         var policy = Policy.BuildBarcodePolicy();
         var result = await Task.Run(() => Preview(policy, ["__format_check__"]));
         if (policy != Policy.BuildBarcodePolicy()) return false;
-        if (result.Outcome is "InvalidPattern" or "FilterTimeout") { Report(result.Detail, preserveScope: true); return false; }
+        if (result.Outcome is "InvalidPattern" or "FilterTimeout") { Report(result.Detail); return false; }
         return valid;
     }
     public void ReportField(string category, string path, string message)

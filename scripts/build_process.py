@@ -22,6 +22,8 @@ class WindowsJob:
         self.api.SetInformationJobObject.argtypes = [wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD]
         self.api.AssignProcessToJobObject.argtypes = [wintypes.HANDLE, wintypes.HANDLE]
         self.api.CloseHandle.argtypes = [wintypes.HANDLE]
+        self.api.TerminateJobObject.argtypes = [wintypes.HANDLE, wintypes.UINT]
+        self.api.QueryInformationJobObject.argtypes = [wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD, ctypes.c_void_p]
         self.handle = self.api.CreateJobObjectW(None, None)
         if not self.handle: raise ctypes.WinError(ctypes.get_last_error())
         limits = EXTENDED_LIMIT()
@@ -66,7 +68,24 @@ class WindowsJob:
 
     def close(self):
         if self.handle:
-            self.api.CloseHandle(self.handle)
+            from ctypes import wintypes
+            class ACCOUNTING(ctypes.Structure):
+                _fields_ = [(name, ctypes.c_longlong) for name in ('TotalUserTime', 'TotalKernelTime', 'ThisPeriodTotalUserTime', 'ThisPeriodTotalKernelTime')] + [(name, wintypes.DWORD) for name in ('TotalPageFaultCount', 'TotalProcesses', 'ActiveProcesses', 'TotalTerminatedProcesses')]
+            # Kill-on-close protects abrupt owner death, but closing the handle is
+            # not a drain barrier. Keep ownership while termination is confirmed.
+            if not self.api.TerminateJobObject(self.handle, 1):
+                raise ctypes.WinError(ctypes.get_last_error())
+            deadline = time.monotonic() + 5
+            while True:
+                accounting = ACCOUNTING()
+                if not self.api.QueryInformationJobObject(self.handle, 1, ctypes.byref(accounting), ctypes.sizeof(accounting), None):
+                    raise ctypes.WinError(ctypes.get_last_error())
+                if accounting.ActiveProcesses == 0: break
+                if time.monotonic() >= deadline:
+                    raise TimeoutError('Compiler job termination is not confirmed; ownership has not been released')
+                time.sleep(.01)
+            if not self.api.CloseHandle(self.handle):
+                raise ctypes.WinError(ctypes.get_last_error())
             self.handle = None
 
 
@@ -84,7 +103,15 @@ def run(command, cwd=None):
                 # Assignment failure must not continue with unowned work.
                 subprocess.run(['taskkill', '/PID', str(process.pid), '/T', '/F'], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 raise
-        code = process.wait()
+        # A Windows console break sets a Python handler pending; an infinite
+        # native wait would defer it until the compiler exits. Bound each wait
+        # so cancellation can reach the owning finally without resending work.
+        while True:
+            try:
+                code = process.wait(timeout=.1)
+                break
+            except subprocess.TimeoutExpired:
+                pass
         if code:
             raise subprocess.CalledProcessError(code, command)
     finally:

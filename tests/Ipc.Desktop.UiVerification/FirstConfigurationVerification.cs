@@ -25,8 +25,8 @@ static partial class Program
         check(!Descendants(window).OfType<TabControl>().Any(t => t.Name == "StartupTasks"),
             "first configuration uses the shared directory without duplicate outer task tabs");
         var steps = Descendants(editor).OfType<Button>().Where(b => AutomationProperties.GetName(b).StartsWith("首次配置第", StringComparison.Ordinal)).ToArray();
-        check(directory.IsVisible && steps.Length == 5 && steps.All(b => b.IsVisible) && editor.PageProgress.StartsWith("第 1 / 5 步"),
-            "five visible stage buttons accompany the current stage directory without exposing a second configuration owner");
+        check(!directory.IsVisible && steps.Count(b => b.IsVisible) == 4 && editor.PageProgress.StartsWith("第 1 / 4 步"),
+            "four visible stage buttons use one page per stage without exposing a second configuration owner");
         return editor;
     }
 

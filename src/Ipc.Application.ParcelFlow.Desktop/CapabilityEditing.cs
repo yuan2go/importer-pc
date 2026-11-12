@@ -129,7 +129,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     public bool Bound { get => bound; set { bound = value; Notify(); } }
     public string InstanceId { get => instanceId; set { instanceId = value; Notify(); } }
     public bool IsTargetReadOnly => Kind == "observation";
-    public string TargetBoundary => IsTargetReadOnly ? "相机设备标识不可修改；更换相机需按换机流程处理" : ParameterOwnership.IsDriver(this) ? "驱动拥有的硬件协议目标；保存后需重启软件生效" : "组件拥有的外部服务目标；保存后需重启软件生效";
+    public string TargetBoundary => IsTargetReadOnly ? "相机设备标识不可修改；更换相机需按换机流程处理" : ParameterOwnership.IsDriver(this) ? "驱动拥有的硬件协议目标；保存后需重启软件生效" : Provider?.Implementation == "sportmaster-rcs" ? "RCS服务目标；符合条件时热生效，受阻或混合修改时以保存回执为准，原请求保持原目标" : "组件拥有的外部服务目标；保存后需重启软件生效";
     public string Target { get => target; set { target = value; Notify(); } }
     public string Contract { get => contract; set { contract = value; Notify(); } }
     public string ProviderIdentity => Provider is { } p ? p.Implementation + " @ " + p.Version + " · " + (p.Package?.ManifestSha256 ?? "内置参考") + " · " + p.Module : "所选组件未安装或版本不匹配，不能保存：" + OriginalProviderIdentity;

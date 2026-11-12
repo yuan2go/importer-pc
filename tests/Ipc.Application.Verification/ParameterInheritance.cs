@@ -47,7 +47,7 @@ static class ParameterInheritance
         var path = Path.Combine(root, "inherit-sportmaster"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), seed);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         string frozen;
-        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } })
+        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } })
         {
             await app.StartAsync(default); await ManagementModeFixture.Authorize(app); var vm = new ParcelViewModel(app, "参数继承", "合成验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
             var startup = new StartupConfigurationDraft(vm.Snapshot!.Configuration.Effective, await app.CapabilitiesAsync());
@@ -91,7 +91,7 @@ static class ParameterInheritance
             await vm.SaveStructuredConfigurationAsync(); var saved = await app.SnapshotAsync();
             Check(saved.Configuration.Pending?.BarcodeFilter?.ExclusionPattern == "OK00[1-3]" && saved.Configuration.Effective.BarcodeFilter == rule && Wire.Encode(saved.Operations.Single().Wcs) == frozen, "new rules save as Pending while the active rule and original request stay frozen");
         }
-        await using (var restarted = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } })
+        await using (var restarted = new ParcelRuntime(launch, new SportmasterFlow(), new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } })
         {
             await restarted.StartAsync(default); var active = await restarted.SnapshotAsync();
             Check(active.Configuration.Effective.BarcodeFilter?.ExclusionPattern == "OK00[1-3]" && active.Configuration.Effective.Retention?.DiagnosticLogDays == 3 && Wire.Encode(active.Operations.Single().Wcs) == frozen, "restart activates the exact saved policy without rewriting original requests");
@@ -106,7 +106,7 @@ static class ParameterInheritance
         c = c with { Reader = isolatedReader, Topology = c.Topology! with { Readers = [isolatedReader], Positions = c.Topology.Positions.Select(p => p with { ReaderDeviceId = isolatedReader.DeviceId }).ToArray() } };
         var path = Path.Combine(root, "inherit-weight"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
-        await using var app = new ParcelRuntime(launch, new DirectPlcFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } }; await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
+        await using var app = new ParcelRuntime(launch, new DirectPlcFlow(), new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } }; await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         var vm = new ParcelViewModel(app, "称重业务", "合成验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
         foreach (var invalid in new[] { "", "bad", "-1", "1.0001" })
         {
@@ -143,13 +143,13 @@ static class ParameterInheritance
         await app.DisposeAsync();
         var replayConfig = Path.Combine(root, "replay-weight-config"); Directory.CreateDirectory(replayConfig); ExtensionStore.AtomicWrite(Path.Combine(replayConfig, "business.json"), c);
         var replayLaunch = new BusinessLaunch(replayConfig, Path.Combine(root, "replay-weight-data"), null, null);
-        await using var first = new ParcelRuntime(replayLaunch, new DirectPlcFlow(), new ParcelCapabilityFactory(replayLaunch)) { RuntimeIdentityPreflight = () => { } }; await first.StartAsync(default); await ManagementModeFixture.Authorize(first);
+        await using var first = new ParcelRuntime(replayLaunch, new DirectPlcFlow(), new P0SimulationFactory(replayLaunch)) { RuntimeIdentityPreflight = () => { } }; await first.StartAsync(default); await ManagementModeFixture.Authorize(first);
         first.EmitReference("range-replay", "001", Wire.Id()); await Wait(first, s => s.Operations.Any(x => x.AdmissionId == "range-replay"));
         var immutable = new WeightMeasurement(Wire.Id(), "range-replay", c.Scale.Target, 0.5m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow);
         first.EmitReferenceWeight(immutable); await Wait(first, s => s.Operations.Single(x => x.AdmissionId == "range-replay").Reason?.Contains("业务范围") == true);
         await first.StopAsync(default);
         await first.DisposeAsync();
-        await using var restarted = new ParcelRuntime(replayLaunch, new DirectPlcFlow(), new ParcelCapabilityFactory(replayLaunch)) { RuntimeIdentityPreflight = () => { } }; await restarted.StartAsync(default);
+        await using var restarted = new ParcelRuntime(replayLaunch, new DirectPlcFlow(), new P0SimulationFactory(replayLaunch)) { RuntimeIdentityPreflight = () => { } }; await restarted.StartAsync(default);
         restarted.EmitReferenceWeight(immutable with { Value = 1.5m });
         var conflict = await Wait(restarted, s => s.IdentityConflicts?.Length > 0);
         Check(conflict.Operations.Single(x => x.AdmissionId == "range-replay").Weight is null && conflict.Operations.Single(x => x.AdmissionId == "range-replay").Plc is null, "rejected first measurement survives restart and changed same-ID sample creates an identity conflict before any request");

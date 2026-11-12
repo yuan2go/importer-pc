@@ -64,7 +64,7 @@ static class ParameterRefactor
         Check(defaults.Policy.StationCode == c.StationId && defaults.Build().StationCode == c.StationId && defaults.Policy.BackupIntervalMinutes == "60" && defaults.Policy.BackupMaximumSets == "10" && !defaults.Policy.BackupEnabled, "mandatory system values have explicit defaults; optional scheduled backup remains off");
         var path = Path.Combine(root, "parameters"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c with { BarcodeFilter = new("OK[0-9]+") });
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
-        var factory = new UxCommercialInputs.InputFactory(new ParcelCapabilityFactory(launch));
+        var factory = new UxCommercialInputs.InputFactory(new P0SimulationFactory(launch));
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
         await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         var reader = c.Topology!.Readers[0].DeviceId;
@@ -72,15 +72,20 @@ static class ParameterRefactor
         var first = await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "third-entity" && o.State == ParcelState.SlotResolved));
         var original = first.Operations.Single(); var frozen = Wire.Encode(original.Wcs);
         Check(original.ParcelCode == "OK003" && original.BarcodeSelection?.Outcome == "Selected" && first.Inputs!.Single().Observation.Codes.SequenceEqual(["noise", "other", "OK003"]), "actual admission freezes the selected code and preserves all raw input candidates");
+        await SmRoundFixture.ConfirmRemovedAsync(app, "left");
         foreach (var (codes, outcome) in new[] { (new[] { "noise" }, "NoMatchingCode"), (new[] { "OK004", "OK005" }, "AmbiguousCodes") })
         {
+            var processed = app.WorkerProgress().Single(w => w.Position == "left").Processed;
             var source = Wire.Id(); factory.Emit(reader, "Read", "rejected-" + source, codes, source);
-            var rejected = await Wait(app, s => s.Inputs!.Any(x => x.Observation.SourceEventId == source));
-            Check(rejected.Inputs!.Single().BarcodeSelection?.Outcome == outcome && rejected.Operations.Length == 1 && rejected.Positions!.Single(p => p.Id == "left").CurrentOperation is null, outcome + " creates no request and cannot reuse a previous slot");
+            await CameraRoundHarness.Until(() => Task.FromResult(app.WorkerProgress().Single(w => w.Position == "left").Processed > processed));
+            var rejected = await app.SnapshotAsync();
+            Check((outcome == "NoMatchingCode" ? app.WorkerProgress().Single(w => w.Position == "left").Dispositions.GetValueOrDefault("NoFormalCandidates") == 1 : rejected.Inputs!.Single().BarcodeSelection?.Outcome == outcome) && rejected.Operations.Length == 1 && rejected.Positions!.Single(p => p.Id == "left").CurrentOperation is null, outcome + " creates no request and cannot reuse a previous slot; no-formal-candidate evidence does not manufacture a UI input");
+            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
         }
         factory.Emit(c.Topology.Readers[1].DeviceId, "Read", "right-entity", ["OK003"], "right-source");
         await Wait(app, s => s.Operations.Length == 2 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
         Check((await app.SnapshotAsync()).Operations.Select(o => o.AdmissionId).Distinct().Count() == 2, "same code at independent positions remains two distinct entities");
+        await SmRoundFixture.ConfirmRemovedAsync(app, "left"); await SmRoundFixture.ConfirmRemovedAsync(app, "right");
         var before = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), before.Revision, "Pause")); await ManagementModeFixture.Authorize(app);
         // Isolate configuration semantics from periodic health probes taking the
         // shared external-call guard between availability and Stage. The real
@@ -112,22 +117,22 @@ static class ParameterRefactor
         Check(staleNoChange.Status == "Rejected" && (await app.SnapshotAsync()).Configuration.Pending!.StationCode == "SYSTEM-EDIT",
             "stale CAS cannot disguise itself as unchanged or discard Pending");
         var proxy = DispatchProxy.Create<IManagementParcelFixture, SaveProbe>(); var probe = (SaveProbe)(object)proxy; probe.Inner = app; probe.FailInspection = true;
-        var pendingVm = new ParcelViewModel(proxy, "待核对", "合成验证"); await pendingVm.RefreshAsync(); await pendingVm.LoadCapabilitiesAsync(); pendingVm.ConfigurationReason = "Synthetic uncertain result"; pendingVm.StructuredPolicy!.TimeoutMs = "1700";
+        var pendingVm = new ParcelViewModel(proxy, "待核对", "合成验证"); await pendingVm.RefreshAsync(); await pendingVm.LoadCapabilitiesAsync(); pendingVm.ConfigurationReason = "Synthetic uncertain result"; pendingVm.StructuredPolicy!.ResidentHistory = "1700";
         await pendingVm.SaveStructuredConfigurationAsync();
         Check(pendingVm.HasUnconfirmedConfigurationSubmission && pendingVm.ConfigurationSubmissionOutcome == "Unknown" &&
-            pendingVm.HasUnsavedConfiguration && pendingVm.StructuredPolicy.TimeoutMs == "1700",
+            pendingVm.HasUnsavedConfiguration && pendingVm.StructuredPolicy.ResidentHistory == "1700",
             "unavailable authority inspection retains raw input and an explicit uncertain-save state");
         var blocked = false; try { await pendingVm.SaveStructuredConfigurationAsync(); } catch (InvalidOperationException) { blocked = true; }
         Check(blocked && probe.StageCalls == 1, "uncertain result prevents a second stage submission");
         probe.FailInspection = false; await pendingVm.InspectLastSaveAsync();
         Check(!pendingVm.HasUnsavedConfiguration && pendingVm.ConfigurationSubmissionOutcome == "PendingRestart" && probe.StageCalls == 1, "later authority inspection confirms the original submission without resubmitting");
         var stale = new ParcelViewModel(app, "旧CAS", "合成验证"); await stale.RefreshAsync(); await stale.LoadCapabilitiesAsync();
-        pendingVm.StructuredPolicy.TimeoutMs = "1800"; pendingVm.ConfigurationReason = "Synthetic newer revision for CAS conflict"; await pendingVm.SaveStructuredConfigurationAsync();
-        stale.StructuredPolicy!.TimeoutMs = "1900"; stale.ConfigurationReason = "Synthetic stale CAS"; await stale.SaveStructuredConfigurationAsync();
-        Check(stale.ConfigurationSubmissionOutcome == "Conflict" && stale.HasUnsavedConfiguration && stale.StructuredPolicy.TimeoutMs == "1900", "CAS conflict preserves input and cannot replace the saved candidate");
-        var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.QueueCapacity = "bad"; await stale.SaveStructuredConfigurationAsync();
-        Check(stale.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision, "field errors are locatable and static validation cannot save or contact a device");
-        stale.StructuredPolicy.QueueCapacity = "64"; stale.StructuredPolicy.BackupEnabled = true;
+        pendingVm.StructuredPolicy.ResidentHistory = "1800"; pendingVm.ConfigurationReason = "Synthetic newer revision for CAS conflict"; await pendingVm.SaveStructuredConfigurationAsync();
+        stale.StructuredPolicy!.ResidentHistory = "1900"; stale.ConfigurationReason = "Synthetic stale CAS"; await stale.SaveStructuredConfigurationAsync();
+        Check(stale.ConfigurationSubmissionOutcome == "Conflict" && stale.HasUnsavedConfiguration && stale.StructuredPolicy.ResidentHistory == "1900", "CAS conflict preserves input and cannot replace the saved candidate");
+        var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.ReadTimeoutMs = "bad"; await stale.SaveStructuredConfigurationAsync();
+        Check(stale.ParameterEditor!.Issues.Any(i => i.Path == "ReadTimeoutMs") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision, "field errors are locatable and static validation cannot save or contact a device");
+        stale.StructuredPolicy.ReadTimeoutMs = "1000"; stale.StructuredPolicy.BackupEnabled = true;
         stale.StructuredPolicy.BackupIntervalMinutes = "bad"; stale.StructuredPolicy.BackupMaximumSets = "0";
         stale.ParameterEditor.ValidateFields();
         Check(stale.ParameterEditor.Issues.Any(i => i.Path == "BackupIntervalMinutes") && stale.ParameterEditor.Issues.Any(i => i.Path == "BackupMaximumSets") && !stale.ParameterEditor.Issues.Any(i => i.Path == "BackupDirectory") && stale.StructuredPolicy.BackupIntervalMinutes == "bad" && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision,
@@ -135,17 +140,19 @@ static class ParameterRefactor
         stale.StructuredPolicy.BackupEnabled = false;
         var heldProxy = DispatchProxy.Create<IManagementParcelFixture, SaveProbe>(); var heldProbe = (SaveProbe)(object)heldProxy; heldProbe.Inner = app; heldProbe.FailInspection = true;
         var heldVm = new ParcelViewModel(heldProxy, "校验期间编辑", "合成验证"); await heldVm.RefreshAsync(); await heldVm.LoadCapabilitiesAsync(); heldVm.ConfigurationReason = "Synthetic validation race";
-        heldVm.StructuredPolicy!.TimeoutMs = "2000"; heldProbe.HoldValidation = true; var heldSave = heldVm.SaveStructuredConfigurationAsync(); await heldProbe.ValidationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        heldVm.StructuredPolicy.TimeoutMs = "2100"; heldProbe.ValidationRelease.TrySetResult(); await heldSave;
+        heldVm.StructuredPolicy!.ResidentHistory = "2000"; heldProbe.HoldValidation = true; var heldSave = heldVm.SaveStructuredConfigurationAsync(); await heldProbe.ValidationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        heldVm.StructuredPolicy.ResidentHistory = "2100"; heldProbe.ValidationRelease.TrySetResult(); await heldSave;
         heldProbe.FailInspection = false; await heldVm.InspectLastSaveAsync();
-        Check(heldVm.HasUnsavedConfiguration && heldVm.StructuredPolicy.TimeoutMs == "2100" && (await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 2000, "late authority inspection accepts only the pre-validation submission while newer input remains unsaved");
-        heldVm.StructuredPolicy.TimeoutMs = "2000"; Check(!heldVm.HasUnsavedConfiguration && heldProbe.StageCalls == 1, "returning to the inspected original candidate restores its exact clean baseline without resubmission");
+        Check(heldVm.HasUnsavedConfiguration && heldVm.StructuredPolicy.ResidentHistory == "2100" && (await app.SnapshotAsync()).Configuration.Pending!.Retention!.ResidentHistory == 2000, "late authority inspection accepts only the pre-validation submission while newer input remains unsaved");
+        heldVm.StructuredPolicy.ResidentHistory = "2000"; Check(!heldVm.HasUnsavedConfiguration && heldProbe.StageCalls == 1, "returning to the inspected original candidate restores its exact clean baseline without resubmission");
         var previewRevision = (await app.SnapshotAsync()).Configuration.Revision;
         var policy = new BarcodeFilterPolicy("OK[0-9]+"); var preview = await app.TestBarcodeFilterAsync(policy, ["bad", "OK003"]);
         Check(preview.SelectedCode == "OK003" && (await app.SnapshotAsync()).Configuration.Revision == previewRevision, "sample test shares the bounded matcher and has no configuration side effect");
+        var beforeDuplicate = app.WorkerProgress().Single(w => w.Position == "left").Processed;
         factory.Emit(reader, "Read", "third-entity", ["OK003"], "duplicate-original");
-        var duplicate = await Wait(app, s => s.Inputs!.Any(x => x.Observation.SourceEventId == "duplicate-original"));
-        Check(duplicate.Inputs!.Single(x => x.PositionId == "left").Outcome == ParcelInputOutcome.Duplicate && Wire.Encode(duplicate.Operations.Single(o => o.Id == original.Id).Wcs) == frozen, "existing entity uses frozen policy while paused and cannot replay its original request");
+        await CameraRoundHarness.Until(() => Task.FromResult(app.WorkerProgress().Single(w => w.Position == "left").Processed > beforeDuplicate));
+        var duplicate = await app.SnapshotAsync();
+        Check(duplicate.Operations.Count(o => o.AdmissionId == "third-entity") == 1 && Wire.Encode(duplicate.Operations.Single(o => o.Id == original.Id).Wcs) == frozen, "old identity while paused cannot replay its original request or pollute current input projection");
     }
     public class SaveProbe : DispatchProxy
     {

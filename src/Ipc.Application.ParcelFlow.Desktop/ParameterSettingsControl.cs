@@ -45,7 +45,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         public TextBox Diagnostic { get; } = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, FontSize = UiTypography.Label };
         public string? TaskGroup { get; set; }
         public string GroupTitle => TaskGroup ?? (Category == 4 ? "检查" : ParameterOwnership.CategoryName(Category));
-        public int Order => Category;
+        public int Order => TaskGroup switch { "本站与 RCS" => 0, "左右相机" => 1, "识读规则" => 2, "检查与完成" => 4, _ => Category };
         public int TaskOrder => TaskGroup switch { "本站接入" => 0, "相机" => 1, "分拣规则" => 2, "系统维护" => 3, _ => 4 };
         int issueCount;
         public string DisplayTitle => Title + (issueCount == 0 ? "" : "（" + issueCount + "）");
@@ -75,7 +75,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             var index = step;
             var button = new Button { Content = (step + 1) + " " + names[step], Tag = names[step], MinHeight = 44, Margin = new(0, 0, 8, 4) };
             AutomationProperties.SetName(button, "首次配置第" + (step + 1) + "步：" + names[step]);
-            button.Click += async (_, _) => { var target = OrderedPages().FirstOrDefault(p => p.Category == index); if (target is not null) await RequestPageAsync(target); };
+            button.Click += async (_, _) => { var target = OrderedPages().FirstOrDefault(p => p.Category == FirstCategories[index]); if (target is not null) await RequestPageAsync(target); };
             firstStepBar.Children.Add(button);
         }
         DockPanel.SetDock(remainingSteps, Dock.Bottom); rail.Children.Add(remainingSteps);
@@ -123,7 +123,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     void EnsureReviewPage()
     {
         if (reviewPage is not null) return;
-        reviewPage = Page(4, FirstConfiguration ? "检查与完成" : "检查结果", "检查全部设置。保存后需重启软件才会生效。");
+        reviewPage = Page(4, FirstConfiguration ? "检查与完成" : "检查结果", "检查全部设置。条码规则、相机和RCS连接可按当前责任热生效；其他业务设置重启生效，本机偏好保存后立即生效。");
         if (errors.Parent is Panel old) old.Children.Remove(errors);
         if (UsesFirstReadiness)
         {
@@ -139,7 +139,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     public void ShowCategory(int? index)
     {
-        if (index is < 0 or > 3) throw new ArgumentOutOfRangeException(nameof(index));
+        if (index is < 0 or > 4) throw new ArgumentOutOfRangeException(nameof(index));
         // Filtering a WPF collection can automatically select its first item.
         // Resolve the remembered destination before Refresh changes selection.
         var selected = directory.SelectedItem as ObjectPage;
@@ -245,7 +245,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var caption = Themed(new TextBlock { Text = label, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Body }, TextBlock.ForegroundProperty, "Ink");
         var describe = new StackPanel { VerticalAlignment = VerticalAlignment.Center }; describe.Children.Add(caption); field.Children.Add(describe);
         var line = new DockPanel { LastChildFill = true, VerticalAlignment = VerticalAlignment.Center };
-        var unit = path.Split('/').Last() switch { "TimeoutMs" or "SessionLifetimeMs" or "request-timeout-ms" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-ms" => "毫秒", _ => "" };
+        var unit = path.Split('/').Last() switch { "ReadTimeoutMs" or "TimeoutMs" or "SessionLifetimeMs" or "request-timeout-ms" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" or "CleanupMaximumBackupSets" => "份", "CleanupHour" => "时", "heartbeat-interval-ms" => "毫秒", _ => "" };
         if (unit.Length > 0) { var suffix = Text(unit); suffix.Margin = new(8, 0, 0, 0); suffix.VerticalAlignment = VerticalAlignment.Center; DockPanel.SetDock(suffix, Dock.Right); line.Children.Add(suffix); }
         line.Children.Add(control); field.Children.Add(line);
         // Preserve stable automation paths used by support and native verification.
@@ -302,10 +302,11 @@ public sealed partial class ParameterSettingsControl : UserControl
         {
             editRevision++; checkedPages.Clear(); RefreshStepBar();
             var model = Model;
-            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.DataBind, new Action(() => { if (ReferenceEquals(Model, model)) model?.RevalidateAfterEdit(); }));
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.DataBind, new Action(() => { if (ReferenceEquals(Model, model)) model?.ValidateFields(); }));
         }
         control.LostKeyboardFocus += (_, _) => { if (Model is { } editor && !navigating) editor.ValidateFields(); };
         if (control is TextBox text) text.TextChanged += (_, _) => Edited();
+        else if (control is Slider slider) slider.ValueChanged += (_, _) => Edited();
         else if (control is PasswordBox password) password.PasswordChanged += (_, _) => Edited();
         else if (control is ComboBox choice) choice.SelectionChanged += (_, _) => Edited();
         else if (control is CheckBox toggle) { toggle.Checked += (_, _) => Edited(); toggle.Unchecked += (_, _) => Edited(); }
@@ -324,7 +325,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         };
         box.SetBinding(TextBox.TextProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         box.MaxWidth = multiline || property is "Target" or "BarcodePattern" or "BackupDirectory" ? 760 :
-            property is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "ResidentHistory" or "MinimumFreeMiB" or "DiagnosticLogDays" or "HistoryDays" or "SessionLifetimeMs" or "BackupIntervalMinutes" or "BackupMaximumSets" or "Precision" or "ConfiguredWeight" or "MaximumAgeMs" or "WaitTimeoutMs" or "ImageBytes" or "TotalBytes" or "MaximumPending" ? 240 : 400;
+            property is "ReadTimeoutMs" or "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "ResidentHistory" or "MinimumFreeMiB" or "DiagnosticLogDays" or "HistoryDays" or "SessionLifetimeMs" or "BackupIntervalMinutes" or "BackupMaximumSets" or "CleanupHour" or "CleanupMaximumBackupSets" or "Precision" or "ConfiguredWeight" or "MaximumAgeMs" or "WaitTimeoutMs" or "ImageBytes" or "TotalBytes" or "MaximumPending" ? 240 : 400;
         Field(form, label, box, help, path, page); return box;
     }
     void Choice(Panel form, string label, object source, string property, Array values, string path, ObjectPage page, string? help = null)

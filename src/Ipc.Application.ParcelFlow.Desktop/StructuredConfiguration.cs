@@ -54,15 +54,19 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string MaximumWeight { get => Get<string>(); set => Set(value); }
     public string QueueCapacity { get => Get<string>(); set => Set(value); }
     public string ReadTimeoutMs { get => Get<string>(); set => Set(value); }
+    public bool AutomaticHistoryCleanup { get => Get<bool>(); set => Set(value); }
+    public string CleanupTimeZoneId { get => Get<string>(); set => Set(value); }
+    public string CleanupHour { get => Get<string>(); set => Set(value); }
+    public string CleanupMaximumBackupSets { get => Get<string>(); set => Set(value); }
     public string TimeoutMs { get => Get<string>(); set => Set(value); }
     public string MaximumOperations { get => Get<string>(); set => Set(value); }
     public string ResidentHistory { get => Get<string>(); set => Set(value); }
     public string MinimumFreeMiB { get => Get<string>(); set => Set(value); }
     internal ParcelConfiguration ApplyParameters(ParcelConfiguration c)
     {
-        var readTimeout = Integer(ReadTimeoutMs, "业务模块/ReadTimeoutMs", 100, 60000);
+        var readTimeout = Integer(ReadTimeoutMs, "业务模块/ReadTimeoutMs", SystemParameterDefaults.MinimumReadTimeoutMs, SystemParameterDefaults.MaximumReadTimeoutMs);
         if (!decimal.TryParse(MinimumFreeMiB, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
-            throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘保留空间须为1～1048576 MiB");
+            throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘预留须为1～1048576 MiB");
         var retention = (c.Retention ?? new ParcelRetentionPolicy()) with
         {
             ResidentHistory = Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000),
@@ -73,15 +77,16 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         return c with
         {
             StationCode = StationCode,
-            SessionLifetimeMs = Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
+            SessionLifetimeMs = c.ApplicationId == "sportmaster" || c.Login is null ? c.SessionLifetimeMs : Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
             BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) && RejectMultipleCodes && MultiCodeSeparator == ";" ? null : BuildBarcodePolicy(),
-            WeightRange = BuildWeightRange(),
-            QueueCapacity = Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096),
+            WeightRange = c.ApplicationId == "sportmaster" ? c.WeightRange : BuildWeightRange(),
+            QueueCapacity = c.ApplicationId == "sportmaster" ? c.QueueCapacity : Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096),
             ReadTimeoutMs = readTimeout == c.EffectiveReadTimeoutMs ? c.ReadTimeoutMs : readTimeout,
-            TimeoutMs = Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
-            MaximumOperations = Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
+            TimeoutMs = c.ApplicationId == "sportmaster" ? c.TimeoutMs : Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
+            MaximumOperations = c.ApplicationId == "sportmaster" ? c.MaximumOperations : Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
             Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention,
-            BackupSchedule = BuildBackup()
+            BackupSchedule = BuildBackup(),
+            OperationsPolicy = c.ApplicationId == "sportmaster" ? BuildOperations(c.OperationsPolicy) : c.OperationsPolicy
         };
     }
     public WeightSource WeightSource { get => Get<WeightSource>(); set => Set(value); }
@@ -114,6 +119,10 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         MaximumWeight = c.WeightRange?.Maximum.ToString(CultureInfo.InvariantCulture) ?? "",
         QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture),
         ReadTimeoutMs = c.EffectiveReadTimeoutMs.ToString(CultureInfo.InvariantCulture),
+        AutomaticHistoryCleanup = c.OperationsPolicy?.AutomaticHistoryCleanup == true,
+        CleanupTimeZoneId = (c.OperationsPolicy ?? StationShiftSchedule.Default).TimeZoneId,
+        CleanupHour = (c.OperationsPolicy ?? StationShiftSchedule.Default).CleanupHour.ToString(CultureInfo.InvariantCulture),
+        CleanupMaximumBackupSets = (c.OperationsPolicy ?? StationShiftSchedule.Default).MaximumBackupSets.ToString(CultureInfo.InvariantCulture),
         TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture),
         MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
         ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture),
@@ -141,6 +150,21 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         if (!BackupEnabled) return null;
         if (string.IsNullOrWhiteSpace(BackupDirectory) || !Path.IsPathFullyQualified(BackupDirectory)) throw new InvalidOperationException("明确选择计划备份的绝对目录；不使用当前工作目录作为默认");
         return new(Path.GetFullPath(BackupDirectory), Integer(BackupIntervalMinutes, "备份周期(分钟)", 15, 10080), Integer(BackupMaximumSets, "备份容量上限(份)", 1, 1000));
+    }
+    internal StationOperationsPolicy? BuildOperations(StationOperationsPolicy? original)
+    {
+        var baseline = original ?? StationShiftSchedule.Default;
+        var result = baseline with
+        {
+            AutomaticHistoryCleanup = AutomaticHistoryCleanup,
+            TimeZoneId = CleanupTimeZoneId,
+            CleanupHour = Integer(CleanupHour, "CleanupHour: 清理时刻", 0, 23),
+            MaximumBackupSets = Integer(CleanupMaximumBackupSets, "CleanupMaximumBackupSets: 清理前备份份数上限", 1, 100)
+        };
+        var errors = StationShiftSchedule.Validate(result);
+        if (errors.Length != 0) throw new InvalidOperationException("CleanupTimeZoneId: " + string.Join("；", errors));
+        if (result.AutomaticHistoryCleanup && HistoryDays.Length == 0) throw new InvalidOperationException("HistoryDays: 启用自动清理须填写7～30天的已结记录清理期限。");
+        return original is null && result == baseline ? null : result;
     }
     internal WeightPolicy BuildWeight()
     {
@@ -174,7 +198,7 @@ public partial class ParcelViewModel
 {
     ParcelConfiguration? structuredBase;
     public ParameterEditorModel? ParameterEditor { get; private set; }
-    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples)), structuredBase.StationId, (application as IParcelConfigurationLocationApplication)?.ConfigurationLocations, ConfigurationRoles.Single(r => r.Role == "登录"), ConfigurationRoles.ToArray()) { CameraSerialReader = (ip, engine) => ServiceAsync(() => application.ReadCameraSerialAsync(ip, engine)) }; Changed(nameof(ParameterEditor)); }
+    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples)), structuredBase.StationId, (application as IParcelConfigurationLocationApplication)?.ConfigurationLocations, ConfigurationRoles.Single(r => r.Role == "登录"), ConfigurationRoles.ToArray()) { CameraSerialReader = (ip, engine) => ServiceAsync(() => application.ReadCameraSerialAsync(ip, engine)), DisplayPreferences = structuredBase.ApplicationId == "sportmaster" ? SmPreferences : null }; Changed(nameof(ParameterEditor)); }
     CapabilityCatalog? installedCatalog;
     string configurationAuthority = "未加载", savedCandidate = "", validationState = "尚未校验";
     public bool HasLoadedConfiguration => configurationAuthority != "未加载";
@@ -202,11 +226,11 @@ public partial class ParcelViewModel
     public System.Windows.Visibility ImageSettingsVisibility => (structuredBase?.ApplicationId ?? Snapshot?.ApplicationId) != "sportmaster" || structuredBase?.Images is not null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
     public string[] NewCapabilityKinds => installedCatalog?.Providers.Where(x => SupportsNewKind(x.Kind)).Select(x => x.Kind).Distinct().ToArray() ?? [];
     public string NewCapabilityKind { get; set; } = "weight";
-    public string ParameterConfigurationSummary => (HasUnsavedConfiguration ? "有未保存修改" : "未修改") + " · " + validationState + " · " +
+    public string ParameterConfigurationSummary => (HasUnsavedConfiguration || HasUnsavedDisplayPreferences ? "有未保存修改" : "未修改") + " · " + validationState + " · " +
         (Snapshot?.Configuration.Pending is not null ? "已保存，重启后生效" : "没有待生效的修改") + " · " +
         (!Fresh || Snapshot?.Configuration.Confirmation is not { Required: false } || Snapshot?.Configuration.Status == "ActivationFailed" ? "运行状态待确认" : "当前设置已生效") +
         (Snapshot?.Configuration.Failure is { } failure ? " · 应用失败：" + failure : "");
-    public string ParameterEditStatus => (HasUnsavedConfiguration ? "未保存修改" : "当前草稿未修改") + "  ·  " + validationState +
+    public string ParameterEditStatus => (HasUnsavedConfiguration || HasUnsavedDisplayPreferences ? "未保存修改" : "当前草稿未修改") + "  ·  " + validationState +
         (Snapshot?.Configuration.Pending is not null ? "  ·  已保存，重启后生效" : "") +
         (!Fresh ? "  ·  状态读取中断" : Snapshot?.Configuration.Failure is { } failure ? "  ·  应用失败：" + failure :
             Snapshot?.Configuration.Confirmation is not { Required: false } ? "  ·  当前设置待确认" : "");
@@ -355,8 +379,8 @@ public partial class ParcelViewModel
             Scale = Role("默认秤"),
             Wcs = Role("上游格口"),
             Plc = Role("PLC"),
-            Weight = policy.BuildWeight(),
-            WeightValidity = policy.Validity,
+            Weight = c.ApplicationId == "sportmaster" ? c.Weight : policy.BuildWeight(),
+            WeightValidity = c.ApplicationId == "sportmaster" ? c.WeightValidity : policy.Validity,
             Images = image,
             Extensions = extensions
         };

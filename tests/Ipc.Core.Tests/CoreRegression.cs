@@ -13,7 +13,7 @@ public sealed class CoreRegression
     {
         var root = RepositoryRoot();
         var configuration = typeof(CoreRegression).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()!.Configuration;
-        var executable = Path.Combine(root, "tests", "Ipc.Application.Verification", "bin", configuration, "net10.0", "Ipc.Application.Verification.dll");
+        var executable = Environment.GetEnvironmentVariable("IPC_VERIFICATION_EXECUTABLE") ?? Path.Combine(root, "tests", "Ipc.Application.Verification", "bin", configuration, "net10.0", "Ipc.Application.Verification.dll");
         var start = new ProcessStartInfo("dotnet")
         {
             WorkingDirectory = root,
@@ -34,6 +34,10 @@ public sealed class CoreRegression
     }
     [TestMethod]
     [TestCategory("Core")]
+    [DataRow("--sm-parameters", 26)]
+    [DataRow("--rcs-timeout-errors", 20)]
+    [DataRow("--parameter-refactor", 30)]
+    [DataRow("--parameter-guidance-startup", 10)]
     [DataRow("--backup-consistency", 66)]
     [DataRow("--stability-analysis", 24)]
     [DataRow("--industrial-recovery", 22)]
@@ -91,7 +95,7 @@ public sealed class CoreRegression
     {
         var root = RepositoryRoot();
         var configuration = typeof(CoreRegression).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()!.Configuration;
-        var executable = Path.Combine(root, "tests", "Ipc.Application.Verification", "bin", configuration, "net10.0", "Ipc.Application.Verification.dll");
+        var executable = Environment.GetEnvironmentVariable("IPC_VERIFICATION_EXECUTABLE") ?? Path.Combine(root, "tests", "Ipc.Application.Verification", "bin", configuration, "net10.0", "Ipc.Application.Verification.dll");
         Assert.IsTrue(File.Exists(executable), "Build the actual verification fixture before running tests.");
         var start = new ProcessStartInfo("dotnet")
         {

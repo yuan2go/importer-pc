@@ -6,15 +6,17 @@
     "Type": "string",
     "Required": true,
     "MaximumLength": 15,
-    "Description": "枚举并绑定明确IP，不使用枚举下标或修改相机IP。"
+    "Description": "枚举并绑定明确IP，不使用枚举下标或修改相机IP。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "device.serial",
     "Group": "设备 / 身份",
-    "Label": "预期序列号（正式必填）",
+    "Label": "物理序列号",
     "Type": "string",
     "MaximumLength": 32,
-    "Description": "正式启用固定本位物理相机；模拟或独立诊断可省略。同一实例重连仍固定原序列号。"
+    "Description": "根据相机IP读取并保存，只读。重连核对原身份；更换相机后明确重新读取，不手填。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "reader.engine",
@@ -26,7 +28,8 @@
       "zxing-cpp",
       "mvid-native"
     ],
-    "Description": "海康原生识码直接接收相机返回的条码结果。软件识别由电脑识别相机图片。"
+    "Description": "新站显式选择海康原生识码，已有明确选择不自动改变、不回退。未指定方式的原配置仍由软件识别。原生返回同帧图片与全部码制结果；软件路线保留码制和反色选项。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "acquisition.trigger",
@@ -39,7 +42,8 @@
       "on",
       "off"
     ],
-    "Description": "本现场连续采集要求已关闭触发。只核对，不修改相机接线或触发源。"
+    "Description": "本现场连续采集要求已关闭触发。只核对，不修改相机接线或触发源。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "entity.mode",
@@ -52,7 +56,8 @@
       "observe-only"
     ],
     "ReadOnly": false,
-    "Description": "识别结果交给供包台筛选；同一次放置只请求一次格口。仅观察不创建作业。"
+    "Description": "识别结果交给供包台筛选；同一次放置只请求一次格口。仅观察不创建作业。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "image.nodes",
@@ -62,7 +67,9 @@
     "Default": "3",
     "Minimum": 1,
     "Maximum": 4,
-    "Description": "有界SDK图像队列。应用只借用一帧，复制到单帧识别缓冲后立即归还；已识别结果同步交持久输入账，不按条码去重。"
+    "Description": "有界SDK图像队列。应用只借用一帧，复制到单帧识别缓冲后立即归还；已识别结果同步交持久输入账，不按条码去重。",
+    "ApplyLevel": "GuardedLive",
+    "Unit": "帧"
   },
   {
     "Key": "image.maximum-payload-bytes",
@@ -72,7 +79,9 @@
     "Default": "8388608",
     "Minimum": 1048576,
     "Maximum": 33554432,
-    "Description": "按相机报告的单帧大小核对，默认8388608字节（8MiB），范围1～32MiB。每帧检查长度、灰度单图及丢包；超限后故障阻断。"
+    "Description": "按相机报告的单帧大小核对，默认8388608字节（8MiB），范围1～32MiB。每帧检查长度、灰度单图及丢包；超限后故障阻断。",
+    "ApplyLevel": "GuardedLive",
+    "Unit": "字节"
   },
   {
     "Key": "code.encoding",
@@ -85,7 +94,8 @@
       "ascii",
       "gb18030"
     ],
-    "Description": "显式选择原始条码字节编码，严格解码；编码不合法仅拒收本帧，不猜测或替换字符。GB18030兼容GBK中文标签。"
+    "Description": "显式选择原始条码字节编码，严格解码；编码不合法仅拒收本帧，不猜测或替换字符。GB18030兼容GBK中文标签。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "code.formats",
@@ -141,7 +151,10 @@
     ],
     "MaximumLength": 32,
     "MaximumItems": 64,
-    "Description": "默认全部码制。可多选现场实际码制；全部与具体码制互斥。减少码制可能漏读未勾选标签，保存并受控启用后生效。"
+    "Description": "默认全部码制。可多选现场实际码制；全部与具体码制互斥。减少码制可能漏读未勾选标签，保存并受控启用后生效。",
+    "AppliesWhenKey": "reader.engine",
+    "AppliesWhenEquals": "zxing-cpp",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "code.try-invert",
@@ -149,7 +162,10 @@
     "Label": "识别反色条码",
     "Type": "boolean",
     "Default": "true",
-    "Description": "仅用于软件识别。海康原生识码使用厂商算法的图像处理。"
+    "Description": "仅用于软件识别。海康原生识码使用厂商算法的图像处理。",
+    "AppliesWhenKey": "reader.engine",
+    "AppliesWhenEquals": "zxing-cpp",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "motion.still-ms",
@@ -161,6 +177,7 @@
     "Maximum": 2000,
     "MaximumLength": 4,
     "Unit": "毫秒",
-    "Description": "放稳后接收识别结果，默认200毫秒。软件识别在放稳后执行；海康原生识码已随采图完成，放置过程中的结果不进入供包业务。0表示每帧接收。"
+    "Description": "放稳后接收识别结果，默认200毫秒。软件识别在放稳后执行；海康原生识码已随采图完成，放置过程中的结果不进入供包业务。0表示每帧接收。",
+    "ApplyLevel": "GuardedLive"
   }
 ]

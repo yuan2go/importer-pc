@@ -147,7 +147,7 @@ public sealed partial class RuntimeJournal : IAsyncDisposable
                 if (File.Exists(file) && File.GetLastWriteTimeUtc(file) <= now.AddDays(-keep)) File.Delete(file);
             }
     }
-    static void ValidateDays(int? days) { if (days is < 1 or > 3650) throw new ArgumentOutOfRangeException(nameof(days), "诊断日志保留天数须为1～3650"); }
+    static void ValidateDays(int? days) { if (days is < 1 or > 3650) throw new ArgumentOutOfRangeException(nameof(days), "日志最长保留时间须为1～3650"); }
     public void ConfigureRetention(int? days)
     {
         ValidateDays(days);

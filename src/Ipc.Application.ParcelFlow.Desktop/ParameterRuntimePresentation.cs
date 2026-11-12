@@ -12,6 +12,12 @@ public sealed record ParameterConnectionPresentation(string Status, string Addre
 
 public partial class ParcelViewModel
 {
+    public string AutomaticCleanupStatusText => Snapshot?.AutomaticCleanup is not { } state ? "尚未取得自动清理执行状态。" :
+        "当前生效：" + (state.Enabled ? "已启用" : "未启用自动清理") + " · " + state.State +
+        (state.LastCompleted is { } last ? "\n历史最近完成：" + last.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "\n尚未取得已确认的历史清理结果") +
+        (state.NextCheck is { } next ? "\n下次检查：" + next.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "") +
+        (string.IsNullOrWhiteSpace(state.Detail) ? "" : "\n" + ChineseInterfaceText.ParameterMessage(state.Detail));
+
     public string ParameterRuntimeSummary(ParameterDiagnosticTarget target) => ParameterConnection(target).Summary;
     public ParameterConnectionPresentation ParameterConnection(ParameterDiagnosticTarget target)
     {
@@ -20,7 +26,7 @@ public partial class ParcelViewModel
         var current = snapshot.Configuration;
         var effective = current.Effective;
         if (ParcelConnectionSetup.IsDeferred(effective, target.DeviceId ?? target.InstanceId))
-            return new("连接待配置", "", "当前运行配置尚未启用此连接。", "填写连接参数并保存，重启后启用连接。", "warning");
+            return new("连接待配置", "", "当前运行配置尚未启用此连接。", "填写连接参数并保存，按保存回执确认已生效或待重启。", "warning");
         var now = DateTimeOffset.UtcNow;
         string identity, address, status, evidence = "", notice = ""; bool ready;
         if (target.DeviceId is { } device)
@@ -43,7 +49,7 @@ public partial class ParcelViewModel
                 notice += (notice.Length == 0 ? "" : "\n") + ((reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode", "observe-only") == "observe-only"
                     ? "仅观察，不创建供包作业。已连接不代表能读到条码。"
                     : (reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode") == "read-result" ? snapshot.ApplicationId == "sportmaster"
-                        ? "持续识别用于判断空托盘；同一位的一次放置只创建一次请求。读码请求不代表物理包裹完成。"
+                        ? "物理在位证据独立于条码识别；可信移出结束轮次，同轮最多一次请求。取得格口不代表物理包裹完成。"
                         : "逐次识别结果上报已选择，相同条码也会交给 RCS 去重。读码请求不代表物理包裹完成。"
                     : "已选择触发关联方式。已连接不代表包裹分割准确。");
             }
@@ -55,7 +61,9 @@ public partial class ParcelViewModel
             if (IsManagementMode && health is not null)
                 evidence = "\n设备确认：" + health.ConfirmedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") +
                     "\n连接周期：" + health.Epoch + " · 已处理序号：" + health.Sequence + "\n连接证据：" + health.Source;
-            if (!ready) notice += "\n请检查本相机连接证据和现场实体，暂停并进入管理模式后按当前运行配置受控重连。";
+            if (!ready) notice += snapshot.ApplicationId == "sportmaster"
+                ? "\n本相机将自动重连；若提示资源未释放或身份冲突，请进入管理中心处理。"
+                : "\n请检查本相机连接证据和现场实体，暂停并进入管理模式后按当前运行配置受控重连。";
         }
         else
         {
@@ -74,7 +82,7 @@ public partial class ParcelViewModel
         // Effective fingerprint, never the edited candidate or Pending identity.
         var fingerprint = Wire.Hash(Wire.Encode(effective))[..12];
         var confirmation = current.Status == "ActivationFailed" || current.Confirmation is not { Required: false } ? " · 启动检查未完成" : "";
-        if (current.Pending is not null) notice += (notice.Length == 0 ? "" : "\n") + "另有已保存设置待重启；当前连接仍使用以上运行配置。";
+        if (current.Pending is not null) notice += (notice.Length == 0 ? "" : "\n") + "另有已保存设置待生效；当前连接仍使用以上运行配置。请按保存回执处理当前责任或重启。";
         return new($"运行连接：{status}{confirmation}", address, $"运行版本：{identity} · 配置标识 {fingerprint}" + evidence,
             notice, !ready || confirmation.Length > 0 ? "warning" : "ready");
     }

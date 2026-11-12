@@ -11,9 +11,8 @@ public sealed partial class ParameterSettingsControl
     void ArrangeSportmasterPages()
     {
         var station = pages.First(p => p.Title == "供包台标识");
-        if (!FirstConfiguration)
         {
-            station.Title = "站点编号与 RCS";
+            station.Title = FirstConfiguration ? "本站与 RCS" : "站点编号与 RCS";
             // One page in reading order: who this station is, how RCS tells the two cameras apart,
             // where RCS is; protocol details stay folded.
             if (station.Body.Children.OfType<ParameterFormPanel>().FirstOrDefault() is { } identity)
@@ -86,8 +85,21 @@ public sealed partial class ParameterSettingsControl
                 for (var i = 0; i < cameraPages.Length; i++) { Grid.SetColumn(cameraPages[i].Body, narrow ? 0 : i); Grid.SetRow(cameraPages[i].Body, narrow ? i : 0); cameraPages[i].Body.Width = double.NaN; }
             };
         }
+        if (FirstConfiguration)
+        {
+            EnsureReviewPage();
+            var optional = new StackPanel();
+            foreach (var source in pages.Where(p => p.Title is "数据与记录" or "自动备份" or "显示偏好").ToArray())
+            {
+                source.Scroll.Content = null; source.Body.Margin = new(0); source.Body.ClearValue(WidthProperty);
+                optional.Children.Add(source.Body); source.Applicable = () => false;
+                foreach (var pair in locations.Where(x => ReferenceEquals(x.Value.Page, source)).ToArray())
+                    locations[pair.Key] = pair.Value with { Page = reviewPage! };
+            }
+            reviewPage!.Body.Children.Insert(2, new Expander { Header = "维护与显示（使用默认值，按需展开）", Content = optional, Margin = new(0, 16, 0, 8) });
+        }
         foreach (var page in pages)
-            page.TaskGroup = FirstConfiguration ? page.Category switch { 0 => "本站信息", 1 => "业务规则", 2 => "左右相机", 3 => "RCS 连接", _ => "检查与完成" } :
+            page.TaskGroup = FirstConfiguration ? page.Category switch { 0 => "本站与 RCS", 1 => "识读规则", 2 => "左右相机", 3 => "本站与 RCS", _ => "检查与完成" } :
                 ReferenceEquals(page, station) ? "本站接入" : page.Category == 2 ? "相机" : page.Title == "条码筛选" ? "分拣规则" : page.Title is "数据与记录" or "自动备份" or "显示偏好" ? "系统维护" : "高级";
     }
 }

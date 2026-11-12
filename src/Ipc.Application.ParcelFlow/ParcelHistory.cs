@@ -281,7 +281,8 @@ public sealed partial class ParcelRuntime
     };
     void ArchiveSettled(bool requested = false, string? reason = null, BusinessCommand? command = null)
     {
-        if (!requested && operations.Count < Math.Min(Retention.ResidentHistory, Effective.MaximumOperations)) return;
+        var threshold = Id == "sportmaster" ? Retention.ResidentHistory : Math.Min(Retention.ResidentHistory, Effective.MaximumOperations);
+        if (!requested && operations.Count < threshold) return;
         var candidates = operations.Values.Where(ArchiveEligible).OrderBy(x => x.ObservedAt).Take(256).Select(x => x.Id).ToArray();
         if (candidates.Length == 0 && command is null) return;
         repository!.Archive(candidates, reason ?? "Resident working-set high-water policy", command);

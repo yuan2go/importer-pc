@@ -12,7 +12,17 @@ internal sealed record BackupSetDeletion(int SchemaVersion, string Backup, strin
 
 public static partial class ParcelRecovery
 {
-    internal static ResourceLease HoldBackupSet(string backup) => new(Path.GetDirectoryName(Path.GetFullPath(backup))!, ["backup-set:" + Path.GetFullPath(backup).ToUpperInvariant()]);
+    internal static Func<string> BackupSetLeaseRoot { get; set; } = ResolveBackupSetLeaseRoot;
+    static string ResolveBackupSetLeaseRoot()
+    {
+        if (!OperatingSystem.IsWindows()) return MachineRuntimePolicy.ResolveLeaseRoot(null);
+        using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+        return new System.Security.Principal.WindowsPrincipal(identity).IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator)
+            ? MachineRuntimePolicy.InstallerLeaseRoot("") : MachineRuntimePolicy.ResolveLeaseRoot(null);
+    }
+    // Runtime and elevated maintenance share the installed machine lease area.
+    // Source media need only read access; no lease or metadata is written there.
+    internal static ResourceLease HoldBackupSet(string backup) => new(BackupSetLeaseRoot(), ["backup-set:" + Path.GetFullPath(backup).ToUpperInvariant()]);
     internal static string SetIdentity(string backup, CancellationToken token = default)
         => Wire.Hash(Wire.FileHash(backup, token) + Wire.FileHash(Path.Combine(backup + ".recovery", "COMPLETED.json"), token));
 
@@ -37,7 +47,7 @@ public static partial class ParcelRecovery
         if (SetIdentity(backup, execution.Token) != expectedIdentity) throw new InvalidDataException("所选完整备份已变化，请重新核验。");
         if (File.Exists(destination) || TrustedProgramRoots.Contains(backup + ".recovery", destination) || Path.GetDirectoryName(backup) == destination)
             throw new IOException("交付目标必须是独立的新文件夹，不能覆盖原集或已有文件。");
-        using var targetOwner = new ResourceLease(Path.GetDirectoryName(destination)!, ["backup-export:" + destination.ToUpperInvariant()]);
+        using var targetOwner = new ResourceLease(BackupSetLeaseRoot(), ["backup-export:" + destination.ToUpperInvariant()]);
         if (Directory.Exists(destination) && !File.Exists(Path.Combine(destination, DeliveryMarker)))
         {
             var already = Path.Combine(destination, manifest.Database);
@@ -109,7 +119,7 @@ public static partial class ParcelRecovery
         backup = Path.GetFullPath(backup); destination = Path.GetFullPath(destination); authority();
         RecoveryFiles.RequireOrdinaryAncestors(backup); RecoveryFiles.RequireOrdinaryAncestors(destination);
         using var sourceOwner = HoldBackupSet(backup);
-        using var targetOwner = new ResourceLease(Path.GetDirectoryName(destination)!, ["backup-export:" + destination.ToUpperInvariant()]);
+        using var targetOwner = new ResourceLease(BackupSetLeaseRoot(), ["backup-export:" + destination.ToUpperInvariant()]);
         var source = VerifyBackup(backup, authority);
         if (SetIdentity(backup) != identity) throw new InvalidDataException("原完整集身份变化，交付结果待核实。");
         var target = Path.Combine(destination, source.Database);
@@ -160,8 +170,11 @@ public static partial class ParcelRecovery
             var manifestHash = File.Exists(completion) ? Wire.FileHash(completion, token) : new string('0', 64);
             var frozen = Wire.Encode(new ParcelRecoveryManifest(application, Path.GetFileName(backup), dbHash, files, default, "Deletion inventory only; never a restore completion"));
             var identity = Wire.Hash(backup + frozen + manifestHash); authority();
-            return new(1, backup, identity, frozen, manifestHash, "Deleting", []) { Incomplete = true,
-                ReferenceIdentity = declared is null ? null : Wire.Hash(declared.DatabaseHash + manifestHash) };
+            return new(1, backup, identity, frozen, manifestHash, "Deleting", [])
+            {
+                Incomplete = true,
+                ReferenceIdentity = declared is null ? null : Wire.Hash(declared.DatabaseHash + manifestHash)
+            };
         }
     }
 

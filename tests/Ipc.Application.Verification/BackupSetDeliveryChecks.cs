@@ -2,6 +2,8 @@ using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Platform;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 static class BackupSetDeliveryChecks
 {
@@ -38,6 +40,55 @@ static class BackupSetDeliveryChecks
         Check(restore.BackupSha256 == originalIdentity, "normal restore entry can reselect the delivered set without manually assembling directories");
         Check(Wire.FileHash(backup) == originalDbHash && Wire.FileHash(Path.Combine(backup + ".recovery", "COMPLETED.json")) == originalManifest, "delivery leaves original backup bytes unchanged");
         Check((await service.ExportBackupSetAsync(backup, originalIdentity, Path.Combine(root, "delivered"), null, default)).Status == "Exported", "reselecting completed same-identity target inspects success without overwriting or repeating a copy");
+        if (OperatingSystem.IsWindows())
+        {
+            var readOnlyDirectory = new DirectoryInfo(Path.GetDirectoryName(delivery.Path)!);
+            var originalAccess = readOnlyDirectory.GetAccessControl();
+            var directoryPaths = Directory.EnumerateDirectories(readOnlyDirectory.FullName, "*", SearchOption.AllDirectories).OrderBy(p => p.Length).ToArray();
+            var originalDirectories = new Dictionary<string, DirectorySecurity>();
+            foreach (var path in directoryPaths) originalDirectories.Add(path, new DirectoryInfo(path).GetAccessControl());
+            var originalFileAccess = new Dictionary<string, FileSecurity>();
+            foreach (var path in Directory.EnumerateFiles(readOnlyDirectory.FullName, "*", SearchOption.AllDirectories)) originalFileAccess.Add(path, new FileInfo(path).GetAccessControl());
+            var deniedAccess = readOnlyDirectory.GetAccessControl();
+            using var identity = WindowsIdentity.GetCurrent();
+            deniedAccess.AddAccessRule(new FileSystemAccessRule(identity.User!, FileSystemRights.Write | FileSystemRights.Delete | FileSystemRights.DeleteSubdirectoriesAndFiles,
+                InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny));
+            var originalFiles = Directory.EnumerateFiles(readOnlyDirectory.FullName, "*", SearchOption.AllDirectories).ToDictionary(p => p, Wire.FileHash);
+            try
+            {
+                readOnlyDirectory.SetAccessControl(deniedAccess);
+                await Reject<UnauthorizedAccessException>(() => File.WriteAllTextAsync(Path.Combine(readOnlyDirectory.FullName, "must-not-write.txt"), "denied"),
+                    "actual Windows source ACL rejects writes, including source-side lease creation");
+                Check((await service.ListBackupsAsync(readOnlyDirectory.FullName, default)).Single().Status == "Verified", "complete backup on actual read-only source remains listable and verifiable");
+                var readOnlyRestore = await service.PlanRestoreAsync(delivery.Path, Path.Combine(root, "read-only-source-restored"));
+                using (ParcelRecovery.HoldBackupSet(delivery.Path))
+                    await Reject<IOException>(() => service.PlanRestoreAsync(delivery.Path, Path.Combine(root, "blocked-restore")), "local shared fence still blocks competing restore of a read-only source");
+                ParcelRecovery.Restore(delivery.Path, readOnlyRestore.Destination);
+                Check(File.Exists(Path.Combine(readOnlyRestore.Destination, "RESTORED-ISOLATED.json")) &&
+                    Wire.FileHash(Path.Combine(readOnlyRestore.Destination, "sportmaster.db")) == originalDbHash,
+                    "normal restore copy consumes read-only complete source and publishes a verified isolated target");
+                Check(Directory.EnumerateFiles(readOnlyDirectory.FullName, "*", SearchOption.AllDirectories).Count() == originalFiles.Count && originalFiles.All(p => Wire.FileHash(p.Key) == p.Value),
+                    "listing, planning and restoring create no source files and leave every original byte unchanged");
+            }
+            finally
+            {
+                // A freshly read security object has no modified sections; mark
+                // Access explicitly so SetAccessControl actually restores it.
+                originalAccess.SetSecurityDescriptorSddlForm(originalAccess.GetSecurityDescriptorSddlForm(AccessControlSections.Access), AccessControlSections.Access);
+                readOnlyDirectory.SetAccessControl(originalAccess);
+                foreach (var directory in directoryPaths)
+                {
+                    var access = originalDirectories[directory];
+                    access.SetSecurityDescriptorSddlForm(access.GetSecurityDescriptorSddlForm(AccessControlSections.Access), AccessControlSections.Access);
+                    new DirectoryInfo(directory).SetAccessControl(access);
+                }
+                foreach (var file in originalFileAccess)
+                {
+                    file.Value.SetSecurityDescriptorSddlForm(file.Value.GetSecurityDescriptorSddlForm(AccessControlSections.Access), AccessControlSections.Access);
+                    new FileInfo(file.Key).SetAccessControl(file.Value);
+                }
+            }
+        }
         using (var cancelled = new CancellationTokenSource())
         {
             var target = Path.Combine(root, "cancelled-export");

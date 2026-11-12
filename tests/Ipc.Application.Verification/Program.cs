@@ -8,6 +8,9 @@ using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
 Console.OutputEncoding = new System.Text.UTF8Encoding(false);
+// Isolated fixtures do not provision or replace the workstation's machine policy.
+// A fixed local area still coordinates independent fixture processes for the same backup path.
+ParcelRecovery.BackupSetLeaseRoot = () => Path.Combine(Path.GetTempPath(), "ipc-verification-backup-leases");
 if (args.FirstOrDefault() == "--sm-presence-replay")
 {
     if (args.Length != 3) throw new ArgumentException("--sm-presence-replay <captured-manifest.json> <new-output.json>");

@@ -126,9 +126,17 @@ static class LifecycleRestore
             Check(!(await reopened.SnapshotAsync()).Paused && reopenedFactory.Sends == 0,
                 "a verified and explicitly resumed restored station reopens normally without replay or another forced restore confirmation");
             _ = await reopened.CommandAsync(new(Wire.Id(), (await reopened.SnapshotAsync()).Revision, "Pause", Value: "normal later pause"));
+            Check(await reopened.EnterManagementModeAsync("Synthetic-restore-password-8374"), "reconfirmation uses actual management authorization after reopening");
+            await LifecycleOptimization.AfterMonitorDrain(reopened, async () =>
+            {
+                var repeatedConfirmation = await reopened.CommandAsync(new(Wire.Id(), (await reopened.SnapshotAsync()).Revision, "ConfirmRestore", proof.Id,
+                    Wire.Encode(new RestoreVerificationInput("reconfirmed same handoff after real enablement", 900000000000000000))));
+                Check(repeatedConfirmation.Status == "Persisted" && (await reopened.SnapshotAsync()).Paused, "same handoff may be reconfirmed while normally paused without enabling supply");
+                return true;
+            }, expectedPorts);
         }
         Check((await service.ReadRestoreOperationsAsync()).Single() is { State: "EnabledPaused", ResponsibilityStatus: "Confirmed", EverEnabled: true, BusinessPaused: true },
-            "a later normal pause remains distinct from restore never enabled after close and reopen");
+            "a later pause and reconfirmation preserve original enablement after close and reopen");
         Check((await restoredMaintenance.PlanChangeAsync("PruneVersions", Path.Combine(root, "after-confirmed-prune.db"))).Allowed,
             "real Application pruning admission accepts a confirmed restored site without removing permanent handoff markers");
         var rollbackBackup = Path.Combine(root, "before-confirmed-rollback.db");

@@ -74,7 +74,7 @@ public sealed partial class ParcelStartupMaintenance
                 var c = RestoredConfiguration(intent.TargetDirectory, manifest); var evidence = RecoveryEvidence(c);
                 if (current?.LifecycleState == "Installed" && Path.GetFullPath(current.DataRoot) == intent.TargetRoot)
                 {
-                    _ = ParcelRestoreEvidence.Require(intent.TargetDirectory, c, evidence);
+                    var restoreProof = ParcelRestoreEvidence.Require(intent.TargetDirectory, c, evidence);
                     var status = OperatingSystem.IsWindows() && RestoreIntentReader is null ? WindowsDeploymentSetup.RestoreCommitStatus(definition.Id, intent.OperationId) : "AdoptedIsolated";
                     if (status is not ("ProjectionPending" or "AdoptedIsolated"))
                         return Result("Unknown", "恢复登记存在，但原提交回执缺失或冲突；原件保留，核对原回执和当前系统入口，不重复接管。", c);
@@ -86,17 +86,21 @@ public sealed partial class ParcelStartupMaintenance
                         () => ParcelRestoreEvidence.Require(intent.TargetDirectory, c, evidence),
                         (id, hash) => ParcelRepository.HasRestoreConfirmation(snapshot, id, hash));
                     using var query = snapshot.CreateCommand();
-                    query.CommandText = "SELECT paused, EXISTS(SELECT 1 FROM parcel_audit WHERE event='AdmissionResumed' AND seq > (SELECT MAX(seq) FROM parcel_audit WHERE event='RestoreHandoffConfirmed')) FROM parcel_meta WHERE id=1";
+                    // Reconfirming this handoff updates verification evidence, not its first enablement boundary.
+                    query.CommandText = "SELECT paused, EXISTS(SELECT 1 FROM parcel_audit WHERE event='AdmissionResumed' AND seq > (SELECT MIN(seq) FROM parcel_audit WHERE event='RestoreHandoffConfirmed' AND json_valid(detail) AND json_extract(detail,'$.HandoffId')=$id)) FROM parcel_meta WHERE id=1";
+                    query.Parameters.AddWithValue("$id", restoreProof.Id);
                     using var row = query.ExecuteReader();
                     if (!row.Read()) throw new InvalidDataException("恢复业务状态缺失，不能推断已启用。");
                     var paused = row.GetBoolean(0); var enabled = row.GetBoolean(1);
                     if (!confirmed)
                         return Result(paused ? "AdoptedIsolated" : "Unknown", paused ? "原恢复接管已完成；恢复责任尚未确认，当前保持暂停；核对原请求、实物及编号后明确确认。" : "恢复责任尚未确认，但原业务状态未暂停，证据冲突，请核对原结果。", c)
-                            with { ResponsibilityStatus = "Unconfirmed", EverEnabled = null, BusinessPaused = paused };
+                            with
+                        { ResponsibilityStatus = "Unconfirmed", EverEnabled = null, BusinessPaused = paused };
                     if (!paused && !enabled) throw new InvalidDataException("当前业务启停与恢复启用审计不一致，须核对。");
                     return Result(enabled ? paused ? "EnabledPaused" : "Enabled" : "ConfirmedPaused",
                         "原恢复接管已完成；恢复责任已确认。" + (enabled ? paused ? "此后曾明确启用，当前正常暂停；不表示从未启用。" : "此后已明确启用，当前未暂停；具体投递准入仍由运行守卫决定。" : "尚无明确启用记录，当前保持暂停；核对后可明确恢复供包。"), c)
-                        with { ResponsibilityStatus = "Confirmed", EverEnabled = enabled, BusinessPaused = paused };
+                        with
+                    { ResponsibilityStatus = "Confirmed", EverEnabled = enabled, BusinessPaused = paused };
                 }
                 if (current is not null && (current.LifecycleState != "Installed" || current.RuntimeAccountSid != intent.Source.RuntimeAccountSid || Path.GetFullPath(current.DataRoot) != Path.GetFullPath(intent.Source.DataRoot)))
                     return Result("Superseded", "原恢复已被后续卸载、安装或接管取代；不能覆盖当前部署。", c);

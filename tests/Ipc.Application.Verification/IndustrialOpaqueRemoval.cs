@@ -15,6 +15,16 @@ static class IndustrialOpaqueRemoval
         Reject<InvalidDataException>(() => WindowsDeploymentSetup.RequireDetachedUninstaller(location, root), "uninstaller cannot own an ancestor of the deletion target");
         WindowsDeploymentSetup.RequireDetachedUninstaller(location, Path.Combine(root, "maintenance"));
         Check(true, "separate maintenance host remains usable without reopening original business data");
+        using (var host = System.Diagnostics.Process.GetCurrentProcess())
+        {
+            var started = host.StartTime.ToUniversalTime().Ticks;
+            try { await WindowsDeploymentSetup.WaitForUninstallHostAsync(host.Id, started, TimeSpan.Zero); throw new Exception("live host was treated as exited"); }
+            catch (IOException) { Check(true, "live original host prevents deletion UI admission even after business resources stopped"); }
+            await WindowsDeploymentSetup.WaitForUninstallHostAsync(host.Id, started - 1, TimeSpan.Zero);
+            Check(true, "reused process ID does not make another process the original host");
+            await WindowsDeploymentSetup.WaitForUninstallHostAsync(["--product-maintenance"]);
+            Check(true, "standalone Windows uninstall entry needs no artificial host wait");
+        }
         var old = Path.Combine(data, "Production", "old-station", "sportmaster");
         var simulation = Path.Combine(data, "Simulation", "other-station", "sportmaster");
         Directory.CreateDirectory(old); Directory.CreateDirectory(simulation);

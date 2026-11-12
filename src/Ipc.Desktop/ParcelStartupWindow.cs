@@ -89,6 +89,26 @@ sealed class ParcelStartupWindow : Window
             actions.Children.Add(button);
         }
     }
+    public void UninstallFailed(string reason, Func<Task> close, Func<Task> retry)
+    {
+        closeAction = close; actions.Children.Clear(); diagnostic.Visibility = Visibility.Visible;
+        title.Text = "卸载入口未打开"; detail.Text = "尚未删除程序或数据。请关闭原供包台窗口后重试；维护缓存无法核验时，使用完整安装包修复。";
+        diagnostic.Text = reason;
+        var exit = new Button { Content = "关闭", MinHeight = 44, IsCancel = true };
+        System.Windows.Automation.AutomationProperties.SetAutomationId(exit, "UninstallHost.Close");
+        exit.Click += async (_, _) => await RequestCloseAsync(); actions.Children.Add(exit);
+        var again = new Button { Content = "重试打开卸载", MinHeight = 44, IsDefault = true };
+        System.Windows.Automation.AutomationProperties.SetAutomationId(again, "UninstallHost.Retry");
+        again.SetResourceReference(StyleProperty, "Primary");
+        again.Click += async (_, _) =>
+        {
+            actions.IsEnabled = false;
+            try { await retry(); }
+            catch (Exception error) { diagnostic.Text += "\n\n卸载入口未打开：" + error; }
+            finally { actions.IsEnabled = true; }
+        };
+        actions.Children.Add(again);
+    }
     public void Fail(string reason, Func<Task> close, Func<Task> retry, Func<Task> repair, Func<Task> setup)
     {
         closeAction = close;

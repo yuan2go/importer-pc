@@ -45,6 +45,17 @@ static partial class Program
         handoff.SetResult(42);
         await WaitUntil(() => !center.IsVisible, "successful detached handoff closes the offline host");
         Check(attempts == 2 && (bool)centerType.GetProperty("UninstallLaunched")!.GetValue(center)!, "retry launches exactly once and returns explicit host-exit routing");
+        var startupType = type.Assembly.GetType("Ipc.Desktop.ParcelStartupWindow", true)!;
+        var failedHost = (Window)Activator.CreateInstance(startupType)!;
+        var retries = 0;
+        Func<Task> closeHost = () => { startupType.GetProperty("AllowClose")!.SetValue(failedHost, true); failedHost.Close(); return Task.CompletedTask; };
+        startupType.GetMethod("UninstallFailed")!.Invoke(failedHost, ["synthetic host wait timeout", closeHost, (Func<Task>)(() => { retries++; return Task.CompletedTask; })]);
+        failedHost.Show();
+        var retryHost = Descendants(failedHost).OfType<Button>().Single(b => System.Windows.Automation.AutomationProperties.GetAutomationId(b) == "UninstallHost.Retry");
+        retryHost.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
+        Check(retries == 1 && failedHost.IsVisible, "failed uninstall retries its original entry rather than starting a business runtime");
+        failedHost.Close(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        Check(!failedHost.IsVisible, "failed uninstall host remains closeable through the original close callback");
         Window Make(DeploymentLocation? current)
         {
             var window = (Window)Activator.CreateInstance(type, [launch, null, "1.0.0"])!;

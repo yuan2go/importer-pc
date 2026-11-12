@@ -61,7 +61,8 @@ static class InstalledLifecycleWindows
         WindowsDeploymentRequest Request(DeploymentMedia medium) => new(medium.Root, application, medium.SourceCommit, sid.Value, data, seeds, RunMode.Simulation,
             null, null, [], ConfigurationHashes: new() { ["business.json"] = Wire.FileHash(Path.Combine(seeds, "business.json")) }, ProgramRoot: programRoot,
             ExpectedRegistrationHash: File.Exists(WindowsDeploymentSetup.Registration(application)) ? Wire.FileHash(WindowsDeploymentSetup.Registration(application)) : null,
-            Shortcuts: new(false, false), OperationId: Wire.Id()) { Recovery = new() };
+            Shortcuts: new(false, false), OperationId: Wire.Id())
+        { Recovery = new() };
         DeploymentLocation Install(WindowsDeploymentRequest request, Action<DeploymentLocation>? projection = null) => WindowsDeploymentSetup.Install(request, _ => { }, _ => { }, projection ?? (_ => { }));
         var oldest = Install(Request(Media('c'))); var previous = Install(Request(Media('a'))); var current = Install(Request(Media('b')));
         var plan = WindowsDeploymentSetup.PlanVersionPruning(application, Wire.Id(), true);
@@ -89,7 +90,23 @@ static class InstalledLifecycleWindows
         }
         finally { File.Move(removalArchive, removed.OperationFile); }
         _ = WindowsDeploymentSetup.Remove(application, Wire.FileHash(WindowsDeploymentSetup.Registration(application)), _ => { }, _ => { });
-        Console.WriteLine("BOUNDARY protected unique test product; real platform plan/admission/files/registration. Real SM purge+reinstall, SDK, UAC cancellation and reboot still require isolated full-media matrix.");
+        var cleanRequest = Request(Media('f')); var cleanInterrupted = false;
+        try { Install(cleanRequest, _ => throw new IOException("controlled final reply loss before cleanup uninstall")); }
+        catch (InstallationOutcomeUnknownException) { cleanInterrupted = true; }
+        var cleanOriginal = WindowsDeploymentSetup.InstallationOperationFile(cleanRequest); var cleanBytes = Wire.FileHash(cleanOriginal);
+        _ = WindowsDeploymentSetup.Remove(application, Wire.FileHash(WindowsDeploymentSetup.Registration(application)), _ => { }, _ => { });
+        var purgePlan = WindowsDeploymentSetup.PlanDataPurge(application, Wire.Id(), WindowsDeploymentSetup.Current(application)!);
+        Check(cleanInterrupted && purgePlan.Allowed, "normal cleanup uninstall generates a real purge plan after a committed install lost its final reply");
+        var purged = WindowsDeploymentSetup.PurgeData(purgePlan);
+        Check(purged.Status == "Purged" && !File.Exists(marker) && WindowsDeploymentSetup.InspectInstallation(cleanRequest).Status == "Superseded",
+            "actual frozen data purge retains protected supersession evidence after deleting the station roots");
+        var cleanInstalled = Install(Request(Media('1')));
+        Check(cleanInstalled.LifecycleState == "Installed" && !File.Exists(marker) && Wire.FileHash(cleanOriginal) == cleanBytes,
+            "normal reinstall after cleanup agrees with discovery without restoring deleted data or rewriting committed history");
+        Check(WindowsDeploymentSetup.InspectVersionPruning(application, plan.OperationId, false).Status == "Completed",
+            "original cleanup result remains readable after retained-data and clean-data reinstalls");
+        _ = WindowsDeploymentSetup.Remove(application, Wire.FileHash(WindowsDeploymentSetup.Registration(application)), _ => { }, _ => { });
+        Console.WriteLine("BOUNDARY protected unique test product; real platform plan/admission/files/registration including retained and purged data. Real SM full-medium, SDK, UAC cancellation and reboot require the target matrix.");
     }
 
     public static void Run()

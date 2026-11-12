@@ -31,7 +31,7 @@ public static partial class WindowsDeploymentSetup
             if (release.ApplicationId != location.ApplicationId || release.SourceCommit != location.SourceCommit) throw new InvalidDataException("程序来源与登记冲突");
             return new(release.BusinessVersion ?? "未记录", location.SourceCommit, "受保护登记及原库存核验一致；" + (location.LifecycleState == "Installed" ? "当前程序已登记安装" : "原部署已退役，数据选择及余项分别核对"));
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException or KeyNotFoundException)
+        catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException or KeyNotFoundException)
         { return new("未核验", location.SourceCommit, "登记来源已保留；程序版本未核验：" + error.Message); }
     }
 }

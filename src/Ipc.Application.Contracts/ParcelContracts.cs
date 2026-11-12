@@ -15,6 +15,8 @@ public sealed record ParcelPayload(string ParcelCode, string AdmissionId, Parcel
 {
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public OperatorInputEvidence? OperatorInput { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? StationCode { get; init; }
 }
 // Facts deliberately independent: delivery != protocol acknowledgement != business acceptance
 // != physical completion. Null is unknown, never a successful fallback.

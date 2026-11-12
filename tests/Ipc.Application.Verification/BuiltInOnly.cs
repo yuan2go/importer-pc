@@ -26,7 +26,7 @@ static partial class SportmasterRcs
         {
             Implementation = "sportmaster-rcs",
             Parameters = new(Binding("http://127.0.0.1:18848/rcs/sorter/api").Parameters)
-            { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION" }
+            { }
         };
         var configured = seed with
         {

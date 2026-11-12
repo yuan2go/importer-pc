@@ -56,7 +56,7 @@ static partial class Program
             Check(editor.NavigateTo(component.InstanceId + "/Target") && editor.CurrentPageTitle == "站点编号与 RCS", "RCS target shares the station task page without another candidate");
             // The harness intentionally carries old separate request/heartbeat station values.
             // Resolve them explicitly in the real common editor; never weaken its guard.
-            Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == component.InstanceId + "/left-station-code").Text = h.Config.StationCode;
+            Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "StationCode").Text = h.Config.StationCode;
             var first = Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == component.InstanceId + "/request-id-base");
             var last = Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == component.InstanceId + "/request-id-count");
             var originalFirst = first.Text; var originalLast = last.Text;

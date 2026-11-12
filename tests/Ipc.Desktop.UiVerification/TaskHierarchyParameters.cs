@@ -21,7 +21,7 @@ static partial class Program
         {
             component.Target = "http://192.0.2.10/rcs/sorter/api";
             foreach (var p in component.Parameters) p.Value = p.Field.Key switch
-            { "source" => "SYNTHETIC", "locale" => "en-US", "zone-id" or "project-id" or "quantity" => "1", "request-id-base" => "1000000", "request-id-count" => "100", "left-station-code" or "right-station-code" => "TASK-STATION", "left-bcr-code" => "TASK-LEFT", "right-bcr-code" => "TASK-RIGHT", "specified-chute" => "false", _ => p.Value };
+            { "source" => "SYNTHETIC", "locale" => "en-US", "zone-id" or "project-id" or "quantity" => "1", "request-id-base" => "1000000", "request-id-count" => "100", "left-bcr-code" => "TASK-LEFT", "right-bcr-code" => "TASK-RIGHT", "specified-chute" => "false", _ => p.Value };
         }
         model.Policy.StationCode = "TASK-STATION";
         var editor = new ParameterSettingsControl { Model = model };
@@ -51,7 +51,7 @@ static partial class Program
             await Flush();
             Check(input.Text == "111" && model.Issues.Any(i => i.Path == right.InstanceId + "/device.ip"), "invalid input stays intact with its exact field issue");
             Check(model.Readers.All(r => r.Parameters.All(p => p.Field.Key != "bcr-code")) && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-bcr-code").Value == "TASK-LEFT", "one camera code is shared by task and heartbeat without a driver copy");
-            Check(model.Policy.StationCode == "TASK-STATION" && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-station-code").Value == "TASK-STATION", "task and heartbeat station identifiers use the same confirmed value");
+            Check(model.Policy.StationCode == "TASK-STATION" && model.Components.Single(ParameterOwnership.IsRcs).Parameters.All(p => !p.Field.Key.EndsWith("-station-code")), "task and heartbeat station identifiers use the same confirmed value");
         }
         if (interactive)
         {

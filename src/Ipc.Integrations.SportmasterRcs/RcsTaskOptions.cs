@@ -14,7 +14,7 @@ internal sealed class RcsTaskOptions
     internal readonly int RequestTimeoutMs;
     internal readonly bool NoDestToExp;
     internal readonly string? SpecifiedChuteCode;
-    internal static readonly string[] RequiredKeys = ["zone-id", "project-id", "left-station-code", "right-station-code"];
+    internal static readonly string[] RequiredKeys = ["zone-id", "project-id"];
     // Old bindings remain readable as immutable evidence for already-sent requests.
     // These keys have no effect on new requests and are removed on candidate save.
     internal static readonly string[] RetiredKeys = ["request-id-base", "request-id-count", "specified-chute", "chute-code"];
@@ -61,9 +61,10 @@ internal sealed class RcsTaskOptions
         var camera = payload.OperatorInput is null && payload.Acquisition is { } acquisition && payload.ReaderBinding is { } reader &&
             acquisition.DeviceId == reader.DeviceId;
         if (payload.PositionId is not ("left" or "right") || payload.ReaderBinding is null || (!manual && !camera) || string.IsNullOrWhiteSpace(payload.ParcelCode) ||
-            payload.ParcelCode.Length > 512 || payload.ParcelCode.Any(char.IsControl))
+            payload.ParcelCode.Length > 512 || payload.ParcelCode.Any(char.IsControl) ||
+            string.IsNullOrWhiteSpace(payload.StationCode) || payload.StationCode.Length > 256 || payload.StationCode.Any(char.IsControl))
             throw new InvalidDataException("RCS requires an original camera acquisition or explicit operator submission and left/right position");
         var key = payload.PositionId + "-bcr-code";
-        return (Text(payload.PositionId + "-station-code", 256), Text(key, 256));
+        return (payload.StationCode, Text(key, 256));
     }
 }

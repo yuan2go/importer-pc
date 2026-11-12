@@ -82,12 +82,10 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             ["request-id-base"] = "820000000",
             ["request-id-count"] = "100000",
             ["heartbeat-interval-ms"] = (heartbeatSeconds * 1000).ToString(System.Globalization.CultureInfo.InvariantCulture),
-            ["left-station-code"] = stationCode ?? "TEST-LEFT",
             ["left-bcr-code"] = "TEST-LEFT-READER",
-            ["right-station-code"] = stationCode ?? "TEST-RIGHT",
             ["right-bcr-code"] = "TEST-RIGHT-READER"
         });
-        Config = seed with { TimeoutMs = timeoutMs ?? seed.TimeoutMs, QueueCapacity = queueCapacity ?? seed.QueueCapacity, MaximumOperations = maximumOperations ?? seed.MaximumOperations, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [], BarcodeFilter = barcodeFilter ?? seed.BarcodeFilter };
+        Config = seed with { StationCode = stationCode ?? seed.StationCode, TimeoutMs = timeoutMs ?? seed.TimeoutMs, QueueCapacity = queueCapacity ?? seed.QueueCapacity, MaximumOperations = maximumOperations ?? seed.MaximumOperations, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [], BarcodeFilter = barcodeFilter ?? seed.BarcodeFilter };
         var configuration = Path.Combine(folder, "config"); Directory.CreateDirectory(configuration);
         ExtensionStore.AtomicWrite(Path.Combine(configuration, "business.json"), Config);
         Launch = new(configuration, Path.Combine(folder, "data"), null, null);

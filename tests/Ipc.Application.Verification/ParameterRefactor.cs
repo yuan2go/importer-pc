@@ -52,7 +52,7 @@ static class ParameterRefactor
             Reader = bootstrapReaders[0],
             Topology = missing.Candidate.Topology with { Readers = bootstrapReaders },
             BarcodeFilter = new("OK[0-9]+"),
-            Wcs = missing.Candidate.Wcs! with { Target = "http://127.0.0.1:1/rcs/sorter/api", Parameters = new() { ["zone-id"] = "1", ["project-id"] = "1", ["left-station-code"] = "SYNTHETIC", ["right-station-code"] = "SYNTHETIC", ["left-bcr-code"] = "L", ["right-bcr-code"] = "R" } }
+            Wcs = missing.Candidate.Wcs! with { Target = "http://127.0.0.1:1/rcs/sorter/api", Parameters = new() { ["zone-id"] = "1", ["project-id"] = "1", ["left-bcr-code"] = "L", ["right-bcr-code"] = "R" } }
         };
         var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, bootstrap, "Synthetic initial defaults and explicit synthetic connection settings");
         Check(created.Candidate is not null && File.Exists(Path.Combine(missingPath, "business.json")) && (!Directory.Exists(missingLaunch.DataRoot) || !Directory.EnumerateFiles(missingLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any()) && (!Directory.Exists(missingLaunch.DataRoot) || Directory.EnumerateFiles(missingLaunch.DataRoot, "*lease*", SearchOption.AllDirectories).All(p => Path.GetFullPath(p) == Path.GetFullPath(Path.Combine(missingLaunch.DataRoot, "security/diagnostics/rotation.lease")))), "explicit first save persists parameters without starting SDK, creating a business database/device lease, or inventing qualification; administrator custody and diagnostic rotation are separate");

@@ -179,8 +179,6 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
                 else if (ip is "0.0.0.0" or "255.255.255.255")
                     Issues.Add(new("驱动", draft.InstanceId + "/device.ip", "此地址不能用于相机连接，请填写具体相机地址。", "ipv4-address"));
             }
-            if (ParameterOwnership.StationConflict(draft))
-                Issue("系统", draft.InstanceId + "/left-station-code", "供包台编号不一致；请核对原值后填写本站共同使用的编号。");
             if (isRcs)
             {
                 if (!Uri.TryCreate(draft.Target, UriKind.Absolute, out var endpoint) || endpoint.Scheme is not ("http" or "https") ||
@@ -188,9 +186,6 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
                     Issue("组件", draft.InstanceId + "/Target", "调度服务地址须使用网页传输协议，接口路径为 /rcs/sorter/api，不能含凭据、查询串或片段。");
             }
         }
-        foreach (var rcs in Components.Where(ParameterOwnership.IsRcs))
-            if (rcs.Parameters.Where(p => p.Field.Key is "left-station-code" or "right-station-code").Any(p => p.Value != Policy.StationCode))
-                Issue("系统", "StationCode", "取格口和心跳的供包台编号尚未统一；请核对原值后填写同一个供包台编号。");
         foreach (var (key, message) in new[]
         {
             ("device.ip", "左右相机的 IP 地址重复，请分别填写两台相机的实际 IP 地址。"),

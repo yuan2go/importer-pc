@@ -199,8 +199,6 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
             if (!ConfigureLater && string.IsNullOrWhiteSpace(parameters.GetValueOrDefault("device.serial")))
                 throw new InvalidOperationException(InstanceId + "/device.serial: 请根据 IP 读取相机序列号后保存。");
         }
-        if (!ConfigureLater && ParameterOwnership.StationConflict(this))
-            throw new InvalidOperationException("供包台编号不一致；请在系统配置核对原值并填写共同编号");
         var errors = ConfigureLater ? [] : ExtensionSchema.Validate(p.Parameters, parameters);
         if (errors.Length != 0) throw new InvalidOperationException(string.Join("; ", errors));
         return new(Kind, p.Implementation, p.Version, InstanceId, Target, Contract, parameters, p.Package, p.Module, Enabled);

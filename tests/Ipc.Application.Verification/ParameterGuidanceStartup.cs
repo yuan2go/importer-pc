@@ -40,15 +40,12 @@ static class ParameterGuidanceStartup
             draft.Build().DeferredConnections!.Contains(initial.Reader.DeviceId) &&
             draft.Build().Reader.Parameters!["entity.mode"] == "read-result" && initial.Reader.Parameters!["entity.mode"] == "read-result",
             "current SDK declares per-result reporting; continuous capture remains deferred and editing never starts acquisition");
-        var left = rcs.Parameters.Single(p => p.Field.Key == "left-station-code"); var right = rcs.Parameters.Single(p => p.Field.Key == "right-station-code");
         var frozen = Wire.Encode(initial);
-        using (var shared = new CommonStationParameter(left, right, draft.Policy)) shared.Value = "SYNTHETIC-STATION";
-        Check(left.Value == right.Value && left.Value == draft.Policy.StationCode && Wire.Encode(initial) == frozen,
-            "one deliberate station edit updates both request identities and heartbeat while leaving the original configuration unchanged");
-        left.Value = "old-left";
-        using (var shared = new CommonStationParameter(left, right, draft.Policy))
-            Check(shared.Value == "" && !editor.ValidateFields() && editor.Issues.Any(i => i.Path == "StationCode"), "conflicting historical station identifiers require an explicit common choice");
-        left.Value = right.Value;
+        draft.Policy.StationCode = "SYNTHETIC-STATION";
+        Check(draft.Build().StationCode == "SYNTHETIC-STATION" && Wire.Encode(initial) == frozen,
+            "one station draft persists the common request and heartbeat identity without changing the original configuration");
+        Check(rcs.Parameters.All(p => !p.Field.Key.EndsWith("-station-code", StringComparison.Ordinal)),
+            "RCS catalog contains no per-position station parameters or paired migration input");
         draft.Readers[0].Parameters.Single(p => p.Field.Key == "device.serial").Value = "SYNTH-PARTIAL";
         Check(!editor.ValidateFields() && editor.Issues.Any(i => i.Path.EndsWith("/device.ip")), "activating an incomplete camera restores required field validation");
         draft.Readers[0].Parameters.Single(p => p.Field.Key == "device.serial").Value = "";

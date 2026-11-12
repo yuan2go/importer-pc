@@ -37,7 +37,29 @@ public static partial class WindowsDeploymentSetup
             : Wire.Encode(current) == Wire.Encode(record.Previous) ? "HandoffPrepared" : "Superseded";
 
     public static string? RestoreCommitStatus(string app, string id)
-        => File.Exists(RestoreCommitFile(app, id)) ? RestoreCommitState(ReadRestoreCommit(app, id), Current(app)) : null;
+    {
+        if (!File.Exists(RestoreCommitFile(app, id))) return null;
+        var record = ReadRestoreCommit(app, id); var current = Current(app);
+        return current is not null && RestoreDataReady(current, record) ? "AdoptedIsolated" : RestoreCommitState(record, current);
+    }
+
+    static void RequireRestoreReady(DeploymentLocation location)
+    {
+        var file = location.MaintenanceOperation;
+        var prefix = location.ApplicationId + ".migration-";
+        if (file is null || !Path.GetFileName(file).StartsWith(prefix, StringComparison.Ordinal)) return;
+        var id = Path.GetFileNameWithoutExtension(file)[prefix.Length..];
+        if (file != RestoreCommitFile(location.ApplicationId, id)) throw new InvalidDataException("原恢复提交范围不一致，保持隔离。");
+        RequireRestoreReady(location, ReadRestoreCommit(location.ApplicationId, id));
+    }
+    internal static void RequireRestoreReady(DeploymentLocation location, DeploymentRestoreCommit record)
+    {
+        if (!RestoreDataReady(location, record))
+            throw new InstallationOutcomeUnknownException("恢复登记存在，但原提交及系统入口未核对完成；从离线维护读取原恢复，不启动业务。");
+    }
+    static bool RestoreDataReady(DeploymentLocation location, DeploymentRestoreCommit record) =>
+        location.LifecycleState == "Installed" && record.Status == "CompletedIsolated" && record.Next.DataRoot == location.DataRoot &&
+        record.HandoffSha256 == location.RestoreHandoffHash && record.Next.ApplicationId == location.ApplicationId && record.Next.RuntimeAccountSid == location.RuntimeAccountSid;
 
     internal static bool RestoreBlocksAnotherOperation(DeploymentRestoreCommit record, DeploymentLocation? current, string? continuingOperation)
         => record.Status == "Prepared" && record.OperationId != continuingOperation && RestoreCommitState(record, current) != "Superseded";

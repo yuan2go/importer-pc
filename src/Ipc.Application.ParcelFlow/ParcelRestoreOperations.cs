@@ -76,6 +76,8 @@ public sealed partial class ParcelStartupMaintenance
                 {
                     _ = ParcelRestoreEvidence.Require(intent.TargetDirectory, c, evidence);
                     var status = OperatingSystem.IsWindows() && RestoreIntentReader is null ? WindowsDeploymentSetup.RestoreCommitStatus(definition.Id, intent.OperationId) : "AdoptedIsolated";
+                    if (status is not ("ProjectionPending" or "AdoptedIsolated"))
+                        return Result("Unknown", "恢复登记存在，但原提交回执缺失或冲突；原件保留，核对原回执和当前系统入口，不重复接管。", c);
                     return Result(status == "ProjectionPending" ? status : "AdoptedIsolated", "原恢复已接管；保持隔离和暂停。修复原入口后，重新打开核对原请求及编号，不自动供包。", c);
                 }
                 if (current is not null && (current.LifecycleState != "Installed" || current.RuntimeAccountSid != intent.Source.RuntimeAccountSid || Path.GetFullPath(current.DataRoot) != Path.GetFullPath(intent.Source.DataRoot)))

@@ -188,6 +188,13 @@ static class LifecycleRestore
             check(record.Status == "Prepared" && WindowsDeploymentSetup.RestoreCommitState(record, current) is "HandoffPrepared" or "ProjectionPending", "interrupted original is inspectable at " + cut);
             interrupt = false; Execute();
             check(current == next && System.Text.Encoding.UTF8.GetString(seed) == "restored seed" && record.Status == "CompletedIsolated", "same original completes seed and sole registration at " + cut);
+            if (cut == "seed")
+            {
+                try { WindowsDeploymentSetup.RequireRestoreReady(next, record with { Status = "Prepared" }); throw new Exception("unfinished restore started"); }
+                catch (InstallationOutcomeUnknownException) { check(true, "registered data root alone cannot authorize startup before original restore completion"); }
+                WindowsDeploymentSetup.RequireRestoreReady(next with { SourceCommit = new string('b', 40), ReleaseRoot = Path.Combine(root, "program-only-rollback") }, record);
+                check(true, "completed restore data custody survives a later program-only rollback");
+            }
             current = next with { SourceCommit = new string('b', 40) };
             try { Execute(); throw new Exception("superseded accepted"); } catch (InvalidOperationException) { check(true, "later deployment cannot be overwritten by old restore at " + cut); }
         }

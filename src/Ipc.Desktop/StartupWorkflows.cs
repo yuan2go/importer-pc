@@ -329,8 +329,10 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             if (restoredPreview is null || restoredBackup is null) throw new InvalidOperationException("请先完成完整恢复，并确认新旧目录都没有正在运行的软件");
             var registration = WindowsDeploymentSetup.Registration(ParcelStartupServices.ApplicationId);
-            if (!File.Exists(registration)) throw new InvalidOperationException("找不到原机的安装登记，不能接管。请联系供应商处理换机。");
-            if (MessageBox.Show(this, "将禁止从原目录启动，并把安装登记切换到新目录。原目录和数据不会删除。切换后需进入管理模式，核对未处理完的作业、设备和编号范围后才能生产。", "确认换机接管", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
+            if (!File.Exists(registration)) throw new InvalidOperationException("找不到当前安装登记，先完成本站安装后重新读取原恢复。");
+            var actionSummary = restoredPreview.State == "ProjectionPending" ? "只修复原次已提交的系统入口，不重新复制或交接。完成后仍保持隔离和暂停。" :
+                "将当前安装切换到已核验的恢复目录。已清理原根不重建，仍存在的原根退役保管。切换后保持隔离和暂停，核对原请求、实物、设备和编号后再明确启用。";
+            if (MessageBox.Show(this, actionSummary, "确认本站恢复", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
             await Task.Run(() => maintenance.AdoptRestoreAsync(restoredBackup, restoredPreview.DataRoot, restoredPreview.BackupSha256, Wire.FileHash(registration)));
             RestoreAdopted = true;
             SelectedLaunch = SelectedLaunch with { DataRoot = restoredPreview.DataRoot };
@@ -637,6 +639,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (original.State is "Isolated" or "HandoffPrepared" or "ProjectionPending" or "AdoptedIsolated")
         { restoredPreview = original; restoredBackup = original.Backup ?? backup; recovery = null; }
         else { recovery = original.State is "Planned" or "CopyIncomplete" ? original : null; restoredPreview = null; restoredBackup = null; }
+        if (original.State == "AdoptedIsolated") { RestoreAdopted = true; SelectedLaunch = SelectedLaunch with { DataRoot = original.DataRoot }; }
         if (restorePlanPreview is not null) restorePlanPreview.Text = original.Summary + "\n目标：" + original.Destination;
     }
     void InvalidateRestorePlan()
@@ -885,7 +888,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Section(RepairTask.Directory, "目录与工位", "确认配置目录和数据目录。更改目录后需重新读取。", fields.Take(policyStart));
             Section(RepairTask.Parameters, "设备与参数", "为每个投递位选择相机等设备。在此选择设备不会连接设备。", fields.Skip(policyStart).Take(reviewStart - policyStart));
             Section(RepairTask.Review, "检查与启动", "先检查配置，再保存并启动。配置未能生效时，可在“恢复与维护”中修复。", fields.Skip(reviewStart).Take(recoveryStart - reviewStart));
-            Section(RepairTask.Recovery, "恢复与维护", "备份、恢复、换机接管和程序修复都需单独确认后执行，切换到本页不会自动执行。", fields.Skip(recoveryStart));
+            Section(RepairTask.Recovery, "恢复与维护", "本站恢复、原次续办、上一部署回滚和程序修复分别核对后执行；切页不复制、接管或启动。", fields.Skip(recoveryStart));
             if (draft is null)
             {
                 // A read failure is not an empty configuration. Keep original
@@ -909,7 +912,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 var recoveryScene = selectedTask == RepairTask.Recovery;
                 foreach (var (task, page) in taskPages) page.IsEnabled = recoveryScene ? task == RepairTask.Recovery : task is RepairTask.Directory or RepairTask.Review;
                 var routes = new WrapPanel { Margin = new(0, 0, 0, 8) };
-                foreach (var route in recoveryScene ? new[] { ("恢复备份与换机", RepairTask.Recovery) } : new[] { ("检查目录与配置", RepairTask.Directory), ("检查并启动", RepairTask.Review) })
+                foreach (var route in recoveryScene ? new[] { ("恢复本站备份与维护", RepairTask.Recovery) } : new[] { ("检查目录与配置", RepairTask.Directory), ("检查并启动", RepairTask.Review) })
                 {
                     var button = new Button { Content = route.Item1, MinHeight = 44, Margin = new(0, 0, 8, 0) };
                     button.Click += (_, _) => { SelectTask(route.Item2); }; routes.Children.Add(button);
@@ -962,6 +965,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 ? parameterControl?.NextPageIsReview == true ? "检查配置" : "继续：" + parameterControl?.NextPageTitle
                 : selectedTask == RepairTask.Directory ? "继续填写参数" : "检查配置";
             if (kind == RepairAction.SaveAndStart && initialConfiguration) button.Content = SaveIsComplete ? "完成并启动" : "保存配置";
+            if (kind == RepairAction.AdoptRestore) button.Content = restoredPreview?.State == "ProjectionPending" ? "修复原恢复入口…" : "核对并接管原恢复…";
             button.IsCancel = kind == RepairAction.Exit;
         }
         var primary = RestoreAdopted ? RepairAction.Exit : initialConfiguration ? draft is null ? RepairAction.Reload : parameterControl?.IsReviewPage == true ? RepairAction.SaveAndStart : RepairAction.Next

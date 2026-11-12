@@ -127,6 +127,7 @@ public static partial class WindowsDeploymentSetup
         var after = actual.Target! with
         {
             ConfigurationDirectory = actual.Current.ConfigurationDirectory,
+            MaintenanceOperation = actual.Current.MaintenanceOperation,
             RestoreHandoffHash = actual.Current.RestoreHandoffHash,
             Shortcuts = actual.Current.Shortcuts,
             Recovery = actual.Current.Recovery,
@@ -219,7 +220,7 @@ public static partial class WindowsDeploymentSetup
     public static void RequireInstalledReady(DeploymentLocation location)
     {
         RequireNoUnresolvedRemoval(location.ApplicationId);
-        if (location.ApplicationId == "sportmaster") RequireNoUnresolvedRestore(location.ApplicationId);
+        if (location.ApplicationId == "sportmaster") { RequireNoUnresolvedRestore(location.ApplicationId); RequireRestoreReady(location); }
         if (location.LifecycleOperation is null) return;
         var name = Path.GetFileNameWithoutExtension(location.LifecycleOperation);
         var prefix = location.ApplicationId + ".rollback-";

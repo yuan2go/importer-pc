@@ -11,7 +11,7 @@ static partial class SportmasterRcs
     {
         await using var peer = new Peer { Mode = "assigned" };
         var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs" };
-        binding = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "request-timeout-ms")) };
+        binding = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "request-timeout-ms")) { ["heartbeat-interval-ms"] = "60000" } };
         var configuration = HeartbeatConfiguration(workspace, binding);
         Check(RcsRequestPolicy.TimeoutMs(binding) == 1000 && new SportmasterFlow().QueuedObservationTimeoutMs(configuration with { TimeoutMs = 1500 }) == 1500 &&
             new SportmasterFlow().QueuedObservationTimeoutMs(configuration with { TimeoutMs = 1500, Wcs = binding with { Parameters = new(binding.Parameters) { ["request-timeout-ms"] = "30000" } } }) == 1500 &&
@@ -30,7 +30,7 @@ static partial class SportmasterRcs
                 try { await socket.ConnectAsync(context.DnsEndPoint, token); return new NetworkStream(socket, true); }
                 catch { socket.Dispose(); throw; }
             }) { RequestTimeForVerification = clock, ResponseBodyProgressForVerification = (_, bytes) => { if (bytes > 0) prefix.TrySetResult(); } };
-            service.ConfigureRuntime(configuration); service.SetEnabledPositions([]); await service.StartAsync(default);
+            service.ConfigureRuntime(configuration); await service.StartAsync(default);
             var request = Request(binding); request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
             var original = Wire.Encode(request); var before = peer.Requests.Count;
             using var caller = new CancellationTokenSource();

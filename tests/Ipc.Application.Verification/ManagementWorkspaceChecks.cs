@@ -90,13 +90,11 @@ static class ManagementWorkspaceChecks
             "closing while waiting for a barcode cancels and drains the unsent round without waiting for a scan or sending a request");
         var current = await h.App.SnapshotAsync(); var control = current.Positions!.Single(p => p.Id == "left").SupplyControl!;
         await h.App.SetPositionEnabledAsync(new(Wire.Id(), current.RuntimeId, "left", control.Revision, false), default);
-        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEXT-PARCEL"), 4);
-        await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == 4)));
-        Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabling,
-            "changed barcode alone cannot complete a reliable current round while draining");
-        await h.TrayAsync(h.Left, TrayPresence.Absent);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabled);
-        Check(h.Peer.Requests.Count == 2, "qualified removal completes the original draining round without claiming the next parcel");
+        Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
+            { SupplyControl.Mode: StationPositionMode.Disabled, CurrentRoundId: null },
+            "operator disable ends the reliable current round without another barcode or empty-tray evidence");
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CameraConnectionSuspended);
+        Check(h.Peer.Requests.Count == 2, "disable releases the original camera without claiming another parcel");
         await h.AuthorizeAsync();
         Check((await h.App.ManagementModeStatusAsync()).Authorized, "reopening uses the fixture original configured management password");
         h.Api(h.Right).Discovered = false;

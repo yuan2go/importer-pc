@@ -217,11 +217,10 @@ internal static class MvidReader
         var basis = await h.App.SnapshotAsync();
         var state = basis.Positions!.Single(p => p.Id == "left").SupplyControl!;
         await h.App.SetPositionEnabledAsync(new(Wire.Id(), basis.RuntimeId, "left", state.Revision, false), default);
-        Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!.Mode == StationPositionMode.Disabling,
-            "native unread multi-code round retains its physical responsibility while disabling");
-        await h.TrayAsync(h.Left, TrayPresence.Absent);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!.Mode == StationPositionMode.Disabled);
-        Check(h.Peer.Requests.Count == 2, "qualified removal completes disabling without sending the rejected native round");
+        Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
+            { SupplyControl.Mode: StationPositionMode.Disabled, CurrentRoundId: null },
+            "native unread multi-code round disables immediately without removal evidence");
+        Check(h.Peer.Requests.Count == 2, "operator disable never sends the rejected native round");
     }
     static async Task InvalidRejectedPlacement(string workspace, string root)
     {
@@ -235,23 +234,19 @@ internal static class MvidReader
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.PositionId == "left" && i.Outcome == ParcelInputOutcome.Rejected));
             var basis = await h.App.SnapshotAsync();
             var rejected = basis.Inputs!.Single(i => i.PositionId == "left");
+            var roundId = basis.Positions!.Single(p => p.Id == "left").CurrentRoundId;
             Check(rejected.Observation.Codes.Single() == invalid && rejected.BarcodeSelection?.SelectedCode is null,
                 "invalid " + name + " candidate remains exact rejection evidence");
             var receipt = await h.App.SetPositionEnabledAsync(new(Wire.Id(), basis.RuntimeId, "left", basis.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, false), default);
             var state = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!;
-            Check(receipt.Status == "Accepted" && state.Mode == StationPositionMode.Disabling && state.PlacementCode is null && (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CurrentRoundId is not null,
-                "invalid " + name + " barcode can persist a safe draining identity without throwing");
-            Check((await h.App.ReadParcelPictureAsync(new(ObservationId: rejected.Observation.Id), default)).Image?.Gray8.SequenceEqual(parcel.Data) == true,
-                "disabling retains the invalid " + name + " parcel original until removal");
-            for (uint frame = 2; frame <= 4; frame++)
-            {
-                h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, frame, []);
-                await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == frame && f.DecodeAttempted)));
-                if (frame < 4) await Task.Delay(450);
-            }
-            await h.TrayAsync(h.Left, TrayPresence.Absent);
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!.Mode == StationPositionMode.Disabled);
-            Check(h.Peer.Requests.Count == 0, "invalid " + name + " parcel drains after confirmed removal without sending a request");
+            Check(receipt.Status == "Accepted" && state.Mode == StationPositionMode.Disabled && state.PlacementCode is null && (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CurrentRoundId is null,
+                "invalid " + name + " barcode disables immediately without requiring a usable code");
+            await CameraRoundHarness.Until(async () => (await h.App.RoundHistoryAsync(search: roundId)).Items.Single().OriginalFrame?.State == "Saved");
+            Check((await h.App.ReadParcelPictureAsync(new(RoundId: roundId), default)).Archived is { } archive &&
+                SportmasterRcs.DecodeOriginalPng(archive.Png).SequenceEqual(parcel.Data),
+                "disable retains the invalid " + name + " parcel original in its ended round history");
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CameraConnectionSuspended);
+            Check(h.Peer.Requests.Count == 0, "invalid " + name + " parcel disables and releases without sending a request");
         }
     }
     static async Task ManualCorrection(string workspace, string root)

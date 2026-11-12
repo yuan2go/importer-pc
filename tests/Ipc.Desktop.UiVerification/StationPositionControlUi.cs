@@ -46,9 +46,9 @@ static partial class Program
             Check(vm.InputTargetPosition == "left", "explicit enable selects this position for the next manual barcode");
             leftEntry.Text = "SYNTH-MANUAL-UI"; ((Button)left.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.ShowConfirmedTask && !vm.Busy);
-            ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Until(() => vm.Left.SupplyDisabling && !vm.Busy);
-            Check(vm.Left.ShowConfirmedTask && vm.Left.Slot == "SYNTH-CHUTE" && leftEntry.IsReadOnly && ((TextBlock)left.FindName("DisablingNotice")).IsVisible,
-                "draining stops new input while preserving confirmed current result and cancellation instruction");
+            ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Until(() => vm.Left.SupplyDisabled && !vm.Busy);
+            Check(!vm.Left.ShowConfirmedTask && vm.Left.CenteredStateTitle == "已停用" && leftEntry.IsReadOnly && !vm.Left.CanConfirmPlacementRemoval,
+                "one disable click clears the current result and shows disabled without requiring parcel removal");
             foreach (var (w, height, name) in new[] { (1366d, 768d, "standard"), (1093d, 614d, "125pct"), (911d, 512d, "150pct") })
             {
                 await SetClient(window, w, height); await Flush();
@@ -57,17 +57,46 @@ static partial class Program
                 Check(Math.Abs(leftResult.TranslatePoint(new Point(), window).Y - rightResult.TranslatePoint(new Point(), window).Y) < 2 && Math.Abs(leftResult.ActualHeight - rightResult.ActualHeight) < 2,
                     "different supply states keep result regions aligned at " + name);
                 Check(((TextBlock)window.FindName("WorkStatus")).IsVisible, "supply status remains visible in compact layout at " + name);
-                CaptureInternal(evidence, "positions-draining-" + name, (Grid)window.FindName("ClientArea"), lines);
+                CaptureInternal(evidence, "positions-disabled-" + name, (Grid)window.FindName("ClientArea"), lines);
             }
             await vm.LoadSupplyHistoryAsync(); Check(vm.SupplyHistory.Length == 4 && vm.SupplyHistory[0].Task == "SYNTH-TASK", "records show operator switches and current task");
             ((Button)left.FindName("EnableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Until(() => vm.Left.SupplyEnabled && !vm.Busy);
-            Check(!leftEntry.IsReadOnly && h.Peer.Requests.Count == 1, "cancelling disable restores input without replaying parcel request");
+            Check(!leftEntry.IsReadOnly && h.Peer.Requests.Count == 1, "reenabling restores input without replaying parcel request");
             typeof(SupplyStationWindow).GetMethod("SetPage", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.Invoke(window, ["history"]);
             await Flush();
             var controls = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "投递位启停记录")); controls.IsExpanded = true;
             await Until(() => !vm.Busy && vm.SupplyHistory.Length == 5);
             Check(Descendants(controls).OfType<DataGrid>().Single().Items.Count == 5, "history page renders durable position switch records");
             CaptureInternal(evidence, "position-control-history", (Grid)window.FindName("ClientArea"), lines);
+            typeof(SupplyStationWindow).GetMethod("SetPage", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.Invoke(window, ["workstation"]);
+            await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == "left").CurrentRoundId is null);
+            h.Peer.Mode = "no-destination";
+            leftEntry.Text = "SYNTH-REJECT-DISABLE"; ((Button)left.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => vm.Left.CanConfirmPlacementRemoval && !vm.Busy);
+            ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => vm.Left.SupplyDisabled && !vm.Busy);
+            Check(!vm.Left.CanConfirmPlacementRemoval && !((Button)left.FindName("ConfirmManualPlacementRemoval")).IsVisible &&
+                vm.Left.CenteredStateTitle == "已停用" && h.Peer.Requests.Count == 2,
+                "one disable click also ends the rejected manual round without a separate removal confirmation or resend");
+            CaptureInternal(evidence, "positions-disabled-rejected-manual", (Grid)window.FindName("ClientArea"), lines);
+            ((Button)left.FindName("EnableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => vm.Left.SupplyEnabled && !vm.Busy);
+            h.Peer.Mode = "assigned"; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            try
+            {
+                leftEntry.Text = "SYNTH-INFLIGHT-DISABLE"; ((Button)left.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                await Until(() => h.Peer.Requests.Count == 3 && !vm.Busy);
+                ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                await Until(() => vm.Left.SupplyDisabling && !vm.Busy);
+                Check(vm.Left.SupplyNotice.Contains("本轮请求及结果保存结束后自动停用") && !vm.Left.CanConfirmPlacementRemoval &&
+                    vm.Snapshot!.Positions!.Single(p => p.Id == "left").CurrentRoundId is not null,
+                    "in-flight disable shows its real request-drain reason without requiring an empty tray or removal click");
+                CaptureInternal(evidence, "positions-request-draining", (Grid)window.FindName("ClientArea"), lines);
+            }
+            finally { h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; }
+            await Until(() => vm.Left.SupplyDisabled);
+            Check(h.Peer.Requests.Count == 3 && vm.Left.CenteredStateTitle == "已停用",
+                "the original request finishing automatically completes disable without any physical input");
         }
         finally { window.Close(); }
         await using var deferred = new ManualSupplyHarness(root, Path.Combine(evidence, "unconfigured-disabled"), true);

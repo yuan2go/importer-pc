@@ -55,19 +55,14 @@ public sealed partial class ParcelRuntime : IStationPositionControl
         if (Id != "sportmaster") return;
         foreach (var position in positions.Keys)
             if (repository!.ReadPositionControl(position) is { } state)
-            {
                 positionControls[position] = state;
-
-            }
-        PublishPositionHeartbeat(ports?.Wcs);
     }
-    void PublishPositionHeartbeat(IWcsPort? wcs)
+    bool PositionDrainRequired(string position)
     {
-        if (Id == "sportmaster" && wcs is IWcsPositionHeartbeat heartbeat)
-            heartbeat.SetEnabledPositions(positions.Keys.Where(PositionSupplyEnabled).ToArray());
+        var operation = CurrentRound(position)?.OperationId ?? PositionControl(position).OperationId;
+        return operation is not null && operations.TryGetValue(operation, out var op) && op.Wcs?.Attempts > 0 &&
+            (smExecutions.Contains(operation) || StageRunning(op) || repository!.HasPendingReceipt(operation));
     }
-    bool CameraDraining(string device) => positions.Values.Any(p => p.ReaderDeviceId == device && PositionControl(p.Id).Mode == StationPositionMode.Disabling);
-    bool PositionDrainRequired(string position) => CurrentRound(position) is not null;
     void MaintainPositionControls()
     {
         if (Id != "sportmaster" || repository is null || backupInProgress) return;
@@ -81,9 +76,11 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                     ChangedAt = StationTime.GetUtcNow(),
                     ChangedBy = "application"
                 };
-                repository.Commit(null, "PositionSupplyChanged", "", positionControl: completed);
+                if (CurrentRound(state.PositionId) is { } round)
+                    EndSmRound(round, "OperatorDisabledPosition", positionControl: completed);
+                else repository.Commit(null, "PositionSupplyChanged", "", positionControl: completed);
                 positionControls[state.PositionId] = completed;
-                WriteRuntimeLog("投递位启停", "本次放置结束，投递位已停用", completed);
+                WriteRuntimeLog("投递位启停", "本轮请求及结果保存结束，投递位已停用", completed);
                 WriteStationState("PositionDrainCompleted", force: true);
             }
     }
@@ -121,11 +118,14 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 repository.Revision + 1, StationTime.GetUtcNow(), currentOperator?.Subject ?? "local-workstation", current?.Id,
                 current?.Wcs?.Replies.LastOrDefault(r => r.Destination is not null)?.Destination?.TaskId, placementCode, cameraSeen);
             var receipt = new BusinessReceipt("Accepted", label + (state.Mode == StationPositionMode.Enabled ? "已启用。" :
-                state.Mode == StationPositionMode.Disabling ? "停用中，不再接收新条码；等待本次放置结束。" : "已停用。"), state.Revision);
-            repository.Commit(null, "PositionSupplyChanged", "", command: command, commandResult: receipt, positionControl: state);
+                state.Mode == StationPositionMode.Disabling ? "停用中，不再接收新条码；等待本轮请求及结果保存结束。" : "已停用。"), state.Revision);
+            // Finish an actual call and receipt before releasing the lane. Ending
+            // local use does not claim an empty tray or rearm automatic submission.
+            if (state.Mode == StationPositionMode.Disabled && round is not null)
+                EndSmRound(round, "OperatorDisabledPosition", command: command, positionControl: state, commandResult: receipt);
+            else repository.Commit(null, "PositionSupplyChanged", "", command: command, commandResult: receipt, positionControl: state);
             positionControls[request.PositionId] = state;
             WriteRuntimeLog("投递位启停", "投递位启停已记录", new { CommandId = request.CommandId, PreviousMode = previous.Mode.ToString(), State = state });
-            PublishPositionHeartbeat(ports?.Wcs);
             WriteStationState("PositionSupplyChanged:" + request.CommandId, force: true);
             return receipt;
         }

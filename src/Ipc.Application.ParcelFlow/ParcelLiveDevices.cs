@@ -105,7 +105,6 @@ public sealed partial class ParcelRuntime
             foreach (var id in change.Readers) readers[id] = new(built.Readers[id]);
             configuration.ApplyLive(expectedRevision, candidate);
             Boundary?.Invoke("AfterLiveDeviceConfigurationApplied");
-            PublishPositionHeartbeat(ports.Wcs);
             RefreshIntegrationBudget();
             var faults = new List<string>();
             await ExternalAsync(async () =>

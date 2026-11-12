@@ -169,8 +169,10 @@ public sealed partial class ParcelRepository : IDisposable
     {
         if (positionControl is not null)
         {
-            if (eventName != "PositionSupplyChanged" || operation is not null || positionControl.Revision != Revision + 1)
-                throw new InvalidDataException("Position control requires its own atomic state/audit transaction");
+            if (eventName != "PositionSupplyChanged" || positionControl.Revision != Revision + 1 ||
+                round is not null && (round.PositionId != positionControl.PositionId || round.EndedAt is null) ||
+                operation is not null && (round is null || round.OperationId != operation.Id))
+                throw new InvalidDataException("Position control and its ended round require one atomic state/audit transaction");
             ValidatePositionControl(positionControl);
             detail = Wire.Encode(positionControl);
         }

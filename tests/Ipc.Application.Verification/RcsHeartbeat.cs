@@ -161,19 +161,15 @@ static partial class SportmasterRcs
         service.ConfigureRuntime(HeartbeatConfiguration(workspace, manual));
         peer.Mode = "assigned";
         await service.StartAsync(default);
-        service.SetEnabledPositions(["left"]);
         var count = peer.Requests.Count;
         Check(await service.SendHeartbeatAsync(default) == RcsHeartbeatResult.Received && peer.Requests.Count == count + 1,
             "manual heartbeat immediately sends exactly one request before a scheduled tick");
         using var request = JsonDocument.Parse(peer.Requests.Last().Body);
-        var item = request.RootElement.GetProperty("data").EnumerateArray().Single();
-        Check(item.GetProperty("command").GetString() == "sorter.task.station_heartbeat" &&
-            item.GetProperty("params").GetProperty("bcrCode").GetString() == manual.Parameters["left-bcr-code"],
-            "manual heartbeat uses the existing protocol and omits a disabled side");
-        service.SetEnabledPositions([]);
-        Check(await service.SendHeartbeatAsync(default) == RcsHeartbeatResult.NoPositions && peer.Requests.Count == count + 1,
-            "manual heartbeat does not send an empty batch when both sides are disabled");
-        service.SetEnabledPositions(["right"]);
+        var items = request.RootElement.GetProperty("data").EnumerateArray().ToArray();
+        Check(items.Length == 2 && items.All(item => item.GetProperty("command").GetString() == "sorter.task.station_heartbeat") &&
+            items.Select(item => item.GetProperty("params").GetProperty("bcrCode").GetString()).SequenceEqual(
+                new[] { manual.Parameters["left-bcr-code"], manual.Parameters["right-bcr-code"] }),
+            "manual heartbeat uses the existing protocol for all configured camera codes");
         peer.Mode = "http-error";
         Check(await service.SendHeartbeatAsync(default) == RcsHeartbeatResult.Failed && peer.Requests.Count == count + 2 &&
             (await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed,

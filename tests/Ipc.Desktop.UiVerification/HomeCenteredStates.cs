@@ -143,11 +143,17 @@ static partial class Program
                 "same-placement frames preserve the rejection, picture and details without another request or changing the other position");
             CaptureInternal(evidence, "home-centered-rcs-refusal", client, lines);
             ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            await Until(() => vm.Left.SupplyDisabling && !vm.Busy);
-            Check(vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateInstruction == "请取下包裹\n停用中，暂不接收新条码" &&
-                !vm.Left.CanSubmitBarcode, "disabling keeps the current rejection and prevents new input");
+            await Until(() => vm.Left.SupplyDisabled && !vm.Busy);
+            Check(vm.Left.CenteredStateTitle == "已停用" && !vm.Left.CenteredRcsRejection &&
+                !vm.Left.CanSubmitBarcode, "disable immediately ends the current rejected round and prevents new input");
             ((Button)left.FindName("EnableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.SupplyEnabled && !vm.Busy);
+            await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
+            await h.TrayAsync(h.Left, TrayPresence.Absent);
+            await h.TrayAsync(h.Left, TrayPresence.Present);
+            h.Api(h.Left).Enqueue(rejectedCode, 3);
+            await Until(() => vm.Left.CenteredRcsRejection);
+            rejectionCount = h.Peer.Requests.Count;
             h.Peer.HeartbeatUnavailable = true;
             await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Offline);
             Check(vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateInstruction == "请取下包裹\nRCS 连接恢复后再放下一件",
@@ -159,7 +165,7 @@ static partial class Program
             try
             {
                 await h.TrayAsync(h.Left, TrayPresence.Absent); await h.TrayAsync(h.Left, TrayPresence.Present);
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-REJECT"), 3);
+                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-REJECT"), 4);
                 await Until(() => vm.Left.IsProcessing && vm.Left.Barcode == "SYNTH-AFTER-REJECT");
                 Check(!vm.Left.CenteredRcsRejection && !center.IsVisible && !vm.Left.ShowConfirmedTask,
                     "next placement processing clears the rejection and does not revive the prior chute");
@@ -177,7 +183,7 @@ static partial class Program
             h.Peer.RejectionMessage = "终点非法";
             var removedCode = CameraRoundHarness.Barcode("SYNTH-REMOVE-REJECT");
             await h.TrayAsync(h.Left, TrayPresence.Absent); await h.TrayAsync(h.Left, TrayPresence.Present);
-            h.Api(h.Left).Enqueue(removedCode, 4);
+            h.Api(h.Left).Enqueue(removedCode, 5);
             await Until(() => vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "终点非法");
             var beforeRemoval = vm.Snapshot!;
             var sentBeforeRemoval = h.Peer.Requests.Count;
@@ -187,7 +193,7 @@ static partial class Program
                 h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, number);
                 await Until(() => vm.Snapshot!.CameraReads.Any(frame => frame.PositionId == "left" && frame.Frame.FrameNumber == number));
             }
-            await BlankFrame(5);
+            await BlankFrame(6);
             Check(vm.Left.CenteredRcsRejection && vm.Left.CurrentRound?.Id == beforeRemoval.Positions!.Single(p => p.Id == "left").CurrentRoundId &&
                 vm.Left.CanViewCurrentPicture && h.Peer.Requests.Count == sentBeforeRemoval,
                 "a changed no-code frame preserves the current round's refusal and image without claiming physical removal");

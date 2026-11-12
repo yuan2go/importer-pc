@@ -44,8 +44,9 @@ public static partial class WindowsDeploymentSetup
         using (parent)
         {
             if (parent.HasExited || parent.StartTime.ToUniversalTime().Ticks != started) return;
-            try { await parent.WaitForExitAsync().WaitAsync(timeout); }
-            catch (TimeoutException error)
+            using var deadline = new CancellationTokenSource(timeout);
+            try { await parent.WaitForExitAsync(deadline.Token); }
+            catch (OperationCanceledException error) when (deadline.IsCancellationRequested)
             { throw new IOException("原供包台窗口尚未退出，请先关闭后重新打开卸载入口。程序和数据未删除。", error); }
         }
     }

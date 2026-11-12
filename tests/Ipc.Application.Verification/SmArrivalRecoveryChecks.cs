@@ -71,6 +71,7 @@ internal static class SmArrivalRecoveryChecks
     {
         await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "late-membership"), deferred: true);
         await h.StartAsync();
+        var rightGeneration = Lane(await h.App.SnapshotAsync(), "right").Arrival!.Generation;
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var once = 0;
@@ -96,9 +97,14 @@ internal static class SmArrivalRecoveryChecks
             Check(unsafeEnable.Status == "Rejected", "a physically late old membership update cannot be mistaken for safe re-enable");
             Check(await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received && !h.Peer.RemoteMembers.Contains("MANUAL-LEFT"),
                 "fresh removal is sent, but cannot prove that old remote work was cancelled");
+            // A valid response settles membership before the capability monitor
+            // necessarily replaces its cached timeout health. Wait for the same
+            // manual admission the workstation uses; never retry a submitted input.
+            await CameraRoundHarness.Until(async () => Lane(await h.App.SnapshotAsync(), "right").BarcodeInput?.Manual == true);
             var right = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "RIGHT-AFTER-LATE-003"), default);
-            Check(right.Status == "Admitted" && Lane(await h.App.SnapshotAsync(), "right").Arrival?.RecoveryReason is null,
-                "unchanged right membership and valid vehicle remain independent");
+            var rightLane = Lane(await h.App.SnapshotAsync(), "right");
+            Check(right.Status == "Admitted" && rightLane.Arrival is { RecoveryReason: null } arrival && arrival.Generation == rightGeneration,
+                "unchanged right membership and valid vehicle remain independent: " + Wire.Encode(right));
         }
         finally { release.TrySetResult(); h.Peer.HeartbeatGate = null; }
     }

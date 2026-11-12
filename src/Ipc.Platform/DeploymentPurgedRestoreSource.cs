@@ -60,14 +60,14 @@ public static partial class WindowsDeploymentSetup
     }
 
     internal static DeploymentPurgedRestoreSource ProjectPurgedRestoreSource(DeploymentLocation retired, string path, string json, string receiptHash,
-        string sourceDirectory, string configurationHash, string originHash)
+        string sourceDirectory, string configurationHash, string originHash, string? machineRoot = null)
     {
         var record = Wire.Decode<DeploymentPurgeRecord>(json);
         if (retired.ApplicationId != "sportmaster" || retired.LifecycleState != "Purged" || record.Status != "Purged" || record.Remaining.Length != 0 ||
             record.Plan.Identity != Wire.Hash(Wire.Encode(new { record.Plan.ApplicationId, operation = record.Plan.OperationId, registrationHash = record.Plan.ExpectedRegistrationHash, delete = record.Plan.Delete })) ||
             path != PurgeFile(retired.ApplicationId, record.Plan.OperationId) || !ExtensionSchema.IsHash(receiptHash))
             throw new InvalidDataException("来源数据删除没有明确终态，不能代替原机退役证据。");
-        _ = ProjectDataPurge(record, path, retired);
+        _ = ProjectDataPurge(record, path, retired, machineRoot ?? MachineRoot);
         sourceDirectory = Path.GetFullPath(sourceDirectory);
         if (!TrustedProgramRoots.Contains(retired.DataRoot, sourceDirectory) || sourceDirectory == Path.GetFullPath(retired.DataRoot) || Path.GetFileName(sourceDirectory) != "sportmaster")
             throw new InvalidDataException("备份来源不属于原数据清理范围。");

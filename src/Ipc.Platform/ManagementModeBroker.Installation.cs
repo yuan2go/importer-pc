@@ -153,7 +153,8 @@ public static partial class ManagementModeBroker
         using var manager = OpenSCManager(null, null, 1); using var service = OpenService(manager, ServiceName(dataRoot), 0xF01FF);
         if (service.IsInvalid) { if (Marshal.GetLastWin32Error() == 1060) return; throw new Win32Exception(Marshal.GetLastWin32Error()); }
         Stop(service); if (!DeleteService(service)) throw new Win32Exception(Marshal.GetLastWin32Error());
-        // Protected credentials, provisioned marker and immutable hosts remain for authorized reinstall/repair.
+        // Program-only removal preserves credentials for reinstall/repair. An
+        // explicit station-data purge owns their separate frozen deletion list.
     }
     [SupportedOSPlatform("windows")]
     static void Stop(ServiceHandle service)

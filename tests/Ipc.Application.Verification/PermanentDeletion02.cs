@@ -40,7 +40,7 @@ static class PermanentDeletion02
             "owner lease files are listed without a byte fence");
 
         var registration = new List<string>(); DeploymentPurgeRecord? saved = null;
-        DeploymentPurgeRecord Record(DeploymentPurgePlan p) => new(1, DateTimeOffset.UtcNow, p, "Prepared", [], "synthetic-admin");
+        DeploymentPurgeRecord Record(DeploymentPurgePlan p) => new(2, DateTimeOffset.UtcNow, p, "Prepared", [], "synthetic-admin");
 
         var changed = Station("changed"); var changedPlan = Plan(changed);
         File.WriteAllText(Path.Combine(changed.DataRoot, "Production", "S1", "sportmaster", "sportmaster.db"), "a request was written after review");
@@ -97,19 +97,19 @@ static class PermanentDeletion02
         var publicationPath = Path.Combine(root, "sportmaster.purge-" + publicationPlan.OperationId + ".json");
         var publishing = publication with { LifecycleState = "Purging", MaintenanceOperation = publicationPath };
         var prepared = Record(publicationPlan);
-        Check(WindowsDeploymentSetup.ProjectDataPurge(prepared, publicationPath, publishing).Status == "PartiallyPurged",
+        Check(WindowsDeploymentSetup.ProjectDataPurge(prepared, publicationPath, publishing, machine).Status == "PartiallyPurged",
             "a crash after marking registration but before marking the receipt permits only original-plan retry");
         Reject<InstallationOutcomeUnknownException>(() => WindowsDeploymentSetup.ApplyDataPurge(prepared with { Status = "Purging" }, publicationPath, () => "retired", s => saved = s,
             state => { if (state == "Purged") throw new IOException("synthetic final registration write loss"); }), "a lost final registration write does not claim completion");
         var published = saved!;
-        Check(published.Status == "Purged" && WindowsDeploymentSetup.ProjectDataPurge(published, publicationPath, publishing).Status == "PartiallyPurged",
+        Check(published.Status == "Purged" && WindowsDeploymentSetup.ProjectDataPurge(published, publicationPath, publishing, machine).Status == "PartiallyPurged",
             "a completed receipt with an unfinished registration remains retryable without claiming success");
         var finalized = WindowsDeploymentSetup.ApplyDataPurge(published, publicationPath, () => "retired", s => saved = s, registration.Add);
-        Check(finalized.Status == "Purged" && WindowsDeploymentSetup.ProjectDataPurge(saved!, publicationPath, publishing with { LifecycleState = "Purged" }).Status == "Purged",
+        Check(finalized.Status == "Purged" && WindowsDeploymentSetup.ProjectDataPurge(saved!, publicationPath, publishing with { LifecycleState = "Purged" }, machine).Status == "Purged",
             "original-plan retry finishes the final registration after data directories have disappeared");
-        Reject<InstallationOutcomeUnknownException>(() => WindowsDeploymentSetup.ProjectDataPurge(published, publicationPath, publishing with { MaintenanceOperation = "other-operation" }),
+        Reject<InstallationOutcomeUnknownException>(() => WindowsDeploymentSetup.ProjectDataPurge(published, publicationPath, publishing with { MaintenanceOperation = "other-operation" }, machine),
             "registration pointing at another operation cannot authorize retry");
-        Reject<InstallationOutcomeUnknownException>(() => WindowsDeploymentSetup.ProjectDataPurge(published, publicationPath, publishing with { DataRoot = Path.Combine(root, "other-root") }),
+        Reject<InstallationOutcomeUnknownException>(() => WindowsDeploymentSetup.ProjectDataPurge(published, publicationPath, publishing with { DataRoot = Path.Combine(root, "other-root") }, machine),
             "another deployment data root cannot authorize the original deletion plan");
 
         var unconfirmed = Station("unconfirmed");
@@ -128,6 +128,45 @@ static class PermanentDeletion02
         Directory.CreateDirectory(Path.Combine(absent.DataRoot, "empty", "nested")); Directory.CreateDirectory(absent.ConfigurationDirectory);
         var emptyResult = WindowsDeploymentSetup.ApplyDataPurge(Record(Plan(absent)), "receipt", () => "registration", s => saved = s, registration.Add);
         Check(emptyResult.Status == "Purged" && !Directory.Exists(absent.DataRoot) && !Directory.Exists(absent.ConfigurationDirectory), "empty station roots are removed without another cleanup workflow");
+
+        var password = Station("password");
+        var authority = WindowsDeploymentSetup.DataPurgeRoots(password, machine)[2];
+        Check(authority == ManagementModeBroker.ProtectedRoot(password.DataRoot, Path.Combine(root, "Administrators")),
+            "password deletion uses exactly the service's data-root identity within this machine anchor");
+        Directory.CreateDirectory(authority);
+        foreach (var name in new[] { "management-mode.json", "MODE-CONFIGURED", "AUTHORITY.json", "management-mode.json.lock" })
+            File.WriteAllText(Path.Combine(authority, name), "synthetic protected " + name);
+        var otherAuthority = Path.Combine(root, "Administrators", "OTHER-STATION"); Directory.CreateDirectory(otherAuthority);
+        File.WriteAllText(Path.Combine(otherAuthority, "management-mode.json"), "other station credential");
+        var passwordPlan = Plan(password);
+        Check(passwordPlan.Delete.Length == 3 && passwordPlan.Delete.Single(a => a.Root == authority).Files.Count == 4,
+            "one frozen deletion plan includes credential, configured marker, authority anchor and lock file");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ApplyDataPurge(Record(passwordPlan) with { SchemaVersion = 1 }, "receipt", () => "registration",
+            _ => throw new Exception("old format wrote a receipt"), _ => throw new Exception("old format changed registration")),
+            "old purge format is refused before any write without expanding its original list");
+        Check(File.Exists(Path.Combine(authority, "management-mode.json")) && Directory.Exists(password.DataRoot),
+            "old-format rejection preserves both credentials and business originals");
+        var changedPassword = Path.Combine(authority, "management-mode.json");
+        File.WriteAllText(changedPassword, "different credential after review");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ApplyDataPurge(Record(passwordPlan), "receipt", () => "registration", _ => { }, _ => { }),
+            "changed credentials refuse the entire deletion before business data is removed");
+        Check(Directory.Exists(password.DataRoot), "credential inventory shares the same pre-delete fence as business data");
+        passwordPlan = Plan(password);
+        var extraCredential = Path.Combine(authority, "unreviewed-credential.json");
+        var passwordPartial = WindowsDeploymentSetup.ApplyDataPurge(Record(passwordPlan), "receipt", () => "registration", state =>
+        {
+            saved = state;
+            if (state.Status == "Purging") File.WriteAllText(extraCredential, "unreviewed synthetic evidence");
+        }, _ => { });
+        Check(passwordPartial.Status == "PartiallyPurged" && passwordPartial.Remaining.Contains(authority) && File.Exists(extraCredential),
+            "a new credential file remains explicit and prevents a false successful purge");
+        File.Delete(extraCredential);
+        var passwordComplete = WindowsDeploymentSetup.ApplyDataPurge(saved!, "receipt", () => "changed-registration", state => saved = state, _ => { });
+        Check(passwordComplete.Status == "Purged" && !Directory.Exists(authority) && !Directory.Exists(password.DataRoot) && !Directory.Exists(password.ConfigurationDirectory),
+            "original-plan retry removes all station credentials and configured markers even after data roots disappeared");
+        Check(File.Exists(Path.Combine(otherAuthority, "management-mode.json")), "another station's password survives cleanup");
+        Check(Plan(password).Delete.Single(a => a.Root == authority).Files.Count == 0 && !Directory.Exists(authority),
+            "the next installation has no old password, configured marker or authority anchor to reuse");
         Console.WriteLine("IE01-PURGE checks=" + checks + "; real files; Windows registration/ACL/elevated helper/VM NOT_RUN");
         return Task.CompletedTask;
     }

@@ -81,23 +81,30 @@ internal static class MvsPresenceChecks
             h.Peer.ReplyVehicleStates = true;
             await h.StartAsync();
             Check(source is not null, "actual acquisition is installed in the Application composition");
+            var acquisition = source!;
             var s = await h.App.SnapshotAsync();
-            var unauthorized = await h.App.CommandAsync(new(Wire.Id(), s.Revision, "CalibrateEmptyTray", source!.DeviceId));
-            Check(unauthorized.Status == "Rejected", "empty teaching requires application management authorization");
+            await CameraRoundHarness.Until(async () =>
+            {
+                s = await h.App.SnapshotAsync();
+                var unauthorized = await h.App.CommandAsync(new(Wire.Id(), s.Revision, "CalibrateEmptyTray", acquisition.DeviceId));
+                if (unauthorized.Status == "Conflict") return false;
+                Check(unauthorized.Status == "Rejected", "empty teaching requires application management authorization");
+                return true;
+            });
             await ManagementModeFixture.Authorize(h.App);
             var window = Wire.Id();
             await h.App.SetManagementWorkspaceAsync(window, true, default);
             await CameraRoundHarness.Until(async () =>
             {
                 s = await h.App.SnapshotAsync();
-                var result = await h.App.CommandAsync(new(Wire.Id(), s.Revision, "CalibrateEmptyTray", source.DeviceId));
+                var result = await h.App.CommandAsync(new(Wire.Id(), s.Revision, "CalibrateEmptyTray", acquisition.DeviceId));
                 if (result.Status == "Conflict") return false;
-                if (result.Status != "Persisted") throw new InvalidOperationException(Wire.Encode(new { result, Device = s.Devices, source.TrayPresenceStatus }));
+                if (result.Status != "Persisted") throw new InvalidOperationException(Wire.Encode(new { result, Device = s.Devices, acquisition.TrayPresenceStatus }));
                 return true;
             });
-            await CameraRoundHarness.Until(() => Task.FromResult(source.TrayPresenceStatus == "空托盘已确认"));
+            await CameraRoundHarness.Until(() => Task.FromResult(acquisition.TrayPresenceStatus == "空托盘已确认"));
             Check(h.Peer.Requests.IsEmpty, "teaching while recognition is paused creates no RCS request");
-            Check(Ipc.Application.Sportmaster.Desktop.CameraAcquisitionPresentation.Describe(await h.App.ReadCameraAcquisitionAsync(source.DeviceId, default)).Contains("空托盘已确认"),
+            Check(Ipc.Application.Sportmaster.Desktop.CameraAcquisitionPresentation.Describe(await h.App.ReadCameraAcquisitionAsync(acquisition.DeviceId, default)).Contains("空托盘已确认"),
                 "actual camera diagnostics expose the completed calibration to the operator");
             await h.App.SetManagementWorkspaceAsync(window, false, default);
             await h.App.ExitManagementModeAsync();
@@ -111,7 +118,7 @@ internal static class MvsPresenceChecks
             Check((await h.App.SnapshotAsync()).Rounds.Any(r => r.Id == first.Id) && h.Peer.Requests.Count == 1,
                 "reliable still-present parcel survives 3sec and never resubmits");
             camera.Parcel = false;
-            await CameraRoundHarness.Until(() => Task.FromResult(source.TrayPresenceStatus == "空托盘已确认"));
+            await CameraRoundHarness.Until(() => Task.FromResult(acquisition.TrayPresenceStatus == "空托盘已确认"));
             var afterAbsence = await h.App.SnapshotAsync();
             Check(afterAbsence.Positions!.Single(p => p.Id == "left").Arrival?.Submitted == true && h.Peer.Requests.Count == 1, "visual absence does not rearm a submitted vehicle");
 

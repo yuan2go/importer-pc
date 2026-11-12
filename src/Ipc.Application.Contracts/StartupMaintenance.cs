@@ -22,6 +22,7 @@ public sealed record StartupCheck(string Layer, string Status, string Reason);
 public sealed record StartupCheckReport(string CandidateHash, DateTimeOffset At, StartupCheck[] Checks);
 public sealed record StartupBackupItem(string Path, string Status, DateTimeOffset? At, long Bytes, string? Identity, string Summary)
 {
+    public string? OriginalDeletionStatus { get; init; }
     public bool CanRestore => Status == "Verified";
     public bool CanDelete => Identity is not null && Status is "Verified" or "Deleting" or "OrphanDatabase" or "InvalidOrIncomplete";
     public string StatusText => Status switch { "Verified" => "完整，已核验", "OrphanDatabase" => "孤立数据库", "Deleting" => "删除未完成", "Deleted" => "已删除", _ => "残缺或无法核验" };

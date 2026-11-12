@@ -215,14 +215,16 @@ public sealed partial class ParcelStartupMaintenance
                 {
                     var detail = originalDeletion.Status == "Deleted" ? "原完整集已删除；保留删除回执。" + (File.Exists(backup) || Directory.Exists(recovery) ? "原位置后来出现内容，未沿旧清单处理。" : "")
                         : "原完整集删除未完成，只能沿原冻结范围重试。";
-                    result.Add(new(backup, originalDeletion.Status == "Deleted" ? "Deleted" : "Deleting", null, 0, originalDeletion.Identity, detail)); continue;
+                    result.Add(new(backup, originalDeletion.Status == "Deleted" ? "Deleted" : "Deleting", null, 0, originalDeletion.Identity,
+                        detail + "\n" + string.Join("\n", originalDeletion.Remaining))
+                    { OriginalDeletionStatus = originalDeletion.Status }); continue;
                 }
             }
             if (!Directory.Exists(recovery))
             {
                 if (originalDeletion is not null)
                 {
-                    result.Add(new(backup, "Deleting", null, 0, originalDeletion.Identity, "原删除在提交前取消；当前位置缺少完整恢复内容，缺失原因未推断。明确办理仍沿原冻结范围。")); continue;
+                    result.Add(new(backup, "Deleting", null, 0, originalDeletion.Identity, "原删除在提交前取消；当前位置缺少完整恢复内容，缺失原因未推断。明确办理仍沿原冻结范围。") { OriginalDeletionStatus = originalDeletion.Status }); continue;
                 }
                 string? deletionIdentity = null; var deletionReason = "";
                 try { deletionIdentity = ParcelRecovery.PlanSetDeletion(backup, definition.Id, Authorize, token).Identity; }
@@ -235,8 +237,11 @@ public sealed partial class ParcelStartupMaintenance
                 var config = BackupConfiguration(backup);
                 var verified = ParcelRecovery.InspectAnalysisBackup(backup, definition, token, Authorize);
                 var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(Path.Combine(recovery, "COMPLETED.json")));
-                result.Add(new(backup, "Verified", manifest.At, verified.RequiredBytes, BackupIdentity(backup, token),
-                    "完整备份已核验：" + config.StationId + " · " + config.Mode + "；数据库及恢复文件须作为一份保管。"));
+                var identity = BackupIdentity(backup, token);
+                var originalStatus = originalDeletion is not null && originalDeletion.Identity == identity ? originalDeletion.Status : null;
+                result.Add(new(backup, "Verified", manifest.At, verified.RequiredBytes, identity,
+                    (originalStatus == "NotStarted" ? "原删除已在提交前取消。" : "") + "完整备份已核验：" + config.StationId + " · " + config.Mode + "；数据库及恢复文件须作为一份保管。")
+                { OriginalDeletionStatus = originalStatus });
             }
             catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
             {
@@ -250,7 +255,9 @@ public sealed partial class ParcelStartupMaintenance
                 }
                 catch (Exception scopeError) when (scopeError is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
                 { Authorize(); deletionDetail += "原因：" + scopeError.Message; }
-                result.Add(new(backup, originalDeletion is null ? "InvalidOrIncomplete" : "Deleting", null, 0, deletionIdentity, "完整集核验失败：" + error.Message + "；" + deletionDetail));
+                result.Add(new(backup, originalDeletion is null ? "InvalidOrIncomplete" : "Deleting", null, 0, deletionIdentity,
+                    "完整集核验失败：" + error.Message + "；" + deletionDetail)
+                { OriginalDeletionStatus = originalDeletion?.Status });
             }
         }
         return Task.FromResult(result.OrderByDescending(x => x.At).ToArray());

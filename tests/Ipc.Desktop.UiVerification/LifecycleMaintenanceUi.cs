@@ -61,6 +61,57 @@ static partial class Program
         Check(probe.Exports == 1 && probe.Inspections == 1, "native original export action inspects a lost reply without repeating the copy");
         CaptureInternal(evidence, "complete-backup-set", manager, lines); manager.Close();
 
+        async Task<(Window Window, BackupDeletionUiProbe Probe, DataGrid Grid)> DeletionWindow()
+        {
+            var api = DispatchProxy.Create<IStartupMaintenance, BackupDeletionUiProbe>(); var probe = (BackupDeletionUiProbe)(object)api;
+            var window = (Window)Activator.CreateInstance(backupType, [api, "D:/synthetic/deletion-catalog", true])!;
+            backupType.GetProperty("ConfirmDeletion", flags)!.SetValue(window, (Func<StartupBackupItem, bool>)(_ => true));
+            window.Show(); await Idle(window); Click(window, "BackupSet.Read"); await Idle(window);
+            var grid = Descendants(window).OfType<DataGrid>().Single(); grid.SelectedIndex = 0;
+            return (window, probe, grid);
+        }
+        bool Unknown(Window window) => (bool)window.GetType().BaseType!.GetField("UnknownOutcome", flags)!.GetValue(window)!;
+        var known = await DeletionWindow(); known.Probe.LoseReply = false;
+        Click(known.Window, "BackupSet.Delete"); await Idle(known.Window);
+        Check(known.Probe.Deletions == 1 && known.Probe.Reads == 1 && known.Grid.SelectedItem is StartupBackupItem { Status: "Deleted" } &&
+            !Find(known.Window, "BackupSet.Delete").IsEnabled && !Find(known.Window, "BackupSet.SelectRestore").IsEnabled,
+            "known deletion immediately displays its authoritative terminal receipt and retires stale restore/delete actions without a refresh dependency");
+        known.Window.Close();
+        var lost = await DeletionWindow(); Click(lost.Window, "BackupSet.Delete"); await Idle(lost.Window);
+        lost.Grid.SelectedItem = null;
+        Check(Unknown(lost.Window) && Find(lost.Window, "BackupSet.Delete").IsEnabled && Equals(Find(lost.Window, "BackupSet.Delete").Content, "核对原删除"),
+            "lost deletion reply retains original path/identity and a usable query action even without a selected row");
+        Click(lost.Window, "BackupSet.Delete"); await Idle(lost.Window);
+        Check(!Unknown(lost.Window) && lost.Probe.Deletions == 1 && lost.Probe.Reads == 2 && lost.Grid.SelectedItem is StartupBackupItem { Status: "Deleted" } &&
+            ((TextBox)backupType.GetField("detail", flags)!.GetValue(lost.Window)!).Text.Contains("后来出现的文件已保留"),
+            "original delete action reads the completed original receipt without another delete, preserving later-file custody facts");
+        CaptureInternal(evidence, "backup-original-deletion-completed", lost.Window, lines); lost.Window.Close();
+        var refreshed = await DeletionWindow(); Click(refreshed.Window, "BackupSet.Delete"); await Idle(refreshed.Window);
+        Click(refreshed.Window, "BackupSet.Read"); await Idle(refreshed.Window);
+        Check(!Unknown(refreshed.Window) && refreshed.Probe.Deletions == 1 && !Find(refreshed.Window, "BackupSet.Delete").IsEnabled,
+            "ordinary read resolves matching deleted terminal status instead of disabling the only remaining original-result action"); refreshed.Window.Close();
+        var partial = await DeletionWindow(); Click(partial.Window, "BackupSet.Delete"); await Idle(partial.Window); partial.Probe.OriginalStatus = "Deleting";
+        Click(partial.Window, "BackupSet.Delete"); await Idle(partial.Window);
+        Check(!Unknown(partial.Window) && partial.Probe.Deletions == 1 && Equals(Find(partial.Window, "BackupSet.Delete").Content, "继续原删除…"),
+            "partial original receipt is a read-only query result and requires an explicit continuation");
+        backupType.GetProperty("ConfirmDeletion", flags)!.SetValue(partial.Window, (Func<StartupBackupItem, bool>)(_ => false));
+        Click(partial.Window, "BackupSet.Delete"); await Idle(partial.Window);
+        Check(partial.Probe.Deletions == 1, "cancelling explicit original continuation performs no delete");
+        partial.Probe.LoseReply = false; backupType.GetProperty("ConfirmDeletion", flags)!.SetValue(partial.Window, (Func<StartupBackupItem, bool>)(_ => true));
+        Click(partial.Window, "BackupSet.Delete"); await Idle(partial.Window);
+        Check(partial.Probe.Deletions == 2 && partial.Grid.SelectedItem is StartupBackupItem { Status: "Deleted" }, "explicit original continuation finishes with the same original backup identity"); partial.Window.Close();
+        var cancelled = await DeletionWindow(); Click(cancelled.Window, "BackupSet.Delete"); await Idle(cancelled.Window); cancelled.Probe.OriginalStatus = "Verified";
+        Click(cancelled.Window, "BackupSet.Delete"); await Idle(cancelled.Window);
+        Check(Unknown(cancelled.Window) && cancelled.Probe.Deletions == 1, "a currently intact backup alone cannot prove the original unknown deletion never committed");
+        cancelled.Probe.OriginalDeletionStatus = "NotStarted";
+        Click(cancelled.Window, "BackupSet.Delete"); await Idle(cancelled.Window);
+        Check(!Unknown(cancelled.Window) && cancelled.Probe.Deletions == 1 && Find(cancelled.Window, "BackupSet.SelectRestore").IsEnabled,
+            "the matching original precommit cancellation receipt settles unknown without deletion and leaves verified backup available"); cancelled.Window.Close();
+        var mismatched = await DeletionWindow(); Click(mismatched.Window, "BackupSet.Delete"); await Idle(mismatched.Window); mismatched.Probe.MismatchIdentity = true;
+        Click(mismatched.Window, "BackupSet.Delete"); await Idle(mismatched.Window);
+        Check(Unknown(mismatched.Window) && mismatched.Probe.Deletions == 1 && !Find(mismatched.Window, "BackupSet.SelectRestore").IsEnabled,
+            "a different backup identity at the old path cannot settle the unknown original or reopen restore/delete admission"); mismatched.Window.Close();
+
         var historyType = assembly.GetType("Ipc.Desktop.MaintenanceHistoryWindow", true)!;
         var history = (Window)Activator.CreateInstance(historyType)!;
         var deployment = new DeploymentLocation("sportmaster", new string('a', 40), "D:/synthetic/original-program", "D:/synthetic/original-config", "D:/synthetic/original-data", "synthetic");
@@ -84,6 +135,32 @@ static partial class Program
             if (method!.Name == nameof(IStartupMaintenance.ListBackupsAsync)) return Task.FromResult(new[] { new StartupBackupItem("D:/synthetic/catalog/complete.db", "Verified", DateTimeOffset.UtcNow, 1024, identity, "完整集已核验") });
             if (method.Name == nameof(IStartupMaintenance.ExportBackupSetAsync)) { Exports++; return Task.FromException<StartupBackupSetResult>(new InstallationOutcomeUnknownException("controlled reply loss")); }
             if (method.Name == nameof(IStartupMaintenance.InspectBackupDeliveryAsync)) { Inspections++; return Task.FromResult(new StartupBackupSetResult("Exported", "D:/synthetic/delivery/complete.db", identity, "原交付已完成，未重复复制。", [])); }
+            throw new NotSupportedException(method.Name);
+        }
+    }
+    public class BackupDeletionUiProbe : DispatchProxy
+    {
+        public int Deletions, Reads;
+        public bool LoseReply = true, MismatchIdentity;
+        public string OriginalStatus = "Deleted";
+        public string? OriginalDeletionStatus;
+        const string Backup = "D:/synthetic/deletion-catalog/original.db";
+        static string Identity => Wire.Hash("original deletion set");
+        protected override object? Invoke(MethodInfo? method, object?[]? arguments)
+        {
+            if (method!.Name == nameof(IStartupMaintenance.ListBackupsAsync))
+            {
+                Reads++;
+                return Task.FromResult(new[] { new StartupBackupItem(Backup, Deletions == 0 ? "Verified" : OriginalStatus, null, 0,
+                    MismatchIdentity ? Wire.Hash("later different set") : Identity, Deletions == 0 ? "完整集已核验" : "原删除回执已核对；后来出现的文件已保留。") { OriginalDeletionStatus = this.OriginalDeletionStatus } });
+            }
+            if (method.Name == nameof(IStartupMaintenance.DeleteBackupSetAsync))
+            {
+                if (!Equals(arguments![0], Backup) || !Equals(arguments[1], Identity)) throw new InvalidOperationException("UI changed original deletion identity");
+                Deletions++;
+                return LoseReply ? Task.FromException<StartupBackupSetResult>(new InstallationOutcomeUnknownException("controlled deletion reply loss"))
+                    : Task.FromResult(new StartupBackupSetResult("Deleted", Backup, Identity, "原完整备份删除已完成，原回执保留。", []));
+            }
             throw new NotSupportedException(method.Name);
         }
     }

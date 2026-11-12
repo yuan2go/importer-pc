@@ -136,7 +136,8 @@ static class BackupSetDeliveryChecks
         }), default);
         Check(partial.Status == "Partial" && File.Exists(extra) && !File.Exists(backup) && !File.Exists(Path.Combine(backup + ".recovery", "COMPLETED.json")),
             "deletion removes only frozen files and invalidates completion while retaining unlisted content");
-        Check((await service.ListBackupsAsync(catalog, default)).Single(i => i.Path == backup).Status == "Deleting", "partial deletion reopens from original frozen record after database removal");
+        Check((await service.ListBackupsAsync(catalog, default)).Single(i => i.Path == backup) is { Status: "Deleting", OriginalDeletionStatus: "Partial", Summary: var remainingDetail } && remainingDetail.Contains(backup + ".recovery", StringComparison.Ordinal),
+            "partial deletion reopens from original frozen record after database removal and presents recorded remainder");
         var retried = await service.DeleteBackupSetAsync(backup, originalIdentity, null, default);
         Check(retried.Status == "Partial" && File.ReadAllText(extra) == "unlisted retained original", "repeated original deletion does not expand scope to unknown files");
         File.Delete(extra);
@@ -145,6 +146,15 @@ static class BackupSetDeliveryChecks
         Check((await service.DeleteBackupSetAsync(backup, originalIdentity, null, default)).Status == "Deleted" && File.ReadAllText(backup) == "later unrelated file at old name",
             "completed deletion query never reexecutes old frozen intent against later content at same path");
         File.Delete(backup);
+        var cancelledBackup = Path.Combine(catalog, "cancelled-delete.db"); await service.BackupAsync(cancelledBackup);
+        var cancelledIdentity = ParcelRecovery.SetIdentity(cancelledBackup);
+        // Model reopening after the known precommit cancellation receipt was
+        // persisted but its reply was lost. Use the real frozen deletion planner.
+        var cancelledPlan = ParcelRecovery.PlanSetDeletion(cancelledBackup, "sportmaster", () => { }, default);
+        ExtensionStore.AtomicWrite(cancelledBackup + ".deleting.json", cancelledPlan with { Status = "NotStarted" });
+        Check((await service.ListBackupsAsync(catalog, default)).Single(i => i.Path == cancelledBackup) is { Status: "Verified", OriginalDeletionStatus: "NotStarted", Summary: var cancelledDetail } &&
+            cancelledDetail.Contains("提交前取消", StringComparison.Ordinal) && ParcelRecovery.SetIdentity(cancelledBackup) == cancelledIdentity,
+            "read-only listing projects the identity-matched original precommit cancellation separately from current intact backup custody");
         var lockedBackup = Path.Combine(catalog, "locked.db"); await service.BackupAsync(lockedBackup); var lockedIdentity = ParcelRecovery.SetIdentity(lockedBackup);
         var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(Path.Combine(lockedBackup + ".recovery", "COMPLETED.json")));
         var held = Path.Combine(lockedBackup + ".recovery", manifest.Files.Keys.First());

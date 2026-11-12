@@ -117,11 +117,23 @@ static partial class Program
         var original = new ProgramUninstallResult(partial, null, false);
         var unknown = Make(_ => Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("合成卸载回执中断")), () => original);
         unknown.Show(); await Idle(unknown); Click(unknown, "卸载"); await Idle(unknown); before = calls;
+        Check(!Descendants(unknown).OfType<Button>().Any(b => Equals(b.Content, "查看结果")) && Status(unknown).Contains("只核对原结果"),
+            "unknown uninstall offers no separate result button and explains the original action");
         Click(unknown, "卸载"); await Idle(unknown);
-        Check(calls == before && Status(unknown).Contains("结果未确认"), "lost receipt cannot submit a second uninstall");
-        Click(unknown, "查看结果"); await Idle(unknown);
+        Check(calls == before, "the original uninstall action inspects a lost receipt without submitting another uninstall");
         Check(inspections == 1 && Button(unknown, "重试卸载").IsEnabled && Status(unknown).Contains("尚未删除"), "verified original partial result permits fixed-inventory retry");
         CaptureInternal(evidence, "uninstall-partial", unknown, lines); Click(unknown, "关闭");
+
+        var unreadable = Make(_ => Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("synthetic lost receipt")),
+            () => throw new InstallationOutcomeUnknownException("synthetic unreadable original receipt"));
+        unreadable.Show(); await Idle(unreadable); Click(unreadable, "卸载"); await Idle(unreadable);
+        before = calls; var readsBefore = inspections;
+        Click(unreadable, "卸载"); await Idle(unreadable);
+        Click(unreadable, "卸载"); await Idle(unreadable);
+        Check(calls == before && inspections == readsBefore + 2 && Status(unreadable).Contains("只核对原结果") &&
+            !Descendants(unreadable).OfType<Button>().Any(b => Equals(b.Content, "查看结果")),
+            "unreadable original results remain guarded across repeated clicks without another uninstall or result button");
+        CaptureInternal(evidence, "uninstall-unknown-single-action", unreadable, lines); Click(unreadable, "取消");
 
         var changedChoice = Make(_ => Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("synthetic lost receipt")),
             () => new(clean, null, false) { Assets = assetsComplete });
@@ -129,7 +141,7 @@ static partial class Program
         Descendants(changedChoice).OfType<RadioButton>().Single(b => Equals(b.Content, "同时删除本站数据")).IsChecked = true;
         Click(changedChoice, "卸载"); await Idle(changedChoice);
         Descendants(changedChoice).OfType<RadioButton>().Single(b => Equals(b.Content, "保留本站数据")).IsChecked = true;
-        Click(changedChoice, "查看结果"); await Idle(changedChoice);
+        Click(changedChoice, "卸载"); await Idle(changedChoice);
         Check(Status(changedChoice).Contains("本站数据已保留") && !Descendants(changedChoice).OfType<Button>().Any(b => Equals(b.Content, "重试卸载")),
             "inspection preserves a later retention choice when no data-deletion operation exists");
         Click(changedChoice, "关闭");
@@ -141,7 +153,7 @@ static partial class Program
         purgeRetry.Show(); await Idle(purgeRetry);
         Descendants(purgeRetry).OfType<RadioButton>().Single(b => Equals(b.Content, "同时删除本站数据")).IsChecked = true;
         Click(purgeRetry, "卸载"); await Idle(purgeRetry); before = calls;
-        Click(purgeRetry, "查看结果"); await Idle(purgeRetry);
+        Click(purgeRetry, "卸载"); await Idle(purgeRetry);
         Check(calls == before && Status(purgeRetry).Contains("部分数据尚未删除"), "inspecting an original partial data deletion never submits another deletion");
         Click(purgeRetry, "重试卸载"); await Idle(purgeRetry);
         Check(selectedDelete && Status(purgeRetry).Contains("本站数据已删除"), "an explicit retry continues a committed partial deletion rather than silently claiming retention");
@@ -156,7 +168,7 @@ static partial class Program
         var replaced = Make(_ => Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("synthetic lost receipt")), () => new(clean, null, false) { Assets = assetsComplete });
         replaced.Show(); await Idle(replaced); Click(replaced, "卸载"); await Idle(replaced); before = inspections;
         type.GetProperty("RegistrationScope", flags)!.SetValue(replaced, (Func<string>)(() => "replacement-installation"));
-        Click(replaced, "查看结果"); await Idle(replaced);
+        Click(replaced, "卸载"); await Idle(replaced);
         Check(inspections == before && Status(replaced).Contains("重新打开"), "result inspection cannot rebind an old window to another installation");
         Click(replaced, "取消");
 

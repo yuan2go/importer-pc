@@ -13,6 +13,7 @@ static class LifecycleRestore
         { try { await action(); } catch (T) { Check(true, reason); return; } throw new Exception("Expected " + typeof(T).Name + ": " + reason); }
         using var h = new RestoreHarness(workspace, root);
         var c = h.Configuration;
+        var expectedPorts = ParcelBindings.Readers(c).Select(r => r.DeviceId).Append(c.Wcs!.InstanceId).Distinct().ToArray();
         var backup = Path.Combine(root, "complete.db");
         await using (var app = new ParcelRuntime(h.Launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(h.Launch)) { RuntimeIdentityPreflight = () => { } })
         {
@@ -20,7 +21,7 @@ static class LifecycleRestore
             await app.ConfigureManagementPasswordAsync("Synthetic-original-password-8374");
             Check(await app.EnterManagementModeAsync("Synthetic-original-password-8374"), "online backup uses actual temporary management authorization");
             _ = await app.CommandAsync(new(Wire.Id(), (await app.SnapshotAsync()).Revision, "Pause"));
-            var receipt = await LifecycleOptimization.AfterMonitorDrain(app, () => app.BackupAsync(backup));
+            var receipt = await LifecycleOptimization.AfterMonitorDrain(app, () => app.BackupAsync(backup), expectedPorts);
             Check(receipt.Status == "BackupCreated", "real running Application produces the complete fenced backup before normal shutdown");
         }
         var source = Path.Combine(h.Launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId);
@@ -80,7 +81,8 @@ static class LifecycleRestore
             {
                 var state = await restored.SnapshotAsync();
                 await Reject<InvalidDataException>(() => restored.CommandAsync(new(Wire.Id(), state.Revision, "ConfirmRestore", proof.Id, "{\"Reason\":\"no actual floor\"}")), "missing external-number evidence is rejected by the real runtime, never defaulted to zero");
-                await Reject<InvalidOperationException>(() => restored.CommandAsync(new(Wire.Id(), state.Revision, "ConfirmRestore", proof.Id, Wire.Encode(new RestoreVerificationInput("exhausted protocol", long.MaxValue)))),
+                var afterMissing = await restored.SnapshotAsync();
+                await Reject<InvalidOperationException>(() => restored.CommandAsync(new(Wire.Id(), afterMissing.Revision, "ConfirmRestore", proof.Id, Wire.Encode(new RestoreVerificationInput("exhausted protocol", long.MaxValue)))),
                     "exhausted Int64 request space cannot be confirmed as usable after restore");
                 var command = new BusinessCommand(Wire.Id(), (await restored.SnapshotAsync()).Revision, "ConfirmRestore", proof.Id, Wire.Encode(new RestoreVerificationInput("controlled external verification", 900000000000000000)));
                 var confirmed = await restored.CommandAsync(command);
@@ -90,7 +92,7 @@ static class LifecycleRestore
                 await Reject<InvalidOperationException>(() => restored.CommandAsync(command with { Id = Wire.Id(), ExpectedRevision = latest.Revision,
                     Value = Wire.Encode(new RestoreVerificationInput("cannot lower", 1)) }), "actual runtime refuses a lower externally claimed number floor after confirmation");
                 return true;
-            });
+            }, expectedPorts);
         }
 
         var machine = Path.Combine(root, "controlled-machine"); Directory.CreateDirectory(Path.Combine(machine, "deployments"));

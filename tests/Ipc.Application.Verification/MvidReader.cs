@@ -132,6 +132,7 @@ internal static class MvidReader
         Check(h.Peer.Requests.Count == 2, "the other native camera supplies independently");
         var epoch = h.Factory.Sources[h.Left].Epoch;
         await h.App.ReconnectDeviceAsync(h.Left);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Epoch != epoch));
         await Show(h.Left, parcel, []); await vm.RefreshAsync();
         Check(vm.Left.ShowConfirmedTask, "a new camera session cannot replace current-round authority or grant another first call");
@@ -195,6 +196,7 @@ internal static class MvidReader
         Check(vm.Left.CurrentRound?.Id == round.Id && h.Peer.Requests.Count == 1, "no-code/background frames cannot certify native physical removal");
         var epoch = h.Factory.Sources[h.Left].Epoch;
         await h.App.ReconnectDeviceAsync(h.Left);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
         await Frame(Symbol("SYNTH-PACKAGE-1"));
         Check(h.Factory.Sources[h.Left].Epoch != epoch && vm.Left.CurrentRound?.Id == round.Id && h.Peer.Requests.Count == 1,
             "native reconnect preserves current round and automatic suppression");
@@ -355,16 +357,16 @@ internal static class MvidReader
         Check(h.Peer.Requests.Count == 3 && (await h.App.OperationAsync(locked.OperationId!))?.Wcs is { State: StageState.Prepared, Attempts: 0 },
             "an unsent prepared native debug request cannot block the next production parcel");
         var sent = await h.App.SendCameraRoundAsync(await h.SendCommandAsync(locked), default);
-        Check(h.Peer.Requests.Count == 4 && h.Peer.Requests.Last() == locked.RequestBody && sent.HttpResponse is { StatusCode: 200, Complete: true } &&
-            (await h.App.OperationAsync(sent.OperationId!))?.Wcs?.State == StageState.Accepted,
-            "explicit native debug send makes one independent RCS request using the frozen body");
+        Check(h.Peer.Requests.Count == 3 && sent.SendAttempts == 0 && sent.HttpResponse is null && !sent.CanSend &&
+            (await h.App.OperationAsync(locked.OperationId!))?.Wcs is { State: StageState.Prepared, Attempts: 0 },
+            "a stale native debug request cannot send to a newer production-claimed arrival");
         await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
         h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, 3, [Symbol("SYNTH-NATIVE-DEBUG-NEXT")]);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NATIVE-DEBUG-NEXT" && o.Wcs?.State == StageState.Accepted));
-        Check((await h.App.ReadCameraReadRoundAsync(default)).Frame!.Id == locked.Frame.Id && h.Factory.Decoders[h.Left].Count == 0 && h.Peer.Requests.Count == 5,
+        Check((await h.App.ReadCameraReadRoundAsync(default)).Frame!.Id == locked.Frame.Id && h.Factory.Decoders[h.Left].Count == 0 && h.Peer.Requests.Count == 4,
             "locked native debug picture does not freeze production, use ZXing or change to a later frame");
         await h.EndAsync();
-        Check(h.Peer.Requests.Count == 5 && !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced,
+        Check(h.Peer.Requests.Count == 4 && !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced,
             "ending native debugging clears the capture boundary without replaying a request");
     }
 }

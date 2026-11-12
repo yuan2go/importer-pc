@@ -55,7 +55,7 @@ static partial class SportmasterRcs
         var absent = new SoftwareFrameApi(readers[0]) { Discovered = false };
         await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new SoftwareFlowFactory(launch, candidate, absent, false)) { RuntimeIdentityPreflight = () => { } })
         {
-            await app.StartAsync(default);
+            await app.StartAsync(default); SmRoundFixture.Register(app, launch, candidate);
             await ManagementModeFixture.Authorize(app);
             var s = await Wait(app, s => s.Health.Any(h => h.InstanceId == rcs.InstanceId && h.Ready));
             Check(s.Configuration.Status == "Effective" && s.Configuration.Pending is null && Wire.Encode(s.Configuration.Effective) == original,
@@ -75,7 +75,7 @@ static partial class SportmasterRcs
         var returnedFactory = new SoftwareFlowFactory(launch, candidate, returned, false);
         await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), returnedFactory) { RuntimeIdentityPreflight = () => { } })
         {
-            await app.StartAsync(default);
+            await app.StartAsync(default); SmRoundFixture.Register(app, launch, candidate);
             await ManagementModeFixture.Authorize(app);
             var s = await Wait(app, s => s.Health.Any(h => h.InstanceId == rcs.InstanceId && h.Ready) && !s.Paused);
             Check(s.Configuration.Pending is null && Wire.Encode(s.Configuration.Effective) == original &&
@@ -135,7 +135,7 @@ static partial class SportmasterRcs
             {
                 await Wait(app, _ => returned.StopAttempts > stops);
                 returned.Discovered = true;
-                s = await Wait(app, s => returned.OpenAttempts > opens && s.Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
+                s = await Wait(app, s => returned.OpenAttempts > opens && s.Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
                 Check(returned.Calls.Contains("destroy") && s.Operations.All(o => o.Wcs!.Attempts == 1),
                     "a StopGrabbing error after stream loss no longer blocks reconnect: native handle destroyed, camera reopened, original requests not resent");
             }

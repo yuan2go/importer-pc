@@ -52,6 +52,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public async Task TrayAsync(string device, TrayPresence presence)
     {
         var position = Config.Topology!.Positions.Single(p => p.ReaderDeviceId == device).Id;
+        await Until(async () => (await App.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.CameraBoundaryReady == true);
         var before = App.WorkerProgress().Single(p => p.Position == position).Processed;
         if (!Factory.Trays[device].Observe(presence)) throw new InvalidOperationException("Qualified fixture presence was not admitted");
         await Until(() => Task.FromResult(App.WorkerProgress().Single(p => p.Position == position).Processed > before));

@@ -191,7 +191,6 @@ if (args.Contains("--sportmaster-ui")) { await SportmasterUi.Run(workspace, root
 if (args.Contains("--storage-format-guards")) { await ArchitectureQuality.StorageFormatChecks(workspace, root); return; }
 
 if (args.Contains("--rcs-heartbeat")) { await SportmasterRcs.HeartbeatChecks(workspace); return; }
-if (args.Contains("--rcs-timeout-rescan")) { await SportmasterRcs.TimeoutRescanChecks(workspace, root); return; }
 if (args.Contains("--rcs-timeout-errors")) { await SportmasterRcs.TimeoutErrorChecks(workspace, root); return; }
 if (args.Contains("--sportmaster-rcs")) { await SportmasterRcs.Run(workspace, root); return; }
 

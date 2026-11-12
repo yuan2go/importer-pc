@@ -64,11 +64,11 @@ static partial class Program
             Check((int)cues.GetValue(left)! == 1, "repeated snapshots of one original result do not repeat its success cue");
             var manualAvailable = vm.Right.CanSubmitBarcode;
             await Vehicles();
-            Check(vm.Left.VehicleStatusText.StartsWith("小车 SYNTH-50020") && vm.Left.VehicleStatusText.Contains("可以投包") && vm.Left.VehicleStatusForeground == OperatorTokens.Success &&
+            Check(vm.Left.VehicleStatusText.StartsWith("小车 SYNTH-50020") && vm.Left.VehicleStatusText.Contains("本车已处理") && vm.Left.VehicleStatusForeground == OperatorTokens.Muted &&
                 vm.Right.VehicleStatusText.StartsWith("小车 SYNTH-50023") && vm.Right.VehicleStatusText.Contains("不可以投包") && vm.Right.CanSubmitBarcode == manualAvailable,
-                "idle and tasking vehicle labels map to their own camera without changing manual admission");
+                "submitted vehicle suppresses idle readiness while independent tasking vehicle retains its own state");
             await Vehicles(expired: true);
-            Check(vm.Left.VehicleStatusText == "小车：待确认" && vm.Left.VehicleStatusForeground == OperatorTokens.Muted, "expired idle telemetry cannot remain green");
+            Check(!vm.Left.VehicleStatusText.Contains("可投包") && vm.Left.VehicleStatusForeground == OperatorTokens.Muted, "expired idle telemetry cannot remain green");
             await ManagementModeFixture.Authorize(h.App); await vm.RefreshManagementModeAsync(); await vm.RefreshAsync();
             var frozen = Wire.Encode(vm.Left.Operation!.Wcs!.Request);
             foreach (var (width, height, fullScreenChrome) in new[] { (1366d, 768d, false), (800d, 420d, false), (800d, 420d, true) })
@@ -95,7 +95,7 @@ static partial class Program
                 if (vm.IsTight)
                 {
                     Check(leftVehicle.ActualHeight <= 44 && rightVehicle.ActualHeight <= 44 &&
-                        Descendants(leftVehicle).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "空闲 可投包" && Inside(t, client)) &&
+                        Descendants(leftVehicle).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "已处理 勿投包" && Inside(t, client)) &&
                         Descendants(rightVehicle).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "工作中 勿投包" && Inside(t, client)),
                         "compact vehicle headers keep both status instructions visible within the switch row");
                 }
@@ -134,7 +134,7 @@ static partial class Program
                 instruction.TransformToAncestor(pausedPanel).TransformBounds(new Rect(instruction.RenderSize)).Bottom <= pausedPanel.ActualHeight + 1,
                 "pause recovery instruction is fully visible inside the compact result panel");
             CaptureInternal(evidence, "operator18-paused-800", (Grid)window.FindName("ClientArea"), lines);
-            vm.DismissGlobalOperationFeedback(); await vm.CommandAsync("Resume"); await vm.RefreshAsync(); await Until(() => !vm.Snapshot!.Paused && vm.Left.CanSubmitBarcode);
+            vm.DismissGlobalOperationFeedback(); await vm.CommandAsync("Resume"); await h.NextVehicleAsync("left"); await vm.RefreshAsync(); await Until(() => !vm.Snapshot!.Paused && vm.Left.CanSubmitBarcode);
             h.Peer.Mode = "no-device";
             entry.Clear(); entry.Text = "000UX180003"; submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.Operation?.State == ParcelState.WcsRejected && !vm.Busy);

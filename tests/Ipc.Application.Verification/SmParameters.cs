@@ -37,7 +37,7 @@ static class SmParameters
             deadline.Value = "";
             Check(!editor.ValidateFields() && editor.Issues.Any(i => i.Path == rcs.InstanceId + "/request-timeout-ms"), "an explicitly cleared numeric request deadline is immediately locatable rather than disguised as an omitted default");
             rcs.ConfigureLater = true; rcs.Target = ""; deadline.Value = "1000";
-            foreach (var p in rcs.Parameters.Where(p => p.Field.Key is "zone-id" or "project-id")) p.Value = "";
+            foreach (var p in rcs.Parameters.Where(p => p.Field.Key is "zone-id" or "project-id")) p.Value = "1";
             startup.Policy.SessionLifetimeMs = "not an SM setting"; startup.Policy.MaximumOperations = "not an SM limit";
             startup.Policy.QueueCapacity = "internal"; startup.Policy.TimeoutMs = "internal"; startup.Policy.Precision = "disabled";
             Check(editor.ValidateFields() && Wire.Encode(startup.Build()) == Wire.Encode(initial), "hidden SM login, disabled weight, unused operation count and internal budgets neither create edits nor unfixable validation failures");

@@ -73,7 +73,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
         vehicle.ReceivedAt <= DateTimeOffset.UtcNow && vehicle.ValidUntil > DateTimeOffset.UtcNow;
     string? SmTargetBlock(string position, string? exceptOperation = null, bool debug = false)
     {
-        if (Id != "sportmaster") return null;
+        if (!UsesSmArrival(position)) return null;
         if (!PositionHasRcsCode(position)) return "本位相机编码未配置，保持停用；填写后可启用。";
         var cycle = SmCycle(position);
         if (cycle.RecoveryReason is not null) return cycle.RecoveryReason;
@@ -279,7 +279,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
     }
     SmPositionCycle[] SmCyclesAfterOperation(ParcelOperation op, bool firstAttempt)
     {
-        if (Id != "sportmaster" || op.PositionId is not { } position) return [];
+        if (op.PositionId is not { } position || !UsesSmArrival(position)) return [];
         var result = new List<SmPositionCycle>();
         foreach (var target in new[] { position })
         {

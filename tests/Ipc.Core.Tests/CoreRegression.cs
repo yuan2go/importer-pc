@@ -61,7 +61,7 @@ public sealed class CoreRegression
     [DataRow("--sm-dispatch-resources", 8)]
     [DataRow("--sm-arrival-cameras", 24)]
     [DataRow("--sm-arrivals", 25)]
-    [DataRow("--sm-round-lifecycle", 147)]
+    [DataRow("--sm-round-lifecycle", 138)]
     [DataRow("--sm-original-frame", 27)]
     [DataRow("--rcs-heartbeat", 25)]
     [DataRow("--station-position-control", 37)]

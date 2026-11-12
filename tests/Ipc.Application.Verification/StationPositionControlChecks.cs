@@ -90,7 +90,7 @@ internal static class StationPositionControlChecks
             await Deliver(CameraRoundHarness.Barcode("SYNTH-DRAIN"));
             Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CurrentRoundId is null,
                 "reenabling over the same placement does not manufacture an empty tray or resend the resting parcel");
-            await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
+            await SmRoundFixture.NextVehicleAsync(h.App, "left");
             await Deliver(CameraRoundHarness.Barcode("SYNTH-REENABLED"));
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.Wcs?.State == StageState.Accepted) == 2);
             Check(h.Peer.Requests.Count == 2 && (await h.App.SnapshotAsync()).Operations.Any(o => o.Id == original.Id), "reenabled camera admits next placement and preserves historical original");
@@ -137,7 +137,19 @@ internal static class StationPositionControlChecks
                 "both disabled cameras release without empty-tray input or extra requests during a real RCS outage");
             var delayedOriginals = h.Peer.Hold;
             h.Peer.Hold = null; h.Peer.HeartbeatUnavailable = false;
+            Check((await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default)).Status == "Rejected",
+                "local timeout and withdrawal cannot automatically cancel the old remote target");
+            await h.AuthorizeAsync();
+            await CameraRoundHarness.Until(async () =>
+            {
+                await h.App.CheckRcsHeartbeatAsync(default);
+                var current = await h.App.SnapshotAsync(); var lane = current.Positions!.Single(p => p.Id == "left");
+                return (await h.App.ConfirmRemoteRecoveryAsync(new(Wire.Id(), current.RuntimeId, "left", lane.Arrival!.Generation,
+                    "SYNTHETIC peer original target bindings completed before response holds; failed heartbeat handlers ended; withdrawal applied")
+                { ExpectedControlRevision = lane.SupplyControl!.Revision, ExpectedTargetOperation = lane.Arrival.TargetOperation, ExpectedRecoveryToken = lane.Arrival.RecoveryToken }, default)).Status == "Accepted";
+            });
             await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
+            await SmRoundFixture.NextVehicleAsync(h.App, "left");
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
             await h.TrayAsync(h.Left, TrayPresence.Absent);
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-UNKNOWN-DISABLE"), 2);
@@ -173,10 +185,11 @@ internal static class StationPositionControlChecks
             h.Peer.ReplySlot = "SYNTH-NEXT";
             await h.StartAsync();
             snapshot = await h.App.SnapshotAsync();
-            Check(!snapshot.Paused && snapshot.Positions!.Single(p => p.Id == "left") is { CurrentOperation: null, BarcodeInput.Manual: true } &&
+            Check(!snapshot.Paused && snapshot.Positions!.Single(p => p.Id == "left") is { CurrentOperation: null, BarcodeInput.Manual: false, Arrival.Submitted: true } &&
                 snapshot.Capacity?.HistoricalUnknown == 1 && snapshot.Operations.All(o => o.Id != old.Id) &&
                 Wire.Encode((await h.App.OperationAsync(old.Id))?.Wcs) == Wire.Encode(old.Wcs),
-                "a restart preserves the removal and original request in history without reblocking the lane");
+                "a restart preserves historical custody and the submitted-car guard without pausing the station");
+            await h.NextVehicleAsync();
             var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-MANUAL-RELEASE"), default);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
             Check(next.Status == "Admitted" && next.OperationId != old.Id && h.Peer.Requests.Count == 2,
@@ -210,7 +223,9 @@ internal static class StationPositionControlChecks
             Check(h.Peer.Requests.IsEmpty && (await h.App.OperationAsync(admitted.OperationId!)) is
                 { State: ParcelState.Abandoned, Wcs.Attempts: 0, Wcs.State: StageState.Cancelled },
                 "a prepared request disabled before its first attempt never reaches RCS");
-            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
+            await CameraRoundHarness.Until(async () => await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received);
+            Check((await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default)).Status == "Accepted", "withdrawal acknowledgement permits explicit re-enable");
+            await h.NextVehicleAsync();
             var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-UNSENT-DISABLE"), default);
             await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(next.OperationId!))?.State == ParcelState.SlotResolved);
             var current = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CurrentRoundId;
@@ -266,6 +281,7 @@ internal static class StationPositionControlChecks
         h.Peer.ReplySlot = "SYNTH-NEW-SLOT";
         var newFingerprint = new string('B', 64);
         await h.StartAsync(ready: false, rcsImplementationFingerprint: newFingerprint);
+        await h.NextVehicleAsync("right");
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").BarcodeInput?.Manual == true);
         var restarted = await h.App.SnapshotAsync();
         Check(!restarted.Paused && h.Peer.Requests.Count == 2 &&
@@ -284,6 +300,7 @@ internal static class StationPositionControlChecks
             (await h.App.SnapshotAsync()).Operations.All(o => o.Id != old.Id) && h.Peer.Requests.Count == 2,
             "after removal, the obsolete request is deleted from live work and history");
 
+        await h.NextVehicleAsync();
         var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-UPGRADE"), default);
         await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(next.OperationId!))?.State == ParcelState.SlotResolved);
         var current = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == next.OperationId);
@@ -309,18 +326,13 @@ internal static class StationPositionControlChecks
         using (var json = JsonDocument.Parse(h.Peer.HeartbeatRequests.Last()))
         {
             var data = json.RootElement.GetProperty("data");
-            Check(data.GetArrayLength() == 2 && data.EnumerateArray().All(item => item.GetProperty("params").EnumerateObject().Count() == 3) &&
+            Check(data.GetArrayLength() == 1 && data.EnumerateArray().All(item => item.GetProperty("params").EnumerateObject().Count() == 3) &&
                 data.EnumerateArray().Select(item => item.GetProperty("params").GetProperty("bcrCode").GetString()).SequenceEqual(
-                    new[] { h.Config.Wcs!.Parameters["left-bcr-code"], h.Config.Wcs.Parameters["right-bcr-code"] }),
-                "disabling one lane retains both configured identities and the unchanged heartbeat protocol");
+                    new[] { h.Config.Wcs!.Parameters["right-bcr-code"] }),
+                "disabling one lane removes only its member and retains the existing heartbeat item protocol");
         }
-        // Hold a real in-flight response across the second switch. It still
-        // confirms RCS connectivity but cannot give a disabled lane a green cue.
-        h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); h.Peer.HoldWhen = _ => true;
-        count = h.Peer.HeartbeatRequests.Count;
-        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.HeartbeatRequests.Count > count));
+        // Actual late-member application is fault-injected by SmArrivalRecoveryChecks.
         await h.App.SetPositionEnabledAsync(await Command(h.App, "right", false), default);
-        h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.All(p =>
             p.SupplyControl?.Mode == StationPositionMode.Disabled && p.CameraConnectionSuspended));
         count = h.Peer.HeartbeatRequests.Count;
@@ -330,7 +342,8 @@ internal static class StationPositionControlChecks
             snapshot.Positions!.All(p => p.Vehicle is null && p.BarcodeInput?.Manual == false),
             "both disabled cameras keep scheduled RCS connectivity without restoring vehicle cues or input admission");
         count = h.Peer.HeartbeatRequests.Count;
-        Check(await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received && h.Peer.HeartbeatRequests.Count == count + 1,
+        await CameraRoundHarness.Until(async () => await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received);
+        Check(h.Peer.HeartbeatRequests.Count > count && h.Peer.Requests.IsEmpty,
             "manual heartbeat also works when both lanes and their cameras are disabled");
         h.Peer.HeartbeatUnavailable = true;
         await CameraRoundHarness.Until(async () => !(await h.App.SnapshotAsync()).Health.Single(health => health.InstanceId == h.Config.Wcs!.InstanceId).Ready);

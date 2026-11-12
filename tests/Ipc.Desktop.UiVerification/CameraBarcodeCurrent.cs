@@ -47,7 +47,7 @@ static partial class Program
                 await vm.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             }
             async Task Next(string device)
-            { await h.TrayAsync(device, TrayPresence.Absent); await h.TrayAsync(device, TrayPresence.Present); await vm.RefreshAsync(); }
+            { await SmRoundFixture.NextVehicleAsync(h.App, device == h.Left ? "left" : "right"); await h.TrayAsync(device, TrayPresence.Present); await vm.RefreshAsync(); }
             async Task Resolved(string code) => await Until(() => p.Barcode == code && p.ShowConfirmedTask, "resolved " + code);
 
             // A decode cue has no authority to create a current business round.
@@ -97,9 +97,9 @@ static partial class Program
                 "late old success only completes its record and leaves the current image, task and barcode intact");
             await Frame(h.Left, CameraRoundHarness.EmptyTray);
             Check(p.CurrentRound?.Id == currentId && p.ShowConfirmedTask, "a no-code frame is not qualified removal");
-            await h.TrayAsync(h.Left, TrayPresence.Absent); await vm.RefreshAsync();
+            await SmRoundFixture.NextVehicleAsync(h.App, "left"); await vm.RefreshAsync();
             Check(p.CurrentRound is null && !p.ShowConfirmedTask && !p.ShowRecentChute && !picture.IsEnabled && !tasks.IsVisible && p.CanSubmitBarcode,
-                "qualified removal clears the current result and image without previous-chute authority");
+                "confirmed vehicle change clears the current result and image without previous-chute authority");
 
             await h.TrayAsync(h.Left, TrayPresence.Present);
             await Frame(h.Left, CameraRoundHarness.Multiple("SYNTH-MULTI-A", "SYNTH-MULTI-B"));

@@ -65,7 +65,7 @@ internal static class BackupConsistency
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == frame)));
                 if (frame < 4) await Task.Delay(420);
             }
-            await h.TrayAsync(h.Left, TrayPresence.Absent);
+            Check(h.Factory.Trays[h.Left].Observe(TrayPresence.Absent), "qualified observation retires normally at the backup ingress fence");
             Check(DateTimeOffset.UtcNow - first >= TimeSpan.FromMilliseconds(800), "three delivered no-code frames are followed by an independent qualified removal fact");
             var before = Progress(h.App);
             await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > before));

@@ -145,7 +145,8 @@ internal static class SamePlacement29
         var oldEpoch = h.Factory.Sources[h.Left].Epoch;
         await h.App.ReconnectDeviceAsync(h.Left);
         await CameraRoundHarness.Until(async () => h.Factory.Sources[h.Left].Epoch != oldEpoch &&
-            (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Left).IsValid(DateTimeOffset.UtcNow));
+            (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Left).IsValid(DateTimeOffset.UtcNow) &&
+            (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival!.CameraBoundaryReady);
         await Read("SYNTH-PLACE-C");
         var reread = await Latest();
         await vm.RefreshAsync();
@@ -212,7 +213,8 @@ internal static class SamePlacement29
 
         var oldEpoch = h.Factory.Sources[h.Left].Epoch;
         await h.App.ReconnectDeviceAsync(h.Left);
-        await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Epoch != oldEpoch));
+        await CameraRoundHarness.Until(async () => h.Factory.Sources[h.Left].Epoch != oldEpoch &&
+            (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
         decoder = h.Factory.Decoders[h.Left]; decoder.MissNext = int.MaxValue;
         await Show(parcel, 1, 60);
         await vm.RefreshAsync();
@@ -230,11 +232,12 @@ internal static class SamePlacement29
         await vm.RefreshAsync();
         Check(vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == 1, "NoCode and changed scene alone cannot end the current round");
         await h.TrayAsync(h.Left, TrayPresence.Absent);
+        await SmRoundFixture.NextVehicleAsync(h.App, "left");
         await vm.RefreshAsync();
-        Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture, "qualified removal clears current result and picture");
+        Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture, "confirmed vehicle change clears current result and picture");
         await Show(parcel, 1, 60);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
-        Check(h.Peer.Requests.Count == 2, "lifting the parcel changes the scene, the empty tray is seen, and placing it again requests once");
+        Check(h.Peer.Requests.Count == 2, "a new vehicle after the lift starts one new request");
         await h.App.StopAsync(default);
     }
 

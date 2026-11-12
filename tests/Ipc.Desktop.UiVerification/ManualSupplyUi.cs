@@ -36,7 +36,8 @@ static partial class Program
                 if (!deferred)
                 {
                     h.Factory.Cameras[vm.Left.ReaderId].Emit();
-                    await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > 0));
+                    // The invalid source observation retires synchronously before durable ingress.
+                    Check(h.App.WorkerProgress().Single(p => p.Position == "left").Processed == 0, "unhealthy source does not create a durable input");
                     await vm.RefreshAsync();
                     Check(vm.Left.CurrentRound is null && vm.Left.Barcode.Length == 0 && vm.Left.CanSubmitBarcode &&
                         vm.Right.CanAdmit && h.Peer.Requests.Count == 0,
@@ -92,15 +93,16 @@ static partial class Program
                 await CameraRoundHarness.Until(async () =>
                 {
                     await Flush();
-                    return vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "等待投包" &&
-                        vm.Right.ShowCenteredState && vm.Right.CenteredStateTitle == "等待投包";
+                    return vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "本车已处理" &&
+                        vm.Right.ShowCenteredState && vm.Right.CenteredStateTitle == "本车已处理";
                 });
-                Check(leftEntry.Text == "" && entry.Text == "" && !vm.Left.HasCurrentInput && !vm.Left.ShowConfirmedTask && vm.Left.CanSubmitBarcode &&
+                Check(leftEntry.Text == "" && entry.Text == "" && !vm.Left.HasCurrentInput && !vm.Left.ShowConfirmedTask && !vm.Left.CanSubmitBarcode &&
                     vm.Snapshot!.Positions!.All(p => p.PlacementClearedAt is null) &&
                     (await h.App.OperationAsync(leftOriginal))?.State == ParcelState.SlotResolved &&
                     (await h.App.OperationAsync(rightOriginal))?.State == ParcelState.SlotResolved && h.Peer.Requests.Count == 2,
                     "keyboard and PDA results automatically clear from both work cards without a removal or another RCS request");
                 CaptureInternal(evidence, deferred ? "manual-deferred-waiting" : "manual-offline-waiting", (Grid)window.FindName("ClientArea"), lines);
+                await h.NextVehicleAsync("left"); await h.NextVehicleAsync("right"); await Until(() => vm.Left.CanSubmitBarcode && vm.Right.CanSubmitBarcode);
                 if (!deferred)
                 {
                     h.Peer.ReplySlot = "";
@@ -112,9 +114,10 @@ static partial class Program
                     Check(removal.IsEnabled && Inside(removal, (Grid)window.FindName("ClientArea")) &&
                         vm.Left.CenteredStateInstruction == "请先取下包裹，再确认", "compact offline-camera card exposes the operator removal action without management");
                     removal.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                    await Until(() => vm.Left.Operation is null && vm.Left.CanSubmitBarcode && !vm.Busy);
+                    await Until(() => vm.Left.Operation is null && !vm.Left.CanSubmitBarcode && !vm.Busy);
                     Check(!removal.IsVisible && !vm.Left.HasCurrentInput && leftEntry.Text == "" && vm.Right.CenteredStateTitle == "等待投包" && h.Peer.Requests.Count == 3,
                         "the removal action clears only the affected card and sends no request");
+                    await h.NextVehicleAsync("left"); await Until(() => vm.Left.CanSubmitBarcode);
                     h.Peer.ReplySlot = "SYNTH-NEXT";
                     leftEntry.Text = "000123458";
                     leftSubmit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -178,6 +181,7 @@ static partial class Program
                 "native history query by removal reason displays the original unsubmitted barcode failure");
             await Query("NoMatchingCode");
             Check(Cell(table.Items.Cast<object>().Single(), "Identity") == rejected.Id, "native read-outcome selector queries the same round without a synthetic operation");
+            await h.NextVehicleAsync("left");
             await h.App.SubmitParcelBarcodeAsync(await h.Command("left", new string('Y', 300)), default);
             clock.Advance();
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.Any(r => r.PositionId == "left" && r.AutoExpired));

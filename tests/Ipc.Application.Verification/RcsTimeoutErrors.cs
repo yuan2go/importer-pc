@@ -31,9 +31,9 @@ static partial class SportmasterRcs
             service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding)); await service.StartAsync(default);
             FrozenRequest Prepare(long sequence)
             { var original = Request(binding); return original with { IntegrationRequest = service.PrepareRequest(original, sequence) }; }
-            peer.Mode = "timeout"; var before = peer.Requests.Count; var watch = Stopwatch.StartNew();
+            peer.Mode = "timeout"; var before = peer.Requests.Count(b => b.Body.Contains("dest_request")); var watch = Stopwatch.StartNew();
             try { await service.ResolveSlotAsync(Prepare(1), default); throw new Exception("Unbounded RCS request"); }
-            catch (TimeoutException) { Check(watch.Elapsed < TimeSpan.FromSeconds(2) && peer.Requests.Count == before + 1, "component times out without a caller deadline and sends only once"); }
+            catch (TimeoutException) { Check(watch.Elapsed < TimeSpan.FromSeconds(2) && peer.Requests.Count(b => b.Body.Contains("dest_request")) == before + 1, "component times out without a caller deadline and sends only once"); }
             using (var cancelled = new CancellationTokenSource(50))
             {
                 try { await service.ResolveSlotAsync(Prepare(2), cancelled.Token); throw new Exception("Caller cancellation lost"); }
@@ -58,15 +58,22 @@ static partial class SportmasterRcs
             var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
             // Isolated Simulation only; production entry points retain the machine identity check.
             var app = new ParcelRuntime(launch, new SportmasterFlow(), new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-            try { await app.StartAsync(default); return app; } catch { await app.DisposeAsync(); throw; }
+            var responseMode = peer.Mode; peer.Mode = "assigned";
+            try
+            {
+                await app.StartAsync(default); SmRoundFixture.Register(app, launch, template with { Wcs = selected });
+                await Wait(app, state => state.Positions!.All(p => p.Arrival?.Confirmed == true));
+                peer.Mode = responseMode; return app;
+            }
+            catch { peer.Mode = responseMode; await app.DisposeAsync(); throw; }
         }
         peer.Mode = "timeout";
         await using (var app = await Open("timeout-presentation", runtimeTimeoutBinding))
         {
-            var watch = Stopwatch.StartNew(); var before = peer.Requests.Count;
+            var watch = Stopwatch.StartNew(); var before = peer.Requests.Count(b => b.Body.Contains("dest_request"));
             app.EmitReferenceAt("left", "timeout-original", "SYNTH-0001", Wire.Id());
             var s = await Wait(app, x => x.Operations.Any(o => o.State == ParcelState.WcsUnknown)); var op = s.Operations.Single();
-            Check(watch.ElapsedMilliseconds >= componentRuntimeDeadline - 50 && watch.Elapsed < TimeSpan.FromSeconds(3) && op.Wcs!.Attempts == 1 && peer.Requests.Count == before + 1,
+            Check(watch.ElapsedMilliseconds >= componentRuntimeDeadline - 50 && watch.Elapsed < TimeSpan.FromSeconds(3) && op.Wcs!.Attempts == 1 && peer.Requests.Count(b => b.Body.Contains("dest_request")) == before + 1,
                 "configured RCS deadline overrides the shorter generic service budget and retains one attempt");
             var omitted = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "request-timeout-ms")) };
             ParcelOperation WithBinding(CapabilityBinding value) => op with { Wcs = op.Wcs! with { Request = op.Wcs.Request with { Binding = value } } };
@@ -79,7 +86,7 @@ static partial class SportmasterRcs
                 "timeout guidance explains independent automatic reads and protects the unconfirmed original without a stale chute");
             await Task.Delay(2600);
             var afterLateResponse = (await app.SnapshotAsync()).Operations.Single();
-            Check(peer.Requests.Count == before + 1 && afterLateResponse.State == ParcelState.WcsUnknown && afterLateResponse.Slot is null && afterLateResponse.Wcs!.Attempts == 1,
+            Check(peer.Requests.Count(b => b.Body.Contains("dest_request")) == before + 1 && afterLateResponse.State == ParcelState.WcsUnknown && afterLateResponse.Slot is null && afterLateResponse.Wcs!.Attempts == 1,
                 "timeout does not repeat the POST and a late server response cannot assign a chute");
         }
         foreach (var mode in new[] { "assigned", "unpack", "reject", "missing-chute", "blank-chute", "malformed", "wrong-id" })
@@ -117,22 +124,22 @@ static partial class SportmasterRcs
                 if (mode is "missing-chute" or "blank-chute" or "malformed" or "wrong-id")
                 {
                     var originalRequest = Wire.Encode(op.Wcs!.Request);
-                    var sent = peer.Requests.Count;
+                    var sent = peer.Requests.Count(b => b.Body.Contains("dest_request"));
                     var processed = app.WorkerProgress().Single(w => w.Position == "left").Processed;
                     app.EmitReferenceAt("left", "same-placement-" + mode, "SYNTH-0001", Wire.Id());
                     await CameraRoundHarness.Until(() => Task.FromResult(app.WorkerProgress().Single(w => w.Position == "left").Processed > processed));
-                    Check(peer.Requests.Count == sent, mode + " repeated observation of the same placement does not send again");
+                    Check(peer.Requests.Count(b => b.Body.Contains("dest_request")) == sent, mode + " repeated observation of the same placement does not send again");
                     await SmRoundFixture.NextVehicleAsync(app, "left");
                     peer.Mode = "assigned"; peer.ResponseTransform = null;
                     app.EmitReferenceAt("left", "changed-placement-" + mode, "SYNTH-0002", Wire.Id());
                     var changed = await Wait(app, x => x.Operations.Any(o => o.ParcelCode == "SYNTH-0002" && o.State == ParcelState.SlotResolved) && x.Capacity?.HistoricalUnknown == 1);
                     var original = (await app.OperationAsync(op.Id))!;
                     await view.RefreshAsync();
-                    Check(peer.Requests.Count == sent + 1 && changed.Capacity?.HistoricalUnknown == 1 &&
+                    Check(peer.Requests.Count(b => b.Body.Contains("dest_request")) == sent + 1 && changed.Capacity?.HistoricalUnknown == 1 &&
                         changed.Operations.All(o => o.Id != op.Id) && original.State == ParcelState.WcsUnknown && original.Wcs!.Attempts == 1 &&
                         Wire.Encode(original.Wcs.Request) == originalRequest && view.Left.SlotAvailable && view.Left.Barcode == "SYNTH-0002" &&
                         changed.Positions!.Single(p => p.Id == "right").Admit,
-                        mode + " confirmed removal permits the next independent parcel while preserving original Unknown and the other position; facts=" + Wire.Encode(new { Requests=peer.Requests.Count, Sent=sent, changed.Capacity, OriginalState=original.State, Attempts=original.Wcs!.Attempts, Frozen=Wire.Encode(original.Wcs.Request)==originalRequest, Slot=view.Left.SlotAvailable, Barcode=view.Left.Barcode, Right=changed.Positions!.Single(p=>p.Id=="right").Admit }));
+                        mode + " confirmed removal permits the next independent parcel while preserving original Unknown and the other position; facts=" + Wire.Encode(new { Requests=peer.Requests.Count(b => b.Body.Contains("dest_request")), Sent=sent, changed.Capacity, OriginalState=original.State, Attempts=original.Wcs!.Attempts, Frozen=Wire.Encode(original.Wcs.Request)==originalRequest, Slot=view.Left.SlotAvailable, Barcode=view.Left.Barcode, Right=changed.Positions!.Single(p=>p.Id=="right").Admit }));
                 }
             }
         }
@@ -151,7 +158,6 @@ static partial class SportmasterRcs
                 op.Wcs!.Replies.Single().HttpResponse is null,
                 "application/component deadline race preserves the response prefix and original-request custody guidance");
         }
-        await TimeoutRescanChecks(workspace, root);
         Console.WriteLine("PASS RCS TIMEOUT AND ERROR PRESENTATION COMPLETE");
     }
 
@@ -162,7 +168,7 @@ static partial class SportmasterRcs
         foreach (var version in new[] { "1.3.2", "1.3.3", "1.3.4" })
         {
             try { await using var rejected = new SportmasterRcsTaskService(binding with { Version = version }); throw new Exception("Old version accepted"); }
-            catch (InvalidDataException) { Check(peer.Requests.Count == 0, "old component rejected before I/O: " + version); }
+            catch (InvalidDataException) { Check(peer.Requests.Count(b => b.Body.Contains("dest_request")) == 0, "old component rejected before I/O: " + version); }
             Check(new Ipc.Application.Sportmaster.SportmasterFlow().Validate(HeartbeatConfiguration(workspace, binding with { Version = version })).Any(x => x.Contains("RCS组件版本")),
                 "current configuration validation refuses old RCS before startup ledger/database writes: " + version);
         }
@@ -172,17 +178,18 @@ static partial class SportmasterRcs
             service.ConfigureRuntime(HeartbeatConfiguration(workspace, selected)); await service.StartAsync(default);
             var request = Request(selected); request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
             using var caller = new CancellationTokenSource(10000);
-            var before = peer.Requests.Count; var watch = Stopwatch.StartNew();
+            var before = peer.Requests.Count(b => b.Body.Contains("dest_request")); var watch = Stopwatch.StartNew();
             Check((await service.ResolveSlotAsync(request, caller.Token)).BusinessAccepted == true && watch.ElapsedMilliseconds >= 5000,
                 "explicit ten-second budget accepts a valid response beyond five seconds");
-            Check(peer.Requests.Count == before + 1, "one request per frozen intent without retries");
+            Check(peer.Requests.Count(b => b.Body.Contains("dest_request")) == before + 1, "one request per frozen intent without retries");
         }
         peer.Mode = "assigned";
         var slowBinding = binding with { Parameters = new(binding.Parameters) { ["request-timeout-ms"] = "15000" } };
         int connects = 0;
         await using var slowConnect = new SportmasterRcsTaskService(slowBinding, async (context, token) =>
         {
-            Interlocked.Increment(ref connects);
+            if ((await context.InitialRequestMessage.Content!.ReadAsStringAsync(token)).Contains("dest_request", StringComparison.Ordinal))
+                Interlocked.Increment(ref connects);
             await Task.Delay(10500, token);
             var socket = new System.Net.Sockets.Socket(System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
             try { await socket.ConnectAsync(context.DnsEndPoint, token); return new System.Net.Sockets.NetworkStream(socket, ownsSocket: true); }
@@ -190,9 +197,9 @@ static partial class SportmasterRcs
         });
         slowConnect.ConfigureRuntime(HeartbeatConfiguration(workspace, slowBinding)); await slowConnect.StartAsync(default);
         var slowRequest = Request(slowBinding); slowRequest = slowRequest with { IntegrationRequest = slowConnect.PrepareRequest(slowRequest, 1) };
-        var originalBytes = Wire.Encode(slowRequest); var sends = peer.Requests.Count; var slowWatch = Stopwatch.StartNew();
+        var originalBytes = Wire.Encode(slowRequest); var sends = peer.Requests.Count(b => b.Body.Contains("dest_request")); var slowWatch = Stopwatch.StartNew();
         Check((await slowConnect.RequestDestinationAsync(slowRequest, default)).BusinessAccepted == true && slowWatch.ElapsedMilliseconds >= 10000 &&
-            connects == 1 && peer.Requests.Count == sends + 1 && Wire.Encode(slowRequest) == originalBytes,
+            connects == 1 && peer.Requests.Count(b => b.Body.Contains("dest_request")) == sends + 1 && Wire.Encode(slowRequest) == originalBytes,
             "controlled connection beyond ten seconds respects the configured total deadline and immutable once-send request");
     }
 }

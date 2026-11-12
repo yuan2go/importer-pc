@@ -19,6 +19,7 @@ internal static class DebugNoIsolation31
     {
         await using (var h = new ManualSupplyHarness(workspace, Path.Combine(root, "legacy"), true, mode: RunMode.Simulation))
         {
+            ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config with { Wcs = h.Config.Wcs! with { Parameters = new(h.Config.Wcs.Parameters) { ["heartbeat-interval-ms"] = "3600000" } } });
             await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
             var admitted = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "DEBUG31-ORIGINAL"), default);
             await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(admitted.OperationId!))?.Wcs?.State == StageState.Accepted);
@@ -40,13 +41,16 @@ internal static class DebugNoIsolation31
                 "persisted legacy isolation cannot block an authorized save after restart");
             Check(before.BlockingReasons.All(r => !r.Contains("隔离") && !r.Contains("清场")) && Wire.Encode((await h.App.OperationAsync(admitted.OperationId!))!.Wcs) == original && h.Peer.Requests.Count == 1,
                 "restart preserves original request/receipt bytes without replay or a clearance workflow");
+            await h.NextVehicleAsync();
             var endpoint = "http://127.0.0.1:9/rcs/sorter/api";
             var candidate = before.Configuration.Effective with { Wcs = before.Configuration.Effective.Wcs! with { Target = endpoint } };
             var saved = await h.App.StageConfigurationAsync(before.Configuration.Revision, candidate, "Synthetic RCS endpoint save after legacy isolation");
             var pending = await h.App.SnapshotAsync();
             Check(saved.Status == "PendingRestart" && pending.Configuration.Pending!.Wcs!.Target == endpoint && pending.Configuration.Effective.Wcs!.Target == h.Peer.Endpoint,
                 "actual RCS address save persists a complete Pending candidate and retains old Effective");
+            await CameraRoundHarness.Until(async () => await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received);
             await h.App.DisposeAsync(); await h.StartAsync(ready: false); await ManagementModeFixture.Authorize(h.App);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Configuration.Pending is null);
             var applied = await h.App.SnapshotAsync();
             Check(applied.Configuration.Pending is null && applied.Configuration.Effective.Wcs!.Target == endpoint && applied.Configuration.Status == "Effective",
                 "controlled restart activates the saved RCS address without obsolete isolation barriers");

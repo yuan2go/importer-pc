@@ -126,7 +126,7 @@ static partial class Program
             Check(entry.Text == "SYNTH-RCS-BARCODE", "RCS recovery keeps the original input ready to submit");
             submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Until(() => vm.Left.ShowConfirmedTask && !vm.Busy);
             Check(!center.IsVisible && vm.Left.Slot == "SYNTH-CHUTE", "a confirmed chute keeps its full result instead of the waiting panel");
-            await h.TrayAsync(h.Left, TrayPresence.Absent); await h.TrayAsync(h.Left, TrayPresence.Present);
+            await SmRoundFixture.NextVehicleAsync(h.App, "left"); await h.TrayAsync(h.Left, TrayPresence.Present);
             h.Peer.Mode = "reject"; h.Peer.RejectionMessage = "无设备可用";
             var rejectedCode = CameraRoundHarness.Barcode("SYNTH-CENTERED-REJECT");
             h.Api(h.Left).Enqueue(rejectedCode, 1);
@@ -143,11 +143,23 @@ static partial class Program
                 "same-placement frames preserve the rejection, picture and details without another request or changing the other position");
             CaptureInternal(evidence, "home-centered-rcs-refusal", client, lines);
             ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            await Until(() => vm.Left.SupplyDisabled && !vm.Busy);
+            await Until(() => vm.Left.SupplyDisabled && vm.Left.CanChangeSupply && !vm.Busy);
             Check(vm.Left.CenteredStateTitle == "已停用" && !vm.Left.CenteredRcsRejection &&
                 !vm.Left.CanSubmitBarcode, "disable immediately ends the current rejected round and prevents new input");
+            await h.AuthorizeAsync();
+            await CameraRoundHarness.Until(async () =>
+            {
+                await h.App.CheckRcsHeartbeatAsync(default);
+                var state = await h.App.SnapshotAsync(); var lane = state.Positions!.Single(p => p.Id == "left");
+                var reconciled = await h.App.ConfirmRemoteRecoveryAsync(new(Wire.Id(), state.RuntimeId, "left", lane.Arrival!.Generation,
+                    "SYNTHETIC loopback peer has completed every handler; original request bound and disabled membership applied")
+                { ExpectedControlRevision = lane.SupplyControl!.Revision, ExpectedTargetOperation = lane.Arrival.TargetOperation, ExpectedRecoveryToken = lane.Arrival.RecoveryToken }, default);
+                return reconciled.Status == "Accepted";
+            });
+            await Flush();
             ((Button)left.FindName("EnableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.SupplyEnabled && !vm.Busy);
+            await SmRoundFixture.NextVehicleAsync(h.App, "left");
             await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
             await h.TrayAsync(h.Left, TrayPresence.Absent);
             await h.TrayAsync(h.Left, TrayPresence.Present);
@@ -164,7 +176,7 @@ static partial class Program
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             try
             {
-                await h.TrayAsync(h.Left, TrayPresence.Absent); await h.TrayAsync(h.Left, TrayPresence.Present);
+                await SmRoundFixture.NextVehicleAsync(h.App, "left"); await h.TrayAsync(h.Left, TrayPresence.Present);
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-REJECT"), 4);
                 await Until(() => vm.Left.IsProcessing && vm.Left.Barcode == "SYNTH-AFTER-REJECT");
                 Check(!vm.Left.CenteredRcsRejection && !center.IsVisible && !vm.Left.ShowConfirmedTask,
@@ -182,7 +194,7 @@ static partial class Program
             h.Peer.Mode = "reject";
             h.Peer.RejectionMessage = "终点非法";
             var removedCode = CameraRoundHarness.Barcode("SYNTH-REMOVE-REJECT");
-            await h.TrayAsync(h.Left, TrayPresence.Absent); await h.TrayAsync(h.Left, TrayPresence.Present);
+            await SmRoundFixture.NextVehicleAsync(h.App, "left"); await h.TrayAsync(h.Left, TrayPresence.Present);
             h.Api(h.Left).Enqueue(removedCode, 5);
             await Until(() => vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "终点非法");
             var beforeRemoval = vm.Snapshot!;
@@ -198,11 +210,12 @@ static partial class Program
                 vm.Left.CanViewCurrentPicture && h.Peer.Requests.Count == sentBeforeRemoval,
                 "a changed no-code frame preserves the current round's refusal and image without claiming physical removal");
             await h.TrayAsync(h.Left, TrayPresence.Absent);
+            await SmRoundFixture.NextVehicleAsync(h.App, "left");
             await Until(() => vm.Left.CurrentRound is null && vm.Left.CanSubmitBarcode);
             Check(center.IsVisible && vm.Left.CenteredStateTitle == "等待投包" && !vm.Left.CenteredRcsRejection &&
                 !vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture && !((Button)left.FindName("WorkDetails")).IsEnabled &&
                 !((DockPanel)left.FindName("DetailedStatus")).IsVisible,
-                "qualified removal clears the exact current round immediately without a previous result card");
+                "confirmed vehicle change clears the exact current round immediately without a previous result card");
             probe.Project = s => production(s) with
             {
                 Positions = s.Positions!.Select(p => p.Id == "left" ? p with
@@ -227,7 +240,7 @@ static partial class Program
             h.Api(h.Left).Enqueue(removedCode, 9);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == 9)));
             await Until(() => vm.Left.ShowConfirmedTask);
-            Check(h.Peer.Requests.Count == sentBeforeRemoval + 1, "same-code replacement after the confirmed empty tray sends once despite repeated frames");
+            Check(h.Peer.Requests.Count == sentBeforeRemoval + 1, "same-code replacement after the confirmed vehicle change sends once despite repeated frames");
             PresentationPreferences.SaveWindowMode("sportmaster", PresentationPreferences.WindowOpeningMode.FullScreen); await Flush();
             exit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => stopAttempts == 1 && window.IsEnabled && vm.Message.Contains("停止未完成"), refresh: false);

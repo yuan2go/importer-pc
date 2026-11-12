@@ -26,8 +26,8 @@ static class RcsOfflineCameraReads
             await CameraRoundHarness.Until(() => Task.FromResult(initial.Factory.Sources[initial.Left].ReadPreview()?.FrameNumber == 1 && initial.Api(initial.Left).Acquires == initial.Api(initial.Left).Releases));
             var initialState = await initial.App.SnapshotAsync();
             Check(initial.Factory.Sources[initial.Left].ReadPreview()?.FrameNumber == 1 && initial.Api(initial.Left).PreviewAcquires > 0 &&
-                initial.Factory.Decoders[initial.Left].Count == 0 && initial.Peer.Requests.IsEmpty && initial.Peer.HeartbeatRequests.IsEmpty &&
-                initialState.Operations.Length == 0 && initialState.Positions!.Single(p => p.Id == "left").BarcodeInput is { Camera: false, Manual: true },
+                initial.Factory.Decoders[initial.Left].Count == 0 && initial.Peer.Requests.IsEmpty && initial.Peer.HeartbeatRequests.Count > 0 &&
+                initialState.Operations.Length == 0 && initialState.Positions!.Single(p => p.Id == "left").BarcodeInput is { Camera: false, Manual: false },
                 "before first heartbeat response both camera routes only acquire preview, without recognition or a business request");
         }
 
@@ -55,7 +55,28 @@ static class RcsOfflineCameraReads
         async Task SwitchLeft(bool enabled)
         {
             var snapshot = await h.App.SnapshotAsync();
-            await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "left", snapshot.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, enabled), default);
+            var receipt = await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "left", snapshot.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, enabled), default);
+            if (enabled && receipt.Status == "Rejected")
+            {
+                Check(snapshot.Positions!.Single(p => p.Id == "left").SupplyControl!.Mode == StationPositionMode.Disabled,
+                    "offline re-enable cannot bypass missing withdrawal acknowledgement");
+                var wasOffline = h.Peer.HeartbeatUnavailable; h.Peer.HeartbeatUnavailable = false;
+                await h.AuthorizeAsync();
+                await CameraRoundHarness.Until(async () =>
+                {
+                    await h.App.CheckRcsHeartbeatAsync(default);
+                    var current = await h.App.SnapshotAsync(); var lane = current.Positions!.Single(p => p.Id == "left");
+                    return (await h.App.ConfirmRemoteRecoveryAsync(new(Wire.Id(), current.RuntimeId, "left", lane.Arrival!.Generation,
+                        "SYNTHETIC peer failed handlers have completed; no queued remote work; removal membership applied")
+                    { ExpectedControlRevision = lane.SupplyControl!.Revision, ExpectedTargetOperation = lane.Arrival.TargetOperation, ExpectedRecoveryToken = lane.Arrival.RecoveryToken }, default)).Status == "Accepted";
+                });
+                snapshot = await h.App.SnapshotAsync();
+                receipt = await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "left", snapshot.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+                Check(receipt.Status == "Accepted", "explicit synthetic remote reconciliation permits re-enable");
+                await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.Confirmed == true);
+                h.Peer.HeartbeatUnavailable = wasOffline;
+                if (wasOffline) await h.App.CheckRcsHeartbeatAsync(default);
+            }
             await CameraRoundHarness.Until(async () => enabled
                 ? (await h.App.SnapshotAsync()).Devices!.SingleOrDefault(d => d.DeviceId == h.Left)?.IsValid(DateTimeOffset.UtcNow) == true
                 : (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CameraConnectionSuspended);
@@ -85,6 +106,16 @@ static class RcsOfflineCameraReads
             (await h.App.SnapshotAsync()).Operations.Length == 0, "offline RCS permits preview but no automatic recognition, work card or destination request");
         Check((await h.App.SnapshotAsync()).Devices!.All(d => d.IsValid(DateTimeOffset.UtcNow)), "RCS loss does not mark the connected cameras offline");
         await SwitchLeft(false);
+        h.Peer.HeartbeatUnavailable = false; await h.AuthorizeAsync();
+        await CameraRoundHarness.Until(async () =>
+        {
+            await h.App.CheckRcsHeartbeatAsync(default);
+            var state = await h.App.SnapshotAsync(); var lane = state.Positions!.Single(p => p.Id == "left");
+            return (await h.App.ConfirmRemoteRecoveryAsync(new(Wire.Id(), state.RuntimeId, "left", lane.Arrival!.Generation,
+                "SYNTHETIC peer has completed failed handlers and applied withdrawal; no queued member changes")
+            { ExpectedControlRevision = lane.SupplyControl!.Revision, ExpectedTargetOperation = lane.Arrival.TargetOperation, ExpectedRecoveryToken = lane.Arrival.RecoveryToken }, default)).Status == "Accepted";
+        });
+        h.Peer.HeartbeatUnavailable = true; await h.App.CheckRcsHeartbeatAsync(default);
         var beforeReplacement = await h.App.SnapshotAsync();
         var candidateReaders = beforeReplacement.Configuration.Effective.Topology!.Readers.Select(reader => reader.DeviceId == h.Left
             ? reader with { Parameters = new Dictionary<string, string>(reader.Parameters!) { ["device.ip"] = "192.0.2.91" } } : reader).ToArray();

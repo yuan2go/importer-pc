@@ -187,7 +187,10 @@ static partial class SportmasterRcs
         var duplicate = binding with { Parameters = new(binding.Parameters) { ["right-bcr-code"] = binding.Parameters["left-bcr-code"] } };
         Reject(c with { Wcs = duplicate }, "distinct");
         var missing = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "left-bcr-code")) };
-        Reject(c with { Wcs = missing }, "left-bcr-code");
+        var optional = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(missing);
+        optional.ConfigureRuntime(c with { Wcs = missing });
+        optional.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        Console.WriteLine("PASS PARAM01: empty left camera code is valid and leaves that lane disabled");
         Reject(c with { Wcs = binding with { Target = "http://127.0.0.1:1/wrong" } }, "/rcs/sorter/api");
     }
 }

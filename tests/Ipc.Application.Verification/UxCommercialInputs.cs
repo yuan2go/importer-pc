@@ -161,6 +161,7 @@ static class UxCommercialInputs
         public string Epoch => inner.Epoch;
         public string ConfirmationSource => inner.ConfirmationSource;
         public bool Raw(Observation o) => receive!(o);
+        public bool EmitPresence(TrayPresence presence) => ((ISyntheticObservationInput)inner).EmitPresence(presence);
         public bool Emit(string kind, string admission, string[] codes, int? quantity, string source) => ((ISyntheticObservationInput)inner).Emit(kind, admission, codes, quantity, source);
         public Task StartControlledAsync(string epoch, Func<Observation, bool> callback, Action<DeviceHealthConfirmation> health, CancellationToken token)
         { receive = callback; return inner.StartControlledAsync(epoch, callback, health, token); }

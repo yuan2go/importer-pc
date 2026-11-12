@@ -243,7 +243,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
             ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => "RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。",
             ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => OperatorCopy.TimeoutUnconfirmed,
             ParcelState.WcsUnknown => OperatorCopy.UnconfirmedStep,
-            ParcelState.WcsRejected when ParcelPresentation.RcsManualHandling(Operation) => "请取下包裹并停用本位，等RCS撤车确认后再启用并等待新车。",
+            ParcelState.WcsRejected when ParcelPresentation.RcsManualHandling(Operation) => "请取下包裹后人工判断，停用本位，等RCS撤车确认后再启用并等待新车。",
             ParcelState.WcsRejected => ParcelPresentation.RcsException(Operation) ?? OperatorCopy.RejectedStep,
             ParcelState.UnpackRequired => "勿重复上件：按拆包明细检查包裹，处理完再继续。",
             ParcelState.ResolvingWcs or ParcelState.SlotResolved => "",
@@ -280,7 +280,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         ParcelPresentation.RcsNotDelivered(Operation) ? "RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。" :
         ParcelPresentation.RcsTimedOut(Operation) ? OperatorCopy.TimeoutUnconfirmed :
         HasUncertainOriginal ? OperatorCopy.UnconfirmedStep :
-        ParcelPresentation.RcsManualHandling(Operation) ? "请取下包裹并停用本位，等RCS撤车确认后再启用并等待新车。" :
+        ParcelPresentation.RcsManualHandling(Operation) ? "请取下包裹后人工判断，停用本位，等RCS撤车确认后再启用并等待新车。" :
         Operation?.State == ParcelState.WcsRejected ? OperatorCopy.RejectedStep :
         BlockingReasons.Length > 0 ? "暂不能供包，请通知维护人员。" : "放上包裹由相机扫码，或输入完整条码后按回车。";
     public string BlockingReasons { get; private set; } = "等待状态更新";

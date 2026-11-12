@@ -129,7 +129,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 repository.Commit(null, "PositionSupplyUnchanged", unchanged.Reason, command: command, commandResult: unchanged);
                 return unchanged;
             }
-            if (request.Enabled && previous.Mode == StationPositionMode.Disabled &&
+            if (UsesSmArrival(request.PositionId) && request.Enabled && previous.Mode == StationPositionMode.Disabled &&
                 (SmCycle(request.PositionId).HeartbeatPending is not null || SmCycle(request.PositionId).UncertainMembership is not null ||
                 SmCycle(request.PositionId).RecoveryReason is not null || SmCycle(request.PositionId).TargetOperation is not null ||
                 !SmMembershipConfirmed(request.PositionId, false)))

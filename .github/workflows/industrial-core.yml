@@ -257,6 +257,18 @@ jobs:
           dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --clean-storage-defaults
           exit $LASTEXITCODE
 
+      - name: Verify protected deployment succession and cleanup on disposable Windows
+        if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --initialize-isolated-ci-storage
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --installed-lifecycle-windows *> .artifacts/protected-lifecycle.log
+          $verificationExit = $LASTEXITCODE
+          Get-Content .artifacts/protected-lifecycle.log
+          exit $verificationExit
+
       - name: Keep source-bound native window evidence
         if: always() && matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

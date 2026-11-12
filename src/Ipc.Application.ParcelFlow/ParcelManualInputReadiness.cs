@@ -40,8 +40,7 @@ public sealed partial class ParcelRuntime
         else if (wcs.Contract == "SPORTMASTER-RCS-SORTER-v1")
         {
             static bool Code(string? value) => !string.IsNullOrWhiteSpace(value) && value.Length <= 256 && !value.Any(char.IsControl);
-            var label = position == "left" ? "左投递位" : "右投递位";
-            if (!Code(wcs.Parameters.GetValueOrDefault(position + "-station-code"))) reasons.Add(label + "供包台编号未配置。");
+            if (!Code(Effective.StationCode)) reasons.Add("供包台编码未配置。");
         }
         var now = DateTimeOffset.UtcNow;
         foreach (var binding in ManualBindings(position))

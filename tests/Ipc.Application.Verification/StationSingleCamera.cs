@@ -23,8 +23,6 @@ static partial class SportmasterRcs
                 Parameters = new(Binding(peer.Endpoint).Parameters)
                 {
                     ["request-timeout-ms"] = RcsRequestPolicy.DefaultTimeoutMs.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    ["left-station-code"] = "SYNTH-STATION",
-                    ["right-station-code"] = "SYNTH-STATION"
                 }
             };
             var readers = ParcelBindings.Readers(seed).ToArray();

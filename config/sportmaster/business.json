@@ -34,8 +34,6 @@
     "Parameters": {
       "zone-id": "1",
       "project-id": "1",
-      "left-station-code": "station-01",
-      "right-station-code": "station-01",
       "no-dest-to-exp": "true",
       "request-timeout-ms": "1000"
     }

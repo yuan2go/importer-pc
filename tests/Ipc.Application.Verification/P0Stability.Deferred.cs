@@ -52,7 +52,7 @@ static partial class SportmasterRcs
                 {
                     Implementation = "sportmaster-rcs",
                     Version = "1.0.0",
-                    Parameters = new(Binding(peer.Endpoint).Parameters) { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["heartbeat-interval-ms"] = "1000" }
+                    Parameters = new(Binding(peer.Endpoint).Parameters) { ["heartbeat-interval-ms"] = "1000" }
                 };
                 var c = seed with
                 {

@@ -218,7 +218,7 @@ static partial class Program
                 foreach (var p in r.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2." + (11 + i), "device.serial" => "SYNTH-" + i, _ => p.Value };
             foreach (var c in model.Components.Where(ParameterOwnership.IsRcs))
                 foreach (var p in c.Parameters) p.Value = p.Field.Key switch
-                { "zone-id" or "project-id" => "1", "request-id-base" => "1000000", "request-id-count" => "100", "left-station-code" or "right-station-code" => "SYNTHETIC", "left-bcr-code" => "L", "right-bcr-code" => "R", "specified-chute" => "false", _ => p.Value };
+                { "zone-id" or "project-id" => "1", "request-id-base" => "1000000", "request-id-count" => "100", "left-bcr-code" => "L", "right-bcr-code" => "R", "specified-chute" => "false", _ => p.Value };
             foreach (var c in model.Components.Where(ParameterOwnership.IsRcs)) c.Target = "http://127.0.0.1:1/rcs/sorter/api";
         }
         bool Retry(Window w) => (bool)type.GetProperty("RetryRequested")!.GetValue(w)!;

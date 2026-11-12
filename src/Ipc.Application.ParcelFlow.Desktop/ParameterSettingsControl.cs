@@ -263,7 +263,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var error = Text(""); error.SetResourceReference(TextBlock.ForegroundProperty, "Danger"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
         form.Children.Add(card); locations[path] = new(page, control, error, label, help ?? "", Row: card);
         var draft = Model?.Readers.Concat(Model.Components).FirstOrDefault(d => path.StartsWith(d.InstanceId + "/", StringComparison.Ordinal));
-        if (draft is not null && path != draft.InstanceId + "/ConfigureLater" && !path.EndsWith("-station-code", StringComparison.Ordinal))
+        if (draft is not null && path != draft.InstanceId + "/ConfigureLater")
         {
             void RefreshRequirement() => caption.Text = draft.ConfigureLater ? label.TrimEnd(' ', '*') : label;
             PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName is nameof(CapabilityDraft.ConfigureLater) or nameof(CapabilityDraft.Bound)) RefreshRequirement(); };

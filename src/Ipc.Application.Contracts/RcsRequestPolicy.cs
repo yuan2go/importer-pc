@@ -15,7 +15,7 @@ public static class RcsRequestPolicy
     public const int MaximumChuteCodeLength = 64;
     static readonly HashSet<string> Parameters = new([
         "source", "locale", "zone-id", "project-id", "specified-chute", "request-id-base", "request-id-count",
-        "left-station-code", "left-bcr-code", "right-station-code", "right-bcr-code", "chute-code",
+        "left-bcr-code", "right-bcr-code", "chute-code",
         "heartbeat-interval-ms", "heartbeat-interval-seconds", "request-timeout-ms", "no-dest-to-exp", DestinationMode, DestinationChuteCode], StringComparer.Ordinal);
 
     public static string? SpecifiedChuteCode(IReadOnlyDictionary<string, string> parameters)

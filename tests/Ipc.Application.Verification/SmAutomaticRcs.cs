@@ -48,7 +48,6 @@ static partial class SportmasterRcs
             var candidate = initial with { Wcs = old };
             Check(!factory.Normalize(candidate).Wcs!.Parameters.Keys.Intersect(removed).Any(), "candidate normalization removes obsolete fields before configuration CAS");
             var draft = new CapabilityDraft("integration", factory.Catalog().Providers, old with { Implementation = "sportmaster-rcs" }, true);
-            foreach (var p in draft.Parameters.Where(p => p.Field.Key is "left-station-code" or "right-station-code")) p.Value = "SYNTH-STATION";
             Check(!draft.Parameters.Any(p => removed.Contains(p.Field.Key)) && !draft.Build().Parameters.Keys.Intersect(removed).Any(), "daily and first-run drafts cannot save retired fields");
         }
         Check(Wire.Encode(frozen) == originalBytes && peer.Requests.Count == 0, "configuration cleanup leaves original requests byte-identical and never sends them");
@@ -76,11 +75,17 @@ static partial class SportmasterRcs
         Check(!RcsDestinationProtocol.MatchesFrozen(new(binding), originalOperator with { IntegrationRequest = editedWire }, editedWire),
             "a different taskId cannot replace the frozen assignment even with a recomputed body hash");
         await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "automatic-runtime"), deferred: true);
-        var configured = h.Config with { Wcs = h.Config.Wcs! with { Parameters = new(h.Config.Wcs!.Parameters)
+        var configured = h.Config with
         {
-            [RcsRequestPolicy.DestinationMode] = "true",
-            [RcsRequestPolicy.DestinationChuteCode] = "00123"
-        } } };
+            Wcs = h.Config.Wcs! with
+            {
+                Parameters = new(h.Config.Wcs!.Parameters)
+                {
+                    [RcsRequestPolicy.DestinationMode] = "true",
+                    [RcsRequestPolicy.DestinationChuteCode] = "00123"
+                }
+            }
+        };
         foreach (var invalid in new[] { "", "  ", "BAD\u0001", new string('A', 65) })
         {
             var invalidBinding = configured.Wcs! with { Parameters = new(configured.Wcs!.Parameters) { [RcsRequestPolicy.DestinationChuteCode] = invalid } };
@@ -123,8 +128,11 @@ static partial class SportmasterRcs
         Check(sentTaskIds.Select(id => id.Task).Distinct().Count() == 3 && sentTaskIds.All(id => id.Task == id.Request),
             "new submissions before and after restart use distinct durable task IDs on the wire");
         var fieldReply = third.Wcs.Replies.Single();
-        Check(third.Slot == "SYNTH-CHUTE-ACCEPTED" && fieldReply is { ProtocolAcknowledged: true, BusinessAccepted: true, PhysicalCompleted: null,
-            Destination: { Quantity: "1", Length: null, Width: null, Height: 2.5m, Weight: 0.75m } },
+        Check(third.Slot == "SYNTH-CHUTE-ACCEPTED" && fieldReply is
+        {
+            ProtocolAcknowledged: true, BusinessAccepted: true, PhysicalCompleted: null,
+            Destination: { Quantity: "1", Length: null, Width: null, Height: 2.5m, Weight: 0.75m }
+        },
             "a correlated RCS success with numeric quantity, measurement strings and dash placeholders settles the operation without claiming physical completion");
         using var fieldBody = JsonDocument.Parse(Convert.FromBase64String(fieldReply.HttpResponse!.BodyBase64));
         var fieldData = fieldBody.RootElement.GetProperty("result")[0].GetProperty("data");

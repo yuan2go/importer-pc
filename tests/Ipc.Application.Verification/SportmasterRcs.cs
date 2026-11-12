@@ -22,28 +22,37 @@ static partial class SportmasterRcs
         ["zone-id"] = "71",
         ["project-id"] = "83",
         ["heartbeat-interval-ms"] = "3600000",
-        ["left-station-code"] = "TEST-LEFT",
         ["left-bcr-code"] = "TEST-LEFT-READER",
-        ["right-station-code"] = "TEST-RIGHT",
         ["right-bcr-code"] = "TEST-RIGHT-READER"
     });
     static FrozenRequest Request(CapabilityBinding binding, string position = "left", string barcode = "SYNTH-0001")
     {
         var reader = new DeviceBinding("parcel-reader", "manual", "synthetic.reader." + position, "1");
         var acquisition = new AcquisitionIdentity(reader.DeviceId, "synthetic-epoch", "synthetic-event", "synthetic-admission", DateTimeOffset.UtcNow);
-        var payload = Wire.Encode(new ParcelPayload(barcode, "synthetic-admission", null, null, null, Acquisition: acquisition, PositionId: position, ReaderBinding: reader));
+        var payload = Wire.Encode(new ParcelPayload(barcode, "synthetic-admission", null, null, null, Acquisition: acquisition, PositionId: position, ReaderBinding: reader) { StationCode = "SYNTH-STATION" });
         return new(Wire.Id(), "sportmaster", Wire.Id(), "synthetic-admission", "wcs-slot", binding, Wire.Hash("synthetic-provider"), Wire.Hash("synthetic-configuration"), payload, Wire.Hash(payload), DateTimeOffset.UtcNow);
     }
     static string Response(string request, string mode, IReadOnlyDictionary<string, string>? vehicles = null)
     {
         using var j = JsonDocument.Parse(request); var id = j.RootElement.GetProperty("requestId").GetInt64();
         var heartbeat = j.RootElement.GetProperty("data").GetArrayLength() == 0 || j.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat";
-        if (heartbeat) return JsonSerializer.Serialize(new { requestId = id, result = j.RootElement.GetProperty("data").EnumerateArray().Reverse().Select(item => new
+        if (heartbeat) return JsonSerializer.Serialize(new
         {
-            index = item.GetProperty("index").GetInt32(), success = true, command = "sorter.task.station_heartbeat",
-            data = new { stationCode = item.GetProperty("params").GetProperty("stationCode").GetString(), bcrCode = item.GetProperty("params").GetProperty("bcrCode").GetString(),
-                agvNo = vehicles?.GetValueOrDefault(item.GetProperty("params").GetProperty("bcrCode").GetString()!) ?? "SYNTH-AGV-" + (item.GetProperty("params").GetProperty("bcrCode").GetString()!.Contains("RIGHT", StringComparison.OrdinalIgnoreCase) ? 2 : 1), status = item.GetProperty("index").GetInt32() == 1 ? "IDLE" : "TASKING" }
-        }).ToArray() });
+            requestId = id,
+            result = j.RootElement.GetProperty("data").EnumerateArray().Reverse().Select(item => new
+            {
+                index = item.GetProperty("index").GetInt32(),
+                success = true,
+                command = "sorter.task.station_heartbeat",
+                data = new
+                {
+                    stationCode = item.GetProperty("params").GetProperty("stationCode").GetString(),
+                    bcrCode = item.GetProperty("params").GetProperty("bcrCode").GetString(),
+                    agvNo = vehicles?.GetValueOrDefault(item.GetProperty("params").GetProperty("bcrCode").GetString()!) ?? "SYNTH-AGV-" + (item.GetProperty("params").GetProperty("bcrCode").GetString()!.Contains("RIGHT", StringComparison.OrdinalIgnoreCase) ? 2 : 1),
+                    status = item.GetProperty("index").GetInt32() == 1 ? "IDLE" : "TASKING"
+                }
+            }).ToArray()
+        });
         if (mode.StartsWith("no-destination", StringComparison.Ordinal))
         {
             var result = new Dictionary<string, object?> { ["index"] = 1, ["success"] = false, ["command"] = "sorter.task.dest_request", ["msg"] = "合成异常：未找到可用格口，请人工核对包裹。" };
@@ -92,7 +101,7 @@ static partial class SportmasterRcs
                 Check(envelope.GetProperty("source").GetString() == "BAR" && envelope.GetProperty("version").GetInt32() == 1 && envelope.GetProperty("locale").GetString() == "zh_CN" &&
                     envelope.GetProperty("requestId").GetInt64() == 7 && item.GetProperty("index").GetInt32() == 1 && item.GetProperty("command").GetString() == "sorter.task.dest_request" &&
                     p.GetProperty("zoneId").GetInt32() == 71 && p.GetProperty("projectId").GetInt32() == 83 && p.GetProperty("loadCode").GetString() == "SYNTH-0001" &&
-                    p.GetProperty("stationCode").GetString() == "TEST-LEFT" && p.GetProperty("bcrCode").GetString() == "TEST-LEFT-READER" && !p.GetProperty("specifiedChute").GetBoolean() &&
+                    p.GetProperty("stationCode").GetString() == "SYNTH-STATION" && p.GetProperty("bcrCode").GetString() == "TEST-LEFT-READER" && !p.GetProperty("specifiedChute").GetBoolean() &&
                     p.GetProperty("chuteCode").ValueKind == JsonValueKind.Null && p.GetProperty("quantity").GetInt32() == 1, mode + " preserves documented field casing, numbers, booleans, null and configured mapping");
                 var bytes = Convert.FromBase64String(reply.HttpResponse!.BodyBase64);
                 Check(bytes.SequenceEqual(Encoding.UTF8.GetBytes(actual.Response)) && reply.HttpResponse.BodyHash == Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)) && reply.HttpResponse.StatusCode == actual.StatusCode,

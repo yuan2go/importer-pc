@@ -22,7 +22,7 @@ static partial class Program
         await using var factory = new ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), Path.Combine(evidence, "data"), null, null));
         var catalog = factory.Catalog();
         await VerifyCameraIdentityEditing(catalog, lines);
-        var incomplete = initial.Wcs! with { Parameters = new() { ["left-station-code"] = "NEW-STATION", ["right-station-code"] = "NEW-STATION" } };
+        var incomplete = initial.Wcs! with { Parameters = new() { } };
         var completing = new CapabilityDraft("integration", catalog.Providers, incomplete, true) { ConfigureLater = false, Target = "http://127.0.0.1:18849/rcs/sorter/api" };
         foreach (var parameter in completing.Parameters.Where(p => p.Field.Key is "zone-id" or "project-id")) parameter.Value = "1";
         var built = completing.Build();

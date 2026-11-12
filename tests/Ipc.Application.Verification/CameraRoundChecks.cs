@@ -22,6 +22,8 @@ internal static partial class CameraRoundChecks
     }
     public static async Task Run(string workspace, string root)
     {
+        await VerifySelectedSample(workspace, root, false);
+        await VerifySelectedSample(workspace, root, true);
         await VerifyNoReadRecovery(workspace, root);
         Console.WriteLine("Real MVS driver/ZXing/SQLite/built-in RCS, synthetic native APIs and loopback HTTP; real hardware/customer RCS NOT_RUN");
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "frozen-offline")))

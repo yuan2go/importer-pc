@@ -54,7 +54,7 @@ internal sealed partial class StationDebugControl
         var snapshot = await vm.ServiceAsync(() => vm.Application.SnapshotAsync());
         token.ThrowIfCancellationRequested();
         var operation = new SampleBatch(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision,
-            CameraInspectionMode.ObserveProduction, "本窗连续二十帧识读采样", new(1, 64, 1000), true), Position.ReaderId, token);
+            CameraInspectionMode.ObserveProduction, "本窗连续二十帧识读采样", new(1, 64, 1000), true) { DeviceId = Position.ReaderId }, Position.ReaderId, token);
         batch = operation; UpdateBatchButtons();
         try
         {

@@ -38,6 +38,8 @@ static partial class Program
             probe.HoldEnd = new(TaskCreationOptions.RunContinuationsAsynchronously);
             Click("StartCameraSampleBatch"); await Until(() => probe.ReadEntered.Task.IsCompleted || Field("busy") is false);
             Check(probe.ReadEntered.Task.IsCompleted, "sampling reaches frame delivery; " + ((TextBlock)Field("batchSummary")!).Text + " / " + ((TextBlock)Field("feedback")!).Text);
+            Check(probe.BeginCommands.Single() is { SingleReadRounds: false } begin && begin.DeviceId == vm.Left.ReaderId,
+                "native selected-camera action freezes its actual device identity into the Application command");
             Check(Field("busy") is true && Button("StopCameraSampleBatch").IsEnabled, "stop is executable during the actual busy sampling wait");
             Click("StopCameraSampleBatch"); await Until(() => probe.EndCommands.Count == 1);
             Check(Field("batch") is not null && !Button("StopCameraSampleBatch").IsEnabled && !Button("StartCameraSampleBatch").IsEnabled,
@@ -76,9 +78,11 @@ public class DebugBatchBoundary : ProjectionProbe
     public TaskCompletionSource? HoldEnd;
     public bool FailEndOnce, CompleteFrames;
     public readonly List<EndCameraInspection> EndCommands = [];
+    public readonly List<BeginCameraInspection> BeginCommands = [];
     public void Reset() { HoldEnd = null; EndCommands.Clear(); ReadEntered = new(TaskCreationOptions.RunContinuationsAsynchronously); CompleteFrames = false; }
     protected override object? Invoke(MethodInfo? method, object?[]? args)
     {
+        if (method!.Name == nameof(ICameraInspection.BeginCameraInspectionAsync)) BeginCommands.Add((BeginCameraInspection)args![0]!);
         if (method!.Name == nameof(ICameraInspection.ReadCameraFramesAsync)) return Frames((string)args![0]!, (string)args[1]!, (CancellationToken)args[5]!);
         if (method.Name == nameof(ICameraInspection.EndCameraInspectionAsync)) return End((EndCameraInspection)args![0]!);
         return base.Invoke(method, args);

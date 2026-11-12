@@ -75,11 +75,14 @@ static class ParameterRefactor
         await SmRoundFixture.NextVehicleAsync(app, "left");
         foreach (var (codes, outcome) in new[] { (new[] { "noise" }, "NoMatchingCode"), (new[] { "OK004", "OK005" }, "AmbiguousCodes") })
         {
-            var processed = app.WorkerProgress().Single(w => w.Position == "left").Processed;
+            var noFormalBefore = app.WorkerProgress().Single(w => w.Position == "left").Dispositions.GetValueOrDefault("NoFormalCandidates");
             var source = Wire.Id(); factory.Emit(reader, "Read", "rejected-" + source, codes, source);
-            await CameraRoundHarness.Until(() => Task.FromResult(app.WorkerProgress().Single(w => w.Position == "left").Processed > processed));
-            var rejected = await app.SnapshotAsync();
-            Check((outcome == "NoMatchingCode" ? app.WorkerProgress().Single(w => w.Position == "left").Dispositions.GetValueOrDefault("NoFormalCandidates") == 1 : rejected.Inputs!.Single().BarcodeSelection?.Outcome == outcome) && rejected.Operations.Length == 1 && rejected.Positions!.Single(p => p.Id == "left").CurrentOperation is null, outcome + " creates no request and cannot reuse a previous slot; no-formal-candidate evidence does not manufacture a UI input");
+            // A queued physical-boundary observation can also advance Processed.
+            // Wait for this input's actual decision, not unrelated worker progress.
+            var rejected = await Wait(app, s => outcome == "NoMatchingCode"
+                ? app.WorkerProgress().Single(w => w.Position == "left").Dispositions.GetValueOrDefault("NoFormalCandidates") == noFormalBefore + 1
+                : s.Inputs!.Any(i => i.Observation.SourceEventId == source));
+            Check((outcome == "NoMatchingCode" ? rejected.Inputs!.All(i => i.Observation.SourceEventId != source) : rejected.Inputs!.Single(i => i.Observation.SourceEventId == source).BarcodeSelection?.Outcome == outcome) && rejected.Operations.Length == 1 && rejected.Positions!.Single(p => p.Id == "left").CurrentOperation is null, outcome + " creates no request and cannot reuse a previous slot; no-formal-candidate evidence does not manufacture a UI input");
             await SmRoundFixture.NextVehicleAsync(app, "left");
         }
         factory.Emit(c.Topology.Readers[1].DeviceId, "Read", "right-entity", ["OK003"], "right-source");

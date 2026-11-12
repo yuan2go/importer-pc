@@ -106,6 +106,9 @@ static partial class Program
             Check(workstation.WindowStyle == WindowStyle.None && workstation.WindowState == WindowState.Maximized && workstation.ResizeMode == ResizeMode.NoResize,
                 "the actual workstation opens in game-style borderless full screen");
             Check(workstation.ViewModel.Snapshot!.Availability is { Admit: false, Resume: false }, "the open native workstation retains Application admission guards");
+            Check(workstation.ViewModel.Snapshot!.Positions is { Length: 2 } positions && positions.All(p =>
+                p is { SupplyControl.Mode: StationPositionMode.Disabled, Arrival.Configured: false, BarcodeInput.Camera: false, BarcodeInput.Manual: false }),
+                "blank camera codes leave both actual workstation lanes disabled without camera or manual admission");
             CaptureInternal(evidence, "pgs-workstation-fullscreen", (FrameworkElement)workstation.FindName("ClientArea"), lines);
             workstation.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(workstation), Environment.TickCount, Key.Escape) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
             await Flush(); Check(workstation.WindowStyle == WindowStyle.None && workstation.ResizeMode == ResizeMode.NoResize, "Escape retains the saved full-screen mode");
@@ -176,9 +179,26 @@ static partial class Program
             activeRcs.Parameters.Single(p => p.Field.Key == "zone-id").Value = "71";
             draft.Readers[0].Parameters.Single(p => p.Field.Key == "device.ip").Value = "192.0.2.10";
             draft.Readers[0].Parameters.Single(p => p.Field.Key == "device.serial").Value = "SYNTH-SERIAL-0";
-            var incomplete = await offline.CheckAsync(draft.Build());
-            Check(incomplete.Checks.Any(c => c.Status == "FAIL" && c.Reason.Contains("bcr-code", StringComparison.Ordinal)),
-                "restoring a camera requires its real identity at preflight; stale deferred blank is refused");
+            Check(model.ValidateFields(), "a configured physical camera may retain an empty business code: " + string.Join("; ", model.Issues.Select(i => i.Path + " " + i.Message)));
+            var unencoded = await offline.CheckAsync(draft.Build());
+            Check(unencoded.Checks.All(c => c.Status != "FAIL"), "an empty business code passes actual offline preflight even when the physical camera is configured");
+
+            activeRcs.Parameters.Single(p => p.Field.Key == "left-bcr-code").Value = "SYNTH-LEFT";
+            var configured = draft.Build();
+            draft.Readers[0].Parameters.Single(p => p.Field.Key == "device.serial").Value = "";
+            var refused = false;
+            try { _ = draft.Build(); }
+            catch (InvalidOperationException error) { refused = error.Message.Contains("/device.serial", StringComparison.Ordinal); }
+            Check(refused, "a coded camera cannot build a save candidate without its real physical identity");
+            var missingIdentity = configured.Reader with { Parameters = new(configured.Reader.Parameters!) { ["device.serial"] = "" } };
+            var topology = configured.Topology!;
+            var incomplete = await offline.CheckAsync(configured with
+            {
+                Reader = missingIdentity,
+                Topology = topology with { Readers = topology.Readers.Select(r => r.DeviceId == missingIdentity.DeviceId ? missingIdentity : r).ToArray() }
+            });
+            Check(incomplete.Checks.Any(c => c.Status == "FAIL" && c.Reason.Contains("/device.serial", StringComparison.Ordinal)),
+                "actual offline preflight refuses a coded camera whose physical identity is missing even when the editor is bypassed");
         }
         finally { draft.Restore(original); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); }
     }

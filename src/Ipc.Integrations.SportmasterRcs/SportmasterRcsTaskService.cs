@@ -22,6 +22,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     internal TimeProvider ReceiptTimeForVerification { get; set; } = TimeProvider.System;
     readonly RcsTaskOptions options;
     readonly HttpClient client;
+    readonly HttpClient heartbeatClient;
     readonly object lifecycle = new();
     bool running, disposed;
     int active;
@@ -33,19 +34,21 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         Func<SocketsHttpConnectionContext, CancellationToken, ValueTask<Stream>>? connect)
     {
         options = new(binding);
-        client = new(new SocketsHttpHandler
+        HttpClient CreateClient(int maximum) => new(new SocketsHttpHandler
         {
             AllowAutoRedirect = false,
             UseCookies = false,
             UseProxy = false,
             AutomaticDecompression = DecompressionMethods.None,
-            MaxConnectionsPerServer = 8,
+            MaxConnectionsPerServer = maximum,
             // Destination and heartbeat each supply one finite cancellation budget, including connect.
             ConnectTimeout = Timeout.InfiniteTimeSpan,
             ConnectCallback = connect,
             PooledConnectionLifetime = TimeSpan.FromMinutes(5)
         })
         { Timeout = Timeout.InfiniteTimeSpan };
+        client = CreateClient(MaximumDestinationSends);
+        heartbeatClient = CreateClient(1);
     }
     public Task StartAsync(CancellationToken token)
     {
@@ -101,22 +104,26 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     }
     public async Task<StageReply> RequestDestinationAsync(FrozenRequest request, CancellationToken token)
     {
+        using var permit = await ReserveDispatchAsync(request, token).ConfigureAwait(false);
+        return await permit.SendAsync(token).ConfigureAwait(false);
+    }
+    string ValidateDestination(FrozenRequest request)
+    {
         options.ValidateOriginal(request);
         var frozen = request.IntegrationRequest ?? throw new InvalidDataException("Persist the RCS wire intent before delivery");
         if (frozen.RequestId <= 0 || frozen.ContentType != "application/json" ||
             Wire.Hash(frozen.Body) != frozen.BodyHash || Encoding.UTF8.GetByteCount(frozen.Body) > 65536 ||
             !RcsDestinationProtocol.MatchesFrozen(options, request, frozen))
             throw new InvalidDataException("RCS frozen wire intent differs from original payload/configuration");
-        lock (lifecycle)
-        {
-            if (!running || disposed) throw new IOException("RCS client is stopped");
-            if (active++ == 0) drained = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        }
-        try
-        {
+        return frozen.Body;
+    }
+    async Task<StageReply> SendDestinationAsync(FrozenRequest request, string body, CancellationToken token)
+    {
+        var frozen = request.IntegrationRequest!;
+        lock (lifecycle) if (!running || disposed) throw new IOException("RCS client is stopped");
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token);
             deadline.CancelAfter(options.RequestTimeoutMs);
-            using var content = new TrackedRequestContent(Encoding.UTF8.GetBytes(frozen.Body));
+            using var content = new TrackedRequestContent(Encoding.UTF8.GetBytes(body));
             using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
             {
                 Version = HttpVersion.Version11,
@@ -156,8 +163,6 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
                 catch (Exception e) when (e is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
                 { return Unknown("Invalid/unmatched RCS response: " + e.GetType().Name + "; original response retained, outcome unknown"); }
             }
-        }
-        finally { lock (lifecycle) if (--active == 0) drained!.TrySetResult(); }
     }
     static bool ConnectionRefused(Exception error)
     {
@@ -209,6 +214,6 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     {
         lock (lifecycle) disposed = true;
         await StopAsync(CancellationToken.None).ConfigureAwait(false);
-        lock (lifecycle) { heartbeatStop?.Dispose(); heartbeatStop = null; client.Dispose(); }
+        lock (lifecycle) { heartbeatStop?.Dispose(); heartbeatStop = null; client.Dispose(); heartbeatClient.Dispose(); }
     }
 }

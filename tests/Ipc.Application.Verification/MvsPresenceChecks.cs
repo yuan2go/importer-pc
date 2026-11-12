@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text.Json;
+using Ipc.Application.ParcelFlow;
 using Ipc.Application.Contracts;
 using Ipc.Drivers.Hikrobot.Mvs;
 using Ipc.Platform;
@@ -19,6 +21,7 @@ internal static class MvsPresenceChecks
     }
     internal static async Task Run(string workspace, string root)
     {
+        ReplaySamples(root);
         var model = new MvsTrayPresence(); var ticks = Stopwatch.GetTimestamp();
         TrayPresenceEvidence? Sample(bool parcel, int ms, int exposure = 0)
         {
@@ -34,14 +37,21 @@ internal static class MvsPresenceChecks
         model.Teach();
         for (var i = 0; i < 20; i++) Sample(false, 100);
         Check(model.Status == "空托盘已确认", "explicit empty teaching requires stable multi-frame evidence");
+        Check(model.Snapshot() is { Calibrated: true, Calibrating: false, Presence: TrayPresence.Absent, ExposureValid: true, ReferenceSha256: { Length: 64 }, ChangedFraction: 0 },
+            "structured model evidence identifies the calibrated reference, actual empty state and measured scene difference");
         Sample(true, 100); Sample(true, 100); Sample(true, 100);
         Check(model.Status == "包裹在位", "parcel pixels establish presence independently of barcode results");
         Sample(false, 100); Sample(false, 100); Sample(false, 700);
         Check(model.Status != "空托盘已确认", "a frame gap resets the continuous removal span");
         for (var i = 0; i < 10; i++) Sample(false, 100);
         Check(model.Status == "空托盘已确认", "return to the taught reference confirms removal after 800ms");
+        model.BreakContinuity();
+        Check(model.Snapshot() is { Calibrated: true, Presence: TrayPresence.Unknown, ChangedFraction: null } && model.Status.Contains("未知"),
+            "a broken frame sequence withdraws the stale empty status immediately while retaining only the reference");
         Sample(false, 100, 40);
         Check(model.Status.Contains("未知"), "large exposure changes invalidate physical inference");
+        Check(model.Snapshot() is { Calibrated: true, Presence: TrayPresence.Unknown, ExposureValid: false, BrightnessShift: 40 },
+            "exposure-invalid evidence remains explicitly unknown despite retaining the session's calibrated reference");
         await using (var restarted = new MvsAcquisition(new("presence-restart", "presence-restart", new Dictionary<string, string>
         { ["device.ip"] = "192.0.2.21", ["device.serial"] = "SYNTH-OFFLINE-0" }), new Camera(false), _ => new Lease(), decoder: new Decoder(new Camera(false))))
         {
@@ -51,6 +61,8 @@ internal static class MvsPresenceChecks
             await restarted.StopAsync(default);
             await restarted.StartControlledAsync(Wire.Id(), _ => true, _ => { }, default);
             Check(restarted.TrayPresenceStatus.Contains("未校准"), "reconnecting the actual acquisition discards its old empty reference");
+            Check(restarted.ReadDiagnostics().TrayPresenceModel is { Calibrated: false, ReferenceSha256: null, Presence: TrayPresence.Unknown },
+                "reconnected acquisition diagnostics cannot carry a prior session's empty-tray identity");
         }
         foreach (var native in new[] { false, true })
         {
@@ -110,6 +122,41 @@ internal static class MvsPresenceChecks
             await CameraRoundHarness.Until(async () => !(await h.App.SnapshotAsync()).Rounds.Any(r => r.PositionId == "left") &&
                 (await h.App.SnapshotAsync()).Capacity!.ManagedExecutions == 0);
         }
+    }
+    static void ReplaySamples(string root)
+    {
+        var samples = Path.Combine(root, "presence-samples"); Directory.CreateDirectory(samples);
+        var planFile = Path.Combine(samples, "manifest.json"); var reportFile = Path.Combine(root, "presence-report.json");
+        List<PresenceSampleReplay.Frame> frames = [];
+        foreach (var (number, ms, parcel) in new[] { (1u, 0d, false), (2u, 400d, false), (3u, 800d, false), (4u, 1200d, false), (5u, 1600d, false), (8u, 2000d, true), (9u, 2100d, true), (10u, 2200d, true) })
+        {
+            var name = "frame-" + number + (number == 1 ? ".pgm" : ".png"); var file = Path.Combine(samples, name);
+            File.WriteAllBytes(file, number == 1 ? System.Text.Encoding.ASCII.GetBytes($"P5\n{W} {H}\n255\n").Concat(Pixels(parcel)).ToArray() : ParcelRuntime.EncodeOriginalPng(Pixels(parcel), W, H));
+            frames.Add(new("session-one", number, ms, name, Wire.FileHash(file), W, H, number == 1, parcel ? TrayPresence.Present : TrayPresence.Absent));
+        }
+        frames.Add(frames[^1] with { SessionId = "session-two", FrameNumber = 1, HostElapsedMs = 0, ConfirmEmptyCalibration = false });
+        var plan = new PresenceSampleReplay.Plan(1, new string('a', 40), "Synthetic", "synthetic-camera", "mvid-native", "Synthetic", frames.ToArray());
+        ExtensionStore.AtomicWrite(planFile, plan);
+        var before = Directory.GetFiles(samples).ToDictionary(f => f, Wire.FileHash);
+        PresenceSampleReplay.Run(planFile, reportFile);
+        using (var report = JsonDocument.Parse(File.ReadAllText(reportFile)))
+        {
+            var rows = report.RootElement.GetProperty("Frames");
+            Check(report.RootElement.GetProperty("Status").GetString() == "SAMPLE_REPLAY_REVIEW_REQUIRED" &&
+                rows[4].GetProperty("Model").GetProperty("Presence").GetString() == "Absent" &&
+                rows[7].GetProperty("Model").GetProperty("Presence").GetString() == "Present" &&
+                rows[8].GetProperty("Model").GetProperty("Calibrated").GetBoolean() == false &&
+                report.RootElement.GetProperty("FalseEmptyAgainstDeclaredLabels").GetInt32() == 0 && before.All(f => Wire.FileHash(f.Key) == f.Value),
+                "offline captured-PGM/PNG replay uses the production model, resets sessions and preserves originals without granting field qualification");
+        }
+        ExtensionStore.AtomicWrite(planFile, plan with { Frames = [frames[0] with { RelativeFile = "../outside.png" }] });
+        var denied = Path.Combine(root, "refused-presence.json");
+        try { PresenceSampleReplay.Run(planFile, denied); throw new InvalidOperationException("Traversal sample accepted"); }
+        catch (InvalidDataException) { Check(!File.Exists(denied), "invalid replay source paths publish no successful report"); }
+        ExtensionStore.AtomicWrite(planFile, plan);
+        File.AppendAllText(Path.Combine(samples, frames[0].RelativeFile), "changed-original");
+        try { PresenceSampleReplay.Run(planFile, denied); throw new InvalidOperationException("Changed sample accepted"); }
+        catch (InvalidDataException) { Check(!File.Exists(denied), "changed original samples are retained and refuse before report publication"); }
     }
     sealed class Lease : IDisposable { public void Dispose() { } }
     sealed class Decoder(Camera camera) : IMonoBarcodeDecoder

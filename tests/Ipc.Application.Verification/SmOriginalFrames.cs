@@ -230,18 +230,36 @@ static partial class SportmasterRcs
         }
         Console.WriteLine("SM_ORIGINAL_FRAME_PASS; synthetic SDK/decoder; actual PNG/SQLite/HTTP; hardware NOT_RUN; root=" + root);
     }
-    static byte[] DecodeOriginalPng(byte[] png)
+    internal static byte[] DecodeOriginalPng(byte[] png, int? expectedWidth = null, int? expectedHeight = null)
     {
+        if (png.Length < 33 || !png.AsSpan(0, 8).SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 })) throw new InvalidDataException("Original PNG signature missing");
         using var compressed = new MemoryStream(); int width = 0, height = 0;
+        var ended = false;
         for (var offset = 8; offset < png.Length;)
         {
+            if (png.Length - offset < 12) throw new InvalidDataException("Incomplete original PNG chunk");
             var length = BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(offset, 4)); var kind = System.Text.Encoding.ASCII.GetString(png, offset + 4, 4);
-            if (kind == "IHDR") { width = BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(offset + 8)); height = BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(offset + 12)); }
-            if (kind == "IDAT") compressed.Write(png, offset + 8, length);
+            if (length < 0 || length > png.Length - offset - 12) throw new InvalidDataException("Invalid original PNG chunk extent");
+            uint crc = uint.MaxValue;
+            foreach (var value in png.AsSpan(offset + 4, length + 4))
+            { crc ^= value; for (var bit = 0; bit < 8; bit++) crc = (crc >> 1) ^ ((crc & 1) != 0 ? 0xEDB88320u : 0); }
+            if (~crc != BinaryPrimitives.ReadUInt32BigEndian(png.AsSpan(offset + 8 + length, 4))) throw new InvalidDataException("Original PNG CRC differs");
+            if (kind == "IHDR")
+            {
+                if (width != 0 || length != 13) throw new InvalidDataException("Original PNG header differs");
+                width = BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(offset + 8)); height = BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(offset + 12));
+                if (width <= 0 || height <= 0 || (long)width * height > 16777216 || expectedWidth is { } w && width != w || expectedHeight is { } h && height != h ||
+                    !png.AsSpan(offset + 16, 5).SequenceEqual(new byte[] { 8, 0, 0, 0, 0 })) throw new InvalidDataException("Only captured tight Mono8 PNG is supported");
+            }
+            else if (kind == "IDAT" && width != 0 && !ended) compressed.Write(png, offset + 8, length);
+            else if (kind == "IEND" && length == 0 && offset + 12 == png.Length) ended = true;
+            else throw new InvalidDataException("Unexpected original PNG chunk");
             offset += length + 12;
         }
+        if (!ended || width == 0 || compressed.Length == 0) throw new InvalidDataException("Original PNG is incomplete");
         compressed.Position = 0; using var zlib = new ZLibStream(compressed, CompressionMode.Decompress); using var pixels = new MemoryStream();
         var row = new byte[width]; for (var i = 0; i < height; i++) { if (zlib.ReadByte() != 0) throw new InvalidDataException("Unexpected PNG filter"); zlib.ReadExactly(row); pixels.Write(row); }
+        if (zlib.ReadByte() != -1) throw new InvalidDataException("Original PNG payload exceeds its dimensions");
         return pixels.ToArray();
     }
 }

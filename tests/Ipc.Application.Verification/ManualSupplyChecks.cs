@@ -1,4 +1,4 @@
-﻿using Ipc.Application.Contracts;
+using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Assembly;
@@ -95,6 +95,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         public string RcsImplementationFingerprint { get; set; } = "synthetic-manual-rcs-implementation";
         public int CreateCalls { get; private set; }
         public readonly Dictionary<string, SilentCamera> Cameras = [];
+        public Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService Rcs { get; private set; } = null!;
         public ParcelConfiguration Normalize(ParcelConfiguration c) => validation.Normalize(c);
         public void Validate(ParcelConfiguration c) => validation.ValidateStructure(c);
         public void ValidateStructure(ParcelConfiguration c) => validation.ValidateStructure(c);
@@ -110,19 +111,21 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
                 else if (CameraSource is not null) readers.Add(reader.DeviceId, CameraSource(reader));
                 else { var source = new SilentCamera(reader.DeviceId); readers.Add(reader.DeviceId, source); Cameras.Add(reader.DeviceId, source); }
             }
-            var wcs = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
+            var wcs = Rcs = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
             return new(readers[c.Reader.DeviceId], null, CameraSource is null ? new RcsHealth(wcs, this) : wcs, null,
                 new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint }, Readers: readers);
         }
         public ValueTask DisposeAsync() => FailDisposal ? ValueTask.FromException(new IOException("synthetic factory still owns resources")) : validation.DisposeAsync();
     }
-    sealed class RcsHealth(Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService inner, ManualFactory owner) : IWcsPort, IWcsRequestPreparer
+    sealed class RcsHealth(Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService inner, ManualFactory owner) : IWcsPort, IWcsRequestPreparer, IWcsDispatchResources
     {
+        public WcsDispatchProgress DispatchProgress => inner.DispatchProgress;
         public string InstanceId => inner.InstanceId;
         public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
         public async Task<CapabilityHealth> HealthAsync(CancellationToken t) { var h = await inner.HealthAsync(t); return owner.RcsOffline ? h with { Ready = false } : h; }
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
         public Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken t) => inner.ResolveSlotAsync(r, t);
+        public Task<IWcsDispatchPermit> ReserveDispatchAsync(FrozenRequest r, CancellationToken t) => inner.ReserveDispatchAsync(r, t);
         public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
         public IntegrationRequestIdRange? GetRequestIdRange(CapabilityBinding b) => inner.GetRequestIdRange(b);
         public bool UsesAutomaticRequestIds => inner.UsesAutomaticRequestIds;
@@ -147,7 +150,8 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
             var id = Wire.Id();
             frames[id] = Enumerable.Repeat(unchecked((byte)(sequence + 1)), 256).ToArray();
             return receive!(new(id, device, epoch, id, Interlocked.Increment(ref sequence), "round." + id,
-                presence is null ? "Read" : "Presence", codes, null, observedAt ?? DateTimeOffset.UtcNow) { TrayPresence = presence });
+                presence is null ? "Read" : "Presence", codes, null, observedAt ?? DateTimeOffset.UtcNow)
+            { TrayPresence = presence });
         }
         public void EnableOriginalFrames() { }
         public Action? BeforeRetainOriginalFrame { get; set; }

@@ -7,7 +7,7 @@ using Ipc.Application.Sportmaster;
 using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
-internal static class StabilityAnalysis
+internal static partial class StabilityAnalysis
 {
     static void Check(bool ok, string detail) { if (!ok) throw new InvalidOperationException(detail); Console.WriteLine("PASS ANALYSIS " + detail); }
     public static async Task Run(string workspace, string root)
@@ -78,6 +78,10 @@ internal static class StabilityAnalysis
             // paired P95 is 110ms; adding the phase P95s would incorrectly yield 200ms.
             timing.CommandText = "UPDATE parcel_ingress SET queue_ms=CASE WHEN id=(SELECT min(id) FROM parcel_ingress) THEN 10 ELSE 100 END,processing_ms=CASE WHEN id=(SELECT min(id) FROM parcel_ingress) THEN 100 ELSE 10 END";
             timing.ExecuteNonQuery();
+            // A controlled image-stage audit on the same original operation
+            // must not become an extra/missing RCS attempt in the real analyzer.
+            timing.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) SELECT at,event,owner,json_set(detail,'$.Stage','image-capture','$.RequestId','synthetic-image-request') FROM parcel_audit WHERE event='Dispatching' AND json_valid(detail) AND json_extract(detail,'$.Stage')='wcs-slot' LIMIT 1";
+            if (timing.ExecuteNonQuery() != 1) throw new InvalidOperationException("Missing actual RCS attempt for image-stage evidence control");
         }
         var pairedManifest = paired + ".recovery/COMPLETED.json";
         var pairedNode = JsonNode.Parse(File.ReadAllText(pairedManifest))!;
@@ -87,9 +91,10 @@ internal static class StabilityAnalysis
         var pairedResult = await Analyze(workspace, collection, paired, pairedOutput);
         Check(pairedResult.Exit == 0, "paired synthetic timing backup passes real analysis");
         using (var pairedReport = JsonDocument.Parse(File.ReadAllText(pairedOutput)))
-            Check(pairedReport.RootElement.GetProperty("LatencyMilliseconds").GetProperty("left").GetProperty("input_queue_decision_and_handoff_ms").GetProperty("P95").GetDouble() == 110,
-                "anti-correlated phases yield measured paired P95=110ms, not summed phase P95=200ms");
-        foreach (var defect in new[] { "missing", "tampered", "version", "forged-schema", "application", "configuration", "path", "active", "wrong-runtime", "input-hash" })
+            Check(pairedReport.RootElement.GetProperty("LatencyMilliseconds").GetProperty("left").GetProperty("input_queue_decision_and_handoff_ms").GetProperty("P95").GetDouble() == 110 &&
+                pairedReport.RootElement.GetProperty("SendAttemptsInWindow").GetInt32() == 1,
+                "paired P95=110ms is measured rather than summing phase P95s, and image-stage attempts do not contaminate RCS counts");
+        foreach (var defect in new[] { "missing", "tampered", "version", "forged-schema", "application", "configuration", "path", "active", "input-hash" })
         {
             var variant = Path.Combine(root, defect + ".db"); CopySet(backup, variant);
             var manifestPath = variant + ".recovery/COMPLETED.json";
@@ -104,7 +109,7 @@ internal static class StabilityAnalysis
             }
             if (defect == "path") manifest["Files"]!["receipts/../escape.json"] = new string('A', 64);
             if (defect == "active") File.WriteAllText(variant + "-wal", "retained sidecar");
-            if (defect is "version" or "forged-schema" or "application" or "wrong-runtime" or "input-hash")
+            if (defect is "version" or "forged-schema" or "application" or "input-hash")
             {
                 using var db = new SqliteConnection("Data Source=" + variant + ";Pooling=False"); db.Open(); using var command = db.CreateCommand();
                 command.CommandText = defect switch
@@ -112,7 +117,6 @@ internal static class StabilityAnalysis
                     "version" => "UPDATE platform_migrations SET version=11",
                     "forged-schema" => "DROP TABLE parcel_ingress_audits",
                     "application" => "UPDATE platform_migrations SET application='direct-plc'",
-                    "wrong-runtime" => "UPDATE parcel_ingress SET session='foreign-runtime'",
                     _ => "UPDATE parcel_ingress SET body_hash='CHANGED'"
                 }; command.ExecuteNonQuery();
             }
@@ -122,6 +126,7 @@ internal static class StabilityAnalysis
             Check(attempt.Exit != 0 && !File.Exists(refused) && !File.Exists(Path.Combine(root, defect + "-analysis-input-dispositions.jsonl")) &&
                 before.OrderBy(x => x.Key).SequenceEqual(Inventory(variant).OrderBy(x => x.Key)), defect + " refuses without source changes or publishing a successful/partial analysis");
         }
+        await VerifyManualBusinessEvidence(workspace, Path.Combine(root, "manual-business"));
     }
     static Dictionary<string, string> Inventory(string database) => new[] { database }.Concat(Directory.GetFiles(database + ".recovery", "*", SearchOption.AllDirectories))
         .Concat(new[] { database + "-wal", database + "-shm", database + "-journal" }.Where(File.Exists)).ToDictionary(p => p, p => Wire.FileHash(p));

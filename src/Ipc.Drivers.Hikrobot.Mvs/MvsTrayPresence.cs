@@ -16,20 +16,31 @@ internal sealed class MvsTrayPresence
     bool requested;
     TrayPresence pending, published;
     string referenceId = "";
+    double? changedFraction;
+    int? brightnessShift;
+    bool? exposureValid;
     string status = "未校准；在位状态未知";
     public string Status { get { lock (gate) return status; } private set => status = value; }
     public bool CanDecode { get { lock (gate) return !requested && (reference is null || published == TrayPresence.Present); } }
+    public TrayPresenceModelSnapshot Snapshot()
+    {
+        lock (gate) return new(Status, reference is not null, requested, reference is null ? null : referenceId,
+            width, height, published, pending, count, previous != 0 && first != 0 ? Math.Max(0, Elapsed(first, previous)) : 0,
+            changedFraction, brightnessShift, exposureValid);
+    }
     public void BreakContinuity()
     {
         lock (gate)
         {
             if (requested && teaching is not null) FailTeaching();
             teaching = null; count = 0; previous = 0; pending = published = TrayPresence.Unknown; lastPublished = 0;
+            changedFraction = null; brightnessShift = null; exposureValid = null;
+            if (reference is not null) Status = "图像连续性中断；在位状态未知";
         }
     }
     void FailTeaching()
     {
-        requested = false; teaching = reference = null;
+        requested = false; teaching = reference = null; referenceId = "";
         Status = "校准失败；请保持空托盘和稳定图像后重新校准";
     }
     public void Teach()
@@ -37,6 +48,7 @@ internal sealed class MvsTrayPresence
         lock (gate)
         {
             reference = teaching = null; requested = true; count = 0; previous = 0;
+            changedFraction = null; brightnessShift = null; exposureValid = null;
             published = pending = TrayPresence.Unknown; lastPublished = 0; referenceId = "";
             Status = "空托盘校准中；请保持托盘为空且画面稳定";
         }
@@ -57,6 +69,8 @@ internal sealed class MvsTrayPresence
             {
                 if (width != 0 && requested && teaching is not null) FailTeaching();
                 reference = teaching = null; count = 0; width = w; height = h;
+                referenceId = ""; published = pending = TrayPresence.Unknown; first = ticks;
+                changedFraction = null; brightnessShift = null;
                 Status = requested ? Status : "图像尺寸变化；请重新校准空托盘";
             }
             if (previous != 0 && Elapsed(previous, ticks) > 500)
@@ -65,14 +79,16 @@ internal sealed class MvsTrayPresence
                 teaching = null; count = 0; first = ticks; pending = published = TrayPresence.Unknown; lastPublished = 0;
             }
             previous = ticks;
+            exposureValid = samples.Count(v => v is < 5 or > 250) < samples.Length * .2;
             if (requested)
             {
-                if (samples.Count(v => v is < 5 or > 250) >= samples.Length * .2)
+                if (exposureValid == false)
                 {
                     FailTeaching();
                     return new(TrayPresence.Unknown, "EmptyTeachingExposureInvalid; explicit calibration must be repeated");
                 }
                 var delta = teaching is null ? (Changed: 1d, Shift: 0) : Difference(teaching, samples);
+                changedFraction = teaching is null ? null : delta.Changed; brightnessShift = teaching is null ? null : delta.Shift;
                 if (teaching is null) { teaching = samples; first = ticks; count = 0; }
                 else if (delta.Changed > .001 || Math.Abs(delta.Shift) > 12)
                 {
@@ -91,8 +107,9 @@ internal sealed class MvsTrayPresence
             if (reference is not null)
             {
                 (changed, shift) = Difference(reference, samples);
+                changedFraction = changed; brightnessShift = shift; exposureValid = exposureValid == true && Math.Abs(shift) <= 12;
                 // Large exposure shifts, near-black and saturation invalidate inference.
-                if (Math.Abs(shift) <= 12 && samples.Count(v => v is < 5 or > 250) < samples.Length * .2)
+                if (exposureValid == true)
                     state = changed <= .001 ? TrayPresence.Absent : changed >= .01 ? TrayPresence.Present : TrayPresence.Unknown;
             }
             if (pending != state) { pending = state; count = 0; first = ticks; }

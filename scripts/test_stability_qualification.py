@@ -26,6 +26,7 @@ class QualificationChecks(unittest.TestCase):
                     calls[0] += 1
                     if unreadable and calls[0] > 1: raise OSError('Synthetic supervision unavailable')
                     return dict(Progress=dict(RuntimeId='test', ProcessId=1, At=q.utc(), Stopping=False, Background=[],
+                        ManualCommands=dict(Positions=[dict(Position=p, Submitted=0, Completed=0) for p in ('left', 'right')]),
                         Workers=[dict(Position=p, Received=calls[0], State='Waiting', QueueDepth=0) for p in ('left', 'right')],
                         Ui=[dict(Id='window', HistogramCounts=[dict(UpperMs=2048, Count=calls[0])], MaximumDispatchMs=6000, LastDispatchAgeMs=0)]), Resource={})
                 process = SimpleNamespace(executable=(release / 'desktop/Ipc.Desktop.exe').resolve(), alive=lambda: True, close=lambda: None)
@@ -56,6 +57,33 @@ class QualificationChecks(unittest.TestCase):
         plan['NormalHours'] = 1
         with self.assertRaisesRegex(ValueError, '24..168'):
             q.validate_plan(plan)
+
+    def test_long_run_samples_keep_calibration_and_resource_truth_without_repeating_frame_windows(self):
+        original = dict(Resource=dict(PrivateMemorySize64=100, WalBytes=10), Progress=dict(
+            Flow=dict(Sequence=99, Counts={'left': {'InputAdmitted': 1}}, Recent=[{'OperationId': 'original'}]),
+            Execution=dict(ManagedExecutions=7), Diagnostics=dict(WrittenBytes=1000),
+            RcsDispatch=dict(Capacity=7, Occupied=7, ActiveSends=7, LeftWaiting=1, RightWaiting=1),
+            Connections=[dict(DeviceId='left', Epoch='one', Health='Ready',
+                Acquisition=dict(RetainedNativeFrameBytes=0, TrayPresenceModel=dict(Calibrated=False, Presence='Unknown')),
+                Performance=dict(OriginalFrames=dict(Frames=2, Bytes=2048, Leases=1, MaximumFrames=32, MaximumBytes=268435456),
+                                 Acquisition=dict(FrameTraceCount=512, RecentFrames=[dict(Number=1)])))]))
+        sample = q.compact_sample(original)
+        self.assertNotIn('Recent', sample['Progress']['Flow'])
+        self.assertEqual(sample['Progress']['Flow']['Sequence'], 99)
+        self.assertNotIn('RecentFrames', sample['Progress']['Connections'][0]['Performance']['Acquisition'])
+        self.assertEqual(original['Progress']['Connections'][0]['Performance']['Acquisition']['RecentFrames'][0]['Number'], 1)
+        trends, cameras = {}, {}
+        q.observe_resources(sample, trends, cameras)
+        second = json.loads(json.dumps(sample)); second['Resource'].update(PrivateMemorySize64=80, WalBytes=30)
+        second['Progress']['Connections'][0].update(Epoch='two')
+        second['Progress']['Connections'][0]['Acquisition']['TrayPresenceModel']['Calibrated'] = True
+        q.observe_resources(second, trends, cameras)
+        self.assertEqual((trends['Process.PrivateMemorySize64']['Minimum'], trends['Process.PrivateMemorySize64']['Maximum']), (80, 100))
+        self.assertEqual(trends['Process.HandleCount']['Samples'], 0)
+        self.assertIsNone(trends['Process.HandleCount']['Start'])
+        self.assertEqual(trends['Process.HandleCount']['Missing'], 2)
+        self.assertEqual(trends['Camera.left.Original.Bytes']['Maximum'], 2048)
+        self.assertEqual((cameras['left']['EpochChanges'], cameras['left']['CalibratedSamples'], cameras['left']['UncalibratedSamples'], cameras['left']['UnknownPresenceSamples']), (1, 1, 1, 2))
 
     def test_verifier_refusal_never_falls_back_to_python_format_rules(self):
         with tempfile.TemporaryDirectory() as folder:

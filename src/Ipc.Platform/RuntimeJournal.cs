@@ -5,7 +5,7 @@ namespace Ipc.Platform;
 // Diagnostic metadata only; authoritative business facts remain in the transactional store.
 public sealed partial class RuntimeJournal : IAsyncDisposable
 {
-    long dropped, written;
+    long dropped, written, writtenBytes;
     string? lastFailure, currentFailure;
     long progressTicks;
     public object Status => new
@@ -15,6 +15,7 @@ public sealed partial class RuntimeJournal : IAsyncDisposable
         Dropped = Interlocked.Read(ref dropped),
         DebugDropped = Interlocked.Read(ref debugDropped),
         Written = Interlocked.Read(ref written),
+        WrittenBytes = Interlocked.Read(ref writtenBytes),
         LastFailure = Volatile.Read(ref lastFailure),
         CurrentFailure = Volatile.Read(ref currentFailure),
         LastProgressUtcTicks = Interlocked.Read(ref progressTicks)
@@ -80,6 +81,7 @@ public sealed partial class RuntimeJournal : IAsyncDisposable
                             var line = System.Text.Json.JsonSerializer.Serialize(entry, new System.Text.Json.JsonSerializerOptions { Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } });
                             var protectedLine = DiagnosticText.Protect(line);
                             await File.AppendAllTextAsync(path, protectedLine + Environment.NewLine);
+                            Interlocked.Add(ref writtenBytes, System.Text.Encoding.UTF8.GetByteCount(protectedLine + Environment.NewLine));
                             PublishTail(protectedLine, clock.GetUtcNow());
                             Interlocked.Increment(ref written); Interlocked.Exchange(ref progressTicks, DateTimeOffset.UtcNow.UtcTicks);
                             Volatile.Write(ref currentFailure, null);

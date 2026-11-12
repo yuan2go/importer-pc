@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -353,6 +353,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         readonly ConcurrentBag<Task> handlers = [];
         public readonly ConcurrentQueue<string> Requests = new();
         public readonly ConcurrentQueue<string> HeartbeatRequests = new();
+        public Func<string, Task>? BusinessGate { get; set; }
         int businessRepliesAttempted;
         public int BusinessRepliesAttempted => Volatile.Read(ref businessRepliesAttempted);
         public TaskCompletionSource? Hold { get; set; }
@@ -385,6 +386,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 using var json = JsonDocument.Parse(body); var id = json.RootElement.GetProperty("requestId").GetInt64();
                 var heartbeat = json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat";
                 (heartbeat ? HeartbeatRequests : Requests).Enqueue(body);
+                if (!heartbeat && BusinessGate is { } gate) await gate(body).WaitAsync(stopped.Token);
                 // Business-result uncertainty does not also simulate a heartbeat outage unless selected explicitly.
                 var hold = Hold; if (hold is not null && (HoldWhen?.Invoke(body) ?? !heartbeat)) await hold.Task.WaitAsync(stopped.Token);
                 if (HeartbeatUnavailable && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")

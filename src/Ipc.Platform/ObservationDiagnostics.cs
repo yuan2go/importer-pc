@@ -17,6 +17,9 @@ public sealed record ObservationDiagnostics(string DeviceId, string Epoch, strin
     DateTimeOffset? LastFrameAt, double? LastFrameAgeMs, DateTimeOffset? LastDecodeAt, string? Failure)
 {
     public string? TrayPresenceStatus { get; init; }
+    public TrayPresenceModelSnapshot? TrayPresenceModel { get; init; }
+    public bool NativeBufferBorrowed { get; init; }
+    public long RetainedNativeFrameBytes { get; init; }
     public DecodeWindowSnapshot? Window { get; init; }
     public long SupersededDecodeFrames { get; init; }
     public long RejectedFrames { get; init; }
@@ -28,3 +31,6 @@ public sealed record ObservationDiagnostics(string DeviceId, string Epoch, strin
     // Median time to decode one frame over the recent window; sets the scan pace once the parcel rests.
     public double? DecodeMedianMs { get; init; }
 }
+public sealed record TrayPresenceModelSnapshot(string Status, bool Calibrated, bool Calibrating, string? ReferenceSha256,
+    int Width, int Height, TrayPresence Presence, TrayPresence Candidate, int StableFrames, double CandidateSpanMs,
+    double? ChangedFraction, int? BrightnessShift, bool? ExposureValid);

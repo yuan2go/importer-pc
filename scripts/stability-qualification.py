@@ -117,6 +117,69 @@ def validate_plan(plan):
         raise ValueError('Set an explicit throughput deficit tolerance 0..10 percent')
 
 
+def compact_sample(sample):
+    """Keep long-run counters/models; detailed frame traces use the existing short collector."""
+    result = dict(sample)
+    progress = result['Progress'] = dict(sample['Progress'])
+    if isinstance(progress.get('Flow'), dict):
+        progress['Flow'] = {key: value for key, value in progress['Flow'].items() if key != 'Recent'}
+    connections = []
+    for source in progress.get('Connections', []):
+        item = dict(source)
+        if isinstance(item.get('Performance'), dict):
+            item['Performance'] = dict(item['Performance'])
+            if isinstance(item['Performance'].get('Acquisition'), dict):
+                item['Performance']['Acquisition'] = {key: value for key, value in item['Performance']['Acquisition'].items() if key != 'RecentFrames'}
+        connections.append(item)
+    progress['Connections'] = connections
+    result['TraceScope'] = 'Long-run counters, calibration and owners; frame/flow details use dual-camera-performance.py and original backup journals'
+    return result
+
+
+def observe_resources(sample, trends, cameras):
+    def metric(name, value):
+        entry = trends.setdefault(name, dict(Samples=0, Missing=0, Start=None, End=None, Minimum=None, Maximum=None))
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+            entry['Missing'] += 1
+            return
+        if not entry['Samples']:
+            entry['Start'] = entry['Minimum'] = entry['Maximum'] = value
+        entry['Samples'] += 1; entry['End'] = value
+        entry['Minimum'] = min(entry['Minimum'], value); entry['Maximum'] = max(entry['Maximum'], value)
+    for key in ('WorkingSet64', 'PrivateMemorySize64', 'ManagedBytes', 'HandleCount', 'Threads', 'CpuTotalMs', 'DatabaseBytes', 'WalBytes'):
+        metric('Process.' + key, (sample.get('Resource') or {}).get(key))
+    progress = sample['Progress']
+    for section, fields in [('Execution', ('ManagedExecutions', 'BeforeAttemptWaits', 'ActiveStageOwners', 'RetainedAuxiliaryTasks')),
+                            ('RcsDispatch', ('Capacity', 'Occupied', 'ActiveSends', 'LeftWaiting', 'RightWaiting')),
+                            ('Diagnostics', ('Written', 'WrittenBytes', 'QueueDepth', 'Dropped'))]:
+        for key in fields:
+            metric(section + '.' + key, (progress.get(section) or {}).get(key))
+    for source in progress.get('Connections', []):
+        device = source.get('DeviceId')
+        if not isinstance(device, str) or not device:
+            raise ValueError('Camera resource sample has no device identity')
+        state = cameras.setdefault(device, dict(Samples=0, Epoch=None, EpochChanges=0, MissingModelSamples=0,
+                                               CalibratedSamples=0, UncalibratedSamples=0, UnknownPresenceSamples=0, HealthCounts={}))
+        state['Samples'] += 1
+        if state['Epoch'] is not None and state['Epoch'] != source.get('Epoch'):
+            state['EpochChanges'] += 1
+        state['Epoch'] = source.get('Epoch')
+        health = source.get('Health') or 'Unknown'
+        state['HealthCounts'][health] = state['HealthCounts'].get(health, 0) + 1
+        model = (source.get('Acquisition') or {}).get('TrayPresenceModel')
+        if not isinstance(model, dict):
+            state['MissingModelSamples'] += 1
+        else:
+            if model.get('Calibrated') is True: state['CalibratedSamples'] += 1
+            elif model.get('Calibrated') is False: state['UncalibratedSamples'] += 1
+            else: state['MissingModelSamples'] += 1
+            if model.get('Presence') == 'Unknown': state['UnknownPresenceSamples'] += 1
+        original = (source.get('Performance') or {}).get('OriginalFrames') or {}
+        for key in ('Frames', 'Bytes', 'Leases', 'MaximumFrames', 'MaximumBytes'):
+            metric('Camera.' + device + '.Original.' + key, original.get(key))
+        metric('Camera.' + device + '.RetainedNativeFrameBytes', (source.get('Acquisition') or {}).get('RetainedNativeFrameBytes'))
+
+
 def collect(args):
     if platform.system() != 'Windows':
         raise RuntimeError('NOT_RUN: target Windows required')
@@ -133,6 +196,7 @@ def collect(args):
     started = time.monotonic(); last = started; normal_start = None; normal_end = None; normal_tick = None; last_normal_tick = None
     failures = collections.Counter(); samples = 0; written = 0; first_normal = None; last_normal = None
     windows = {}; window_start = {}; window_last = {}; resource_start = None; resource_end = None
+    resource_trends = {}; camera_states = {}
     metadata = dict(Started=utc(), RuntimeId=runtime, ProcessId=pid, Executable=str(process.executable),
                     SourceCommit=identity['SourceCommit'], ReleaseManifestSha256=sha(release / 'SHA256SUMS'),
                     Plan=plan, OS=platform.platform(), Scope='ACTUAL_SINGLE_PROCESS_OBSERVATION; no automatic business/qualification PASS')
@@ -153,7 +217,7 @@ def collect(args):
                 if shutil.disk_usage(output).free < plan['MinimumFreeBytes']:
                     failures['EvidenceVolumeReserve'] += 1; break
                 try:
-                    sample = read_json(progress_file); progress = sample['Progress']
+                    sample = compact_sample(read_json(progress_file)); progress = sample['Progress']
                     if progress['RuntimeId'] != runtime or progress['ProcessId'] != pid:
                         failures['RuntimeIdentityChanged'] += 1; break
                     stale = (dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(progress['At'])).total_seconds()
@@ -161,6 +225,7 @@ def collect(args):
                         failures['SupervisionStaleOrClockChanged'] += 1
                     is_normal = now - started >= warmup
                     if is_normal:
+                        observe_resources(sample, resource_trends, camera_states)
                         if normal_start is None:
                             normal_start = utc(); first_normal = progress; resource_start = sample['Resource']; normal_tick = now
                         normal_end = utc(); last_normal = progress; resource_end = sample['Resource']; last_normal_tick = now
@@ -209,7 +274,7 @@ def collect(args):
     finally:
         process.close()
         actual = max(0, (last_normal_tick or started) - (normal_tick or started))
-        rates = {}
+        rates = {}; camera_rates = {}; manual_rates = {}
         normal_ui = []
         for window_id, last_ui in windows.items():
             bins = {upper: count - window_start[window_id].get(upper, 0) for upper, count in window_last[window_id].items()}
@@ -229,14 +294,28 @@ def collect(args):
                 after = next((w for w in last_normal['Workers'] if w['Position'] == position), None)
                 if not before or not after:
                     failures['MissingPosition:' + position] += 1; continue
-                rate = (after['Received'] - before['Received']) / actual; rates[position] = rate
+                camera_delta = after['Received'] - before['Received']
+                first_manual = next((p for p in first_normal.get('ManualCommands', {}).get('Positions', []) if p['Position'] == position), {})
+                last_manual = next((p for p in last_normal.get('ManualCommands', {}).get('Positions', []) if p['Position'] == position), {})
+                manual_delta = last_manual.get('Submitted', -1) - first_manual.get('Submitted', 0)
+                camera_rates[position] = camera_delta / actual if camera_delta >= 0 else None
+                manual_rates[position] = manual_delta / actual if 'Submitted' in first_manual and 'Submitted' in last_manual and manual_delta >= 0 else None
+                if camera_rates[position] is None or manual_rates[position] is None:
+                    rates[position] = None; failures['InputCounterEvidenceMissingOrReset:' + position] += 1; continue
+                rate = camera_rates[position] + manual_rates[position]; rates[position] = rate
                 if rate < target * (1 - plan['MaximumRateDeficitPercent'] / 100):
                     failures['InputRateBelowPlan:' + position] += 1
+        for trend in resource_trends.values():
+            trend['Delta'] = trend['End'] - trend['Start'] if trend['Samples'] >= 2 else None
+            trend['DeltaPerHour'] = trend['Delta'] * 3600 / actual if trend['Delta'] is not None and actual else None
         report = dict(Status='SMOKE_ONLY' if args.smoke_seconds else 'COLLECTED_REQUIRES_RECONCILIATION' if actual >= normal_seconds and not failures else 'NOT_QUALIFIED',
                       ActualNormalSeconds=actual, RequiredNormalSeconds=plan['NormalHours'] * 3600, WarmupSeconds=warmup, ObservedInputHz=rates,
                       NormalStart=normal_start, NormalEnd=normal_end, Samples=samples, Bytes=written, Failures=dict(failures),
                       RuntimeId=runtime, SourceCommit=identity['SourceCommit'], FirstNormal=first_normal, LastNormal=last_normal,
                       Ui=normal_ui, ResourceStart=resource_start, ResourceEnd=resource_end,
+                      CameraInputHz=camera_rates, ManualCommandHz=manual_rates, ResourceTrends=resource_trends, CameraStates=camera_states,
+                      RateScope='Durable camera inputs plus manual command acceptances, counted separately; not parcels, frames or RCS calls',
+                      ResourceScope='Observed process/SQLite, local task/send/image owners and journal bytes; camera states are sampled evidence, not physical counts or field qualification',
                       Qualification='REVIEW_REQUIRED; source-to-receipt, target hardware, real devices/contracts and recovery evidence are independent')
         (output / 'collection.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
         print(json.dumps(report, ensure_ascii=False))
@@ -326,11 +405,12 @@ def observed_delta(collection, field):
 
 
 def analyze(args):
+    from stability_business_evidence import analyze_business
     collection_root = ordinary(args.collection)
     collection = read_json(collection_root / 'collection.json')
     identity = read_json(collection_root / 'identity.json')
     database = ordinary(args.database); output = ordinary(args.output)
-    products = [output, output.parent / (output.stem + '-input-dispositions.jsonl'), output.with_suffix('.reconciliation.db')]
+    products = [output, output.parent / (output.stem + '-input-dispositions.jsonl'), output.with_suffix('.reconciliation.db'), output.parent / (output.stem + '-business-events.jsonl')]
     if len(set(products)) != len(products) or any(p.exists() for p in products):
         raise FileExistsError('Preserve prior analysis')
     if not collection.get('NormalStart') or not collection.get('NormalEnd'):
@@ -370,8 +450,6 @@ def analyze(args):
         params = (collection['RuntimeId'].replace('-', ''), collection['NormalStart'], collection['NormalEnd'])
         where = 'session=? AND julianday(received_at)>=julianday(?) AND julianday(received_at)<=julianday(?)'
         counts = db.execute('SELECT position,state,count(*) FROM parcel_ingress WHERE ' + where + ' GROUP BY position,state', params).fetchall()
-        if not counts:
-            raise ValueError('Backup has no input evidence for this runtime and interval')
         latencies = {}
         for position in ('left', 'right'):
             timing = {}
@@ -386,83 +464,16 @@ def analyze(args):
             latencies[position] = timing
         round_where = "replace(json_extract(body,'$.ClockRuntime'),'-','')=? AND julianday(started)>=julianday(?) AND julianday(started)<=julianday(?)"
         round_counts = db.execute('SELECT position,active,count(*) FROM sm_parcel_rounds WHERE ' + round_where + ' GROUP BY position,active', params).fetchall()
-        round_ends = db.execute("SELECT position,json_extract(body,'$.EndReason'),count(*) FROM sm_parcel_rounds WHERE active=0 AND " + round_where + " GROUP BY position,json_extract(body,'$.EndReason')", params).fetchall()
+        round_end_where = "replace(json_extract(body,'$.ClockRuntime'),'-','')=? AND julianday(json_extract(body,'$.EndedAt'))>=julianday(?) AND julianday(json_extract(body,'$.EndedAt'))<=julianday(?)"
+        round_ends = db.execute("SELECT position,json_extract(body,'$.EndReason'),count(*) FROM sm_parcel_rounds WHERE active=0 AND " + round_end_where + " GROUP BY position,json_extract(body,'$.EndReason')", params).fetchall()
         # Bounded scratch outputs are private until every validation succeeds. A refusal
         # publishes no report or partial dispositions and never mutates the backup.
         with tempfile.TemporaryDirectory(prefix='stability-analysis-', dir=output.parent) as scratch:
             scratch = Path(scratch); dispositions = scratch / 'inputs.jsonl'
-            inventory = collections.Counter(); operations = set(); written = 0
-            with dispositions.open('x', encoding='utf-8') as lines:
-                for input_id, position, state, body, digest, detail in db.execute('SELECT id,position,state,body,body_hash,detail FROM parcel_ingress WHERE ' + where + ' ORDER BY received_at,id', params):
-                    if hashlib.sha256(body.encode('utf-8')).hexdigest().upper() != digest:
-                        raise ValueError('Input original hash differs')
-                    decoded = json.loads(body); observation = decoded.get('Observation', {})
-                    resolved = json.loads(detail) if detail and state == 'Processed' else {}
-                    outcome = resolved.get('Disposition', state)
-                    linked = resolved.get('Input') or {}
-                    if linked.get('OperationId'):
-                        operations.add(linked['OperationId'])
-                    inventory[position + ':' + str(outcome)] += 1
-                    line = json.dumps(dict(Id=input_id, Position=position, State=state, Outcome=outcome,
-                        OperationId=linked.get('OperationId'), SourceEvent=observation.get('SourceEventId'),
-                        Device=observation.get('DeviceId'), Epoch=observation.get('Epoch'), Sequence=observation.get('Sequence'),
-                        Codes=observation.get('Codes'), OriginalSha256=digest), ensure_ascii=False) + '\n'
-                    written += len(line.encode('utf-8'))
-                    if written > 2 * 1024**3 or len(operations) > 1000000:
-                        raise ValueError('Analysis evidence capacity exceeded')
-                    lines.write(line)
-            rcs = collections.Counter(); operation_facts = {}; missing = []
-            for op_id in operations:
-                row = db.execute('SELECT body,NULL FROM parcel_operations WHERE id=? UNION ALL SELECT body,body_hash FROM parcel_archives WHERE id=?', (op_id, op_id)).fetchone()
-                if row is None:
-                    missing.append(op_id); continue
-                body, digest = row
-                if digest and hashlib.sha256(body.encode()).hexdigest().upper() != digest:
-                    raise ValueError('Archived operation hash differs')
-                op = json.loads(body)
-                if op['Id'] != op_id:
-                    raise ValueError('Operation identity differs')
-                stage = op.get('Wcs')
-                if not stage:
-                    continue
-                request = stage['Request']; prepared = dt.datetime.fromisoformat(request['PreparedAt'])
-                if not start <= prepared <= end:
-                    rcs['PriorWindowOriginalsObserved'] += 1; continue
-                operation_facts[op_id] = dict(RequestId=request['Id'], ProtocolRequestId=(request.get('IntegrationRequest') or {}).get('RequestId'))
-                rcs['FrozenNewIntents'] += 1
-                rcs['PreRegisteredAttempts'] += stage['Attempts']
-                rcs['SnapshotOutcome:' + stage['State']] += 1
-                for occurrence, receipt_state, raw_hash in db.execute('SELECT id,state,raw_hash FROM parcel_receipts WHERE operation=? AND stage=? AND request=?', (op_id, 'wcs-slot', request['Id'])):
-                    rcs['SnapshotReceipt:' + receipt_state] += 1
-                    if raw_hash is None:
-                        continue
-                    if not re.fullmatch('[a-fA-F0-9]{32}', occurrence):
-                        raise ValueError('Invalid original receipt identity')
-                    raw_file = database.parent / (database.name + '.recovery') / 'receipts' / (occurrence + '.json')
-                    if raw_file.exists():
-                        with raw_file.open('rb') as original:
-                            raw = original.read(8 * 1024 * 1024 + 1)
-                    else:
-                        archived = db.execute('SELECT CASE WHEN length(body)<=8388608 THEN body ELSE NULL END FROM parcel_archived_receipts WHERE id=?', (occurrence,)).fetchone()
-                        if archived is None or archived[0] is None:
-                            raise ValueError('Receipt original missing or exceeds bounded analysis read')
-                        raw = archived[0]
-                    if len(raw) > 8 * 1024 * 1024:
-                        raise ValueError('Receipt exceeds bounded analysis read')
-                    if hashlib.sha256(raw).hexdigest().upper() != raw_hash:
-                        raise ValueError('Receipt original differs from database custody hash')
-                    reply = json.loads(raw); clock = reply.get('LocalClockEvidence')
-                    if reply['RequestId'] != request['Id']:
-                        raise ValueError('Receipt request identity differs')
-                    if not clock:
-                        rcs['ReceiptTimeEvidenceMissing'] += 1
-                        continue
-                    if clock['RuntimeId'] == collection['RuntimeId'] and start <= dt.datetime.fromisoformat(clock['CompletedAt']) <= end:
-                        rcs['LocalCompletedCallsInWindow'] += 1
-                        if reply.get('HttpResponse') is not None:
-                            rcs['HttpResponsesInWindow'] += 1
-                    else:
-                        rcs['ReceiptOutsideRuntimeWindow'] += 1
+            business_events = scratch / 'business-events.jsonl'
+            business = analyze_business(db, database, collection, dispositions, business_events, deadline)
+            inventory, rcs, operation_facts = business['Dispositions'], business['Rcs'], business['LinkedRequestIds']
+            missing = business['Missing']
             source_kind = getattr(args, 'source_kind', 'unavailable')
             reconciliation = dict(Status='NOT_RECONCILED', Missing=['Independent placement/source identities', 'RCS peer receive/response journal'],
                                   PhysicalPlacements=None, Accuracy=None)
@@ -479,23 +490,26 @@ def analyze(args):
                 raise ValueError('Backup changed during analysis')
             evidence = dict(IdentitySha256=sha(collection_root / 'identity.json'), CollectionSha256=sha(collection_root / 'collection.json'),
                             SamplesSha256=sha(collection_root / 'samples.jsonl') if (collection_root / 'samples.jsonl').exists() else None,
-                            CollectionFailures=collection.get('Failures'), MissingOperations=missing, SampleCount=sample_count, SampleIssues=sample_issues,
-                            Coverage='Retained input ledger only; coalesced observations and expired history require independent evidence')
+                            CollectionFailures=collection.get('Failures'), MissingOperations=[m['OperationId'] for m in missing if m['Kind'] == 'OperationMissing'], MissingAssociations=missing, SampleCount=sample_count, SampleIssues=sample_issues,
+                            Coverage='Camera input, durable manual command, round, operation, original request and receipt ledgers; coalesced observations require independent evidence')
             report = dict(Status='ANALYZED_REVIEW_REQUIRED', SourceCommit=collection['SourceCommit'], RuntimeId=collection['RuntimeId'], Backup=verified,
                           ActualNormalSeconds=actual, NormalStart=collection['NormalStart'], NormalEnd=collection['NormalEnd'], CollectionStatus=collection['Status'],
                           Counts=counts, Dispositions=dict(inventory), LatencyMilliseconds=latencies, RoundCounts=round_counts, RoundEndReasons=round_ends,
+                          RoundCountsScope='Round starts in window; active/state are backup snapshots; BusinessEventsInWindow uses each event clock',
+                          BusinessEventsInWindow=business['EventsInWindow'], SendAttemptsInWindow=business['SendAttemptsInWindow'],
+                          BusinessTimingMilliseconds=dict(RcsCalls=business['RcsElapsedMs'], Rounds=business['RoundElapsedMs']),
                           InputCompletionMeaning='Input decision and managed handoff; not RCS completion', Ui=collection.get('Ui'), Evidence=evidence,
                           Counters=dict(ReceivedInputDelta=observed_delta(collection, 'Received'), ObservedOnlyDelta=observed_delta(collection, 'ObservedOnly'),
                                         CameraFrames=None, PhysicalPlacements=None, RcsFacts=dict(rcs), LinkedRequestIds=operation_facts,
                                         ActualPeerReceivedRequests=None, ActualPeerResponses=None), SourceDeliveryReconciliation=reconciliation,
-                          RcsScope='Intent prepared in selected runtime window; Snapshot fields describe backup time; local responses require matching receipt clock; peer receipt remains unverified',
+                          RcsScope=business['Scope'] + '; peer receipt remains unverified',
                           TimingScope='Per-input queue+processing; no exposure-to-slot measurement; stage percentiles are never added',
                           Qualification='NOT_GRANTED; smoke, synthetic and restart segments never establish continuous field qualification')
             staged_report = scratch / 'report.json'; staged_report.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding='utf-8')
             # Preserve existing destinations even if another analyzer raced this run.
             published = []
             try:
-                pairs = [(dispositions, products[1])]
+                pairs = [(dispositions, products[1]), (business_events, products[3])]
                 if source_kind == 'loopback-unique-code':
                     pairs.append((scratch / 'reconciliation.db', products[2]))
                 pairs.append((staged_report, output))  # Atomic final report publication, last.

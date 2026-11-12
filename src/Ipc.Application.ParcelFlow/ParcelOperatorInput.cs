@@ -63,16 +63,20 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                     // command is inspectable but is never replayed as a fresh camera event.
                     repository.Commit(null, "OperatorBarcodeSubmitted", Wire.Encode(new { Command = request, Evidence = evidence, Observation = observation }),
                         command: command, commandResult: new("Pending", "人工输入已持久接纳；结果尚待核对，禁止以新命令盲重发。", repository.Revision + 1));
+                    Interlocked.Increment(ref manualCommandsSubmitted);
+                    manualSubmittedByPosition.AddOrUpdate(request.PositionId, 1, (_, count) => count + 1);
                     activeOperatorCommands.Add(request.CommandId);
-                    try { await ProcessTrustedObservationAsync(request.PositionId, observation, currentOperator, at, readers[position.ReaderDeviceId]).ConfigureAwait(false); }
+                    ObservationHandling handled;
+                    try { handled = await ProcessTrustedObservationAsync(request.PositionId, observation, currentOperator, at, readers[position.ReaderDeviceId]).ConfigureAwait(false); }
                     finally { activeOperatorCommands.Remove(request.CommandId); }
                     var admitted = repository.FindIdentities(observation.AdmissionId, Wire.Hash(observation.DeviceId + ":" + observation.Epoch + ":" + observation.SourceEventId)).SingleOrDefault();
-                    var input = latestInputs.GetValueOrDefault(request.PositionId);
-                    if (input?.Observation.OperatorInput?.CommandId != request.CommandId) input = null;
-                    var result = new ParcelBarcodeReceipt(admitted is not null ? "Admitted" : input?.Outcome.ToString() ?? "Pending",
-                        admitted is not null ? "人工输入已创建独立作业；RCS结果以该作业为准。" : input?.Reason ?? "未取得本次输入结果，请查看原命令。",
-                        admitted?.Id ?? input?.OperationId, observation.Id, repository.Revision + 1);
-                    repository.CompleteCommand(command, new("BarcodeResult", Wire.Encode(result), result.Revision));
+                    var result = new ParcelBarcodeReceipt(admitted is not null ? "Admitted" : handled.Input?.Outcome.ToString() ?? handled.Disposition.ToString(),
+                        admitted is not null ? "人工输入已创建独立作业；RCS结果以该作业为准。" : handled.Reason,
+                        admitted?.Id ?? handled.OperationId, observation.Id, repository.Revision + 1);
+                    repository.CompleteCommand(command, new("BarcodeResult", Wire.Encode(result), result.Revision),
+                        new { RuntimeId = runtimeId, request.CommandId, handled.RoundId, result.OperationId, handled.Disposition, Meaning = "Input decision and durable handoff only; external result independent" });
+                    Interlocked.Increment(ref manualCommandsCompleted);
+                    manualCompletedByPosition.AddOrUpdate(request.PositionId, 1, (_, count) => count + 1);
                     return result;
                 }
                 catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "OperatorBarcode"); throw; }

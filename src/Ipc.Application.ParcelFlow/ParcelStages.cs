@@ -8,6 +8,8 @@ public sealed partial class ParcelRuntime
     {
         var key = op.Id + ":" + kind;
         if (!activeStages.Add(key)) return operations[op.Id];
+        IWcsDispatchPermit? dispatchPermit = null;
+        FrozenRequest? reservedRequest = null;
         try
         {
             op = operations[op.Id];
@@ -30,6 +32,29 @@ public sealed partial class ParcelRuntime
             }
             var port = PortFor(op, kind);
             if (!PortMaintenanceClear(port)) return op;
+            if (Id == "sportmaster" && kind == ParcelStage.Wcs && !query && port is IWcsDispatchResources resources)
+            {
+                reservedRequest = Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
+                using var wait = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, IsDebugRequest(op) ? Management.Require() : CancellationToken.None);
+                wait.CancelAfter(definition.RequestTimeoutMs(op, kind));
+                if (op.RoundId is not null) smSendWaits.Add(op.Id, wait);
+                var waitingAt = System.Diagnostics.Stopwatch.GetTimestamp();
+                WriteRuntimeLog("RCS请求", "等待发送资源", new { OperationId = op.Id, op.RoundId, op.PositionId, RequestId = stage.Request.Id, AttemptStarted = false });
+                try
+                {
+                    dispatchPermit = await ExternalPortAsync(port, () => resources.ReserveDispatchAsync(reservedRequest, wait.Token)).ConfigureAwait(false);
+                    WriteRuntimeLog("RCS请求", "发送资源已就绪", new { OperationId = op.Id, op.RoundId, op.PositionId, RequestId = stage.Request.Id, WaitMs = System.Diagnostics.Stopwatch.GetElapsedTime(waitingAt).TotalMilliseconds, Meaning = "Local permit only; final round check and attempt have not occurred" });
+                }
+                catch (Exception error) when (error is OperationCanceledException or IOException or TimeoutException)
+                {
+                    op = operations[op.Id];
+                    if (stopping.IsCancellationRequested || !SmRoundOwns(op)) return op;
+                    op = StageFailure(op, kind, GetStage(op, kind)!, "未取得发送资源，本件尚未发送；请按本位提示处理包裹后重新上件。");
+                    Save(op, "SendResourcesUnavailable", Wire.Encode(new { RuntimeId = runtimeId, OperationId = op.Id, op.RoundId, RequestId = stage.Request.Id, AttemptStarted = false, Error = error.ToString() }));
+                    return op;
+                }
+                finally { if (op.RoundId is not null) smSendWaits.Remove(op.Id); }
+            }
             CapabilityHealth health;
             try { health = await ExternalPortAsync(port, () => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false); }
             catch (OperationCanceledException) when (stopping.IsCancellationRequested)
@@ -49,12 +74,23 @@ public sealed partial class ParcelRuntime
             if (stopping.IsCancellationRequested) return op;
             var deliveryAuthority = query || IsDebugRequest(op) ? Management.Require() : CancellationToken.None;
             // Adapter dictionaries are mutable; never expose the owned original intent.
-            var deliveryRequest = Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
+            var deliveryRequest = reservedRequest ?? Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
             if (!query)
             {
                 if (stage.State != StageState.Prepared || stage.Attempts != 0) throw new InvalidOperationException("Only a never-attempted prepared intent can be dispatched");
                 stage = stage with { State = StageState.Dispatching, Attempts = 1 };
-                op = SetStage(op, kind, stage); Save(op, "Dispatching", "T2: attempt persisted before external call");
+                op = SetStage(op, kind, stage); Save(op, "Dispatching", Wire.Encode(new
+                {
+                    RuntimeId = runtimeId,
+                    OperationId = op.Id,
+                    op.RoundId,
+                    CommandId = op.OperatorInput?.CommandId,
+                    RequestId = stage.Request.Id,
+                    ProtocolRequestId = stage.Request.IntegrationRequest?.RequestId,
+                    Stage = stage.Request.Stage,
+                    stage.Attempts,
+                    Meaning = "T2: first attempt persisted before external call; not proof of body write or remote receipt"
+                }));
             }
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, deliveryAuthority);
             budget.CancelAfter(definition.RequestTimeoutMs(op, kind));
@@ -95,24 +131,29 @@ public sealed partial class ParcelRuntime
             });
             StageReply? reply;
             double? callMs = null;
+            DateTimeOffset? callStarted = null, callCompleted = null;
+            ParcelCallEvidence? CallEvidence() => callStarted is { } started && callCompleted is { } completed && callMs is { } elapsed
+                ? new(runtimeId, stage.Request.Id, started, completed, elapsed, definition.RequestTimeoutMs(op, kind)) : null;
             if (Id == "sportmaster" && kind == ParcelStage.Wcs) RecordRcsPerformance(op, query ? "RcsQueryStarted" : "RcsSubmitStarted");
             try
             {
                 reply = await ExternalPortAsync(port, () => PortCallAsync(port, async () =>
                 {
                     var calledAt = ReceiptTimeForVerification.GetTimestamp();
+                    callStarted = ReceiptTimeForVerification.GetUtcNow();
                     try
                     {
                         return kind switch
                         {
-                            ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                            ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) :
+                                dispatchPermit is not null ? await dispatchPermit.SendAsync(budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
                             ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
                             ParcelStage.Capture => query ? await ((IImageCamera)port).QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ((IImageCamera)port).CaptureAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
                             ParcelStage.Upload => query ? await ports.Uploader!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Uploader!.UploadAsync(deliveryRequest, ReadImage(op, op.Image!), budget.Token).ConfigureAwait(false),
                             _ => throw new InvalidOperationException("Unregistered stage")
                         };
                     }
-                    finally { callMs = ReceiptTimeForVerification.GetElapsedTime(calledAt).TotalMilliseconds; }
+                    finally { callCompleted = ReceiptTimeForVerification.GetUtcNow(); callMs = ReceiptTimeForVerification.GetElapsedTime(calledAt).TotalMilliseconds; }
                 }, budget.Token)).ConfigureAwait(false);
                 op = operations[op.Id];
             }
@@ -131,7 +172,7 @@ public sealed partial class ParcelRuntime
                     Exception = DiagnosticFragment(ex.ToString())
                 });
                 Diagnostic("通信", query ? "原请求核对异常" : "业务请求异常", "错误", ex.ToString());
-                repository.NoReply(occurrence);
+                repository.NoReply(occurrence, CallEvidence());
                 op = operations[op.Id];
                 // A failed confirmation query supplies no contrary evidence about an
                 // already accepted/rejected command. Keep that fact and its original reply.
@@ -174,7 +215,7 @@ public sealed partial class ParcelRuntime
             });
             if (reply is null)
             {
-                repository.NoReply(occurrence);
+                repository.NoReply(occurrence, CallEvidence());
                 // Query absence does not prove no side effect.
                 if (stage.State is not (StageState.Accepted or StageState.Rejected)) stage = stage with { State = StageState.Unknown };
                 op = StageFailure(SetStage(op, kind, stage), kind, stage, "Original query has no authoritative result; no resend is permitted");
@@ -184,7 +225,7 @@ public sealed partial class ParcelRuntime
             // Do not reclassify a returned-but-unrecorded reply as an ordinary transport failure.
             reply = ParcelReceiptChronology.Observe(stage.Request, reply, runtimeId, receiptStartedAt, ReceiptTimeForVerification.GetUtcNow(),
                 ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks), definition.RequestTimeoutMs(op, kind), repository.ReadOriginalReply(stage.Request, reply.Id));
-            repository.StoreRaw(occurrence, reply);
+            repository.StoreRaw(occurrence, reply, CallEvidence());
             Boundary?.Invoke("AfterRawDurable");
             op = ApplyReply(op, kind, reply);
             // Some adapters retain a partial response on cancellation. Preserve that raw
@@ -199,12 +240,21 @@ public sealed partial class ParcelRuntime
                     occurrence: occurrence, command: resolutionCommand, reconciledOccurrence: missingOccurrence);
                 operations[op.Id] = op;
             }
-            else Save(op, "ReceiptApplied", reply.LocalClockEvidence is null ? "T3: original raw reply, stage and downstream intent committed together" :
-                Wire.Encode(new { Policy = "T3: original raw reply, stage and downstream intent committed together", ClockAnomaly = "InFlightUtcRollbackEvidence", reply.LocalClockEvidence }), occurrence);
+            else Save(op, "ReceiptApplied", Wire.Encode(new
+            {
+                RuntimeId = runtimeId,
+                OperationId = op.Id,
+                op.RoundId,
+                CommandId = op.OperatorInput?.CommandId,
+                RequestId = stage.Request.Id,
+                OccurrenceId = occurrence,
+                reply.LocalClockEvidence,
+                Policy = "T3: original raw reply, stage and downstream intent committed together; not physical completion"
+            }), occurrence);
             LogRcsResult(op, kind, receiptStartedTicks, query, callMs);
             return op;
         }
-        finally { activeStages.Remove(key); }
+        finally { dispatchPermit?.Dispose(); activeStages.Remove(key); }
     }
     void LogRcsResult(ParcelOperation operation, ParcelStage kind, long startedTicks, bool query, double? callMs)
     {

@@ -140,46 +140,63 @@ public static partial class ParcelRecovery
         long databaseBytes, Action<string> backupDatabase, Action<string, ParcelConfiguration> registerBackup, Action? requireAuthority = null, CancellationToken cancellationToken = default, MaintenanceExecution? execution = null, bool finalOperation = true, Action<string>? boundary = null)
     {
         requireAuthority?.Invoke();
-        destination = Path.GetFullPath(destination); directory = Path.GetFullPath(directory);
-        RecoveryFiles.RequireOrdinaryAncestors(directory); RecoveryFiles.RequireOrdinaryAncestors(destination);
-        var relative = Path.GetRelativePath(directory, destination);
-        if (!Path.IsPathRooted(relative) && relative != ".." && !relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal)) throw new IOException("Backup must be outside the live application directory");
-        var recovery = destination + ".recovery";
-        if (Directory.Exists(recovery) || File.Exists(recovery) || File.Exists(destination) || Directory.Exists(destination)) throw new IOException("Backup destination must be new");
-        using var editor = new ResourceLease(Path.Combine(directory, "startup-maintenance"), ["configuration-editor"]);
-        var names = new List<string> { "configuration.json" };
-        if (File.Exists(Path.Combine(directory, ParcelMachineOrigin.FileName))) names.Add(ParcelMachineOrigin.FileName);
-        names.AddRange(RecoveryFiles.Enumerate(directory, "receipts", false, cancellationToken)); names.AddRange(RecoveryFiles.Enumerate(directory, "images", true, cancellationToken));
-        names.AddRange(RecoveryFiles.MaintenanceEvidence(directory, cancellationToken));
-        if (File.Exists(Path.Combine(directory, "overload.json"))) names.Add("overload.json");
-        RecoveryFiles.ValidateNames(directory, names, cancellationToken);
-        boundary?.Invoke("Inventory");
-        var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n), cancellationToken), StringComparer.Ordinal);
-        var bytes = checked(databaseBytes + names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length) + RecoveryFiles.MaximumManifestBytes);
-        if (!ParcelStorageVolume.Plan(destination, bytes, effective.Retention?.MinimumFreeBytes ?? 67108864).Fits) throw new IOException("Backup requires database/custody capacity plus manifest and configured reserve");
-        Directory.CreateDirectory(recovery); RecoveryFiles.RequireOrdinaryAncestors(recovery);
-        registerBackup(destination, effective); if (pending is not null) registerBackup(destination, pending);
-        requireAuthority?.Invoke(); execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingDatabase);
-        backupDatabase(destination);
-        boundary?.Invoke("DatabaseCopied");
-        long copiedBytes = 0; var totalBytes = names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length);
-        execution?.Report(MaintenanceStage.CopyingCustody, 0, totalBytes);
-        foreach (var name in names)
+        var origin = RecoveryFailureOrigin.Destination; var phase = "DestinationValidation";
+        try
         {
+            destination = Path.GetFullPath(destination); directory = Path.GetFullPath(directory);
+            origin = RecoveryFailureOrigin.Source; phase = "SourceValidation"; RecoveryFiles.RequireOrdinaryAncestors(directory);
+            origin = RecoveryFailureOrigin.Destination; phase = "DestinationValidation"; RecoveryFiles.RequireOrdinaryAncestors(destination);
+            var relative = Path.GetRelativePath(directory, destination);
+            if (!Path.IsPathRooted(relative) && relative != ".." && !relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal)) throw new IOException("Backup must be outside the live application directory");
+            var recovery = destination + ".recovery";
+            if (Directory.Exists(recovery) || File.Exists(recovery) || File.Exists(destination) || Directory.Exists(destination)) throw new IOException("Backup destination must be new");
+            origin = RecoveryFailureOrigin.Undetermined; phase = "ConfigurationOwnership";
+            using var editor = new ResourceLease(Path.Combine(directory, "startup-maintenance"), ["configuration-editor"]);
+            origin = RecoveryFailureOrigin.Source; phase = "SourceInventory";
+            var names = new List<string> { "configuration.json" };
+            if (File.Exists(Path.Combine(directory, ParcelMachineOrigin.FileName))) names.Add(ParcelMachineOrigin.FileName);
+            names.AddRange(RecoveryFiles.Enumerate(directory, "receipts", false, cancellationToken)); names.AddRange(RecoveryFiles.Enumerate(directory, "images", true, cancellationToken));
+            names.AddRange(RecoveryFiles.MaintenanceEvidence(directory, cancellationToken));
+            if (File.Exists(Path.Combine(directory, "overload.json"))) names.Add("overload.json");
+            RecoveryFiles.ValidateNames(directory, names, cancellationToken);
+            boundary?.Invoke("Inventory");
+            var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n), cancellationToken), StringComparer.Ordinal);
+            var bytes = checked(databaseBytes + names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length) + RecoveryFiles.MaximumManifestBytes);
+            origin = RecoveryFailureOrigin.Destination; phase = "DestinationPreparation";
+            if (!ParcelStorageVolume.Plan(destination, bytes, effective.Retention?.MinimumFreeBytes ?? 67108864).Fits) throw new IOException("Backup requires database/custody capacity plus manifest and configured reserve");
+            Directory.CreateDirectory(recovery); RecoveryFiles.RequireOrdinaryAncestors(recovery);
+            origin = RecoveryFailureOrigin.Undetermined; phase = "BackupRegistration";
+            registerBackup(destination, effective); if (pending is not null) registerBackup(destination, pending);
+            requireAuthority?.Invoke(); execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingDatabase);
+            phase = "DatabaseSnapshot"; backupDatabase(destination);
+            boundary?.Invoke("DatabaseCopied");
+            origin = RecoveryFailureOrigin.Source; phase = "SourceLength";
+            long copiedBytes = 0; var totalBytes = names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length);
+            execution?.Report(MaintenanceStage.CopyingCustody, 0, totalBytes);
+            foreach (var name in names)
+            {
+                requireAuthority?.Invoke();
+                origin = RecoveryFailureOrigin.Destination; phase = "CustodyDestinationPreparation";
+                var target = RecoveryFiles.Resolve(recovery, name); Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory, name), target, hashes[name], cancellationToken,
+                    count => { copiedBytes += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingCustody, copiedBytes, totalBytes); });
+            }
+            execution?.Checkpoint(); execution?.Report(MaintenanceStage.Verifying);
+            boundary?.Invoke("CustodyCopied");
+            origin = RecoveryFailureOrigin.Destination; phase = "DestinationInventory";
+            var inventory = RecoveryFiles.Inventory(recovery, cancellationToken);
+            if (inventory.Count != hashes.Count || hashes.Any(f => inventory.GetValueOrDefault(f.Key) != f.Value))
+                throw new InvalidDataException("Destination custody changed after copying; incomplete set retained");
+            var manifest = new ParcelRecoveryManifest(effective.ApplicationId, Path.GetFileName(destination), Wire.FileHash(destination, cancellationToken), inventory, DateTimeOffset.UtcNow,
+                "Isolated original-deployment restore; reconcile external effects before admission; retire original numeric ranges");
+            if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(manifest)) > RecoveryFiles.MaximumManifestBytes) throw new InvalidDataException("Recovery manifest quota exceeded; incomplete backup retained");
             requireAuthority?.Invoke();
-            var target = RecoveryFiles.Resolve(recovery, name); Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-            RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory, name), target, hashes[name], cancellationToken,
-                count => { copiedBytes += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingCustody, copiedBytes, totalBytes); });
+            cancellationToken.ThrowIfCancellationRequested(); execution?.Checkpoint();
+            if (finalOperation) execution?.BeginCommit(MaintenanceStage.PublishingBackup);
+            else execution?.Report(MaintenanceStage.PublishingBackup); // A completed backup does not retire the installation.
+            phase = "PublishCompleted"; ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), manifest);
         }
-        execution?.Checkpoint(); execution?.Report(MaintenanceStage.Verifying);
-        boundary?.Invoke("CustodyCopied");
-        var manifest = new ParcelRecoveryManifest(effective.ApplicationId, Path.GetFileName(destination), Wire.FileHash(destination, cancellationToken), RecoveryFiles.Inventory(recovery, cancellationToken), DateTimeOffset.UtcNow,
-            "Isolated original-deployment restore; reconcile external effects before admission; retire original numeric ranges");
-        if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(manifest)) > RecoveryFiles.MaximumManifestBytes) throw new InvalidDataException("Recovery manifest quota exceeded; incomplete backup retained");
-        requireAuthority?.Invoke();
-        cancellationToken.ThrowIfCancellationRequested(); execution?.Checkpoint();
-        if (finalOperation) execution?.BeginCommit(MaintenanceStage.PublishingBackup);
-        else execution?.Report(MaintenanceStage.PublishingBackup); // A completed backup does not retire the installation.
-        ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), manifest);
+        catch (Exception error) when (error is not (RecoveryFileFailure or BackupCopyFailure) && error is IOException or UnauthorizedAccessException or InvalidDataException or SqliteException)
+        { throw new RecoveryFileFailure(origin, phase, error); }
     }
 }

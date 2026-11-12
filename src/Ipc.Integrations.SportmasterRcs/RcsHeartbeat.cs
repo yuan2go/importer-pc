@@ -149,7 +149,7 @@ public sealed partial class SportmasterRcsTaskService
                 Content = new ByteArrayContent(Encoding.UTF8.GetBytes(body))
             };
             message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
+            using var response = await heartbeatClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode) throw new HttpRequestException("HTTP " + (int)response.StatusCode);
             var (bytes, complete) = await ReadBoundedAsync(response.Content, timeout.Token).ConfigureAwait(false);
             stop.ThrowIfCancellationRequested();

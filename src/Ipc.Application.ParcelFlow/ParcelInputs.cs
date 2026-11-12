@@ -25,14 +25,25 @@ public sealed partial class ParcelRepository
 
 public sealed partial class ParcelRuntime
 {
+    enum ObservationDisposition { Admitted, Rejected, Blocked, Duplicate, PhysicalEvidenceProcessed, AutoRepeatSuppressed, NoFormalCandidates, UntrustedSource, Expired, DiagnosticOnly }
+    readonly record struct ObservationHandling(ObservationDisposition Disposition, string Reason, string? OperationId = null, string? RoundId = null, ParcelInputSnapshot? Input = null);
     readonly Dictionary<string, ParcelInputSnapshot> latestInputs = new(StringComparer.Ordinal);
     ParcelInputSnapshot Input(string position, Observation observation, ParcelInputOutcome outcome, string reason, string? operation = null, BarcodeFilterResult? selection = null) =>
         new(position, observation, outcome, reason, operation, DateTimeOffset.UtcNow, ReaderBinding(position), selection);
     DeviceBinding ReaderBinding(string position) => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == positions[position].ReaderDeviceId);
-    void RecordInput(ParcelInputSnapshot input, string eventName, bool? paused = null)
+    ObservationHandling RecordInput(ParcelInputSnapshot input, string eventName, bool? paused = null, ObservationDisposition? disposition = null)
     {
         repository!.Commit(null, eventName, input.Reason, paused: paused, input: input, ingressIdentity: activeIngress.Value);
         PublishInput(input);
+        return new(disposition ?? input.Outcome switch
+        {
+            ParcelInputOutcome.Admitted => ObservationDisposition.Admitted,
+            ParcelInputOutcome.Rejected => ObservationDisposition.Rejected,
+            ParcelInputOutcome.Blocked => ObservationDisposition.Blocked,
+            ParcelInputOutcome.Duplicate => ObservationDisposition.Duplicate,
+            _ => throw new InvalidDataException("Invalid input outcome")
+        }, input.Reason, input.OperationId,
+            Id == "sportmaster" ? CurrentRound(input.PositionId)?.Id : null, input);
     }
     void PublishInput(ParcelInputSnapshot input)
     {

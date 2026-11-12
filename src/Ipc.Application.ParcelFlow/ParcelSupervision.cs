@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using Ipc.Platform;
+using Ipc.Application.Contracts;
 
 namespace Ipc.Application.ParcelFlow;
 
@@ -38,6 +39,8 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
     readonly ConcurrentDictionary<string, (DateTimeOffset At, string Detail)> backgroundProgress = new();
     Task? supervisor;
     string? supervisionFailure;
+    long manualCommandsSubmitted, manualCommandsCompleted;
+    readonly ConcurrentDictionary<string, long> manualSubmittedByPosition = new(), manualCompletedByPosition = new();
     public void RegisterUi(string id)
     {
         if (!Guid.TryParseExact(id, "N", out _) || uiProgress.Count >= 8) throw new InvalidOperationException("UI progress registration limit/identity");
@@ -47,7 +50,7 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
     {
         if (!double.IsFinite(dispatchMilliseconds) || dispatchMilliseconds < 0) throw new ArgumentOutOfRangeException(nameof(dispatchMilliseconds));
         if (uiProgress.TryGetValue(id, out var progress)) lock (progress.Sync)
-            { progress.Tick = Stopwatch.GetTimestamp(); progress.Count++; progress.Last = dispatchMilliseconds; progress.Maximum = Math.Max(progress.Maximum, dispatchMilliseconds); progress.Milliseconds[(int)Math.Min(2048, Math.Ceiling(dispatchMilliseconds))]++; }
+        { progress.Tick = Stopwatch.GetTimestamp(); progress.Count++; progress.Last = dispatchMilliseconds; progress.Maximum = Math.Max(progress.Maximum, dispatchMilliseconds); progress.Milliseconds[(int)Math.Min(2048, Math.Ceiling(dispatchMilliseconds))]++; }
     }
     public void UnregisterUi(string id) => uiProgress.TryRemove(id, out _);
     public object RuntimeProgress()
@@ -73,6 +76,19 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
             Flow = FlowPerformance(),
             Presentation = PresentationProgress(),
             Workers = WorkerProgress(),
+            ManualCommands = new
+            {
+                Submitted = Interlocked.Read(ref manualCommandsSubmitted), Completed = Interlocked.Read(ref manualCommandsCompleted),
+                Positions = positions.Keys.Select(position => new { Position = position, Submitted = manualSubmittedByPosition.GetValueOrDefault(position), Completed = manualCompletedByPosition.GetValueOrDefault(position) }).ToArray(),
+                Meaning = "Durable command acceptance/decision; not RCS completion"
+            },
+            RcsDispatch = (ports?.Wcs as IWcsDispatchResources)?.DispatchProgress,
+            Execution = new
+            {
+                ManagedExecutions = smExecutions.Count, BeforeAttemptWaits = smSendWaits.Count,
+                ActiveStageOwners = activeStages.Count, RetainedAuxiliaryTasks = auxiliary.Count,
+                Meaning = "Independently sampled local owners, including retained completed tasks; not remote acceptance or parcel counts"
+            },
             Ui = uiProgress.Select(p => p.Value.Snapshot(p.Key)).ToArray(),
             Background = backgroundTasks.Select(p => new
             {

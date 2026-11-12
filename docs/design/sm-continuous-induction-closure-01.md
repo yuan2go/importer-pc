@@ -299,7 +299,7 @@ Release Application/Core 与原生WPF验证器构建均为零警告、零错误�
 
 原生WPF选择器：`--home-centered-states`、`--continuous-pda-input`、`--manual-supply-ui`、`--station-position-control-ui`、`--rcs-no-destination-ui`。覆盖实际控件状态、鼠标/键盘、中文长回包复制、800×420与1366×768布局、当前轮次及退出释放；已查看等待/局部围栏截图。误用一次不支持的`--station-position-control`落入旧共享Shell默认验证，历史导航断言失败，未计入通过；本次未修改暂停开发模块的该测试。正确SM选择器已通过。
 
-旧CameraChainReliability中“等待HTTP使重复帧填满队列”和“换条码/重连即自动新件”的测试已删除；现行互补覆盖在SmDispatchResources、SmRoundLifecycle、SmArrivalCameraChecks与MvidReader。解码、原图池容量和真实发送证据检查保留。
+旧CameraChainReliability中“等待HTTP使重复帧填满队列”和“换条码/重连即自动新件”的测试已删除；现行互补覆盖在SmDispatchResources、SmRoundLifecycle、SmArrivalCameraChecks与MvidReader。解码、原图池容量和真实发送证据检查保留。该选择器已纳入CoreRegression；连接测试以真实首心跳确认开始，区分正文前连接拒绝和正文后断链，回环服务退出时中止未完成的固定长度响应。最终Core入口执行4项（storage-schema-only、sm-arrivals、sm-arrival-cameras、camera-chain-reliability）均通过，未运行本机全量Core。
 
 ### 短样本性能
 

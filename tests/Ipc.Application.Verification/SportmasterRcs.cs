@@ -559,6 +559,7 @@ static partial class SportmasterRcs
             var response = Response(body, mode, Vehicles); response = ResponseTransform?.Invoke(response) ?? response;
             var status = mode == "http-error" ? 503 : mode == "redirect" ? 302 : 200;
             Requests.Enqueue(new(context.Request.HttpMethod, context.Request.ContentType ?? "", body, status, response));
+            var bodyCompleted = false;
             try
             {
                 if (ResponseHold is { } hold) await hold.Task.WaitAsync(stop.Token);
@@ -576,13 +577,16 @@ static partial class SportmasterRcs
                 if (mode == "delayed-assignment") await Task.Delay(5500, stop.Token);
                 var bytes = Encoding.UTF8.GetBytes(response); context.Response.StatusCode = status; if (mode == "redirect") context.Response.RedirectLocation = Endpoint + "/synthetic-followed"; context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes, stop.Token);
+                bodyCompleted = true;
             }
             catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
             catch (HttpListenerException) { } // The timeout fixture intentionally closes the client.
             catch (IOException) { }
             finally
             {
-                try { context.Response.Close(); }
+                // An interrupted fixed-length response cannot be closed as a
+                // complete message; abort it without hiding a handler failure.
+                try { if (bodyCompleted) context.Response.Close(); else context.Response.Abort(); }
                 catch (HttpListenerException) { } // A timed-out client may already have closed the connection.
                 catch (ObjectDisposedException) when (stop.IsCancellationRequested) { }
             }

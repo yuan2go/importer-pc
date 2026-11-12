@@ -25,16 +25,16 @@ class ReleaseDocumentTests(unittest.TestCase):
         referenced = set(re.findall(r'\b[A-Z][A-Z0-9-]+\.md\b', generated))
         self.assertLessEqual(referenced, set(docs.SPORTMASTER_GUIDES.values()), 'Generated launch instructions must reference shipped current guides')
 
-    def test_parcel13_is_the_shipped_current_guide(self):
+    def test_parcel14_is_the_shipped_current_guide(self):
         root = Path(__file__).resolve().parent.parent
         self.assertNotIn('DB11-UPGRADE.md', docs.SPORTMASTER_GUIDES.values())
-        self.assertIn('PARCEL13-OPERATIONS.md', docs.PARCEL_GUIDES.values())
+        self.assertIn('PARCEL14-OPERATIONS.md', docs.PARCEL_GUIDES.values())
         self.assertIn('SM-SESSION-SHIFTS.md', docs.SPORTMASTER_GUIDES.values())
         guide = docs.render(root, 'docs/runtime/parcel12-operations-26.md', 'a' * 40)
         current = str(read_storage_format(root))
         self.assertIn('PARCEL' + current + '-OPERATIONS.md', docs.SPORTMASTER_GUIDES.values())
         self.assertIn('新库直接创建格式 **' + current + '**', guide)
-        for fact in ['新库直接创建格式 **13**', '普通启动仅核验当前格式', '不提供 DB12 到 DB13 的迁移或离线接续', '非当前格式在写入前拒绝', '不提供旧格式升级或降级', 'COMPLETED.json', '旧程序不能直接读取13', '原请求', '不得只改版本号']:
+        for fact in ['新库直接创建格式 **14**', '普通启动仅核验当前格式', '不提供 DB12 到 DB14 的迁移或离线接续', '非当前格式在写入前拒绝', '不提供旧格式升级或降级', 'COMPLETED.json', '旧程序不能直接读取14', '原请求', '不得只改版本号']:
             self.assertIn(fact, guide)
 
     def test_sm_ships_current_scan_and_diagnostic_semantics(self):

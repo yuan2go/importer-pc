@@ -111,7 +111,7 @@ static class SmParameters
             var code = "ARCHIVE-" + n;
             app.EmitReference("archive-" + n, code, Wire.Id());
             await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Operations.Any(o => o.ParcelCode == code && o.State == ParcelState.SlotResolved));
-            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+            await SmRoundFixture.NextVehicleAsync(app, "left");
         }
         Check((await app.SnapshotAsync()).Operations.Length == 2, "SM resident archive threshold remains 3 despite the unused MaximumOperations value of 1; legal later parcels continue");
         await app.StopAsync(default);

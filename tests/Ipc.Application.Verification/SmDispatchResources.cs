@@ -16,7 +16,7 @@ internal static class SmDispatchResources
         { Wcs = h.Config.Wcs! with { Parameters = new(h.Config.Wcs.Parameters) { ["request-timeout-ms"] = "30000", ["heartbeat-interval-ms"] = "100" } } });
         await h.StartAsync();
         var holds = new ConcurrentDictionary<string, TaskCompletionSource>();
-        h.Peer.BusinessGate = body => holds.FirstOrDefault(p => body.Contains("\"" + p.Key + "\"", StringComparison.Ordinal)).Value?.Task ?? Task.CompletedTask;
+        h.Peer.ResponseGate = body => holds.FirstOrDefault(p => body.Contains("\"" + p.Key + "\"", StringComparison.Ordinal)).Value?.Task ?? Task.CompletedTask;
         async Task<ParcelBarcodeReceipt> Submit(string side, string code) => await h.App.SubmitParcelBarcodeAsync(await h.Command(side, code), default);
         TaskCompletionSource Hold(string code) => holds.GetOrAdd(code, _ => new(TaskCreationOptions.RunContinuationsAsynchronously));
         async Task Fill(string prefix, int before)
@@ -26,7 +26,7 @@ internal static class SmDispatchResources
                 var code = prefix + i; _ = Hold(code);
                 await Submit("left", code);
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == before + i + 1));
-                await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
+                await SmRoundFixture.NextVehicleAsync(h.App, "left");
             }
         }
         try
@@ -41,7 +41,7 @@ internal static class SmDispatchResources
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.HeartbeatRequests.Count > heartbeat));
             Check(h.Factory.Rcs.DispatchProgress is { Capacity: 7, Occupied: 7, ActiveSends: 7 } && h.Peer.Requests.Count == ceiling,
                 "heartbeat remains usable while the bounded destination pool is full; total connection ceiling is unchanged");
-            await SmRoundFixture.ConfirmRemovedAsync(h.App, "right");
+            await SmRoundFixture.NextVehicleAsync(h.App, "right");
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Rcs.DispatchProgress.RightWaiting == 0));
             Check((await h.App.OperationAsync(queued.OperationId!))?.Wcs is { Attempts: 0, State: StageState.Cancelled },
                 "ending an unsent round cancels only its resource wait and retains zero attempts");
@@ -62,7 +62,7 @@ internal static class SmDispatchResources
             Check(h.Peer.Requests.Count == ceiling + 2 && !h.Peer.Requests.Any(b => b.Contains("SYNTH-END-WHILE-QUEUED", StringComparison.Ordinal)) &&
                 h.Factory.Rcs.DispatchProgress is { Occupied: 0, ActiveSends: 0, LeftWaiting: 0, RightWaiting: 0 },
                 "original started calls finish, canceled round never calls later, and every real send owner drains");
-            await SmRoundFixture.ConfirmRemovedAsync(h.App, "left"); await SmRoundFixture.ConfirmRemovedAsync(h.App, "right");
+            await SmRoundFixture.NextVehicleAsync(h.App, "left"); await SmRoundFixture.NextVehicleAsync(h.App, "right");
 
             var beforeLoad = h.Peer.Requests.Count;
             var loadClock = System.Diagnostics.Stopwatch.StartNew();
@@ -72,7 +72,7 @@ internal static class SmDispatchResources
                 var side = i % 2 == 0 ? "left" : "right";
                 var receipt = await Submit(side, "SYNTH-SUSTAINED-" + i);
                 await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
-                await SmRoundFixture.ConfirmRemovedAsync(h.App, side);
+                await SmRoundFixture.NextVehicleAsync(h.App, side);
                 using var process = System.Diagnostics.Process.GetCurrentProcess(); process.Refresh();
                 var progress = h.Factory.Rcs.DispatchProgress;
                 if (progress.Occupied > progress.Capacity || progress.ActiveSends > progress.Occupied || progress.LeftWaiting > 128 || progress.RightWaiting > 128)
@@ -103,7 +103,7 @@ internal static class SmDispatchResources
             Check(h.Peer.Requests.Count == beforeStop + SportmasterRcsTaskService.MaximumDestinationSends && !h.App.FatalFailure.IsCompleted,
                 "congestion, removal and stop create no extra POST, retry or false fatal storage failure");
         }
-        finally { foreach (var hold in holds.Values) hold.TrySetResult(); h.Peer.BusinessGate = null; }
+        finally { foreach (var hold in holds.Values) hold.TrySetResult(); h.Peer.ResponseGate = null; }
     }
     static async Task DefaultDeadlineQueuedRemoval(string workspace, string root)
     {
@@ -115,7 +115,7 @@ internal static class SmDispatchResources
         var request = (await h.App.OperationAsync(seed.OperationId!))!.Wcs!.Request;
         Check(new Ipc.Application.Sportmaster.SportmasterFlow().RequestTimeoutMs((await h.App.OperationAsync(seed.OperationId!))!, ParcelStage.Wcs) == 1000,
             "omitted setting freezes the actual production request's effective deadline at 1000ms");
-        await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
+        await SmRoundFixture.NextVehicleAsync(h.App, "left");
         // Occupy the real bounded resource without starting HTTP calls. The
         // existing congestion scenario separately holds real network responses.
         List<IWcsDispatchPermit> permits = [];
@@ -125,7 +125,7 @@ internal static class SmDispatchResources
                 permits.Add(await h.Factory.Rcs.ReserveDispatchAsync(request, default));
             var queued = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-DEFAULT-REMOVED"), default);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Rcs.DispatchProgress.LeftWaiting == 1));
-            await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
+            await SmRoundFixture.NextVehicleAsync(h.App, "left");
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Rcs.DispatchProgress.LeftWaiting == 0));
             Check((await h.App.OperationAsync(queued.OperationId!))?.Wcs is { Attempts: 0, State: StageState.Cancelled } && h.Peer.Requests.Count == 1,
                 "1000ms default and round removal cancel the real pre-attempt wait with zero additional POSTs");

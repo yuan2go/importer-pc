@@ -321,10 +321,11 @@ public sealed partial class ParcelRuntime
         {
             if (operations.Values.Any(o => o.OriginalFrame?.State == "Pending"))
                 return new("Rejected", "等待识码原图后台保存完成后再创建一致性备份；原任务和原请求保留。", repository?.Revision ?? 0);
-            if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 || backupInProgress)
+            if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 || backupInProgress || smCycles.Values.Any(c => c.HeartbeatPending is not null) || arrivalBoundaryWorkers.Count != 0)
                 return new("Rejected", "当前尚未满足完整备份条件。请先暂停供包、验证管理授权，并等待在途任务、设备调用或另一项备份结束；原请求和原回执保留。", repository?.Revision ?? 0);
             original = repository; effective = Effective; pending = configuration!.Current.Pending; bytes = original.StorageBytes;
             images = operations.Values.Where(x => x.Image is not null && !x.ImageReleased).ToArray();
+            PrepareSmHeartbeatMaintenance();
             backupInProgress = true;
         }
         catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
@@ -348,7 +349,9 @@ public sealed partial class ParcelRuntime
         finally
         {
             await gate.WaitAsync().ConfigureAwait(false);
-            try { backupInProgress = false; } finally { gate.Release(); }
+            try { CompleteSmHeartbeatMaintenance(); backupInProgress = false; }
+            catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "HeartbeatMaintenanceRelease"); throw; }
+            finally { gate.Release(); }
         }
     }
     readonly object stopOwnership = new();

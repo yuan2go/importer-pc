@@ -50,7 +50,7 @@ static partial class StabilityRemediation
         {
             Check(app.EmitReferenceAt("left", "first", "001", "first-event"), "first delivery accepted durably");
             await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+            await SmRoundFixture.NextVehicleAsync(app, "left");
             Check(app.EmitReferenceAt("left", "second", "002", "second-event"), "second delivery accepted before first T3 fails");
             await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Operations.Count(o => o.Wcs?.State == StageState.Dispatching) == 2 &&
                 app.WorkerProgress().Single(w => w.Position == "left").Processed == 2);
@@ -91,10 +91,10 @@ static partial class StabilityRemediation
         {
             Check(app.EmitReferenceAt("left", "slow-first", "001", "slow-first-event"), "slow-marker first left input");
             await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+            await SmRoundFixture.NextVehicleAsync(app, "left");
             Check(app.EmitReferenceAt("left", "slow-second", "002", "slow-second-event"), "left second input is admitted while its predecessor awaits RCS");
             await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Operations.Any(o => o.AdmissionId == "slow-second" && o.Wcs?.State == StageState.Dispatching));
-            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+            await SmRoundFixture.NextVehicleAsync(app, "left");
             waiting = Task.Run(() => app.EmitReferenceAt("left", "backpressure", "003", "waiting-event"));
             Check(await waiting.WaitAsync(TimeSpan.FromSeconds(5)), "a held predecessor does not block the third parcel's input handoff");
             await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Operations.Count(o => o.PositionId == "left" && o.Wcs?.State == StageState.Dispatching) == 3);

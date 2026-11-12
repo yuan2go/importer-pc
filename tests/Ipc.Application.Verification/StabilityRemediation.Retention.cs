@@ -22,13 +22,13 @@ static partial class StabilityRemediation
             await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
             for (var i = 0; i < 5; i++)
             {
-                await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+                await SmRoundFixture.NextVehicleAsync(app, "left");
                 Check(app.EmitReferenceAt("left", "retention-" + i, "000" + i, "retention-event-" + i), "retention fixture uses actual accepted ingress " + i);
                 var deadline = DateTimeOffset.UtcNow.AddSeconds(5);
                 while (!(await app.SnapshotAsync()).Operations.Any(o => o.AdmissionId == "retention-" + i && o.State == ParcelState.SlotResolved))
                 { if (DateTimeOffset.UtcNow > deadline) throw new TimeoutException(); await Task.Delay(10); }
             }
-            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+            await SmRoundFixture.NextVehicleAsync(app, "left");
             await Command(app, "Pause"); originals = (await app.SnapshotAsync()).Operations.OrderBy(o => o.AdmissionId).ToArray();
         }
         var directory = DirectoryFor(launch, c); var database = Path.Combine(directory, "sportmaster.db");

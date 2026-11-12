@@ -1,4 +1,4 @@
-﻿using System.Buffers;
+using System.Buffers;
 using System.Diagnostics;
 using Ipc.Platform;
 
@@ -11,6 +11,8 @@ internal sealed partial class MvsAcquisition
     {
         internal MvsFrameLatency? Trace { get; set; }
         internal long? Scene { get; init; }
+        internal string? ArrivalGeneration { get; init; }
+        internal string? CaptureBoundaryId { get; init; }
         internal double AcquireMs { get; init; }
         internal long QueuedTicks { get; init; } = Stopwatch.GetTimestamp();
         internal bool SupersededBeforeDecode { get; set; }
@@ -136,7 +138,7 @@ internal sealed partial class MvsAcquisition
                 FramePrefix + ".read." + Wire.Hash(DeviceId + ":" + Epoch + ":" + nativeSource)[..40].ToLowerInvariant(),
                 entityMode == "read-result" ? "Read" : "UncorrelatedRead", nativeSymbols.Select(s => s.Text).ToArray(), null, observedAt)
             {
-                DecodedTicks = deliveredTicks,
+                DecodedTicks = deliveredTicks, ArrivalGeneration = work.ArrivalGeneration, CaptureBoundaryId = work.CaptureBoundaryId, CaptureTicks = deliveredTicks, FrameNumber = frame.Number,
                 Symbols = nativeSymbols,
                 InspectionSessionId = inspected.Registration is { Isolated: true } nativeIsolated ? nativeIsolated.Id : null,
                 CaptureSessionId = inspected.Registration is { CaptureImages: true } nativeCapture ? nativeCapture.Id : null
@@ -201,7 +203,8 @@ internal sealed partial class MvsAcquisition
         var observationIdentity = codes.Length == 0 ? null : nativeObservation?.Id ?? Wire.Id();
         var sourceEvent = codes.Length == 0 ? null : FramePrefix + ".frame." + frame.Number;
         var admissionIdentity = sourceEvent is null ? null : FramePrefix + ".read." + Wire.Hash(DeviceId + ":" + Epoch + ":" + sourceEvent)[..40].ToLowerInvariant();
-        var acquisitionIdentity = sourceEvent is null ? null : new AcquisitionIdentity(DeviceId, Epoch, sourceEvent, admissionIdentity!, observedAt);
+        var acquisitionIdentity = sourceEvent is null ? null : new AcquisitionIdentity(DeviceId, Epoch, sourceEvent, admissionIdentity!, observedAt)
+        { ArrivalGeneration = work.ArrivalGeneration, CaptureBoundaryId = work.CaptureBoundaryId, CaptureTicks = deliveredTicks, FrameNumber = frame.Number };
         if (inspected.Registration is { } registration && inspectionOriginal is not null)
             PublishInspection(registration, new(DeviceId, Epoch, frame.Number, observedAt, checked((int)frame.Width), checked((int)frame.Height),
                 inspectionOriginal, symbols, Timings.LastMs("decode"), observationIdentity,
@@ -233,7 +236,7 @@ internal sealed partial class MvsAcquisition
                 InspectionSessionId = inspected.Registration is { Isolated: true } isolated ? isolated.Id : null,
                 CaptureSessionId = inspected.Registration is { CaptureImages: true } capture ? capture.Id : null
             };
-            observation = observation with { Timing = new(work.AcquireMs, work.CopyMs, work.ReleaseMs, queueMs,
+            observation = observation with { ArrivalGeneration = work.ArrivalGeneration, CaptureBoundaryId = work.CaptureBoundaryId, CaptureTicks = deliveredTicks, FrameNumber = frame.Number, Timing = new(work.AcquireMs, work.CopyMs, work.ReleaseMs, queueMs,
                 originalCapacityMs, Timings.LastMs("decode"), originalCopyMs,
                 Stopwatch.GetElapsedTime(deliveredTicks, decodedTicks).TotalMilliseconds) };
             try { originals.Publish(acquisitionIdentity!, original); }

@@ -33,7 +33,7 @@ internal sealed class MvsTrayPresence
         lock (gate)
         {
             if (requested && teaching is not null) FailTeaching();
-            teaching = null; count = 0; previous = 0; pending = published = TrayPresence.Unknown; lastPublished = 0;
+            teaching = null; count = 0; first = previous = 0; pending = published = TrayPresence.Unknown; lastPublished = 0;
             changedFraction = null; brightnessShift = null; exposureValid = null;
             if (reference is not null) Status = "图像连续性中断；在位状态未知";
         }
@@ -112,7 +112,7 @@ internal sealed class MvsTrayPresence
                 if (exposureValid == true)
                     state = changed <= .001 ? TrayPresence.Absent : changed >= .01 ? TrayPresence.Present : TrayPresence.Unknown;
             }
-            if (pending != state) { pending = state; count = 0; first = ticks; }
+            if (pending != state || first == 0) { pending = state; count = 0; first = ticks; }
             count++;
             var confirmed = state == TrayPresence.Unknown || count >= 3 && Elapsed(first, ticks) >= (state == TrayPresence.Absent ? 800 : 100);
             var output = confirmed ? state : state == TrayPresence.Absent && published == TrayPresence.Present
@@ -123,7 +123,8 @@ internal sealed class MvsTrayPresence
             { TrayPresence.Absent => "空托盘已确认", TrayPresence.Present => "包裹在位", _ => "在位状态未知；等待可靠图像" };
             if (published == output && lastPublished != 0 && Elapsed(lastPublished, ticks) < 1000) return null;
             published = output; lastPublished = ticks;
-            return new(output, $"TaughtMono8-v1;reference={referenceId};size={w}x{h};changed={changed:F5};shift={shift};frames={count};spanMs={Elapsed(first, ticks):F0}");
+            return new(output, $"TaughtMono8-v1;reference={referenceId};size={w}x{h};changed={changed:F5};shift={shift};frames={count};spanMs={Elapsed(first, ticks):F0}")
+            { ReferenceSha256 = reference is null ? null : referenceId, FirstPresentTicks = output == TrayPresence.Present ? first : null };
         }
     }
     static double Elapsed(long a, long b) => (b - a) * 1000d / Stopwatch.Frequency;

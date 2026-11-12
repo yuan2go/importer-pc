@@ -178,10 +178,10 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string Heading => requestedPosition == "left" ? "左投递位" : "右投递位";
     StationVehicleState? vehicle;
     public string VehicleNumberText => vehicle is null ? "小车" : "小车 " + vehicle.VehicleNo;
-    public string VehicleStatusText => vehicle is null ? "小车：待确认" : VehicleNumberText + " · " + (vehicle.Status switch
+    public string VehicleStatusText => Arrival is { RecoveryReason: not null } ? "小车：需人工恢复" : Arrival is { PlacementClosed: true } ? "小车：需撤车恢复" : Arrival is { Confirmed: false } ? "小车：待确认" : Arrival is { Submitted: true } ? VehicleNumberText + (Operation?.Wcs?.State is StageState.Prepared or StageState.Dispatching ? " · 处理中" : " · 本车已处理") : vehicle is null ? "小车：待确认" : VehicleNumberText + " · " + (vehicle.Status switch
     { "IDLE" => "空闲，可以投包", "TASKING" => "工作中，不可以投包", _ => "状态待确认" });
-    public string CompactVehicleStatusText => vehicle?.Status switch { "IDLE" => "空闲 可投包", "TASKING" => "工作中 勿投包", _ => "待确认" };
-    public string VehicleStatusForeground => vehicle?.Status switch { "IDLE" => OperatorTokens.Success, "TASKING" => OperatorTokens.Danger, _ => OperatorTokens.Muted };
+    public string CompactVehicleStatusText => Arrival?.RecoveryReason is not null ? "需人工恢复 勿投包" : Arrival is { PlacementClosed: true } ? "需撤车恢复 勿投包" : Arrival is { Confirmed: false } ? "待确认" : Arrival is { Submitted: true } ? Operation?.Wcs?.State is StageState.Prepared or StageState.Dispatching ? "处理中 勿投包" : "已处理 勿投包" : vehicle?.Status switch { "IDLE" => "空闲 可投包", "TASKING" => "工作中 勿投包", _ => "待确认" };
+    public string VehicleStatusForeground => Arrival is { Confirmed: false } or { Submitted: true } or { PlacementClosed: true } or { RecoveryReason: not null } ? OperatorTokens.Muted : vehicle?.Status switch { "IDLE" => OperatorTokens.Success, "TASKING" => OperatorTokens.Danger, _ => OperatorTokens.Muted };
     public bool InputTargetActive => owner.InputTargetPosition == PositionId;
     public string InputTargetBrush => InputTargetActive ? OperatorTokens.Accent : "Transparent";
     internal void SetInputFocused(bool focused) { if (focused && !SupplyEnabled) return; if (focused || InputTargetActive) owner.SetInputTarget(focused ? PositionId : ""); }
@@ -194,6 +194,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public bool InputUnadmitted => ParcelPresentation.IsUnadmitted(Input);
     public string LatestInputSummary => ParcelPresentation.InputSummary(Input);
     public bool InputFailed => (!RoundReadActive || CurrentRound?.AutoExpired == true) && ParcelPresentation.IsInputFailure(Input);
+    public SmArrivalSnapshot? Arrival => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.Arrival;
     public SmParcelRound? CurrentRound => owner.Snapshot?.Rounds.SingleOrDefault(r => r.Id == owner.Snapshot.Positions?.SingleOrDefault(p => p.Id == PositionId)?.CurrentRoundId);
     public bool HasCurrentInput => CurrentRound is not null;
     public bool IsCompact => owner.IsCompact;
@@ -242,7 +243,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
             ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => "RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。",
             ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => OperatorCopy.TimeoutUnconfirmed,
             ParcelState.WcsUnknown => OperatorCopy.UnconfirmedStep,
-            ParcelState.WcsRejected when ParcelPresentation.RcsManualHandling(Operation) => "请取下包裹后人工判断，再放下一件。",
+            ParcelState.WcsRejected when ParcelPresentation.RcsManualHandling(Operation) => "请取下包裹并停用本位，等RCS撤车确认后再启用并等待新车。",
             ParcelState.WcsRejected => ParcelPresentation.RcsException(Operation) ?? OperatorCopy.RejectedStep,
             ParcelState.UnpackRequired => "勿重复上件：按拆包明细检查包裹，处理完再继续。",
             ParcelState.ResolvingWcs or ParcelState.SlotResolved => "",
@@ -279,7 +280,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         ParcelPresentation.RcsNotDelivered(Operation) ? "RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。" :
         ParcelPresentation.RcsTimedOut(Operation) ? OperatorCopy.TimeoutUnconfirmed :
         HasUncertainOriginal ? OperatorCopy.UnconfirmedStep :
-        ParcelPresentation.RcsManualHandling(Operation) ? "请取下包裹后人工判断，再放下一件。" :
+        ParcelPresentation.RcsManualHandling(Operation) ? "请取下包裹并停用本位，等RCS撤车确认后再启用并等待新车。" :
         Operation?.State == ParcelState.WcsRejected ? OperatorCopy.RejectedStep :
         BlockingReasons.Length > 0 ? "暂不能供包，请通知维护人员。" : "放上包裹由相机扫码，或输入完整条码后按回车。";
     public string BlockingReasons { get; private set; } = "等待状态更新";

@@ -45,3 +45,13 @@ public sealed class ParcelToneConverter : IValueConverter
         value is ParcelOperation op ? ParcelPresentation.Operation(op, true).Tone : ParcelPresentationTone.Neutral;
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
 }
+
+public sealed class RcsReturnedTaskIdConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var taskId = (value as ParcelOperation)?.Wcs?.Replies.LastOrDefault(r => r.Destination is not null)?.Destination?.TaskId;
+        return string.IsNullOrWhiteSpace(taskId) ? "—" : taskId;
+    }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
+}

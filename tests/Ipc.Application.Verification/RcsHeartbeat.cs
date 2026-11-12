@@ -21,14 +21,16 @@ static partial class SportmasterRcs
             try { await service.StartAsync(default); throw new Exception("Started without runtime context"); }
             catch (InvalidDataException) { Check(peer.Requests.IsEmpty, "missing station/driver configuration refuses start before network I/O"); }
             service.ConfigureRuntime(config);
+            peer.ResponseHold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             var clock = Stopwatch.StartNew();
             await Task.WhenAll(Enumerable.Range(0, 8).Select(_ => service.StartAsync(default)));
-            await Task.Delay(300);
-            Check(peer.Requests.IsEmpty, "repeated start owns one timer and default heartbeat waits for its interval");
+            await Until(() => peer.Requests.Count == 1);
+            Check(peer.Requests.Count == 1, "repeated start owns one immediate initial heartbeat and one loop");
             Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "local lifecycle cannot fabricate a typed remote connection confirmation");
             Check((await service.HealthAsync(default)) is { RemoteConfirmedAt: null, RemoteValidUntil: null }, "health reads before first response cannot fabricate remote timestamps");
+            peer.ResponseHold.TrySetResult(); peer.ResponseHold = null;
             await Until(() => peer.Requests.Count == 1);
-            Check(clock.Elapsed >= TimeSpan.FromSeconds(.8) && clock.Elapsed < TimeSpan.FromSeconds(3), "omitted component interval defaults to one second");
+            Check(clock.Elapsed < TimeSpan.FromSeconds(8) && RcsRequestPolicy.HeartbeatMs(binding) == 1000, "initial connectivity check is independent of the default one-second periodic interval");
             var exchange = peer.Requests.Single();
             using var json = JsonDocument.Parse(exchange.Body); var envelope = json.RootElement;
             var data = envelope.GetProperty("data").EnumerateArray().ToArray();
@@ -161,6 +163,7 @@ static partial class SportmasterRcs
         service.ConfigureRuntime(HeartbeatConfiguration(workspace, manual));
         peer.Mode = "assigned";
         await service.StartAsync(default);
+        await Healthy(service);
         var count = peer.Requests.Count;
         Check(await service.SendHeartbeatAsync(default) == RcsHeartbeatResult.Received && peer.Requests.Count == count + 1,
             "manual heartbeat immediately sends exactly one request before a scheduled tick");

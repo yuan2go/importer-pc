@@ -96,7 +96,7 @@ static partial class SportmasterRcs
             if (mode == "assigned")
             {
                 Check(view.Left.SlotAvailable && view.Left.Slot == "SYNTH-CHUTE", "valid assignment still displays its exact chute");
-                await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+                await SmRoundFixture.NextVehicleAsync(app, "left");
                 peer.Mode = "reject";
                 app.EmitReferenceAt("left", "rejected-after-assigned", "SYNTH-0002", Wire.Id());
                 await Wait(app, x => x.Operations.Length == 2 && x.Operations.Any(o => o.State == ParcelState.WcsRejected));
@@ -122,7 +122,7 @@ static partial class SportmasterRcs
                     app.EmitReferenceAt("left", "same-placement-" + mode, "SYNTH-0001", Wire.Id());
                     await CameraRoundHarness.Until(() => Task.FromResult(app.WorkerProgress().Single(w => w.Position == "left").Processed > processed));
                     Check(peer.Requests.Count == sent, mode + " repeated observation of the same placement does not send again");
-                    await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+                    await SmRoundFixture.NextVehicleAsync(app, "left");
                     peer.Mode = "assigned"; peer.ResponseTransform = null;
                     app.EmitReferenceAt("left", "changed-placement-" + mode, "SYNTH-0002", Wire.Id());
                     var changed = await Wait(app, x => x.Operations.Any(o => o.ParcelCode == "SYNTH-0002" && o.State == ParcelState.SlotResolved) && x.Capacity?.HistoricalUnknown == 1);

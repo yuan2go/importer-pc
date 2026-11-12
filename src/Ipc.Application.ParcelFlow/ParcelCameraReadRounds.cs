@@ -159,7 +159,8 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                     Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes), Effective.Weight,
                     WeightRules.Configured(Effective.Weight), ParcelState.Prepared, null, null, null, "独立手动调试请求；未发送",
                     Operator: currentOperator, Acquisition: acquisition, PositionId: positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id, ReaderBinding: ReaderBinding(positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id))
-                { DebugRequest = new(round.Session, round.Id, metadata.Id, round.Device, frame.Epoch, frame.SourceEventId!, metadata.OriginalSha256, ManagementEvidence!.AuditActor) };
+                { ArrivalGeneration = acquisition.ArrivalGeneration, VehicleNo = acquisition.ArrivalGeneration == SmCycle(positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id).Generation
+                    ? SmCycle(positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id).VehicleNo : null, DebugRequest = new(round.Session, round.Id, metadata.Id, round.Device, frame.Epoch, frame.SourceEventId!, metadata.OriginalSha256, ManagementEvidence!.AuditActor) };
                 Save(op, "CameraDebugIntentCreated", "独立调试请求；仅明确发送命令可执行，正常供包继续。"); round.Operation = op.Id;
                 op = ((IParcelExecution)this).PrepareWcs(op);
                 Save(op, "CameraDebugRequestPrepared", "冻结本轮原请求，仅供查看，未执行外呼。");
@@ -275,7 +276,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             AdmissionCapabilitiesReady(op.PositionId) && WeightReady(op) &&
             (Effective.Login is null || currentOperator is not null && currentOperator.Subject == op.Operator?.Subject) &&
             !repository!.PendingReceipts().Any(x => x.Operation == op.Id) &&
-            !operations.Values.Any(x => x.Id != op.Id && x.PositionId == op.PositionId && !MainTerminated(x));
+            SmTargetDispatchAllowed(op);
     }
     static bool OriginalRoundFrameMatches(ParcelOperation op, CameraDebugRequestEvidence evidence, ReadRound round) =>
         op.Acquisition is { } acquisition && round.Frame is { } frame && op.OperatorInput is null &&

@@ -23,7 +23,11 @@ public sealed partial class ParcelRepository
         while (cycles.Read())
         {
             var body = cycles.GetString(1); var cycle = Wire.Decode<SmPositionCycle>(body);
-            if (Wire.Hash(body) != cycles.GetString(2) || cycle.PositionId != cycles.GetString(0) || !Enum.IsDefined(cycle.Presence))
+            if (Wire.Hash(body) != cycles.GetString(2) || cycle.PositionId != cycles.GetString(0) || !Enum.IsDefined(cycle.Presence) || !Guid.TryParseExact(cycle.Generation, "N", out _) || !Guid.TryParseExact(cycle.RecoveryToken, "N", out _) ||
+                cycle.VehicleNo is { } vehicle && (string.IsNullOrWhiteSpace(vehicle) || vehicle.Length > 256 || vehicle.Any(char.IsControl)) ||
+                (cycle.RecoveryCause & ~(SmRemoteRecoveryCause.RequestMayBind | SmRemoteRecoveryCause.MembershipMayApply)) != 0 ||
+                cycle.SubmittedOperation is not null && cycle.VehicleNo is null || cycle.HeartbeatPending is <= 0 ||
+                cycle.ArrivalAt is not null && (cycle.VehicleNo is null || cycle.ArrivalEvidence is null))
                 throw new InvalidDataException("Physical cycle original differs; original retained");
         }
     }
@@ -55,6 +59,7 @@ public sealed partial class ParcelRepository
         RecoveryFiles.RequireOrdinaryAncestors(database);
         using var connection = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
         connection.Open(); token.ThrowIfCancellationRequested();
+        RequireCurrentStorage(connection);
         SQLitePCL.raw.sqlite3_progress_handler(connection.Handle, 1000, _ => token.IsCancellationRequested ? 1 : 0, null);
         return ReadRounds(connection, false, position, limit, search, from, to);
     }

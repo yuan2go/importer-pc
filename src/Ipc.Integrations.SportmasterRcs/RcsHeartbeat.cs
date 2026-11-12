@@ -8,7 +8,7 @@ using Ipc.Platform;
 
 namespace Ipc.Integrations.SportmasterRcs;
 
-public sealed partial class SportmasterRcsTaskService
+public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
 {
     internal const string HeartbeatCommand = "sorter.task.station_heartbeat";
     (string Station, string Bcr)[]? heartbeatStations;
@@ -23,6 +23,27 @@ public sealed partial class SportmasterRcsTaskService
     string heartbeatEvidence = "RCS client stopped; upstream acceptance unconfirmed";
     StationVehicleState[] stationVehicles = [];
     static long lastHeartbeatId;
+    ISmHeartbeatOwner? heartbeatOwner;
+    readonly SemaphoreSlim heartbeatRefresh = new(0, 1);
+    int heartbeatRefreshPending;
+    public void SetHeartbeatOwner(ISmHeartbeatOwner owner)
+    {
+        lock (lifecycle)
+        {
+            if (running) throw new InvalidOperationException("Bind heartbeat owner before starting");
+            heartbeatOwner = owner;
+        }
+    }
+    public void RefreshHeartbeat()
+    {
+        Interlocked.Exchange(ref heartbeatRefreshPending, 1);
+        SignalHeartbeat();
+    }
+    void SignalHeartbeat()
+    {
+        if (heartbeatRefresh.CurrentCount == 0)
+            try { heartbeatRefresh.Release(); } catch (SemaphoreFullException) { }
+    }
 
     public void ConfigureRuntime(ParcelConfiguration configuration)
     {
@@ -40,11 +61,18 @@ public sealed partial class SportmasterRcsTaskService
 
     async Task HeartbeatLoopAsync(CancellationToken stop)
     {
-        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(options.HeartbeatIntervalMs));
         try
         {
-            while (await timer.WaitForNextTickAsync(stop).ConfigureAwait(false))
+            while (!stop.IsCancellationRequested)
             {
+                using var tick = CancellationTokenSource.CreateLinkedTokenSource(stop);
+                var delay = Task.Delay(options.HeartbeatIntervalMs, tick.Token);
+                var refresh = heartbeatRefresh.WaitAsync(tick.Token);
+                await Task.WhenAny(delay, refresh).ConfigureAwait(false);
+                tick.Cancel();
+                try { await Task.WhenAll(delay, refresh).ConfigureAwait(false); }
+                catch (OperationCanceledException) when (!stop.IsCancellationRequested) { }
+                stop.ThrowIfCancellationRequested();
                 if (!heartbeatSerial.Wait(0)) continue;
                 try { await SendHeartbeatCoreAsync(stop).ConfigureAwait(false); }
                 finally { heartbeatSerial.Release(); }
@@ -59,7 +87,6 @@ public sealed partial class SportmasterRcsTaskService
         lock (lifecycle)
         {
             if (!running || disposed) return RcsHeartbeatResult.Unavailable;
-            if (heartbeatStations is not { Length: > 0 }) return RcsHeartbeatResult.NoPositions;
             if (manualHeartbeatPending) return RcsHeartbeatResult.Busy;
             linked = CancellationTokenSource.CreateLinkedTokenSource(token, heartbeatStop!.Token);
             manualHeartbeatPending = true;
@@ -69,7 +96,7 @@ public sealed partial class SportmasterRcsTaskService
         {
             await heartbeatSerial.WaitAsync(linked.Token).ConfigureAwait(false);
             try { return await SendHeartbeatCoreAsync(linked.Token).ConfigureAwait(false); }
-            finally { heartbeatSerial.Release(); }
+            finally { heartbeatSerial.Release(); if (Volatile.Read(ref heartbeatRefreshPending) != 0) SignalHeartbeat(); }
         }
         catch (OperationCanceledException) when (linked.IsCancellationRequested && !token.IsCancellationRequested)
         { return RcsHeartbeatResult.Unavailable; }
@@ -87,19 +114,27 @@ public sealed partial class SportmasterRcsTaskService
     async Task<RcsHeartbeatResult> SendHeartbeatCoreAsync(CancellationToken stop)
     {
         stop.ThrowIfCancellationRequested();
+        Interlocked.Exchange(ref heartbeatRefreshPending, 0);
         (string Station, string Bcr)[] mapping;
         lock (lifecycle)
         {
             if (!running || disposed) return RcsHeartbeatResult.Unavailable;
             mapping = heartbeatStations ?? [];
         }
-        if (mapping.Length == 0) return RcsHeartbeatResult.NoPositions;
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(stop);
-        timeout.CancelAfter(TimeSpan.FromMilliseconds(Math.Min(3000, options.HeartbeatIntervalMs)));
+        timeout.CancelAfter(TimeSpan.FromMilliseconds(3000));
+        SmHeartbeatIntent? intent = null;
+        var confirmation = new SmHeartbeatConfirmation(false, false, [], default, default);
         try
         {
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var requestId = NextHeartbeatId(timestamp);
+            if (heartbeatOwner is { } owner)
+            {
+                intent = await owner.BeginHeartbeatAsync(requestId, timeout.Token).ConfigureAwait(false);
+                if (intent is null) return RcsHeartbeatResult.Busy;
+                mapping = intent.Members.Select(x => (x.StationCode, x.BcrCode)).ToArray();
+            }
             var body = JsonSerializer.Serialize(new
             {
                 source = options.Source,
@@ -121,20 +156,24 @@ public sealed partial class SportmasterRcsTaskService
             };
             message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             using var response = await heartbeatClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
+            confirmation = confirmation with { HttpResponded = true };
             if (!response.IsSuccessStatusCode) throw new HttpRequestException("HTTP " + (int)response.StatusCode);
             var (bytes, complete) = await ReadBoundedAsync(response.Content, timeout.Token).ConfigureAwait(false);
             stop.ThrowIfCancellationRequested();
             if (!complete) throw new InvalidDataException("Incomplete or oversized heartbeat response");
             var receivedAt = HeartbeatTimeForVerification.GetUtcNow();
-            var lifetime = TimeSpan.FromMilliseconds(Math.Max(3000, options.HeartbeatIntervalMs * 3));
+            var lifetime = TimeSpan.FromMilliseconds(Math.Max(3000, options.HeartbeatIntervalMs * 3L) + 3000);
             var vehicles = ReadHeartbeatVehicles(bytes, requestId, mapping, receivedAt, lifetime);
+            var acknowledged = ValidHeartbeatConfirmation(bytes, requestId, mapping);
+            confirmation = new(true, acknowledged, vehicles, receivedAt, receivedAt + lifetime);
+            if (!acknowledged) throw new InvalidDataException("Heartbeat protocol acknowledgement invalid");
             lock (lifecycle)
             {
                 if (!running || disposed) return RcsHeartbeatResult.Unavailable;
                 stationVehicles = vehicles;
                 heartbeatFailure = null; heartbeatResponseReceived = true;
                 heartbeatReceivedAt = receivedAt; heartbeatValidUntil = receivedAt + lifetime;
-                heartbeatEvidence = "RCS heartbeat HTTP " + (int)response.StatusCode + " at " + timestamp.ToString(CultureInfo.InvariantCulture) + "; application acknowledgement unconfirmed";
+                heartbeatEvidence = "RCS heartbeat HTTP " + (int)response.StatusCode + " at " + timestamp.ToString(CultureInfo.InvariantCulture) + "; heartbeat protocol and membership acknowledged; destination outcome unconfirmed";
             }
             return RcsHeartbeatResult.Received;
         }
@@ -147,6 +186,11 @@ public sealed partial class SportmasterRcsTaskService
                 stationVehicles = []; heartbeatFailure = "RCS heartbeat failed: " + (e is OperationCanceledException ? "timeout" : e.Message) + "; no business request was retried";
             }
             return RcsHeartbeatResult.Failed;
+        }
+        finally
+        {
+            if (intent is not null && heartbeatOwner is { } owner)
+                await owner.CompleteHeartbeatAsync(intent, confirmation).ConfigureAwait(false);
         }
     }
 

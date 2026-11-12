@@ -45,7 +45,13 @@ public sealed class OperatorSession
     public void Clear() => Volatile.Write(ref grant, null);
 }
 
-public sealed record AcquisitionIdentity(string DeviceId, string Epoch, string SourceEventId, string AdmissionId, DateTimeOffset ObservedAt);
+public sealed record AcquisitionIdentity(string DeviceId, string Epoch, string SourceEventId, string AdmissionId, DateTimeOffset ObservedAt)
+{
+    public string? ArrivalGeneration { get; init; }
+    public string? CaptureBoundaryId { get; init; }
+    public long CaptureTicks { get; init; }
+    public long? FrameNumber { get; init; }
+}
 
 public sealed record WeightObservation(string Epoch, long Sequence, WeightMeasurement Measurement);
 public interface IControlledWeightSource : ICapabilityPort

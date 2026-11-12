@@ -17,6 +17,9 @@ public sealed partial class ParcelRuntime
     {
         if (Id != "sportmaster") return true;
         if (positions.Values.Any(p => p.ReaderDeviceId == device && !PositionSupplyEnabled(p.Id))) return false;
+        var position = positions.Values.SingleOrDefault(p => p.ReaderDeviceId == device)?.Id;
+        if (position is not null && UsesSmArrival(position) &&
+            (!arrivalCaptures.TryGetValue(device, out var capture) || !capture.Ready || capture.Until <= DateTimeOffset.UtcNow || capture.Epoch != readers[device].Epoch)) return false;
         var health = Volatile.Read(ref automaticCameraRcsHealth);
         var now = DateTimeOffset.UtcNow;
         return health is { Ready: true, RemoteConfirmation: RemoteConnectionConfirmation.ResponseReceived } &&

@@ -21,16 +21,20 @@ public sealed partial class ParcelRuntime
     SmPositionCycle SmCycle(string position) => smCycles.GetValueOrDefault(position) ?? new(position, false, TrayPresence.Unknown, null, 0, Wire.Id(), null);
     bool SmRoundOwns(ParcelOperation op) => op.RoundId is null || CurrentRound(op.PositionId!)?.Id == op.RoundId;
     readonly Dictionary<string, DateTimeOffset> smPresenceTimes = [];
+    readonly Dictionary<string, long> smPresenceCaptureTicks = [];
     bool SmVisualReliable(string position) => SmCycle(position) is { Presence: TrayPresence.Present } cycle &&
         readers.TryGetValue(positions[position].ReaderDeviceId, out var reader) && reader.Epoch == cycle.Epoch &&
         reader.Health?.IsValid(DateTimeOffset.UtcNow) == true &&
-        smPresenceTimes.TryGetValue(position, out var at) && DateTimeOffset.UtcNow - at < TimeSpan.FromMilliseconds(1500);
+        (UsesSmArrival(position) ? smPresenceCaptureTicks.TryGetValue(position, out var ticks) &&
+            System.Diagnostics.Stopwatch.GetElapsedTime(ticks) is var age && age >= TimeSpan.Zero && age < TimeSpan.FromMilliseconds(1500) :
+            smPresenceTimes.TryGetValue(position, out var at) && DateTimeOffset.UtcNow - at < TimeSpan.FromMilliseconds(1500));
     void StoreSmRound(SmParcelRound round, string name, SmPositionCycle? cycle = null, ParcelOperation? operation = null, BusinessCommand? command = null,
-        StationPositionState? positionControl = null, BusinessReceipt? commandResult = null)
+        StationPositionState? positionControl = null, BusinessReceipt? commandResult = null, SmPositionCycle[]? relatedCycles = null, SmParcelRound[]? relatedRounds = null)
     {
         repository!.Commit(operation, positionControl is null ? name : "PositionSupplyChanged", Wire.Encode(new
         {
             RoundId = round.Id,
+            round.ArrivalGeneration, round.VehicleNo,
             round.PositionId,
             round.Version,
             round.OperationId,
@@ -41,13 +45,20 @@ public sealed partial class ParcelRuntime
             RoundElapsedMs = round.ClockRuntime == runtimeId ? StationTime.GetElapsedTime(round.StartedTicks).TotalMilliseconds : (double?)null,
             OperationIds = round.OperationId is { } id ? new[] { id } : []
         }),
-            round: round, cycle: cycle, command: command, positionControl: positionControl, commandResult: commandResult);
+            round: round, cycle: cycle, command: command, positionControl: positionControl, commandResult: commandResult, cycles: relatedCycles, rounds: relatedRounds);
         ApplySmRound(round);
         if (cycle is not null) smCycles[cycle.PositionId] = cycle;
+        foreach (var related in relatedCycles ?? []) smCycles[related.PositionId] = related;
+        foreach (var related in relatedRounds ?? [])
+        {
+            ApplySmRound(related); smRoundPictures.Remove(related.Id);
+            if (related.OperationId is { } released) releasedPlacements.Add(released);
+        }
         if (operation is not null) operations[operation.Id] = operation;
         WriteRuntimeLog("包裹轮次", name, new
         {
             RoundId = round.Id,
+            round.ArrivalGeneration, round.VehicleNo,
             round.PositionId,
             round.State,
             round.EndReason,
@@ -65,20 +76,25 @@ public sealed partial class ParcelRuntime
         if (round.EndedAt is null) smCurrentRounds[round.PositionId] = round.Id;
         else if (smCurrentRounds.GetValueOrDefault(round.PositionId) == round.Id) smCurrentRounds.Remove(round.PositionId);
     }
-    SmParcelRound StartSmRound(string position, bool manual, string? commandId = null)
+    SmParcelRound StartSmRound(string position, bool manual, string? commandId = null, Observation? frame = null)
     {
-        var cycle = SmCycle(position) with { AutoSuppressed = true };
-        var round = new SmParcelRound(Wire.Id(), position, 1, runtimeId, StationTime.GetUtcNow(), StationTime.GetTimestamp(),
+        var priorCycle = SmCycle(position);
+        var cycle = priorCycle with { AutoSuppressed = true };
+        var captureStarted = frame?.TrayPresence is { State: TrayPresence.Present, FirstPresentTicks: > 0 } physical
+            ? physical.FirstPresentTicks.Value : frame?.CaptureTicks ?? 0;
+        var elapsed = !manual && captureStarted > 0 ? System.Diagnostics.Stopwatch.GetElapsedTime(captureStarted) : TimeSpan.Zero;
+        var started = StationTime.GetTimestamp() - (long)(elapsed.TotalSeconds * StationTime.TimestampFrequency);
+        var round = new SmParcelRound(Wire.Id(), position, 1, runtimeId, StationTime.GetUtcNow() - elapsed, started,
             Effective.EffectiveReadTimeoutMs, configuration!.Current.Revision, Effective.BarcodeFilter, SmRoundState.Reading, [])
-        { Manual = manual, PresenceEvidence = cycle.Evidence, CommandId = commandId };
+        { Manual = manual, PresenceEvidence = cycle.Evidence, CommandId = commandId, ArrivalGeneration = UsesSmArrival(position) ? cycle.Generation : null, VehicleNo = cycle.VehicleNo, CaptureBoundaryTicks = !manual && captureStarted > 0 ? captureStarted : System.Diagnostics.Stopwatch.GetTimestamp() };
         StoreSmRound(round, "RoundStarted", cycle); return round;
     }
     void EndSmRound(SmParcelRound round, string reason, bool physicallyRemoved = false, BusinessCommand? command = null, DateTimeOffset? removalAt = null,
-        StationPositionState? positionControl = null, BusinessReceipt? commandResult = null)
+        StationPositionState? positionControl = null, BusinessReceipt? commandResult = null, SmPositionCycle? replacementCycle = null, SmPositionCycle[]? relatedCycles = null, SmParcelRound[]? relatedRounds = null)
     {
         if (CurrentRound(round.PositionId)?.Id != round.Id) return;
-        var cycle = SmCycle(round.PositionId);
-        if (physicallyRemoved)
+        var cycle = replacementCycle ?? SmCycle(round.PositionId);
+        if (physicallyRemoved && !UsesSmArrival(round.PositionId))
         {
             cycle = cycle with
             {
@@ -106,7 +122,7 @@ public sealed partial class ParcelRuntime
                 };
             }
         }
-        StoreSmRound(ended, "RoundEnded", cycle, operation, command, positionControl, commandResult);
+        StoreSmRound(ended, "RoundEnded", cycle, operation, command, positionControl, commandResult, relatedCycles, relatedRounds);
         if (round.OperationId is { } released) releasedPlacements.Add(released);
         if (physicallyRemoved) confirmedEmptyTrays[round.PositionId] = cycle.ClearedAt!.Value;
         smRoundPictures.Remove(round.Id);
@@ -117,7 +133,7 @@ public sealed partial class ParcelRuntime
         foreach (var id in smCurrentRounds.Values.ToArray())
         {
             var round = CheckSmReadDeadline(smRounds[id]);
-            if ((round.Manual || !SmVisualReliable(round.PositionId)) && round.SuccessTicks is { } accepted && round.ClockRuntime == runtimeId &&
+            if ((round.Manual || !SmVisualReliable(round.PositionId)) && round.SuccessTicks is { } accepted && round.SuccessClockRuntime == runtimeId &&
                 StationTime.GetElapsedTime(accepted).TotalMilliseconds >= 3000)
                 EndSmRound(round, "SuccessDisplayElapsed");
         }
@@ -161,6 +177,7 @@ public sealed partial class ParcelRuntime
         foreach (var position in positions.Keys)
             if (repository!.Cycle(position) is { } cycle)
                 smCycles[position] = cycle with { Presence = TrayPresence.Unknown };
+            else StoreSmCycle(SmCycle(position), "PositionCycleInitialized");
         foreach (var round in repository!.Rounds(currentOnly: true))
         {
             ApplySmRound(round);
@@ -180,6 +197,8 @@ public sealed partial class ParcelRuntime
                     RequireRemoval = true,
                     AutoExpired = true
                 }, "RoundRemovalRestored");
+            else if (operation is null && UsesSmArrival(round.PositionId))
+                StoreSmRound(round with { Version = round.Version + 1, AutoExpired = true, State = SmRoundState.ReadException, ReadOutcome = "ReadWindowExpired" }, "UnsubmittedArrivalRestored");
             else EndSmRound(round, "InterruptedOnRestart");
         }
     }
@@ -203,6 +222,7 @@ public sealed partial class ParcelRuntime
                 State = SmRoundState.Result,
                 RequireRemoval = false,
                 SuccessAt = round.SuccessAt ?? StationTime.GetUtcNow(),
+                SuccessClockRuntime = round.SuccessClockRuntime ?? runtimeId,
                 SuccessTicks = round.SuccessTicks ?? StationTime.GetTimestamp()
             };
         if (op.Wcs?.State is StageState.Rejected or StageState.Unknown or StageState.Conflict || op.State is ParcelState.Blocked or ParcelState.ImageRejected)
@@ -217,10 +237,20 @@ public sealed partial class ParcelRuntime
         var fact = observation.TrayPresence!;
         if (!Enum.IsDefined(fact.State) || string.IsNullOrWhiteSpace(fact.Evidence) || fact.Evidence.Length > 1024 || fact.Evidence.Any(char.IsControl))
             throw new InvalidDataException("Physical evidence is incomplete");
+        var presence = fact.State;
+        if (UsesSmArrival(position) && fact.ReferenceSha256 is { } reference)
+        {
+            if (!ExtensionSchema.IsHash(reference)) throw new InvalidDataException("Physical reference identity invalid");
+            var key = (SmCycle(position).Generation, observation.Epoch, reference);
+            if (presence == TrayPresence.Absent) arrivalVisualBaselines[position] = key;
+            if (presence == TrayPresence.Present && (!arrivalVisualBaselines.TryGetValue(position, out var baseline) || baseline != key))
+                presence = TrayPresence.Unknown;
+        }
         smPresenceTimes[position] = observation.ObservedAt;
-        var cycle = SmCycle(position) with { Presence = fact.State, Epoch = observation.Epoch, Sequence = observation.Sequence, Evidence = fact.Evidence };
+        smPresenceCaptureTicks[position] = observation.CaptureTicks;
+        var cycle = SmCycle(position) with { Presence = presence, Epoch = observation.Epoch, Sequence = observation.Sequence, Evidence = fact.Evidence };
         var round = CurrentRound(position);
-        if (fact.State == TrayPresence.Absent && round is not { RequireRemoval: true })
+        if (!UsesSmArrival(position) && fact.State == TrayPresence.Absent && round is not { RequireRemoval: true })
         {
             blockedInputs.TryRemove(position, out _); blockedInputPictures.Remove(position);
             if (round is not null) { smCycles[position] = cycle; EndSmRound(round, "TrustedRemoval", physicallyRemoved: true, removalAt: observation.ObservedAt); }
@@ -233,18 +263,24 @@ public sealed partial class ParcelRuntime
             return;
         }
         repository!.Commit(null, "TrayPresenceObserved", Wire.Encode(cycle), cycle: cycle); smCycles[position] = cycle;
-        if (fact.State == TrayPresence.Present && round is null && !cycle.AutoSuppressed && CameraAdmissionBlock(position) is null)
-            _ = StartSmRound(position, false);
+        if (presence == TrayPresence.Present && round is null && !cycle.AutoSuppressed && CameraAdmissionBlock(position) is null)
+            _ = StartSmRound(position, false, frame: observation);
     }
     async Task<ObservationHandling> ProcessSmObservationAsync(string position, Observation observation, OperatorIdentity? actor, ObservationSession reader, bool manual)
     {
-        var beforeRound = !manual && (SmCycle(position).ClearedAt is { } cleared && observation.ObservedAt <= cleared ||
-            CurrentRound(position) is { } target && observation.ObservedAt < target.StartedAt);
+        if (!manual && !SmCameraArrivalCurrent(position, observation))
+            return new(ObservationDisposition.Expired, "OldArrivalGeneration; observation retired without source failure");
+        var beforeRound = !manual && (UsesSmArrival(position)
+            ? CurrentRound(position) is { } current && current.ClockRuntime == runtimeId && observation.CaptureTicks > 0 && observation.CaptureTicks < current.CaptureBoundaryTicks
+            : SmCycle(position).ClearedAt is { } cleared && observation.ObservedAt <= cleared ||
+                CurrentRound(position) is { } target && observation.ObservedAt < target.StartedAt);
+        var sourceAge = observation.CaptureTicks > 0 ? System.Diagnostics.Stopwatch.GetElapsedTime(observation.CaptureTicks) : DateTimeOffset.UtcNow - observation.ObservedAt;
+        if (!manual && sourceAge < TimeSpan.Zero) return new(ObservationDisposition.UntrustedSource, "CaptureClockInvalid; source capture time is in the future");
         if (observation.TrayPresence is not null && !manual)
         {
             // A physical frame captured before this round (or left in delivery
             // too long) cannot remove a later deliberately submitted parcel.
-            if (beforeRound || DateTimeOffset.UtcNow - observation.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
+            if (beforeRound || sourceAge > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
             {
                 return RecordInput(Input(position, observation, ParcelInputOutcome.Rejected,
                     "PhysicalEvidenceExpired; 旧物理观察只留证，不改变当前轮次。"), "PhysicalEvidenceIgnored", disposition: ObservationDisposition.Expired);
@@ -289,7 +325,7 @@ public sealed partial class ParcelRuntime
         }
         // Source freshness is an input trust guard, not a round timeout. A stale
         // handoff cannot manufacture a fresh parcel or renew an existing window.
-        if (!manual && DateTimeOffset.UtcNow - observation.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
+        if (!manual && sourceAge > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
         {
             var result = RecordInput(Input(position, observation, ParcelInputOutcome.Rejected,
                 "ObservationExpired; 过期相机观察已忽略，未发送请求；当前轮次自动识读期限不变。", selection: selection), "ObservationRejected", disposition: ObservationDisposition.Expired);
@@ -300,7 +336,7 @@ public sealed partial class ParcelRuntime
         {
             // Codes (including a changed code) are observations, never a new physical boundary.
             RecordFlowPerformance(position, "AutoRepeatSuppressed", observation.Id,
-                new(observation.DeviceId, observation.Epoch, observation.SourceEventId, observation.AdmissionId, observation.ObservedAt),
+                observation.Acquisition,
                 round?.OperationId, decodedTicks: observation.DecodedTicks, roundId: round?.Id);
             smSuppressed.TryGetValue(position, out var prior);
             var count = prior.Count + 1;
@@ -324,7 +360,7 @@ public sealed partial class ParcelRuntime
             if (!manual && formal.Length == 0) return new(ObservationDisposition.NoFormalCandidates, selection.Outcome);
             var block = manual ? ManualInputReasons(position) : CameraAdmissionBlock(position) is { } reason ? new[] { reason.ToString() } : [];
             if (block.Length != 0) return RecordInput(Input(position, observation, ParcelInputOutcome.Blocked, string.Join("; ", block), selection: selection), "ObservationBlocked");
-            round = StartSmRound(position, manual, observation.OperatorInput?.CommandId);
+            round = StartSmRound(position, manual, observation.OperatorInput?.CommandId, observation);
         }
         if (observation.InspectionSessionId is not null || observation.Kind != "Read" || !ExtensionSchema.IsId(observation.AdmissionId))
             return new(ObservationDisposition.Rejected, "Invalid observation kind or admission identity", RoundId: round.Id);
@@ -350,9 +386,9 @@ public sealed partial class ParcelRuntime
         var op = new ParcelOperation(Wire.Id(), observation.AdmissionId, selection.SelectedCode, observationHash, observation.ObservedAt,
             Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes),
             Effective.Weight, weight, ParcelState.Prepared, null, null, null, null, Operator: actor,
-            Acquisition: manual ? null : new(observation.DeviceId, observation.Epoch, observation.SourceEventId, observation.AdmissionId, observation.ObservedAt),
+            Acquisition: manual ? null : observation.Acquisition,
             PositionId: position, ReaderBinding: ReaderBinding(position), BarcodeSelection: selection)
-        { OperatorInput = observation.OperatorInput, RoundId = round.Id, IngressId = activeIngress.Value };
+        { OperatorInput = observation.OperatorInput, RoundId = round.Id, IngressId = activeIngress.Value, ArrivalGeneration = round.ArrivalGeneration, VehicleNo = round.VehicleNo };
         var claimed = decision with
         {
             OperationId = op.Id,
@@ -380,7 +416,16 @@ public sealed partial class ParcelRuntime
                 frame?.Dispose(); frame = null;
                 return RecordSmReadObservation(expired, observation, reader, selection, formal);
             }
-            repository.Commit(op, "DispatchClaimed", Wire.Encode(new { RoundId = round.Id, OperationId = op.Id }), round: claimed, input: admitted, ingressIdentity: op.IngressId);
+            if (UsesSmArrival(position) && (!SmArrivalConfirmed(position) || !manual && !SmCameraArrivalCurrent(position, observation)))
+            {
+                frame?.Dispose(); frame = null;
+                return new(ObservationDisposition.Blocked, "VehicleUnconfirmed; 到位确认在接纳前过期，未创建请求；保留原轮次及识读期限。", RoundId: round.Id);
+            }
+            var cycle = UsesSmArrival(position) ? SmCycle(position) with { SubmittedOperation = op.Id } : null;
+            if (cycle?.SubmittedOperation is not null && SmCycle(position).SubmittedOperation is not null)
+                throw new InvalidOperationException("Arrival already claimed");
+            repository.Commit(op, "DispatchClaimed", Wire.Encode(new { RoundId = round.Id, OperationId = op.Id, op.ArrivalGeneration, VehicleNo = cycle?.VehicleNo }), round: claimed, cycle: cycle, input: admitted, ingressIdentity: op.IngressId);
+            if (cycle is not null) smCycles[position] = cycle;
         }
         catch { frame?.Dispose(); throw; }
         operations[op.Id] = op; admissionPositions.TryAdd(op.AdmissionId, position); ApplySmRound(claimed); PublishInput(admitted);
@@ -426,7 +471,7 @@ public sealed partial class ParcelRuntime
     void ArchiveSmRoundFrame(SmParcelRound round, Observation observation, ObservationSession reader)
     {
         if (round.OriginalFrame is not null || observation.OperatorInput is not null || reader.Source is not IOriginalFrameSource source) return;
-        var identity = new AcquisitionIdentity(observation.DeviceId, observation.Epoch, observation.SourceEventId, observation.AdmissionId, observation.ObservedAt);
+        var identity = observation.Acquisition;
         IOriginalFrameLease pixels;
         try { pixels = source.RetainOriginalFrame(identity); }
         catch (Exception error) when (error is IOException or InvalidOperationException)

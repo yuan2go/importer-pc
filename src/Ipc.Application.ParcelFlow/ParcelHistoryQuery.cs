@@ -98,7 +98,7 @@ public sealed class ParcelHistoryReader : IDisposable
             await using (var output = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None, 65536, true))
             {
                 await using var writer = new StreamWriter(output, new UTF8Encoding(true), 65536, leaveOpen: true);
-                await writer.WriteLineAsync("sequence,observed_at_text,position_text,operation_text,barcode_text,barcode_utf8_base64,state_text,slot_text,wcs_request_text,wcs_attempts,wcs_fact_text,physical_completed");
+                await writer.WriteLineAsync("sequence,observed_at_text,position_text,operation_text,barcode_text,barcode_utf8_base64,state_text,slot_text,wcs_request_text,wcs_attempts,wcs_fact_text,physical_completed,rcs_task_id_text");
                 long cursor = long.MaxValue;
                 do
                 {
@@ -112,7 +112,8 @@ public sealed class ParcelHistoryReader : IDisposable
                         static string Text(string? value) => "\"'" + (value ?? "").Replace("\"", "\"\"") + "\"";
                         var line = string.Join(",", item.Sequence, Text(op.ObservedAt.ToString("O")), Text(op.PositionId ?? "main"), Text(op.Id), Text(op.ParcelCode),
                             Convert.ToBase64String(Encoding.UTF8.GetBytes(op.ParcelCode)), Text(op.State.ToString()), Text(op.Slot), Text(op.Wcs?.Request.Id), op.Wcs?.Attempts ?? 0,
-                            Text(op.Wcs?.State.ToString()), op.State == ParcelState.PhysicalCompleted ? "1" : "0");
+                            Text(op.Wcs?.State.ToString()), op.State == ParcelState.PhysicalCompleted ? "1" : "0",
+                            Text(op.Wcs?.Replies.LastOrDefault(r => r.Destination is not null)?.Destination?.TaskId));
                         bytes += Encoding.UTF8.GetByteCount(line) + 2;
                         if (bytes > 64 * 1024 * 1024) throw new IOException("导出超过64MiB预算；缩小筛选区间");
                         await writer.WriteLineAsync(line.AsMemory(), budget.Token);

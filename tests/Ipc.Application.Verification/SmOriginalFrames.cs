@@ -83,7 +83,7 @@ static partial class SportmasterRcs
                     // Hold image IO, not the recognition boundary: all three completed
                     // recognitions must survive, while unrecognized video may be superseded.
                     await Wait(app, s => s.Operations.Length == n && s.Operations.All(o => o.State == ParcelState.SlotResolved));
-                    if (n < 3) await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+                    if (n < 3) await SmRoundFixture.NextVehicleAsync(app, "left");
                 }
                 Check(entered.Wait(5000), "background writer enters with owned raw pixels");
                 var pending = await Wait(app, s => s.Operations.Length == 3 && s.Operations.All(o => o.State == ParcelState.SlotResolved));

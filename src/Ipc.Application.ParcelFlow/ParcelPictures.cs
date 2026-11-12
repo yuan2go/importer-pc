@@ -110,7 +110,7 @@ public sealed partial class ParcelRuntime
                     return new ParcelPictureResult("Available", "本次未受理条码对应的完整原图，尚未请求格口。", null, observationId,
                         CopyInputPicture(blockedImage));
                 if (o.InspectionSessionId is not null) return new ParcelPictureResult("Isolated", "本次是隔离调试输入；请在获授权的调试会话查看原始证据。", null, observationId, null);
-                acquisition = manual ? null : new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt);
+                acquisition = manual ? null : o.Acquisition;
                 operationId = input.OperationId;
                 if (operationId is not null)
                 {

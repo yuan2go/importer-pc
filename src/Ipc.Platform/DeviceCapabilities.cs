@@ -37,11 +37,22 @@ public sealed record Observation(string Id, string DeviceId, string Epoch, strin
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public OperatorInputEvidence? OperatorInput { get; init; }
     public TrayPresenceEvidence? TrayPresence { get; init; }
+    public string? ArrivalGeneration { get; init; }
+    public string? CaptureBoundaryId { get; init; }
+    public long CaptureTicks { get; init; }
+    public long? FrameNumber { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore]
+    public AcquisitionIdentity Acquisition => new(DeviceId, Epoch, SourceEventId, AdmissionId, ObservedAt)
+    { ArrivalGeneration = ArrivalGeneration, CaptureBoundaryId = CaptureBoundaryId, CaptureTicks = CaptureTicks, FrameNumber = FrameNumber };
 }
 // Supplied only by a source with independently qualified physical evidence.
 // Decoder absence, scene hashes and barcode changes must never populate this fact.
 public enum TrayPresence { Unknown, Present, Absent }
-public sealed record TrayPresenceEvidence(TrayPresence State, string Evidence);
+public sealed record TrayPresenceEvidence(TrayPresence State, string Evidence)
+{
+    public string? ReferenceSha256 { get; init; }
+    public long? FirstPresentTicks { get; init; }
+}
 // Same-process monotonic measurements; no camera/host clock synchronization is implied.
 public sealed record ObservationTiming(double AcquireMs, double FrameCopyMs, double ReleaseMs, double DecodeQueueMs,
     double OriginalCapacityMs, double DecodeMs, double OriginalCopyMs, double HostToDecodeMs);

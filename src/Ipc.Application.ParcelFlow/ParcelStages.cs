@@ -65,7 +65,7 @@ public sealed partial class ParcelRuntime
                 await ExternalAsync(async () => { await beforeAttempt(op.Id).ConfigureAwait(false); return true; }).ConfigureAwait(false);
             op = operations[op.Id];
             stage = GetStage(op, kind)!;
-            if (!query && op.RoundId is not null && !SmRoundOwns(op)) return op;
+            if (!query && (op.RoundId is not null && !SmRoundOwns(op) || kind == ParcelStage.Wcs && !SmTargetDispatchAllowed(op))) return op;
             if (!PortMaintenanceClear(port)) return op;
             if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
             { op = StageFailure(op, kind, stage, "Original capability is not healthy; reconnect and reconcile"); Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }
@@ -83,7 +83,7 @@ public sealed partial class ParcelRuntime
                 {
                     RuntimeId = runtimeId,
                     OperationId = op.Id,
-                    op.RoundId,
+                    op.RoundId, op.ArrivalGeneration, op.VehicleNo,
                     CommandId = op.OperatorInput?.CommandId,
                     RequestId = stage.Request.Id,
                     ProtocolRequestId = stage.Request.IntegrationRequest?.RequestId,
@@ -101,7 +101,7 @@ public sealed partial class ParcelRuntime
                 WriteRuntimeLog("RCS请求", "开始请求格口", new
                 {
                     OperationId = op.Id,
-                    op.RoundId,
+                    op.RoundId, op.ArrivalGeneration, op.VehicleNo,
                     op.PositionId,
                     op.ParcelCode,
                     ObservationId = op.ObservationId,
@@ -265,7 +265,7 @@ public sealed partial class ParcelRuntime
         Diagnostic("RCS结果", "取格口结果", detail: Wire.Encode(new
         {
             OperationId = operation.Id,
-            operation.RoundId,
+            operation.RoundId, operation.ArrivalGeneration, operation.VehicleNo,
             operation.ParcelCode,
             operation.PositionId,
             RequestId = stage.Request.Id,
@@ -275,6 +275,7 @@ public sealed partial class ParcelRuntime
             HttpStatus = stage.Replies.LastOrDefault()?.HttpResponse?.StatusCode,
             ResponseCode = stage.Replies.LastOrDefault()?.Destination?.Code,
             ResponseMessage = stage.Replies.LastOrDefault()?.Destination?.Message,
+            ReturnedTaskId = stage.Replies.LastOrDefault(r => r.Destination is not null)?.Destination?.TaskId,
             stage.Attempts,
             operation.Slot,
             CurrentRound = operation.RoundId is null || SmRoundOwns(operation),

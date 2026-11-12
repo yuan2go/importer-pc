@@ -100,6 +100,9 @@ public sealed record ParcelOperation(string Id, string AdmissionId, string Parce
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] BarcodeFilterResult? BarcodeSelection = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] OriginalFrameArchive? OriginalFrame = null)
 {
+    public string? ArrivalGeneration { get; init; }
+    public string? VehicleNo { get; init; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public OperatorInputEvidence? OperatorInput { get; init; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

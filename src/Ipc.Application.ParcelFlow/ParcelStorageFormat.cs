@@ -31,7 +31,7 @@ public sealed partial class ParcelRepository
             ValidateRoundHistory(db, tx);
             return actual;
         }
-        catch (Exception ex) when (ex is SqliteException or InvalidCastException or InvalidOperationException or FormatException)
+        catch (Exception ex) when (ex is SqliteException or InvalidCastException or InvalidOperationException or FormatException or System.Text.Json.JsonException)
         { throw new InvalidDataException(UnsupportedStorage, ex); }
     }
 }

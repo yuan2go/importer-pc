@@ -70,6 +70,7 @@ static partial class Program
             CaptureInternal(evidence, "position-control-history", (Grid)window.FindName("ClientArea"), lines);
             typeof(SupplyStationWindow).GetMethod("SetPage", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.Invoke(window, ["workstation"]);
             await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == "left").CurrentRoundId is null);
+            await h.NextVehicleAsync(); await Flush();
             h.Peer.Mode = "no-destination";
             leftEntry.Text = "SYNTH-REJECT-DISABLE"; ((Button)left.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.CanConfirmPlacementRemoval && !vm.Busy);
@@ -81,6 +82,7 @@ static partial class Program
             CaptureInternal(evidence, "positions-disabled-rejected-manual", (Grid)window.FindName("ClientArea"), lines);
             ((Button)left.FindName("EnableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.SupplyEnabled && !vm.Busy);
+            await h.NextVehicleAsync(); await Flush();
             h.Peer.Mode = "assigned"; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             try
             {

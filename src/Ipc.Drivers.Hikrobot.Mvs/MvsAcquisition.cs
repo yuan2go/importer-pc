@@ -1,4 +1,4 @@
-﻿using System.Buffers;
+using System.Buffers;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Net;
@@ -211,6 +211,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
             {
                 ApplyInspectionCacheCutover();
                 var inspected = BeginInspectedCycle();
+                var arrival = productionArrival;
                 try
                 {
                     PhaseTo("get-image-buffer"); MvsFrame? frame; DateTimeOffset observedAt; long deliveredTicks;
@@ -266,7 +267,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             }
                             // A raw preview acquired while paused never becomes an
                             // empty recognition fact when readiness changes mid-call.
-                            var allowDecode = (trayPresence.CanDecode || inspected.Registration?.CutoverKey is not null) && decodeRequested && inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
+                            var allowDecode = (arrival is not null || trayPresence.CanDecode || inspected.Registration?.CutoverKey is not null) && decodeRequested && inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
                             lock (gate) decodePaused = !allowDecode;
                             if (Recognizes && allowDecode)
                             {
@@ -305,7 +306,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         {
                             var source = FramePrefix + ".presence." + frame.Number;
                             var observation = new Observation(Wire.Id(), DeviceId, Epoch, source, Interlocked.Increment(ref sequence),
-                                Wire.Hash(DeviceId + ":" + Epoch + ":" + source), "TrayPresence", [], null, observedAt) { TrayPresence = presence };
+                                Wire.Hash(DeviceId + ":" + Epoch + ":" + source), "TrayPresence", [], null, observedAt) { TrayPresence = presence, ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, CaptureTicks = deliveredTicks, FrameNumber = frame.Number };
                             try
                             {
                                 if (!DeliverObservation(observation)) throw new IOException("Application rejected physical evidence; source fenced");
@@ -315,7 +316,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         if (pixels is not null)
                         {
                             var work = new DecodeWork(pixels, length, frame with { Data = 0 }, observedAt, deliveredTicks, copyMs, releaseMs, skippedBefore, inspected.Registration)
-                            { Scene = scene, AcquireMs = Timings.LastMs("sdk.acquire") };
+                            { Scene = scene, ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, AcquireMs = Timings.LastMs("sdk.acquire") };
                             if (api.ReturnsDecodedFrames)
                             {
                                 // Native recognition already happened. Do not replace a decoded result with a newer frame.

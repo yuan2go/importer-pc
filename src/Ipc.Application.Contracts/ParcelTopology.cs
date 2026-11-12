@@ -16,6 +16,7 @@ public sealed record PositionSnapshot(string Id, string ReaderDeviceId, bool Adm
     public string? CurrentRoundId { get; init; }
     public long? RoundVersion { get; init; }
     public bool AutomaticSuppressed { get; init; }
+    public SmArrivalSnapshot? Arrival { get; init; }
 }
 // A presentation boundary only. PlacementClearedAt carries actual removal evidence.
 public sealed record ManualWorkCardExpiry(string OperationId, DateTimeOffset ObservedThrough);

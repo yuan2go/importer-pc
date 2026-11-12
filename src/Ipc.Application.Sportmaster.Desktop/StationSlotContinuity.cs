@@ -133,7 +133,7 @@ public sealed partial class SupplyStationPositionViewModel
     void NotifySlotDisplay()
     {
         foreach (var (name, value) in new (string, object?)[] {
-            (nameof(SupplyEnabled), SupplyEnabled), (nameof(SupplyDisabling), SupplyDisabling), (nameof(SupplyDisabled), SupplyDisabled),
+            (nameof(Arrival), Arrival), (nameof(SupplyEnabled), SupplyEnabled), (nameof(SupplyDisabling), SupplyDisabling), (nameof(SupplyDisabled), SupplyDisabled),
             (nameof(CanChangeSupply), CanChangeSupply), (nameof(CanConfirmPlacementRemoval), CanConfirmPlacementRemoval), (nameof(ShowConfirmedPlacementRemoval), ShowConfirmedPlacementRemoval), (nameof(DisableLabel), DisableLabel), (nameof(EnableLabel), EnableLabel), (nameof(SupplyNotice), SupplyNotice), (nameof(SupplyStateText), SupplyStateText),
             (nameof(EnableBackground), EnableBackground), (nameof(EnableForeground), EnableForeground), (nameof(DisableBackground), DisableBackground), (nameof(DisableForeground), DisableForeground),
             (nameof(Barcode), Barcode), (nameof(HasCurrentInput), HasCurrentInput), (nameof(BarcodePlaceholder), BarcodePlaceholder),

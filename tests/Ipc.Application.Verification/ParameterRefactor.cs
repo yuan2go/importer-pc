@@ -72,7 +72,7 @@ static class ParameterRefactor
         var first = await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "third-entity" && o.State == ParcelState.SlotResolved));
         var original = first.Operations.Single(); var frozen = Wire.Encode(original.Wcs);
         Check(original.ParcelCode == "OK003" && original.BarcodeSelection?.Outcome == "Selected" && first.Inputs!.Single().Observation.Codes.SequenceEqual(["noise", "other", "OK003"]), "actual admission freezes the selected code and preserves all raw input candidates");
-        await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+        await SmRoundFixture.NextVehicleAsync(app, "left");
         foreach (var (codes, outcome) in new[] { (new[] { "noise" }, "NoMatchingCode"), (new[] { "OK004", "OK005" }, "AmbiguousCodes") })
         {
             var processed = app.WorkerProgress().Single(w => w.Position == "left").Processed;
@@ -80,12 +80,12 @@ static class ParameterRefactor
             await CameraRoundHarness.Until(() => Task.FromResult(app.WorkerProgress().Single(w => w.Position == "left").Processed > processed));
             var rejected = await app.SnapshotAsync();
             Check((outcome == "NoMatchingCode" ? app.WorkerProgress().Single(w => w.Position == "left").Dispositions.GetValueOrDefault("NoFormalCandidates") == 1 : rejected.Inputs!.Single().BarcodeSelection?.Outcome == outcome) && rejected.Operations.Length == 1 && rejected.Positions!.Single(p => p.Id == "left").CurrentOperation is null, outcome + " creates no request and cannot reuse a previous slot; no-formal-candidate evidence does not manufacture a UI input");
-            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+            await SmRoundFixture.NextVehicleAsync(app, "left");
         }
         factory.Emit(c.Topology.Readers[1].DeviceId, "Read", "right-entity", ["OK003"], "right-source");
         await Wait(app, s => s.Operations.Length == 2 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
         Check((await app.SnapshotAsync()).Operations.Select(o => o.AdmissionId).Distinct().Count() == 2, "same code at independent positions remains two distinct entities");
-        await SmRoundFixture.ConfirmRemovedAsync(app, "left"); await SmRoundFixture.ConfirmRemovedAsync(app, "right");
+        await SmRoundFixture.NextVehicleAsync(app, "left"); await SmRoundFixture.NextVehicleAsync(app, "right");
         var before = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), before.Revision, "Pause")); await ManagementModeFixture.Authorize(app);
         // Isolate configuration semantics from periodic health probes taking the
         // shared external-call guard between availability and Stage. The real

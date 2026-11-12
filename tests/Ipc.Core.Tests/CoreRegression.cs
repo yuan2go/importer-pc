@@ -58,6 +58,8 @@ public sealed class CoreRegression
     [DataRow("--sm-built-in-only", 10)]
     [DataRow("--sm-runtime-responsibility", 17)]
     [DataRow("--sm-dispatch-resources", 8)]
+    [DataRow("--sm-arrival-cameras", 24)]
+    [DataRow("--sm-arrivals", 25)]
     [DataRow("--sm-round-lifecycle", 147)]
     [DataRow("--sm-original-frame", 27)]
     [DataRow("--rcs-heartbeat", 25)]

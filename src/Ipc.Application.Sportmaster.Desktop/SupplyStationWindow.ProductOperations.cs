@@ -44,6 +44,11 @@ public partial class SupplyStationWindow
         cancelProductDiagnostic = new Button { Content = "取消导出", MinHeight = 44, Visibility = Visibility.Collapsed, Margin = new(0, 6, 12, 6) };
         cancelProductDiagnostic.Click += (_, _) => productDiagnosticCancellation?.Cancel(); actions.Children.Add(cancelProductDiagnostic);
         actions.Children.Add(ProductButton("离线维护…", RequestOfflineMaintenance)); body.Children.Add(actions);
+        body.Children.Add(ProductText("本位远端请求或启停责任待核对时，先取件、停用本位，核对客户RCS原结果后记录依据；另一位可继续供包。"));
+        var remote = new WrapPanel();
+        remote.Children.Add(ProductButton("核对左位远端责任…", () => ConfirmRemotePositionRecovery("left")));
+        remote.Children.Add(ProductButton("核对右位远端责任…", () => ConfirmRemotePositionRecovery("right")));
+        body.Children.Add(remote);
         return body;
     }
     async Task CreateProductBackup()

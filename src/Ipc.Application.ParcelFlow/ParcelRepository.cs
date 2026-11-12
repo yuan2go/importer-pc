@@ -17,7 +17,7 @@ public sealed partial class ParcelRepository : IDisposable
     readonly CancellationToken maintenanceCancellation;
     readonly Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver;
     public int StorageVersion { get; private set; }
-    public const int CurrentStorageVersion = 13;
+    public const int CurrentStorageVersion = 14;
     const string Baseline = """
         CREATE TABLE parcel_archive_versions(operation TEXT NOT NULL,body_hash TEXT NOT NULL,body TEXT NOT NULL,recorded_at TEXT NOT NULL,PRIMARY KEY(operation,body_hash));
         CREATE TABLE parcel_archived_receipts(id TEXT PRIMARY KEY,body BLOB NOT NULL,raw_hash TEXT NOT NULL);
@@ -165,7 +165,7 @@ public sealed partial class ParcelRepository : IDisposable
         }
         return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null, StationPositionState? positionControl = null, SmParcelRound? round = null, SmPositionCycle? cycle = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null, StationPositionState? positionControl = null, SmParcelRound? round = null, SmPositionCycle? cycle = null, SmPositionCycle[]? cycles = null, SmParcelRound[]? rounds = null)
     {
         if (positionControl is not null)
         {
@@ -185,6 +185,8 @@ public sealed partial class ParcelRepository : IDisposable
             throw new InvalidDataException("Expired identity cannot be recreated; permanent retention evidence remains authoritative");
         using var tx = db.BeginTransaction();
         WriteRound(tx, round, cycle);
+        foreach (var additional in cycles ?? []) WriteRound(tx, null, additional);
+        foreach (var additional in rounds ?? []) WriteRound(tx, additional, null);
         if (inspectedIngress is not null)
         {
             using var inspected = db.CreateCommand(); inspected.Transaction = tx;

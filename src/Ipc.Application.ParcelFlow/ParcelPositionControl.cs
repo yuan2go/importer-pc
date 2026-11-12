@@ -59,9 +59,12 @@ public sealed partial class ParcelRuntime : IStationPositionControl
     }
     bool PositionDrainRequired(string position)
     {
-        var operation = CurrentRound(position)?.OperationId ?? PositionControl(position).OperationId;
-        return operation is not null && operations.TryGetValue(operation, out var op) && op.Wcs?.Attempts > 0 &&
-            (smExecutions.Contains(operation) || StageRunning(op) || repository!.HasPendingReceipt(operation));
+        var cycle = SmCycle(position);
+        var roundOperation = CurrentRound(position)?.OperationId;
+        return operations.Values.Any(op => op.Wcs?.Attempts > 0 &&
+            (cycle.TargetOperation == op.Id || op.PositionId == position &&
+                (op.ArrivalGeneration == cycle.Generation || roundOperation == op.Id)) &&
+            (smExecutions.Contains(op.Id) || StageRunning(op) || repository!.HasPendingReceipt(op.Id)));
     }
     void MaintainPositionControls()
     {
@@ -80,6 +83,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                     EndSmRound(round, "OperatorDisabledPosition", positionControl: completed);
                 else repository.Commit(null, "PositionSupplyChanged", "", positionControl: completed);
                 positionControls[state.PositionId] = completed;
+                RefreshSmHeartbeat();
                 WriteRuntimeLog("投递位启停", "本轮请求及结果保存结束，投递位已停用", completed);
                 WriteStationState("PositionDrainCompleted", force: true);
             }
@@ -109,6 +113,11 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 repository.Commit(null, "PositionSupplyUnchanged", unchanged.Reason, command: command, commandResult: unchanged);
                 return unchanged;
             }
+            if (request.Enabled && previous.Mode == StationPositionMode.Disabled &&
+                (SmCycle(request.PositionId).HeartbeatPending is not null || SmCycle(request.PositionId).UncertainMembership is not null ||
+                SmCycle(request.PositionId).RecoveryReason is not null || SmCycle(request.PositionId).TargetOperation is not null ||
+                !SmMembershipConfirmed(request.PositionId, false)))
+                return new("Rejected", SmCycle(request.PositionId).RecoveryReason ?? "尚未确认RCS撤车及原请求目标责任；请等待成员同步，必要时维护核对后启用。", repository.Revision);
             var current = DisplayedOperation(request.PositionId);
             var round = CurrentRound(request.PositionId);
             var placementCode = round?.SelectedCode;
@@ -125,6 +134,10 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 EndSmRound(round, "OperatorDisabledPosition", command: command, positionControl: state, commandResult: receipt);
             else repository.Commit(null, "PositionSupplyChanged", "", command: command, commandResult: receipt, positionControl: state);
             positionControls[request.PositionId] = state;
+            membershipConfirmations.Remove(request.PositionId);
+            arrivalConfirmations.Remove(request.PositionId);
+            arrivalCaptures.TryRemove(positions[request.PositionId].ReaderDeviceId, out _);
+            RefreshSmHeartbeat();
             WriteRuntimeLog("投递位启停", "投递位启停已记录", new { CommandId = request.CommandId, PreviousMode = previous.Mode.ToString(), State = state });
             WriteStationState("PositionSupplyChanged:" + request.CommandId, force: true);
             return receipt;

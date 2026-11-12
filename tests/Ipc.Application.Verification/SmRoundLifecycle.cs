@@ -34,9 +34,10 @@ internal static class SmRoundLifecycle
         }
         async Task<ParcelSnapshot> Observe(string[] codes, TrayPresence? presence = null, DateTimeOffset? observedAt = null)
         {
-            var before = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
+            var beforeProgress = h.App.WorkerProgress().Single(p => p.Position == "left");
+            var before = beforeProgress.Processed + beforeProgress.ObservedOnly;
             Check(left.Read(codes, presence is { } fact ? new(fact, "synthetic-qualified-presence") : null, observedAt), "controlled source hands off a complete observation");
-            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > before));
+            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left") is var done && done.Processed + done.ObservedOnly > before));
             return await h.App.SnapshotAsync();
         }
         async Task<ParcelOperation> Resolved(string id) => await WaitOperation(id, op => op.Wcs?.State is StageState.Accepted or StageState.Rejected or StageState.Unknown);
@@ -45,6 +46,11 @@ internal static class SmRoundLifecycle
             ParcelOperation? result = null;
             await CameraRoundHarness.Until(async () => (result = await h.App.OperationAsync(id)) is { } op && ready(op));
             return result!;
+        }
+        async Task NextVehicle()
+        {
+            clock.Utc = DateTimeOffset.UtcNow;
+            await h.NextVehicleAsync();
         }
         async Task Remove()
         {
@@ -60,6 +66,7 @@ internal static class SmRoundLifecycle
                 return receipt.Status == "Persisted" && Current(await h.App.SnapshotAsync()) is null;
             });
             Check(Current(await h.App.SnapshotAsync()) is null, "explicit removal ends only its target round");
+            await NextVehicle();
         }
         var s = await Observe([]);
         s = await Observe(["BG123", "ordinary-invalid"]);
@@ -71,7 +78,11 @@ internal static class SmRoundLifecycle
         await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > beforeInvalid));
         Check(LastDisposition().GetProperty("Disposition").GetString() == "UntrustedSource" && h.Peer.Requests.IsEmpty,
             "a genuinely invalid source sequence is explicitly rejected instead of being counted as a physical observation");
-        await Observe([], observedAt: DateTimeOffset.UtcNow.AddHours(-1));
+        var queued = left.Capture([]);
+        await Task.Delay(new Ipc.Application.Sportmaster.SportmasterFlow().QueuedObservationTimeoutMs(config) + 60);
+        var queuedBefore = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
+        Check(left.Deliver(queued), "controlled source delivers a genuinely queued current-arrival frame");
+        await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > queuedBefore));
         Check(LastDisposition().GetProperty("Disposition").GetString() == "Expired", "a valid source's stale input is expired separately from source-identity rejection");
 
         clock.Utc = DateTimeOffset.UtcNow;
@@ -88,7 +99,7 @@ internal static class SmRoundLifecycle
         Check(r.FormalCodes.SequenceEqual(["GOOD-100"]) && first.ParcelCode == "GOOD-100" && h.Peer.Requests.Count == 1,
             "T01 all candidates are filtered before quantity/UI/request selection and produce one actual POST");
         var capturedBeforeRemoval = DateTimeOffset.UtcNow;
-        await Observe([], TrayPresence.Absent);
+        await NextVehicle();
         await Observe(["GOOD-100"], observedAt: capturedBeforeRemoval);
         Check(Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.Count == 1,
             "T10 a previous parcel's frame finishing after qualified removal cannot create or claim a new round");
@@ -104,7 +115,7 @@ internal static class SmRoundLifecycle
         Check(corrected.ParcelCode == "GOOD-201" && corrected.RoundId == correction.Id && h.Peer.Requests.Count == 2,
             "T03 correction within the original window claims exactly one request");
 
-        await Observe([], TrayPresence.Absent); s = await Observe([], TrayPresence.Present); var expiredId = Current(s)!.Id;
+        await NextVehicle(); s = await Observe([], TrayPresence.Present); var expiredId = Current(s)!.Id;
         clock.Elapse(TimeSpan.FromMilliseconds(999)); await Observe(["GOOD-301", "GOOD-302"]);
         clock.Elapse(TimeSpan.FromMilliseconds(2)); s = await h.App.SnapshotAsync();
         Check(Current(s) is { AutoExpired: true, State: SmRoundState.ReadException } expired && expired.Id == expiredId,
@@ -131,7 +142,7 @@ internal static class SmRoundLifecycle
             card.Inputs!.Single(x => x.PositionId == "left").Observation.OperatorInput?.CommandId == supplemented.OperatorInput?.CommandId &&
             h.App.WorkerProgress().Single(x => x.Position == "left").Dispositions.GetValueOrDefault("AutoRepeatSuppressed") > 0,
             "suppressed observations share receipt/log/counter semantics while retaining the PDA barcode and current parcel card");
-        await Observe([], TrayPresence.Absent);
+        await NextVehicle();
 
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var ready = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -142,7 +153,7 @@ internal static class SmRoundLifecycle
             await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             var unsent = (await h.App.OperationAsync(prepared.OperationId!))!;
             Check(prepared.Status == "Admitted" && unsent.RoundId != expiredId && unsent.Wcs is { Attempts: 0, State: StageState.Prepared },
-                "T07 trusted removal allows a new same-code round; its frozen request exists before the executor's final send decision");
+                "T07 trusted changed vehicle allows a new same-code round; its frozen request exists before the executor's final send decision");
             clock.Utc = DateTimeOffset.UtcNow;
             var capturedBeforeClick = clock.Utc.AddMilliseconds(-1);
             await Remove(); ready.TrySetResult();
@@ -162,7 +173,7 @@ internal static class SmRoundLifecycle
             var a = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-400"), default);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 4));
             var snapshot = await h.App.SnapshotAsync(); var oldTarget = snapshot.Positions!.Single(p => p.Id == "left").PlacementRemovalOperation;
-            await Observe([], TrayPresence.Absent);
+            await NextVehicle();
             s = await Observe(["GOOD-401"]); var b = Current(s)!;
             var bResult = await Resolved(b.OperationId!);
             Check(h.Peer.Requests.Count == 5 && !h.Peer.Hold.Task.IsCompleted && bResult.Slot is not null,
@@ -188,14 +199,14 @@ internal static class SmRoundLifecycle
         await Observe(["GOOD-500"]);
         Check(Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.Count == count, "T11 continued camera reads remain suppressed after display reset");
         var capturedBeforeIdleRemoval = DateTimeOffset.UtcNow;
-        await Observe([], TrayPresence.Absent);
+        await NextVehicle();
         await Observe(["GOOD-500"], observedAt: capturedBeforeIdleRemoval);
         Check(Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.Count == count,
             "T10 qualified removal after display reset also fences late frames when no current round exists");
         var replay = await h.App.SubmitParcelBarcodeAsync(command, default);
         Check(replay.OperationId == success.OperationId && h.Peer.Requests.Count == count, "T15 original CommandId replay returns its durable receipt without resending");
         var sameCodeNew = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-500"), default); await Resolved(sameCodeNew.OperationId!);
-        Check(sameCodeNew.OperationId != success.OperationId && h.Peer.Requests.Count == count + 1, "T11 a new complete manual same-code submission is a distinct round");
+        Check(sameCodeNew.OperationId != success.OperationId && h.Peer.Requests.Count == count + 1, "T11 same-code submission on the explicitly advanced vehicle is a distinct round");
         await Remove();
 
         h.Peer.Mode = "reject";
@@ -250,7 +261,7 @@ internal static class SmRoundLifecycle
             {
                 var old = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-700"), default);
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == baseline + 1));
-                await Observe([], TrayPresence.Absent);
+                await NextVehicle();
                 var newer = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-701"), default);
                 await Resolved(newer.OperationId!);
                 var newerRound = Current(await h.App.SnapshotAsync())!;
@@ -267,12 +278,13 @@ internal static class SmRoundLifecycle
         var reset = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-800"), default); await Resolved(reset.OperationId!);
         clock.Elapse(TimeSpan.FromMilliseconds(3000)); _ = await h.App.SnapshotAsync();
         var beforeRestart = h.Peer.Requests.Count;
-        await h.App.DisposeAsync(); await h.StartAsync();
+        await h.App.DisposeAsync(); await h.StartAsync(ready: false);
         left = h.Factory.Cameras[h.Config.Topology!.Readers[0].DeviceId]; left.ConfirmConnected();
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
         await Observe(["GOOD-800"]);
         Check(Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.Count == beforeRestart,
             "T16 restart preserves automatic suppression and does not replay an ended round");
+        await NextVehicle();
         h.Peer.Mode = "reject";
         var requiring = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-801"), default); await Resolved(requiring.OperationId!);
         var requiredId = Current(await h.App.SnapshotAsync())!.Id;
@@ -282,7 +294,7 @@ internal static class SmRoundLifecycle
             "T15/T16 restart restores the exact current manual-removal responsibility without a second call");
         await Remove(); h.Peer.Mode = "assigned";
         left = h.Factory.Cameras[h.Config.Topology!.Readers[0].DeviceId]; left.ConfirmConnected();
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").BarcodeInput?.Manual == true);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
         var baselineCompetition = h.Peer.Requests.Count;
         var competingCommand = await h.Command("left", "GOOD-901", ParcelBarcodeInputKind.PdaKeyboard);
         await Task.WhenAll(Observe(["GOOD-900"]), h.App.SubmitParcelBarcodeAsync(competingCommand, default));
@@ -306,7 +318,7 @@ internal static class SmRoundLifecycle
             Check((await h.App.ReadParcelPictureAsync(pictureQuery, default)).Image!.Gray8[0] == originalByte,
                 "T10 a caller cannot mutate the current round's retained original pixels");
             await imageEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            await Observe([], TrayPresence.Absent);
+            await NextVehicle();
             var nextImageRound = Current(await Observe(["GOOD-912"]))!;
             await Resolved(nextImageRound.OperationId!); imageRelease.TrySetResult();
             await CameraRoundHarness.Until(async () => (await h.App.RoundHistoryAsync()).Items.Single(r => r.Id == oldImageRound).OriginalFrame?.State == "Saved");
@@ -335,6 +347,7 @@ internal static class SmRoundLifecycle
             var capacityRound = Current(await Observe(["GOOD-932"]))!;
             Check(capacityRound.OperationId is null && capacityRound.ReadOutcome == "ExecutionCapacityBlocked" && h.Peer.Requests.Count == beforeCapacity + 2,
                 "T13 actual task saturation refuses before claiming/sending and retains a correctable current round");
+            await h.NextVehicleAsync("right");
             var other = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "GOOD-933"), default);
             await Resolved(other.OperationId!);
             Check(h.Peer.Requests.Count == beforeCapacity + 3 && !h.Peer.Hold.Task.IsCompleted,
@@ -407,16 +420,17 @@ internal static class SmRoundLifecycle
             "T01 SM diagnostic and settings previews share production legality filtering even without an allow/exclude policy");
         async Task<SmParcelRound?> Observe(string[] codes, TrayPresence? presence = null)
         {
-            var before = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
+            var beforeProgress = h.App.WorkerProgress().Single(p => p.Position == "left");
+            var before = beforeProgress.Processed + beforeProgress.ObservedOnly;
             if (!left.Read(codes, presence is { } fact ? new(fact, "synthetic-qualified-presence") : null)) throw new InvalidOperationException("Source handoff refused");
-            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > before));
+            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left") is var done && done.Processed + done.ObservedOnly > before));
             return Current(await h.App.SnapshotAsync());
         }
         var selected = (await Observe(["GOOD-960", "bad\0code"]))!;
         await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(selected.OperationId!))?.State == ParcelState.SlotResolved);
         Check(selected.FormalCodes.SequenceEqual(["GOOD-960"]) && selected.SelectedCode == "GOOD-960" && h.Peer.Requests.Count == 1,
             "T01 an inactive custom separator cannot bypass legality filtering in the actual SM admission chain");
-        await Observe([], TrayPresence.Absent);
+        await h.NextVehicleAsync();
         var multiple = (await Observe(["GOOD-961", "GOOD-961"]))!;
         Check(multiple is { OperationId: null, FormalCodes.Length: 2, ReadOutcome: "AmbiguousCodes" } && h.Peer.Requests.Count == 1,
             "T02 the same configuration retains two physical same-text labels without a second POST");

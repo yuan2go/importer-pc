@@ -18,7 +18,7 @@ internal static partial class ManualRcsDebugChecks
             await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "capacity"), deferred: true, maximumOperations: 1, mode: RunMode.Simulation);
             await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
             var s = await h.App.SnapshotAsync();
-            var command = new PrepareManualRcsRequest(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "CAPACITY-ONE", null);
+            var command = new PrepareManualRcsRequest(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "CAPACITY-ONE", null) { ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == "left").Arrival?.Generation };
             var first = await h.App.PrepareManualRcsRequestAsync(command, default);
             Check(first.CanSend && (await h.App.SnapshotAsync()).Capacity!.Available && h.Peer.Requests.IsEmpty,
                 "an unsent debug intention remains sendable without occupying normal SM admission capacity");
@@ -39,6 +39,8 @@ internal static partial class ManualRcsDebugChecks
                 (await Original(h, replacement)).Wcs is { State: StageState.Accepted, Attempts: 1 },
                 "the independent debug request sends once; repeated send only reads original facts");
             await Reject(() => h.App.CloseUnsentDebugRoundAsync(new(Wire.Id(), s.RuntimeId, replacement.Id!), default), "accepted original cannot be cancelled by page exit");
+            await h.NextVehicleAsync();
+            command = command with { ExpectedArrivalGeneration = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival!.Generation };
             h.Peer.Mode = "malformed";
             var unknown = await h.App.PrepareManualRcsRequestAsync(command with { CommandId = Wire.Id(), Barcode = "UNKNOWN", ExpectedRoundId = replacement.Id }, default);
             await h.App.SendCameraRoundAsync(new(Wire.Id(), s.RuntimeId, unknown.Id!, unknown.RequestHash!), default);
@@ -52,7 +54,7 @@ internal static partial class ManualRcsDebugChecks
             await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "prepare-failure"), deferred: true, maximumOperations: 1, mode: RunMode.Simulation);
             await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
             var s = await h.App.SnapshotAsync();
-            var command = new PrepareManualRcsRequest(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "FIRST-INTENT", null);
+            var command = new PrepareManualRcsRequest(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "FIRST-INTENT", null) { ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == "left").Arrival?.Generation };
             var first = await h.App.PrepareManualRcsRequestAsync(command, default);
             await h.App.CloseUnsentDebugRoundAsync(new(Wire.Id(), s.RuntimeId, first.Id!), default);
             command = command with { CommandId = Wire.Id(), Barcode = "PREPARATION-FAILURE", ExpectedRoundId = first.Id };
@@ -84,7 +86,7 @@ internal static partial class ManualRcsDebugChecks
             await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "pending"), deferred: true, mode: RunMode.Simulation);
             await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
             var s = await h.App.SnapshotAsync();
-            var round = await h.App.PrepareManualRcsRequestAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "PENDING-RAW", null), default);
+            var round = await h.App.PrepareManualRcsRequestAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "PENDING-RAW", null) { ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == "left").Arrival?.Generation }, default);
             h.App.Boundary = point => { if (point == "AfterRawDurable") throw new IOException("Synthetic T3 failure after durable raw reply"); };
             await Reject(() => h.App.SendCameraRoundAsync(new(Wire.Id(), s.RuntimeId, round.Id!, round.RequestHash!), default), "T3 failure remains observable");
             h.App.Boundary = null;

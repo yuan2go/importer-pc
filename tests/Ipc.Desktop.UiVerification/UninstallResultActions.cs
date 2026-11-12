@@ -69,6 +69,11 @@ static partial class Program
         CaptureInternal(evidence, "uninstall-deleted", delete, lines); Click(delete, "关闭");
 
         var residualAssets = assetsComplete with { Status = "Partial", Remaining = ["D:/synthetic-cache"], TotalRemaining = 1 };
+        var uncheckedAssets = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, deletion, true)));
+        uncheckedAssets.Show(); await Idle(uncheckedAssets); Click(uncheckedAssets, "卸载"); await Idle(uncheckedAssets);
+        Check(!Status(uncheckedAssets).StartsWith("卸载完成", StringComparison.Ordinal) && Button(uncheckedAssets, "重试卸载").IsEnabled,
+            "a missing historical asset receipt is not substituted with a successful purge result");
+        Click(uncheckedAssets, "关闭");
         var oldAssets = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, deletion, true) { Assets = residualAssets }));
         oldAssets.Show(); await Idle(oldAssets); Click(oldAssets, "卸载"); await Idle(oldAssets);
         Check(Status(oldAssets).Contains("历史程序或维护缓存尚未全部清理") && Button(oldAssets, "重试卸载").IsEnabled,

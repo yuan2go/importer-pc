@@ -40,7 +40,7 @@ public sealed class QuietDeploymentOperation : IDisposable
     public void FreezeRetiredAssets(DeploymentLocation original, string hash)
     {
         RequireNew();
-        if (record.Intent.Action != "Uninstall" || original.ApplicationId != record.Intent.ApplicationId || original.LifecycleState != "Purged")
+        if (record.Intent.Action != "Uninstall" || original.ApplicationId != record.Intent.ApplicationId || original.LifecycleState != "Purged" || !ExtensionSchema.IsHash(hash))
             throw new InvalidDataException("历史资产清理必须绑定原退役安装。");
         Update(record with { Status = "Executing", ExpectedRegistrationHash = hash, RetiredAssetsScope = WindowsDeploymentSetup.UninstallScope(original) });
     }

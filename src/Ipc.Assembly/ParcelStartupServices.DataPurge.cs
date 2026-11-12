@@ -62,6 +62,7 @@ public static partial class ParcelStartupServices
         catch (Exception error) when (error is not InstallationOutcomeUnknownException)
         { throw new InstallationOutcomeUnknownException("程序已卸载，数据清理未完成。请查看结果后重试卸载。", error); }
     }
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static UninstallAssetsReceipt CleanAssets(MaintenanceExecution? execution)
         => WindowsDeploymentSetup.CleanUninstallAssets(ApplicationId, Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)), execution);
 }

@@ -30,15 +30,10 @@ public abstract partial class StartupWorkflowWindow : Window
     {
         var running = WindowsDeploymentSetup.RunningBuild(typeof(StartupWorkflowWindow).Assembly);
         var current = registered is null ? null : WindowsDeploymentSetup.RegisteredBuild(registered);
-        var targetVersion = "未核验";
-        if (target is not null)
-        {
-            try { targetVersion = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(target.Root, "desktop", "application-release.json"))).BusinessVersion ?? "未记录"; }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.Text.Json.JsonException) { targetVersion = "未读取：" + error.Message; }
-        }
+        var targetBuild = target is null ? null : WindowsDeploymentSetup.MediaBuild(target);
         BuildIdentityDetails.Text = "实际运行维护宿主：" + running.BusinessVersion + "\n" + running.SourceCommit +
             "\n\n当前登记部署：" + (current is null ? "未登记" : current.BusinessVersion + "\n" + current.SourceCommit + "\n" + current.Detail) +
-            (target is null ? "" : "\n\n核验目标介质：" + targetVersion + "\n" + target.SourceCommit + "\n当前构建 → 目标构建：\n" + (current?.SourceCommit ?? "未登记") + " → " + target.SourceCommit);
+            (targetBuild is null ? "" : "\n\n所选目标介质：" + targetBuild.BusinessVersion + "\n" + targetBuild.SourceCommit + "\n" + targetBuild.Detail + "\n当前构建 → 目标构建：\n" + (current?.SourceCommit ?? "未登记") + " → " + targetBuild.SourceCommit);
     }
     readonly TextBlock[] installationSteps = new TextBlock[3];
     protected void InstallationStep(int step)
@@ -613,8 +608,18 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
 
     void ShowStartupDiagnostics()
     {
-        var dialog = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "启动诊断",
-            Width = 760, Height = 520, MinWidth = 520, MinHeight = 320, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var dialog = new Window
+        {
+            FontFamily = UiTypography.Interface,
+            FontSize = UiTypography.Body,
+            Owner = this,
+            Title = "启动诊断",
+            Width = 760,
+            Height = 520,
+            MinWidth = 520,
+            MinHeight = 320,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner
+        };
         StartupAppearance.FitToWorkArea(dialog);
         System.Windows.Automation.AutomationProperties.SetAutomationId(dialog, "StartupDiagnosticDetails");
         var content = new DockPanel { Margin = new(20) };
@@ -858,8 +863,13 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             var destination = Folder("恢复到新目录（不覆盖原目录）", restoreRoot);
             System.Windows.Automation.AutomationProperties.SetAutomationId(destination, "Startup.RestoreDestination");
             destination.TextChanged += (_, _) => { restoreRoot = destination.Text; InvalidateRestorePlan(); };
-            restorePlanPreview = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 80,
-                Text = (recovery ?? restoredPreview) is { } prior ? prior.Summary + "\n目标：" + prior.Destination : "选择完整备份和独立恢复目录，或读取原恢复。检查不会复制、接管或启动。" };
+            restorePlanPreview = new TextBox
+            {
+                IsReadOnly = true,
+                TextWrapping = TextWrapping.Wrap,
+                MinHeight = 80,
+                Text = (recovery ?? restoredPreview) is { } prior ? prior.Summary + "\n目标：" + prior.Destination : "选择完整备份和独立恢复目录，或读取原恢复。检查不会复制、接管或启动。"
+            };
             Body.Children.Add(restorePlanPreview);
         }
         var fields = Body.Children.Cast<UIElement>().ToArray(); Body.Children.Clear();

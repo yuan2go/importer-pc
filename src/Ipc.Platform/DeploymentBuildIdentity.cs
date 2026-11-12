@@ -13,6 +13,25 @@ public static partial class WindowsDeploymentSetup
         var source = information is { Length: 2 } && information[1].Length == 40 && information[1].All(char.IsAsciiHexDigit) ? information[1] : "未记录";
         return new(information?[0] ?? assembly.GetName().Version?.ToString(3) ?? "未记录", source, "实际运行程序集的构建元数据");
     }
+    public static DeploymentBuildIdentity MediaBuild(DeploymentMedia media)
+    {
+        try
+        {
+            const string name = "desktop/application-release.json";
+            if (!media.Files.TryGetValue(name, out var expected)) throw new InvalidDataException("缺少原介质核验字节身份");
+            var file = Path.Combine(media.Root, name); DeploymentPaths.RequireOrdinaryAncestors(file);
+            using var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            if (stream.Length > 4 * 1024 * 1024 || Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(stream)) != expected)
+                throw new InvalidDataException("目标版本元数据与原核验介质不一致");
+            stream.Position = 0; using var reader = new StreamReader(stream);
+            var release = Wire.Decode<ApplicationRelease>(reader.ReadToEnd());
+            if (release.SchemaVersion != 2 || release.ApplicationId != media.ApplicationId || release.SourceCommit != media.SourceCommit)
+                throw new InvalidDataException("目标版本元数据与原审阅来源冲突");
+            return new(release.BusinessVersion ?? "未记录", media.SourceCommit, "目标版本元数据与原核验介质一致");
+        }
+        catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException)
+        { return new("未核验", media.SourceCommit, "原审阅来源保留；当前目标版本未核验：" + error.Message); }
+    }
     public static DeploymentBuildIdentity RegisteredBuild(DeploymentLocation location)
     {
         try

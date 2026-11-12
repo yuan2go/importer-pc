@@ -62,7 +62,7 @@ static partial class SportmasterRcs
             try
             {
                 await app.StartAsync(default); SmRoundFixture.Register(app, launch, template with { Wcs = selected });
-                await Wait(app, state => state.Positions!.All(p => p.Arrival?.Confirmed == true));
+                await Wait(app, state => state.Positions!.All(p => p.Arrival?.Confirmed == true && p.BarcodeInput?.Camera == true));
                 peer.Mode = responseMode; return app;
             }
             catch { peer.Mode = responseMode; await app.DisposeAsync(); throw; }
@@ -139,7 +139,7 @@ static partial class SportmasterRcs
                         changed.Operations.All(o => o.Id != op.Id) && original.State == ParcelState.WcsUnknown && original.Wcs!.Attempts == 1 &&
                         Wire.Encode(original.Wcs.Request) == originalRequest && view.Left.SlotAvailable && view.Left.Barcode == "SYNTH-0002" &&
                         changed.Positions!.Single(p => p.Id == "right").Admit,
-                        mode + " confirmed removal permits the next independent parcel while preserving original Unknown and the other position; facts=" + Wire.Encode(new { Requests=peer.Requests.Count(b => b.Body.Contains("dest_request")), Sent=sent, changed.Capacity, OriginalState=original.State, Attempts=original.Wcs!.Attempts, Frozen=Wire.Encode(original.Wcs.Request)==originalRequest, Slot=view.Left.SlotAvailable, Barcode=view.Left.Barcode, Right=changed.Positions!.Single(p=>p.Id=="right").Admit }));
+                        mode + " confirmed removal permits the next independent parcel while preserving original Unknown and the other position; facts=" + Wire.Encode(new { Requests = peer.Requests.Count(b => b.Body.Contains("dest_request")), Sent = sent, changed.Capacity, OriginalState = original.State, Attempts = original.Wcs!.Attempts, Frozen = Wire.Encode(original.Wcs.Request) == originalRequest, Slot = view.Left.SlotAvailable, Barcode = view.Left.Barcode, Right = changed.Positions!.Single(p => p.Id == "right").Admit }));
                 }
             }
         }

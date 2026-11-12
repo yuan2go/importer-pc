@@ -84,6 +84,12 @@ static partial class Program
         Check(Status(waitingAssets).Contains("重启") && !Descendants(waitingAssets).OfType<Button>().Any(b => Equals(b.Content, "重试卸载")),
             "a queued self-cache stays visibly incomplete without a duplicate queue action");
         CaptureInternal(evidence, "uninstall-assets-restart", waitingAssets, lines); Click(waitingAssets, "关闭");
+        var pendingData = Make(_ => Task.FromResult(new ProgramUninstallResult(null, deletion with { Status = "PartiallyPurged" }, true)
+        { Assets = residualAssets with { Status = "RestartRequired" } }));
+        pendingData.Show(); await Idle(pendingData); Click(pendingData, "卸载"); await Idle(pendingData);
+        Check(Button(pendingData, "重试卸载").IsEnabled && Status(pendingData).Contains("部分数据尚未删除"),
+            "an independent pending data purge remains retryable while a cache waits for reboot");
+        Click(pendingData, "关闭");
         var open = Make(_ => Task.FromException<ProgramUninstallResult>(new InvalidOperationException("请先关闭供包台，再卸载。程序和数据未删除。")));
         open.Show(); await Idle(open); Click(open, "卸载"); await Idle(open);
         Check(Status(open).Contains("请先关闭供包台") && Button(open, "卸载").IsEnabled && !Status(open).Contains("卸载完成"),

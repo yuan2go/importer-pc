@@ -125,7 +125,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         if (result.Assets is { DetailsTruncated: true } assets)
             Note("历史清理尚有 " + assets.TotalRemaining + " 个目录、" + assets.TotalRetained + " 个保留项；此处仅显示摘要，完整清单见历史清理记录。");
         Note("共享驱动和系统运行库、管理安全信息、个人偏好、安全回执和本站以外的备份保留。");
-        if (!complete && result.Assets?.Status != "RestartRequired")
+        if (!complete && (!baseComplete || result.Assets?.Status != "RestartRequired"))
         {
             deleteData.IsChecked = result.DeleteData; keepData.IsChecked = !result.DeleteData;
             Action("重试卸载", Uninstall);

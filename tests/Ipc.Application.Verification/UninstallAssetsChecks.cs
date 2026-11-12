@@ -92,6 +92,13 @@ static class UninstallAssetsChecks
         Check(Apply(live, liveSaved, _ => { }, p => p == live.CurrentCache, queued.Add).Status == "RestartRequired" && queued.Count == queuedCount,
             "repeated invocation does not duplicate a confirmed restart queue");
         Check(Apply(live, liveSaved, _ => { }).Status == "Completed", "an independent media host can finish the same pending cache without reboot or expanded scope");
+        var mixed = Make("mixed-pending"); File.WriteAllText(Path.Combine(mixed.OldProgram, "unowned.txt"), "unowned");
+        var mixedPlan = Plan(mixed); UninstallAssetsRecord mixedSaved = mixedPlan; var mixedQueue = new List<string>();
+        Check(Apply(mixed, mixedPlan, s => mixedSaved = s, p => p == mixed.CurrentCache, mixedQueue.Add).Status == "Partial",
+            "unknown files remain partial even when a separate self-cache was successfully queued");
+        var oldCount = mixedQueue.Count;
+        _ = Apply(mixed, mixedSaved, _ => { }, p => p == mixed.CurrentCache, mixedQueue.Add);
+        Check(mixedQueue.Count == oldCount, "retrying other leftovers does not duplicate a separately recorded cache queue");
         Console.WriteLine("UNINSTALL-ASSETS checks=" + count + "; real files/locks and production planner/deleter; OS reboot queue/registry/UAC NOT_RUN");
         return Task.CompletedTask;
     }

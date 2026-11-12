@@ -8,7 +8,10 @@ internal sealed record UninstallAssetInventory(string Root, string Json);
 internal sealed record UninstallAssetsPlan(string ApplicationId, string Scope, string OperationId,
     DeploymentVersionFiles[] Delete, string[] Caches, DeploymentVersionRetention[] Retained);
 internal sealed record UninstallAssetsRecord(int SchemaVersion, DateTimeOffset At, UninstallAssetsPlan Plan,
-    string Identity, string Status, string[] Remaining, string? Failure = null);
+    string Identity, string Status, string[] Remaining, string? Failure = null)
+{
+    public string[] QueuedCaches { get; init; } = [];
+}
 
 public static partial class WindowsDeploymentSetup
 {
@@ -73,7 +76,7 @@ public static partial class WindowsDeploymentSetup
                 }
                 Add(program, names.Concat(markers));
             }
-            catch (Exception error) when (error is InvalidDataException or JsonException or InvalidOperationException or ArgumentException or KeyNotFoundException)
+            catch (Exception error) when (error is InvalidDataException or FileNotFoundException or DirectoryNotFoundException or JsonException or InvalidOperationException or ArgumentException or KeyNotFoundException)
             { retained.Add(new(retainedRoot, "库存或历史程序无法核验：" + DiagnosticText.Protect(error.Message))); }
         }
         var plan = new UninstallAssetsPlan(location.ApplicationId, UninstallScope(location), operation,
@@ -129,6 +132,8 @@ public static partial class WindowsDeploymentSetup
         if (record.Plan.Delete.Length != 0) ValidatePruneFiles(record.Plan.Delete, cancellationToken);
         if (record.Plan.Caches.Any(root => !record.Plan.Delete.Any(a => a.Root == root)))
             throw new InvalidDataException("待重启缓存不属于冻结清单。");
+        if (record.QueuedCaches.Any(root => !record.Plan.Caches.Contains(root, StringComparer.OrdinalIgnoreCase)))
+            throw new InvalidDataException("缓存执行回执超出原冻结范围。");
     }
 
     internal static UninstallAssetsReceipt ProjectUninstallAssets(UninstallAssetsRecord record, string path)
@@ -174,10 +179,15 @@ public static partial class WindowsDeploymentSetup
                 {
                     // Keep the live host intact. Only its fixed, reviewed cache is
                     // queued; Windows removes directories only when they are empty.
-                    foreach (var name in area.Files.Keys.Where(n => File.Exists(Path.Combine(area.Root, n)))) queueCacheDelete(Path.Combine(area.Root, name));
-                    foreach (var dir in area.Files.Keys.Select(n => Path.GetDirectoryName(Path.Combine(area.Root, n))!)
-                        .SelectMany(p => Parents(p, area.Root)).Append(area.Root).Distinct(StringComparer.OrdinalIgnoreCase).OrderByDescending(p => p.Length))
-                        if (Directory.Exists(dir)) queueCacheDelete(dir);
+                    if (!record.QueuedCaches.Contains(area.Root, StringComparer.OrdinalIgnoreCase))
+                    {
+                        foreach (var name in area.Files.Keys.Where(n => File.Exists(Path.Combine(area.Root, n)))) queueCacheDelete(Path.Combine(area.Root, name));
+                        foreach (var dir in area.Files.Keys.Select(n => Path.GetDirectoryName(Path.Combine(area.Root, n))!)
+                            .SelectMany(p => Parents(p, area.Root)).Append(area.Root).Distinct(StringComparer.OrdinalIgnoreCase).OrderByDescending(p => p.Length))
+                            if (Directory.Exists(dir)) queueCacheDelete(dir);
+                        record = record with { QueuedCaches = [.. record.QueuedCaches, area.Root] };
+                        save(record with { Status = "Cleaning" });
+                    }
                     restart = true;
                 }
                 else _ = CleanRemovalInventory(area.Root, area.Files.Keys.ToArray(), _ => false, reviewedHashes: area.Files);

@@ -86,7 +86,7 @@ public static partial class WindowsDeploymentSetup
 
     static string[] InstalledInventory(DeploymentLocation location)
     {
-        if (location.LifecycleState != "Installed" && !File.Exists(location.InventoryFile) && ExtensionSchema.IsHash(location.InventorySha256 ?? ""))
+        if (location.ApplicationId == "sportmaster" && location.LifecycleState != "Installed" && !File.Exists(location.InventoryFile) && ExtensionSchema.IsHash(location.InventorySha256 ?? ""))
         {
             var archive = AssetInventoryArchive(location.InventorySha256!);
             MachineRuntimePolicy.RequireProtectedEvidence(archive);

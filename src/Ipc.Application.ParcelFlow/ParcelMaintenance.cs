@@ -12,7 +12,11 @@ public sealed record ParcelMaintenanceProvider(string InstanceId, string Impleme
 public sealed record ParcelMaintenanceInspection(string Application, string Station, RunMode Mode, int DatabaseVersion,
     long Revision, bool Paused, long Resident, long Archived, long Unsettled, long PendingReceipts, long IdentityConflicts,
     long DatabaseBytes, long CustodyBytes, string DatabaseSha256, string? WalSha256, string ConfigurationSha256,
-    bool ResponsibilitiesSettled, string[] Reasons, DateTimeOffset At, string BusinessVersion, string SourceIdentity, string ApplicationContractSha256, int ConfigurationSchema, ParcelMaintenanceProvider[] Providers);
+    bool ResponsibilitiesSettled, string[] Reasons, DateTimeOffset At, string BusinessVersion, string SourceIdentity, string ApplicationContractSha256, int ConfigurationSchema, ParcelMaintenanceProvider[] Providers)
+{
+    public long HistoricalUnknown { get; init; }
+    public long CurrentRounds { get; init; }
+}
 
 // Offline application-owned operations. No runtime, source, SDK or external port starts.
 public sealed partial class ParcelRepository
@@ -50,10 +54,10 @@ public sealed partial class ParcelRepository
         var archived = Scalar("SELECT count(*) FROM parcel_archives");
         var pending = Scalar("SELECT count(*) FROM parcel_receipts WHERE state NOT IN ('Committed','NoReply')");
         var conflicts = Scalar("SELECT count(*) FROM parcel_identity_conflicts WHERE acknowledged=0");
-        long unsettled = 0;
+        long unsettled = 0, historicalUnknown = 0;
         using (var c = db.CreateCommand())
         {
-            c.Transaction = tx; c.CommandText = "SELECT body,NULL FROM parcel_operations UNION ALL SELECT body,body_hash FROM parcel_archives";
+            c.Transaction = tx; c.CommandText = "SELECT body,NULL,0 FROM parcel_operations UNION ALL SELECT body,body_hash,1 FROM parcel_archives";
             using var r = c.ExecuteReader();
             while (r.Read())
             {
@@ -61,6 +65,10 @@ public sealed partial class ParcelRepository
                 var body = r.GetString(0); if (!r.IsDBNull(1) && Wire.Hash(body) != r.GetString(1)) throw new InvalidDataException("Archived original hash differs");
                 var op = Wire.Decode<ParcelOperation>(body);
                 if (op.ConfigurationHash != Wire.Hash(Wire.Encode(op.FrozenConfiguration))) throw new InvalidDataException("Original frozen configuration hash differs");
+                // Archive custody is committed by the Application only after the
+                // placement and actual execution/receipt responsibility end.
+                if (flow.Id == "sportmaster" && r.GetInt64(2) == 1 && IsSmUnknownHistoryCandidate(op))
+                { historicalUnknown++; continue; }
                 var terminated = flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected;
                 if (!terminated || op.RecoveryRequired || new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(x => x.State is not (StageState.Accepted or StageState.Rejected or StageState.Cancelled)) ||
                     op.FrozenConfiguration.Images is not null && !op.ImageReleased) unsettled++;
@@ -84,6 +92,8 @@ public sealed partial class ParcelRepository
             }
         }
         var reasons = new List<string>();
+        var currentRounds = flow.Id == "sportmaster" ? Scalar("SELECT count(*) FROM sm_parcel_rounds WHERE active=1") : 0;
+        if (currentRounds != 0) reasons.Add("Current parcel rounds still require their original placement disposition");
         if (Scalar("SELECT count(*) FROM parcel_ingress WHERE state IN ('Pending','Interrupted')") != 0)
             reasons.Add("Original input custody requires matching-release inspection; never replay accepted source input");
         if (invalidRaw != 0) reasons.Add("Original receipt bytes missing/changed: " + invalidRaw);
@@ -99,7 +109,8 @@ public sealed partial class ParcelRepository
             names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length), hash, walHash, Wire.FileHash(configuration), reasons.Count == 0, reasons.ToArray(), DateTimeOffset.UtcNow,
             BusinessCompatibility.VersionOf(flow.GetType().Assembly), flow.GetType().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "Unidentified source",
             Wire.FileHash(typeof(IParcelApplication).Assembly.Location), config.Effective.SchemaVersion,
-            ParcelBindings.Bound(config.Effective).Select(b => new ParcelMaintenanceProvider(b.InstanceId, b.Implementation, b.Version, b.Contract, Wire.Hash(b.Target), b.Package?.ManifestSha256)).ToArray());
+            ParcelBindings.Bound(config.Effective).Select(b => new ParcelMaintenanceProvider(b.InstanceId, b.Implementation, b.Version, b.Contract, Wire.Hash(b.Target), b.Package?.ManifestSha256)).ToArray())
+        { HistoricalUnknown = historicalUnknown, CurrentRounds = currentRounds };
         tx.Commit();
         tx.Dispose(); db.Close(); // Windows WAL handles must close before byte-preservation hashes.
         if (Wire.FileHash(database, token) != hash || (File.Exists(wal) ? Wire.FileHash(wal, token) : null) != walHash) throw new IOException("Original database changed during offline inspection");

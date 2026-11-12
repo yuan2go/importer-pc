@@ -41,6 +41,7 @@ public sealed class CoreRegression
     [DataRow("--backup-consistency", 66)]
     [DataRow("--stability-analysis", 24)]
     [DataRow("--industrial-recovery", 22)]
+    [DataRow("--lifecycle-restore", 35)]
     [DataRow("--industrial-lifecycle", 76)]
     [DataRow("--industrial-rollback", 49)]
     [DataRow("--industrial-version-pruning", 33)]

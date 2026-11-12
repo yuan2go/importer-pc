@@ -119,7 +119,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (!File.Exists(Path.Combine(directory, Id + ".db")) && new[] { "receipts", "images" }.Any(n => Directory.Exists(Path.Combine(directory, n)) && Directory.EnumerateFileSystemEntries(Path.Combine(directory, n)).Any()))
                 throw new InvalidDataException("缺少业务库但存在原件；保留原根，不创建空库代替原责任");
             if (!File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json")) && !File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json")))
-                ParcelMachineOrigin.EnsureNew(directory, seed);
+                ParcelMachineOrigin.EnsureNew(directory, seed, RestoreEvidence);
             overloadMarker = Path.Combine(directory, "overload.json"); overload = File.Exists(overloadMarker) ? 1 : 0;
             if (overload != 0)
             {
@@ -175,7 +175,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
         RefreshStorageCapacity();
         RecoverOverloadAcknowledgement();
-        if (File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json"))) repository!.Commit(null, "RestoredIsolated", "Original recovery set loaded; operator must reconcile external effects", paused: true);
+        if (File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json")) && !RestoreConfirmed)
+            repository!.Commit(null, "RestoredIsolated", "Original recovery set loaded; operator must reconcile external effects", paused: true);
         foreach (var op in repository.Load())
         {
             operations.Add(op.Id, op);
@@ -296,7 +297,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             }
             if (Interlocked.CompareExchange(ref accepting, 1, 2) != 2) throw new IOException("Startup ingress fenced; inspect diagnostic failure before retrying");
             ingressStartup.TrySetResult(true);
-            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && (Id == "sportmaster" || !launch.RequireRecoveryReview);
+            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && (Id == "sportmaster" || !launch.RequireRecoveryReview) &&
+                !File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json"));
             foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
             backgroundTasks.TryAdd("maintenance", Task.Run(MaintainAsync, CancellationToken.None));
             backgroundTasks.TryAdd("wal-checkpoint", Task.Run(ObserveWalAsync, CancellationToken.None));

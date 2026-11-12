@@ -110,7 +110,7 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
         }
         _ = Inspect(destination, ApplicationId);
     }
-    public static DeploymentLocation? ReadInstalled(string directory, string application)
+    public static DeploymentLocation? ReadInstalled(string directory, string application, bool requireReady = true)
     {
         var file = Path.GetFullPath(Path.Combine(directory, "..", "deployment-location.json"));
         if (OperatingSystem.IsWindows() && WindowsDeploymentSetup.Current(application) is { } current &&
@@ -118,7 +118,7 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
              string.Equals(Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar), Path.Combine(current.ReleaseRoot, "desktop"), StringComparison.OrdinalIgnoreCase)))
         {
             if (current.LifecycleState != "Installed") throw new InvalidOperationException("本发布已退役；从可信介质继续维护，原数据保留");
-            WindowsDeploymentSetup.RequireInstalledReady(current);
+            if (requireReady) WindowsDeploymentSetup.RequireInstalledReady(current);
             return current;
         }
         if (!File.Exists(file))
@@ -133,7 +133,7 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
         if (OperatingSystem.IsWindows()) location = AuthoritativeLocation(location, WindowsDeploymentSetup.Current(application));
         if (location.LifecycleState != "Installed" || File.Exists(Path.Combine(location.ReleaseRoot, "deployment-retired.json")))
             throw new InvalidOperationException("本发布已卸载/退役；原数据保留，请从可信介质重新安装后运行");
-        WindowsDeploymentSetup.RequireInstalledReady(location);
+        if (requireReady) WindowsDeploymentSetup.RequireInstalledReady(location);
         if (location.ApplicationId != application || !string.Equals(Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar), Path.Combine(location.ReleaseRoot, "desktop"), StringComparison.OrdinalIgnoreCase) &&
             !string.Equals(Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar), Path.Combine(location.ReleaseRoot, "app"), StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Deployment location differs from the selected executable");

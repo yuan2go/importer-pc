@@ -64,6 +64,14 @@ public sealed partial class ParcelStartupMaintenance
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Verifying);
         var inspection = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution?.Token ?? CancellationToken.None);
         var markers = new[] { "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }.Where(n => File.Exists(Path.Combine(state.Directory, n))).ToArray();
+        if (purpose == "Rollback" && definition.Id == "sportmaster" && markers.Contains("RESTORED-ISOLATED.json"))
+        {
+            var c = state.Envelope?.Effective ?? state.Seed;
+            using var snapshot = ParcelRepository.OpenHandoffSnapshot(copy.Database);
+            if (ParcelRestoreEvidence.ConfirmationValid(state.Directory, () => ParcelRestoreEvidence.Require(state.Directory, c, RecoveryEvidence(c)),
+                (id, hash) => ParcelRepository.HasRestoreConfirmation(snapshot, id, hash)))
+                markers = markers.Where(n => n != "RESTORED-ISOLATED.json").ToArray();
+        }
         var allowed = purpose is "Backup" or "Repair" or "Uninstall" || inspection.ResponsibilitiesSettled && markers.Length == 0;
         var pruningBlocker = purpose == "PruneVersions" ? VersionPruningBlocker(state.Directory, state.Envelope) : null;
         if (pruningBlocker is not null) allowed = false;

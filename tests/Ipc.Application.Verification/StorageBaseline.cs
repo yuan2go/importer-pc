@@ -37,7 +37,7 @@ static class StorageBaseline
             c.CommandText = name == "parcel" ? "SELECT count(*) FROM platform_migrations" : "SELECT count(*) FROM schema_history";
             Check(Convert.ToInt32(c.ExecuteScalar()) == 1, name + " contains no historical migration entries");
         }
-        Check(ParcelRepository.ReadStorageVersion(Path.Combine(parcelRoot, "sportmaster.db"), "sportmaster") == ParcelRepository.CurrentStorageVersion && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel13/Supply6");
+        Check(ParcelRepository.ReadStorageVersion(Path.Combine(parcelRoot, "sportmaster.db"), "sportmaster") == ParcelRepository.CurrentStorageVersion && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel14/Supply6");
         var analyzed = Path.Combine(root, "analyzed-current.db"); File.Copy(Path.Combine(parcelRoot, "sportmaster.db"), analyzed);
         using (var db = new SqliteConnection("Data Source=" + analyzed + ";Pooling=False"))
         { db.Open(); using var c = db.CreateCommand(); c.CommandText = "ANALYZE;"; c.ExecuteNonQuery(); }
@@ -78,7 +78,7 @@ static class StorageBaseline
         { db.Open(); using var c = db.CreateCommand(); c.CommandText = "DROP TABLE parcel_reply_identities"; c.ExecuteNonQuery(); }
         var before = Wire.FileHash(broken);
         try { using var denied = new ParcelRepository(brokenRoot, "sportmaster"); throw new Exception("Missing identity table accepted"); }
-        // Current DB13 verifies the complete schema before the old, narrower
+        // Current DB14 verifies the complete schema before the old, narrower
         // reply-identity check. Keep typed rejection and byte/no-directory guards;
         // a historical diagnostic phrase is not the storage safety contract.
         catch (InvalidDataException)

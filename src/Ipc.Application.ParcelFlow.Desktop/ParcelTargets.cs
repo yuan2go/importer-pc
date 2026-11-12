@@ -190,6 +190,7 @@ public partial class ParcelViewModel
     string? inspectedRestoreId;
     public string RestoreInspection { get; private set; } = "数据已从备份恢复，尚未完成换机交接。完成换机接管后读取交接信息；权限、密码、设备和编号范围需实际交接。";
     public string RestoreInspectionReason { get; set; } = "";
+    public string RestoreVerifiedRequestIdHighWater { get; set; } = "";
     public async Task InspectRestoreAsync()
     {
         RequireFreshSnapshot(); var receipt = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), Snapshot!.Revision, "InspectRestore")));
@@ -198,7 +199,9 @@ public partial class ParcelViewModel
     public async Task ConfirmRestoreAsync()
     {
         RequireFreshSnapshot(); if (inspectedRestoreId is null) throw new InvalidOperationException("先读取当前原机交接证据");
-        var receipt = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), Snapshot!.Revision, "ConfirmRestore", inspectedRestoreId, RestoreInspectionReason)));
+        if (!long.TryParse(RestoreVerifiedRequestIdHighWater, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var highWater) || highWater < 0)
+            throw new InvalidOperationException("填写已实际核实的非负请求编号高水位；未知不能按零处理。");
+        var receipt = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), Snapshot!.Revision, "ConfirmRestore", inspectedRestoreId, Wire.Encode(new RestoreVerificationInput(RestoreInspectionReason, highWater)))));
         Message = receipt.Status + " · " + receipt.Reason;
     }
     string? receiptInventoryOwner;

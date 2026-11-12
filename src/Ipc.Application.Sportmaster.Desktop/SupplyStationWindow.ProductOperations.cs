@@ -49,6 +49,7 @@ public partial class SupplyStationWindow
         remote.Children.Add(ProductButton("核对左位远端责任…", () => ConfirmRemotePositionRecovery("left")));
         remote.Children.Add(ProductButton("核对右位远端责任…", () => ConfirmRemotePositionRecovery("right")));
         body.Children.Add(remote);
+        actions.Children.Add(ProductButton("恢复本站核对…", () => OpenProductTool(MaintenanceTool.RestoreHandoff)));
         return body;
     }
     async Task CreateProductBackup()

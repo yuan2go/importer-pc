@@ -21,6 +21,7 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
     public bool OrdinaryStartupConfirmed { get; init; }
     public bool DeleteData { get; init; }
     public string? RemovalOperationId { get; init; }
+    public string? InstallationOperationId { get; init; }
     public int InitiatorProcessId { get; init; }
     public long InitiatorStartedTicks { get; init; }
 }
@@ -207,6 +208,8 @@ public static partial class ParcelStartupServices
         execution?.Checkpoint();
         switch (request.Action)
         {
+            case "MediaConcludeInstallation": return ContinueInstallationCore(request, repair: false, execution);
+            case "MediaRepairInstallation": return ContinueInstallationCore(request, repair: true, execution);
             case "RepairCameraDependencies":
                 if (!OperatingSystem.IsWindows() || ApplicationId != "sportmaster") throw new PlatformNotSupportedException();
                 WindowsDeploymentSetup.RepairCameraDependencies(request.ExpectedHash ?? throw new InvalidDataException("缺少原安装身份。"));
@@ -264,13 +267,25 @@ public static partial class ParcelStartupServices
                         if (new FileInfo(proofFile).Length > 65536) throw new InvalidDataException("交接证据超出预算");
                         var committedProof = Wire.Decode<StartupRestoreHandoff>(File.ReadAllText(proofFile));
                         if (originalDeployment.RestoreHandoffHash != Wire.Hash(Wire.Encode(committedProof)) || committedProof.BackupIdentity != request.ExpectedHash ||
-                            !File.Exists(Path.Combine(committedProof.SourceDirectory, "MIGRATION-SOURCE-FENCED.json")) || Wire.FileHash(proofFile) != Wire.FileHash(Path.Combine(committedProof.SourceDirectory, "MIGRATION-SOURCE-FENCED.json")))
+                            committedProof.TargetDirectory != Path.GetDirectoryName(proofFile))
                             throw new InvalidDataException("登记已指向新根但交接身份不符；保留隔离，不重复迁移");
+                        _ = ParcelRestoreEvidence.Require(Path.GetDirectoryName(proofFile)!, restoredSeed, RestoreMachineEvidence.For(restoredSeed));
+                        if (WindowsDeploymentSetup.RestoreCommitStatus(ApplicationId, committedProof.Id) == "ProjectionPending")
+                            WindowsDeploymentSetup.RepairRestoreCommit(ApplicationId, committedProof.Id, request.ExpectedHash!);
                         break; // Previous commit succeeded; receipt loss must not create a second handoff.
                     }
-                    using var recoveryMigration = WindowsDeploymentSetup.PrepareRecoveryMigration(originalDeployment, request.Destination!, request.ChangePlanIdentity!);
-                    await Core(new(originalDeployment.ConfigurationDirectory, originalDeployment.DataRoot, null, null), installer: true).AdoptRestoreOwnedAsync(request.Backup!, request.Destination!, request.ExpectedHash!, proof =>
-                    { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); WindowsDeploymentSetup.SwitchDataRoot(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), recoveryMigration); return Task.CompletedTask; });
+                    var originalRestore = ApplicationId == "sportmaster" ? WindowsDeploymentSetup.ReadRestoreIntents(ApplicationId)
+                        .Single(i => i.BackupIdentity == request.ExpectedHash && i.TargetRoot == Path.GetFullPath(request.Destination!)).OperationId : null;
+                    using var recoveryMigration = WindowsDeploymentSetup.PrepareRecoveryMigration(originalDeployment, request.Destination!, request.ChangePlanIdentity!, originalRestore);
+                    var restoreCore = Core(new(originalDeployment.ConfigurationDirectory, originalDeployment.DataRoot, null, null), installer: true);
+                    var routingSeed = ApplicationId == "sportmaster" ? restoreCore.RestoredSeed(request.Destination!, request.ExpectedHash!) : null;
+                    await restoreCore.AdoptRestoreOwnedAsync(request.Backup!, request.Destination!, request.ExpectedHash!, proof =>
+                    {
+                        if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                        if (ApplicationId == "sportmaster") WindowsDeploymentSetup.CommitRestore(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), proof.Id, routingSeed!, recoveryMigration);
+                        else WindowsDeploymentSetup.SwitchDataRoot(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), recoveryMigration);
+                        return Task.CompletedTask;
+                    }, recoveryMigration);
                     break;
                 }
             case "RepairSystem":
@@ -406,7 +421,7 @@ public static partial class ParcelStartupServices
         var helper = Path.Combine(directory, "Ipc.Assembly.exe");
         if (!File.Exists(helper)) helper = Path.GetFullPath(Path.Combine(directory, "..", "app", "Ipc.Assembly.exe"));
         if (request.Action == "InstallWithPreflight") helper = Path.Combine(request.Deployment!.MediaRoot, "desktop", "Ipc.Desktop.exe");
-        if (request.Action == "MediaUninstall") helper = Path.Combine(request.Deployment!.MediaRoot, "app", "Ipc.Assembly.exe");
+        if (request.Action is "MediaUninstall" or "MediaConcludeInstallation" or "MediaRepairInstallation") helper = Path.Combine(request.Deployment!.MediaRoot, "app", "Ipc.Assembly.exe");
         if (!MediaCommand(request.Action) && WindowsDeploymentSetup.Current(ApplicationId) is { } installed)
             helper = Path.Combine(installed.MaintenanceRoot ?? installed.ReleaseRoot, "app", "Ipc.Assembly.exe");
         foreach (var assembly in new[] { typeof(ParcelStartupServices).Assembly, typeof(MachineRuntimeSetup).Assembly })
@@ -474,7 +489,7 @@ public static partial class ParcelStartupServices
             { throw new InstallationOutcomeUnknownException("未取得可信维护终态。安装可能已提交，请核对安装记录后再继续。", error); }
         }
         catch (InstallationOutcomeUnknownException) { retainRequest = true; throw; }
-        catch (Win32Exception ex) when (ex.NativeErrorCode == 1223) { throw new UnauthorizedAccessException("已取消 Windows 维护授权；已有配置和数据保留，可重新操作。", ex); }
+        catch (Win32Exception ex) when (ex.NativeErrorCode == 1223) { throw new MaintenanceCancelledException("已取消 Windows 维护授权，操作尚未开始；已有配置和数据保留，可重新操作。"); }
         finally { if (!retainRequest) File.Delete(path); }
     }
     internal static void WriteInstallationProgress(TextWriter writer, WindowsInstallationStage stage)
@@ -502,7 +517,7 @@ public static partial class ParcelStartupServices
         }
         return null; // A truncated final line never proves completion.
     }
-    static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "MediaUninstall";
+    static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "MediaUninstall" or "MediaConcludeInstallation" or "MediaRepairInstallation";
     static void RequireProtectedHelper(string directory)
     {
         var file = Path.Combine(directory, "application-release.json");
@@ -528,6 +543,7 @@ public static partial class ParcelStartupServices
         void RequireManagementMode() => LocalManagementMode.ForRoot(launch.DataRoot).Require();
         public Task<StartupClassification> ClassifyAsync() => core.ClassifyAsync();
         public Task<StartupMaintenanceDocument> ReadAsync() => core.ReadAsync();
+        public Task<StartupRecoveryPreview[]> ReadRestoreOperationsAsync() => core.ReadRestoreOperationsAsync();
         public async Task AdoptRestoreAsync(string backup, string restoredDataRoot, string expectedBackupHash, string expectedRegistrationHash)
         {
             RequireManagementMode();

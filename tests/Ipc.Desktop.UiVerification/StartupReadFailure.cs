@@ -56,6 +56,19 @@ static partial class Program
         var permission = helper.GetType("Ipc.Assembly.ParcelStartupServices", true)!.GetMethod("RequiresManagementMode", BindingFlags.NonPublic | BindingFlags.Static)!;
         Check((bool)permission.Invoke(null, ["PlanSmDb12Continuation"])! && (bool)permission.Invoke(null, ["ContinueSmDb12"])!,
             "both privileged continuation commands require the original delegated management grant");
+        var tools = Descendants(window).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.Tools");
+        tools.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        var diagnostics = tools.ContextMenu!.Items.OfType<MenuItem>().SelectMany(m => m.Items.OfType<MenuItem>()).Single(m => AutomationProperties.GetAutomationId(m) == "Startup.OpenDiagnosticDetails");
+        tools.ContextMenu.IsOpen = false;
+        _ = window.Dispatcher.BeginInvoke(new Action(() => diagnostics.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent))));
+        await WaitUntil(() => System.Windows.Application.Current.Windows.OfType<Window>().Any(w => AutomationProperties.GetAutomationId(w) == "StartupDiagnosticDetails"));
+        var details = System.Windows.Application.Current.Windows.OfType<Window>().Single(w => AutomationProperties.GetAutomationId(w) == "StartupDiagnosticDetails");
+        details.Height = 340; details.UpdateLayout();
+        var dismiss = Descendants(details).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "StartupDiagnostic.Close");
+        Check(ReferenceEquals(details.Owner, window) && dismiss.IsCancel && dismiss.IsDefault && dismiss.IsVisible &&
+            Descendants(details).OfType<TextBox>().Single().IsReadOnly, "read-failure diagnostics have an owned read-only body and a fixed cancel/default close action at low height");
+        dismiss.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await WaitUntil(() => !details.IsVisible);
+        Check(window.IsVisible && Wire.FileHash(ledger) == before, "closing diagnostics returns to the original protected failure page without altering its ledger");
         window.Close(); await WaitUntil(() => !window.IsVisible);
 
         ExtensionStore.AtomicWrite(ledger, CurrentConfigurationFixture.Create<ParcelConfiguration>(3, seed, null, "Effective", null));

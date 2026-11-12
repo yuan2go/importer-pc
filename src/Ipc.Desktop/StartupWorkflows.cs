@@ -518,7 +518,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (path is null) return;
         if (new FileInfo(path).Length > 4 * 1024 * 1024) throw new InvalidDataException("配置文件超出4兆字节限制。");
         var replacement = StartupConfigurationFiles.Import(File.ReadAllText(path), document.Candidate, draft, document.Catalog);
-        var comparison = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "导入配置预览", Width = 720, Height = 560, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var comparison = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "导入配置预览", Width = 720, Height = 560, MinWidth = 520, MinHeight = 320, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        StartupAppearance.FitToWorkArea(comparison);
         var panel = new DockPanel { Margin = new(20) };
         var footer = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 12, 0, 0) };
         var cancel = new Button { Content = "取消", IsCancel = true, IsDefault = true, MinHeight = 44, MinWidth = 100, Margin = new(0, 0, 8, 0) };
@@ -539,7 +540,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var advanced = new MenuItem { Header = "备份、诊断与修复" };
         foreach (var kind in new[] { RepairAction.Read, RepairAction.Check, RepairAction.Save, RepairAction.ExportTemplate, RepairAction.Backup, RepairAction.Retention, RepairAction.Repair, RepairAction.AdoptRestore, RepairAction.Install }) Add(advanced.Items, kind);
         var diagnostic = new MenuItem { Header = "查看完整诊断…" };
-        diagnostic.Click += (_, _) => new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "启动诊断", Width = 760, Height = 520, Content = new TextBox { Text = diagnosticDetails + "\n" + Status.Text, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } }.ShowDialog();
+        System.Windows.Automation.AutomationProperties.SetAutomationId(diagnostic, "Startup.OpenDiagnosticDetails");
+        diagnostic.Click += (_, _) => ShowStartupDiagnostics();
         advanced.Items.Add(diagnostic); menu.Items.Add(advanced);
         var tools = actionButtons[RepairAction.Tools];
         menu.PlacementTarget = tools; tools.ContextMenu = menu; menu.IsOpen = true;
@@ -551,6 +553,20 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         }
     }
 
+    void ShowStartupDiagnostics()
+    {
+        var dialog = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "启动诊断",
+            Width = 760, Height = 520, MinWidth = 520, MinHeight = 320, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        StartupAppearance.FitToWorkArea(dialog);
+        System.Windows.Automation.AutomationProperties.SetAutomationId(dialog, "StartupDiagnosticDetails");
+        var content = new DockPanel { Margin = new(20) };
+        var footer = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 12, 0, 0) };
+        var close = new Button { Content = "关闭", IsCancel = true, IsDefault = true, MinHeight = 44, MinWidth = 100 };
+        System.Windows.Automation.AutomationProperties.SetAutomationId(close, "StartupDiagnostic.Close");
+        close.Click += (_, _) => dialog.Close(); footer.Children.Add(close); DockPanel.SetDock(footer, Dock.Bottom); content.Children.Add(footer);
+        content.Children.Add(new TextBox { Text = diagnosticDetails + "\n" + Status.Text, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+        dialog.Content = content; dialog.Loaded += (_, _) => close.Focus(); dialog.ShowDialog();
+    }
     string Input() => config.Text + "\n" + data.Text + "\n" + reason + "\n" + (draft is null ? "" : Wire.Encode(draft.Capture()));
     Button Action(RepairAction kind, string label, Func<Task> execute)
     {

@@ -72,12 +72,20 @@ public static partial class WindowsDeploymentSetup
         var json = File.ReadAllText(file); using var document = JsonDocument.Parse(json);
         var recorded = kind == "restore" ? "CopyIntentPrepared" : document.RootElement.GetProperty("Status").GetString() ?? "Unknown";
         var current = Current(application); var history = ReadDeploymentHistory(application);
+        DateTimeOffset? at = document.RootElement.TryGetProperty("At", out var time) && time.TryGetDateTimeOffset(out var stamp) ? stamp : null;
+        string? scope = document.RootElement.TryGetProperty("Plan", out var plan) && plan.TryGetProperty(kind == "assets" ? "Scope" : "ExpectedRegistrationHash", out var originalScope) ? originalScope.GetString() : null;
+        DeploymentLocation? OriginalDeployment(string hash)
+        {
+            var candidates = history.SelectMany(edge => new[] { edge.Previous, edge.Next }).Concat(current is null ? [] : [current])
+                .Where(location => Wire.Hash(Wire.Encode(location)) == hash).DistinctBy(location => Wire.Encode(location)).ToArray();
+            return candidates.Length == 1 ? candidates[0] : null;
+        }
         DeploymentHistoryItem Result(string status, string detail, DeploymentLocation? location = null, string[]? remaining = null,
             DeploymentVersionRetention[]? retained = null, bool resume = false)
         {
             remaining ??= []; retained ??= [];
             return new(kind, operation, recorded, status, detail, file, location,
-                remaining.Take(16).Select(s => s[..Math.Min(s.Length, 600)]).ToArray(), retained.Take(16).ToArray(), resume, remaining.Length, retained.Length);
+                remaining.Take(16).Select(s => s[..Math.Min(s.Length, 600)]).ToArray(), retained.Take(16).ToArray(), resume, remaining.Length, retained.Length, at, scope);
         }
         if (kind == "setup")
         {
@@ -120,7 +128,7 @@ public static partial class WindowsDeploymentSetup
             var record = ReadPrune(application, operation);
             var remaining = ObserveVersionPruneRemaining(record);
             return Result(record.Status, record.Status == "RetainedUnverified" ? "原余项已选择保留，未逐项确认。" : "原清理提交结果保留；当前已知清单余项见详情，续办仍核验当前引用。",
-                null, remaining, record.Plan.Retain, record.Status is "Prepared" or "Partial");
+                OriginalDeployment(record.Plan.ExpectedRegistrationHash), remaining, record.Plan.Retain, record.Status is "Prepared" or "Partial");
         }
         if (kind == "assets")
         {
@@ -129,12 +137,13 @@ public static partial class WindowsDeploymentSetup
             var projected = ProjectUninstallAssets(record, file);
             return Result(projected.Status, projected.Status == "RestartRequired" ? "原资产清理已登记重启删除，尚未实际清完；新部署不在原清单内。" : "只读核对原卸载资产范围；新部署不改变原余项，也不能扩展旧清单。",
                 original, projected.Remaining, projected.Retained, projected.Status != "Completed")
-                with { TotalRemaining = projected.TotalRemaining, TotalRetained = projected.TotalRetained };
+                with
+            { TotalRemaining = projected.TotalRemaining, TotalRetained = projected.TotalRetained };
         }
         var purge = Wire.Decode<DeploymentPurgeRecord>(json);
         if (purge.SchemaVersion != 2 || purge.Plan.ApplicationId != application || purge.Plan.OperationId != operation)
             throw new InvalidDataException("原数据删除记录身份无效。");
-        return Result(purge.Status, "原数据删除回执已读取；这是原冻结范围的结果，不描述后续新部署的数据。", null, purge.Remaining);
+        return Result(purge.Status, "原数据删除回执已读取；这是原冻结范围的结果，不描述后续新部署的数据。", OriginalDeployment(purge.Plan.ExpectedRegistrationHash), purge.Remaining);
     }
 
     static UninstallAssetsRecord ReadHistoricalAssets(string application, string operation)

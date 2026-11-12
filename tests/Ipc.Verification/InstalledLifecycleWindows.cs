@@ -106,6 +106,12 @@ static class InstalledLifecycleWindows
         Check(WindowsDeploymentSetup.InspectVersionPruning(application, plan.OperationId, false).Status == "Completed",
             "original cleanup result remains readable after retained-data and clean-data reinstalls");
         _ = WindowsDeploymentSetup.Remove(application, Wire.FileHash(WindowsDeploymentSetup.Registration(application)), _ => { }, _ => { });
+        var originalHistory = WindowsDeploymentSetup.InspectMaintenanceHistory(application, "prune", plan.OperationId);
+        Check(originalHistory.Deployment?.ReleaseRoot == current.ReleaseRoot && originalHistory.OriginalScope == plan.ExpectedRegistrationHash && originalHistory.At is not null,
+            "historical result resolves original deployment identity and time from protected evidence after reinstallation");
+        var purgeHistory = WindowsDeploymentSetup.InspectMaintenanceHistory(application, "purge", purgePlan.OperationId);
+        Check(purgeHistory.Deployment?.SourceCommit == cleanRequest.SourceCommit && purgeHistory.RecordedStatus == "Purged",
+            "historical purge result retains the retired original deployment rather than substituting the new program");
         Console.WriteLine("BOUNDARY protected unique test product; real platform plan/admission/files/registration including retained and purged data. Real SM full-medium, SDK, UAC cancellation and reboot require the target matrix.");
     }
 

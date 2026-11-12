@@ -313,7 +313,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             await ReleaseMaintenanceAsync();
             var restore = new StartupRepairWindow(SelectedLaunch) { Owner = this, OpenRecoveryScenario = true, SceneOnly = true };
             restore.ShowDialog();
-            if (restore.RestoreAdopted) { RestoreAdopted = true; Busy = false; Close(); }
+            if (restore.RestoreAdopted) { RestoreAdopted = true; SelectedLaunch = restore.SelectedLaunch; Busy = false; Close(); }
             else { maintenanceReleased = false; await Read(true); }
         });
         Action(RepairAction.ExecuteRestore, "按计划恢复到新目录…", async () =>
@@ -333,6 +333,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (MessageBox.Show(this, "将禁止从原目录启动，并把安装登记切换到新目录。原目录和数据不会删除。切换后需进入管理模式，核对未处理完的作业、设备和编号范围后才能生产。", "确认换机接管", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
             await Task.Run(() => maintenance.AdoptRestoreAsync(restoredBackup, restoredPreview.DataRoot, restoredPreview.BackupSha256, Wire.FileHash(registration)));
             RestoreAdopted = true;
+            SelectedLaunch = SelectedLaunch with { DataRoot = restoredPreview.DataRoot };
             Message("已切换到新目录，原目录不能再启动。请重新启动软件，在维护页核对交接内容；旧作业不会自动恢复或重发。");
         });
         Action(RepairAction.Rollback, "上一部署回滚…", () =>
@@ -407,10 +408,17 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var authorizationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
         async Task RefreshAuthorization()
         {
+            if (RestoreAdopted)
+            {
+                AuthorizationGate.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Visible;
+                WorkflowBody.Visibility = Visibility.Visible; WorkflowBody.IsEnabled = false; SessionActions.IsEnabled = false;
+                UpdateActions(); return; // Completed result/close needs no grant from the retired root.
+            }
             if (checkingAuthority) return; checkingAuthority = true;
             try
             {
                 var identity = await ManagementMode.ManagementModeStatusAsync(); var allowed = identity.Authorized;
+                if (RestoreAdopted) return;
                 authorityAllowed = allowed; if (allowed) { seenAuthorization = true; manuallyExited = false; }
                 if (initialConfiguration && gateLayout == allowed)
                 {
@@ -432,7 +440,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 else if (allowed && authorityWasBlocked) Message(statusBeforeAuthorityBlock ?? "已进入管理模式，已填写的内容已恢复。");
                 authorityWasBlocked = !allowed;
             }
-            catch (Exception error) { authorityAllowed = false; managementMenu.Status = new(false, false, null, Available: false); WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; if (initialConfiguration && headerImport is not null) headerImport.Visibility = Visibility.Collapsed; AuthorizationGate.Visibility = Visibility.Visible; gateTitle.Text = "管理授权状态无法读取"; gateDescription.Text = "已填写的内容暂存在本窗口。" + error.Message; }
+            catch (Exception error) { if (RestoreAdopted) return; authorityAllowed = false; managementMenu.Status = new(false, false, null, Available: false); WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; if (initialConfiguration && headerImport is not null) headerImport.Visibility = Visibility.Collapsed; AuthorizationGate.Visibility = Visibility.Visible; gateTitle.Text = "管理授权状态无法读取"; gateDescription.Text = "已填写的内容暂存在本窗口。" + error.Message; }
             finally { checkingAuthority = false; }
         }
         authorizationTimer.Tick += async (_, _) => await RefreshAuthorization();
@@ -946,7 +954,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     RepairAction.Next => !SceneOnly && selectedTask is RepairTask.Directory or RepairTask.Parameters,
                     _ => false
                 };
-            button.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            button.Visibility = (RestoreAdopted ? kind == RepairAction.Exit : visible) ? Visibility.Visible : Visibility.Collapsed;
             button.IsEnabled = CanExecute(kind);
             button.IsDefault = false;
             if (kind == RepairAction.Next) button.Content = initialConfiguration
@@ -955,7 +963,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (kind == RepairAction.SaveAndStart && initialConfiguration) button.Content = SaveIsComplete ? "完成并启动" : "保存配置";
             button.IsCancel = kind == RepairAction.Exit;
         }
-        var primary = initialConfiguration ? draft is null ? RepairAction.Reload : parameterControl?.IsReviewPage == true ? RepairAction.SaveAndStart : RepairAction.Next
+        var primary = RestoreAdopted ? RepairAction.Exit : initialConfiguration ? draft is null ? RepairAction.Reload : parameterControl?.IsReviewPage == true ? RepairAction.SaveAndStart : RepairAction.Next
             : selectedTask switch { RepairTask.Directory => RepairAction.Read, RepairTask.Parameters => RepairAction.Next, RepairTask.Review => SceneOnly || savedInput == Input() ? RepairAction.Start : RepairAction.SaveAndStart, _ => restoredPreview is not null ? RepairAction.AdoptRestore : recovery is not null ? RepairAction.ExecuteRestore : RepairAction.PlanRestore };
         foreach (var (kind, button) in actionButtons)
         {

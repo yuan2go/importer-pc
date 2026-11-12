@@ -70,12 +70,19 @@ static class LifecycleRestore
             Check((await restored.SnapshotAsync()).Paused && restoredFactory.Sends == 0, "real restored runtime opens isolated and paused without resending any request");
             await restored.ConfigureManagementPasswordAsync("Synthetic-restore-password-8374");
             Check(await restored.EnterManagementModeAsync("Synthetic-restore-password-8374"), "explicit management authorization remains required for enablement verification");
-            var state = await restored.SnapshotAsync();
-            await Reject<InvalidDataException>(() => restored.CommandAsync(new(Wire.Id(), state.Revision, "ConfirmRestore", proof.Id, "{\"Reason\":\"no actual floor\"}")), "missing external-number evidence is rejected by the real runtime, never defaulted to zero");
-            var command = new BusinessCommand(Wire.Id(), (await restored.SnapshotAsync()).Revision, "ConfirmRestore", proof.Id, Wire.Encode(new RestoreVerificationInput("controlled external verification", 900000000000000000)));
-            var confirmed = await restored.CommandAsync(command);
-            var repeated = await restored.CommandAsync(command);
-            Check(confirmed == repeated && (await restored.SnapshotAsync()).Paused && restoredFactory.Sends == 0, "one confirmation command is durable and replay-safe, retains pause, and never calls RCS");
+            await LifecycleOptimization.AfterMonitorDrain(restored, async () =>
+            {
+                var state = await restored.SnapshotAsync();
+                await Reject<InvalidDataException>(() => restored.CommandAsync(new(Wire.Id(), state.Revision, "ConfirmRestore", proof.Id, "{\"Reason\":\"no actual floor\"}")), "missing external-number evidence is rejected by the real runtime, never defaulted to zero");
+                var command = new BusinessCommand(Wire.Id(), (await restored.SnapshotAsync()).Revision, "ConfirmRestore", proof.Id, Wire.Encode(new RestoreVerificationInput("controlled external verification", 900000000000000000)));
+                var confirmed = await restored.CommandAsync(command);
+                var repeated = await restored.CommandAsync(command);
+                Check(confirmed.Status == "Persisted" && confirmed == repeated && (await restored.SnapshotAsync()).Paused && restoredFactory.Sends == 0, "one confirmation command is durable and replay-safe, retains pause, and never calls RCS");
+                var latest = await restored.SnapshotAsync();
+                await Reject<InvalidOperationException>(() => restored.CommandAsync(command with { Id = Wire.Id(), ExpectedRevision = latest.Revision,
+                    Value = Wire.Encode(new RestoreVerificationInput("cannot lower", 1)) }), "actual runtime refuses a lower externally claimed number floor after confirmation");
+                return true;
+            });
         }
 
         var machine = Path.Combine(root, "controlled-machine"); Directory.CreateDirectory(Path.Combine(machine, "deployments"));

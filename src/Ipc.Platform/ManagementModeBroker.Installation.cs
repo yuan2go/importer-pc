@@ -40,8 +40,13 @@ public static partial class ManagementModeBroker
                         throw new InvalidDataException("恢复目标的原凭据与来源不同，不覆盖或重置密码。");
                     continue; // Original copy completed before its result was lost.
                 }
-                using var output = new FileInfo(Path.Combine(target, item.Name)).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 16384, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18")));
-                item.Stream.CopyTo(output); output.Flush(true);
+                // A process loss must leave a private residual, never a partial
+                // credential at the authoritative filename that blocks re-entry.
+                var temporary = targetFile + ".migration-" + Wire.Id() + ".new";
+                using (var output = new FileInfo(temporary).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 16384, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18"))))
+                { item.Stream.CopyTo(output); output.Flush(true); }
+                if (Wire.FileHash(temporary) != Wire.FileHash(Path.Combine(original, item.Name))) throw new InvalidDataException("管理凭据复制不完整；受保护残件保留，不替换目标。");
+                File.Move(temporary, targetFile, overwrite: false);
             }
         }
         finally { foreach (var item in inputs) item.Stream.Dispose(); }

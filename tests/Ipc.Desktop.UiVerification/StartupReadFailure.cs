@@ -77,6 +77,10 @@ static partial class Program
         type.GetMethod("UpdateActions", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, null);
         Check(!Descendants(window).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.AdoptRestore").IsEnabled && Wire.FileHash(ledger) == before,
             "conflicting original evidence removes handoff eligibility while retaining unreadable original ledger bytes");
+        type.GetProperty("RestoreAdopted")!.SetValue(window, true);
+        type.GetMethod("UpdateActions", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, null);
+        Check(Descendants(window).OfType<Button>().Where(b => b.IsVisible && AutomationProperties.GetAutomationId(b).StartsWith("Startup.", StringComparison.Ordinal)).All(b => AutomationProperties.GetAutomationId(b) == "Startup.Exit"),
+            "completed handoff exposes only close rather than saving or starting the retired root");
         window.Close(); await WaitUntil(() => !window.IsVisible);
 
         ExtensionStore.AtomicWrite(ledger, CurrentConfigurationFixture.Create<ParcelConfiguration>(3, seed, null, "Effective", null));

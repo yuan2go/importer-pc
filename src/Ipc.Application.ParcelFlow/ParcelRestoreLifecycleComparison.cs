@@ -39,7 +39,8 @@ public sealed partial class ParcelRepository
         Require(tails is 0 or 1);
         Require(Rows(current, "SELECT * FROM sqlite_sequence WHERE name<>'parcel_audit' ORDER BY name") == Rows(original, "SELECT * FROM sqlite_sequence WHERE name<>'parcel_audit' ORDER BY name"));
         var originalRevision = Number(original, "SELECT revision FROM parcel_meta WHERE id=1");
-        Require(Number(current, "SELECT revision FROM parcel_meta WHERE id=1") == checked(originalRevision + tails) &&
+        Require(Number(original, "SELECT count(*) FROM parcel_meta") == 1 && Number(current, "SELECT count(*) FROM parcel_meta") == 1 &&
+            Number(current, "SELECT revision FROM parcel_meta WHERE id=1") == checked(originalRevision + tails) &&
             Number(current, "SELECT paused FROM parcel_meta WHERE id=1") == Number(original, "SELECT paused FROM parcel_meta WHERE id=1"));
         Require(Number(current, "SELECT coalesce(max(seq),0) FROM sqlite_sequence WHERE name='parcel_audit'") == checked(floor + tails));
         if (tails == 0)
@@ -59,13 +60,14 @@ public sealed partial class ParcelRepository
         }
         Require(Number(original, "SELECT count(*) FROM station_run_shifts WHERE status='Open'") == 1);
         Require(Rows(current, "SELECT * FROM station_run_shifts WHERE id<>$value ORDER BY id", shift) == Rows(original, "SELECT * FROM station_run_shifts WHERE id<>$value ORDER BY id", shift));
-        using var oldShift = original.CreateCommand(); oldShift.CommandText = "SELECT opened_at,status,closed_at,detected_at,elapsed_ms,clock_adjusted FROM station_run_shifts WHERE id=$id"; oldShift.Parameters.AddWithValue("$id", shift);
+        using var oldShift = original.CreateCommand(); oldShift.CommandText = "SELECT opened_at,status,closed_at,detected_at,elapsed_ms,clock_adjusted,last_seen_at FROM station_run_shifts WHERE id=$id"; oldShift.Parameters.AddWithValue("$id", shift);
         using var newShift = current.CreateCommand(); newShift.CommandText = oldShift.CommandText; newShift.Parameters.AddWithValue("$id", shift);
         using var before = oldShift.ExecuteReader(); using var after = newShift.ExecuteReader();
         Require(before.Read() && after.Read());
         Require(before.GetString(0) == after.GetString(0) && before.GetString(1) == "Open" && after.GetString(1) == "Closed" && before.IsDBNull(2) && before.IsDBNull(3) &&
             !after.IsDBNull(2) && !after.IsDBNull(3) && DateTimeOffset.TryParse(after.GetString(2), out _) && DateTimeOffset.TryParse(after.GetString(3), out _) &&
-            after.GetDouble(4) >= before.GetDouble(4) && closedElapsed >= after.GetDouble(4) && after.GetInt64(5) >= before.GetInt64(5));
+            double.IsFinite(after.GetDouble(4)) && after.GetDouble(4) >= before.GetDouble(4) && closedElapsed >= after.GetDouble(4) &&
+            after.GetInt64(5) is 0 or 1 && after.GetInt64(5) >= before.GetInt64(5) && DateTimeOffset.TryParse(after.GetString(6), out _));
     }
     static SqliteConnection OpenHandoffSnapshot(string database)
     {

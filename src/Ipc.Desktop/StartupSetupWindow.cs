@@ -465,7 +465,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewedCandidate.ConfigurationSource, "business.json")));
             // Publish UI readiness only after every preview/seed check succeeds.
             // The execution path still rechecks the original registration CAS and owners.
-            if (ApplicationId == "sportmaster") HideCompletedReadOnlyProgress();
+            if (ApplicationId == "sportmaster") HideCompletedMaintenanceProgress();
             reviewedLocation = current;
             reviewed = reviewedCandidate;
             components = preview.review;

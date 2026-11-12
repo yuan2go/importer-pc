@@ -76,7 +76,8 @@ static partial class Program
         Click(uncheckedAssets, "关闭");
         var oldAssets = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, deletion, true) { Assets = residualAssets }));
         oldAssets.Show(); await Idle(oldAssets); Click(oldAssets, "卸载"); await Idle(oldAssets);
-        Check(Status(oldAssets).Contains("历史程序或维护缓存尚未全部清理") && Button(oldAssets, "重试卸载").IsEnabled,
+        Check(Status(oldAssets).Contains("历史程序或维护缓存尚未全部清理") && Button(oldAssets, "重试卸载").IsEnabled &&
+            !Descendants(oldAssets).OfType<TextBox>().Any(t => t.IsVisible && System.Windows.Automation.AutomationProperties.GetAutomationId(t) == "Maintenance.Progress"),
             "a successful data purge cannot hide incomplete historical assets");
         CaptureInternal(evidence, "uninstall-assets-partial", oldAssets, lines); Click(oldAssets, "关闭");
         var waitingAssets = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, deletion, true) { Assets = residualAssets with { Status = "RestartRequired" } }));

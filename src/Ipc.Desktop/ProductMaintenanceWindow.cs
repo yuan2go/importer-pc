@@ -99,6 +99,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
     void ShowResult(ProgramUninstallResult result)
     {
         Title = "菜鸟供包台 · 卸载结果"; WorkflowHeading.Text = "卸载结果";
+        HideCompletedMaintenanceProgress(); // The receipt below owns the result; a finished call is not proof that cleanup completed.
         Body.Children.Clear(); Actions.Children.Clear(); SessionActions.Children.Clear();
         var removal = result.Removal;
         var deleted = result.DataDeletion?.Status == "Purged";

@@ -45,7 +45,7 @@ public abstract partial class StartupWorkflowWindow
         UnknownOutcome = false;
         unknownMaintenanceContext = null;
     }
-    protected void HideCompletedReadOnlyProgress()
+    protected void HideCompletedMaintenanceProgress()
     {
         if (maintenanceCancellation is not null || UnknownOutcome)
             throw new InvalidOperationException("维护仍在执行或结果尚未确认，不能收起当前结果。");

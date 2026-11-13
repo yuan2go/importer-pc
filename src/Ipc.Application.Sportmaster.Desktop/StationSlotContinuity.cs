@@ -129,7 +129,9 @@ public sealed partial class SupplyStationPositionViewModel
     internal void ApplyCameraReadFeedback(Guid runtime, ParcelCameraReadFeedback value) { }
     void UpdateSlotMemory(ParcelSnapshot? snapshot, DateTimeOffset now, bool fresh, bool viewportReady)
     {
-        if (!fresh || !viewportReady || SupplyDisabled || DisplayPaused || snapshot?.RuntimeId != recentResult?.Runtime || ReaderId != recentResult?.Reader ||
+        // Display invalidation hides the summary through ShowRecentChute, but
+        // must preserve the first-shown watermark for this same operation.
+        if (snapshot?.RuntimeId != recentResult?.Runtime || ReaderId != recentResult?.Reader ||
             CurrentRound is { } current && current.Id != recentResult?.Round)
             recentResult = null;
         if (ShowConfirmedTask && Operation is { } success && CurrentRound is { } round && recentResult?.Operation != success.Id)

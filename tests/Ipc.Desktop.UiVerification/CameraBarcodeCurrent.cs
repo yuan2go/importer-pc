@@ -117,12 +117,27 @@ static partial class Program
             Check(p.CurrentRound?.Id == correcting && entry.Text == "SYNTH-CORRECTED" && !placeholder.IsVisible && h.Peer.Requests.Count == 5,
                 "a corrected unique label submits once within the same round instead of locking permanent rejection");
 
+            var successfulSnapshot = await h.App.SnapshotAsync();
+            var restoredDisplay = new SupplyStationViewModel(h.App); restoredDisplay.SetViewport(800, 420);
+            async Task RestoreDisplay(bool paused) => await restoredDisplay.AcceptPublishedSnapshotAsync(successfulSnapshot with
+            { PublishedTicks = System.Diagnostics.Stopwatch.GetTimestamp(), Paused = paused });
+            await RestoreDisplay(false);
             await SmRoundFixture.NextVehicleAsync(h.App, "left"); await vm.RefreshAsync();
             Check(p.ShowRecentChute && p.CanSubmitBarcode, "previous result retention does not reserve the next parcel's submission claim");
             var retention = System.Diagnostics.Stopwatch.StartNew();
             while (retention.Elapsed < TimeSpan.FromMilliseconds(3200)) { await vm.RefreshAsync(); await Task.Delay(80); }
             Check(!p.ShowRecentChute && p.CanSubmitBarcode && entry.Text.Length == 0 && h.Peer.Requests.Count == 5,
                 "repeated fresh snapshots do not extend previous-result retention or send a request");
+            await RestoreDisplay(true); await RestoreDisplay(false);
+            restoredDisplay.SetViewport(100, 100); await RestoreDisplay(false);
+            restoredDisplay.SetViewport(800, 420); await RestoreDisplay(false);
+            await restoredDisplay.AcceptPublishedSnapshotAsync(successfulSnapshot with
+            {
+                PublishedTicks = System.Diagnostics.Stopwatch.GetTimestamp(), Rounds = [], Inputs = [],
+                Positions = successfulSnapshot.Positions!.Select(s => s.Id == "left" ? s with { CurrentRoundId = null, CurrentOperation = null } : s).ToArray()
+            });
+            Check(!restoredDisplay.Left.ShowRecentChute && h.Peer.Requests.Count == 5,
+                "restoring the same successful operation after pause or a small viewport cannot renew its expired first-shown window");
 
             entry.Focus(); entry.Text = "INTENTIONAL-DRAFT"; entry.Select(3, 4);
             await Next(h.Left); await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-DURING-DRAFT")); await Resolved("SYNTH-DURING-DRAFT");

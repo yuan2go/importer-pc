@@ -8,7 +8,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 public sealed partial class SupplyStationPositionViewModel
 {
     ParcelReadFeedback? readFeedback;
-    sealed record RecentResult(Guid Runtime, string Reader, string Round, string Operation, string Slot, string Barcode, string Task, long ShownTicks);
+    sealed record RecentResult(Guid Runtime, string Reader, string Round, string? ArrivalGeneration, string Operation, string Slot, string Barcode, string Task, long ShownTicks);
     RecentResult? recentResult;
     DateTimeOffset? PlacementClearedAt => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.PlacementClearedAt;
     ManualWorkCardExpiry? ExpiredManualResult => null;
@@ -117,7 +117,14 @@ public sealed partial class SupplyStationPositionViewModel
         // A short-lived cue may expire while its observed identity still leads the
         // business consumer. Keep that watermark for late snapshots/new windows.
         readFeedback = value;
+        RetireRecentResultForNewRead();
         NotifySlotDisplay();
+    }
+    void RetireRecentResultForNewRead()
+    {
+        if (CurrentRound is null && readFeedback is { CandidateCount: > 0, ArrivalGeneration: { } generation } &&
+            generation == Arrival?.Generation && recentResult?.ArrivalGeneration is { } previousGeneration && generation != previousGeneration)
+            recentResult = null;
     }
     internal void ApplyReaderFeedback(Guid runtime, DeviceState value)
     {
@@ -135,12 +142,13 @@ public sealed partial class SupplyStationPositionViewModel
             CurrentRound is { } current && current.Id != recentResult?.Round)
             recentResult = null;
         if (ShowConfirmedTask && Operation is { } success && CurrentRound is { } round && recentResult?.Operation != success.Id)
-            recentResult = new(snapshot!.RuntimeId, ReaderId, round.Id, success.Id, success.Slot!, success.ParcelCode ?? "", TaskId, Stopwatch.GetTimestamp());
+            recentResult = new(snapshot!.RuntimeId, ReaderId, round.Id, round.ArrivalGeneration, success.Id, success.Slot!, success.ParcelCode ?? "", TaskId, Stopwatch.GetTimestamp());
         if (readFeedback?.RuntimeId != snapshot?.RuntimeId || readFeedback?.DeviceId != ReaderId) readFeedback = null;
         if (fastReaderState?.DeviceId != ReaderId) fastReaderState = null;
         if (fastReaderState is { } state && snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == ReaderId) is { } acknowledged &&
             acknowledged.Epoch == state.Epoch && acknowledged.UpdatedAt >= state.UpdatedAt) fastReaderState = null;
         if (snapshot?.ReadFeedbacks.SingleOrDefault(r => r.PositionId == PositionId) is { } read) ApplyReadFeedback(read);
+        RetireRecentResultForNewRead(); // A newer stream cue may precede this snapshot's round ending.
     }
     void NotifySlotDisplay()
     {

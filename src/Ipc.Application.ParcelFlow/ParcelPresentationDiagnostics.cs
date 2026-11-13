@@ -25,6 +25,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
             observation.DecodedTicks, observation.ObservedAt)
         {
             OperatorInput = operatorInput,
+            ArrivalGeneration = observation.ArrivalGeneration,
             PlacementOperationId = placementOperation,
             RetainedObservationId = retainedInput ?? ContinuingBlockedObservation(position, observation)?.Observation.Id,
             CandidateCount = observation.Codes?.Length ?? 0,

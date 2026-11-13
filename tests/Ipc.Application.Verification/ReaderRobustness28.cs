@@ -174,7 +174,7 @@ internal static class ReaderRobustness28
             await CameraRoundHarness.Until(() => Task.FromResult(entered.IsSet));
             // No stream subscription: exactly the snapshot-first/new-window path.
             await vm.RefreshAsync();
-            Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture && vm.Left.DisplaySlot != "SYNTH-CHUTE" && vm.Left.Barcode != "SYNTH-RETIRED-28" && vm.Right.ShowConfirmedTask,
+            Check(!vm.Left.ShowConfirmedTask && !vm.Left.ShowRecentChute && !vm.Left.CanViewCurrentPicture && vm.Left.DisplaySlot != "SYNTH-CHUTE" && vm.Left.Barcode != "SYNTH-RETIRED-28" && vm.Right.ShowConfirmedTask,
                 "snapshot before its UI stream cue cannot restore retired barcode, slot or picture; right position remains current");
             var snapshot = vm.Snapshot!; var frame = snapshot.CameraReads.Single(f => f.PositionId == "left"); var cue = snapshot.ReadFeedbacks.Single(r => r.PositionId == "left");
             Check(frame.Frame.FrameNumber == 3 && cue.DetectedTicks == frame.Frame.CompletedTicks && vm.Left.Input is null && vm.Left.CurrentRound is null,

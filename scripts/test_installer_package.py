@@ -55,6 +55,22 @@ class InstallerPackageTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'same frozen source'):
             installer.inspect_medium(self.path, 'b' * 40)
 
+    def test_test_channel_requires_matching_installer_and_executable(self):
+        self.files['desktop/Ipc.Desktop.Test.exe'] = self.files.pop('desktop/Ipc.Desktop.exe')
+        for name in ('BUILD-INFO.json', 'app/BUILD-INFO.json', 'desktop/BUILD-INFO.json'):
+            record = json.loads(self.files[name])
+            record['InstallationChannel'] = 'Test'
+            self.files[name] = json.dumps(record).encode()
+        self.write()
+        self.assertEqual(installer.inspect_medium(self.path, self.source, True)['ApplicationId'], 'sportmaster')
+        with self.assertRaises(ValueError):
+            installer.inspect_medium(self.path, self.source, False)
+
+    def test_production_channel_cannot_be_wrapped_as_test(self):
+        self.write()
+        with self.assertRaises(ValueError):
+            installer.inspect_medium(self.path, self.source, True)
+
     def test_reused_ui_closure_must_equal_payload_bytes(self):
         self.files['desktop/Ipc.Desktop.dll'] = b'SYNTHETIC selected desktop'
         self.files['desktop/Ipc.Assembly.dll'] = b'SYNTHETIC composition'

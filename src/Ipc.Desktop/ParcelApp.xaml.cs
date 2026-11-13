@@ -196,13 +196,14 @@ public partial class App : System.Windows.Application
 #if SPORTMASTER
             if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station) { station.ReopenOwnerAsync = ReopenStopped; station.OpenRetentionOwnerAsync = OpenRetentionStopped; station.OpenMaintenanceOwnerAsync = OpenMaintenanceStopped; station.OpenBackupSetsAsync = path => { new BackupSetsWindow(ParcelStartupServices.Maintenance(launch), path ?? @"D:\") { Owner = station }.ShowDialog(); return Task.CompletedTask; }; }
 #endif
+            if (InstallationIdentity.IsTest) window.Title = InstallationIdentity.DisplayName;
             MainWindow = window; window.Show(); startup.AllowClose = true; startup.Close(); ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
         catch (Exception ex) { await Failed(ex); }
     }
     async Task Failed(Exception error)
     {
-        selected ??= new(new(Path.Combine(AppContext.BaseDirectory, "config"), Path.Combine(WindowsStoragePaths.UserRoot, "data"), null, null), DesktopLaunchOptions.DefaultUi(ApplicationId));
+        selected ??= new(new(Path.Combine(AppContext.BaseDirectory, "config"), InstallationIdentity.DefaultLaunchDataRoot, null, null), DesktopLaunchOptions.DefaultUi(ApplicationId));
         Exception failure = error;
         try { await StopAsync(); } catch (Exception cleanup) { failure = new AggregateException("启动与清理失败，保留诊断", error, cleanup); }
         startup.Show(); MainWindow = startup;

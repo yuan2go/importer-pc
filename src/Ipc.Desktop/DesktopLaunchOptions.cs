@@ -38,7 +38,7 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
         var installed = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, applicationId, requireReady: false);
         return new(new(
             options.GetValueOrDefault("--config", installed?.ConfigurationDirectory ?? Path.Combine(AppContext.BaseDirectory, "config")),
-            options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(WindowsStoragePaths.UserRoot, "data")),
+            options.GetValueOrDefault("--data-root", installed?.DataRoot ?? InstallationIdentity.DefaultLaunchDataRoot),
             options.GetValueOrDefault("--view"), options.GetValueOrDefault("--layout"))
         { RequireRecoveryReview = recoveryChild }, ui);
     }

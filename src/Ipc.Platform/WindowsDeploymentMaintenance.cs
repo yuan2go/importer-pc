@@ -46,7 +46,7 @@ public static partial class WindowsDeploymentSetup
             state.Location.ApplicationId == application && state.Location.LifecycleOperation == operation &&
             state.Location.SourceCommit.Length == 40 && state.Location.SourceCommit.All(char.IsAsciiHexDigit);
     }
-    static string SystemKey(string application) => @"Software\Microsoft\Windows\CurrentVersion\Uninstall\ImporterPc." + application;
+    static string SystemKey(string application) => InstallationIdentity.UninstallKeyPrefix + application;
     [SupportedOSPlatform("windows")]
     static void ProjectInstalledApplication(DeploymentLocation location)
     {
@@ -54,9 +54,9 @@ public static partial class WindowsDeploymentSetup
         using var machine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
         if (location.LifecycleState != "Installed") { machine.DeleteSubKeyTree(SystemKey(location.ApplicationId), false); return; }
         using var key = machine.CreateSubKey(SystemKey(location.ApplicationId), true);
-        var executable = Path.Combine(location.MaintenanceRoot ?? location.ReleaseRoot, "desktop", "Ipc.Desktop.exe");
+        var executable = Path.Combine(location.MaintenanceRoot ?? location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable);
         var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(location.ReleaseRoot, "app", "application-release.json")));
-        key.SetValue("DisplayName", location.ApplicationId == "sportmaster" ? "菜鸟供包台" : "菜鸟供包台 · " + location.ApplicationId);
+        key.SetValue("DisplayName", location.ApplicationId == "sportmaster" ? InstallationIdentity.DisplayName : "菜鸟供包台 · " + location.ApplicationId);
         key.SetValue("DisplayVersion", release.BusinessVersion ?? "reference");
         key.SetValue("QuietUninstallString", "\"" + executable + "\" /quiet /uninstall /norestart");
         key.SetValue("EstimatedSize", (int)Math.Min(int.MaxValue, new DirectoryInfo(location.ReleaseRoot).EnumerateFiles("*", SearchOption.AllDirectories).Sum(f => f.Length) / 1024), RegistryValueKind.DWord);

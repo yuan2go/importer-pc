@@ -19,7 +19,7 @@ public static partial class DesktopRecoveryInstallation
             folder = ((dynamic)service).GetFolder("\\"); registered = ((dynamic)folder).GetTask(Plan(location).TaskName);
             var xml = XDocument.Parse((string)((dynamic)registered).Xml); XNamespace ns = xml.Root!.Name.Namespace;
             if ((string?)xml.Root?.Element(ns + "RegistrationInfo")?.Element(ns + "Source") != Owner ||
-                (string?)xml.Descendants(ns + "Command").SingleOrDefault() != Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe"))
+                (string?)xml.Descendants(ns + "Command").SingleOrDefault() != Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable))
                 throw new InvalidDataException("Scheduled recovery owner differs from installed release");
             running = ((dynamic)registered).Run(null);
         }
@@ -79,8 +79,9 @@ public static partial class DesktopRecoveryInstallation
         foreach (var path in files)
         {
             var name = Path.GetFileName(path);
-            if (name.Length is < 21 or > 30 || !name.StartsWith("Ipc.Desktop.exe.", StringComparison.OrdinalIgnoreCase) || !name.EndsWith(".dmp", StringComparison.OrdinalIgnoreCase) ||
-                !uint.TryParse(name[16..^4], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var pid) || pid == 0) continue;
+            var prefix = InstallationIdentity.DesktopExecutable + ".";
+            if (name.Length < prefix.Length + 5 || name.Length > prefix.Length + 14 || !name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) || !name.EndsWith(".dmp", StringComparison.OrdinalIgnoreCase) ||
+                !uint.TryParse(name[prefix.Length..^4], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var pid) || pid == 0) continue;
             DeploymentPaths.RequireOrdinaryAncestors(path); File.Delete(path);
         }
         if (!Directory.EnumerateFileSystemEntries(directory).Any()) Directory.Delete(directory);

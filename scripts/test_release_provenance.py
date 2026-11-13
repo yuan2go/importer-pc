@@ -68,6 +68,7 @@ class ReleaseProvenanceTests(unittest.TestCase):
             self.assertIn(self.source, (directory / 'BUILD-INFO.txt').read_text())
 
     def test_english_filename_contains_version_without_commit(self):
+        self.assertEqual(installer_name('sportmaster', '1.0.0', True), 'CainiaoSupplyStation_SM_Test_Setup_v1.0.0_win-x64.exe')
         self.assertEqual(installer_name('sportmaster', '1.4.1'), 'CainiaoSupplyStation_SM_Setup_v1.4.1_win-x64.exe')
         self.assertNotIn(self.source[:8], installer_name('sportmaster', '1.4.1'))
         self.assertEqual(installer_name('direct-plc', '4.8.2'), 'CainiaoSupplyStation_DIRECTPLC_Setup_v4.8.2_win-x64.exe')

@@ -221,7 +221,7 @@ public static partial class DesktopRecoverySupervisor
                 {
                     if (state.Launches >= policy.MaximumRestarts + 1) return Block(location, state, "Configured restart budget exhausted");
                     state = new(state.Launches + 1, "Launching", SourceCommit: location.SourceCommit, LaunchUncertain: true); Save(location, state);
-                    var executable = Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe");
+                    var executable = Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable);
                     var start = new ProcessStartInfo(executable) { UseShellExecute = false, WorkingDirectory = location.ReleaseRoot };
                     foreach (var arg in new[] { "--recovery-child", "--config", location.ConfigurationDirectory, "--data-root", location.DataRoot }) start.ArgumentList.Add(arg);
                     foreach (var arg in presentation ?? []) start.ArgumentList.Add(arg);

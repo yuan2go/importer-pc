@@ -451,7 +451,7 @@ public static partial class ParcelStartupServices
         var directory = Path.GetDirectoryName(typeof(ParcelStartupServices).Assembly.Location)!;
         var helper = Path.Combine(directory, "Ipc.Assembly.exe");
         if (!File.Exists(helper)) helper = Path.GetFullPath(Path.Combine(directory, "..", "app", "Ipc.Assembly.exe"));
-        if (request.Action == "InstallWithPreflight") helper = Path.Combine(request.Deployment!.MediaRoot, "desktop", "Ipc.Desktop.exe");
+        if (request.Action == "InstallWithPreflight") helper = Path.Combine(request.Deployment!.MediaRoot, "desktop", InstallationIdentity.DesktopExecutable);
         if (request.Action is "MediaUninstall" or "MediaConcludeInstallation" or "MediaRepairInstallation") helper = Path.Combine(request.Deployment!.MediaRoot, "app", "Ipc.Assembly.exe");
         if (!MediaCommand(request.Action) && WindowsDeploymentSetup.Current(ApplicationId) is { } installed)
             helper = Path.Combine(installed.MaintenanceRoot ?? installed.ReleaseRoot, "app", "Ipc.Assembly.exe");

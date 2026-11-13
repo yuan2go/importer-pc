@@ -50,9 +50,10 @@ def publish(output, record):
         (directory / 'BUILD-INFO.txt').write_text(text, encoding='utf-8', newline='\n')
 
 
-def installer_name(application, version):
+def installer_name(application, version, test_instance=False):
     if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+', version) or any(int(part) > 65535 for part in version.split('.')):
         raise ValueError('Installer needs a numeric three-part business version')
     if application not in MODULE_SHORT_NAMES:
         raise ValueError('Installer needs a supported selected business module')
-    return f'CainiaoSupplyStation_{MODULE_SHORT_NAMES[application]}_Setup_v{version}_win-x64.exe'
+    channel = '_Test' if test_instance else ''
+    return f'CainiaoSupplyStation_{MODULE_SHORT_NAMES[application]}{channel}_Setup_v{version}_win-x64.exe'

@@ -52,7 +52,13 @@ static partial class Program
         var navigation = (Border)window.FindName("DailyNavigation");
         var clock = (TextBlock)window.FindName("StationClock");
         var header = (Border)window.FindName("TimeHeader");
-        Check(Descendants(header).OfType<TextBlock>().Single() == clock && !Descendants(header).OfType<Button>().Any(b => b.IsVisible) && !Descendants(header).OfType<Image>().Any(), "top bar contains only the clock");
+        var testLabel = (TextBlock)window.FindName("TestInstallationLabel");
+        var visibleHeaderText = Descendants(header).OfType<TextBlock>().Where(t => t.IsVisible).ToArray();
+        Check(testLabel.Text == "测试版" && testLabel.IsVisible == InstallationIdentity.IsTest &&
+            visibleHeaderText.Length == (InstallationIdentity.IsTest ? 2 : 1) && visibleHeaderText.Contains(clock) &&
+            (!InstallationIdentity.IsTest || visibleHeaderText.Contains(testLabel)) &&
+            !Descendants(header).OfType<Button>().Any(b => b.IsVisible) && !Descendants(header).OfType<Image>().Any(),
+            "normal top bar contains only the clock; the isolated test installation also displays its test label");
         var clockRight = clock.TranslatePoint(new Point(clock.ActualWidth, 0), client).X;
         Check(clock.HorizontalAlignment == HorizontalAlignment.Right && clockRight > client.ActualWidth * .8 && clockRight <= client.ActualWidth - 8,
             "clock is right aligned in the brand-free header");

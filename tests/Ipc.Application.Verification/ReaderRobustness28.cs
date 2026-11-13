@@ -12,7 +12,7 @@ internal static class ReaderRobustness28
     static void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); Console.WriteLine("PASS READER28 " + message); }
     internal static async Task Run(string workspace, string root)
     {
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "reader28")) { StationClock = new TimeStorageFaultChecks.ManualTime() };
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "reader28"), barcodeFilter: new("", "BG-28")) { StationClock = new TimeStorageFaultChecks.ManualTime() };
         DecodeCases();
         await h.StartAsync();
         await SnapshotOrdering(h);
@@ -166,18 +166,22 @@ internal static class ReaderRobustness28
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 2) ; });
         Check(vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == 2, "no-code frame cannot retire current-round display authority");
         await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left"); await vm.RefreshAsync();
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("BG-28"), 3);
+        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 3); });
+        Check(vm.Left.ShowRecentChute && vm.Left.CurrentRound is null && h.Peer.Requests.Count == 2,
+            "an excluded bottom code on the new empty car does not erase the previous-result summary or create a parcel");
         using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
         h.App.Boundary = point => { if (point == "BeforeIngressDurable") { entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Snapshot/stream regression gate timed out"); } };
         try
         {
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEW-28"), 3);
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEW-28"), 4);
             await CameraRoundHarness.Until(() => Task.FromResult(entered.IsSet));
             // No stream subscription: exactly the snapshot-first/new-window path.
             await vm.RefreshAsync();
-            Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture && vm.Left.DisplaySlot != "SYNTH-CHUTE" && vm.Left.Barcode != "SYNTH-RETIRED-28" && vm.Right.ShowConfirmedTask,
+            Check(!vm.Left.ShowConfirmedTask && !vm.Left.ShowRecentChute && !vm.Left.CanViewCurrentPicture && vm.Left.DisplaySlot != "SYNTH-CHUTE" && vm.Left.Barcode != "SYNTH-RETIRED-28" && vm.Right.ShowConfirmedTask,
                 "snapshot before its UI stream cue cannot restore retired barcode, slot or picture; right position remains current");
             var snapshot = vm.Snapshot!; var frame = snapshot.CameraReads.Single(f => f.PositionId == "left"); var cue = snapshot.ReadFeedbacks.Single(r => r.PositionId == "left");
-            Check(frame.Frame.FrameNumber == 3 && cue.DetectedTicks == frame.Frame.CompletedTicks && vm.Left.Input is null && vm.Left.CurrentRound is null,
+            Check(frame.Frame.FrameNumber == 4 && cue.HasFormalCandidates && cue.DetectedTicks == frame.Frame.CompletedTicks && vm.Left.Input is null && vm.Left.CurrentRound is null,
                 "one snapshot carries matching frame/read watermarks even while the new durable input is not yet written");
             var reopened = new SupplyStationViewModel(h.App); reopened.SetViewport(1366, 768);
             await reopened.AcceptPublishedSnapshotAsync(snapshot, default);
@@ -191,7 +195,7 @@ internal static class ReaderRobustness28
         }
         finally { release.Set(); h.App.Boundary = null; }
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-NEW-28"; });
-        Check(h.Peer.Requests.Count == 3 && vm.Left.Input!.Observation.SourceEventId == "mvs.frame.3", "only the matched new observation and its original RCS response restore a confirmed task");
+        Check(h.Peer.Requests.Count == 3 && vm.Left.Input!.Observation.SourceEventId == "mvs.frame.4", "only the matched new observation and its original RCS response restore a confirmed task");
     }
     static void Paste(byte[] canvas, int width, byte[] data, int w, int h, int x, int y)
     { for (var row = 0; row < h; row++) data.AsSpan(row * w, w).CopyTo(canvas.AsSpan((y + row) * width + x, w)); }

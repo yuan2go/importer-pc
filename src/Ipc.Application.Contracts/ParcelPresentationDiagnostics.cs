@@ -11,6 +11,9 @@ public sealed record ParcelReadFeedback(Guid RuntimeId, string PositionId, strin
     string? SingleCode, long DetectedTicks, DateTimeOffset ObservedAt)
 {
     public bool OperatorInput { get; init; }
+    // Capture-time vehicle identity; a fast display cue never grants admission.
+    public string? ArrivalGeneration { get; init; }
+    public bool HasFormalCandidates { get; init; }
     // Application-confirmed existing placement; display only, never admission authority.
     public string? PlacementOperationId { get; init; }
     public string? RetainedObservationId { get; init; }

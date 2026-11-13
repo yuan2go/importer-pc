@@ -98,19 +98,31 @@ static partial class Program
             await Frame(h.Left, CameraRoundHarness.EmptyTray);
             Check(p.CurrentRound?.Id == currentId && p.ShowConfirmedTask, "a no-code frame is not qualified removal");
             await SmRoundFixture.NextVehicleAsync(h.App, "left"); await vm.RefreshAsync();
-            Check(p.CurrentRound is null && !p.ShowConfirmedTask && !p.ShowRecentChute && !picture.IsEnabled && !tasks.IsVisible && p.CanSubmitBarcode,
-                "confirmed vehicle change clears the current result and image without previous-chute authority");
+            Check(p.CurrentRound is null && !p.ShowConfirmedTask && p.ShowRecentChute && !picture.IsEnabled && !tasks.IsVisible && p.CanSubmitBarcode &&
+                entry.Text.Length == 0 && p.DisplaySlot == "SYNTH-CHUTE" && p.RecentChuteBarcode.Contains("SYNTH-LATEST-0004") &&
+                p.DisplayStatus.Contains("上一件") && p.DisplayNextStep == "当前：可以扫码投包" && h.Peer.Requests.Count == 4,
+                "new vehicle immediately permits input while the previous successful chute and task remain explicitly read-only for three seconds");
+            CaptureInternal(evidence, "previous-result-ready-1366", (Grid)window.FindName("ClientArea"), lines);
+            await SetClient(window, 800, 420); await vm.RefreshAsync();
+            CaptureInternal(evidence, "previous-result-ready-800", (Grid)window.FindName("ClientArea"), lines);
 
             await h.TrayAsync(h.Left, TrayPresence.Present);
             await Frame(h.Left, CameraRoundHarness.Multiple("SYNTH-MULTI-A", "SYNTH-MULTI-B"));
             var correcting = p.CurrentRound!.Id;
-            Check(p.CurrentRound.FormalCodes.Length == 2 && entry.Text.Contains("SYNTH-MULTI-A") && entry.Text.Contains("SYNTH-MULTI-B") &&
+            Check(!p.ShowRecentChute && p.CurrentRound.FormalCodes.Length == 2 && entry.Text.Contains("SYNTH-MULTI-A") && entry.Text.Contains("SYNTH-MULTI-B") &&
                 p.CenteredStateReason.Contains("多个") && picture.IsEnabled && h.Peer.Requests.Count == 4,
                 "multiple formal labels have their exact image and a correctable unsent round");
             await SetClient(window, 800, 420); CaptureInternal(evidence, "camera-round-multiple-compact", (Grid)window.FindName("ClientArea"), lines);
             await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-CORRECTED")); await Resolved("SYNTH-CORRECTED");
             Check(p.CurrentRound?.Id == correcting && entry.Text == "SYNTH-CORRECTED" && !placeholder.IsVisible && h.Peer.Requests.Count == 5,
                 "a corrected unique label submits once within the same round instead of locking permanent rejection");
+
+            await SmRoundFixture.NextVehicleAsync(h.App, "left"); await vm.RefreshAsync();
+            Check(p.ShowRecentChute && p.CanSubmitBarcode, "previous result retention does not reserve the next parcel's submission claim");
+            var retention = System.Diagnostics.Stopwatch.StartNew();
+            while (retention.Elapsed < TimeSpan.FromMilliseconds(3200)) { await vm.RefreshAsync(); await Task.Delay(80); }
+            Check(!p.ShowRecentChute && p.CanSubmitBarcode && entry.Text.Length == 0 && h.Peer.Requests.Count == 5,
+                "repeated fresh snapshots do not extend previous-result retention or send a request");
 
             entry.Focus(); entry.Text = "INTENTIONAL-DRAFT"; entry.Select(3, 4);
             await Next(h.Left); await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-DURING-DRAFT")); await Resolved("SYNTH-DURING-DRAFT");

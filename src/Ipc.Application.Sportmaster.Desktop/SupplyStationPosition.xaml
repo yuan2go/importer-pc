@@ -96,6 +96,7 @@
        <RowDefinition Height="Auto"/>
        <RowDefinition Height="*"/>
        <RowDefinition Height="Auto"/>
+       <RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
       <DockPanel x:Name="DetailedStatus" Grid.ColumnSpan="2">
        <DockPanel.Style><Style TargetType="DockPanel"><Style.Triggers><DataTrigger Binding="{Binding ShowCenteredState}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></DockPanel.Style>
@@ -156,7 +157,7 @@
         </MultiDataTrigger></Style.Triggers>
        </Style></TextBlock.Style>
       </TextBlock>
-      <TextBox x:Name="RecentChuteBarcode" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,4,0,0" MaxHeight="48"
+      <TextBox x:Name="RecentChuteBarcode" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,4,0,0" MaxHeight="48"
                Text="{Binding RecentChuteBarcode,Mode=OneWay}" Foreground="{Binding ResultForeground}"
                Background="Transparent" BorderThickness="0" Padding="0" IsReadOnly="True"
                FontSize="{x:Static type:UiTypography.Body}"

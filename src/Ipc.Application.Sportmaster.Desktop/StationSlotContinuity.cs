@@ -122,7 +122,7 @@ public sealed partial class SupplyStationPositionViewModel
     }
     void RetireRecentResultForNewRead()
     {
-        if (CurrentRound is null && readFeedback is { CandidateCount: > 0, ArrivalGeneration: { } generation } &&
+        if (CurrentRound is null && readFeedback is { HasFormalCandidates: true, ArrivalGeneration: { } generation } &&
             generation == Arrival?.Generation && recentResult?.ArrivalGeneration is { } previousGeneration && generation != previousGeneration)
             recentResult = null;
     }

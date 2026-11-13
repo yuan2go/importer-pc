@@ -20,12 +20,15 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
         if (observation.DecodedTicks <= 0 || observation.DecodedTicks > Stopwatch.GetTimestamp()) return;
         string? placementOperation = null;
         var continuing = placementOperation is not null;
+        var selection = BarcodeFiltering.Select(Effective.BarcodeFilter ?? new BarcodeFilterPolicy(""), observation.Codes, observation.CandidateIssue);
         var feedback = new ParcelReadFeedback(runtimeId, position, observation.Id, observation.DeviceId, observation.Epoch,
             observation.Codes is { Length: 1 } codes && codes[0] is { Length: > 0 and <= 4096 } single && !single.Any(char.IsControl) ? single : null,
             observation.DecodedTicks, observation.ObservedAt)
         {
             OperatorInput = operatorInput,
             ArrivalGeneration = observation.ArrivalGeneration,
+            HasFormalCandidates = selection.Outcome is not ("IncompleteCandidates" or "FilterTimeout" or "InvalidPattern") &&
+                (selection.Candidates?.Any(c => c.Outcome == "Eligible") == true || selection.SelectedCode is not null),
             PlacementOperationId = placementOperation,
             RetainedObservationId = retainedInput ?? ContinuingBlockedObservation(position, observation)?.Observation.Id,
             CandidateCount = observation.Codes?.Length ?? 0,

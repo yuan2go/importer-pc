@@ -17,7 +17,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
 {
     internal Func<string, DeploymentLocation?> CurrentInstallation { get; set; } = WindowsDeploymentSetup.Current;
     internal Func<DeploymentLocation, uint> LaunchDesktop { get; set; } = location => OrdinaryRuntimeProcess.LaunchForCurrentUser(
-        Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe"), ["--after-install"], location.ReleaseRoot);
+        Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable), ["--after-install"], location.ReleaseRoot);
     internal Func<DeploymentMedia, string, string, string, string?, string[], bool, string?, CancellationToken, WindowsDeploymentRequest> Review { get; set; } = ParcelStartupServices.Review;
     internal Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, IProgress<MaintenanceProgress>, CancellationToken, Task<DeploymentLocation>> Install { get; set; } = ParcelStartupServices.InstallWithPreflightAsync;
     internal Func<WindowsDeploymentRequest, InstallationInspection> InspectInstallation { get; set; } = ParcelStartupServices.InspectInstallation;
@@ -58,7 +58,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     readonly Button next, back, records, cancel, inspect, resumeRemoval, repairCommitted, concludeUncommitted, reviewAgain;
     bool reopenedInstallation;
     InstallationInspection? originalInspection;
-    public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · 菜鸟供包台", installation: true)
+    public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · " + InstallationIdentity.DisplayName, installation: true)
     {
         this.prepareMedia = prepareMedia;
         ConcludeInstallation = (request, progress, token) => ParcelStartupServices.ContinueInstallationAsync(media ?? throw new InvalidOperationException("请先核验完整介质。"), request, false, progress, token);
@@ -263,8 +263,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Section("安装位置");
             // New SM stations use independent D-drive locations. Existing deployments
             // and explicitly reviewed/user-entered paths retain their original authority.
-            program = InstallationFolder("程序目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? (ApplicationId == "sportmaster" ? @"D:\CainiaoSupplyStation" : WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation")) : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName), retainRegistered, InlineReviewReady);
-            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? (ApplicationId == "sportmaster" ? @"D:\ProgramData\ImporterPc\data" : Path.Combine(WindowsDeploymentSetup.MachineRoot, "data")), retainRegistered, InlineReviewReady);
+            program = InstallationFolder("程序目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? (ApplicationId == "sportmaster" ? InstallationIdentity.DefaultProgramRoot : WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation")) : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName), retainRegistered, InlineReviewReady);
+            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? (ApplicationId == "sportmaster" ? InstallationIdentity.DefaultDataRoot : Path.Combine(WindowsDeploymentSetup.MachineRoot, "data")), retainRegistered, InlineReviewReady);
             if (retainRegistered) Note("沿用本机已登记的程序和数据位置。需要迁移位置时，请先完成完整备份，再按恢复流程处理。");
             startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu };
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop };

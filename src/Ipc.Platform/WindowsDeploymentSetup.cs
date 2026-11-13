@@ -53,6 +53,7 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static void PreviewDataAccess(string dataRoot, string runtimeSid)
     {
+        InstallationIdentity.RequireDataRoot(dataRoot);
         RequireDataStorage(dataRoot);
         var data = Path.GetFullPath(dataRoot);
         if (!Directory.Exists(data)) return; // Creation uses an explicit runtime-Modify ACL.

@@ -15,11 +15,11 @@ public sealed record DesktopRecoveryPlan(string TaskName, string TaskXml, string
 public static partial class DesktopRecoveryInstallation
 {
     internal const string Owner = "ImporterPc.DesktopRecovery/1";
-    internal const string DumpKey = @"SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\Ipc.Desktop.exe";
+    internal static string DumpKey => @"SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\" + InstallationIdentity.DesktopExecutable;
     public static DesktopRecoveryPlan Plan(DeploymentLocation location)
     {
         var policy = location.Recovery ?? new DesktopRecoveryOptions(false); policy.Validate();
-        var name = "ImporterPc-" + location.ApplicationId + "-" + Wire.Hash(location.RuntimeAccountSid)[..12];
+        var name = InstallationIdentity.ProductName + "-" + location.ApplicationId + "-" + Wire.Hash(location.RuntimeAccountSid)[..12];
         var dumps = Path.Combine(WindowsDeploymentSetup.MachineRoot, "diagnostics", "crash-dumps");
         XNamespace ns = "http://schemas.microsoft.com/windows/2004/02/mit/task";
         XElement E(string key, object? content) => new(ns + key, content);
@@ -34,7 +34,7 @@ public static partial class DesktopRecoveryInstallation
             E("Principals", new XElement(ns + "Principal", new XAttribute("id", "Runtime"), E("UserId", location.RuntimeAccountSid),
                 E("LogonType", "InteractiveToken"), E("RunLevel", "LeastPrivilege"))), settings,
             new XElement(ns + "Actions", new XAttribute("Context", "Runtime"), E("Exec", new object[] {
-                E("Command", Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe")), E("Arguments", "--supervise-desktop " + location.ApplicationId),
+                E("Command", Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable)), E("Arguments", "--supervise-desktop " + location.ApplicationId),
                 E("WorkingDirectory", location.ReleaseRoot) })));
         return new(name, task.ToString(), DumpKey, dumps, location.Recovery is not null
             ? ["ScheduledTask:" + name, "HKLM64:" + DumpKey, "OwnedDumps:" + dumps, "RuntimeRecoveryRetainedWithData:" + DesktopRecoverySupervisor.StateDirectory(location), "SCMRecovery:" + ManagementModeBroker.RecoveryServiceIdentity(location.DataRoot)] : []);

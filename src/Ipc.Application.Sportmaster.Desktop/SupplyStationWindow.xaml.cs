@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
+using Ipc.Platform;
 
 namespace Ipc.Application.Sportmaster.Desktop;
 
@@ -28,6 +29,7 @@ public partial class SupplyStationWindow : Window
     public SupplyStationWindow(IParcelApplication application, string? view, string? layout, Func<Task>? stopOwner = null, SupplyStationWindow? owner = null)
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
+        TestInstallationLabel.Visibility = InstallationIdentity.IsTest ? Visibility.Visible : Visibility.Collapsed;
         ViewModel = new(application); DataContext = ViewModel; InitializePresentationFeedback(); this.stopOwner = stopOwner;
         InitializeAudio();
         ViewModel.RequestActivationAsync = RequestActivation;

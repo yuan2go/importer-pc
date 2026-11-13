@@ -35,7 +35,7 @@ def safe_name(name):
     return name
 
 
-def inspect_medium(path, source):
+def inspect_medium(path, source, test_instance=False):
     with zipfile.ZipFile(path) as archive:
         names = {}
         total = 0
@@ -64,12 +64,14 @@ def inspect_medium(path, source):
         releases = [json.loads(archive.read(area + '/application-release.json')) for area in ('app', 'desktop')]
         if any(r['SourceCommit'] != source for r in releases) or any(releases[0][key] != releases[1][key] for key in ('ApplicationId', 'BusinessVersion')):
             raise ValueError('Installer and embedded medium must use the same frozen source')
-        if releases[0]['ApplicationId'] not in ('sportmaster', 'direct-plc', 'wcs-to-plc') or 'desktop/ipc.desktop.exe' not in names:
+        if releases[0]['ApplicationId'] not in ('sportmaster', 'direct-plc', 'wcs-to-plc') or ('desktop/ipc.desktop.test.exe' if test_instance else 'desktop/ipc.desktop.exe') not in names:
             raise ValueError('Expected a complete supported Windows Application')
         if 'build-info.json' not in names or archive.getinfo(names['build-info.json']).file_size > 65536:
             raise ValueError('Expected the packaged BUILD-INFO source record')
         provenance_bytes = archive.read(names['build-info.json'])
         provenance = json.loads(provenance_bytes)
+        if (provenance.get('InstallationChannel') == 'Test') != test_instance:
+            raise ValueError('Installer installation identity differs from the medium')
         if (provenance.get('SourceCommit') != source or provenance.get('BusinessVersion') != releases[0]['BusinessVersion']
                 or provenance.get('ApplicationId') != releases[0]['ApplicationId'] or provenance.get('Target') != 'win-x64'
                 or provenance.get('BusinessModuleShortName') != MODULE_SHORT_NAMES[releases[0]['ApplicationId']]
@@ -92,13 +94,14 @@ def main():
     parser.add_argument('--media', type=Path, required=True, help='Frozen win-x64 ZIP from package-application.py')
     parser.add_argument('--output', type=Path, required=True, help='New delivery directory, or the canonical English versioned EXE path')
     parser.add_argument('--dotnet', default='dotnet')
+    parser.add_argument('--test-instance', action='store_true', help='Wrap an independent SM test medium')
     args = parser.parse_args()
     if subprocess.check_output(['git', 'status', '--porcelain', '--', 'src', 'scripts', 'Directory.Build.props', 'global.json'], cwd=ROOT, text=True).strip():
         raise ValueError('Commit installer, payload runtime and packaging sources first')
     source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    descriptor = inspect_medium(args.media.resolve(), source)
+    descriptor = inspect_medium(args.media.resolve(), source, args.test_instance)
     capture_provenance(ROOT, source, descriptor['SourceBranch'], descriptor['ApplicationId'], descriptor['BusinessVersion'], 'win-x64')
-    name = installer_name(descriptor['ApplicationId'], descriptor['BusinessVersion'])
+    name = installer_name(descriptor['ApplicationId'], descriptor['BusinessVersion'], args.test_instance)
     output = args.output.resolve()
     if output.suffix.lower() == '.exe':
         if output.name != name:
@@ -119,7 +122,7 @@ def main():
     subprocess.run([args.dotnet, 'publish', 'src/Ipc.Installer/Ipc.Installer.csproj', '-c', 'Release', '-m:1', '-nr:false', '-r', 'win-x64', '--self-contained', 'true',
                     '-p:InstallerPayload=' + str(payload), '-p:InstallerDescriptor=' + str(metadata),
                     '-p:Application=' + module, '-p:NuGetLockFilePath=packages.' + descriptor['ApplicationId'] + '.win-x64.lock.json',
-                    '-p:RestoreLockedMode=true', *build_properties(source, snapshot, artifacts),
+                    '-p:RestoreLockedMode=true', *build_properties(source, snapshot, artifacts, args.test_instance),
                     '-p:CopyOutputSymbolsToPublishDirectory=false',
                     '-p:ArtifactsPath=' + str(artifacts), '-p:InstallerBusinessVersion=' + descriptor['BusinessVersion'],
                     '-o', str(publish)], cwd=snapshot, check=True)

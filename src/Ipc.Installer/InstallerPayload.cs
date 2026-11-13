@@ -2,6 +2,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text.Json;
+using Ipc.Platform;
 
 namespace Ipc.Installer;
 
@@ -112,7 +113,7 @@ public static class InstallerPayload
             if (release.RootElement.GetProperty("SourceCommit").GetString() != descriptor.SourceCommit || release.RootElement.GetProperty("ApplicationId").GetString() != descriptor.ApplicationId || release.RootElement.GetProperty("BusinessVersion").GetString() != descriptor.BusinessVersion)
                 throw new InvalidDataException("安装包的程序版本不一致");
         }
-        var executable = Path.Combine(target, "desktop", "Ipc.Desktop.exe");
+        var executable = Path.Combine(target, "desktop", InstallationIdentity.DesktopExecutable);
         if (!File.Exists(executable)) throw new InvalidDataException("安装向导程序缺失");
         progress?.Report(new("安装文件已就绪", "", 100));
         return executable;

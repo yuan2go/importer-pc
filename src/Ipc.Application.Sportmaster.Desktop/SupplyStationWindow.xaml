@@ -47,6 +47,7 @@
    </Border.Style>
    <Grid>
     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <TextBlock x:Name="TestInstallationLabel" Text="测试版" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Warning}" VerticalAlignment="Center" Visibility="Collapsed"/>
     <TextBlock x:Name="StationClock" Grid.Column="1" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Ink}" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.Name="本机时间"/>
     <Button x:Name="MinimizeFullScreen" Grid.Column="2" Click="MinimizeFullScreen_Click" HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="最小化到任务栏" AutomationProperties.Name="最小化到任务栏">
      <Path Data="M 3,10 L 17,10" Stroke="{DynamicResource Ink}" StrokeThickness="1.7" Width="20" Height="20"/>

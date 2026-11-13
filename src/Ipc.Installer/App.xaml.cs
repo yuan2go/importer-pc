@@ -34,7 +34,7 @@ public partial class App : System.Windows.Application
         try
         {
             var preparation = new InstallerPreparation();
-            var launch = new BusinessLaunch("", Path.Combine(WindowsStoragePaths.UserRoot, "data"), null, null);
+            var launch = new BusinessLaunch("", InstallationIdentity.DefaultLaunchDataRoot, null, null);
             var window = new StartupSetupWindow(launch, preparation.PrepareAsync, preparation.BusinessVersion);
             window.Closed += (_, _) =>
             {

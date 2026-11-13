@@ -21,7 +21,7 @@ public static partial class ParcelStartupServices
             var command = InstallerCommandLine.Parse(args); operationId = command.OperationId;
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
             MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-            log = Path.GetFullPath(command.Log ?? Path.Combine(@"D:\ProgramData\ImporterPc\DeploymentLogs", command.OperationId + ".log"));
+            log = Path.GetFullPath(command.Log ?? Path.Combine(InstallationIdentity.DeploymentLogRoot, command.OperationId + ".log"));
             if (!Path.GetPathRoot(log)!.Equals(@"D:\", StringComparison.OrdinalIgnoreCase)) throw new ArgumentException("部署日志须使用D盘。");
             DeploymentPaths.RequireOrdinaryAncestors(log);
             var media = command.Action == "Uninstall" ? null : DeploymentMedia.Inspect(mediaRoot ?? throw new ArgumentException("安装或修复须使用完整安装包。"), ApplicationId);
@@ -158,11 +158,11 @@ public static partial class ParcelStartupServices
             return (receipt!.RestartRequired ? 3010 : receipt.RemainingFiles?.Length > 0 ? 1603 : 0, receipt);
         }
         if (media is null) throw new ArgumentException("安装或修复须使用完整安装包。");
-        var data = installed?.DataRoot ?? command.DataRoot ?? @"D:\ProgramData\ImporterPc\data";
+        var data = installed?.DataRoot ?? command.DataRoot ?? InstallationIdentity.DefaultDataRoot;
         if (installed is not null && command.DataRoot is not null && !Path.GetFullPath(command.DataRoot).Equals(Path.GetFullPath(data), StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("更新保留原数据根，不能静默迁移。");
         if (ApplicationId == "sportmaster") ApplicationRootOwnership.RequireWindowsStorage(data,
-            installed is null ? @"D:\CainiaoSupplyStation" : Path.GetDirectoryName(Path.GetDirectoryName(installed.ReleaseRoot))!);
+            installed is null ? InstallationIdentity.DefaultProgramRoot : Path.GetDirectoryName(Path.GetDirectoryName(installed.ReleaseRoot))!);
         var seed = installed?.ConfigurationDirectory;
         if (ApplicationId == "sportmaster")
             seed = PrepareInstallationConfiguration(installed, Path.Combine(Path.GetDirectoryName(log)!, "quiet-seed-" + command.OperationId), data);
@@ -172,7 +172,7 @@ public static partial class ParcelStartupServices
             CreateSiteSeed(media, seed, SystemParameterDefaults.InitialStationId, RunMode.Production);
         }
         var account = installed?.RuntimeAccountSid ?? MachineRuntimePolicy.SharedUsersSid;
-        var plan = Review(media, account, data, seed, null, [], false, installed is null ? @"D:\CainiaoSupplyStation" : Path.GetDirectoryName(Path.GetDirectoryName(installed.ReleaseRoot))!)
+        var plan = Review(media, account, data, seed, null, [], false, installed is null ? InstallationIdentity.DefaultProgramRoot : Path.GetDirectoryName(Path.GetDirectoryName(installed.ReleaseRoot))!)
             with
         { OperationId = command.OperationId, Shortcuts = installed?.Shortcuts ?? new(true, true) };
         if (command.Action == "Repair" && installed is null) throw new ArgumentException("未安装时不能选择修复。");

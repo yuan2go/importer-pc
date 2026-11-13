@@ -21,7 +21,7 @@ public static partial class WindowsDeploymentSetup
         RequireProtectedMaintenanceHelper(application, Path.Combine(cache, "desktop"),
             media.Files.Keys.Where(name => name.StartsWith("desktop/", StringComparison.Ordinal)).Select(name => name[8..]).ToArray());
         using var parent = Process.GetCurrentProcess();
-        return OrdinaryRuntimeProcess.LaunchForCurrentUser(Path.Combine(cache, "desktop", "Ipc.Desktop.exe"),
+        return OrdinaryRuntimeProcess.LaunchForCurrentUser(Path.Combine(cache, "desktop", InstallationIdentity.DesktopExecutable),
             ["--product-maintenance", "--wait-for-host", parent.Id.ToString(CultureInfo.InvariantCulture),
                 parent.StartTime.ToUniversalTime().Ticks.ToString(CultureInfo.InvariantCulture)], cache);
     }

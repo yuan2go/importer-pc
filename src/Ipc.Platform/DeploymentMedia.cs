@@ -49,7 +49,7 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
                     throw new InvalidDataException("Unregistered media file: " + path);
             }
         }
-        foreach (var required in new[] { "app/Ipc.Assembly.exe", "desktop/Ipc.Desktop.exe", "app/config/business.json", "desktop/config/business.json" })
+        foreach (var required in new[] { "app/Ipc.Assembly.exe", "desktop/" + InstallationIdentity.DesktopExecutable, "app/config/business.json", "desktop/config/business.json" })
             if (!files.ContainsKey(required)) throw new InvalidDataException("Incomplete Windows media: " + required);
         // Shipped operating guides, launchers and optional offline bundles stay with the installed release.
         var inventory = Path.Combine(root, "SHA256SUMS");

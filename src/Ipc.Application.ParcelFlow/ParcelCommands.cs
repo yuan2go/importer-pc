@@ -327,43 +327,58 @@ public sealed partial class ParcelRuntime
     async Task<BusinessReceipt> BackupCoreAsync(string destination, CancellationToken token)
     {
         ParcelRepository original; ParcelConfiguration effective; ParcelConfiguration? pending; ParcelOperation[] images; long bytes;
-        await gate.WaitAsync(token).ConfigureAwait(false);
+        var ownsFence = false;
+        Exception? backupFailure = null;
         try
         {
-            if (operations.Values.Any(o => o.OriginalFrame?.State == "Pending"))
-                return new("Rejected", "等待识码原图后台保存完成后再创建一致性备份；原任务和原请求保留。", repository?.Revision ?? 0);
-            if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 || backupInProgress || smCycles.Values.Any(c => c.HeartbeatPending is not null) || arrivalBoundaryWorkers.Count != 0)
-                return new("Rejected", "当前尚未满足完整备份条件。请先暂停供包、验证管理授权，并等待在途任务、设备调用或另一项备份结束；原请求和原回执保留。", repository?.Revision ?? 0);
-            original = repository; effective = Effective; pending = configuration!.Current.Pending; bytes = original.StorageBytes;
-            images = operations.Values.Where(x => x.Image is not null && !x.ImageReleased).ToArray();
-            if (!TryFenceBackupIngress())
-                return new("Rejected", "等待相机输入交付收口后再创建完整备份；预览不受影响。", repository.Revision);
-            PrepareSmHeartbeatMaintenance();
-        }
-        catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
-        { GuardBackupSourceFailure(error, "BackupSourcePreparation", knownSource: true); throw; }
-        finally { gate.Release(); }
-        try
-        {
-            try { foreach (var op in images) ValidateBackupImage(directory!, op, op.Image!, token); }
+            await gate.WaitAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (operations.Values.Any(o => o.OriginalFrame?.State == "Pending"))
+                    return new("Rejected", "等待识码原图后台保存完成后再创建一致性备份；原任务和原请求保留。", repository?.Revision ?? 0);
+                if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 || backupInProgress || configurationSaving || smCycles.Values.Any(c => c.HeartbeatPending is not null) || arrivalBoundaryWorkers.Count != 0)
+                    return new("Rejected", "当前尚未满足完整备份条件。请先暂停供包、验证管理授权，并等待在途任务、设备调用、设置保存或另一项备份结束；原请求和原回执保留。", repository?.Revision ?? 0);
+                original = repository; effective = Effective; pending = configuration!.Current.Pending; bytes = original.StorageBytes;
+                images = operations.Values.Where(x => x.Image is not null && !x.ImageReleased).ToArray();
+                if (!TryFenceBackupIngress())
+                    return new("Rejected", "等待相机输入交付收口后再创建完整备份；预览不受影响。", repository.Revision);
+                ownsFence = true;
+                PrepareSmHeartbeatMaintenance();
+            }
             catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
-            { throw new RecoveryFileFailure(RecoveryFailureOrigin.Source, "SourceImageValidation", error); }
-            ParcelRecovery.CreateBackup(directory!, destination, effective, pending, bytes,
-                path => original.Backup(path, token), factory.RegisterBackup, () => { token.ThrowIfCancellationRequested(); Management.Require(); }, token, boundary: BackupBoundary);
-            return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", original.Revision);
+            { GuardBackupSourceFailure(error, "BackupSourcePreparation", knownSource: true); throw; }
+            finally { gate.Release(); }
+            try
+            {
+                try { foreach (var op in images) ValidateBackupImage(directory!, op, op.Image!, token); }
+                catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
+                { throw new RecoveryFileFailure(RecoveryFailureOrigin.Source, "SourceImageValidation", error); }
+                ParcelRecovery.CreateBackup(directory!, destination, effective, pending, bytes,
+                    path => original.Backup(path, token), factory.RegisterBackup, () => { token.ThrowIfCancellationRequested(); Management.Require(); }, token, boundary: BackupBoundary);
+                return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", original.Revision);
+            }
+            catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
+            {
+                // The source-storage guard survives release of the temporary admission fence.
+                GuardBackupSourceFailure(error, "BackupSourceCopy");
+                throw;
+            }
         }
-        catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
-        {
-            // Fence proven source failure before releasing the backup admission fence.
-            GuardBackupSourceFailure(error, "BackupSourceCopy");
-            throw;
-        }
+        catch (Exception error) { backupFailure = error; throw; }
         finally
         {
-            await gate.WaitAsync().ConfigureAwait(false);
-            try { CompleteSmHeartbeatMaintenance(); ReleaseBackupIngress(); }
-            catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "HeartbeatMaintenanceRelease"); throw; }
-            finally { gate.Release(); }
+            if (ownsFence)
+            {
+                await gate.WaitAsync().ConfigureAwait(false);
+                try { CompleteSmHeartbeatMaintenance(); }
+                catch (Exception error)
+                {
+                    if (IsStorageError(error)) StorageFailed(error, "HeartbeatMaintenanceRelease");
+                    if (backupFailure is not null) throw new AggregateException("Backup and heartbeat cleanup failed; original evidence retained", backupFailure, error);
+                    throw;
+                }
+                finally { ReleaseBackupIngress(); gate.Release(); }
+            }
         }
     }
     readonly object stopOwnership = new();

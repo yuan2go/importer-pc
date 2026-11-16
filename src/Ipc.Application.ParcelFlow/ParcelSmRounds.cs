@@ -502,13 +502,21 @@ public sealed partial class ParcelRuntime
             if (cycle is not null) smCycles[position] = cycle;
         }
         catch { frame?.Dispose(); throw; }
-        operations[op.Id] = op; admissionPositions.TryAdd(op.AdmissionId, position); ApplySmRound(claimed); PublishInput(admitted);
-        if (frame is not null) ScheduleOriginalFrame(op, frame);
-        if (!manual && RetainInputPicture(observation, reader) is { } original) smRoundPictures[round.Id] = original;
-        if (op.FrozenConfiguration.Images is not null && reader.Source is IReaderImageCapture capture && op.Acquisition is { } identity)
-            capture.RetainAcquisition(identity, "operation:" + op.Id);
+        operations[op.Id] = op; admissionPositions.TryAdd(op.AdmissionId, position); ApplySmRound(claimed);
+        // The durable claim owns an execution before auxiliary publication can fail.
+        // It cannot enter until this command releases gate; storage failures still fence sending.
         smExecutions.Add(op.Id); activeStages.Add(op.Id + ":RoundExecution");
         auxiliary.Add(ExecuteSmRoundAsync(op.Id));
+        try
+        {
+            if (frame is not null) { ScheduleOriginalFrame(op, frame); frame = null; }
+            Boundary?.Invoke("BeforeSmInputPublication");
+            PublishInput(admitted);
+            if (!manual && RetainInputPicture(observation, reader) is { } original) smRoundPictures[round.Id] = original;
+            if (op.FrozenConfiguration.Images is not null && reader.Source is IReaderImageCapture capture && op.Acquisition is { } identity)
+                capture.RetainAcquisition(identity, "operation:" + op.Id);
+        }
+        finally { frame?.Dispose(); }
         await Task.CompletedTask;
         return new(ObservationDisposition.Admitted, admitted.Reason, op.Id, round.Id, admitted);
     }

@@ -162,8 +162,9 @@ public static partial class ParcelRecovery
                 if (declared.Application != application || declared.Database != Path.GetFileName(backup) || !ExtensionSchema.IsHash(declared.DatabaseHash))
                     throw new InvalidDataException("无法证明是所选业务的备份范围，原件保留。");
             }
-            else if (File.Exists(backup)) _ = ParcelRepository.ReadStorageVersion(backup, application, immutable: true);
-            else throw new InvalidDataException("缺少可核验的原清单和业务身份，未知恢复目录保留。");
+            // A damaged completion manifest cannot establish ownership of an existing database.
+            if (File.Exists(backup)) _ = ParcelRepository.ReadStorageVersion(backup, application, immutable: true);
+            else if (declared is null) throw new InvalidDataException("缺少可核验的原清单和业务身份，未知恢复目录保留。");
             var files = (declared?.Files.Keys ?? Enumerable.Empty<string>()).Where(n => File.Exists(RecoveryFiles.Resolve(backup + ".recovery", n)))
                 .ToDictionary(n => n, n => { authority(); return Wire.FileHash(RecoveryFiles.Resolve(backup + ".recovery", n), token); }, StringComparer.Ordinal);
             var dbHash = File.Exists(backup) ? Wire.FileHash(backup, token) : new string('0', 64);
@@ -208,11 +209,12 @@ public static partial class ParcelRecovery
         BackupSetDeletion record;
         if (File.Exists(receipt)) record = ReadSetDeletion(backup);
         else record = PlanSetDeletion(backup, application, authority, execution.Token);
+        var manifest = Wire.Decode<ParcelRecoveryManifest>(record.ManifestJson);
+        if (manifest.Application != application) throw new InvalidDataException("原删除清单不属于当前业务，原集保留。");
         if (record.Identity != expectedIdentity) throw new InvalidDataException("所选备份身份已变化，未删除文件。");
         if (record.Status == "Deleted") return new("Deleted", backup, record.Identity, "原备份删除已完成；只读返回原结果，不处理其后出现的文件。", record.Remaining);
         RequireInactiveBackup(backup);
         requireUnreferenced(record.ReferenceIdentity ?? record.Identity); authority(); execution.Checkpoint();
-        var manifest = Wire.Decode<ParcelRecoveryManifest>(record.ManifestJson);
         var recovery = backup + ".recovery";
         var files = manifest.Files.ToDictionary(f => RecoveryFiles.ResolveRecorded(recovery, f.Key), f => f.Value, StringComparer.OrdinalIgnoreCase);
         files.Add(Path.Combine(recovery, "COMPLETED.json"), record.ManifestSha256); files.Add(backup, manifest.DatabaseHash);

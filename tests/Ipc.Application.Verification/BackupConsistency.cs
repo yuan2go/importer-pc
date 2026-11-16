@@ -199,7 +199,11 @@ internal static class BackupConsistency
         h.App.BackupBoundary = phase => { if (phase == "DatabaseCopied") File.WriteAllText(original, "synthetic damaged source ledger"); };
         try
         {
-            try { await h.App.BackupAsync(destination); throw new InvalidOperationException("Damaged source accepted"); }
+            try
+            {
+                await LifecycleOptimization.AfterMonitorDrain(h.App, () => h.App.BackupAsync(destination));
+                throw new InvalidOperationException("Damaged source accepted");
+            }
             catch (RecoveryFileFailure error)
             {
                 Check(error is { Origin: RecoveryFailureOrigin.Source, Phase: "SourceChecksum", SourceBytesVerified: false } && h.App.FatalFailure.IsCompleted,

@@ -24,17 +24,23 @@ public partial class ParcelViewModel
     {
         if (!IsManagementMode) throw new UnauthorizedAccessException("请先进入管理模式。原草稿保留。");
         if (ConfigurationEditSignature() != preview.EditorSignature) throw new InvalidOperationException("预览后输入已改变；请重新比较，当前输入保留");
-        var replacements = preview.Draft.Readers.Concat(preview.Draft.Capabilities).ToDictionary(d => d.InstanceId);
-        foreach (var draft in ReaderDrafts.Select(r => r.Capability).Concat(CapabilityDrafts))
-            if (replacements.TryGetValue(draft.InstanceId, out var replacement))
-            {
-                draft.Provider = replacement.Provider;
-                foreach (var parameter in draft.Parameters)
-                    parameter.Value = replacement.Parameters.Single(p => p.Field.Key == parameter.Field.Key).Value;
-            }
+        // Reader IDs are local editor row IDs; the device target preserves camera identity.
+        var readers = preview.Draft.Readers.ToDictionary(d => d.Target);
+        foreach (var reader in ReaderDrafts.Select(r => r.Capability))
+            if (readers.TryGetValue(reader.Target, out var replacement)) Apply(reader, replacement);
+        var capabilities = preview.Draft.Capabilities.ToDictionary(d => d.InstanceId);
+        foreach (var capability in CapabilityDrafts)
+            if (capabilities.TryGetValue(capability.InstanceId, out var replacement)) Apply(capability, replacement);
         foreach (var property in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite))
             property.SetValue(StructuredPolicy, property.GetValue(preview.Draft.Policy));
         validationState = "模板已应用到草稿，须重新检查"; RebuildParameterEditor(); EditorChanged();
         Message = "模板已应用到当前草稿；未保存、未重连、未生效。";
+
+        static void Apply(CapabilityDraft draft, CapabilityDraft replacement)
+        {
+            draft.Provider = replacement.Provider;
+            foreach (var parameter in draft.Parameters)
+                parameter.Value = replacement.Parameters.Single(p => p.Field.Key == parameter.Field.Key).Value;
+        }
     }
 }

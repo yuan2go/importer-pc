@@ -35,7 +35,7 @@ public sealed partial class ParcelRuntime
                 ? new("NotSaved", "权威修订未改变；本次候选未保存，修正原因后可重试", actual.Revision, hash)
                 : new("Conflict", "配置修订已变化，保留输入；重新读取比较后再决定", actual.Revision, hash);
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or System.Text.Json.JsonException)
+        catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or System.Text.Json.JsonException)
         { return new("Unknown", "保存结果待核对：" + ex.Message, expectedRevision, ""); }
         finally { gate.Release(); }
     }

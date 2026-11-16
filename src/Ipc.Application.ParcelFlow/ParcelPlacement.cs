@@ -37,7 +37,7 @@ public sealed partial class ParcelRuntime
     }
     bool ConfirmPlacementRemoval(BusinessCommand command)
     {
-        if (Id != "sportmaster" || CurrentRound(command.Owner ?? "") is not { } round ||
+        if (Id != "sportmaster" || string.IsNullOrEmpty(command.Value) || CurrentRound(command.Owner ?? "") is not { } round ||
             PlacementRemovalOperation(round.PositionId, null, null) != command.Value) return false;
         EndSmRound(round, "OperatorConfirmedRemoval", physicallyRemoved: true, command: command); return true;
     }

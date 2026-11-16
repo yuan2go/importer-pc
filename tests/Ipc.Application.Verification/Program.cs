@@ -29,6 +29,13 @@ if (args.FirstOrDefault() == "--action" && args.ElementAtOrDefault(1) == "verify
 }
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
 var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
+if (args.Contains("--cr-sm-removal")) { await CrVerifiedSmChecks.Removal(workspace, root); return; }
+if (args.Contains("--cr-sm-dispatch")) { await CrVerifiedSmChecks.Dispatch(workspace, root); return; }
+if (args.Contains("--cr-sm-live-devices")) { await CrVerifiedSmChecks.LiveDevices(workspace, root); return; }
+if (args.Contains("--cr-sm-backup-ownership")) { await CrVerifiedSmChecks.BackupOwnership(workspace, root); return; }
+if (args.Contains("--cr-sm-backup-fences")) { await CrVerifiedSmChecks.BackupFences(workspace, root); return; }
+if (args.Contains("--cr-sm-templates")) { await CrVerifiedSmChecks.Templates(workspace, root); return; }
+if (args.Contains("--cr-sm-preferences")) { await CrVerifiedSmChecks.Preferences(workspace, root); return; }
 if (args.Contains("--mvs-presence")) { await MvsPresenceChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-single-station")) { await SmSingleStationChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-arrival-cameras")) { await Ipc.Verification.SmArrivalCameraChecks.Run(workspace, root); return; }

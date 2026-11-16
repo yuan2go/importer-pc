@@ -127,6 +127,7 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
         var confirmation = new SmHeartbeatConfirmation(false, false, [], default, default);
         try
         {
+            await InstallationResourceBoundary.RequireRcsEndpointAsync(options.Endpoint, timeout.Token).ConfigureAwait(false);
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var requestId = NextHeartbeatId(timestamp);
             if (heartbeatOwner is { } owner)

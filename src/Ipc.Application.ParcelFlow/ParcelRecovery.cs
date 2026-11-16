@@ -75,6 +75,8 @@ public static partial class ParcelRecovery
     {
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Checking);
         var source = Path.GetFullPath(databaseBackup); var target = Path.GetFullPath(newApplicationDirectory);
+        InstallationIdentity.RequireExternalFilePath(source);
+        InstallationIdentity.RequireIndependentPath(target);
         if (File.Exists(target)) throw new IOException("恢复目标被文件占用，原件保留。");
         using var sourceOwner = HoldBackupSet(source);
         var manifest = VerifyBackup(source, authority, token);
@@ -86,6 +88,7 @@ public static partial class ParcelRecovery
             Directory.GetParent(target)?.Parent?.Name != config.Effective.Mode.ToString() ||
             config.Pending is { } pending && (pending.ApplicationId != config.Effective.ApplicationId || pending.StationId != config.Effective.StationId || pending.Mode != config.Effective.Mode))
             throw new InvalidDataException("Original application/mode/directory identity must be preserved");
+        InstallationIdentity.RequireDataRoot(Directory.GetParent(target)!.Parent!.Parent!.FullName);
         RecoveryFiles.RequireOrdinaryAncestors(target);
         var expected = manifest.Files.ToDictionary(f => f.Key, f => f.Value, StringComparer.Ordinal);
         expected.Add(manifest.Application + ".db", manifest.DatabaseHash);

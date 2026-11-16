@@ -160,6 +160,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             var issues = ExtensionSchema.Validate(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor.Parameters, sdk.Parameters ?? []);
             if (issues.Length != 0) throw new InvalidDataException("驱动/" + sdk.DeviceId + ": " + string.Join("; ", issues));
             Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ValidateReaderParameters(sdk.Parameters ?? new());
+            InstallationResourceBoundary.RequireCamera(sdk.Parameters!.GetValueOrDefault("device.ip", ""), sdk.Parameters!.GetValueOrDefault("device.serial"));
         }
 #endif
         ValidateHikrobotIdentities(c);

@@ -218,7 +218,7 @@ public static partial class WindowsDeploymentSetup
             throw new InvalidOperationException("此历史构建或缓存仍是当前维护宿主，保留全部原文件。");
         // Installed hosts have fixed executable names. Do not terminate them or
         // remove their not-yet-loaded files while a maintenance process is alive.
-        foreach (var name in new[] { "Ipc.Assembly", "Ipc.Desktop", "Ipc.Installer" })
+        foreach (var name in new[] { "Ipc.Assembly", "Ipc.Desktop", "Ipc.Desktop.Test", "Ipc.Installer" })
         {
             var processes = System.Diagnostics.Process.GetProcessesByName(name);
             try
@@ -263,6 +263,7 @@ public static partial class WindowsDeploymentSetup
     {
         foreach (var area in areas)
         {
+            InstallationIdentity.RequireIndependentPath(area.Root);
             DeploymentPaths.RequireOrdinaryAncestors(area.Root);
             if (Directory.Exists(area.Root)) TrustedProgramRoots.RequireAncestors(area.Root);
             foreach (var name in area.Files.Keys)

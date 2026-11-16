@@ -38,6 +38,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsDispatchResources
         {
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, stop);
             budget.CancelAfter(options.RequestTimeoutMs);
+            await InstallationResourceBoundary.RequireRcsEndpointAsync(options.Endpoint, budget.Token).ConfigureAwait(false);
             var slot = await sendSlots.AcquireAsync(position, budget.Token).ConfigureAwait(false);
             return new DispatchPermit(this, owned, body, slot);
         }

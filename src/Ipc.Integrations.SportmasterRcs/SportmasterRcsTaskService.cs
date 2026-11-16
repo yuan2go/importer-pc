@@ -45,8 +45,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             MaxConnectionsPerServer = maximum,
             // Destination and heartbeat each supply one finite cancellation budget, including connect.
             ConnectTimeout = Timeout.InfiniteTimeSpan,
-            ConnectCallback = connect,
-            PooledConnectionLifetime = TimeSpan.FromMinutes(5)
+            ConnectCallback = connect ?? InstallationResourceBoundary.ConnectRcsAsync,
+            PooledConnectionLifetime = InstallationIdentity.IsTest ? TimeSpan.Zero : TimeSpan.FromMinutes(5)
         })
         { Timeout = Timeout.InfiniteTimeSpan };
         client = CreateClient(MaximumDestinationSends);
@@ -125,6 +125,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         lock (lifecycle) if (!running || disposed) throw new IOException("RCS client is stopped");
             using var expiry = new CancellationTokenSource(TimeSpan.FromMilliseconds(options.RequestTimeoutMs), RequestTimeForVerification);
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token, expiry.Token);
+            await InstallationResourceBoundary.RequireRcsEndpointAsync(options.Endpoint, deadline.Token).ConfigureAwait(false);
             using var content = new TrackedRequestContent(Encoding.UTF8.GetBytes(body));
             using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
             {

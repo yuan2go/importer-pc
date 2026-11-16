@@ -157,6 +157,7 @@ public static partial class ParcelRecovery
             destination = Path.GetFullPath(destination); directory = Path.GetFullPath(directory);
             origin = RecoveryFailureOrigin.Source; phase = "SourceValidation"; RecoveryFiles.RequireOrdinaryAncestors(directory);
             origin = RecoveryFailureOrigin.Destination; phase = "DestinationValidation"; RecoveryFiles.RequireOrdinaryAncestors(destination);
+            InstallationIdentity.RequireExternalFilePath(destination);
             var relative = Path.GetRelativePath(directory, destination);
             if (!Path.IsPathRooted(relative) && relative != ".." && !relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal)) throw new IOException("Backup must be outside the live application directory");
             var recovery = destination + ".recovery";

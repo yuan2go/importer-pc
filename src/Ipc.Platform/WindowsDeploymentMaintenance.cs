@@ -208,6 +208,7 @@ public static partial class WindowsDeploymentSetup
         IReadOnlyDictionary<string, string>? reviewedHashes = null)
     {
         root = Path.GetFullPath(root); DeploymentPaths.RequireOrdinaryAncestors(root);
+        InstallationIdentity.RequireIndependentPath(root);
         if (files.Length > fileBudget || files.Any(n => !ExtensionPackages.SafePath(n)) || files.Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length)
             throw new InvalidDataException("Unsafe removal inventory");
         if (!Directory.Exists(root))

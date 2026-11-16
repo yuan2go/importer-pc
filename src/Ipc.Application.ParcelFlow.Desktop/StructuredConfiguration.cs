@@ -135,7 +135,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         MaximumAgeMs = c.Weight.MaximumAgeMs.ToString(CultureInfo.InvariantCulture),
         WaitTimeoutMs = c.Weight.WaitTimeoutMs.ToString(CultureInfo.InvariantCulture),
         BackupEnabled = c.BackupSchedule is not null,
-        BackupDirectory = c.BackupSchedule?.Directory ?? (c.ApplicationId == "sportmaster" && WindowsStoragePaths.ProtectedAnchor is null ? Path.Combine(@"D:\ProgramData\ImporterPc", "backups", c.ApplicationId) : Path.Combine(WindowsStoragePaths.UserRoot, "backups", c.ApplicationId)),
+        BackupDirectory = c.BackupSchedule?.Directory ?? (InstallationIdentity.IsTest ? Path.Combine(InstallationIdentity.TestDataArea, "backups", c.ApplicationId) : c.ApplicationId == "sportmaster" && WindowsStoragePaths.ProtectedAnchor is null ? Path.Combine(@"D:\ProgramData\ImporterPc", "backups", c.ApplicationId) : Path.Combine(WindowsStoragePaths.UserRoot, "backups", c.ApplicationId)),
         BackupIntervalMinutes = c.BackupSchedule?.IntervalMinutes.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.BackupIntervalMinutes.ToString(CultureInfo.InvariantCulture),
         BackupMaximumSets = c.BackupSchedule?.MaximumSets.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.MaximumBackupSets.ToString(CultureInfo.InvariantCulture),
         UploadStrategy = c.Images?.Strategy ?? UploadStrategy.BeforeMain,

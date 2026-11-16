@@ -40,6 +40,7 @@ if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordin
 Directory.CreateDirectory(root);
 if (args.Contains("--startup-camera-dependencies")) { StartupCameraDependencies.Run(root); return; }
 if (args.Contains("--backup-set-delivery")) { await BackupSetDeliveryChecks.Run(workspace, root); return; }
+if (args.Contains("--installation-resource-boundary")) { await SportmasterRcs.InstallationBoundaryChecks(workspace, root); return; }
 if (args.Contains("--backup-consistency")) { await BackupConsistency.Run(workspace, root); return; }
 if (args.Contains("--stability-analysis")) { await StabilityAnalysis.Run(workspace, root); return; }
 if (args.Contains("--debug-no-isolation-31")) { await DebugNoIsolation31.Run(workspace, root); return; }

@@ -34,6 +34,8 @@ public sealed class InstallationIsolation
         {
             InstallationIdentity.RequireDataRoot(@"D:\ProgramData\ImporterPc\data");
             InstallationIdentity.RequireProgramRoot(@"D:\CainiaoSupplyStation");
+            Assert.ThrowsExactly<InvalidDataException>(() => InstallationIdentity.RequireDataRoot(@"D:\ProgramData\ImporterPcTest\data"));
+            Assert.ThrowsExactly<InvalidDataException>(() => InstallationIdentity.RequireProgramRoot(@"D:\CainiaoSupplyStationTest"));
         }
     }
 

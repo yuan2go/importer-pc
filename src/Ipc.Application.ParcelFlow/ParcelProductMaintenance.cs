@@ -201,6 +201,7 @@ public sealed partial class ParcelStartupMaintenance
         foreach (var backup in selections)
         {
             token.ThrowIfCancellationRequested();
+            RequireBackupSetBoundary(backup);
             using var selectionOwner = ParcelRecovery.HoldBackupSet(backup);
             var recovery = backup + ".recovery";
             BackupSetDeletion? originalDeletion = null;

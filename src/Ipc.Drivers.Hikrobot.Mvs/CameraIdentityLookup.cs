@@ -22,6 +22,7 @@ public sealed class CameraIdentityLookup : IAsyncDisposable
             // Retry the same owner before acquiring another reference. Otherwise
             // MVS's process-wide owner count could hide a failed last Finalize.
             ReleaseOwner();
+            Ipc.Platform.InstallationResourceBoundary.RequireCamera(ip);
             owner = createApi(readerEngine);
             string serial;
             try
@@ -33,6 +34,7 @@ public sealed class CameraIdentityLookup : IAsyncDisposable
                 serial = matches[0].Serial;
                 if (string.IsNullOrWhiteSpace(serial) || serial.Length > 32 || serial.Any(char.IsControl))
                     throw new InvalidDataException("相机未返回有效序列号，请检查设备后重新保存。");
+                Ipc.Platform.InstallationResourceBoundary.RequireCamera(ip, serial);
             }
             catch (Exception lookupError)
             {

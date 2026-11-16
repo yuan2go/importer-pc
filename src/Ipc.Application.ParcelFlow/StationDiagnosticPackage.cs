@@ -221,6 +221,7 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
     {
         if (!Path.IsPathFullyQualified(destination)) throw new IOException("请选择完整的诊断包路径。");
         destination = Path.GetFullPath(destination);
+        InstallationIdentity.RequireExternalFilePath(destination);
         RecoveryFiles.RequireOrdinaryAncestors(destination);
         if (OperatingSystem.IsWindows() && !string.Equals(Path.GetPathRoot(destination), @"D:\", StringComparison.OrdinalIgnoreCase))
             throw new IOException("诊断包须保存在D盘。");

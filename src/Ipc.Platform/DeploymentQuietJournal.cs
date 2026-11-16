@@ -285,6 +285,7 @@ public static partial class WindowsDeploymentSetup
 
     internal static void RequireQuietLogOutsideManagedRoots(string log, IEnumerable<string> roots)
     {
+        InstallationIdentity.RequireExternalFilePath(log);
         DeploymentPaths.RequireOrdinaryAncestors(log);
         if (roots.Any(root => TrustedProgramRoots.Contains(root, log)))
             throw new ArgumentException("部署日志须位于程序、配置、数据和机器政策根之外；不把日志写入受管库存。");

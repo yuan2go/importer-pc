@@ -66,6 +66,7 @@ public static partial class WindowsDeploymentSetup
                 Path.GetFullPath(target.ReleaseRoot).Equals(Path.GetFullPath(current.ReleaseRoot), StringComparison.OrdinalIgnoreCase))
                 return Denied("上一版本不属于本站安装或数据根。");
             _ = TrustedProgramRoots.RequireBoundary(current.ReleaseRoot);
+            InstallationIdentity.RequireProgramRoot(target.ReleaseRoot);
             _ = TrustedProgramRoots.RequireBoundary(target.ReleaseRoot);
             if (!Directory.Exists(target.ReleaseRoot) || target.MaintenanceRoot is null || !Directory.Exists(target.MaintenanceRoot) || !File.Exists(target.InventoryFile))
                 return Denied("上一部署的程序或维护缓存已清理、缺失或不可读，不能回滚。安全库存回执不能代替运行文件。");

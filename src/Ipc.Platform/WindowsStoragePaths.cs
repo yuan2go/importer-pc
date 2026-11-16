@@ -32,14 +32,16 @@ public static class WindowsStoragePaths
             // A clean workstation has no HKLM registration. Reading the built-in
             // location stays read-only; the elevated installer creates its ACLs.
             // Invalid existing registrations still fail in ReadAnchor, never fall back.
-            return ReadAnchor() ?? DefaultProtectedAnchor;
+            return ProtectedAnchorFor(InstallationIdentity.IsTest);
         }
     }
     [SupportedOSPlatform("windows")]
-    static string? ReadAnchor()
+    internal static string ProtectedAnchorFor(bool test) => ReadAnchor(test) ?? (test ? InstallationIdentity.TestProtectedAnchor : @"D:\ImporterPc");
+    [SupportedOSPlatform("windows")]
+    static string? ReadAnchor(bool test)
     {
         using var registry = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-        using var key = registry.OpenSubKey(InstallationIdentity.StorageRegistryKey);
+        using var key = registry.OpenSubKey(test ? @"SOFTWARE\ImporterPc.Test\Storage" : @"SOFTWARE\ImporterPc\Storage");
         if (key is null) return null;
         var security = key.GetAccessControl(AccessControlSections.Access | AccessControlSections.Owner);
         if (((SecurityIdentifier)security.GetOwner(typeof(SecurityIdentifier))!).Value is not ("S-1-5-18" or "S-1-5-32-544")) throw new UnauthorizedAccessException("存储路径登记须由安装管理员持有。");
@@ -48,8 +50,9 @@ public static class WindowsStoragePaths
             if (rule.AccessControlType == AccessControlType.Allow && (rule.RegistryRights & mutation) != 0 && ((SecurityIdentifier)rule.IdentityReference).Value is not ("S-1-5-18" or "S-1-5-32-544")) throw new UnauthorizedAccessException("存储路径登记可被非安装管理员修改。");
         if (key.GetValue("Root", null, RegistryValueOptions.DoNotExpandEnvironmentNames) is not string value || !Path.IsPathFullyQualified(value) || value.StartsWith(@"\\", StringComparison.Ordinal)) throw new InvalidDataException("受保护存储路径登记无效。");
         var root = Path.GetFullPath(value).TrimEnd(Path.DirectorySeparatorChar);
-        if (InstallationIdentity.IsTest && !root.Equals(DefaultProtectedAnchor, StringComparison.OrdinalIgnoreCase))
+        if (test && !root.Equals(InstallationIdentity.TestProtectedAnchor, StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("测试版受保护存储须使用独立的测试目录。");
+        if (!test) InstallationIdentity.RequireOutsideTestStorage(root);
         if (root == Path.GetPathRoot(root)?.TrimEnd(Path.DirectorySeparatorChar) || new DriveInfo(Path.GetPathRoot(root)!).DriveType != DriveType.Fixed) throw new InvalidDataException("存储目录须位于本机固定卷内。");
         RequireExistingProtectedAncestors(root);
         return root;

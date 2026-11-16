@@ -50,6 +50,9 @@ public static class InstallationIdentity
         if (!OperatingSystem.IsWindows()) return;
         DeploymentPaths.RequireOrdinaryAncestors(path);
         if (!IsTest) { RequireOutsideTestStorage(path); return; }
+        var full = CanonicalPath(path);
+        if (!new[] { TestProtectedAnchor, TestProgramRoot, TestDataArea }.Any(root => TrustedProgramRoots.Contains(CanonicalPath(root), full)))
+            throw new InvalidDataException("测试版维护操作须使用本实例独立的程序、数据和机器安全目录。");
         RequireOutsideOtherInstallation(path, InstallationResourceBoundary.OtherInstallation());
     }
 

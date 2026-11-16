@@ -49,6 +49,21 @@ public sealed class InstallationResourceIsolation
         }
     }
     [TestMethod]
+    public void MaintenanceCannotBorrowAnotherConfigurationWhenItsRegistrationIsMissing()
+    {
+        InstallationResourceBoundary.OtherInstallationForVerification = () => null;
+        if (InstallationIdentity.IsTest)
+        {
+            InstallationIdentity.RequireIndependentPath(InstallationIdentity.TestProtectedAnchor + @"\Machine\configuration\sportmaster");
+            Assert.ThrowsExactly<InvalidDataException>(() => InstallationIdentity.RequireIndependentPath(@"D:\ImporterPc\Machine\configuration\sportmaster"));
+            Assert.ThrowsExactly<InvalidDataException>(() => InstallationIdentity.RequireIndependentPath(Path.Combine(root, "unregistered-config")));
+        }
+        else
+        {
+            Assert.ThrowsExactly<InvalidDataException>(() => InstallationIdentity.RequireIndependentPath(InstallationIdentity.TestProtectedAnchor + @"\Machine\configuration\sportmaster"));
+        }
+    }
+    [TestMethod]
     public void LegacyPeerRegistrationAndPreviousDeploymentStillOwnTheirPaths()
     {
         var legacy = peer with { DataRoot = InstallationIdentity.TestDataArea + @"\data" };

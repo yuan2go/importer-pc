@@ -23,6 +23,7 @@
 
 ## 设计
 
+- [SM 双程序第一阶段边界与第二阶段剩余迁移](design/sm-dual-desktop-operator-operations-proposal.md)
 - [SM 连续供包、双证据分轮与异常取件恢复](design/sm-continuous-induction-closure-01.md)
 
 - [SM 包裹轮次与原请求生命周期](design/sm-parcel-rounds.md)

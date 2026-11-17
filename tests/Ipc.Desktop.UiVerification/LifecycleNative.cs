@@ -74,6 +74,7 @@ static partial class Program
             var b = c with { TimeoutMs = c.TimeoutMs + 1 };
             var staged = await app.StageConfigurationAsync((await app.SnapshotAsync()).Configuration.Revision, b, "LIA native controlled activation");
             Check(staged.Status == "PendingRestart", "candidate B is saved into the existing pending ledger");
+            await OpenFieldSettingsForVerification(window);
             await Until(() => vm.CanRequestActivation && vm.Snapshot?.HasPendingConfiguration == true);
             Check(vm.CanRequestActivation && vm.Snapshot!.Configuration.Pending!.TimeoutMs == b.TimeoutMs, "native activation is offered only after the saved candidate B is observed");
             await vm.RequestActivationAsync!();
@@ -81,6 +82,8 @@ static partial class Program
             Check(window.IsVisible && stopCalls == 1 && reopen == 0 && vm.Message.Contains("仍持有资源"), "failed owner stop retains the original native window and prevents reopen; visible=" + window.IsVisible + "; reopen=" + reopen + "; message=" + vm.Message);
             var originalRequests = (await app.SnapshotAsync()).Operations.ToDictionary(o => o.Id, o => Wire.Encode(o.Wcs));
             Check(originalRequests.Count == 3, "three specific original operations exist before activation");
+            await OpenFieldSettingsForVerification(window);
+            await vm.RefreshAsync();
             await vm.RequestActivationAsync!();
             await CloseCompleted(() => !window.IsVisible && reopen == 1);
             Check(!window.IsVisible && stopCalls == 2 && reopen == 1 && replacement is not null, "successful resource release permits exactly one controlled replacement");

@@ -87,14 +87,25 @@ public partial class StationSettingsWindow : Window
         try
         {
             await System.Windows.Threading.Dispatcher.Yield();
-            ConfigurationCloseGuard.CommitAndFindInvalid(editor);
-            await model.DrainAsync().WaitAsync(TimeSpan.FromSeconds(5));
-            if (session is not null) await model.ServiceAsync(() => authority.ExitManagementModeAsync(session));
-            await model.RefreshManagementModeAsync();
-            closeReady = true; Close();
+            await CloseAfterDrainAsync();
         }
         catch (Exception error) { model.Message = "设置窗口尚未关闭，原授权和输入保留：" + ChineseInterfaceText.ParameterMessage(error.Message, "授权结束或原操作收尾未确认，请再次关闭重试。"); }
         finally { closing = false; IsEnabled = true; }
+    }
+    internal async Task CloseForOwnerStopAsync()
+    {
+        if (closing || authenticating) throw new InvalidOperationException("设置窗口仍有授权或关闭操作，请等待原结果。");
+        closing = true; IsEnabled = false;
+        try { await CloseAfterDrainAsync(); }
+        finally { closing = false; IsEnabled = true; }
+    }
+    async Task CloseAfterDrainAsync()
+    {
+        ConfigurationCloseGuard.CommitAndFindInvalid(editor);
+        await model.DrainAsync().WaitAsync(TimeSpan.FromSeconds(5));
+        if (session is not null) await model.ServiceAsync(() => authority.ExitManagementModeAsync(session));
+        await model.RefreshManagementModeAsync();
+        closeReady = true; Close();
     }
     void Close_Click(object sender, RoutedEventArgs e) => Close();
     void Return_Click(object sender, RoutedEventArgs e) => (Owner as SupplyStationWindow)?.ReturnToWorkstation();

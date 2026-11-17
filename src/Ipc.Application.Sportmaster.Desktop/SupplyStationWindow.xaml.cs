@@ -139,7 +139,6 @@ public partial class SupplyStationWindow : Window
     bool activationRequested;
     async Task RequestActivation()
     {
-        if (root.settingsWindow is not null) { ViewModel.Message = "请先关闭设置，再重新打开供包台。未保存输入保留。"; return; }
         try
         {
             if (root.ReopenOwnerAsync is null) throw new InvalidOperationException("无法从这里重新打开，请稍后从桌面图标重新打开软件。");
@@ -157,12 +156,12 @@ public partial class SupplyStationWindow : Window
     {
         if (closeReady || closed) return;
         e.Cancel = true;
-        if (ActivateSettingsWindow()) { ViewModel.Message = "请先关闭设置窗口，再退出供包台。未保存输入保留。"; return; }
+        if (!activationRequested && ActivateSettingsWindow()) { ViewModel.Message = "请先关闭设置窗口，再退出供包台。未保存输入保留。"; return; }
         if (closing) return;
         closing = true;
         var generation = ++closeGeneration;
         var affected = stopOwner is null ? new[] { this } : windows.ToArray();
-        foreach (var window in affected) { if (window != this) window.closeGeneration++; window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
+        foreach (var window in affected) { if (window != this) window.closeGeneration++; window.closing = true; window.timer.Stop(); window.IsEnabled = false; if (window.settingsWindow is { } settings) settings.IsEnabled = false; }
         var ownerStopped = false;
         try
         {
@@ -180,7 +179,12 @@ public partial class SupplyStationWindow : Window
                 ViewModel.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
                 RestoreAfterClose(); return;
             }
-            if (activationRequested) await ViewModel.RequireManagementModeAsync();
+            if (activationRequested)
+            {
+                await ViewModel.RequireManagementModeAsync();
+                foreach (var window in affected)
+                    if (window.settingsWindow is { } settings) await settings.CloseForOwnerStopAsync();
+            }
             if (stopOwner is not null) { await stopOwner(); ownerStopped = true; }
             if (activationRequested && ReopenOwnerAsync is not null) await ReopenOwnerAsync();
             closeReady = true;
@@ -207,7 +211,7 @@ public partial class SupplyStationWindow : Window
             activationRequested = false;
             closing = false;
             foreach (var window in affected.Where(x => !x.closed && windows.Contains(x)))
-            { window.closing = false; window.IsEnabled = true; window.timer.Start(); }
+            { window.closing = false; window.IsEnabled = true; if (window.settingsWindow is { } settings) settings.IsEnabled = true; window.timer.Start(); }
         }
     }
 }

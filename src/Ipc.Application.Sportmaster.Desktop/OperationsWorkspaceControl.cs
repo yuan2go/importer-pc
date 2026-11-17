@@ -21,6 +21,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     readonly ContentControl page = new();
     readonly MaintenancePage parameters = new() { Audience = SmParameterAudience.Technical };
     readonly TextBlock status = Text("查看、登录和切页不暂停供包。调试须明确进入。");
+    readonly Expander authorizationPanel = new() { IsExpanded = true };
     readonly TextBox message = new() { MaxHeight = 72, Margin = new(0, 4, 0, 4) };
     readonly TextBox technicalFailure = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 140, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly Button enterDebug = new() { Content = "进入设备调试（暂停整站供包）", MinHeight = 44 };
@@ -53,6 +54,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         DataContext = model; parameters.DataContext = model;
         model.PropertyChanged += (_, change) =>
         {
+            if (change.PropertyName == nameof(model.IsManagementMode) && model.IsManagementMode) authorizationPanel.IsExpanded = false;
             if ((change.PropertyName is nameof(model.IsManagementMode) or nameof(model.Fresh)) && (!model.IsManagementMode || !model.Fresh)) Lock();
         };
         Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
@@ -72,7 +74,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             if (dialog.EnteredSessionId is { } entered) { grant = entered; model.OwnedManagementSession = entered; }
             await model.RefreshManagementModeAsync();
         }));
-        top.Children.Add(authorization); top.Children.Add(status); top.Children.Add(message);
+        authorizationPanel.Header = status; authorizationPanel.Content = authorization;
+        top.Children.Add(authorizationPanel); top.Children.Add(message);
         System.Windows.Automation.AutomationProperties.SetAutomationId(technicalFailure, "Operations.Failure");
         actions.Children.Add(technicalFailure);
         var noticeStyle = new Style(typeof(TextBox), (Style)FindResource("OperatorCopyableNotice"));

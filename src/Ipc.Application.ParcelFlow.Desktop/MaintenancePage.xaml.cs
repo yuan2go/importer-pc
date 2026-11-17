@@ -125,7 +125,7 @@ public partial class MaintenancePage : UserControl
     void BackToSettings_Click(object sender, RoutedEventArgs e) => ShowParameterEditor();
     void ShowParameterEditor()
     {
-        if (DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false }) { ShowTechnicalTool(1); return; }
+        if (Audience != SmParameterAudience.Field && DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false }) { ShowTechnicalTool(1); return; }
         TechnicalTabs.Visibility = Visibility.Collapsed; MainParameterEditor.Visibility = Visibility.Visible;
         BackToSettings.Visibility = Visibility.Collapsed; ToolTitle.Text = "未保存的修改会保留";
     }

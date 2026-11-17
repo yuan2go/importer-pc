@@ -138,10 +138,12 @@ static partial class Program
         await vm.SwitchToAdvancedConfigurationAsync();
         var reviewDraft = vm.CapabilityDrafts.Single(d => d.InstanceId == binding.InstanceId);
         foreach (var field in fields) reviewDraft.Parameters.Add(new(field, binding.Parameters[field.Key]));
+        var originalGenericDraft = vm.ConfigurationDraft;
         var candidate = Wire.Decode<ParcelConfiguration>(vm.ConfigurationDraft);
         vm.ConfigurationDraft = Wire.Encode(candidate with { Wcs = candidate.Wcs! with { Parameters = new(candidate.Wcs.Parameters) { ["reference"] = "secret:synthetic-edited" } } });
         var maskedReview = vm.GetConfigurationChangeItems().Single(c => c.TechnicalPath.EndsWith("Wcs.Parameters.reference"));
         Check(!maskedReview.Before.Contains("secret:") && !maskedReview.After.Contains("secret:"), "review masks secret-reference even without the Sensitive flag");
+        vm.ConfigurationDraft = originalGenericDraft; await vm.LoadStructuredFromJsonAsync();
         vm.ParameterAudience = SmParameterAudience.Field;
         window.Content = client; await vm.LoadCapabilitiesAsync(); editor.ShowPage(2, "左相机");
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })

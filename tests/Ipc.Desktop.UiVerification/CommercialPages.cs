@@ -25,7 +25,11 @@ static partial class Program
         {
             // Keep this deliberately corrupt offline draft isolated from the later
             // live-settings journey; retain its original bytes and refusal checks.
-            var offlineLaunch = launch with { DataRoot = Path.Combine(evidence, "offline-data") };
+            var nativeDefaults = new SportmasterFlow().InitialConfiguration();
+            var offlineConfig = config with { Reader = nativeDefaults.Reader, Topology = nativeDefaults.Topology, Wcs = nativeDefaults.Wcs, DeferredConnections = nativeDefaults.DeferredConnections };
+            var offlineConfigRoot = Path.Combine(evidence, "offline-config"); Directory.CreateDirectory(offlineConfigRoot);
+            ExtensionStore.AtomicWrite(Path.Combine(offlineConfigRoot, "business.json"), offlineConfig);
+            var offlineLaunch = launch with { ConfigurationDirectory = offlineConfigRoot, DataRoot = Path.Combine(evidence, "offline-data") };
             ManagementModeFixture.AuthorizeRoot(offlineLaunch.DataRoot);
             var draftFile = Path.Combine(offlineLaunch.DataRoot, config.Mode.ToString(), config.StationId, config.ApplicationId, "startup-maintenance/editor-draft.bin");
             Directory.CreateDirectory(Path.GetDirectoryName(draftFile)!); File.WriteAllBytes(draftFile, [1, 2, 3, 4]); var draftHash = Wire.FileHash(draftFile);
@@ -48,7 +52,7 @@ static partial class Program
             }
             Check(!Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "创建完整备份…")), "low-frequency recovery actions do not crowd the first business task");
             CheckFirstConfigurationReview(first, parameterEditor, Check);
-            foreach (var category in new[] { 1, 0, 2, 3, 4 }) await SelectSection(category);
+            foreach (var category in new[] { 1, 0, 2, 4 }) await SelectSection(category);
             Check(!Directory.GetFiles(offlineLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.GetFiles(offlineLaunch.DataRoot, "configuration.json", SearchOption.AllDirectories).Any(),
                 "first-configuration native read creates neither database nor authoritative configuration");
             await SelectSection(1);
@@ -124,31 +128,21 @@ static partial class Program
         var previousTask = parameterVm.RunAsync(() => releasePrevious.Task, "合成：经典布局首开参数前仍有任务");
         try
         {
-            Click(primary, "设备与维护");
-            Check(parameterVm.Busy && !parameterVm.HasLoadedConfiguration, "primary first settings navigation waits for the existing task without replacing it");
+            ((Button)primary.FindName("StationSettingsEntry")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Check(primary.OwnedWindows.OfType<StationSettingsWindow>().Any(w => w.IsVisible) && parameterVm.Busy && !parameterVm.HasLoadedConfiguration, "primary first settings navigation waits for the existing task without replacing it");
         }
         finally { releasePrevious.TrySetResult(); await previousTask; }
-        for (var i = 0; i < 100 && (parameterVm.Busy || !parameterVm.HasLoadedConfiguration); i++) await Task.Delay(50);
-        Check(!parameterVm.Busy && parameterVm.HasLoadedConfiguration, "native parameter loading completes before automatic candidate review: " + parameterVm.Message);
-        var maintenance = (MaintenancePage)page.Content;
-        var tools = Descendants(maintenance).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>())
-            .Single(m => m.Items.OfType<MenuItem>().Any(i => Equals(i.Header, "暂存未完成的设置")));
-        try
-        {
-            tools.IsSubmenuOpen = true; primary.UpdateLayout(); await System.Windows.Threading.Dispatcher.Yield();
-            var actions = tools.Items.OfType<MenuItem>().ToArray();
-            Check(actions.Single(i => Equals(i.Header, "暂存未完成的设置")).Visibility == Visibility.Collapsed &&
-                actions.Single(i => Equals(i.Header, "继续编辑暂存的设置")).Visibility == Visibility.Collapsed,
-                "current SM daily settings hides stashed-draft tools; in-window candidate preservation is checked below");
-        }
-        finally { tools.IsSubmenuOpen = false; }
+        var fieldSettings = await OpenFieldSettingsForVerification(primary);
+        Check(!parameterVm.Busy && parameterVm.HasLoadedConfiguration, "native field loading completes before automatic candidate review: " + parameterVm.Message);
+        var maintenance = (MaintenancePage)((ContentControl)fieldSettings.FindName("EditorHost")).Content;
+        Check(!((FrameworkElement)maintenance.FindName("MoreTools")).IsVisible, "field settings expose no retired technical or stashed-draft tools");
         Check(maintenance.NavigateToParameter("StationCode"), "primary parameter directory resolves StationCode in the loaded candidate");
         await primary.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         primary.UpdateLayout();
         var stationInput = Descendants(maintenance).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "StationCode");
         var originalStation = stationInput.Text; stationInput.Text = "NATIVE-REVIEW";
         var configurationRevision = (await runtime.SnapshotAsync()).Configuration.Revision;
-        await ObserveSaveReviewAsync(primary, maintenance, dialog =>
+        await ObserveSaveReviewAsync(fieldSettings, maintenance, dialog =>
         {
             Check(!parameterVm.Busy && parameterVm.IsManagementMode && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
                 !Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible),
@@ -157,6 +151,7 @@ static partial class Program
         Check(stationInput.Text == "NATIVE-REVIEW" && (await runtime.SnapshotAsync()).Configuration.Revision == configurationRevision,
             "canceling native save review preserves the edited field and never stages the candidate");
         stationInput.Text = originalStation;
+        fieldSettings.Close(); await Task.Delay(200);
 
         Check((await runtime.SnapshotAsync()).RuntimeId == identity, "history/settings/account window actions never reconstruct the business runtime");
         lines.Add("NOT_RUN target client 1440x900 and target touch/DPI/reader hardware: current host work area " + SystemParameters.WorkArea + "; original full matrix assertion remains unchanged.");

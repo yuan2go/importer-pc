@@ -67,6 +67,7 @@ internal static partial class Program
                 Check(!model.HasUnsavedConfiguration && !model.HasUnsavedDisplayPreferences,
                     "opening professional parameters creates no phantom dirty draft; business=" + model.HasUnsavedConfiguration + "; preferences=" + model.HasUnsavedDisplayPreferences);
                 var authorizationPanel = (Expander)typeof(OperationsWorkspaceControl).GetField("authorizationPanel", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(workspace)!;
+                await Until(() => !authorizationPanel.IsExpanded && authorizationPanel.Header is string value && value.StartsWith("已授权", StringComparison.Ordinal));
                 Check(!authorizationPanel.IsExpanded && authorizationPanel.Header is string heading && heading.StartsWith("已授权", StringComparison.Ordinal), "authorized native header shows actual status and folds account actions");
                 var editor = Visuals(window).OfType<MaintenancePage>().Single();
                 Check(editor.Audience == Ipc.Application.Contracts.SmParameterAudience.Technical, "operations reuses the existing complete editor in technical scope");

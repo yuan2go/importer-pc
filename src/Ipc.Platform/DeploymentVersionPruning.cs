@@ -207,6 +207,7 @@ public static partial class WindowsDeploymentSetup
         var current = Current(actual.ApplicationId)!;
         using var rootOwnership = actual.ApplicationId == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(actual.ApplicationId, current.DataRoot) : null;
         RequirePruneExcludesCurrent(actual, current);
+        using var programUse = DeploymentProgramUse.MaintainRoots(actual.Delete.Select(a => a.Root));
         RequirePruneNotExecuting(actual.Delete.Select(a => a.Root));
         RequireProtectedPruneFiles(actual.Delete);
         return ApplyVersionPruning(record, path, () => Wire.FileHash(Registration(actual.ApplicationId)),
@@ -220,7 +221,7 @@ public static partial class WindowsDeploymentSetup
             throw new InvalidOperationException("此历史构建或缓存仍是当前维护宿主，保留全部原文件。");
         // Installed hosts have fixed executable names. Do not terminate them or
         // remove their not-yet-loaded files while a maintenance process is alive.
-        foreach (var name in new[] { "Ipc.Assembly", "Ipc.Desktop", "Ipc.Desktop.Test", "Ipc.Installer" })
+        foreach (var name in new[] { "Ipc.Assembly", "Ipc.Desktop", "Ipc.Desktop.Test", "Ipc.Operations.Desktop", "Ipc.Operations.Desktop.Test", "Ipc.Installer" })
         {
             var processes = System.Diagnostics.Process.GetProcessesByName(name);
             try
@@ -384,6 +385,7 @@ public static partial class WindowsDeploymentSetup
             using var otherLeases = AcquireOtherPurgeDeployments(application, MachineRoot);
             RequirePruneExcludesCurrent(record.Plan, current);
             foreach (var reference in ReadVersionReferences(Path.Combine(MachineRoot, "deployments"))) RequirePruneExcludesCurrent(record.Plan, reference);
+            using var programUse = DeploymentProgramUse.MaintainRoots(record.Plan.Delete.Select(a => a.Root));
             RequirePruneNotExecuting(record.Plan.Delete.Select(a => a.Root));
             RequireProtectedPruneFiles(record.Plan.Delete);
             return ApplyVersionPruning(record, path, () => Wire.FileHash(Registration(application)),

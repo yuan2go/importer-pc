@@ -1,6 +1,6 @@
 using Ipc.Application.Contracts;
 
-namespace Ipc.Application.ParcelFlow;
+namespace Ipc.Diagnostics;
 
 public sealed partial class SoftwareLogReader
 {
@@ -40,7 +40,7 @@ public sealed partial class SoftwareLogReader
             if (e.At is { } at) { first = first is null || at < first ? at : first; last = last is null || at > last ? at : last; }
             if (!more && Match(e, s.Query, matcher) && position++ >= skip) { if (page.Count == 200) more = true; else page.Add(e); }
         }
-        s.Earliest = first; s.Latest = last; management.Require(); token.ThrowIfCancellationRequested();
+        s.Earliest = first; s.Latest = last; authorize(); token.ThrowIfCancellationRequested();
         return new(id, page.ToArray(), more, Notices(s));
     }
     async Task<SoftwareLogContext> StreamContext(Selection s, SoftwareLogLocation location, int before, int after, CancellationToken token)
@@ -60,7 +60,7 @@ public sealed partial class SoftwareLogReader
             else { prior.Enqueue(e); if (prior.Count > before) prior.Dequeue(); }
         }
         if (!found) throw new IOException("所选原日志不在保留快照中，请重新查询。");
-        management.Require(); token.ThrowIfCancellationRequested();
+        authorize(); token.ThrowIfCancellationRequested();
         return new(result.ToArray(), [.. Notices(s), .. (prior.Count < before || after > 0 ? new[] { "已到保留文件边界，部分上下文不可取得。" } : Array.Empty<string>())]);
     }
 }

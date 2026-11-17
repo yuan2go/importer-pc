@@ -5,11 +5,22 @@ using System.Text.RegularExpressions;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 
-namespace Ipc.Application.ParcelFlow;
+namespace Ipc.Diagnostics;
 
 // Read-only snapshots pin the actual file objects across rename/delete rotation. No business lock.
-public sealed partial class SoftwareLogReader(string diagnostics, LocalManagementMode management, string? securityDiagnostics = null, string? protectedRoot = null) : IDisposable
+public sealed partial class SoftwareLogReader : IDisposable
 {
+    readonly string diagnostics;
+    readonly string? securityDiagnostics, protectedRoot;
+    readonly Func<CancellationToken> authorize;
+    readonly LocalManagementMode? management;
+    public SoftwareLogReader(string diagnostics, LocalManagementMode management, string? securityDiagnostics = null, string? protectedRoot = null)
+        : this(diagnostics, management.Require, securityDiagnostics, protectedRoot) { this.management = management; }
+    // The caller supplies the actual read authority. This path cannot export or read authentication logs.
+    public static SoftwareLogReader OperationalReadOnly(string diagnostics, Func<CancellationToken> authorize)
+        => new(diagnostics, authorize, null, null);
+    SoftwareLogReader(string diagnostics, Func<CancellationToken> authorize, string? securityDiagnostics, string? protectedRoot)
+    { this.diagnostics = diagnostics; this.authorize = authorize; this.securityDiagnostics = securityDiagnostics; this.protectedRoot = protectedRoot; }
     internal long ScannedLines;
     internal Action? BeforeSourceRead { get; set; }
     sealed record Source(string Id, string Name, FileStream Stream, long Length)
@@ -84,7 +95,7 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
     static string Redact(string text) => DiagnosticText.Protect(text);
     ReadLease Get(string id)
     {
-        management.Require();
+        authorize();
         lock (sync)
         {
             ObjectDisposedException.ThrowIf(disposed, this); PruneLocked();
@@ -94,7 +105,7 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
     }
     string Select(SoftwareLogQuery q)
     {
-        var authority = management.Require();
+        var authority = authorize();
         q = Ipc.Platform.Wire.Decode<SoftwareLogQuery>(Ipc.Platform.Wire.Encode(q));
         if (q.Levels is null || q.Sources is null || q.Levels.Length > 6 || q.Sources.Length > 32 || q.Levels.Any(x => x is null || x.Length > 32) || q.Sources.Any(x => x is null || x.Length > 128) || q.OperationId is not null && !Guid.TryParseExact(q.OperationId, "N", out _)) throw new InvalidDataException("日志筛选超出预算或作业身份无效");
         if (q.From >= q.ToExclusive || q.ToExclusive - q.From > TimeSpan.FromDays(3660) || q.Keyword.Length > 2048 || q.Level.Length > 32 || q.Source.Length > 128) throw new InvalidDataException("请检查时间范围和检索条件长度。");
@@ -156,7 +167,7 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
             if (index.Streaming) return await StreamQuery(s, id, skip, budget.Token).ConfigureAwait(false);
             List<SoftwareLogEntry> page = []; var check = AuthorityCheck(budget.Token);
             foreach (var row in index.Matches.Skip(skip).Take(200)) { check(); page.Add(await ReadRow(s, index.Rows[row], budget.Token).ConfigureAwait(false)); }
-            management.Require(); budget.Token.ThrowIfCancellationRequested();
+            authorize(); budget.Token.ThrowIfCancellationRequested();
             return new(id, page.ToArray(), index.Matches.Length > (long)skip + page.Count, Notices(s));
         }
         catch { if (selection is null) Release(id); throw; }
@@ -181,11 +192,12 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
         while (end + 1 < index.Rows.Length && end - found < after && s.Sources[index.Rows[end + 1].Source].Name.Split('/')[0] == group) end++;
         List<SoftwareLogEntry> result = []; var check = AuthorityCheck(budget.Token);
         for (var i = start; i <= end; i++) { check(); result.Add(await ReadRow(s, index.Rows[i], budget.Token).ConfigureAwait(false)); }
-        management.Require(); budget.Token.ThrowIfCancellationRequested();
+        authorize(); budget.Token.ThrowIfCancellationRequested();
         return new(result.ToArray(), [.. Notices(s), .. (found - start < before || end - found < after ? new[] { "已到保留文件边界，部分上下文不可取得。" } : Array.Empty<string>())]);
     }
     public async Task<long> ExportAsync(string id, string destination, bool range, int context, CancellationToken token)
     {
+        if (management is null) throw new UnauthorizedAccessException("只读日志入口不提供导出权限。");
         if (context is < 0 or > 200) throw new InvalidDataException("导出上下文范围为0～200条。");
         using var lease = Get(id); var s = lease.Value; using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, s.Authority, s.Lifetime.Token); budget.CancelAfter(TimeSpan.FromMinutes(5));
         _ = await IndexAsync(s, budget.Token).ConfigureAwait(false); ValidateLengths(s);

@@ -68,7 +68,8 @@ SPORTMASTER_GUIDES = {**{path: name for path, name in PARCEL_GUIDES.items() if p
     'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
     'docs/runtime/rcs-heartbeat-01.md': 'RCS-HEARTBEAT.md',
     'docs/runtime/windows-client-compatibility-01.md': 'WINDOWS-COMPATIBILITY.md',
-    'docs/runtime/mvs-software-reader-01.md': 'MVS-SOFTWARE-READER.md'}
+    'docs/runtime/mvs-software-reader-01.md': 'MVS-SOFTWARE-READER.md',
+    'docs/design/sm-readonly-operations.md': 'SM-OPERATIONS.md'}
 
 ALL_GUIDES = {**PARCEL_GUIDES, **GUIDES, **SPORTMASTER_GUIDES}
 

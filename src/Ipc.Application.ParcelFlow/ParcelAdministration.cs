@@ -1,3 +1,4 @@
+using Ipc.Diagnostics;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
@@ -39,20 +40,24 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration, ISoftwar
     void InvalidateManagementStatus() { lock (readOwnership) managementStatusRead = null; }
     public Task ConfigureManagementPasswordAsync(string password) => OwnedAdministration(async token =>
     { await new ParcelManagementMode(launch.DataRoot, ManagementPasswordSetupApproval).ConfigureManagementPasswordAsync(password).ConfigureAwait(false); InvalidateManagementStatus(); Diagnostic("管理模式", "管理密码已设置"); return true; });
-    public Task<bool> EnterManagementModeAsync(string password) => OwnedAdministration(async token =>
+    public async Task<bool> EnterManagementModeAsync(string password) => await EnterManagementSessionAsync(password).ConfigureAwait(false) is { Authorized: true };
+    public Task<ManagementModeStatus?> EnterManagementSessionAsync(string password) => OwnedAdministration(async token =>
     {
-        var accepted = Management.Enter(password); InvalidateManagementStatus();
+        var grant = Management.EnterSession(password); var accepted = grant is { Authorized: true }; InvalidateManagementStatus();
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
             Diagnostic("管理模式", accepted ? "已进入管理模式" : "管理密码验证失败", accepted ? "信息" : "警告");
-            repository?.Commit(null, accepted ? "ManagementModeEntered" : "ManagementModeEnterFailed", accepted ? Wire.Encode(new { Authorization = Management.Evidence, Operator = currentOperator }) : "Credential rejected");
-            return accepted;
+            var evidence = grant is { Authorized: true, SessionId: { } id, ExpiresAt: { } until } ? new ManagementModeEvidence(id, until.AddMinutes(-15), until) : null;
+            repository?.Commit(null, accepted ? "ManagementModeEntered" : "ManagementModeEnterFailed", accepted ? Wire.Encode(new { Authorization = evidence, Operator = currentOperator }) : "Credential rejected");
+            return grant;
         }
         finally { gate.Release(); }
     });
     public Task ExitManagementModeAsync()
         => OwnedAdministration(_ => { Management.Exit(); InvalidateManagementStatus(); InvalidatePresentation(); Diagnostic("管理模式", "已退出管理模式"); return Task.FromResult(true); });
+    public Task ExitManagementModeAsync(string expectedSessionId)
+        => OwnedAdministration(_ => { Management.Exit(expectedSessionId); InvalidateManagementStatus(); InvalidatePresentation(); return Task.FromResult(true); });
     public Task<ManagementModeStatus> RenewManagementModeAsync() => OwnedAdministration(async token =>
     {
         var status = Management.Renew(); InvalidateManagementStatus();

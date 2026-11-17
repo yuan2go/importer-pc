@@ -1,3 +1,4 @@
+using Ipc.Diagnostics;
 using System.Diagnostics;
 using System.Text.Json;
 using Ipc.Application.Contracts;

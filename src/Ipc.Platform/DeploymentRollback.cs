@@ -130,6 +130,7 @@ public static partial class WindowsDeploymentSetup
         if (File.Exists(file)) throw new InstallationOutcomeUnknownException("原回退记录已存在，请核对该次结果，不重复提交。");
         var actual = PlanRollbackCore(application, reviewed.OperationId);
         if (!actual.Allowed || actual.Identity != reviewed.Identity) throw new InvalidOperationException("回退计划已变化或不再兼容，请重新核对。");
+        using var programUse = application == "sportmaster" ? DeploymentProgramUse.Maintain(actual.Current) : null;
         using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, actual.Current.DataRoot) : null;
         var after = actual.Target! with
         {

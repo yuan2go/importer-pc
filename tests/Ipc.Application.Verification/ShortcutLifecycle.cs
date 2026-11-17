@@ -78,15 +78,24 @@ static class ShortcutLifecycle
             var old = Release(directory) with { Shortcuts = new(true, true) };
             var menu = Path.Combine(directory, "菜单"); var desktop = Path.Combine(directory, "桌面");
             var plan = DeploymentShortcuts.Plan(old, menu, desktop);
-            Check(plan.Where(e => e.Arguments == "").All(e => Path.GetFileName(e.Path) == "菜鸟供包台.lnk") &&
+            Check(plan.Length == 3 && plan.All(e => e.Arguments == "") && plan.Count(e => Path.GetFileName(e.Path) == "菜鸟供包台.lnk") == 2 &&
+                plan.Single(e => Path.GetFileName(e.Path) == "供包运维工具.lnk").Target == Path.Combine(old.ReleaseRoot, "desktop", "Ipc.Operations.Desktop.exe") &&
                 plan.All(e => !e.Path.Contains("sportmaster") && !e.Path.Contains(old.SourceCommit[..8])), "start menu and desktop use the plain product name without internal identities");
             var legacy = Path.Combine(menu, "菜鸟供包台", "菜鸟供包台 · SM供包业务 · sportmaster · " + old.SourceCommit[..8] + " · " + Path.GetFileName(old.ReleaseRoot)[^8..] + " · 运行.lnk");
             Directory.CreateDirectory(Path.GetDirectoryName(legacy)!); Write(plan[0] with { Path = legacy });
+            var oldRepair = plan[0] with { Path = Path.Combine(menu, "菜鸟供包台", "菜鸟供包台 · 启动修复.lnk"), Arguments = "--maintenance" };
+            Write(oldRepair);
+            var changedSetup = plan[0] with { Path = Path.Combine(menu, "菜鸟供包台", "菜鸟供包台 · 安装维护.lnk"), Target = Path.Combine(directory, "user-retargeted.exe"), Arguments = "--setup" };
+            Write(changedSetup); var changedHash = Wire.FileHash(changedSetup.Path);
             DeploymentShortcuts.Create(old, menu, desktop);
+            Check(!File.Exists(oldRepair.Path) && Wire.FileHash(changedSetup.Path) == changedHash, "replaced owned repair entry is removed while user-retargeted maintenance entry is preserved");
             Check(!File.Exists(legacy) && plan.All(e => File.Exists(e.Path)), "same-version repair replaces the registered long-name entry without leaving a duplicate");
             var next = Release(Path.Combine(directory, "新版本")) with { SourceCommit = new string('b', 40), DataRoot = old.DataRoot, Shortcuts = new(true, true) };
             DeploymentShortcuts.Create(next, menu, desktop, old); DeploymentShortcuts.Remove(old, menu, desktop);
             Check(DeploymentShortcuts.Plan(next, menu, desktop).All(e => ReadTarget(e.Path) == e.Target), "upgrade retargets all stable entries and old-installation cleanup preserves the new links");
+            DeploymentShortcuts.Create(next with { Shortcuts = new(false, false) }, menu, desktop, next);
+            Check(DeploymentShortcuts.Plan(next, menu, desktop).All(e => !File.Exists(e.Path)) && Wire.FileHash(changedSetup.Path) == changedHash,
+                "unchecking menu and desktop removes both owned app entries while preserving the user-retargeted legacy link");
         });
         Scenario("historical-and-missing-target", directory =>
         {
@@ -180,7 +189,7 @@ static class ShortcutLifecycle
             Directory.CreateDirectory(Path.GetDirectoryName(plan[2].Path)!);
             File.WriteAllText(plan[2].Path, "user file preserved"); var hash = Wire.FileHash(plan[2].Path);
             Reject(() => DeploymentShortcuts.Create(location, menu, desktop), "projection failure is reported after earlier entries were created");
-            Check(File.Exists(plan[0].Path) && File.Exists(plan[1].Path) && !File.Exists(plan[3].Path) && Wire.FileHash(plan[2].Path) == hash,
+            Check(plan.Length == 3 && File.Exists(plan[0].Path) && File.Exists(plan[1].Path) && Wire.FileHash(plan[2].Path) == hash,
                 "partial projection retains completed entries and original conflicting bytes");
             var retained = plan[2].Path + ".preserved";
             File.Move(plan[2].Path, retained); // Explicit fixture-owner conflict resolution, never product auto-adoption.

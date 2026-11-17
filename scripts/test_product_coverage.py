@@ -37,8 +37,8 @@ class ProductCoverage(unittest.TestCase):
         ET.SubElement(ET.SubElement(duplicate, 'lines'), 'line', number='1', hits='2')
         ET.ElementTree(root).write(path)
         result = analyze(path)
-        self.assertEqual(8, result['total']['valid'])
-        self.assertEqual(8, result['total']['covered'])
+        self.assertEqual(9, result['total']['valid'])
+        self.assertEqual(9, result['total']['covered'])
         self.assertFalse(result['wholeProductCoverage'])
         self.assertFalse(result['testAssembliesIncluded'])
 

@@ -93,6 +93,7 @@ public static partial class WindowsDeploymentSetup
         RequireNoUnresolvedInstallation(location.ApplicationId, null);
         RequireNoUnresolvedLifecycle(location.ApplicationId);
         _ = TrustedProgramRoots.RequireBoundary(location.ReleaseRoot);
+        using var programUse = DeploymentProgramUse.Maintain(location);
         var files = CameraInventory(location);
         // Inspect the entire independent cache before it is trusted as repair media.
         var media = DeploymentMedia.Inspect(location.MaintenanceRoot!, location.ApplicationId);

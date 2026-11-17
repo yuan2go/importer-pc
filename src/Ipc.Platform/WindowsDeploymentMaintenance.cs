@@ -143,6 +143,7 @@ public static partial class WindowsDeploymentSetup
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         if (Wire.FileHash(Registration(application)) != expectedHash) throw new InvalidOperationException("部署登记变化；重新检查卸载计划");
         var location = Current(application) ?? throw new InvalidDataException("没有可核验的原部署");
+        using var programUse = application == "sportmaster" ? DeploymentProgramUse.Maintain(location) : null;
         using var rootOwnership = application == "sportmaster" && !withoutBusinessInspection ? ApplicationRootOwnership.AcquireMaintenance(application, location.DataRoot) : null;
         var sid = new SecurityIdentifier(location.RuntimeAccountSid);
         var operation = location.LifecycleState != "Installed" && location.MaintenanceOperation is not null ? location.MaintenanceOperation : RemovalOperationFile(application, operationId ?? Wire.Id());

@@ -140,6 +140,7 @@ public static partial class WindowsDeploymentSetup
             if (Wire.FileHash(trust) != request.TrustSha256) throw new InvalidDataException("Selected independent trust policy changed");
             _ = ReadTrust(trust, request.Mode);
         }
+        using var programUse = request.ApplicationId == "sportmaster" ? DeploymentProgramUse.Maintain(Current(request.ApplicationId)) : null;
         if (execution is { Committing: false }) execution.BeginCommit(MaintenanceStage.InstallingMachine);
         else execution?.Report(MaintenanceStage.InstallingMachine);
         MachineRuntimeSetup.InstallForAccount(request.RuntimeAccountSid);

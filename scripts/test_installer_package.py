@@ -93,11 +93,16 @@ class InstallerPackageTests(unittest.TestCase):
     def test_reused_ui_closure_must_equal_payload_bytes(self):
         self.files['desktop/Ipc.Desktop.dll'] = b'SYNTHETIC selected desktop'
         self.files['desktop/Ipc.Assembly.dll'] = b'SYNTHETIC composition'
+        self.files['desktop/Ipc.Operations.Desktop.dll'] = b'SYNTHETIC independent observer entry'
+        self.files['desktop/Ipc.Presentation.Wpf.dll'] = b'SYNTHETIC shared native theme'
         self.write()
         binaries = self.path.parent / 'binaries'; binaries.mkdir()
-        for name in ('Ipc.Desktop.dll', 'Ipc.Assembly.dll'):
+        for name in ('Ipc.Desktop.dll', 'Ipc.Assembly.dll', 'Ipc.Presentation.Wpf.dll'):
             (binaries / name).write_bytes(self.files['desktop/' + name])
         installer.verify_shared_binaries(self.path, binaries)
+        (binaries / 'Ipc.Presentation.Wpf.dll').write_bytes(b'OTHER THEME')
+        with self.assertRaisesRegex(ValueError, 'bytes differ'): installer.verify_shared_binaries(self.path, binaries)
+        (binaries / 'Ipc.Presentation.Wpf.dll').write_bytes(self.files['desktop/Ipc.Presentation.Wpf.dll'])
         (binaries / 'Ipc.Assembly.dll').write_bytes(b'OTHER SOURCE')
         with self.assertRaisesRegex(ValueError, 'bytes differ'): installer.verify_shared_binaries(self.path, binaries)
         (binaries / 'Ipc.Assembly.dll').unlink()

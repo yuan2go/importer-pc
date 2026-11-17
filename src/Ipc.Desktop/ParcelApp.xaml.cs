@@ -11,6 +11,9 @@ namespace Ipc.Desktop;
 public partial class App : System.Windows.Application
 {
     IBusinessRuntime? runtime;
+#if SPORTMASTER
+    Ipc.Operations.OperationsServer? operations;
+#endif
     ParcelStartupWindow startup = null!;
     DesktopLaunchOptions? selected;
     bool recoveryChild;
@@ -182,6 +185,16 @@ public partial class App : System.Windows.Application
             await Ipc.Application.ParcelFlow.Desktop.WorkstationEntry.BeginRuntimeAsync(application);
             var initial = await Task.Run(application.SnapshotAsync);
             crashDiagnostics.SetContext(initial.RuntimeId.ToString(), string.Join(",", initial.Devices?.Select(d => d.DeviceId + ":" + d.Epoch) ?? []), initial.State);
+            #if SPORTMASTER
+            try
+            {
+                if (DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId, requireReady: false) is { } currentInstallation &&
+                    Path.GetFullPath(launch.DataRoot).Equals(Path.GetFullPath(currentInstallation.DataRoot), StringComparison.OrdinalIgnoreCase) &&
+                    Path.GetFullPath(launch.ConfigurationDirectory).Equals(Path.GetFullPath(currentInstallation.ConfigurationDirectory), StringComparison.OrdinalIgnoreCase))
+                    operations = new(Ipc.Operations.OperationsInstallation.Load(AppContext.BaseDirectory), (IParcelPresentationSource)application, initial);
+            }
+            catch (Exception error) { crashDiagnostics.Report("Operations.ReadOnlyEndpointUnavailable", error); }
+#endif
             var effective = initial.Configuration.Effective;
             crashDiagnostics.SetProgressFile(Path.Combine(launch.DataRoot, effective.Mode.ToString(), effective.StationId, effective.ApplicationId, "runtime-progress.json"));
             startup.Phase("创建工作窗口", "应用状态：" + initial.State + "\n" + string.Join("\n", initial.BlockingReasons), "已取得运行实例 " + initial.RuntimeId);
@@ -301,6 +314,9 @@ public partial class App : System.Windows.Application
     }
     async Task StopAsync()
     {
+        #if SPORTMASTER
+        if (operations is not null) { await operations.DisposeAsync(); operations = null; }
+#endif
         if (runtime is null) return;
         var stopping = runtime;
         if (ownedShutdown is null || ownedShutdown.IsFaulted || ownedShutdown.IsCanceled)

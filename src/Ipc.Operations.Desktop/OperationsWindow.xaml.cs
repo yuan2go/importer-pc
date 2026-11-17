@@ -166,7 +166,8 @@ public partial class OperationsWindow : Window
             if (stop.IsCancellationRequested) reader.Release(page.Selection);
             stop.Token.ThrowIfCancellationRequested();
             selection = page.Selection; offset = requestedOffset;
-            LogGrid.ItemsSource = page.Entries; PageText.Text = $"第 {offset / 200 + 1} 页 · 本页 {page.Entries.Length} 条";
+            LogGrid.ItemsSource = page.Entries.Select(entry => entry with { At = entry.At?.ToLocalTime() }).ToArray();
+            PageText.Text = $"第 {offset / 200 + 1} 页 · 本页 {page.Entries.Length} 条";
             PreviousButton.IsEnabled = offset > 0; NextButton.IsEnabled = page.HasMore;
             LogStatus.Text = "已读取 · 本次时间至 " + applied.ToExclusive.ToLocalTime().ToString("HH:mm:ss") + "。选择记录查看完整原文，支持多选复制。";
             LogNotices.Text = "本次固定范围：" + logDirectory + "\n" + string.Join("\n", page.Notices);

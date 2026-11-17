@@ -89,6 +89,19 @@ internal static class Program
         { Check(true, message); return; }
         throw new InvalidOperationException("Expected rejection: " + message);
     }
+    static async Task<ResourceLease> ReleasedBusinessLease()
+    {
+        // A signaled process is not proof that outstanding Windows file-object
+        // references have drained. Assert actual exclusive acquisition, with a
+        // finite wait only for observed sharing/lock violations; other failures fail now.
+        var started = Stopwatch.GetTimestamp();
+        while (true)
+        {
+            try { return new ResourceLease(Path.Combine(root, "leases"), ["operations-synthetic-business-owner"]); }
+            catch (IOException error) when ((error.HResult & 0xFFFF) is 32 or 33 && Stopwatch.GetElapsedTime(started) < TimeSpan.FromSeconds(5))
+            { await Task.Delay(50); }
+        }
+    }
     static async Task Server(bool ready)
     {
         Trace.Listeners.Add(new TextWriterTraceListener(Console.Error));
@@ -230,7 +243,7 @@ internal static class Program
             File.Delete(Path.Combine(root, "registration-changed"));
             server.Kill(); await server.WaitForExitAsync();
             await Reject(() => client.ReadAsync(default), "abnormal owner exit cannot yield a cached live result");
-            using (var owner = new ResourceLease(Path.Combine(root, "leases"), ["operations-synthetic-business-owner"]))
+            using (var owner = await ReleasedBusinessLease())
                 Check(true, "OS releases actual process-held business lease after abnormal exit");
             var before = Directory.GetFiles(Location().DataRoot, "*", SearchOption.AllDirectories)
                 .Where(p => p.EndsWith(".db") || p.EndsWith("-wal") || p.EndsWith("-shm")).ToDictionary(p => p, p => Wire.FileHash(p));
@@ -256,7 +269,7 @@ internal static class Program
                 await restarted.StandardInput.WriteLineAsync("stop"); await restarted.StandardInput.FlushAsync();
                 await restarted.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(20));
                 Check(restarted.ExitCode == 0, "normal IPC and Application shutdown releases original resources: " + await ErrorText(restarted));
-                using var owner = new ResourceLease(Path.Combine(root, "leases"), ["operations-synthetic-business-owner"]);
+                using var owner = await ReleasedBusinessLease();
                 Check(true, "business lease is available after successful normal stop");
             }
         }

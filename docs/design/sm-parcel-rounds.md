@@ -44,7 +44,7 @@ Parcel DB14 持久保存轮次、本位到位代次、车号、提交关联及�
 
 ### 样本复核工具
 
-复用管理中心连续采样及诊断导出，保管原 ZIP、`frames.jsonl`、来源提交、设备/IP/序列号、相机会话、帧号、时钟证据和独立标注。导出的 `images/*.pgm` 是原始 Mono8；当前件归档的原始 Mono8 PNG 也可回放。不要使用预览缩略图、截图或有损转换。复制[清单模板](../../config/tray-presence-samples.example.json)，逐帧填写原文件 SHA256、尺寸、会话、帧号和相对时间；模板占位符故意不能执行。明确空盘校准的帧须有操作员空盘标注，其余帧可以未标注，不能以模型自身输出当真值。
+复用运维工具设备调试中的连续采样及相机证据导出，保管原 ZIP、`frames.jsonl`、来源提交、设备/IP/序列号、相机会话、帧号、时钟证据和独立标注。导出的 `images/*.pgm` 是原始 Mono8；当前件归档的原始 Mono8 PNG 也可回放。不要使用预览缩略图、截图或有损转换。复制[清单模板](../../config/tray-presence-samples.example.json)，逐帧填写原文件 SHA256、尺寸、会话、帧号和相对时间；模板占位符故意不能执行。明确空盘校准的帧须有操作员空盘标注，其余帧可以未标注，不能以模型自身输出当真值。
 
 ```powershell
 dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll --sm-presence-replay D:/samples/capture/manifest.json D:/samples/review-new.json

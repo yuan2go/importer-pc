@@ -133,6 +133,10 @@ namespace Ipc.Application.Sportmaster.Desktop
     // Event-owner harness placeholder only. Product operations are exercised by
     // the native --product-closure-21 suite, not by this cross-platform shim.
     internal sealed class StationStatisticsControl(SupplyStationViewModel vm) : System.Windows.FrameworkElement { public SupplyStationViewModel ViewModel { get; } = vm; public bool HasUnsavedChanges => false; }
+    public sealed class StationSettingsWindow : System.Windows.Window
+    {
+        public Task CloseForOwnerStopAsync() { Close(); return Task.CompletedTask; }
+    }
     public partial class SupplyStationWindow
     {
         object PositionHistory() => history;
@@ -145,7 +149,7 @@ namespace Ipc.Application.Sportmaster.Desktop
         readonly System.Windows.Controls.Grid ClientArea = new();
         readonly System.Windows.Controls.ContentControl PageHost = new();
         void InitializeComponent() { }
-        System.Windows.Window? settingsWindow = null;
+        StationSettingsWindow? settingsWindow = null;
         System.Windows.Window ManagementDialogOwner => settingsWindow is { IsVisible: true } settings ? settings : this;
         bool ConfirmStationExit() => true;
         void ApplyNavigation() { }

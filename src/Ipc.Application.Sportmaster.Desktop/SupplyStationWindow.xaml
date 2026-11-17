@@ -70,6 +70,7 @@
      <Button Tag="M 8,4 L 4,4 4,22 20,22 20,4 16,4 M 8,2 L 16,2 16,6 8,6 Z M 8,11 L 9,11 M 12,11 L 17,11 M 8,16 L 9,16 M 12,16 L 17,16" Content="记录" Click="History_Click" Margin="0,0,0,8" ToolTip="记录" AutomationProperties.Name="记录">
       <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="history"><Setter Property="Background" Value="{StaticResource AccentBackground}"/><Setter Property="Foreground" Value="{StaticResource Accent}"/><Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style>
      </Button>
+     <Button x:Name="StationSettingsEntry" Content="设置" Click="StationSettings_Click" Style="{StaticResource StationIconNavigation}" Tag="M 3,6 L 21,6 M 3,12 L 21,12 M 3,18 L 21,18 M 8,3 L 8,9 M 16,9 L 16,15 M 10,15 L 10,21" ToolTip="设置（查看不暂停，修改需验证密码）" AutomationProperties.Name="设置，查看不暂停，修改需验证密码"/>
     </StackPanel>
    </DockPanel>
   </Border>

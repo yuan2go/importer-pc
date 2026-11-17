@@ -37,6 +37,7 @@ namespace System.Windows
         [ThreadStatic] static TaskCompletionSource? closingEvent;
         internal static Task YieldClosingEvent() => closingEvent?.Task ?? Task.CompletedTask;
         public void Show() => IsVisible = true;
+        public bool Activate() => IsVisible; // Focus itself is verified only by native WPF.
         public void RaiseLoaded() => Loaded?.Invoke(this, EventArgs.Empty);
         public void Close()
         {
@@ -152,6 +153,7 @@ namespace Ipc.Application.Sportmaster.Desktop
         Ipc.Application.ParcelFlow.Desktop.SoftwareLogControl? logs;
         string dailyPage = "workstation";
         System.Windows.Window? managementCenter;
+        System.Windows.Window? settingsWindow = null;
         System.Windows.Window ManagementDialogOwner => managementCenter is { IsVisible: true } center ? center : this;
         bool ConfirmStationExit() => true; // The real modal and cancellation are exercised by --station-exit-dialog on Windows.
         void ApplyNavigation() { } // Geometry and input are verified by --management-center on Windows.

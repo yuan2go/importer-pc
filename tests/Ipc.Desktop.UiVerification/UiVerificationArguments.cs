@@ -26,6 +26,7 @@ internal static class UiVerificationArguments
         "--hikrobot-sdk-editing",
         "--home-centered-states",
         "--industrial-help",
+        "--independent-settings",
         "--industrial-maintenance-ui",
         "--installer-first-run-ui",
         "--installer-lifecycle",

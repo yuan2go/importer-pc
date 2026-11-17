@@ -118,19 +118,19 @@ public sealed partial class LocalManagementMode
     }
     ManagementModeStatus CurrentRemoteGrant() => new(knownConfigured, active && Now < expires, active ? expires : null, knownLegacy, knownAvailable)
     { SessionId = active ? sessionId : null };
-    bool RemoteEnter(string password)
+    ManagementModeStatus? RemoteEnter(string password)
     {
         long intent; lock (sync) intent = ++managementIntent;
         var grant = Rpc<ManagementModeSessionGrant?>(new("Enter", Password: password));
-        if (grant is null) return false;
+        if (grant is null) return null;
         lock (sync)
         {
             if (intent != managementIntent) throw new UnauthorizedAccessException("管理操作已改变，本次较早的授权结果未采用，请重新验证。");
             Revoke(); revoked = new(); active = true; sessionSecret = grant.Token; enteredAt = grant.ExpiresAt.AddMinutes(-15); expires = grant.ExpiresAt;
             if (expires > Now) revoked.CancelAfter(expires - Now);
             sessionId = grant.SessionId; knownConfigured = true; knownLegacy = false; knownAvailable = true;
+            return CurrentRemoteGrant();
         }
-        return true;
     }
     bool AdoptBrokerToken(string? token)
     {

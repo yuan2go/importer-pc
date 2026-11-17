@@ -13,14 +13,15 @@ public sealed class ManagementModeWindow : Window
 {
     bool closed;
     public bool Entered { get; private set; }
-    public ManagementModeWindow(IWorkstationAdministration service, string? entryName = null) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
-        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync, entryName)
+    public string? EnteredSessionId { get; private set; }
+    public ManagementModeWindow(IWorkstationAdministration service, string? entryName = null, bool bindSession = false) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
+        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync, entryName, bindSession ? service.EnterManagementSessionAsync : null)
     { }
     public ManagementModeWindow(IManagementMode service) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
         service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync)
     { }
     ManagementModeWindow(Func<Task<ManagementModeStatus>> status, Func<string, Task> configure, Func<string, Task<bool>> enter,
-        Func<Task> exit, Func<string, Task> change, Func<string, Task> reset, Func<Task<ManagementPasswordRecoveryReceipt?>> inspect, string? entryName = null)
+        Func<Task> exit, Func<string, Task> change, Func<string, Task> reset, Func<Task<ManagementPasswordRecoveryReceipt?>> inspect, string? entryName = null, Func<string, Task<ManagementModeStatus?>>? scopedEnter = null)
     {
         Title = "管理模式"; Width = 520; Height = 540; MinWidth = 360; MinHeight = 320;
         StartupAppearance.Apply(this); WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -77,19 +78,20 @@ public sealed class ManagementModeWindow : Window
         async Task Refresh()
         {
             var previous = current; var latest = await status(); if (closed) return; current = latest;
+            var grantedView = current.Authorized && entryName is null;
             if (previous.Authorized && !current.Authorized || previous.Configured != current.Configured || !current.Available) ClearSecrets();
-            Title = heading.Text = !current.Available ? "管理模式不可用" : current.Authorized ? "管理模式" : current.Configured ? entryName is null ? "验证管理密码" : "进入" + entryName : "设置管理密码";
-            state.Text = current.HasUnsupportedCredentials ? "管理密码文件缺失或无法识别，请联系部署负责人处理。" : !current.Available ? "管理模式服务不可用，请用原安装包修复软件。" : current.Authorized ? "管理模式已开启 · " + current.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出\n进入或退出管理模式不影响正在进行的作业。" : current.Configured ? "输入管理密码以继续配置。管理模式 15 分钟后自动退出。" : "用于保护参数设置，请妥善保管。";
-            var preferredHeight = current.Authorized ? changeTools.IsExpanded ? 640 : 340 : current.Configured ? 400 : 540;
+            Title = heading.Text = !current.Available ? "管理模式不可用" : grantedView ? "管理模式" : current.Configured ? entryName is null ? "验证管理密码" : "进入" + entryName : "设置管理密码";
+            state.Text = current.HasUnsupportedCredentials ? "管理密码文件缺失或无法识别，请联系部署负责人处理。" : !current.Available ? "管理模式服务不可用，请用原安装包修复软件。" : grantedView ? "管理模式已开启 · " + current.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出\n进入或退出管理模式不影响正在进行的作业。" : current.Configured ? "输入管理密码以继续配置。管理模式 15 分钟后自动退出。" : "用于保护参数设置，请妥善保管。";
+            var preferredHeight = grantedView ? changeTools.IsExpanded ? 640 : 340 : current.Configured ? 400 : 540;
             if (lastPreferredHeight != preferredHeight) { Height = Math.Min(preferredHeight, MaxHeight); lastPreferredHeight = preferredHeight; }
             body.IsEnabled = true; leave.IsEnabled = current.Available;
-            passwordFields.Visibility = current.Authorized ? Visibility.Collapsed : Visibility.Visible; passwordFields.IsEnabled = current.Available;
+            passwordFields.Visibility = grantedView ? Visibility.Collapsed : Visibility.Visible; passwordFields.IsEnabled = current.Available;
             confirmation.Visibility = !current.Configured ? Visibility.Visible : Visibility.Collapsed; rules.Visibility = confirmation.Visibility;
-            recoveryPolicy.Visibility = current.Configured && !current.Authorized ? Visibility.Visible : Visibility.Collapsed;
+            recoveryPolicy.Visibility = current.Configured && !grantedView ? Visibility.Visible : Visibility.Collapsed;
             proofLabel.Content = "管理密码";
             enterButton.Content = current.Configured ? entryName is null ? "进入管理模式" : "进入" + entryName : "设置并继续";
-            enterButton.Visibility = current.Authorized ? Visibility.Collapsed : Visibility.Visible; enterButton.IsEnabled = current.Available;
-            leave.Visibility = current.Authorized ? Visibility.Visible : Visibility.Collapsed; changeTools.Visibility = leave.Visibility;
+            enterButton.Visibility = grantedView ? Visibility.Collapsed : Visibility.Visible; enterButton.IsEnabled = current.Available;
+            leave.Visibility = grantedView ? Visibility.Visible : Visibility.Collapsed; changeTools.Visibility = leave.Visibility;
         }
         async Task Run(Func<Task> action)
         {
@@ -111,8 +113,13 @@ public sealed class ManagementModeWindow : Window
                     feedback.Text = "正在设置管理密码；如出现 Windows 授权窗口，请确认。";
                     await configure(password);
                 }
-                if (!await enter(password)) throw new UnauthorizedAccessException("管理密码不正确，请重新输入。");
-                if (!(await status()).Authorized) throw new UnauthorizedAccessException("管理授权尚未生效，请重新验证后继续。");
+                var granted = scopedEnter is null ? null : await scopedEnter(password);
+                if (granted is { Authorized: true }) EnteredSessionId = granted.SessionId;
+                if (scopedEnter is null ? !await enter(password) : granted?.Authorized != true)
+                    throw new UnauthorizedAccessException("管理密码不正确，请重新输入。");
+                var confirmed = await status();
+                if (!confirmed.Authorized || scopedEnter is not null && granted!.SessionId != confirmed.SessionId)
+                    throw new UnauthorizedAccessException("管理授权已改变，请重新验证后继续。");
                 enteredThisAction = true;
                 closeAfter = true;
             });

@@ -17,7 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 def verify_shared_binaries(media, binaries):
     """The UI is reused in-process; every shared DLL must equal the verified medium."""
     with zipfile.ZipFile(media) as archive:
-        selected = [name for name in archive.namelist() if name.startswith('desktop/Ipc.') and name.endswith('.dll')]
+        # The observer's executable entry assembly is embedded payload only;
+        # the installer never loads that second WPF Application in-process.
+        # Its shared Operations/platform/theme dependencies remain checked.
+        selected = [name for name in archive.namelist() if name.startswith('desktop/Ipc.') and name.endswith('.dll')
+                    and name != 'desktop/Ipc.Operations.Desktop.dll']
         if not selected:
             raise ValueError('Missing selected desktop assembly closure')
         for name in selected:

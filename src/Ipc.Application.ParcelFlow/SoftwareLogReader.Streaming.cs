@@ -15,7 +15,7 @@ public sealed partial class SoftwareLogReader
             while (offset < source.Length)
             {
                 check();
-                var count = await RandomAccess.ReadAsync(source.Stream.SafeFileHandle, buffer.AsMemory(0, (int)Math.Min(buffer.Length, source.Length - offset)), offset, token).ConfigureAwait(false);
+                var count = await ReadBlock(source, offset, buffer, token).ConfigureAwait(false);
                 if (count == 0) throw new IOException("原日志范围已缺失，请重新查询。");
                 offset += count;
                 for (var i = 0; i < count; i++)
@@ -50,11 +50,12 @@ public sealed partial class SoftwareLogReader
         {
             var currentGroup = e.Location.File.Split('/')[0];
             if (group != currentGroup) { if (found) break; prior.Clear(); group = currentGroup; }
-            if (found) { if (after-- <= 0) break; result.Add(e); continue; }
+            if (found) { result.Add(e); if (--after == 0) break; continue; }
             if (e.Location.FileId == location.FileId && e.Location.Line == location.Line)
             {
                 if (e.Location.Hash != location.Hash) throw new IOException("原日志位置内容已变化，不能显示错位上下文。");
                 found = true; result.AddRange(prior); result.Add(e);
+                if (after == 0) break;
             }
             else { prior.Enqueue(e); if (prior.Count > before) prior.Dequeue(); }
         }

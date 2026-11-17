@@ -143,6 +143,7 @@ static partial class Program
         navigate("日志查询"); await Until(() => host.Content is SoftwareLogControl); await Flush();
         var logs = (SoftwareLogControl)host.Content;
         var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        typeof(SoftwareLogControl).GetField("relativeHours", flags)!.SetValue(logs, null);
         var expectedFrom = DateTimeOffset.Parse(((TextBox)typeof(SoftwareLogControl).GetField("from", flags)!.GetValue(logs)!).Text);
         var expectedTo = DateTimeOffset.Parse(((TextBox)typeof(SoftwareLogControl).GetField("to", flags)!.GetValue(logs)!).Text);
         Click(host, "查询");
@@ -150,7 +151,7 @@ static partial class Program
         await Until(() => queryButton.IsEnabled); await Flush();
         await SetClient(window, 800, 420); await Flush();
         var range = Descendants(host).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "日志当前查询范围");
-        var advanced = Descendants(host).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选与导出"));
+        var advanced = (Expander)typeof(SoftwareLogControl).GetField("advancedFilters", flags)!.GetValue(logs)!;
         var actualQuery = (SoftwareLogQuery)typeof(SoftwareLogControl).GetField("query", flags)!.GetValue(logs)!;
         Check(actualQuery.From.EqualsExact(expectedFrom) && actualQuery.ToExclusive.EqualsExact(expectedTo) &&
             range.IsVisible && range.Text.StartsWith("查询范围") && range.Text.Contains(expectedFrom.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) && range.Text.Contains(expectedTo.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) && Inside(range, client),

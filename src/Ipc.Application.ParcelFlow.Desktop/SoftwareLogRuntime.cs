@@ -86,7 +86,7 @@ public sealed partial class SoftwareLogControl
         var version = diagnosticVersion; settingReading = true;
         try
         {
-            var settings = await control.DiagnosticSettingsAsync();
+            var settings = await TrackService(control.DiagnosticSettingsAsync());
             if (version != diagnosticVersion || diagnosticsClosed) return;
             ApplyDiagnosticSettings(settings);
         }
@@ -104,7 +104,7 @@ public sealed partial class SoftwareLogControl
         var version = ++diagnosticVersion; settingApplying = true; debugMode.IsEnabled = false;
         try
         {
-            var settings = await control.SetDebugLoggingAsync(enabled);
+            var settings = await TrackService(control.SetDebugLoggingAsync(enabled));
             if (version != diagnosticVersion || diagnosticsClosed) return;
             settingApplying = false; ApplyDiagnosticSettings(settings);
             status.Text = settings.DebugEnabled ? "调试模式已开启，开始记录详细日志。" : "调试模式已关闭，常规日志继续记录。";
@@ -170,6 +170,7 @@ public sealed partial class SoftwareLogControl
         try
         {
             using var json = JsonDocument.Parse(entry.Text);
+            if (json.RootElement.ValueKind != JsonValueKind.Object) return SoftwareLogFacts.Enrich(new(new("live", entry.Sequence, "", "当前运行日志"), source, at, level, entry.Text));
             if (json.RootElement.TryGetProperty("Source", out var s) && s.ValueKind == JsonValueKind.String) source = s.GetString()!;
             if (json.RootElement.TryGetProperty("Level", out var l) && l.ValueKind == JsonValueKind.String) level = l.GetString()!;
             if (json.RootElement.TryGetProperty("At", out var time) && time.ValueKind == JsonValueKind.String && time.TryGetDateTimeOffset(out var original)) at = original;
@@ -184,7 +185,7 @@ public sealed partial class SoftwareLogControl
         using var owner = new CancellationTokenSource(TimeSpan.FromSeconds(10)); liveCancellation = owner; var token = owner.Token;
         try
         {
-            var batch = await control.ReadDiagnosticTailAsync(liveStream, liveCursor, token);
+            var batch = await TrackService(control.ReadDiagnosticTailAsync(liveStream, liveCursor, token));
             var filter = liveFilter!;
             var text = await Task.Run(() =>
             {
@@ -193,9 +194,10 @@ public sealed partial class SoftwareLogControl
                     (regex?.IsMatch(e.Text) ?? e.Text.Contains(filter.Keyword, StringComparison.OrdinalIgnoreCase)));
                 return SoftwareLogText.Format(entries, token);
             }, token);
-            if (!(await service.ManagementModeStatusAsync()).Authorized) { Revoke(); return; }
+            var authorized = (await TrackService(service.ManagementModeStatusAsync()).WaitAsync(token)).Authorized;
             token.ThrowIfCancellationRequested();
             if (version != liveVersion || !liveActive || displayPaused || diagnosticsClosed) return;
+            if (!authorized) { Revoke(); return; }
             if (liveCursor is null || liveStream != batch.Stream) terminal.Clear();
             liveStream = batch.Stream; liveCursor = batch.Cursor; ApplyDiagnosticSettings(batch.Settings);
             if (text.Length > 0)

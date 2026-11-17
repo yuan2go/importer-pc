@@ -30,7 +30,7 @@ public partial class ParcelViewModel
             DisplayPreferenceStatus = "本机显示已读取";
         }
         catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
-        { stationDisplay = new(1, "", null); DisplayPreferenceStatus = "显示偏好未加载，原文件保留：" + ex.Message; }
+        { stationDisplay = new(1, "", null); displayNameDraft = targetEfficiencyDraft = ""; displayIdentity = null; DisplayPreferenceStatus = "显示偏好未加载，原文件保留：" + ex.Message; }
         Changed(nameof(DisplayNameDraft)); Changed(nameof(TargetEfficiencyDraft)); Changed(nameof(TargetEfficiencyPerHour)); Changed(nameof(StationDisplaySummary)); Changed(nameof(Title)); Changed(nameof(HasUnsavedDisplayPreferences));
     }
     public bool ApplyStationDisplay()

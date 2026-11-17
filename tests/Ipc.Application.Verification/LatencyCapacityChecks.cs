@@ -79,8 +79,8 @@ static class LatencyCapacityChecks
             factory.Release.Set();
             await copying.Task.WaitAsync(TimeSpan.FromSeconds(15));
             stopClock.Start(); var stop = runtime.StopAsync(default);
-            try { await backup; } catch (OperationCanceledException) { }
-            await reading; await stop;
+            try { await backup.WaitAsync(TimeSpan.FromSeconds(15)); } catch (OperationCanceledException) { }
+            await reading.WaitAsync(TimeSpan.FromSeconds(5)); await stop.WaitAsync(TimeSpan.FromSeconds(15));
         }
         finally { factory.Release.Set(); observer.SetValue(null, null); }
         Check(readCompletedDuringIo, "ST03 snapshot gate is released across backup storage work", new { SnapshotCompletedBeforeBarrierRelease = readCompletedDuringIo });

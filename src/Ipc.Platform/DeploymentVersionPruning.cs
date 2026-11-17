@@ -25,6 +25,7 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static DeploymentPrunePlan PlanVersionPruning(string application, string operation, bool ordinaryStartupConfirmed)
     {
+        _ = PruneFile(application, operation);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
         return PlanVersionPruningCore(application, operation, ordinaryStartupConfirmed);
     }
@@ -194,6 +195,7 @@ public static partial class WindowsDeploymentSetup
     public static DeploymentPruneReceipt PruneVersions(DeploymentPrunePlan reviewed, MaintenanceExecution? execution = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        _ = PruneFile(reviewed.ApplicationId, reviewed.OperationId);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", reviewed.ApplicationId + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         var path = PruneFile(reviewed.ApplicationId, reviewed.OperationId);
         if (File.Exists(path)) throw new InstallationOutcomeUnknownException("原清理记录已存在，请核对或续办原次，不能换清单重复提交。");
@@ -372,6 +374,7 @@ public static partial class WindowsDeploymentSetup
     public static DeploymentPruneReceipt InspectVersionPruning(string application, string operation, bool resume, MaintenanceExecution? execution = null)
     {
         if (resume) MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        _ = PruneFile(application, operation);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         var record = ReadPrune(application, operation); var path = PruneFile(application, operation);
         if (resume && record.Status is "Prepared" or "Partial")
@@ -400,6 +403,7 @@ public static partial class WindowsDeploymentSetup
     public static DeploymentPruneReceipt KeepVersionPruningRemainder(string application, string operation)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        _ = PruneFile(application, operation);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         var record = ReadPrune(application, operation); var path = PruneFile(application, operation);
         var current = Current(application) ?? throw new InvalidDataException("缺少原部署登记。");
@@ -426,6 +430,7 @@ public static partial class WindowsDeploymentSetup
 
     public static string? LastVersionPruning(string application)
     {
+        if (!ExtensionSchema.IsId(application)) throw new InvalidDataException("应用身份无效。");
         var directory = Path.Combine(MachineRoot, "deployments"); if (!Directory.Exists(directory)) return null;
         var files = Directory.EnumerateFiles(directory, application + ".prune-*.json").Take(129).ToArray();
         if (files.Length > 128) throw new InvalidDataException("版本清理回执超出核对预算。");

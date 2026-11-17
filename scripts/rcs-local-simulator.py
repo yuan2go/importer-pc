@@ -63,6 +63,10 @@ def main():
     class Handler(BaseHTTPRequestHandler):
         protocol_version = 'HTTP/1.1'
 
+        def setup(self):
+            super().setup()
+            self.connection.settimeout(3)
+
         def log_message(self, *unused):
             pass  # The private ledger is authoritative; no raw codes on stdout.
 
@@ -72,6 +76,8 @@ def main():
             self.send_header('Content-Type', 'application/json; charset=utf-8')
             self.send_header('X-Ipc-Simulator', 'LOCAL_ONLY_NOT_REAL_RCS')
             self.send_header('Content-Length', str(len(data)))
+            if self.close_connection:
+                self.send_header('Connection', 'close')
             self.end_headers()
             try:
                 self.wfile.write(data)
@@ -89,18 +95,20 @@ def main():
 
         def do_POST(self):
             if self.path != '/rcs/sorter/api':
+                self.close_connection = True
                 self.send(404, {'error': 'not-found', 'simulated': True})
                 return
             try:
                 length = int(self.headers.get('Content-Length', '0'))
                 if not 0 < length <= 65536:
+                    self.close_connection = True
                     self.send(413, {'error': 'bounded-body-required'})
                     return
                 raw = self.rfile.read(length)
                 request = json.loads(raw)
                 request_id = request['requestId']
-                if not isinstance(request_id, int) or isinstance(request_id, bool):
-                    raise ValueError('numeric requestId required')
+                if not isinstance(request_id, int) or isinstance(request_id, bool) or not 0 <= request_id <= 9223372036854775807:
+                    raise ValueError('nonnegative signed 64-bit requestId required')
                 mode_file = root / 'mode.json'
                 mode = json.loads(mode_file.read_text()).get('mode', 'assigned') if mode_file.exists() else 'assigned'
                 if mode not in ('assigned', 'timeout', 'reject', 'wrong-id', 'malformed'):
@@ -157,6 +165,7 @@ def main():
                     time.sleep(8)
                 self.send(200, response if mode != 'malformed' else {'simulated': 'invalid-response-shape'})
             except (ValueError, KeyError, TypeError, json.JSONDecodeError):
+                self.close_connection = True
                 self.send(400, {'error': 'invalid-envelope', 'simulated': True})
 
     server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)

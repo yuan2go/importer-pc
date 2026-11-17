@@ -17,13 +17,15 @@ static class SportmasterUi
     }
     static async Task<ParcelSnapshot> Wait(ParcelRuntime app, Func<ParcelSnapshot, bool> predicate)
     {
+        ParcelSnapshot? last = null;
         for (var i = 0; i < 200; i++)
         {
             var snapshot = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(1));
+            last = snapshot;
             if (predicate(snapshot)) return snapshot;
             await Task.Delay(20);
         }
-        throw new Exception("SMUI timeout: " + Wire.Encode(await app.SnapshotAsync()));
+        throw new Exception("SMUI timeout; last completed snapshot: " + Wire.Encode(last));
     }
     static ReferencePeer.PeerEntry Peer(StageFact stage) => Wire.Decode<ReferencePeer.PeerEntry>(File.ReadAllText(
         Path.Combine(stage.Request.Binding.Parameters["peer-root"], Wire.Hash(stage.Request.Binding.Target), stage.Request.Id + ".json")));

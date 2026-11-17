@@ -54,6 +54,13 @@ class ReleaseProvenanceTests(unittest.TestCase):
     def test_wrong_branch_and_source_refused(self):
         with self.assertRaisesRegex(ValueError, 'same commit'):
             self.record('old-source')
+
+    def test_tag_does_not_impersonate_a_branch_and_same_named_tag_cannot_shadow_it(self):
+        self.git('tag', 'only-a-tag', self.source)
+        with self.assertRaisesRegex(ValueError, 'existing local branch'):
+            self.record('only-a-tag')
+        self.git('tag', 'main', self.first)
+        self.assertTrue(self.record('main')['SourceBranchVerified'])
         with self.assertRaisesRegex(ValueError, 'same commit'):
             capture(self.root, self.first, 'main', 'sportmaster', '1.4.1', 'win-x64')
         for label in ('https://private.invalid/token', 'main\nsecret', '-main'):

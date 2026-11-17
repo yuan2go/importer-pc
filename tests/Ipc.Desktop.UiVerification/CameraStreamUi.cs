@@ -12,15 +12,19 @@ static partial class Program
     {
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS STREAM-UI " + text); }
         T Field<T>(object c, string name) => (T)c.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(c)!;
-        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "stream")); await h.StartAsync(); await h.BeginAsync();
+        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "stream")); await h.StartAsync();
         await h.App.SetDebugLoggingAsync(true);
         var window = new SupplyStationWindow(h.App, null, "standard") { Title = "相机实时视频 · 合成图像验证" };
         window.Show();
         try
         {
-            await SetClient(window, 1366, 768); await window.ViewModel.RefreshAsync(); window.ShowPositionDebug(window.ViewModel.Left);
+            await SetClient(window, 1366, 768);
+            await CameraRoundHarness.Until(async () => { await window.ViewModel.RefreshAsync(); return window.ViewModel.Fresh && window.ViewModel.IsManagementMode; });
+            window.ShowPositionDebug(window.ViewModel.Left);
             await Dispatcher.Yield(); window.UpdateLayout();
-            var control = Descendants(window).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
+            Window Surface() => window.OwnedWindows.OfType<ManagementCenterWindow>().SingleOrDefault(center => center.IsVisible) ?? (Window)window;
+            for (var n = 0; n < 200 && !Descendants(Surface()).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"); n++) await Task.Delay(20);
+            var control = Descendants(Surface()).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             var live = Field<UserControl>(control, "livePreview"); var image = Field<Image>(live, "image");
             Task Poll(UserControl c) => (Task)c.GetType().GetMethod("PollAsync")!.Invoke(c, null)!;
             async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
@@ -33,7 +37,10 @@ static partial class Program
             await CameraRoundHarness.Until(async () => { await Poll(live); return image.Source is not null; });
             Check(h.Factory.Sources[h.Left].ReadDiagnostics() is { Frames: 1, DecodeStarted: 0, DecodePaused: true } && h.Peer.Requests.Count == 0,
                 "native debug video displays an unrecognized frame before trigger while the isolated decoder and RCS remain idle");
-            await h.ArmAsync(h.Left); await Task.Delay(220); h.Api(h.Left).Enqueue(blank, 2);
+            await Poll(control);
+            Field<Button>(control, "trigger").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await CameraRoundHarness.Until(async () => (await h.App.ReadCameraReadRoundAsync(default)).State == "Reading");
+            await Task.Delay(220); h.Api(h.Left).Enqueue(blank, 2);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].ReadDiagnostics().EmptyFrames == 1));
             await Poll(live);
             Check(image.Source is not null && (await h.App.ReadCameraReadRoundAsync(default)).State == "Reading",
@@ -56,8 +63,8 @@ static partial class Program
             Check(livePoint.X < photoPoint.X && Math.Abs(livePoint.Y - photoPoint.Y) < 2 && Field<TextBox>(control, "requestBody").TranslatePoint(new Point(), control).Y > livePoint.Y + liveCard.ActualHeight,
                 "design layout places live video left and locked result right, with request and response underneath");
             var navigation = (Border)window.FindName("DailyNavigation");
-            Check(Descendants(navigation).OfType<Button>().Count(b => b.Content is string && Descendants(b).OfType<System.Windows.Shapes.Path>().Any(p => p.Data is not null && p.IsVisible)) == 5,
-                "all five existing sidebar destinations render vector icons while keeping their text and management guards");
+            Check(!Descendants(navigation).OfType<Button>().Any(b => b.IsVisible && b.Content is string text && text is "异常处理" or "统计与班次"),
+                "the current daily navigation omits the hidden exception and statistics destinations");
             CaptureInternal(evidence, "camera-video-1366", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 1600, 1000); await Flush();
             CaptureInternal(evidence, "camera-design-1600", (Grid)window.FindName("ClientArea"), lines);
@@ -82,9 +89,11 @@ static partial class Program
             Check(progress.RootElement.GetProperty("Connections").EnumerateArray().All(c => c.GetProperty("Acquisition").GetProperty("Frames").GetInt64() > 0),
                 "runtime progress carries per-camera acquisition counters rather than conflating them with ReadOperations");
             Check(h.Factory.Apis.Values.All(a => a.Opens == 1 && a.Starts == 1 && a.Stops == 0), "simultaneous preview and camera selection never open or restart an SDK connection");
-            await h.App.ExitManagementModeAsync(); await window.ViewModel.RefreshAsync(); await Poll(live);
-            Check(image.Source is null && Field<TextBlock>(live, "counters").Text.Length == 0 && (await h.App.SnapshotAsync()).Paused,
-                "management revocation clears preview and telemetry while preserving business isolation");
+            await h.App.ExitManagementModeAsync(); await window.ViewModel.RefreshManagementModeAsync(); await window.ViewModel.RefreshAsync(); await Poll(live);
+            await CameraRoundHarness.Until(async () => { await Poll(live); return image.Source is null && Field<TextBlock>(live, "counters").Text.Length == 0; });
+            var revoked = await h.App.SnapshotAsync();
+            Check(image.Source is null && Field<TextBlock>(live, "counters").Text.Length == 0 && revoked.Positions!.All(position => position.BarcodeInput?.Camera == false) && h.Peer.Requests.IsEmpty,
+                "management revocation clears preview and telemetry while the original management owner keeps automatic admission suspended");
             try { await h.App.ReadCameraPreviewAsync(h.Left, default); throw new InvalidOperationException("Preview survived authority revoke"); }
             catch (UnauthorizedAccessException) { Check(true, "Application rejects preview reads without management authority"); }
         }

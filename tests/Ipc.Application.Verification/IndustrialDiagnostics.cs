@@ -107,6 +107,7 @@ static class IndustrialDiagnostics
             });
         var requests = h.Peer.Requests.Count;
         var overviewCanary = Path.Combine(root, "overview-canary.zip");
+        await h.App.ExitManagementModeAsync();
         var ordinaryAfterLogs = await api.ExportDiagnosticOverviewAsync(overviewCanary, default);
         using (var archive = ZipFile.OpenRead(overviewCanary))
             foreach (var entry in archive.Entries)
@@ -117,15 +118,18 @@ static class IndustrialDiagnostics
                     "ordinary allowlist excludes log canary and local identity: " + entry.FullName);
             }
         var target = Path.Combine(root, "diagnostics.ZIP");
+        await ManagementModeFixture.Authorize(h.App);
         var receipt = await api.ExportDiagnosticPackageReportAsync(target, default);
         Check(receipt.Path == target && receipt.Status == DiagnosticPackageStatus.Partial, "receipt explicitly reports retained-window partial package");
         Check(receipt.Bytes == new FileInfo(target).Length && receipt.Sha256 == Wire.FileHash(target), "receipt identifies actual committed ZIP bytes");
         Check(receipt.Cutoff - receipt.From == TimeSpan.FromHours(24), "one fixed 24-hour cutoff for all log pages");
         using (var archive = ZipFile.OpenRead(target))
         {
-            Check(archive.Entries.Count == 6 && archive.Entries.All(e => e.FullName.EndsWith(".json", StringComparison.Ordinal)), "only six bounded JSON artifacts published");
+            var expectedFiles = new[] { "environment.json", "installation.json", "event-index.json", "release.json", "station.json" };
+            Check(archive.Entries.Select(e => e.FullName).Order().SequenceEqual(expectedFiles.Append("manifest.json").Order()), "exactly the six distinct expected JSON artifacts are published");
             using var manifest = JsonDocument.Parse(archive.GetEntry("manifest.json")!.Open());
             Check(manifest.RootElement.GetProperty("Schema").GetInt32() == 2 && manifest.RootElement.GetProperty("Status").GetString() == "Partial", "manifest records privacy version and partial status");
+            Check(manifest.RootElement.GetProperty("Files").EnumerateObject().Select(p => p.Name).Order().SequenceEqual(expectedFiles.Order()), "manifest hashes cover exactly every expected non-manifest artifact");
             foreach (var file in manifest.RootElement.GetProperty("Files").EnumerateObject())
             {
                 using var input = archive.GetEntry(file.Name)!.Open();

@@ -56,10 +56,10 @@ public partial class SupplyStationWindow
         cancelProductDiagnostic = new Button { Content = "取消导出", MinHeight = 44, Visibility = Visibility.Collapsed, Margin = new(0, 6, 12, 6) };
         cancelProductDiagnostic.Click += (_, _) => productDiagnosticCancellation?.Cancel(); actions.Children.Add(cancelProductDiagnostic);
         actions.Children.Add(ProductButton("离线维护…", RequestOfflineMaintenance)); body.Children.Add(actions);
-        body.Children.Add(ProductText("本位远端请求或启停责任待核对时，先取件、停用本位，核对客户RCS原结果后记录依据；另一位可继续供包。"));
+        body.Children.Add(ProductText("原请求的远端绑定或旧心跳成员变更未确认时，先停用本位，核对客户RCS后记录依据。已确认结果的普通包裹取下后即结束，无需在此核对。"));
         var remote = new WrapPanel();
-        remote.Children.Add(ProductButton("核对左位远端责任…", () => ConfirmRemotePositionRecovery("left")));
-        remote.Children.Add(ProductButton("核对右位远端责任…", () => ConfirmRemotePositionRecovery("right")));
+        remote.Children.Add(ProductButton("核对左位未确认责任…", () => ConfirmRemotePositionRecovery("left")));
+        remote.Children.Add(ProductButton("核对右位未确认责任…", () => ConfirmRemotePositionRecovery("right")));
         body.Children.Add(remote);
         actions.Children.Add(ProductButton("恢复本站核对…", () => OpenProductTool(MaintenanceTool.RestoreHandoff)));
         return body;

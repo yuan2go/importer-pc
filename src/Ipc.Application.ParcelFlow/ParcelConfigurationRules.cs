@@ -22,6 +22,7 @@ public static partial class ParcelConfigurationRules
             return ["Malformed configuration: missing reader/weight/camera"];
         if (application != "sportmaster" && c.BarcodeFilter is not null) e.Add("BarcodeFilter belongs to the Sportmaster Application");
         e.AddRange(ValidateCapabilityInventory(c));
+        if (e.Count == 0) e.AddRange(ValidateTopology(c, positionRoles));
         if (e.Count != 0) return e.ToArray(); // No topology/binding deduplication may hide invalid originals.
         // Validate the selected current RCS contract before startup can create a
         // configuration ledger/database, not only when constructing its adapter.
@@ -59,7 +60,7 @@ public static partial class ParcelConfigurationRules
             if (c.Weight.Source == WeightSource.Configured && c.Weight.ConfiguredValue is { } value && !WeightRules.WithinRange(value, range))
                 e.Add("WeightRange: 显式配置重量超出本业务允许范围");
         }
-        if (c.BackupSchedule is { } backup && (!Path.IsPathFullyQualified(backup.Directory) || backup.IntervalMinutes is < 15 or > 10080 || backup.MaximumSets is < 1 or > 1000)) e.Add("备份计划须指定绝对目录、15～10080分钟周期和1～1000份容量上限；不会自动删除原件");
+        if (c.BackupSchedule is { } backup && (string.IsNullOrWhiteSpace(backup.Directory) || !Path.IsPathFullyQualified(backup.Directory) || backup.IntervalMinutes is < 15 or > 10080 || backup.MaximumSets is < 1 or > 1000)) e.Add("备份计划须指定绝对目录、15～10080分钟周期和1～1000份容量上限；不会自动删除原件");
         if (c.ApplicationId == "sportmaster" && c.BackupSchedule is { } schedule && Path.IsPathFullyQualified(schedule.Directory))
             try { InstallationIdentity.RequireExternalFilePath(schedule.Directory); }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException) { e.Add(error.Message); }
@@ -73,7 +74,6 @@ public static partial class ParcelConfigurationRules
             if ((w.Source == WeightSource.Measured) != (c.Scale is not null)) e.Add("Measured weight requires exactly one scale binding");
         }
         if (c.Images is { } images && (images.MaximumBytes is < 1 or > 4194304 || !Enum.IsDefined(images.Strategy) || images.TotalBytes < images.MaximumBytes || images.TotalBytes > 268435456 || images.MaximumPending is < 1 or > 256)) e.Add("Image capture requires a binding and a bounded byte quota");
-        e.AddRange(ValidateTopology(c, positionRoles));
         if (c.Scale is not null && c.Scale.Kind != "weight" || c.Plc is not null && c.Plc.Kind != "plc" || c.Wcs is not null && c.Wcs.Kind != "integration") e.Add("Wrong capability binding kind");
         if (c.Login is not null && c.Login.Kind != "login" || c.Images is { } i && (i.Camera.Kind != "camera" || i.Uploader is not null && i.Uploader.Kind != "upload")) e.Add("Wrong optional capability kind");
         if (c.Login is not null && c.SessionLifetimeMs is < 100 or > 86400000) e.Add("Invalid session lifetime");

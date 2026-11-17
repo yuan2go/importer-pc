@@ -13,6 +13,15 @@ spec.loader.exec_module(branches)
 
 
 class BranchEvidence(unittest.TestCase):
+    def test_same_assembly_branch_merges_across_mapped_document_roots(self):
+        self.report('one', 1); self.report('two', 0)
+        file = self.results / 'two.json'; data = json.loads(file.read_text())
+        documents = data['Ipc.Example.dll']; content = documents.pop(self.source.as_posix())
+        documents['Z:/different-checkout/src/Ipc.Example/Production.cs'] = content
+        file.write_text(json.dumps(data))
+        result = branches.analyze(self.root, self.results)
+        self.assertEqual((result['coveredBranches'], result['measuredBranches']), (1, 2))
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

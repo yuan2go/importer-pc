@@ -172,20 +172,20 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     async Task ApplySnapshotAsync(ParcelSnapshot next, long readId, long generation)
     {
         if (Snapshot is { } newer && next.RuntimeId == newer.RuntimeId && next.PublishedTicks > 0 && newer.PublishedTicks > next.PublishedTicks) return;
+        if (retiredRuntimeIds.Contains(next.RuntimeId) || Snapshot is { } prior && next.RuntimeId == prior.RuntimeId && next.Revision < prior.Revision) return;
         if (next.PublishedTicks > 0 && (next.PublishedTicks > System.Diagnostics.Stopwatch.GetTimestamp() ||
             System.Diagnostics.Stopwatch.GetElapsedTime(next.PublishedTicks) >= TimeSpan.FromSeconds(3)))
         { MarkReadFailure("收到的状态已过期，请等待更新，勿按旧结果投递。"); return; }
-        if (retiredRuntimeIds.Contains(next.RuntimeId) || Snapshot is { } previous && next.RuntimeId == previous.RuntimeId && next.Revision < previous.Revision)
-        { MarkReadFailure("软件实例已变更，旧状态已失效，请重新读取"); return; }
         if (Snapshot is { } original && original.RuntimeId != next.RuntimeId)
         {
             globalOperationGeneration++; SetGlobalFeedback("");
+            pauseSubmission = null;
             retiredRuntimeIds.Add(original.RuntimeId);
             ResetHistoryForRuntime();
             Selected = null;
         }
         Snapshot = next;
-        SnapshotReadApplied(readId);
+        SnapshotReadApplied(readId, next.PublishedTicks);
         if (!PositionIds.Contains(SelectedPositionId)) SelectedPositionId = PositionIds.FirstOrDefault() ?? "main";
         NotifyTargets();
         // Resolve the selection after the await. A slow read must never restore an
@@ -261,6 +261,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     }
     public Task PauseAsync() => PauseAsync("操作员请求暂停供包");
     public Task PauseAsync(string reason) => Own(PauseCoreAsync(reason));
+    Task<BusinessReceipt>? pauseSubmission;
     async Task PauseCoreAsync(string reason)
     {
         var generation = BeginGlobalOperation("暂停供包");
@@ -270,7 +271,9 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
             for (var retry = 0; retry < 3; retry++)
             {
                 var s = retry == 0 && Snapshot is { } displayed ? displayed : await ServiceAsync(application.SnapshotAsync).WaitAsync(TimeSpan.FromSeconds(2));
-                var r = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), s.Revision, "Pause", Value: reason)));
+                var submitted = pauseSubmission ??= ServiceAsync(() => application.CommandAsync(new(Wire.Id(), s.Revision, "Pause", Value: reason)));
+                var r = await submitted.WaitAsync(TimeSpan.FromSeconds(2));
+                if (ReferenceEquals(pauseSubmission, submitted)) pauseSubmission = null;
                 if (r.Status == "Conflict") continue;
                 CompleteGlobalOperation(generation, "暂停供包", r.Status + " · " + r.Reason, r.Status == "Persisted");
                 try { await RefreshAsync().WaitAsync(TimeSpan.FromSeconds(2)); }
@@ -279,7 +282,22 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
             }
             CompleteGlobalOperation(generation, "暂停供包", "暂停时状态多次变化，请刷新后确认是否已暂停。");
         }
-        catch (Exception ex) { CompleteGlobalOperation(generation, "暂停供包", "暂停结果未确认：" + ex.Message + "；请刷新状态确认，通信失败不代表未执行。"); }
+        catch (Exception ex)
+        {
+            CompleteGlobalOperation(generation, "暂停供包", "暂停结果未确认：" + ex.Message + "；请刷新状态确认，通信失败不代表未执行。");
+            if (pauseSubmission is { } pending) _ = Own(ObservePauseCompletionAsync(pending, generation));
+        }
+    }
+    async Task ObservePauseCompletionAsync(Task<BusinessReceipt> pending, long generation)
+    {
+        try
+        {
+            var result = await pending;
+            CompleteGlobalOperation(generation, "暂停供包", "原暂停结果：" + result.Status + " · " + result.Reason, result.Status == "Persisted");
+        }
+        catch (Exception error) { CompleteGlobalOperation(generation, "暂停供包", "原暂停结果仍待核对：" + error.Message); }
+        // Keep a faulted submission for explicit reconciliation; it cannot prove no commit.
+        finally { if (pending.IsCompletedSuccessfully && ReferenceEquals(pauseSubmission, pending)) pauseSubmission = null; }
     }
     public async Task CommandAsync(string kind, string? owner = null)
     {

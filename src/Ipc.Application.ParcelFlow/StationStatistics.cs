@@ -60,10 +60,10 @@ public static class StationStatisticsReader
         using var command = connection.CreateCommand(); command.Transaction = tx; command.CommandTimeout = 30;
         command.CommandText = """
             SELECT minute,position,sum(recognitions),sum(requests),sum(assigned),sum(rejected),sum(unknown_count),sum(manual_requests)
-              FROM station_metric_buckets WHERE julianday(minute)>=julianday($from) AND julianday(minute)<julianday($to)
+              FROM station_metric_buckets WHERE minute>=$from AND minute<$to
               GROUP BY minute,position ORDER BY minute,position LIMIT 100001
             """;
-        command.Parameters.AddWithValue("$from", from.ToUniversalTime().ToString("O")); command.Parameters.AddWithValue("$to", to.ToUniversalTime().ToString("O"));
+        command.Parameters.AddWithValue("$from", from.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:00Z", CultureInfo.InvariantCulture)); command.Parameters.AddWithValue("$to", to.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:00Z", CultureInfo.InvariantCulture));
         List<StationMetricBucket> rows = [];
         try
         {

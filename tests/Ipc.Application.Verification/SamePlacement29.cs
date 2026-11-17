@@ -37,8 +37,12 @@ internal static class SamePlacement29
         async Task Read(string code)
         {
             var before = Processed();
-            var completed = await Deliver(h, h.Left, CameraRoundHarness.Barcode(code), ++frame);
-            if (!completed.DecodeAttempted) return;
+            var deadline = System.Diagnostics.Stopwatch.StartNew();
+            while (!(await Deliver(h, h.Left, CameraRoundHarness.Barcode(code), ++frame)).DecodeAttempted)
+            {
+                if (deadline.Elapsed > TimeSpan.FromSeconds(5)) throw new TimeoutException("Required same-placement observation was never decoded");
+                await Task.Delay(30);
+            }
             await CameraRoundHarness.Until(() => Task.FromResult(Processed() > before));
         }
         var blank = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240);

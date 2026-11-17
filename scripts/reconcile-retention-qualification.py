@@ -47,6 +47,28 @@ def fingerprint(db, sql):
     return h.hexdigest().upper()
 
 
+def require_command_receipt(receipts, name, action, database, backup=None, original_hash=None):
+    matches = [receipt for receipt in receipts if receipt.get('Name') == name]
+    if len(matches) != 1 or matches[0].get('ExitCode') != 0:
+        raise ValueError('Exactly one successful command receipt required: ' + name)
+    receipt = matches[0]
+    arguments = receipt.get('Arguments')
+    if not isinstance(arguments, list) or any(not isinstance(value, str) for value in arguments):
+        raise ValueError('Invalid command arguments: ' + name)
+    def operand(option):
+        indexes = [index for index, value in enumerate(arguments) if value == option]
+        if len(indexes) != 1 or indexes[0] + 1 >= len(arguments):
+            raise ValueError('Missing or duplicate command operand: ' + option)
+        return arguments[indexes[0] + 1]
+    if operand('--action') != action or Path(operand('--file')).resolve() != database.resolve():
+        raise ValueError('Command receipt does not identify the original action/database: ' + name)
+    if backup is not None and Path(operand('--destination')).resolve() != backup.resolve():
+        raise ValueError('Command receipt does not identify the original backup: ' + name)
+    if original_hash is not None and operand('--sha256').upper() != original_hash.upper():
+        raise ValueError('Command receipt uses a different original hash: ' + name)
+    return receipt
+
+
 def reconcile(run_file, output, completed_only=False, simulated_authority=False):
     if output.exists():
         raise ValueError('A new reconciliation output is required')
@@ -61,7 +83,6 @@ def reconcile(run_file, output, completed_only=False, simulated_authority=False)
         checks.append(reason)
 
     cases = []
-    runs = {r['Name']: r for r in run.get('Runs', [])}
     for case in run['Cases']:
         expected_status = 'PASS_SIMULATED_AUTHORITY_SYNTHETIC' if simulated_authority else 'PASS_PROTECTED_CLI_SYNTHETIC'
         if case['Status'] != expected_status:
@@ -103,7 +124,9 @@ def reconcile(run_file, output, completed_only=False, simulated_authority=False)
             check(scalar('SELECT count(*) FROM parcel_retired_operations WHERE id<? OR id>?', (guid(1, 1), guid(1, count))) == 0, f'{count}: only eligible identity range retired')
             check(scalar('SELECT count(*) FROM parcel_retired_operations t LEFT JOIN original.parcel_archives a ON a.id=t.id WHERE a.id IS NULL OR a.body_hash!=t.body_hash') == 0, f'{count}: every retirement matches its original body hash')
             guards = {guid(1, n) for n in range(count + 1, count + 7)}
-            retained = dict(db.execute('SELECT id,body FROM parcel_operations UNION ALL SELECT id,body FROM parcel_archives'))
+            owners = list(db.execute('SELECT id,body FROM parcel_operations UNION ALL SELECT id,body FROM parcel_archives'))
+            check(len(owners) == len({row[0] for row in owners}), f'{count}: no duplicate active/archive owner')
+            retained = dict(owners)
             check(set(retained) == guards, f'{count}: exact six guarded owners retained')
             before = dict(db.execute('SELECT id,body FROM original.parcel_archives WHERE id>?', (guid(1, count),)))
             check(retained == before, f'{count}: guarded original bodies unchanged byte for byte')
@@ -126,6 +149,9 @@ def reconcile(run_file, output, completed_only=False, simulated_authority=False)
             check(fingerprint(db, 'SELECT request,id,hash FROM parcel_reply_identities ORDER BY request,id') == fixture['ReplyFingerprint'], f'{count}: complete reply identity fingerprint unchanged')
             raw_bytes = scalar('SELECT sum(length(body)) FROM original.parcel_archived_receipts')
             operation_bytes = scalar('SELECT sum(length(body)) FROM original.parcel_archives')
+            with backup.open('rb') as stream:
+                backup_hash = hashlib.file_digest(stream, 'sha256').hexdigest().upper()
+            check(backup_hash == case['BackupHash'], f'{count}: original complete backup matches frozen identity')
             restore_hash = None
             if 'IsolatedRestoreSeconds' in case:
                 marker = json.loads(restored.with_name('RESTORED-ISOLATED.json').read_text(encoding='utf-8-sig'))
@@ -154,7 +180,10 @@ def reconcile(run_file, output, completed_only=False, simulated_authority=False)
                               OperationBodyBytes=operation_bytes, OriginalRawBytes=raw_bytes,
                               SimulatedMaintenanceAndVerifySeconds=receipt['ElapsedSeconds']))
             continue
-        expire = runs[f'expire-{count}']
+        if case['Action'] not in ('expire-history', 'expire-history-compact'):
+            raise ValueError('Unknown frozen expiry action')
+        inspect = require_command_receipt(run.get('Runs', []), f'inspect-{count}', 'maintenance-inspect', database)
+        expire = require_command_receipt(run.get('Runs', []), f'expire-{count}', case['Action'], database, backup, fixture['DatabaseSha256'])
         marker = Path(str(backup) + '.recovery/COMPLETED.json')
         started = datetime.fromisoformat(expire['StartedUtc']).timestamp()
         # Filesystem timestamp separates backup completion approximately; CLI total uses Stopwatch.
@@ -170,13 +199,13 @@ def reconcile(run_file, output, completed_only=False, simulated_authority=False)
                 restore_runs.append(matches[0])
         cases.append(dict(Count=count, Action=case['Action'], DatabaseBytes=case['OriginalBytes'],
                           OperationBodyBytes=operation_bytes, OriginalRawBytes=raw_bytes,
-                          InspectSeconds=runs[f'inspect-{count}']['Seconds'], ExpireSeconds=expire['Seconds'],
+                          InspectSeconds=inspect['Seconds'], ExpireSeconds=expire['Seconds'],
                           ApproxPreflightArchiveBackupSeconds=before_backup,
                           ApproxPostBackupRetentionVerifyCompactSeconds=expire['Seconds'] - before_backup,
                           PhaseTimingMethod='COMPLETED.json mtime vs UTC start; approximate only. CLI total is monotonic Stopwatch.',
                           CliPeakWorkingSet=expire['PeakWorkingSet'], PeakWalBytes=expire['PeakWalBytes'],
                           BackupBytes=case['BackupBytes'], PostBytes=case['PostBytes'],
-                          InspectPlusExpirySeconds=runs[f'inspect-{count}']['Seconds'] + expire['Seconds'],
+                          InspectPlusExpirySeconds=inspect['Seconds'] + expire['Seconds'],
                           IsolatedRestoreSeconds=case.get('IsolatedRestoreSeconds'), RestoredDatabaseSHA256=restore_hash,
                           RestorePlanCopyInspectSeconds=sum(r['Seconds'] for r in restore_runs) if restore_runs else None,
                           TimingBoundary=run.get('MaintenanceBudgetScope', 'Historical two-hour product CTS starts after original hash/Repository construction; CLI total also includes those steps. Preceding inspection, fixture generation, restore drill, operator review and business takeover are separate.')))

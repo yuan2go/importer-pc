@@ -73,17 +73,30 @@ static partial class Program
             for (var i = 0; i < 200 && detail.Text != entries[201].Text; i++) await Task.Delay(10);
             if (detail.Text != entries[201].Text) throw new InvalidOperationException("Single-record original differs from the selected record");
             grid.SelectedItems.Add(entries[200]);
-            var previousClipboard = Clipboard.GetDataObject();
+            var previousClipboard = Clipboard.GetDataObject(); uint publishedClipboard = 0;
+            var copyStatus = (TextBlock)typeof(SoftwareLogControl).GetField("status", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!;
             try
             {
-                Click(window, "复制所选原文"); await Settle();
+                for (var attempt = 0; attempt < 20; attempt++)
+                {
+                    copyStatus.Text = ""; Click(window, "复制所选原文");
+                    for (var n = 0; n < 500 && (copyStatus.Text.Length == 0 || copyStatus.Text == "正在处理…"); n++) await Task.Delay(10);
+                    if (copyStatus.Text.StartsWith("已复制 ", StringComparison.Ordinal)) { publishedClipboard = ManualDebugClipboardSequence(); break; }
+                    if (!copyStatus.Text.Contains("无法复制")) throw new InvalidOperationException("Copy did not publish a terminal result: " + copyStatus.Text);
+                    await Task.Delay(50);
+                }
+                if (publishedClipboard == 0) throw new InvalidOperationException("System clipboard remained busy; no successful copy inferred");
                 if (Clipboard.GetText() != string.Join(Environment.NewLine, entries[200].Text, entries[201].Text))
                     throw new InvalidOperationException("Copied text must contain the selected original records in display order only");
             }
             finally
             {
-                if (previousClipboard is null) Clipboard.Clear();
-                else Clipboard.SetDataObject(previousClipboard, true);
+                if (publishedClipboard != 0 && ManualDebugClipboardSequence() == publishedClipboard)
+                    for (var attempt = 0; ; attempt++)
+                    {
+                        try { if (previousClipboard is null) Clipboard.Clear(); else Clipboard.SetDataObject(previousClipboard, true); break; }
+                        catch (System.Runtime.InteropServices.COMException) when (attempt < 10) { await Task.Delay(50); if (ManualDebugClipboardSequence() != publishedClipboard) break; }
+                    }
             }
             if (original.IsVisible) throw new InvalidOperationException("Multiple selection must clear the single-record original panel");
             lines.Add("PASS multi-select copies exactly the selected original records in display order; single selection shows its exact original");
@@ -99,8 +112,9 @@ static partial class Program
             if (!detail.Text.Contains("导出") || !detail.Text.Contains("内容过长")) throw new InvalidOperationException("Budgeted detail must disclose omitted presentation and the complete original export path");
             CaptureInternal(evidence, "logs-bounded-context", window, lines);
             // A slow old context cannot republish after unload/revocation.
-            var late = new TaskCompletionSource<SoftwareLogContext>(TaskCreationOptions.RunContinuationsAsynchronously); probe.Context = () => late.Task;
-            Click(window, "查看前后日志"); await Task.Delay(20); control.Revoke(); late.SetResult(new([entries[0]], [])); await Settle();
+            var late = new TaskCompletionSource<SoftwareLogContext>(TaskCreationOptions.RunContinuationsAsynchronously); var contextEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); probe.Context = () => { contextEntered.TrySetResult(); return late.Task; };
+            try { Click(window, "查看前后日志"); await contextEntered.Task.WaitAsync(TimeSpan.FromSeconds(5)); control.Revoke(); }
+            finally { late.TrySetResult(new([entries[0]], [])); await Settle().WaitAsync(TimeSpan.FromSeconds(5)); }
             if (detail.Text.Length != 0) throw new InvalidOperationException("Old context returned after revocation");
             lines.Add("PASS H02 native bounded background context, explicit full-export notice, late result revoked; layout/font unchanged");
         }

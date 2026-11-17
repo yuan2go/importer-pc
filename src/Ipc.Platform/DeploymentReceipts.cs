@@ -12,7 +12,6 @@ public static class DeploymentReceipts
 {
     public static readonly string[] Kinds = ["setup", "quiet", "remove", "rollback", "prune", "purge"];
     const int MaximumBytes = 1024 * 1024;
-    const int MaximumFiles = 1025;
 
     public static DeploymentReceiptSummary[] Summarize(string application) =>
         Summarize(Path.Combine(WindowsStoragePaths.MachineRoot, "deployments"), application);
@@ -25,7 +24,7 @@ public static class DeploymentReceipts
         {
             if (!Directory.Exists(directory)) return new DeploymentReceiptSummary(kind, 0, null, 0);
             var prefix = application + "." + kind + "-";
-            var files = Directory.EnumerateFiles(directory, prefix + "*.json").Take(MaximumFiles)
+            var files = Directory.EnumerateFiles(directory, prefix + "*.json")
                 .Where(file => OperationOf(file, prefix) is not null).ToArray();
             var receipts = files.Select(file => Read(file, kind, OperationOf(file, prefix)!)).ToArray();
             var latest = receipts.OfType<DeploymentReceipt>().OrderByDescending(r => r.At).ThenBy(r => r.OperationId, StringComparer.Ordinal).FirstOrDefault();
@@ -57,7 +56,7 @@ public static class DeploymentReceipts
                 ? stamp : new DateTimeOffset(info.LastWriteTimeUtc, TimeSpan.Zero);
             int? exit = root.TryGetProperty("ExitCode", out var code) && code.ValueKind == JsonValueKind.Number && code.TryGetInt32(out var value) ? value : null;
             string? action = kind == "quiet" && root.TryGetProperty("Intent", out var intent) && intent.ValueKind == JsonValueKind.Object &&
-                intent.TryGetProperty("Action", out var verb) && verb.GetString() is "Install" or "Repair" or "Uninstall" ? verb.GetString() : null;
+                intent.TryGetProperty("Action", out var verb) && verb.ValueKind == JsonValueKind.String && verb.GetString() is "Install" or "Repair" or "Uninstall" ? verb.GetString() : null;
             return new DeploymentReceipt(kind, operation, text, at, action, exit);
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException) { return null; }

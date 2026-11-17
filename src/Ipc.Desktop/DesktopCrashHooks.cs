@@ -22,7 +22,7 @@ public partial class App
                 version = json.RootElement.GetProperty("BusinessVersion").GetString() ?? version;
             }
         }
-        catch (Exception error) when (error is IOException or JsonException or KeyNotFoundException or InvalidOperationException) { commit = "release-identity-unavailable"; }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException or KeyNotFoundException or InvalidOperationException) { commit = "release-identity-unavailable"; }
         string root;
         try { root = Path.Combine(WindowsStoragePaths.UserRoot, "diagnostics", "desktop"); }
         catch (Exception) { root = Path.Combine(AppContext.BaseDirectory, "diagnostics-unavailable"); }

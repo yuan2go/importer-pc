@@ -69,6 +69,8 @@ public sealed class QuietDeploymentOperation : IDisposable
         if (request.ApplicationId != record.Intent.ApplicationId || request.OperationId != record.Intent.OperationId ||
             request.SourceCommit != record.Intent.MediaSourceCommit || record.Intent.Action == "Uninstall")
             throw new InvalidDataException("静默安装计划与原命令身份不一致。");
+        if (DeploymentMedia.InventoryIdentity(DeploymentMedia.Inspect(request.MediaRoot, request.ApplicationId)) != record.Intent.MediaInventorySha256)
+            throw new InvalidDataException("静默安装介质清单与原命令身份不一致。");
         Update(record with { Status = "Executing", Installation = request, ExpectedRegistrationHash = request.ExpectedRegistrationHash });
     }
 
@@ -95,7 +97,7 @@ public sealed class QuietDeploymentOperation : IDisposable
             "尚未提交程序事务；原暂存/备份按原件保留。", "Unverified") : inspect(record);
         var terminal = outcome.Status is "Completed" or "Failed";
         Update(record with { Status = terminal ? outcome.Status : "Unknown", ExitCode = outcome.ExitCode, LogSha256 = logHash ?? record.LogSha256 });
-        return outcome;
+        return outcome with { LogStatus = WindowsDeploymentSetup.QuietLogStatus(record) };
     }
 
     void RequireNew()
@@ -109,6 +111,20 @@ public sealed class QuietDeploymentOperation : IDisposable
 
 public static partial class WindowsDeploymentSetup
 {
+    internal static void RequireQuietInstallationMedia(WindowsDeploymentRequest request, DeploymentMedia media)
+    {
+        if (request.OperationId is null) return;
+        var file = Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".quiet-" + request.OperationId + ".json");
+        try { _ = File.GetAttributes(file); }
+        catch (FileNotFoundException) { return; }
+        catch (DirectoryNotFoundException) { return; }
+        MachineRuntimePolicy.RequireProtectedEvidence(file);
+        if (new FileInfo(file).Length > 4 * 1024 * 1024) throw new InvalidDataException("原静默安装记录超过读取预算。");
+        var original = Wire.Decode<QuietDeploymentRecord>(File.ReadAllText(file));
+        ValidateQuietRecord(original, original.Intent);
+        if (Wire.Encode(original.Installation) != Wire.Encode(request) || original.Intent.MediaInventorySha256 != DeploymentMedia.InventoryIdentity(media))
+            throw new InvalidDataException("原静默安装请求或介质清单已变化，未执行安装。");
+    }
     static string QuietFile(QuietDeploymentIntent intent) => Path.Combine(MachineRoot, "deployments", intent.ApplicationId + ".quiet-" + intent.OperationId + ".json");
     internal static void ValidateQuietRecord(QuietDeploymentRecord record, QuietDeploymentIntent intent)
     {
@@ -291,7 +307,7 @@ public static partial class WindowsDeploymentSetup
             throw new ArgumentException("部署日志须位于程序、配置、数据和机器政策根之外；不把日志写入受管库存。");
     }
 
-    static string QuietLogStatus(QuietDeploymentRecord record)
+    internal static string QuietLogStatus(QuietDeploymentRecord record)
     {
         DeploymentPaths.RequireOrdinaryAncestors(record.Intent.LogFile);
         if (!File.Exists(record.Intent.LogFile)) return "Missing";

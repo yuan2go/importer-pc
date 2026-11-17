@@ -42,7 +42,8 @@ public sealed partial class ParcelStartupMaintenance : IStartupRetentionMaintena
         {
             await using var ports = factory();
             var result = ParcelRepository.ExpireHistoryAuthorized(Path.Combine(state.Directory, definition.Id + ".db"), plan.DatabaseHash, plan.BackupDestination, definition,
-                (path, config) => { ports.Normalize(config); ports.RegisterBackup(path, config); }, false, Authorize, phase: RetentionPhase);
+                (path, config) => { ports.Normalize(config); ports.RegisterBackup(path, config); }, false, Authorize, phase: RetentionPhase,
+                expectedConfigurationHash: plan.ConfigurationHash, expectedDays: plan.Days);
             var outcome = new StartupRetentionOutcome("Completed", plan.Identity, "完整备份、到期清理和完整性核对已完成；未决/永久身份保留。\n" + Wire.Encode(result), result.Run, result.BackupHash);
             ExtensionStore.AtomicWrite(file, outcome); return outcome;
         }

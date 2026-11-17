@@ -58,13 +58,23 @@ static class P0Supervisor
         File.WriteAllText(Path.Combine(dumps, "Ipc.Desktop.exe.dmp"), "retain malformed foreign name");
         DesktopRecoveryInstallation.RemoveOwnedDumps(dumps);
         Check(!File.Exists(Path.Combine(dumps, "Ipc.Desktop.exe.123.dmp")) && File.Exists(Path.Combine(dumps, "foreign-evidence.dmp")) && File.Exists(Path.Combine(dumps, "Ipc.Desktop.exe.dmp")), "uninstall removes only owned WER names and preserves foreign evidence");
+        var ownedChildren = new List<Process>(); var ownedKillers = new List<Task>();
+        using var ownedLifetime = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+        try
+        {
         Process Launch(string mode)
         {
             var start = new ProcessStartInfo("dotnet") { UseShellExecute = false, CreateNoWindow = true };
             foreach (var value in new[] { typeof(P0Supervisor).Assembly.Location, root, "--p0-supervised-child", mode }) start.ArgumentList.Add(value);
-            var child = Process.Start(start)!;
+            var child = Process.Start(start)!; ownedChildren.Add(child);
             var ready = Stopwatch.GetTimestamp();
-            while (child.MainModule?.FileName is null && !child.HasExited && Stopwatch.GetElapsedTime(ready) < TimeSpan.FromSeconds(2)) Thread.Sleep(5);
+            while (!child.HasExited && Stopwatch.GetElapsedTime(ready) < TimeSpan.FromSeconds(2))
+            {
+                try { if (child.MainModule?.FileName is not null) break; }
+                catch (InvalidOperationException) when (child.HasExited) { break; }
+                catch (System.ComponentModel.Win32Exception) when (child.HasExited) { break; }
+                Thread.Sleep(5);
+            }
             return child;
         }
         using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(35));
@@ -96,10 +106,10 @@ static class P0Supervisor
             deadline.Cancel(); try { await watch; } catch (OperationCanceledException) { }
         }
         location = Location("retired"); var attached = true; Process? retained = null;
-        watch = DesktopRecoverySupervisor.RunAsync(location, () => attached ? location : null, launch: _ => retained = Launch("--sleep"));
+        watch = DesktopRecoverySupervisor.RunAsync(location, () => attached ? location : null, launch: _ => retained = Launch("--sleep"), cancellationToken: ownedLifetime.Token);
         while (retained is null) await Task.Delay(10);
         var retainedPid = retained.Id;
-        attached = false; result = await watch;
+        attached = false; result = await watch.WaitAsync(TimeSpan.FromSeconds(5));
         using (var original = Process.GetProcessById(retainedPid)) { Check(result == 0 && !original.HasExited, "retirement detaches watchdog without killing business process"); original.Kill(); await original.WaitForExitAsync(); }
         location = Location("uncertain"); Directory.CreateDirectory(DesktopRecoverySupervisor.StateDirectory(location));
         ExtensionStore.AtomicWrite(Path.Combine(DesktopRecoverySupervisor.StateDirectory(location), "state.json"), new { Launches = 1, Status = "Launching" });
@@ -114,9 +124,21 @@ static class P0Supervisor
             result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: start =>
             {
                 launches++; if (launches > 1) healthyClock.SlowDown(); var process = Launch(launches == 1 ? "--sleep" : "--fail");
-                if (launches == 1) _ = Task.Run(async () => { await Task.Delay(1400); using var first = Process.GetProcessById(process.Id); first.Kill(); }); return process;
+                if (launches == 1) ownedKillers.Add(Task.Run(async () => { await Task.Delay(1400, ownedLifetime.Token); if (!process.HasExited) process.Kill(); })); return process;
             }, clock: healthyClock);
             Check(result == 77 && launches == allowedRestarts + 1, "healthy interval preserves current child and exact restart budget=" + allowedRestarts);
+        }
+        }
+        finally
+        {
+            ownedLifetime.Cancel();
+            List<Exception> cleanup = [];
+            foreach (var child in ownedChildren)
+                try { if (!child.HasExited) { child.Kill(entireProcessTree: true); await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5)); } }
+                catch (Exception error) { cleanup.Add(error); }
+                finally { child.Dispose(); }
+            foreach (var killer in ownedKillers) try { await killer.WaitAsync(TimeSpan.FromSeconds(5)); } catch (OperationCanceledException) { } catch (Exception error) { cleanup.Add(error); }
+            if (cleanup.Count != 0) throw new AggregateException("Verification-owned child cleanup failed", cleanup);
         }
     }
     sealed class AcceleratedClock : TimeProvider

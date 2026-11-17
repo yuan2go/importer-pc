@@ -12,7 +12,7 @@ public sealed partial class ParcelRuntime
     readonly object archiveCountOwnership = new();
     Task<(long Total, long HistoricalUnknown)>? archiveCountRead;
     long archiveCountReadRevision = -1;
-    async Task RefreshArchiveCountAsync()
+    async Task RefreshArchiveCountAsync(CancellationToken token = default)
     {
         var original = repository ?? throw new InvalidOperationException("Application has not started");
         while (true)
@@ -24,15 +24,15 @@ public sealed partial class ParcelRuntime
             {
                 if (archiveCountRead is null || archiveCountReadRevision != revision || archiveCountRead.IsFaulted || archiveCountRead.IsCanceled)
                 {
-                    archiveCountReadRevision = revision;
                     archiveCountRead = OwnedRead(token => Task.FromResult(original.ReadArchivedCount(Id == "sportmaster", token)));
+                    archiveCountReadRevision = revision;
                 }
                 read = archiveCountRead;
             }
-            var count = await read.ConfigureAwait(false);
+            var count = await read.WaitAsync(token).ConfigureAwait(false);
             // The independent reader can see the SQLite commit before the writer
             // publishes its in-memory revision. Validate under the writer's gate.
-            await gate.WaitAsync().ConfigureAwait(false);
+            await gate.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 if (original.ArchiveRevision != revision) continue;

@@ -130,13 +130,14 @@ static partial class SportmasterRcs
             // stream. Teardown records it, really destroys/finalizes, and automatic reconnect reopens.
             var stops = returned.StopAttempts;
             var opens = returned.OpenAttempts;
+            var priorDestroys = returned.DestroyAttempts;
             returned.FailStop = true; returned.Discovered = false;
             try
             {
                 await Wait(app, _ => returned.StopAttempts > stops);
                 returned.Discovered = true;
                 s = await Wait(app, s => returned.OpenAttempts > opens && s.Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
-                Check(returned.Calls.Contains("destroy") && s.Operations.All(o => o.Wcs!.Attempts == 1),
+                Check(returned.DestroyAttempts > priorDestroys && s.Operations.All(o => o.Wcs!.Attempts == 1),
                     "a StopGrabbing error after stream loss no longer blocks reconnect: native handle destroyed, camera reopened, original requests not resent");
             }
             finally { returned.FailStop = false; }

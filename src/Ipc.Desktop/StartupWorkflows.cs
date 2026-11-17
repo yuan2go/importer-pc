@@ -191,6 +191,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     StartupSavedDraft? savedDraft;
     TextBox? restorePlanPreview;
     StartupRecoveryPreview? recovery;
+    StartupRecoveryPreview? uncertainRestore;
     StartupRecoveryPreview? restoredPreview;
     public bool RestoreAdopted { get; private set; }
     string? restoredBackup;
@@ -338,8 +339,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             if (!MayDiscard()) return;
             var selected = recovery ?? throw new InvalidOperationException("先检查恢复计划。");
-            await RunMaintenance("恢复备份到新目录\n备份：" + backup + "\n目标：" + selected.Destination + "\n恢复完成后仍需检查配置才能生产。",
-                (progress, token) => maintenance.RestoreAsync(backup, selected.Destination, selected.BackupSha256, progress, token));
+            try
+            {
+                await RunMaintenance("恢复备份到新目录\n备份：" + backup + "\n目标：" + selected.Destination + "\n恢复完成后仍需检查配置才能生产。",
+                    (progress, token) => maintenance.RestoreAsync(backup, selected.Destination, selected.BackupSha256, progress, token));
+            }
+            catch (InstallationOutcomeUnknownException) { uncertainRestore = selected; throw; }
             restoredPreview = selected with { State = "Isolated" }; restoredBackup = backup; recovery = null;
             Message("备份已恢复到新目录，原目录保留。尚未启动；请核对接管条件、原请求和设备后再明确启动。");
         });
@@ -553,6 +558,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (maintenanceReleased) return;
         maintenanceReleasePending = true;
         if (maintenance is not null) await maintenance.DisposeAsync();
+        maintenanceReleasePending = false;
         maintenanceReleased = true; maintenanceReleasePending = false;
     }
     async Task StartReviewed()
@@ -668,7 +674,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     }
     void SelectRestoreStage(StartupRecoveryPreview original)
     {
-        if (original.State is "Planned" or "CopyIncomplete" or "Isolated" or "HandoffPrepared" or "ProjectionPending" or "AdoptedIsolated" or "ConfirmedPaused" or "Enabled" or "EnabledPaused") ResolveKnownMaintenanceOutcome();
+        if (original.State is "Planned" or "CopyIncomplete" or "Isolated" or "HandoffPrepared" or "ProjectionPending" or "AdoptedIsolated" or "ConfirmedPaused" or "Enabled" or "EnabledPaused")
+        {
+            if (uncertainRestore is { } pending && original.BackupSha256 == pending.BackupSha256 &&
+                Path.GetFullPath(original.Destination) == Path.GetFullPath(pending.Destination))
+            { ResolveKnownMaintenanceOutcome(); uncertainRestore = null; }
+        }
         if (original.State is "Isolated" or "HandoffPrepared" or "ProjectionPending" or "AdoptedIsolated")
         { restoredPreview = original; restoredBackup = original.Backup ?? backup; recovery = null; }
         else { recovery = original.State is "Planned" or "CopyIncomplete" ? original : null; restoredPreview = null; restoredBackup = null; }
@@ -812,6 +823,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         }
         var policyStart = Body.Children.Count; var reviewStart = policyStart;
         ParameterSettingsControl? sharedEditor = null;
+        var openingMode = parameterControl?.OpeningModeDraft;
+        refreshReview = null; parameterEditor = null; parameterControl = null;
         if (replaceDraft) draft = document?.Candidate is { } candidate ? new(candidate, document.Catalog, initialConfiguration && !document.ExistingConfiguration) : null;
         if (draft is not null)
         {
@@ -832,7 +845,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 try { return await maintenance.ReadCameraSerialAsync(ip, engine); }
                 catch (Exception error) { diagnosticDetails += "\n相机身份读取：" + Ipc.Platform.DiagnosticText.Protect(error.ToString()); throw; }
             };
-            sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, OpeningModeDraft = parameterControl?.OpeningModeDraft, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430 };
+            sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, OpeningModeDraft = openingMode, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430 };
             Body.Children.Add(sharedEditor);
             reviewStart = Body.Children.Count;
             if (!initialConfiguration) Field("维护原因（必填，记入审计）", reason, v => reason = v);

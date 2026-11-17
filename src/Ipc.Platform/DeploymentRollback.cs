@@ -43,6 +43,7 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static DeploymentRollbackPlan PlanRollback(string application, string operationId)
     {
+        _ = RollbackFile(application, operationId);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
         return PlanRollbackCore(application, operationId);
     }
@@ -94,6 +95,9 @@ public static partial class WindowsDeploymentSetup
             {
                 _ = ValidateInstalledInventory(target, inventory.RootElement.GetRawText());
                 var expected = inventory.RootElement.GetProperty("Files");
+                if (targetMedia.Files.Count != expected.EnumerateObject().Count() ||
+                    targetMedia.Files.Any(f => !expected.TryGetProperty(f.Key, out var value) || !string.Equals(value.GetString(), f.Value, StringComparison.OrdinalIgnoreCase)))
+                    return Denied("上一部署的程序与原安装库存不一致。");
                 if (cachedMedia.SourceCommit != target.SourceCommit || cachedMedia.Files.Count != expected.EnumerateObject().Count() ||
                     cachedMedia.Files.Any(f => !expected.TryGetProperty(f.Key, out var value) || !string.Equals(value.GetString(), f.Value, StringComparison.OrdinalIgnoreCase)))
                     return Denied("上一部署的维护缓存不完整或不属于原安装；库存安全归档不能代替可运行程序。");
@@ -120,6 +124,7 @@ public static partial class WindowsDeploymentSetup
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         var application = reviewed.Current.ApplicationId;
+        _ = RollbackFile(application, reviewed.OperationId);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         var file = RollbackFile(application, reviewed.OperationId);
         if (File.Exists(file)) throw new InstallationOutcomeUnknownException("原回退记录已存在，请核对该次结果，不重复提交。");
@@ -151,6 +156,7 @@ public static partial class WindowsDeploymentSetup
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         var app = reviewed.Current.ApplicationId;
+        _ = RollbackFile(app, reviewed.OperationId);
         using var owner = new FileStream(Path.Combine(MachineRoot, "deployments", app + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         var file = RollbackFile(app, reviewed.OperationId);
         if (File.Exists(file)) throw new InstallationOutcomeUnknownException("原回滚记录已存在，核对原结果，不补写未开始。");
@@ -257,6 +263,7 @@ public static partial class WindowsDeploymentSetup
 
     public static string? RollbackOperationToInspect(string application)
     {
+        if (!ExtensionSchema.IsId(application)) throw new InvalidDataException("应用身份无效。");
         var directory = Path.Combine(MachineRoot, "deployments");
         if (!Directory.Exists(directory)) return null;
         var records = Directory.EnumerateFiles(directory, application + ".rollback-*.json").Take(1025).ToArray();
@@ -275,6 +282,7 @@ public static partial class WindowsDeploymentSetup
         Action<DeploymentLocation>? shortcuts = null)
     {
         if (repair) MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        _ = RollbackFile(application, operation);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         if (RemovedRollbackOperations(application).Contains(RollbackFile(application, operation)))
             return new(operation, "SupersededByRemoval", "原回退涉及的程序已卸载，不再修复已移除入口。原数据和业务责任保留。", RollbackFile(application, operation));

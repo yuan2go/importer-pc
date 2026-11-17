@@ -312,15 +312,15 @@ static class LifecycleRestore
                 check(!WindowsDeploymentSetup.RestoreBlocksAnotherOperation(record, before, id), "the same original handoff can resume its prepared commit");
                 check(!WindowsDeploymentSetup.RestoreBlocksAnotherOperation(record, before with { LifecycleState = "Purged" }, Wire.Id()), "explicit later uninstall supersedes an old handoff without reviving it");
             }
-            DeploymentLocation? current = before; var seed = "old seed"u8.ToArray(); var interrupt = true;
+            DeploymentLocation? current = before; var seed = "old seed"u8.ToArray(); var descriptorRoot = before.DataRoot; var projectedRoot = before.DataRoot; var interrupt = true;
             void Boundary(string phase) { if (interrupt && cut == phase) throw new IOException("synthetic process boundary " + phase); }
             void Execute() => WindowsDeploymentSetup.ExecuteRestoreCommit(record, () => current, () => seed,
-                bytes => { seed = bytes; Boundary("seed"); }, _ => Boundary("descriptor"), location => { current = location; Boundary("registration"); },
-                () => Boundary("projection"), completed => { Boundary("receipt"); record = completed; });
+                bytes => { seed = bytes; Boundary("seed"); }, location => { descriptorRoot = location.DataRoot; Boundary("descriptor"); }, location => { current = location; Boundary("registration"); },
+                () => { projectedRoot = next.DataRoot; Boundary("projection"); }, completed => { Boundary("receipt"); record = completed; });
             try { Execute(); throw new Exception("missing interruption"); } catch (IOException) { }
             check(record.Status == "Prepared" && WindowsDeploymentSetup.RestoreCommitState(record, current) is "HandoffPrepared" or "ProjectionPending", "interrupted original is inspectable at " + cut);
             interrupt = false; Execute();
-            check(current == next && System.Text.Encoding.UTF8.GetString(seed) == "restored seed" && record.Status == "CompletedIsolated", "same original completes seed and sole registration at " + cut);
+            check(current == next && descriptorRoot == next.DataRoot && projectedRoot == next.DataRoot && System.Text.Encoding.UTF8.GetString(seed) == "restored seed" && record.Status == "CompletedIsolated", "same original completes seed and sole registration at " + cut);
             if (cut == "seed")
             {
                 try { WindowsDeploymentSetup.RequireRestoreReady(next, record with { Status = "Prepared" }); throw new Exception("unfinished restore started"); }

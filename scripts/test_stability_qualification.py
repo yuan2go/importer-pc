@@ -13,6 +13,32 @@ q = importlib.util.module_from_spec(spec); spec.loader.exec_module(q)
 
 
 class QualificationChecks(unittest.TestCase):
+    def test_normal_summary_must_match_persisted_endpoints(self):
+        import copy
+        samples = [dict(Normal=True, CollectedAt='2026-10-24T00:00:00+00:00', ElapsedSeconds=10,
+                        Progress=dict(RuntimeId='synthetic', Counter=1)),
+                   dict(Normal=True, CollectedAt='2026-10-24T00:00:03+00:00', ElapsedSeconds=13,
+                        Progress=dict(RuntimeId='synthetic', Counter=2))]
+        collection = dict(RuntimeId='synthetic', Samples=2, FirstNormal=samples[0]['Progress'], LastNormal=samples[-1]['Progress'],
+                          NormalStart=samples[0]['CollectedAt'], NormalEnd=samples[-1]['CollectedAt'], ActualNormalSeconds=3)
+        self.assertEqual(q.validate_normal_samples(collection, samples), 2)
+        for field, replacement in [('FirstNormal', dict(RuntimeId='synthetic', Counter=0)),
+                                   ('NormalStart', '2026-10-23T00:00:00+00:00'), ('ActualNormalSeconds', 999), ('Samples', 3)]:
+            invalid = copy.deepcopy(collection); invalid[field] = replacement
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                q.validate_normal_samples(invalid, samples)
+
+    def test_unlisted_release_identity_is_refused(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as folder:
+            release = Path(folder); (release / 'desktop').mkdir()
+            executable = release / 'desktop/Ipc.Desktop.exe'; executable.write_bytes(b'synthetic executable')
+            (release / 'ASSEMBLY.json').write_text(json.dumps(dict(SourceCommit='a' * 40)))
+            (release / 'SHA256SUMS').write_text(hashlib.sha256(executable.read_bytes()).hexdigest() + '  desktop/Ipc.Desktop.exe\n')
+            with patch.object(q, 'ordinary', side_effect=lambda path: Path(path).resolve()):
+                with self.assertRaisesRegex(ValueError, 'identity must be present'):
+                    q.verify_release(release)
+
     def test_short_collector_preserves_release_identity_and_has_an_independent_deadline(self):
         for unreadable in (False, True):
             with self.subTest(unreadable=unreadable), tempfile.TemporaryDirectory() as folder:

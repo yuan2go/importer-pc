@@ -218,7 +218,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     public async ValueTask DisposeAsync()
     {
         lock (lifecycle) disposed = true;
-        await StopAsync(CancellationToken.None).ConfigureAwait(false);
-        lock (lifecycle) { heartbeatStop?.Dispose(); heartbeatStop = null; client.Dispose(); heartbeatClient.Dispose(); }
+        try { await StopAsync(CancellationToken.None).ConfigureAwait(false); }
+        finally { lock (lifecycle) { heartbeatStop?.Dispose(); heartbeatStop = null; client.Dispose(); heartbeatClient.Dispose(); } }
     }
 }

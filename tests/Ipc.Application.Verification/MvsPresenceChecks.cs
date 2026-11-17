@@ -55,7 +55,7 @@ internal static class MvsPresenceChecks
         Check(model.Snapshot() is { Calibrated: true, Presence: TrayPresence.Unknown, ExposureValid: false, BrightnessShift: 40 },
             "exposure-invalid evidence remains explicitly unknown despite retaining the session's calibrated reference");
         await using (var restarted = new MvsAcquisition(new("presence-restart", "presence-restart", new Dictionary<string, string>
-        { ["device.ip"] = "192.0.2.21", ["device.serial"] = "SYNTH-OFFLINE-0" }), new Camera(false), _ => new Lease(), decoder: new Decoder(new Camera(false))))
+        { ["device.ip"] = "192.0.2.21", ["device.serial"] = "SYNTH-OFFLINE-0" }), new Camera(false), _ => new Lease(), decoder: new Decoder()))
         {
             await restarted.StartControlledAsync(Wire.Id(), _ => true, _ => { }, default);
             restarted.CalibrateEmptyTray();
@@ -77,7 +77,7 @@ internal static class MvsPresenceChecks
             };
             MvsAcquisition CreateSource(DeviceBinding binding)
             {
-                source = new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), camera, _ => new Lease(), decoder: native ? null : new Decoder(camera));
+                source = new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), camera, _ => new Lease(), decoder: native ? null : new Decoder());
                 source.EnableOriginalFrames(); return source;
             }
             h.Peer.ReplyVehicleStates = true;
@@ -121,13 +121,12 @@ internal static class MvsPresenceChecks
                 "reliable still-present parcel survives 3sec and never resubmits");
             camera.Parcel = false;
             await CameraRoundHarness.Until(() => Task.FromResult(acquisition.TrayPresenceStatus == "空托盘已确认"));
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CurrentRoundId: null, Arrival.Submitted: false });
             var afterAbsence = await h.App.SnapshotAsync();
-            Check(afterAbsence.Positions!.Single(p => p.Id == "left").Arrival?.Submitted == true && h.Peer.Requests.Count == 1, "visual absence does not rearm a submitted vehicle");
+            Check(afterAbsence.Positions!.Single(p => p.Id == "left").Arrival?.Submitted == false && h.Peer.Requests.Count == 1, "qualified visual absence releases the completed parcel without sending another request");
 
-            await SmRoundFixture.NextVehicleAsync(h.App, "left");
-            await CameraRoundHarness.Until(async () => !(await h.App.SnapshotAsync()).Rounds.Any(r => r.PositionId == "left"));
             Check((await h.App.RoundHistoryAsync(search: first.Id)).Items.Single().EndReason == "TrustedRemoval",
-                "qualified empty tray closes its original round; accepted vehicle claim survives until actual vehicle change");
+                "qualified empty tray closes its original round and releases its accepted claim on the same vehicle");
             camera.Parcel = true;
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
             var second = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
@@ -191,11 +190,11 @@ internal static class MvsPresenceChecks
         catch (InvalidDataException) { Check(!File.Exists(denied), "changed original samples are retained and refuse before report publication"); }
     }
     sealed class Lease : IDisposable { public void Dispose() { } }
-    sealed class Decoder(Camera camera) : IMonoBarcodeDecoder
+    sealed class Decoder : IMonoBarcodeDecoder
     {
         public void Prepare() { }
         public void Release() { }
-        public string[] Decode(byte[] p, int length, int w, int h) => camera.Parcel ? ["PRESENCE-123456"] : [];
+        public string[] Decode(byte[] p, int length, int w, int h) => p[100 * w + 150] > 140 ? ["PRESENCE-123456"] : [];
     }
     sealed class Camera(bool native) : IMvsApi
     {
@@ -214,9 +213,9 @@ internal static class MvsPresenceChecks
         public void Start() { }
         public MvsFrame? Acquire()
         {
-            Thread.Sleep(25); var p = Pixels(Parcel); data = Marshal.AllocHGlobal(p.Length); Marshal.Copy(p, 0, data, p.Length);
+            Thread.Sleep(25); var parcel = Parcel; var p = Pixels(parcel); data = Marshal.AllocHGlobal(p.Length); Marshal.Copy(p, 0, data, p.Length);
             return new(data, W, H, MvsNative.Mono8, (ulong)p.Length, ++number, 0, 0)
-            { NativeSymbols = Parcel ? [new("PRESENCE-123456", "Code128", [], 0)] : [] };
+            { NativeSymbols = parcel ? [new("PRESENCE-123456", "Code128", [], 0)] : [] };
         }
         public void Release() { Marshal.FreeHGlobal(data); data = 0; }
         public bool Connected() => true;

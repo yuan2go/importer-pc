@@ -27,11 +27,12 @@ public sealed class ConfigurationSaveReviewWindow : Window
     readonly TextBox reason = new() { Name = "ChangeReason", AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MinHeight = 72, MaxLength = 1024, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly TextBlock reasonError = new TextBlock { TextWrapping = TextWrapping.Wrap, Visibility = Visibility.Collapsed }.Themed(TextBlock.ForegroundProperty, "Danger");
     string? localFailure;
+    bool observedAuthorization;
     readonly PasswordBox proof = new() { Name = "MaintenanceProof" };
     public event EventHandler<string>? NavigateRequested;
     public ConfigurationSaveReviewWindow(Window? owner, ParcelViewModel model, bool authorizationOnly = false)
     {
-        vm = model; this.authorizationOnly = authorizationOnly; Owner = owner; DataContext = vm;
+        vm = model; this.authorizationOnly = authorizationOnly; Owner = owner; DataContext = vm; observedAuthorization = vm.IsManagementMode;
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; SetResourceReference(BackgroundProperty, "Surface");
         Title = authorizationOnly ? "管理模式与操作条件" : "保存更改"; WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -135,7 +136,8 @@ public sealed class ConfigurationSaveReviewWindow : Window
     }
     void ModelChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (!vm.IsManagementMode && !vm.Busy) { Close(); return; }
+        observedAuthorization |= vm.IsManagementMode;
+        if (observedAuthorization && !vm.IsManagementMode && !vm.Busy) { Close(); return; }
         if (e.PropertyName is nameof(vm.Busy) or nameof(vm.Fresh) or nameof(vm.CanConfigure) or nameof(vm.ConfigurationReviewIsCurrent) or nameof(vm.HasUnconfirmedConfigurationSubmission) or nameof(vm.ConfigurationSubmissionOutcome) or nameof(vm.Snapshot) or nameof(vm.Feedback)) UpdateState();
     }
     void UpdateState()

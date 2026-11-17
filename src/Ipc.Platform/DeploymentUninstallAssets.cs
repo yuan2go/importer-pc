@@ -33,6 +33,7 @@ public static partial class WindowsDeploymentSetup
             cancellationToken.ThrowIfCancellationRequested();
             var cache = Path.GetFullPath(input.Root);
             var retainedRoot = cache;
+            var existingAreas = areas.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase); var existingCaches = caches.Count;
             try
             {
                 if (Path.GetDirectoryName(cache) != Path.GetFullPath(cacheParent) ||
@@ -40,9 +41,9 @@ public static partial class WindowsDeploymentSetup
                     throw new InvalidDataException("维护库存目录身份无效。");
                 using var document = JsonDocument.Parse(input.Json);
                 var value = document.RootElement;
-                var source = value.GetProperty("SourceCommit").GetString()!;
+                var source = value.GetProperty("SourceCommit").GetString();
                 var program = Path.GetFullPath(value.GetProperty("ReleaseRoot").GetString()!);
-                if (value.GetProperty("ApplicationId").GetString() != location.ApplicationId || source.Length != 40 || !source.All(char.IsAsciiHexDigit))
+                if (value.GetProperty("ApplicationId").GetString() != location.ApplicationId || source is not { Length: 40 } || !source.All(char.IsAsciiHexDigit))
                     throw new InvalidDataException("库存不属于本站应用。");
                 var evidence = new DeploymentLocation(location.ApplicationId, source, program, location.ConfigurationDirectory, location.DataRoot, location.RuntimeAccountSid);
                 var names = ValidateInstalledInventory(evidence, input.Json);
@@ -51,9 +52,7 @@ public static partial class WindowsDeploymentSetup
                 if (string.Equals(cache, location.MaintenanceRoot, StringComparison.OrdinalIgnoreCase) && originalHash != location.InventorySha256)
                     throw new InvalidDataException("本站原库存身份已变化。");
                 archiveInventory(originalHash, input.Json); // Durable safety evidence lives outside deletion roots.
-                Add(cache, names.Append("installed-inventory.json")); caches.Add(cache);
-
-                if (!Directory.Exists(program)) continue;
+                if (!Directory.Exists(program)) { Add(cache, names.Append("installed-inventory.json")); caches.Add(cache); continue; }
                 retainedRoot = program;
                 RequireUninstallAssetRoot(program, location, machineRoot, others);
                 var prefix = location.ApplicationId + "-" + source[..12] + "-";
@@ -75,9 +74,10 @@ public static partial class WindowsDeploymentSetup
                     markers.Add("deployment-retired.json");
                 }
                 Add(program, names.Concat(markers));
+                Add(cache, names.Append("installed-inventory.json")); caches.Add(cache);
             }
             catch (Exception error) when (error is InvalidDataException or FileNotFoundException or DirectoryNotFoundException or JsonException or InvalidOperationException or ArgumentException or KeyNotFoundException)
-            { retained.Add(new(retainedRoot, "库存或历史程序无法核验：" + DiagnosticText.Protect(error.Message))); }
+            { foreach (var added in areas.Keys.Where(k => !existingAreas.Contains(k)).ToArray()) areas.Remove(added); if (caches.Count > existingCaches) caches.RemoveRange(existingCaches, caches.Count - existingCaches); retained.Add(new(retainedRoot, "库存或历史程序无法核验：" + DiagnosticText.Protect(error.Message))); }
         }
         var plan = new UninstallAssetsPlan(location.ApplicationId, UninstallScope(location), operation,
             areas.Values.OrderBy(x => x.Root, StringComparer.Ordinal).ToArray(), caches.ToArray(), retained.ToArray());
@@ -149,7 +149,7 @@ public static partial class WindowsDeploymentSetup
     }
 
     internal static UninstallAssetsReceipt ApplyUninstallAssets(UninstallAssetsRecord record, string path, DeploymentLocation current,
-        Action<UninstallAssetsRecord> save, Func<string, bool> executingCache, Action<string> queueCacheDelete,
+        Action<UninstallAssetsRecord> save, Func<string, bool> executingCache,
         MaintenanceExecution? execution = null)
     {
         ValidateUninstallAssets(record, current, execution?.Token ?? default);
@@ -169,7 +169,6 @@ public static partial class WindowsDeploymentSetup
             catch (Exception error) { throw new InstallationOutcomeUnknownException("清理前取消回执未确认，请核对原次。", new AggregateException(cancelled, error)); }
             throw;
         }
-        var restart = false;
         try
         {
             save(record with { Status = "Cleaning" });
@@ -177,22 +176,14 @@ public static partial class WindowsDeploymentSetup
             {
                 if (record.Plan.Caches.Contains(area.Root, StringComparer.OrdinalIgnoreCase) && executingCache(area.Root))
                 {
-                    // Keep the live host intact. Only its fixed, reviewed cache is
-                    // queued; Windows removes directories only when they are empty.
-                    if (!record.QueuedCaches.Contains(area.Root, StringComparer.OrdinalIgnoreCase))
-                    {
-                        foreach (var name in area.Files.Keys.Where(n => File.Exists(Path.Combine(area.Root, n)))) queueCacheDelete(Path.Combine(area.Root, name));
-                        foreach (var dir in area.Files.Keys.Select(n => Path.GetDirectoryName(Path.Combine(area.Root, n))!)
-                            .SelectMany(p => Parents(p, area.Root)).Append(area.Root).Distinct(StringComparer.OrdinalIgnoreCase).OrderByDescending(p => p.Length))
-                            if (Directory.Exists(dir)) queueCacheDelete(dir);
-                        record = record with { QueuedCaches = [.. record.QueuedCaches, area.Root] };
-                        save(record with { Status = "Cleaning" });
-                    }
-                    restart = true;
+                    // A running cache is retained. OS reboot deletion is path-based
+                    // and cannot recheck these frozen hashes when it actually runs.
+                    // Explicit continuation revalidates this same finite plan after exit.
+                    continue;
                 }
                 else _ = CleanRemovalInventory(area.Root, area.Files.Keys.ToArray(), _ => false, reviewedHashes: area.Files);
             }
-            var result = ProjectUninstallAssets(record with { Status = restart ? "RestartRequired" : "Partial" }, path);
+            var result = ProjectUninstallAssets(record with { Status = "Partial" }, path);
             save(record with { Status = result.Status, Remaining = result.Remaining });
             return result;
         }

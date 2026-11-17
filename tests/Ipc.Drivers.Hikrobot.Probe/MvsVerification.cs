@@ -112,11 +112,11 @@ internal static partial class MvsVerification
         using (var release = new ManualResetEventSlim())
         await using (var source = Source(blockedApi, blockedLease))
         {
-            blockedApi.Acquiring = () => { entered.Set(); release.Wait(); };
-            await source.StartControlledAsync("blocked-native", _ => true, _ => { }, default);
-            Check(entered.Wait(2000), "native acquisition surrogate entered");
             try
             {
+                blockedApi.Acquiring = () => { entered.Set(); release.Wait(); };
+                await source.StartControlledAsync("blocked-native", _ => true, _ => { }, default);
+                Check(entered.Wait(2000), "native acquisition surrogate entered");
                 using var cancelled = new CancellationTokenSource(30);
                 try { await source.StopAsync(cancelled.Token); throw new Exception("Falsely stopped"); } catch (OperationCanceledException) { }
                 Check(blockedLease.Releases == 0 && !blockedApi.Calls.Contains("destroy"), "cancelled stop wait retains blocked native acquisition owner");
@@ -213,11 +213,12 @@ internal static partial class MvsVerification
         public void Start() => Call("start");
         public void ClearBuffers() { if (HasFrame) throw new InvalidOperationException("Cannot clear a borrowed frame"); Frames.Clear(); Call("clear"); }
         public MvsFrame? Acquire() { Acquiring?.Invoke(); if (HasFrame) throw new InvalidOperationException("Loan still held"); if (Frames.TryDequeue(out var f)) { HasFrame = true; return f; } Thread.Sleep(5); return null; }
-        public void Release() { if (FailFree) throw new IOException("Synthetic FreeImageBuffer failure"); if (HasFrame) { Freed++; HasFrame = false; } }
+        public void Release() { if (FailFree) throw new IOException("Synthetic FreeImageBuffer failure"); if (HasFrame) { Call("release"); Freed++; HasFrame = false; } }
         public bool Connected() => Online;
-        public void Stop() { Call("stop"); MvsNative.Check(StopResult, "StopGrabbing"); }
-        public void Close() { Call("close"); MvsNative.Check(CloseResult, "CloseDevice"); }
-        public void Destroy() => Call("destroy");
-        public void Shutdown() => Call("finalize");
+        void RequireNoLoan() { if (HasFrame) throw new InvalidOperationException("Native teardown ran before its loan was returned"); }
+        public void Stop() { RequireNoLoan(); Call("stop"); MvsNative.Check(StopResult, "StopGrabbing"); }
+        public void Close() { RequireNoLoan(); Call("close"); MvsNative.Check(CloseResult, "CloseDevice"); }
+        public void Destroy() { RequireNoLoan(); Call("destroy"); }
+        public void Shutdown() { RequireNoLoan(); Call("finalize"); }
     }
 }

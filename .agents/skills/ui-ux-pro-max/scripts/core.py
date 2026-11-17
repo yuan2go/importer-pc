@@ -301,6 +301,11 @@ class BM25:
 
     def fit(self, documents):
         """Build BM25 index from documents"""
+        self.doc_freqs.clear()
+        self.idf.clear()
+        self.doc_lengths = []
+        self._term_freqs = []
+        self.avgdl = 0
         self.corpus = [self.tokenize(doc) for doc in documents]
         self.N = len(self.corpus)
         if self.N == 0:
@@ -413,13 +418,13 @@ def _query_coverage(index, query):
 
 def _search_csv_detailed(filepath, search_cols, output_cols, query, max_results,
                          threshold=None, routing_domain=None, row_filter=None,
-                         cache_variant=""):
+                         cache_variant="", snapshot=None):
     """Calibrated search returning results, index, and internal diagnostics."""
     if not filepath.exists():
         return [], None, {"reason": "missing-file"}
 
     try:
-        data, signature = _load_csv_snapshot(filepath)
+        data, signature = snapshot if snapshot is not None else _load_csv_snapshot(filepath)
     except (csv.Error, OSError, UnicodeDecodeError):
         return [], None, {
             "reason": "read-error",
@@ -684,10 +689,10 @@ def _style_identity(rows, query, allow_contained=True):
     if not candidates:
         return None
     candidates.sort(key=lambda item: (item[0], item[1]), reverse=True)
-    best_score = candidates[0][:3]
+    best_score = candidates[0][:2]
     best_rows = {
         candidate[3].get("Style ID", ""): candidate[3]
-        for candidate in candidates if candidate[:3] == best_score
+        for candidate in candidates if candidate[:2] == best_score
     }
     return next(iter(best_rows.values())) if len(best_rows) == 1 else None
 
@@ -772,7 +777,9 @@ def search(query, domain=None, max_results=MAX_RESULTS, diagnostics=False):
         else:
             domain, runner_up = detect_domain(query, return_scores=True)
 
-    search_domain = domain if domain in CSV_CONFIG else "style"
+    if domain not in CSV_CONFIG:
+        return {"error": f"Unknown domain: {domain}", "domain": domain}
+    search_domain = domain
     config = CSV_CONFIG[search_domain]
     filepath = DATA_DIR / config["file"]
 
@@ -960,7 +967,10 @@ def search_stack(query, stack, max_results=MAX_RESULTS, diagnostics=False):
     if not filepath.exists():
         return {"error": f"Stack file not found: {filepath}", "stack": stack}
 
-    rows = _load_rows_or_empty(filepath)
+    try:
+        rows, signature = _load_csv_snapshot(filepath)
+    except (csv.Error, OSError, UnicodeDecodeError):
+        return {"error": f"Unable to read search data: {filepath.name}", "stack": stack, "count": 0, "results": []}
     row_filter, cache_variant = _stack_row_filter(rows, query, stack)
     threshold = _NO_THRESHOLD if cache_variant == "legacy-only" else _STACK_THRESHOLD
     exact = (_legacy_successor_guidance(rows, query, stack, row_filter)
@@ -973,7 +983,7 @@ def search_stack(query, stack, max_results=MAX_RESULTS, diagnostics=False):
         results, bm25, diagnostic = _search_csv_detailed(
             filepath, _STACK_COLS["search_cols"], _STACK_COLS["output_cols"], query,
             max_results, threshold, row_filter=row_filter,
-            cache_variant=cache_variant)
+            cache_variant=cache_variant, snapshot=(rows, signature))
 
     out = {
         "domain": "stack",

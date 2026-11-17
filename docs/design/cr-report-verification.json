@@ -1,0 +1,927 @@
+{
+  "schema": 1,
+  "formed_at": "2026-11-17",
+  "repository": "yuan2go/importer-pc",
+  "tested_branch": "codex/cr-verified-sm-fixes",
+  "head_before_uncommitted_fixes": "7e41e2e1676f0c92a8fc27c6cf4e69167d01bf08",
+  "formed_from_dirty_worktree": true,
+  "qualification": "Isolated Windows/WPF/SQLite/loopback HTTP and controlled SDK boundaries; no real SDK, customer RCS, UAC/SCM installation, reboot or field qualification. CI status belongs to the PR commit checks.",
+  "aggregation": "Latest corrected result per case. Core first full run: 92/94 passed, two failures corrected and rerun with related tests (13/13), new custody guard then passed. Native fixtures changed between attempts; this is not one frozen single-run claim.",
+  "core": {
+    "passed": 94,
+    "total": 94,
+    "cases": [
+      {
+        "name": "BuildDisplayUsesReviewedMediaBytesAndDisclosesMissingEvidence",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--acquisition-lifecycle\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--backup-consistency\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--backup-set-delivery\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--camera-chain-reliability\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--camera-rounds\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--cr-report-boundaries\")",
+        "outcome": "Passed",
+        "local_evidence": "boundaries-final14.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--cr-report-cameras\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--cr-sm-backup-fences\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--cr-sm-backup-ownership\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--cr-sm-dispatch\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--cr-sm-live-devices\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--cr-sm-preferences\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--cr-sm-removal\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--cr-sm-templates\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--debug-no-isolation-31\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--dual-camera-performance\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--first-configuration-03\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--history-detail-sheet\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--industrial-diagnostics\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--industrial-lifecycle\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--industrial-opaque-removal\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--industrial-quiet-deployment\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--industrial-recovery\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--industrial-rollback\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--industrial-version-pruning\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--installation-configuration\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--installation-receipts-04\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--installer-storage-checks\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--interrupted-scan-skip\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--lifecycle-restore\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--live-devices-30\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--log-readable\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--management-mode\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--management-status-ownership\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--management-workspace\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--manual-rcs-debug\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--mvid-reader\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--mvs-network-reconnect\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--mvs-offline-activation\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--mvs-presence\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--mvs-still-frames\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--mvs-stop-reconnect\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--parameter-guidance-startup\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--parameter-refactor\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--permanent-deletion-02\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--rcs-heartbeat\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--rcs-timeout-errors\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--read-cadence\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--reader-robustness-28\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--same-placement-29\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--shortcut-lifecycle\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--sm-arrival-cameras\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--sm-arrivals\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--sm-automatic-rcs\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--sm-built-in-only\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--sm-dispatch-resources\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--sm-original-frame\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--sm-parameters\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--sm-round-lifecycle\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--sm-runtime-responsibility\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--sm-single-station\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--stability-analysis\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--startup-camera-dependencies\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--state-journal\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--station-position-control\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--station-single-camera\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--storage-schema-only\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--tilted-decode\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--uninstall-assets\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--uninstall-data-boundary\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--win11-stability\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "ExistingBehaviorSuite (\"--work-card-current\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "InvalidSelectorsCannotFallThrough (\"--camera-debug --camera-debug\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "InvalidSelectorsCannotFallThrough (\"--camera-debug --camera-round-ui\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "InvalidSelectorsCannotFallThrough (\"--camera-debug --latency-assert\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "InvalidSelectorsCannotFallThrough (\"--camera-debug --observe-only\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "InvalidSelectorsCannotFallThrough (\"--latency-capacity --latency-rows\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "InvalidSelectorsCannotFallThrough (\"--p0-crash-hooks --unknown\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "InvalidSelectorsCannotFallThrough (\"--typography-comparison --system-family --system-family\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "InvalidSelectorsCannotFallThrough (\"--unknown\")",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "NewVersionActionRequiresBegin (\"MediaUninstall\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "NewVersionActionRequiresBegin (\"PruneVersions\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "NewVersionActionRequiresBegin (\"ResumeVersionPruning\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "NewVersionActionRequiresBegin (\"ReviewRollback\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "NewVersionActionRequiresBegin (\"ReviewVersionPruning\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "NewVersionActionRequiresBegin (\"Rollback\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "NewVersionActionRequiresBegin (\"SimpleUninstall\")",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "RootPositionDoesNotChangeScenario",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "SharedSmRemovalKernelUsesAnIsolatedBoundedFixture",
+        "outcome": "Passed",
+        "local_evidence": "focused-final13.trx"
+      },
+      {
+        "name": "UnknownAndOversizedTerminalRemainUnknown",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "UnsupportedSelectorCannotRunDefaultSuite",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "VersionReceiptDisclosesDisplayTruncation",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      },
+      {
+        "name": "VersionReviewUsesBoundedSummary",
+        "outcome": "Passed",
+        "local_evidence": "full-final12.trx"
+      }
+    ]
+  },
+  "native": {
+    "passed": 31,
+    "total": 31,
+    "cases": [
+      {
+        "name": "camera-chain-reliability-ui",
+        "exit": 0,
+        "attempt": 13
+      },
+      {
+        "name": "camera-debug",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "camera-filter-preview",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "camera-preview-lifecycle",
+        "exit": 0,
+        "attempt": 14
+      },
+      {
+        "name": "camera-round-ui",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "camera-stream-ui",
+        "exit": 0,
+        "attempt": 17
+      },
+      {
+        "name": "complete-backup-ui",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "continuous-pda-input",
+        "exit": 0,
+        "attempt": 13
+      },
+      {
+        "name": "debug-batch-actions",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "debug-log-live",
+        "exit": 0,
+        "attempt": 13
+      },
+      {
+        "name": "home-centered-states",
+        "exit": 0,
+        "attempt": 15
+      },
+      {
+        "name": "installer-first-run-ui",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "internal-pages",
+        "exit": 0,
+        "attempt": 16
+      },
+      {
+        "name": "lifecycle-ux",
+        "exit": 0,
+        "attempt": 20
+      },
+      {
+        "name": "management-center",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "management-close-read-race",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "management-entry-ordering",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "management-password-layout",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "manual-supply-ui",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "operator-ux-18",
+        "exit": 0,
+        "attempt": 15
+      },
+      {
+        "name": "parameter-guidance-startup",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "parameter-refactor",
+        "exit": 0,
+        "attempt": 14
+      },
+      {
+        "name": "paused-workstation",
+        "exit": 0,
+        "attempt": 13
+      },
+      {
+        "name": "reliability-logs",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "station-latency-ui",
+        "exit": 0,
+        "attempt": 14
+      },
+      {
+        "name": "station-settings",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "task-hierarchy",
+        "exit": 0,
+        "attempt": 15
+      },
+      {
+        "name": "task-hierarchy-chain",
+        "exit": 0,
+        "attempt": 16
+      },
+      {
+        "name": "task-redesign",
+        "exit": 0,
+        "attempt": 14
+      },
+      {
+        "name": "uninstall-result-actions",
+        "exit": 0,
+        "attempt": 12
+      },
+      {
+        "name": "window-preference",
+        "exit": 0,
+        "attempt": 12
+      }
+    ]
+  },
+  "other_checks": {
+    "python_scripts": 169,
+    "installer_preparation": 28,
+    "mvs_self_test": 88,
+    "mvs_additional_probe_suites": 4,
+    "powershell_evidence": 5,
+    "archive": 10,
+    "installed_skill_tests": 145,
+    "node_helpers": 4,
+    "launcher": 5
+  },
+  "local_evidence_sha256": {
+    "full-final12.trx": "75e511c1f3c4c5af3ba8c25a82037e7fa7ffb28fc883ae56c10250d437beb962",
+    "focused-final13.trx": "52849c0855594fca2bc4ac8bd33acc2b5d62ea1a5656f1cd8d13cd88f2136e5f",
+    "boundaries-final14.trx": "e75c40caf4e2ad4aef3b91eb18234100d270257ff234b0a2bb4b61ecda7ca973",
+    "python-final2.log": "f60a252037d0f64330bf9e3a190630a91a66d4655f79e7370061375bea3c69b7",
+    "installer-final.log": "7f63bd5862b0d79cf1151ae0a8977289352991fe9efe0e42d26d1825c5b47a15",
+    "probe-mvs-self-test-final13.log": "0b942c08b6b9a025aea873dba82bd06a070bdd350ca7bee76278f073cd44ad73",
+    "powershell-evidence-final.log": "b350b4432d2b01e1674f8262c0bbaa8c97ec5f528a57288e8a64924ba3c8093b",
+    "archive-final.log": "e7cdb51831f709dc3c9d5f29f13986d8aeadc2fb0eecb7ff47ec9f496209c24d",
+    "skill-final-results.json": "a9e7c2cbdaf341d2342360e9014618dac65135febed72f2d0e854dcb1001d845",
+    "node-final.log": "c8026562e0af0bff2436ca8d771b94387b0e3a85c57f3864691620ffc738aa15",
+    "launcher-final.log": "8ff4bd07cf69cbadd6def64ae9458eab7e7af7442635a4f0260e8399705e48b3"
+  },
+  "compiled_inventory": [
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Application.Contracts.dll",
+      "SHA256": "37B96DB83596D751DF394D94C5D5A8C803F4E6CB6F2EDE15FCBD08701D7589B5"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll",
+      "SHA256": "5B30B42777052C1F71ED7E2FE04A805D32EDDECB153F75EE7849D6276D64FD84"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.dll",
+      "SHA256": "1471E89964680AB5FEB0E7DA2B9CEEC65C1B7DDCBF06063DFD560DCDF2FEB077"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Application.Sportmaster.Desktop.dll",
+      "SHA256": "10BB245E6246B5E27BF1601D3347514E15B2ED32D4DBCC345C2906892B2AF2BF"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Application.Sportmaster.dll",
+      "SHA256": "7EA2DC86B83BD65BB1A507CAEA2B535C730CDAC1A9B9842D07621070C8918544"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Assembly.dll",
+      "SHA256": "0179DAB9B37B4295E8C02AF371444484B260A1D68134D58CB2D750B861D2D247"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Components.dll",
+      "SHA256": "AB7ADD351466EFCC027043FECDE9C69D80AF4692F424A96C243C485573425ECC"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll",
+      "SHA256": "1ACF78BA2000F5F0D0202D5180E457524480A53D94B33CE15C43A6E4204EB584"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Drivers.dll",
+      "SHA256": "53D0428C977D534B3ACFF7A5B99D3D316458A004FC934D6A9A44A5B33875F9ED"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Drivers.Hikrobot.Mvs.dll",
+      "SHA256": "78B0E0C4EB9F929056C77A5975542FEE1C61A4665C2D3444DFEBF5E60DB38311"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Integrations.dll",
+      "SHA256": "B7667282A124FC1E23A8CC147C533400BA4D35FAF902360A72D6780BE4D4A595"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Platform.dll",
+      "SHA256": "5ABCED870AA9FFE27668288A170992DD7ECD1C0A80AD3AAC8DE8B8686D6B30CF"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Platform.Storage.dll",
+      "SHA256": "D5A088B7BDA413A1D60AD9D781C1B502D860F92A177CA0A6FA00B056E59D77E5"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Presentation.Wpf.dll",
+      "SHA256": "8DBE80508EAB42C28292D228DC83CDD9138070E6FA31298DC901A475612ABBAD"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Reference.Protocol.dll",
+      "SHA256": "66AA2A118DE7A8AC6B84FB53C9367422ACA73BB45926422378B00D352C71ED7D"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Supply.Contracts.dll",
+      "SHA256": "6655B341A8FDDAA333A963BB31CE13773B3EC5DF19DA0E836D8F6E0D12E32DAE"
+    },
+    {
+      "Path": "src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Supply.dll",
+      "SHA256": "FF09A20B422D7A3FF2A3542B811F0E99DB3B1D508D610E04EC6992F258FB4603"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Contracts.dll",
+      "SHA256": "37B96DB83596D751DF394D94C5D5A8C803F4E6CB6F2EDE15FCBD08701D7589B5"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.DirectPlc.dll",
+      "SHA256": "B4186CB8DAF0327D5002CCDE63F4025FDAACCF85038810FD195C9312905D34E8"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll",
+      "SHA256": "1471E89964680AB5FEB0E7DA2B9CEEC65C1B7DDCBF06063DFD560DCDF2FEB077"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Sportmaster.dll",
+      "SHA256": "7EA2DC86B83BD65BB1A507CAEA2B535C730CDAC1A9B9842D07621070C8918544"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      "SHA256": "97ECCEF843B529A71A710BE98392B69D5AB0B6B2525039E1A685C71B92E98B7D"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.WcsToPlc.dll",
+      "SHA256": "9005A3C3BC2F35CB9573C17377284BD6612D9C0F3C7F025067984394B69346AE"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Components.dll",
+      "SHA256": "AB7ADD351466EFCC027043FECDE9C69D80AF4692F424A96C243C485573425ECC"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Drivers.dll",
+      "SHA256": "53D0428C977D534B3ACFF7A5B99D3D316458A004FC934D6A9A44A5B33875F9ED"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Drivers.Hikrobot.Mvs.dll",
+      "SHA256": "78B0E0C4EB9F929056C77A5975542FEE1C61A4665C2D3444DFEBF5E60DB38311"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Integrations.dll",
+      "SHA256": "B7667282A124FC1E23A8CC147C533400BA4D35FAF902360A72D6780BE4D4A595"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Integrations.SportmasterRcs.dll",
+      "SHA256": "57B85D337938DDF34ABAD4589648CE0777D1F40017FF0A178239CA2B6362C41C"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Platform.dll",
+      "SHA256": "5ABCED870AA9FFE27668288A170992DD7ECD1C0A80AD3AAC8DE8B8686D6B30CF"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Platform.Storage.dll",
+      "SHA256": "D5A088B7BDA413A1D60AD9D781C1B502D860F92A177CA0A6FA00B056E59D77E5"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Reference.Protocol.dll",
+      "SHA256": "66AA2A118DE7A8AC6B84FB53C9367422ACA73BB45926422378B00D352C71ED7D"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Supply.Contracts.dll",
+      "SHA256": "6655B341A8FDDAA333A963BB31CE13773B3EC5DF19DA0E836D8F6E0D12E32DAE"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Supply.dll",
+      "SHA256": "FF09A20B422D7A3FF2A3542B811F0E99DB3B1D508D610E04EC6992F258FB4603"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Application.Contracts.dll",
+      "SHA256": "37B96DB83596D751DF394D94C5D5A8C803F4E6CB6F2EDE15FCBD08701D7589B5"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll",
+      "SHA256": "5B30B42777052C1F71ED7E2FE04A805D32EDDECB153F75EE7849D6276D64FD84"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.dll",
+      "SHA256": "1471E89964680AB5FEB0E7DA2B9CEEC65C1B7DDCBF06063DFD560DCDF2FEB077"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Application.Sportmaster.Desktop.dll",
+      "SHA256": "10BB245E6246B5E27BF1601D3347514E15B2ED32D4DBCC345C2906892B2AF2BF"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Application.Sportmaster.dll",
+      "SHA256": "7EA2DC86B83BD65BB1A507CAEA2B535C730CDAC1A9B9842D07621070C8918544"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Components.dll",
+      "SHA256": "AB7ADD351466EFCC027043FECDE9C69D80AF4692F424A96C243C485573425ECC"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Desktop.UiVerification.dll",
+      "SHA256": "7CC413F90D0F416E852FB1DE127EA0E9287BF1A54DF28EE1825467F5ADD4E040"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Drivers.dll",
+      "SHA256": "53D0428C977D534B3ACFF7A5B99D3D316458A004FC934D6A9A44A5B33875F9ED"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Drivers.Hikrobot.dll",
+      "SHA256": "87C0C9939ECE52B194D401A814951955EB9358DFACB9409CA2365FDAA5CD2FB6"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Drivers.Hikrobot.Mvs.dll",
+      "SHA256": "78B0E0C4EB9F929056C77A5975542FEE1C61A4665C2D3444DFEBF5E60DB38311"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Integrations.dll",
+      "SHA256": "B7667282A124FC1E23A8CC147C533400BA4D35FAF902360A72D6780BE4D4A595"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Platform.dll",
+      "SHA256": "5ABCED870AA9FFE27668288A170992DD7ECD1C0A80AD3AAC8DE8B8686D6B30CF"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Platform.Storage.dll",
+      "SHA256": "D5A088B7BDA413A1D60AD9D781C1B502D860F92A177CA0A6FA00B056E59D77E5"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Presentation.Wpf.dll",
+      "SHA256": "8DBE80508EAB42C28292D228DC83CDD9138070E6FA31298DC901A475612ABBAD"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Reference.Protocol.dll",
+      "SHA256": "66AA2A118DE7A8AC6B84FB53C9367422ACA73BB45926422378B00D352C71ED7D"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Supply.Contracts.dll",
+      "SHA256": "6655B341A8FDDAA333A963BB31CE13773B3EC5DF19DA0E836D8F6E0D12E32DAE"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Supply.dll",
+      "SHA256": "FF09A20B422D7A3FF2A3542B811F0E99DB3B1D508D610E04EC6992F258FB4603"
+    },
+    {
+      "Path": "tests/Ipc.Core.Tests/bin/Debug/net10.0-windows/Ipc.Application.Contracts.dll",
+      "SHA256": "37B96DB83596D751DF394D94C5D5A8C803F4E6CB6F2EDE15FCBD08701D7589B5"
+    },
+    {
+      "Path": "tests/Ipc.Core.Tests/bin/Debug/net10.0-windows/Ipc.Core.Tests.dll",
+      "SHA256": "35F84DF7495E167B4D282176BBB7FEAEC9A5199B7CD61169774DFBC3B6A1ED4F"
+    },
+    {
+      "Path": "tests/Ipc.Core.Tests/bin/Debug/net10.0-windows/Ipc.Platform.dll",
+      "SHA256": "5ABCED870AA9FFE27668288A170992DD7ECD1C0A80AD3AAC8DE8B8686D6B30CF"
+    }
+  ],
+  "premerge_follow_up": {
+    "base_commit": "cf81761ca8c5841011d74f01fb4272743a4691ee",
+    "scope": "Post-push CI fixture corrections; production guards unchanged. Local evidence below is cumulative and precedes the follow-up commit. CI completion is reported by PR checks.",
+    "native": {
+      "camera-barcode-current": {
+        "outcome": "Passed",
+        "log_sha256": "a827d26e25494418cd7bfe6ccaa8691db7171c750e65ac6faf8cd14a3b1a9a6d"
+      },
+      "manual-rcs-debug-ui": {
+        "outcome": "Passed",
+        "log_sha256": "d4ee6c364350077dfaa23e6fad6090d28cae8b3937cf1c61e3dbcbe0cff7652e"
+      },
+      "startup-experience": {
+        "outcome": "Passed",
+        "log_sha256": "773c18d9349085f8967499d9e0dd5f841da17ee9890549b656933895c9d4b6df"
+      }
+    },
+    "powershell": "Volume fixture syntax passed; actual local invocation was refused before volume access. Real volume/installation verification is CI-only.",
+    "core": {
+      "outcome": "Passed",
+      "passed": 3,
+      "failed": 0,
+      "coverage_collection": true,
+      "trx_sha256": "5dbc785679cb2a52de6ba1830d46e5f273c7cb61706a20ba00594aad2230b8dc",
+      "cases": [
+        "ExistingBehaviorSuite (\"--station-position-control\")",
+        "ExistingBehaviorSuite (\"--cr-report-boundaries\")",
+        "ExistingBehaviorSuite (\"--cr-report-cameras\")"
+      ]
+    },
+    "cold_install": {
+      "scope": "Unregistered installer reads the current Windows personal address without provisioning; actual personal files retain original authority checks. Synthetic retention seed uses the existing controlled reference factory, not real machine leases.",
+      "core_boundary_passed": 1,
+      "trx_sha256": "99e54be81f538e19b2c38d8e3cd672a6140bafd76f8e4d042a4b0663b8a43062",
+      "build_log_sha256": {
+        "premerge-build-cold-storage.log": "d6ca4a9fba8178567dd1a620f9d2f256ede69c56b6753c8a850bbe88a369f2c6",
+        "premerge-build-cold-ui.log": "917830aa8533e9ea1a670626dda20fbaf79fed6a2ee8a2aee800975542240c85",
+        "premerge-build-installer3.log": "048a2c35cf18768b75ca42612bb11a5849be1d0821b2cbf77f8b07fdadc00734"
+      },
+      "ci_qualification": "Real unregistered-machine and protected lifecycle checks require disposable Windows CI; not executed on the user PC."
+    }
+  }
+}

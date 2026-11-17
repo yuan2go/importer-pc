@@ -16,10 +16,15 @@ internal static class LogReadable
         Check(structured == request, "structured request metadata preserves the readable barcode and protocol number in the log list");
         Check(SoftwareLogFacts.Matches(new(new("synthetic-file", 1, "synthetic-hash", "运行/runtime.jsonl"), "设备通信", DateTimeOffset.UtcNow, "信息", "{}"),
             new(DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }), "device recovery stays visible in default key events rather than only the preceding failure");
-        foreach (var source in new[] { "原图留档", "作业页面" })
+        foreach (var source in new[] { "原图留档", "作业页面", "RCS心跳" })
             Check(SoftwareLogFacts.Matches(new(new("synthetic-file", 1, "synthetic-hash", "运行/runtime.jsonl"), source, DateTimeOffset.UtcNow, "信息", "{}"),
                 new(DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }),
-                "picture retention, reads and button state are included in default key logs: " + source);
+                "picture, page and actual heartbeat evidence are included in default key logs: " + source);
+        var heartbeat = SoftwareLogText.Summary(Entry(new { Source = "RCS心跳", Event = "心跳实际响应", Detail = new
+        { RequestId = 24680, HttpStatus = 200, ProtocolConfirmed = true, ElapsedMs = 12.5,
+            Vehicles = new[] { new { CameraCode = "SYNTH-LEFT", VehicleNo = "SYNTH-123", Status = "IDLE" } } } }));
+        Check(heartbeat.Contains("24680") && heartbeat.Contains("HTTP 200") && heartbeat.Contains("协议已确认") && heartbeat.Contains("SYNTH-123") && heartbeat.Contains("IDLE"),
+            "heartbeat list shows its actual request number, HTTP/protocol result, elapsed time and returned vehicle");
         var failedFrame = SoftwareLogText.Summary(Entry(new { Source = "相机识码", Event = "图像识码失败", Detail = Entry(new { PositionId = "right", FrameNumber = 17, CandidateCount = 0, FramesSinceLastLog = 6, SourceEventId = "mvid.frame.17", FailureReason = "native-recognition-failed: 0x80002200" }) }));
         Check(failedFrame.Contains("右投递位") && failedFrame.Contains("帧 17") && failedFrame.Contains("0x80002200"), "failed-frame log exposes its exact frame and known decoder failure rather than a generic connection event");
         Check(SoftwareLogText.Summary(Entry(new { Source = "相机通信", Event = "相机自动重连", Level = "信息", Detail = "sportmaster.reader.left" })) == "相机自动重连 · 左相机",

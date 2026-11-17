@@ -29,11 +29,40 @@ public sealed partial class LocalManagementMode
     string? callerWindowsSid;
     string? credentialHash;
     string sessionId = "", sessionSecret = "";
+    long managementIntent;
     DateTimeOffset expires, enteredAt;
     CancellationTokenSource revoked = new();
     internal Func<DateTimeOffset> Clock { get; set; } = () => DateTimeOffset.UtcNow;
     DateTimeOffset Now => Clock();
-    public T Commit<T>(Func<T> action) { lock (sync) { Require(); return action(); } }
+    T Commit<T>(Func<T> action)
+    {
+        lock (sync)
+        {
+            using var held = LockStore();
+            if (!ValidSession(Read())) { Revoke(); throw new UnauthorizedAccessException("管理模式已退出或到期。"); }
+            return action();
+        }
+    }
+    public void PublishExport(ExportPublication publication, string temporary, long length, string sha256)
+    {
+        lock (sync)
+        {
+            if (Remote)
+            {
+                _ = ManagementModeBroker.Call<bool>(dataRoot, new("PublishExport", sessionSecret,
+                    Export: new(temporary, publication.Destination, length, sha256)));
+                return;
+            }
+            Commit(() => { publication.Publish(temporary, length, sha256, RequireGrantDuringCommit); return true; });
+        }
+    }
+    void RequireGrantDuringCommit()
+    {
+        // The store lock still fixes credential/session identity. Expiry can
+        // advance while hashing an export, so check it at the actual rename.
+        if (active && !revoked.IsCancellationRequested && Now < expires) return;
+        Revoke(); throw new UnauthorizedAccessException("管理模式已退出或到期，未发布导出文件。");
+    }
     const int Iterations = 600_000;
     sealed record Credential(string Salt, string Hash);
     sealed record Audit(DateTimeOffset At, string Action, string? ModeSession, string? Detail, string? WindowsSid = null);
@@ -95,7 +124,9 @@ public sealed partial class LocalManagementMode
                 : new FileStream(temp, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             { JsonSerializer.Serialize(stream, s); stream.Flush(true); }
             File.Move(temp, path, true);
-            RuntimeJournal.AppendMetadata(diagnosticDirectory, new { At = DateTimeOffset.UtcNow, Source = "管理模式", Level = action.EndsWith("Failed", StringComparison.Ordinal) ? "警告" : "信息", Event = action, ModeSession = auditSession, WindowsSid = callerWindowsSid, Detail = detail });
+            try { RuntimeJournal.AppendMetadata(diagnosticDirectory, new { At = DateTimeOffset.UtcNow, Source = "管理模式", Level = action.EndsWith("Failed", StringComparison.Ordinal) ? "警告" : "信息", Event = action, ModeSession = auditSession, WindowsSid = callerWindowsSid, Detail = detail }); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+            { System.Diagnostics.Trace.TraceError("Management credential committed; diagnostic append failed: {0}", error); }
         }
         finally { if (File.Exists(temp)) File.Delete(temp); }
     }
@@ -120,7 +151,14 @@ public sealed partial class LocalManagementMode
         }
     }
     public ManagementModeStatus InspectStatus() => Remote ? RemoteStatus() : Status();
-    public ManagementModeEvidence? Evidence { get { var s = Status(); return s.Authorized ? new(sessionId, enteredAt, expires) : null; } }
+    public ManagementModeEvidence? Evidence
+    {
+        get
+        {
+            var status = Status();
+            lock (sync) return status.Authorized && active && status.SessionId == sessionId && Now < expires ? new(sessionId, enteredAt, expires) : null;
+        }
+    }
     bool ValidSession(Store s) => active && !revoked.IsCancellationRequested && Now < expires && s.SessionHash == ProofHash(sessionSecret) && s.Credential?.Hash == credentialHash;
     void Revoke() { active = false; sessionSecret = ""; credentialHash = null; revoked.Cancel(); }
     public CancellationToken Require()
@@ -148,7 +186,7 @@ public sealed partial class LocalManagementMode
     {
         if (Remote) { Rpc<bool>(new("ConfigurePassword", Password: password)); return; }
         var credential = Create(password);
-        lock (sync) { using var held = LockStore(); var s = Read(); if (s.Credential is not null || File.Exists(legacyPath)) throw new UnauthorizedAccessException("已有管理密码或旧版凭据，不能重新设置覆盖。"); MarkConfigured(); Save(s with { Credential = credential }, "ManagementPasswordConfigured"); }
+        lock (sync) { using var held = LockStore(); var s = Read(); if (s.Credential is not null || File.Exists(legacyPath)) throw new UnauthorizedAccessException("已有管理密码或旧版凭据，不能重新设置覆盖。"); Save(s with { Credential = credential }, "ManagementPasswordConfigured"); MarkConfigured(); }
     }
     public bool Enter(string password)
     {
@@ -171,10 +209,10 @@ public sealed partial class LocalManagementMode
         if (Remote)
         {
             ManagementModeRpcRequest request;
-            lock (sync) { request = new("Exit", Token: sessionSecret); Revoke(); }
+            lock (sync) { managementIntent++; request = new("Exit", Token: sessionSecret); Revoke(); }
             ManagementModeBroker.Call<bool>(dataRoot, request); return;
         }
-        lock (sync) { try { using var held = LockStore(); var s = Read(); if (s.Credential is not null) Save(s with { SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "ManagementModeExited"); } finally { Revoke(); } }
+        lock (sync) { managementIntent++; try { using var held = LockStore(); var s = Read(); if (s.Credential is not null && s.SessionId == sessionId && s.SessionHash == ProofHash(sessionSecret)) Save(s with { SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "ManagementModeExited"); } finally { Revoke(); } }
     }
     public ManagementModeStatus Renew()
     {

@@ -10,11 +10,14 @@ static partial class SportmasterRcs
 {
     public static void DecodeFormatBenchmark(string[] args)
     {
+        var roundsAt = Array.IndexOf(args, "--rounds");
+        var rounds = 5;
+        if (roundsAt >= 0 && (roundsAt + 1 >= args.Length || !int.TryParse(args[roundsAt + 1], out rounds) || rounds < 1))
+            throw new ArgumentException("--rounds requires a positive integer");
         // Same restored native as the round harness (D-drive NuGet cache on Windows).
         var cache = Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? throw new InvalidOperationException("D-drive restored cache required");
         var library = NativeLibrary.Load(Path.Combine(cache, "zxingcpp/0.5.3/runtimes/win-x64/native/ZXing.dll"));
         NativeLibrary.SetDllImportResolver(typeof(BarcodeReader).Assembly, (name, _, _) => name is "ZXing" or "ZXing.dll" ? library : 0);
-        var rounds = args.Contains("--rounds") ? int.Parse(args[Array.IndexOf(args, "--rounds") + 1]) : 5;
         const int width = 3072, height = 2048;
         var random = new Random(29);
         var empty = new byte[width * height];

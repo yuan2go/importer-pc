@@ -26,6 +26,10 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
     readonly Dictionary<AcquisitionIdentity, AcquisitionRecord> acquisitions = [];
     bool captureBound, disposed;
     readonly object callbackGate = new();
+    readonly object emissionGate = new();
+    readonly SemaphoreSlim lifecycle = new(1, 1);
+    int inFlight;
+    TaskCompletionSource? delivered;
     // A receiver can wait for its bounded queue. The consumer must still be able
     // to release an earlier acquisition before that wait can finish.
     readonly object acquisitionGate = new();
@@ -34,16 +38,19 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
     public string Epoch { get; private set; } = Wire.Id();
     public int StartCount { get; private set; }
     public string ConfirmationSource => confirmationSource;
-    public Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receiver, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)
+    public async Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receiver, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         if (string.IsNullOrWhiteSpace(registeredEpoch)) throw new ArgumentException("Registered epoch required", nameof(registeredEpoch));
+        await lifecycle.WaitAsync(token).ConfigureAwait(false);
+        try
+        {
         lock (callbackGate)
         {
             ObjectDisposedException.ThrowIf(disposed, this);
             if (receive is not null || heartbeatStop is not null) throw new InvalidOperationException("Source already owns a callback/heartbeat");
             receive = receiver; health = onHealth; Epoch = registeredEpoch; sequence = 0; StartCount++;
-            heartbeatStop = new(); Confirm(DeviceHealth.Ready);
+            heartbeatStop = new();
             var stop = heartbeatStop.Token;
             heartbeat = Task.Run(async () =>
             {
@@ -56,7 +63,15 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
                 catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
             }, CancellationToken.None);
         }
-        return Task.CompletedTask;
+        try { Confirm(DeviceHealth.Ready); }
+        catch (Exception original)
+        {
+            try { await StopCore(CancellationToken.None).ConfigureAwait(false); }
+            catch (Exception cleanup) { throw new AggregateException("Synthetic source startup and cleanup failed", original, cleanup); }
+            throw;
+        }
+        }
+        finally { lifecycle.Release(); }
     }
     void Confirm(DeviceHealth state)
     {
@@ -70,14 +85,17 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
         new(state, "SIMULATION:explicit-qualified-physical-state"));
     bool EmitObservation(string kind, string admissionId, string[]? codes, int? quantity, string? sourceId, TrayPresenceEvidence? presence)
     {
-        lock (callbackGate)
+        lock (emissionGate)
         {
-            var callback = receive ?? throw new InvalidOperationException("Source stopped");
-            var observation = new Observation(Wire.Id(), DeviceId, Epoch, sourceId ?? Wire.Id(), Interlocked.Increment(ref sequence), admissionId,
+            Func<Observation, bool> callback; Observation observation; string owner;
+            lock (callbackGate)
+            {
+            callback = receive ?? throw new InvalidOperationException("Source stopped");
+            observation = new Observation(Wire.Id(), DeviceId, Epoch, sourceId ?? Wire.Id(), Interlocked.Increment(ref sequence), admissionId,
                 kind, codes ?? [], quantity, DateTimeOffset.UtcNow)
             { TrayPresence = presence, ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, CaptureTicks = arrival is null ? 0 : System.Diagnostics.Stopwatch.GetTimestamp(), FrameNumber = arrival is null ? null : sequence };
             var identity = observation.Acquisition;
-            var owner = "observation:" + observation.Id;
+            owner = "observation:" + observation.Id;
             if (captureBound)
             {
                 lock (acquisitionGate)
@@ -86,9 +104,15 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
                     record.Owners.Add(owner);
                 }
             }
+            if (inFlight++ == 0) delivered = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            }
             var accepted = false;
             try { return accepted = callback(observation); }
-            finally { if (!accepted) ReleaseAcquisition(identity, owner); }
+            finally
+            {
+                if (!accepted) ReleaseAcquisition(observation.Acquisition, owner);
+                lock (callbackGate) { if (--inFlight == 0) delivered!.TrySetResult(); }
+            }
         }
     }
     public IImageCamera BindCapture(CapabilityBinding binding, string temporaryDirectory)
@@ -152,25 +176,43 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
     }
     public async Task StopAsync(CancellationToken token)
     {
-        Task? pending;
-        lock (callbackGate) { receive = null; heartbeatStop?.Cancel(); pending = heartbeat; }
-        if (pending is not null) await pending.WaitAsync(token).ConfigureAwait(false);
+        CancellationTokenSource? original;
+        lock (callbackGate) original = heartbeatStop;
+        await lifecycle.WaitAsync(token).ConfigureAwait(false);
+        try
+        {
+            lock (callbackGate) if (!ReferenceEquals(original, heartbeatStop)) return;
+            await StopCore(token).ConfigureAwait(false);
+        }
+        finally { lifecycle.Release(); }
+    }
+    async Task StopCore(CancellationToken token)
+    {
+        Task pending;
         lock (callbackGate)
         {
-            Confirm(DeviceHealth.Stopped); health = null; heartbeat = null;
-            heartbeatStop?.Dispose(); heartbeatStop = null;
+            receive = null; heartbeatStop?.Cancel();
+            pending = Task.WhenAll(heartbeat ?? Task.CompletedTask, inFlight == 0 ? Task.CompletedTask : delivered!.Task);
         }
+        Exception? failure = null;
+        try { await pending.WaitAsync(token).ConfigureAwait(false); }
+        catch (Exception error) { if (!pending.IsCompleted) throw; failure = error; }
+        try { Confirm(DeviceHealth.Stopped); }
+        catch (Exception error) { failure = failure is null ? error : new AggregateException(failure, error); }
+        finally
+        {
+            lock (callbackGate) { health = null; heartbeat = null; heartbeatStop?.Dispose(); heartbeatStop = null; }
+        }
+        if (failure is not null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
     }
     public async ValueTask DisposeAsync()
     {
+        lock (callbackGate) disposed = true;
         await StopAsync(CancellationToken.None).ConfigureAwait(false);
-        lock (callbackGate)
+        lock (acquisitionGate)
         {
-            lock (acquisitionGate)
-            {
-                if (acquisitions.Values.Any(x => x.Captures != 0)) throw new InvalidOperationException("Original captures still active; source ownership retained");
-                disposed = true; acquisitions.Clear();
-            }
+            if (acquisitions.Values.Any(x => x.Captures != 0)) throw new InvalidOperationException("Original captures still active; source ownership retained");
+            acquisitions.Clear();
         }
     }
 }

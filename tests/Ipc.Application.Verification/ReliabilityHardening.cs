@@ -48,14 +48,21 @@ static partial class ReliabilityHardening
             Stop = t => { Interlocked.Increment(ref stops); return p.StopAsync(t); }
         });
         var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
-        var start = app.StartAsync(default); await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        bool retained; var watch = Stopwatch.StartNew();
+        var start = app.StartAsync(default);
+        bool retained = false; var watch = Stopwatch.StartNew();
         using var cancel = new CancellationTokenSource(TimeSpan.FromMilliseconds(150));
-        try { await app.StopAsync(cancel.Token); retained = false; }
+        try
+        {
+            await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            await app.StopAsync(cancel.Token);
+        }
         catch (OperationCanceledException) { retained = !start.IsCompleted && app.HasUnreleasedResources && stops == 0; }
-        finally { release.TrySetResult(); }
-        try { await start; } catch (OperationCanceledException) { } catch (IOException) { /* Baseline completes with the ingress fence; preserve measured failure. */ }
-        await app.DisposeAsync();
+        finally
+        {
+            release.TrySetResult();
+            try { try { await start; } catch (OperationCanceledException) { } catch (IOException) { /* Startup ingress fence remains reported by disposal. */ } }
+            finally { await app.DisposeAsync(); }
+        }
         Console.WriteLine($"MEASURE H02 startup-stop wait_ms={watch.Elapsed.TotalMilliseconds:F2}; retained={retained}; stops={stops}");
         Check(retained, "cancelled Stop waits for the real startup owner without stopping/disposal underneath it");
         Check(!app.HasUnreleasedResources && !app.HasActiveWork, "startup cancellation followed by disposal releases all application ownership");

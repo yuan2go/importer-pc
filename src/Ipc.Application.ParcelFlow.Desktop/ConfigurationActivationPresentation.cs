@@ -5,7 +5,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class ParcelViewModel
 {
     public bool HasConfigurationActivationNotice => Snapshot?.Configuration is { } c &&
-        (c.Pending is not null || c.Failure is not null || c.Status == "ActivationFailed");
+        (c.Pending is not null || c.Failure is not null || c.Status == "ActivationFailed" || c.Confirmation?.Required == true);
     public string ConfigurationActivationBannerText => Snapshot?.Configuration is { } c && (c.Failure is not null || c.Status == "ActivationFailed")
         ? "设置未生效，仍使用原设置。请查看生效问题，处理后重新保存。" : ConfigurationActivationOutcome;
     public string ConfigurationActivationOutcome

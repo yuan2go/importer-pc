@@ -41,13 +41,21 @@ def main():
         server = subprocess.Popen([sys.executable, str(workspace / "scripts/rcs-local-simulator.py"),
                                    "--port", "0", "--data-root", str(server_root)],
                                   cwd=workspace, stdout=server_log, stderr=subprocess.STDOUT)
+        endpoint = None
         for _ in range(100):
-            if (server_root / "endpoint.json").exists():
+            try:
+                candidate = json.loads((server_root / "endpoint.json").read_text())["endpoint"]
+                if not isinstance(candidate, str) or not candidate.startswith("http://127.0.0.1:"):
+                    raise ValueError("Owned simulator must publish loopback only")
+                endpoint = candidate
                 break
+            except (FileNotFoundError, json.JSONDecodeError):
+                pass
             if server.poll() is not None:
                 raise RuntimeError("Owned Python simulator stopped before readiness")
             time.sleep(.05)
-        endpoint = json.loads((server_root / "endpoint.json").read_text())["endpoint"]
+        if endpoint is None:
+            raise TimeoutError("Owned simulator did not publish a complete endpoint")
         if not endpoint.startswith("http://127.0.0.1:"):
             raise ValueError("Owned simulator must publish loopback only")
         environment = os.environ.copy()

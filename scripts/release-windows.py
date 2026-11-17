@@ -204,12 +204,23 @@ def main():
     a = p.parse_args()
     output = a.output.resolve()
     if a.verify_only:
+        inventory = {}
         for line in (output / 'SHA256SUMS').read_text(encoding='utf-8').splitlines():
             digest, name = line.split('  ', 1)
             safe_name(name)
+            if name in inventory or len(digest) != 64 or any(c not in '0123456789abcdefABCDEF' for c in digest):
+                raise ValueError('Invalid or duplicate release inventory entry')
+            inventory[name] = digest
             if sha(output / name) != digest.upper():
                 raise ValueError('Release receipt/log/archive changed: ' + name)
         receipt = read(output / 'RELEASE.json')
+        required = {'RELEASE.json', 'build-record.json'} | {r['File'] for r in receipt['Packages']}
+        required |= {r['File'][:-4] + '.log' for r in receipt['Packages'] if not any(item.get('OriginalZip') == r['File'] for item in receipt.get('ReusedArtifacts', []))}
+        actual_files = {p.name for p in output.iterdir() if p.is_file() and p.name != 'SHA256SUMS'}
+        if set(inventory) != required or actual_files != required:
+            raise ValueError('Release inventory must cover every required receipt, log and archive')
+        if receipt.get('State') != 'PASS' or read(output / 'build-record.json') != receipt:
+            raise ValueError('Release completion receipts differ')
         profile = receipt.get('Profile', 'complete')
         if profile not in PROFILES or a.profile != profile:
             raise ValueError('Use the recorded release profile; profiles cannot inherit each other\'s scope')
@@ -235,8 +246,13 @@ def main():
         raise ValueError('Frozen --source must be a full commit SHA')
     for commit in MERGES.values():
         subprocess.run(['git', 'merge-base', '--is-ancestor', commit, source], cwd=ROOT, check=True)
-    expected = read(ROOT / 'global.json')['sdk']['version']
-    sdk = subprocess.check_output([a.dotnet, '--version'], cwd=ROOT, text=True).strip()
+    source_global = subprocess.check_output(['git', 'show', source + ':global.json'], cwd=ROOT)
+    expected = json.loads(source_global)['sdk']['version']
+    with tempfile.TemporaryDirectory(prefix='ipc-source-sdk-') as sdk_root:
+        Path(sdk_root, 'global.json').write_bytes(source_global)
+        sdk = subprocess.check_output([a.dotnet, '--version'], cwd=sdk_root, text=True).strip()
+    lock_names = git('ls-tree', '-r', '--name-only', source, '--', 'src').splitlines()
+    source_locks = {name: hashlib.sha256(subprocess.check_output(['git', 'show', source + ':' + name], cwd=ROOT)).hexdigest().upper() for name in lock_names if Path(name).name.startswith('packages') and name.endswith('.lock.json')}
     if sdk != expected:
         raise ValueError('Pinned SDK required: ' + expected)
     output.mkdir(parents=True)
@@ -245,7 +261,7 @@ def main():
                   StartedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                   WindowsAcceptance='NOT_RUN', PhysicalIntegration='BLOCKED', Assurance='SIMULATION_REFERENCE_ONLY',
                   Authenticode='NOT_SIGNED_NO_CERTIFICATE_PROVIDED',
-                  Inputs={str(f.relative_to(ROOT)).replace('\\', '/'): sha(f) for f in sorted(ROOT.glob('src/*/packages*.lock.json'))}, Commands=[], Packages=[])
+                  Inputs=source_locks, Commands=[], Packages=[])
     record['Toolchain'] = subprocess.check_output([a.dotnet, '--info'], cwd=ROOT, text=True, encoding='utf-8')
     record.update(BuildControllerCommit=controller, MainBaseline=main_baseline, ReusedArtifacts=[])
     record['NonRuntimeMainInputDifferences'] = input_differences

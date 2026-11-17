@@ -176,6 +176,7 @@ static partial class SportmasterRcs
             ExtensionStore.AtomicWrite(Path.Combine(cfg, "business.json"), c);
             var run = new BusinessLaunch(cfg, Path.Combine(folder, "data"), null, null);
             var api = new SoftwareFrameApi(readers[0]); var dec = new OriginalDecoder(); var f = new SoftwareFlowFactory(run, c, api, false, dec);
+            var requestClock = archiveCase == "saved" ? new RequestClock() : null; f.RequestClock = requestClock;
             ParcelOperation? unknown = null;
             await using (var app = new ParcelRuntime(run, new SportmasterFlow(), f) { RuntimeIdentityPreflight = () => { } })
             {
@@ -206,6 +207,7 @@ static partial class SportmasterRcs
                         Check(archivedDuringRequest.Wcs!.Attempts == 1 && archivedDuringRequest.OriginalFrame!.Acquisition == archivedDuringRequest.Acquisition,
                             "original archive can finish while the actual frozen HTTP request remains in flight");
                     }
+                    requestClock?.Advance(1500);
                     var expectedArchive = archiveCase == "saved" ? "Saved" : "Failed";
                     unknown = (await Wait(app, s => s.Operations.SingleOrDefault() is { State: ParcelState.WcsUnknown } op && op.OriginalFrame?.State == expectedArchive)).Operations.Single();
                     Check(unknown.Wcs is { Attempts: 1, State: StageState.Unknown } && unknown.Wcs.Request.IntegrationRequest!.Body.Contains("A|B") && f.Source!.RetainedOriginalFrames == 0,

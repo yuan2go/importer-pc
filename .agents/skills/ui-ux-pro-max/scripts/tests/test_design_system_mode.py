@@ -102,9 +102,10 @@ class TestPaletteSelection(unittest.TestCase):
         chosen = _select_palette_for_mode([LIGHT_PALETTE, DARK_PALETTE], "dark")
         self.assertEqual(chosen["Background"], "#0F172A")
 
-    def test_dark_mode_falls_back_to_top_hit_when_no_dark_ramp_exists(self):
+    def test_dark_mode_derives_top_hit_when_no_dark_ramp_exists(self):
         chosen = _select_palette_for_mode([LIGHT_PALETTE], "dark")
-        self.assertEqual(chosen["Background"], "#F8FAFC")
+        self.assertEqual(chosen["Background"], "#0F172A")
+        self.assertEqual(chosen["_mode_derivation"], "derived-dark")
 
     def test_light_mode_keeps_the_existing_top_hit_behaviour(self):
         chosen = _select_palette_for_mode([DARK_PALETTE, LIGHT_PALETTE], "light")

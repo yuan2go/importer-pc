@@ -48,7 +48,7 @@ static class P0Recovery
             _ = await stdout; _ = await stderr;
             var file = Path.Combine(output, "runtime.jsonl");
             var lines = File.Exists(file) ? File.ReadAllLines(file) : [];
-            var expected = scenario == "domain" ? FatalCode : 0;
+            var expected = scenario == "domain" ? OperatingSystem.IsWindows() ? FatalCode : 134 : 0;
             var context = lines.Any(l => l.Contains("synthetic-instance") && l.Contains("synthetic-epoch") && l.Contains(new string('a', 40)) &&
                 l.Contains("synthetic-1") && l.Contains("synthetic-latest-state") && l.Contains("synthetic-progress-epoch"));
             var result = new { Scenario = scenario, ExitCode = process.ExitCode, ExpectedExitCode = expected, FlushedLogExists = File.Exists(file), ContextPresent = context, Lines = lines.Length };

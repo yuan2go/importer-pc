@@ -34,7 +34,7 @@ internal static partial class MvsVerification
             epochApi.Frames.Enqueue(nativePixels.Frame);
             await Until(() => source.ConfirmationSource.Contains("readResults=1;"));
             var first = epochReceived.Last();
-            var firstIdentity = new AcquisitionIdentity(first.DeviceId, first.Epoch, first.SourceEventId, first.AdmissionId, first.ObservedAt);
+            var firstIdentity = new AcquisitionIdentity(first.DeviceId, first.Epoch, first.SourceEventId, first.AdmissionId, first.ObservedAt) { ArrivalGeneration = first.ArrivalGeneration, CaptureBoundaryId = first.CaptureBoundaryId, CaptureTicks = first.CaptureTicks, FrameNumber = first.FrameNumber };
             using var oldWriter = source.RetainOriginalFrame(firstIdentity);
             source.ReleaseOriginalFrame(firstIdentity);
             await source.StopAsync(default);
@@ -46,7 +46,7 @@ internal static partial class MvsVerification
             epochApi.Frames.Enqueue(nativePixels.Frame); // frame number 1 reused by the new session
             await Until(() => source.ConfirmationSource.Contains("readResults=1;"));
             var second = epochReceived.Last();
-            var secondIdentity = new AcquisitionIdentity(second.DeviceId, second.Epoch, second.SourceEventId, second.AdmissionId, second.ObservedAt);
+            var secondIdentity = new AcquisitionIdentity(second.DeviceId, second.Epoch, second.SourceEventId, second.AdmissionId, second.ObservedAt) { ArrivalGeneration = second.ArrivalGeneration, CaptureBoundaryId = second.CaptureBoundaryId, CaptureTicks = second.CaptureTicks, FrameNumber = second.FrameNumber };
             using var newWriter = source.RetainOriginalFrame(secondIdentity);
             source.ReleaseOriginalFrame(secondIdentity); source.ReleaseOriginalFrame(firstIdentity);
             Check(first.SourceEventId == second.SourceEventId && first.Epoch != second.Epoch && first.AdmissionId != second.AdmissionId &&

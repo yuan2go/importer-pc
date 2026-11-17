@@ -112,8 +112,10 @@ static partial class Program
         Check(fake.Saves == 1 && !Retry(first) && Descendants(first).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "保存未完成"), "known save failure is explicit and cannot use the initially clean draft as proof of persistence");
         Check(((string)type.GetField("diagnosticDetails", flags)!.GetValue(first)!).Contains("合成写入前失败"), "folded diagnostics retain the original save failure before the authority read-back");
         fake.Uncertain = true; Click(first, "保存配置"); await Idle(first); var attempts = fake.Saves;
-        Click(first, "保存配置"); await Idle(first);
-        Check(fake.Saves == attempts && !Retry(first), "unknown save result blocks a duplicate submission and startup");
+        var uncertainSave = Descendants(first).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.SaveAndStart");
+        Check(!uncertainSave.IsVisible, "unknown save result withdraws the save action until the original configuration is reread");
+        uncertainSave.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Idle(first);
+        Check(fake.Saves == attempts && !Retry(first), "a stale save event cannot duplicate an unknown save or start runtime");
         Check(!Directory.EnumerateFiles(launch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && Directory.EnumerateFiles(launch.DataRoot, "*lease*", SearchOption.AllDirectories).All(p => Path.GetFullPath(p) == Path.GetFullPath(Path.Combine(launch.DataRoot, "security/diagnostics/rotation.lease"))), "first-run navigation creates no database or device owner; administrator custody and its diagnostic rotation lock are separate");
         first.Close();
 
@@ -245,7 +247,7 @@ static partial class Program
             var visual = new DrawingVisual(); using (var drawing = visual.RenderOpen()) { drawing.DrawRectangle(w.Background ?? Brushes.White, null, new Rect(0, 0, target.ActualWidth, target.ActualHeight)); drawing.DrawRectangle(new VisualBrush(target) { ViewboxUnits = BrushMappingMode.Absolute, Viewbox = new Rect(0, 0, target.ActualWidth, target.ActualHeight), Stretch = Stretch.Fill }, null, new Rect(0, 0, target.ActualWidth, target.ActualHeight)); }
             bitmap.Render(visual); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap)); using var file = File.Create(Path.Combine(evidence, name + ".png")); encoder.Save(file);
         }
-        static void Click(Window w, string label) => Descendants(w).OfType<Button>().First(b => (b.Content as string) == label).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        static void Click(Window w, string label) => Descendants(w).OfType<Button>().First(b => b.IsVisible && b.IsEnabled && (b.Content as string) == label).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     }
 
     sealed class StartupMaintenanceProbe(StartupMaintenanceDocument document) : IStartupMaintenance

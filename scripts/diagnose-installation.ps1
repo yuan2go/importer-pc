@@ -13,8 +13,7 @@ Set-Content -LiteralPath $reportPath -Encoding UTF8 -Value 'Importer PC installa
 function Write-Section([string]$Name, [scriptblock]$Read) {
     Add-Content -LiteralPath $reportPath -Encoding UTF8 -Value ("`r`n===== " + $Name + ' =====')
     try {
-        $result = & $Read | Out-String -Width 240
-        Add-Content -LiteralPath $reportPath -Encoding UTF8 -Value $result
+        & $Read | ForEach-Object { $_ | Out-String -Width 240 | Add-Content -LiteralPath $reportPath -Encoding UTF8 }
     } catch {
         Add-Content -LiteralPath $reportPath -Encoding UTF8 -Value ('READ FAILED: ' + $_.Exception.ToString())
     }
@@ -37,11 +36,9 @@ Write-Section 'Windows and caller' {
 $anchor = $null
 Write-Section 'Protected storage registration (read only)' {
     if (Test-Path 'HKLM:\SOFTWARE\ImporterPc\Storage') {
-        Get-ItemProperty 'HKLM:\SOFTWARE\ImporterPc\Storage' | Select-Object Root | Format-List
+        $script:anchor = (Get-ItemProperty 'HKLM:\SOFTWARE\ImporterPc\Storage').Root
+        [pscustomobject]@{ Root=$script:anchor } | Format-List
     } else { 'No protected storage registration; application uses Windows default locations.' }
-}
-if (Test-Path 'HKLM:\SOFTWARE\ImporterPc\Storage') {
-    $anchor = (Get-ItemProperty 'HKLM:\SOFTWARE\ImporterPc\Storage').Root
 }
 $machineRoots = @((Join-Path ([Environment]::GetFolderPath('CommonApplicationData')) 'ImporterPc'), 'D:\ProgramData\ImporterPc')
 if ($anchor -and [IO.Path]::IsPathRooted($anchor)) { $machineRoots += Join-Path $anchor 'Machine' }

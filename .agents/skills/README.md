@@ -24,7 +24,7 @@ $hallmark-wpf refine 退出确认；保持现行紧凑布局和业务语义，�
 - 上游：[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/56ea9cf174ed86786187daa9de0e6247cb0747e4/README.zh.md)。固定提交：`56ea9cf174ed86786187daa9de0e6247cb0747e4`。
 - 使用 `skill-installer` 从上游 `.claude/skills/ui-ux-pro-max/` 安装完整核心skill；目录遵循上游Codex配置 `.agents/skills/ui-ux-pro-max/`，仅作用于本项目。包含搜索脚本、数据、参考说明与上游测试文件。
 - 上游 [MIT许可证](ui-ux-pro-max/LICENSE)仅覆盖此引入内容，不改变本项目或客户资料的许可。数据中含字体目录元数据和来源链接，没有字体二进制。
-- 本地适配仅涉及 `SKILL.md`：将Claude插件变量路径改为skill目录内的相对命令，使用 `python3`，补充本项目WPF、UI基线及验收边界。脚本、数据、参考说明和上游测试保持原字节。逐文件来源与校验值见 [UPSTREAM.json](ui-ux-pro-max/UPSTREAM.json)。
+- 初次安装适配涉及 `SKILL.md`：将Claude插件变量路径改为skill目录内的相对命令，使用 `python3`，补充本项目WPF、UI基线及验收边界。2026-11-17 的 CR 修复另包含搜索索引、数据边界校验、字体参数、深色语义配色和相对链接修复及对应回归；数据和参考说明未改。逐文件来源与校验值见 [UPSTREAM.json](ui-ux-pro-max/UPSTREAM.json)。
 - 更新时先核对上游提交与许可，再显式升级并重做搜索冒烟；保留本地适配，不自动跟随上游main或覆盖既有设计文件。
 
 ## 使用
@@ -59,6 +59,8 @@ python3 .agents/skills/ui-ux-pro-max/scripts/tests/test_native_desktop_stack_fre
 
 [impeccable](impeccable/SKILL.md) 从官方 [pbakaus/impeccable](https://github.com/pbakaus/impeccable/tree/46b822f7dda9f7dba799a9c7776fdc19b3a93559) 的 `.agents/skills/impeccable` 完整安装，固定提交46b822f7dda9f7dba799a9c7776fdc19b3a93559，skill4.7.0 / engine0.1.16。Apache-2.0 LICENSE及第三方NOTICE完整保留，全部原文件hash见UPSTREAM.json；原ui-ux-pro-max保留。
 
-本地只适配SKILL.md入口并新增[WPF约束](impeccable/WPF.md)。下一轮Codex可识别 `$impeccable`，本轮已读取并实际应用其Operate、critique/layout/clarify/polish。原生WPF按native评审扩展，不用网页检测/CDP/营销动效验收。Windows context启动器会按固定版本缓存校验过的engine；不入库或进入客户端依赖。本轮context实际执行，报告XAML未识别为视觉实现，故以项目实物和真实WPF为权威。
+初次安装适配SKILL.md入口并新增[WPF约束](impeccable/WPF.md)。2026-11-17 的本地 CR 补丁另修复扫描路径、豁免类型、前缀边界、CSS 转义、顶层挂载、浏览器存储访问及启动器探测/递归边界，并补上可控回归。下一轮Codex可识别 `$impeccable`，本轮已读取并实际应用其Operate、critique/layout/clarify/polish。原生WPF按native评审扩展，不用网页检测/CDP/营销动效验收。Windows context启动器会按固定版本缓存校验过的engine；不入库或进入客户端依赖。本轮context实际执行，报告XAML未识别为视觉实现，故以项目实物和真实WPF为权威。
 
 `--design-system`模式忽略`--stack`；WPF查询必须独立执行，不把通用设计系统输出称为WPF定稿。示例：`python .agents/skills/ui-ux-pro-max/scripts/search.py "binding update focus selection" --stack wpf`；针对性UX查询见本轮证据。技能安装/搜索可用不代表客户端验收。
+
+本地 CR 补丁的当前文件哈希见两份 `UPSTREAM.json` 的 `local_cr_patches`；上游提交及原始哈希保留用于追溯。上游维护生成器依赖完整上游仓库，本安装不包含这些工具；不把它们标记为本地已验证。

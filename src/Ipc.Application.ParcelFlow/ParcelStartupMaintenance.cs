@@ -58,8 +58,9 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
             InstallationIdentity.RequireIndependentPath(launch.ConfigurationDirectory);
         }
         var seedMissing = !File.Exists(Seed);
-        var seed = seedMissing ? definition.InitialConfiguration() : Wire.Decode<ParcelConfiguration>(Text(ReadBytes(Seed)));
-        var seedHash = seedMissing ? "MissingSeed:" + Wire.Hash(Wire.Encode(seed)) : Hash(ReadBytes(Seed));
+        var seedBytes = seedMissing ? null : ReadBytes(Seed);
+        var seed = seedBytes is null ? definition.InitialConfiguration() : Wire.Decode<ParcelConfiguration>(Text(seedBytes));
+        var seedHash = seedBytes is null ? "MissingSeed:" + Wire.Hash(Wire.Encode(seed)) : Hash(seedBytes);
         // Reading an editor cannot require all runtime parameters to be valid.
         // Only the identity needed to locate the original authority is required here.
         if (seed.ApplicationId != definition.Id || !ExtensionSchema.IsId(seed.StationId) || !Enum.IsDefined(seed.Mode))

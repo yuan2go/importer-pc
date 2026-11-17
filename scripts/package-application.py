@@ -150,7 +150,10 @@ shutil.copyfile(build_source / 'config/stability-target-plan.example.json', outp
 if a.application == 'sportmaster':
     shutil.copyfile(build_source / 'scripts/diagnose-camera-network.ps1', output / 'diagnose-camera-network.ps1')
 if a.target == 'win-x64':
-    for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1', 'application.ps1', 'application.cmd', 'Setup.cmd', 'Maintenance.cmd']:
+    bootstrap = ['application.ps1', 'application.cmd', 'Setup.cmd', 'Maintenance.cmd']
+    if a.application != 'sportmaster':
+        bootstrap = ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1', *bootstrap]
+    for script in bootstrap:
         script_text = (build_source / 'scripts' / script).read_text(encoding='utf-8')
         if a.test_instance:
             script_text = script_text.replace('Ipc.Desktop.exe', desktop_executable)

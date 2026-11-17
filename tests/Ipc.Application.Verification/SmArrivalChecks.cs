@@ -11,6 +11,7 @@ internal static class SmArrivalChecks
     public static async Task Run(string workspace, string root)
     {
         await SmContinuousInductionChecks.Run(workspace, root);
+        await SmPlacementIndependenceChecks.Run(workspace, root);
         await SmArrivalRecoveryChecks.Run(workspace, root);
         Console.WriteLine("Synthetic RCS applies target binding separately from response delivery; real SDK/customer/site NOT_RUN");
         await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "arrivals"), deferred: false, mode: RunMode.Simulation);
@@ -44,9 +45,8 @@ internal static class SmArrivalChecks
         await Resolved(a.OperationId!);
         Check(h.Peer.Requests.Count == 1 && a.ArrivalGeneration == first.Generation, "first vehicle has exactly one bound production request");
         var repeated = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "OTHER-002"), default);
-        await Read([], TrayPresence.Absent);
         await Read(["OTHER-002"]);
-        Check(repeated.Status == "Rejected" && h.Peer.Requests.Count == 1, "same-car manual, changed code and visible absence do not rearm");
+        Check(repeated.Status == "Rejected" && h.Peer.Requests.Count == 1, "same placement rejects repeated manual or changed-code submission without a trusted ending");
         var oldCommand = await h.Command("left", "SAME-001");
         await h.NextVehicleAsync("left", "CAR-B");
         var b = Lane(await h.App.SnapshotAsync()).Arrival!;
@@ -78,15 +78,13 @@ internal static class SmArrivalChecks
         }
         finally { release.TrySetResult(); h.App.BeforeSmAttemptForVerification = null; }
 
-        // A real business refusal leaves the car: remove via acknowledged membership,
-        // never by clearing the claim or repeating its request.
+        // Disabling ends local placement ownership without changing the refusal.
         h.Peer.Mode = "no-destination";
         var refused = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "REFUSED-005"), default); await Resolved(refused.OperationId!);
         await SetEnabled(false);
         await CameraRoundHarness.Until(() => Task.FromResult(!h.Peer.RemoteMembers.Contains("MANUAL-LEFT")));
         Check(Lane(await h.App.SnapshotAsync()).SupplyControl!.Mode == StationPositionMode.Disabled, "confirmed refusal can withdraw without waiting for empty vision");
-        Check(Lane(await h.App.SnapshotAsync()).Arrival!.RecoveryReason is not null, "business refusal without a no-side-effect contract retains remote protection");
-        await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC peer has completed REFUSED-005 and applied withdrawal; no pending remote effects");
+        Check(Lane(await h.App.SnapshotAsync()).Arrival is { RecoveryReason: null, TargetOperation: null }, "ended refusal does not retain a lane fence or require external reconciliation");
         h.Peer.Vehicles["MANUAL-LEFT"] = "CAR-AFTER-REFUSAL";
         h.Peer.Mode = "assigned";
         await SetEnabled(true);
@@ -94,8 +92,8 @@ internal static class SmArrivalChecks
         var resumed = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "RESUMED-006"), default); await Resolved(resumed.OperationId!);
         Check(h.Peer.Requests.Count == 5, "acknowledged withdrawal and a new vehicle restore production after refusal");
 
-        // Delay actual remote binding, not just a response. A local timeout cannot
-        // let an old request encounter a replacement car on this physical lane.
+        // Hold execution before remote binding, not merely response delivery.
+        // Change the real peer car and try the next parcel before releasing it.
         await h.NextVehicleAsync();
         var bindEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var bindRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -106,29 +104,36 @@ internal static class SmArrivalChecks
             var late = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "LATE-BIND-007"), default);
             await bindEntered.Task.WaitAsync(TimeSpan.FromSeconds(5)); await Resolved(late.OperationId!);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity!.ManagedExecutions == 0);
-            await SetEnabled(false);
-            var disabled = await h.App.SnapshotAsync();
-            var unsafeEnable = await h.App.SetPositionEnabledAsync(new(Wire.Id(), disabled.RuntimeId, "left", Lane(disabled).SupplyControl!.Revision, true), default);
-            Check(unsafeEnable.Status == "Rejected" && !h.Peer.RemoteMembers.Contains("MANUAL-LEFT"), "timeout then withdrawal blocks unsafe re-dispatch before late target binding");
+            await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
+            h.Peer.Vehicles["MANUAL-LEFT"] = "CAR-BEFORE-OLD-BINDING";
+            await h.App.CheckRcsHeartbeatAsync(default);
+            await CameraRoundHarness.Until(async () => Lane(await h.App.SnapshotAsync()).Arrival?.VehicleNo == "CAR-BEFORE-OLD-BINDING");
+            var beforeNext = h.Peer.Requests.Count;
+            var blocked = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "NEXT-BEFORE-OLD-BINDING"), default);
+            Check(blocked.Status == "Rejected" && h.Peer.Requests.Count == beforeNext &&
+                Lane(await h.App.SnapshotAsync()).Arrival!.TargetOperation == late.OperationId && !bindRelease.Task.IsCompleted,
+                "physical removal and a replacement vehicle cannot admit the next left parcel while the old request can still bind remotely");
             var right = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "RIGHT-008"), default); await Resolved(right.OperationId!);
             Check(right.Status == "Admitted", "remote uncertainty is confined to its physical lane");
             bindRelease.TrySetResult();
-            var originalRequestId = JsonDocument.Parse(h.Peer.Requests.Single(x => x.Contains("LATE-BIND-007", StringComparison.Ordinal))).RootElement.GetProperty("requestId").GetInt64();
+            using var originalRequest = JsonDocument.Parse(h.Peer.Requests.Single(x => x.Contains("LATE-BIND-007", StringComparison.Ordinal)));
+            var originalRequestId = originalRequest.RootElement.GetProperty("requestId").GetInt64();
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.RemoteBindings.Any(x => x.Request == originalRequestId)));
-            await ManagementModeFixture.Authorize(h.App);
-            Check((await h.App.ManagementModeStatusAsync()).Active, "remote recovery requires current management authority");
-            var recovery = await h.App.ConfirmRemoteRecoveryAsync(new(Wire.Id(), disabled.RuntimeId, "left", Lane(disabled).Arrival!.Generation,
-                "SYNTHETIC peer original binding completed while lane withdrawn; no pending remote execution")
-            { ExpectedControlRevision = Lane(disabled).SupplyControl!.Revision, ExpectedTargetOperation = Lane(disabled).Arrival!.TargetOperation, ExpectedRecoveryToken = Lane(disabled).Arrival!.RecoveryToken }, default);
-            Check(recovery.Status == "Accepted", "explicit external reconciliation records evidence without changing original Unknown outcome");
-            h.Peer.Vehicles["MANUAL-LEFT"] = "CAR-AFTER-RECONCILIATION";
+            Check(h.Peer.RemoteBindings.Any(x => x.Request == originalRequestId && x.Vehicle == "CAR-BEFORE-OLD-BINDING") &&
+                !h.Peer.Requests.Any(body => body.Contains("NEXT-BEFORE-OLD-BINDING", StringComparison.Ordinal)),
+                "the old request really binds the replacement car late, but no next parcel request was allowed into that lane");
+            await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC original execution and late binding completed; customer confirms the old task settled and withdrawal applied");
             await SetEnabled(true);
-            Check((await h.App.OperationAsync(late.OperationId!))!.Wcs!.Attempts == 1, "recovery never replays the original request");
+            await h.NextVehicleAsync();
+            var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "AFTER-LATE-009"), default); await Resolved(next.OperationId!);
+            Check(next.Status == "Admitted" && (await h.App.OperationAsync(late.OperationId!))!.Wcs is { State: StageState.Unknown, Attempts: 1 } &&
+                Lane(await h.App.SnapshotAsync()).Arrival!.RecoveryReason is null,
+                "external binding/cancellation evidence releases only the remote fence; the next parcel completes without replaying the original Unknown");
         }
         finally { bindRelease.TrySetResult(); h.Peer.BusinessGate = null; }
 
         await SetEnabled(false); await SetEnabled(false, "right");
-        Check(h.Peer.HeartbeatRequests.Any(body => JsonDocument.Parse(body).RootElement.GetProperty("data").GetArrayLength() == 0), "both disabled send a real empty heartbeat");
+        Check(h.Peer.HeartbeatRequests.Any(body => { using var document = JsonDocument.Parse(body); return document.RootElement.GetProperty("data").GetArrayLength() == 0; }), "both disabled send a real empty heartbeat");
         Check((await h.App.SnapshotAsync()).Health.Any(x => x.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived), "legal empty acknowledgement retains confirmed RCS connectivity");
     }
 }

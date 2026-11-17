@@ -85,7 +85,7 @@ internal static class ReaderRobustness28
                 }
                 var oversized = ordered[0] with { Corners = [ordered[0].Corners[0], ordered[0].Corners[1], ordered[1].Corners[2], ordered[1].Corners[3]] };
                 var associate = typeof(SoftwareDecoder).GetMethod("SamePrintedRegion", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
-                Check(!(bool)associate.Invoke(ordinary, [ordered[0], oversized, two, label.Width, label.Height * 2 + 80])!,
+                Check(!(bool)associate.Invoke(ordinary, [ordered[0], oversized, two, label.Width, label.Height * 2 + 80, false])!,
                     "even a containing search band cannot bridge the original-pixel quiet gap between separate identical labels");
             }
             foreach (var angle in new[] { 15, 30, 45, 70 })
@@ -127,9 +127,9 @@ internal static class ReaderRobustness28
             catch (MvsFrameRejection error) when (error.Message.Contains("candidate limit", StringComparison.OrdinalIgnoreCase)) { capacityRejected = true; }
             Check(capacityRejected, "a frame reaching the 64-candidate limit is rejected in full rather than selecting a truncated subset");
             Check(ordinary.Decode(a.Data, a.Data.Length, a.Width, a.Height).SequenceEqual(new[] { "SYNTH-SAME-28" }), "candidate-limit rejection releases native results and leaves the next frame usable");
-            using var gcStop = new CancellationTokenSource(); using var gcStarted = new ManualResetEventSlim(); var collections = 0;
-            var collector = Task.Run(() => { gcStarted.Set(); while (!gcStop.IsCancellationRequested) { GC.Collect(); GC.WaitForPendingFinalizers(); Interlocked.Increment(ref collections); Thread.Sleep(1); } });
-            var completed = 0;
+            using var gcStop = new CancellationTokenSource(); using var gcStarted = new ManualResetEventSlim();
+            var collector = Task.Run(() => { while (!gcStop.IsCancellationRequested) { GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: true, compacting: true); GC.WaitForPendingFinalizers(); gcStarted.Set(); Thread.Sleep(1); } });
+            var completed = 0; var decodeWindowsWithCollection = 0;
             try
             {
                 if (!gcStarted.Wait(TimeSpan.FromSeconds(5))) throw new TimeoutException("GC stress owner did not start");
@@ -138,7 +138,10 @@ internal static class ReaderRobustness28
                     var pooled = System.Buffers.ArrayPool<byte>.Shared.Rent(a.Data.Length);
                     try
                     {
-                        a.Data.CopyTo(pooled, 0); var result = ordinary.DecodeDetailed(pooled, a.Data.Length, a.Width, a.Height);
+                        a.Data.CopyTo(pooled, 0);
+                        var beforeCollection = GC.CollectionCount(GC.MaxGeneration);
+                        var result = ordinary.DecodeDetailed(pooled, a.Data.Length, a.Width, a.Height);
+                        if (GC.CollectionCount(GC.MaxGeneration) > beforeCollection) decodeWindowsWithCollection++;
                         if (result is not [{ Text: "SYNTH-SAME-28" }] || result[0].Corners.Any(p => p.X < 0 || p.X >= a.Width || p.Y < 0 || p.Y >= a.Height) || !pooled.AsSpan(0, a.Data.Length).SequenceEqual(a.Data))
                             throw new InvalidOperationException("Native view ownership failed under concurrent GC");
                         completed++;
@@ -147,7 +150,7 @@ internal static class ReaderRobustness28
                 }
             }
             finally { gcStop.Cancel(); collector.GetAwaiter().GetResult(); }
-            Check(completed == 32 && collections > 0, "32 consecutive pooled-frame decodes survive concurrent GC/finalizers with exact payload, in-bounds corners and unchanged source pixels");
+            Check(completed == 32 && decodeWindowsWithCollection > 0, "32 pooled-frame decodes preserve exact bytes and candidates, with a full compacting collection observed inside an actual decode call interval");
         }
         finally { ordinary.Release(); }
         var qrOnly = new SoftwareDecoder("utf-8", () => { }, settings: new(["QRCode"], false)); qrOnly.Prepare();
@@ -170,12 +173,20 @@ internal static class ReaderRobustness28
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 3); });
         Check(vm.Left.ShowRecentChute && vm.Left.CurrentRound is null && h.Peer.Requests.Count == 2,
             "an excluded bottom code on the new empty car does not erase the previous-result summary or create a parcel");
-        using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
-        h.App.Boundary = point => { if (point == "BeforeIngressDurable") { entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Snapshot/stream regression gate timed out"); } };
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var exited = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        h.App.Boundary = point =>
+        {
+            if (point != "BeforeIngressDurable") return;
+            entered.TrySetResult();
+            try { if (!release.Task.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Snapshot/stream regression gate timed out"); }
+            finally { exited.TrySetResult(); }
+        };
         try
         {
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEW-28"), 4);
-            await CameraRoundHarness.Until(() => Task.FromResult(entered.IsSet));
+            await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             // No stream subscription: exactly the snapshot-first/new-window path.
             await vm.RefreshAsync();
             Check(!vm.Left.ShowConfirmedTask && !vm.Left.ShowRecentChute && !vm.Left.CanViewCurrentPicture && vm.Left.DisplaySlot != "SYNTH-CHUTE" && vm.Left.Barcode != "SYNTH-RETIRED-28" && vm.Right.ShowConfirmedTask,
@@ -193,7 +204,11 @@ internal static class ReaderRobustness28
             await vm.AcceptPublishedSnapshotAsync(old, default);
             Check(!vm.Left.ShowConfirmedTask, "late prior snapshot cannot revive an already superseded camera result");
         }
-        finally { release.Set(); h.App.Boundary = null; }
+        finally
+        {
+            release.TrySetResult(); h.App.Boundary = null;
+            if (entered.Task.IsCompleted) await exited.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        }
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-NEW-28"; });
         Check(h.Peer.Requests.Count == 3 && vm.Left.Input!.Observation.SourceEventId == "mvs.frame.4", "only the matched new observation and its original RCS response restore a confirmed task");
     }

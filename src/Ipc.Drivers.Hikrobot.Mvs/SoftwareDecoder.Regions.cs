@@ -8,7 +8,7 @@ internal sealed partial class SoftwareDecoder
 {
     const int Tile = 32, RegionLimit = 32, RegionPixelLimit = 4 * 1024 * 1024;
     // Centers: the bar-dense tiles of the region (at least half its median edge density), in original-image pixels.
-    sealed record SearchRegion(int X, int Y, int Width, int Height, double Angle, double AlternateAngle, int Tiles, (double X, double Y)[] Centers);
+    sealed record SearchRegion(int X, int Y, int Width, int Height, double Angle, double AlternateAngle, int Tiles, (double X, double Y)[] Centers, double BarAngle);
     struct EdgeTile { public double XX, YY, XY, Angle, Density; public bool Active; }
     static List<SearchRegion> FindRegions(byte[] p, int width, int height)
     {
@@ -86,6 +86,7 @@ internal sealed partial class SoftwareDecoder
             var margin = Math.Max(48, Math.Max(maxX - minX, maxY - minY) * Tile / 8);
             var left = Math.Max(0, minX * Tile - margin); var top = Math.Max(0, minY * Tile - margin);
             var right = Math.Min(width, (maxX + 1) * Tile + margin); var bottom = Math.Min(height, (maxY + 1) * Tile + margin);
+            var barAngle = angle;
             if (angle > Math.PI / 4) angle -= Math.PI / 2;
             if (angle < -Math.PI / 4) angle += Math.PI / 2;
             if (alternate > Math.PI / 4) alternate -= Math.PI / 2;
@@ -95,7 +96,7 @@ internal sealed partial class SoftwareDecoder
             var densities = component.Select(at => cells[at].Density).Order().ToArray(); var dense = densities[densities.Length / 2] / 2;
             var centers = component.Where(at => cells[at].Density >= dense)
                 .Select(at => (Math.Min(width - 1, (at % columns + .5) * Tile), Math.Min(height - 1, (at / columns + .5) * Tile))).ToArray();
-            result.Add(new(left, top, right - left, bottom - top, angle, alternate, tiles, centers));
+            result.Add(new(left, top, right - left, bottom - top, angle, alternate, tiles, centers, barAngle));
             if (result.Count > RegionLimit) throw new MvsFrameRejection("SearchRegionLimit", "Directional search capacity exceeded; complete frame rejected");
         }
         return result;
@@ -108,14 +109,89 @@ internal sealed partial class SoftwareDecoder
     bool Explained(SearchRegion region, List<RecognitionSymbol> symbols, byte[] original, int width, int height)
     {
         if (symbols.Count == 0) return false;
-        var bands = symbols.Where(s => SingleBand(s, original, width, height)).ToArray();
-        return bands.Length > 0 && region.Centers.All(c => bands.Any(s => Covers(s.Corners, c.X, c.Y)));
+        var bands = symbols.Where(s =>
+            Math.Abs(Math.Cos(Math.Atan2(s.Corners[1].Y - s.Corners[0].Y, s.Corners[1].X - s.Corners[0].X) - region.BarAngle)) >= .94 &&
+            SingleBand(s, original, width, height)).ToArray();
+        return bands.Length > 0 && region.Centers.All(c => bands.Any(s => CoversTile(s, c.X, c.Y, original, width, height)));
+    }
+    struct UncoveredBandRow
+    {
+        public double XX, YY, XY, Low, High;
+        public int Count, Strong;
+    }
+    bool CoversTile(RecognitionSymbol symbol, double centerX, double centerY, byte[] original, int width, int height)
+    {
+        var q = symbol.Corners;
+        if (Covers(q, centerX - Tile / 2d, centerY - Tile / 2d) && Covers(q, centerX + Tile / 2d, centerY - Tile / 2d) &&
+            Covers(q, centerX + Tile / 2d, centerY + Tile / 2d) && Covers(q, centerX - Tile / 2d, centerY + Tile / 2d)) return true;
+        double sx = (q[0].X + q[3].X) / 2d, sy = (q[0].Y + q[3].Y) / 2d;
+        double dx = (q[1].X + q[2].X) / 2d - sx, dy = (q[1].Y + q[2].Y) / 2d - sy;
+        var length = Math.Sqrt(dx * dx + dy * dy); if (length < 1) return false;
+        double ux = dx / length, uy = dy / length;
+        // Tile centres can lie outside a short/slanted band while every dense bar
+        // edge in the tile lies inside it. Examine those original edges instead of
+        // expanding the band by a whole tile, which could cover another label.
+        SpendPatternSamples(Tile * Tile / 4 * 8);
+        var minimum = 0d; var maximum = 0d;
+        Span<UncoveredBandRow> rows = stackalloc UncoveredBandRow[Tile];
+        var centerAcross = -(centerX - sx) * uy + (centerY - sy) * ux;
+        var outsideMinimum = double.MaxValue; var outsideMaximum = double.MinValue;
+        for (var y = centerY - Tile / 2; y < centerY + Tile / 2; y += 2)
+            for (var x = centerX - Tile / 2; x < centerX + Tile / 2; x += 2)
+            {
+                if (x < 1 || y < 1 || x >= width - 1 || y >= height - 1 || Covers(q, x, y)) continue;
+                var nw = Sample(original, width, height, x - 1, y - 1); var n = Sample(original, width, height, x, y - 1);
+                var ne = Sample(original, width, height, x + 1, y - 1); var e = Sample(original, width, height, x + 1, y);
+                var se = Sample(original, width, height, x + 1, y + 1); var s = Sample(original, width, height, x, y + 1);
+                var sw = Sample(original, width, height, x - 1, y + 1); var w = Sample(original, width, height, x - 1, y);
+                var gx = (ne + 2 * e + se - nw - 2 * w - sw) / 4;
+                var gy = (sw + 2 * s + se - nw - 2 * n - ne) / 4;
+                var along = (x - sx) * ux + (y - sy) * uy;
+                if (along < 0 || along > length)
+                {
+                    if (along < -Math.Max(2 * Tile, .18 * length) || along > length + Math.Max(2 * Tile, .18 * length)) return false;
+                    if (Math.Abs(gx) + Math.Abs(gy) >= 20)
+                    { outsideMinimum = Math.Min(outsideMinimum, along); outsideMaximum = Math.Max(outsideMaximum, along); }
+                    continue;
+                }
+                var across = -(x - sx) * uy + (y - sy) * ux;
+                ref var row = ref rows[(int)Math.Floor((across - centerAcross + Tile) / 2)];
+                var parallel = gx * ux + gy * uy; var normal = -gx * uy + gy * ux;
+                row.XX += parallel * parallel; row.YY += normal * normal; row.XY += parallel * normal;
+                if (row.Count++ == 0) row.Low = row.High = across;
+                row.Low = Math.Min(row.Low, across); row.High = Math.Max(row.High, across);
+                if (Math.Abs(gx) + Math.Abs(gy) >= 20) row.Strong++;
+            }
+        // Apply the same original-image density/coherence rule as FindRegions to
+        // the uncovered scan rows. Random glyph texture is not a second bar band.
+        for (var index = 0; index < rows.Length; index++)
+        {
+            var row = rows[index];
+            if (row.Count == 0) continue;
+            double xx = 0, yy = 0, xy = 0; var count = 0; var strong = 0;
+            for (var nearby = Math.Max(0, index - 1); nearby <= Math.Min(rows.Length - 1, index + 1); nearby++)
+            { xx += rows[nearby].XX; yy += rows[nearby].YY; xy += rows[nearby].XY; count += rows[nearby].Count; strong += rows[nearby].Strong; }
+            var energy = xx + yy;
+            if (count < 8 || strong < count * .16 || energy == 0 || xx < yy ||
+                Math.Sqrt(Math.Pow(xx - yy, 2) + 4 * xy * xy) / energy < .8) continue;
+            minimum = Math.Min(minimum, row.Low); maximum = Math.Max(maximum, row.High);
+        }
+        bool Continuous(double across)
+        {
+            if (across == 0) return true;
+            var center = (centerX - sx) * ux + (centerY - sy) * uy;
+            var lo = Math.Max(0, center - 2 * Tile); var hi = Math.Min(length, center + 2 * Tile);
+            ImagePoint Point(double along, double offset) => new((int)Math.Round(sx + ux * along - uy * offset), (int)Math.Round(sy + uy * along + ux * offset));
+            var a = Point(lo, 0); var b = Point(hi, 0); var c = Point(lo, across); var d = Point(hi, across);
+            return SamePrintedRegion(symbol with { Corners = [a, b, b, a] }, symbol with { Corners = [c, d, d, c] }, original, width, height, adjacentLines: true);
+        }
+        var lowContinuous = Continuous(minimum); var highContinuous = Continuous(maximum);
+        return outsideMaximum - outsideMinimum <= 4 && lowContinuous && highContinuous;
     }
     // The code box as an oriented band. Along the code axis the quiet zone and the label paper corner beyond it are
     // allowed: two tiles or 18% of the code length. A second code placed end to end keeps a 20-module gap and is at
-    // least 35 modules long, so it never lies wholly inside that allowance and keeps the full search. Across the code
-    // the human-readable line printed under the bars is allowed: 60% of the bar height, between one and two tiles. A
-    // second code stacked above or below is a full bar height tall, so part of it stays outside and keeps the search.
+    // least 35 modules long, so it never lies wholly inside that allowance and keeps the full search.
+    // Across the code, unexplained tiles remain searchable: a tile-sized margin can hide a short stacked label.
     static bool Covers(ImagePoint[] q, double x, double y)
     {
         double sx = (q[0].X + q[3].X) / 2d, sy = (q[0].Y + q[3].Y) / 2d, ex = (q[1].X + q[2].X) / 2d, ey = (q[1].Y + q[2].Y) / 2d;
@@ -127,7 +203,7 @@ internal sealed partial class SoftwareDecoder
         foreach (var corner in q) { var v = -(corner.X - sx) * uy + (corner.Y - sy) * ux; low = Math.Min(low, v); high = Math.Max(high, v); }
         var outsideAlong = Math.Max(0, Math.Max(-along, along - length));
         var outsideAcross = Math.Max(0, Math.Max(low - across, across - high));
-        return outsideAlong <= Math.Max(2 * Tile, .18 * length) && outsideAcross <= Math.Clamp(.6 * (high - low), Tile, 2 * Tile);
+        return outsideAlong <= Math.Max(2 * Tile, .18 * length) && outsideAcross == 0;
     }
     void SearchRegions(byte[] original, int width, int height, List<RecognitionSymbol> symbols)
     {

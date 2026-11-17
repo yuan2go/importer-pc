@@ -70,7 +70,7 @@ SPORTMASTER_GUIDES = {**{path: name for path, name in PARCEL_GUIDES.items() if p
     'docs/runtime/windows-client-compatibility-01.md': 'WINDOWS-COMPATIBILITY.md',
     'docs/runtime/mvs-software-reader-01.md': 'MVS-SOFTWARE-READER.md'}
 
-ALL_GUIDES = {**GUIDES, **SPORTMASTER_GUIDES}
+ALL_GUIDES = {**PARCEL_GUIDES, **GUIDES, **SPORTMASTER_GUIDES}
 
 ROOT_INPUTS = ['global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx', 'docs/licenses/MIT.txt', 'docs/licenses/Apache-2.0.txt']
 SOURCE_DIRECTORIES = ['src', 'config', 'scripts', 'examples']

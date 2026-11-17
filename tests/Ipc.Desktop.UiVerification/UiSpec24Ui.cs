@@ -57,11 +57,10 @@ static partial class Program
             // The harness intentionally carries old separate request/heartbeat station values.
             // Resolve them explicitly in the real common editor; never weaken its guard.
             Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "StationCode").Text = h.Config.StationCode;
-            var first = Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == component.InstanceId + "/request-id-base");
-            var last = Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == component.InstanceId + "/request-id-count");
-            var originalFirst = first.Text; var originalLast = last.Text;
-            first.Text = "0"; Check(!model.ValidateFields(), "invalid inclusive start cannot silently save the old valid candidate");
-            first.Text = originalFirst; last.Text = originalLast; Check(model.ValidateFields(), "restoring inclusive endpoints restores the one complete valid draft; " + string.Join(";", model.Issues.Select(i => i.Path + "=" + i.Message)) + " endpoints=" + first.Text + ".." + last.Text);
+            Check(editor.NavigateTo("ReadTimeoutMs"), "current automatic read timeout is editable");
+            var previousTimeout = model.Policy.ReadTimeoutMs;
+            model.Policy.ReadTimeoutMs = "bad"; Check(!model.ValidateFields(), "invalid current read timeout blocks the complete candidate");
+            model.Policy.ReadTimeoutMs = previousTimeout; Check(model.ValidateFields(), "restoring the current read timeout restores the valid complete candidate");
             Check(editor.ShowPage(2, "左相机") && editor.CurrentPageTitle == "左右相机", "legacy navigation resolves to the combined camera page");
             Check(Descendants(editor).OfType<TextBox>().Count(b => AutomationProperties.GetAutomationId(b).EndsWith("/device.ip", StringComparison.Ordinal)) == 2, "both independent camera IP editors are in the same real native page");
             CaptureInternal(evidence, "ui24-cameras-1366", (Grid)window.FindName("ClientArea"), lines);

@@ -65,8 +65,10 @@ static class LifecycleOptimization
             Check(File.ReadAllText(Path.Combine(root, "leading-zero.csv")).Contains("MDAwMDEyMzQ="), "real fixed-selection export preserves exact leading-zero barcode bytes separately from spreadsheet text");
             var fixture = DispatchProxy.Create<ILifecycleHistoryFixture, HistoryProbe>(); var probe = (HistoryProbe)(object)fixture; probe.Inner = app;
             var delayed = new ParcelViewModel(fixture, "LIA", "synthetic", "sportmaster"); await delayed.RefreshAsync(); await delayed.LoadHistoryAsync();
-            var prior = delayed.HistoryItems; probe.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
-            var reading = delayed.LoadHistoryAsync(); await probe.Entered.Task.WaitAsync(TimeSpan.FromSeconds(3)); delayed.HistoryPosition = "right"; probe.Hold.SetResult(); await reading;
+            var prior = delayed.HistoryItems; var held = probe.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            var reading = delayed.LoadHistoryAsync();
+            try { await probe.Entered.Task.WaitAsync(TimeSpan.FromSeconds(3)); delayed.HistoryPosition = "right"; }
+            finally { held.TrySetResult(); await reading.WaitAsync(TimeSpan.FromSeconds(3)); }
             Check(ReferenceEquals(prior, delayed.HistoryItems) && delayed.HistoryStatus.Contains("取消") && delayed.HistoryFiltersChanged, "editing during a real cancellable query retains previous results and releases the read");
             probe.Hold = null; await delayed.LoadHistoryAsync();
             Check(delayed.HistoryItems.All(x => x.Operation.PositionId == "right") && delayed.HistoryPositionChoices.Any(p => p.Id == "right" && p.Label == "右投递位"), "Chinese business label selection maps to the actual stable position ID without appending its internal English value");
@@ -108,6 +110,8 @@ static class LifecycleOptimization
         service.RetentionPhase = phase => { if (phase == "ExpireDetails") throw new IOException("Synthetic stop after complete backup before expiry"); };
         await Reject<IOException>(() => service.ExecuteRetentionAsync(plan), "interruption after full backup retains the original operation and records a non-success terminal");
         Check((await service.InspectRetentionAsync(plan)).Status == "Interrupted" && File.Exists(plan.BackupDestination + ".recovery/COMPLETED.json"), "original interrupted receipt and complete backup remain inspectable without rerunning deletion");
+        using (var preserved = new ParcelRepository(directory, c.ApplicationId))
+            Check(preserved.ReadOperation(oldest.Id) is not null && preserved.ReadOperation(uncertain.Id) is { RecoveryRequired: true, Wcs.State: StageState.Unknown }, "pre-expiry failure preserves the eligible original details and the uncertain request before any successful retry");
         service.RetentionPhase = null;
         plan = await service.PlanRetentionAsync(Path.Combine(root, "retention-complete.db"));
         var result = await service.ExecuteRetentionAsync(plan);

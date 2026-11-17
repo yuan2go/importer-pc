@@ -8,6 +8,9 @@ using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
 Console.OutputEncoding = new System.Text.UTF8Encoding(false);
+// Test-only outer bound also covers a deadlocked predicate or failed cleanup.
+using var verificationWatchdog = new Timer(_ => Environment.FailFast("Verification exceeded its execution/cleanup deadline: " + string.Join(" ", args)), null,
+    args.Any(a => a.Contains("retention", StringComparison.Ordinal) || a.Contains("installation-storage", StringComparison.Ordinal)) ? TimeSpan.FromMinutes(30) : TimeSpan.FromMinutes(3), Timeout.InfiniteTimeSpan);
 // Isolated fixtures do not provision or replace the workstation's machine policy.
 // A fixed local area still coordinates independent fixture processes for the same backup path.
 ParcelRecovery.BackupSetLeaseRoot = () => Path.Combine(Path.GetTempPath(), "ipc-verification-backup-leases");
@@ -27,8 +30,21 @@ if (args.FirstOrDefault() == "--action" && args.ElementAtOrDefault(1) == "verify
     catch (Exception error) { Console.Error.WriteLine(error); Environment.ExitCode = 2; }
     return;
 }
+try { VerificationArguments.Require(args); }
+catch (ArgumentException error) { Console.Error.WriteLine(error.Message); Environment.ExitCode = 2; return; }
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
 var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
+if (Environment.GetEnvironmentVariable("IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME") == "1")
+    WindowsStoragePaths.UserRootForVerification = () => Path.Combine(root, "synthetic-windows-user");
+if (args.Contains("--cr-report-boundaries")) { await CrReportBoundaryChecks.Run(workspace, root); return; }
+if (args.Contains("--cr-report-cameras")) { await CrReportCameraChecks.Run(workspace, root); return; }
+if (args.Contains("--cr-sm-removal")) { await CrVerifiedSmChecks.Removal(workspace, root); return; }
+if (args.Contains("--cr-sm-dispatch")) { await CrVerifiedSmChecks.Dispatch(workspace, root); return; }
+if (args.Contains("--cr-sm-live-devices")) { await CrVerifiedSmChecks.LiveDevices(workspace, root); return; }
+if (args.Contains("--cr-sm-backup-ownership")) { await CrVerifiedSmChecks.BackupOwnership(workspace, root); return; }
+if (args.Contains("--cr-sm-backup-fences")) { await CrVerifiedSmChecks.BackupFences(workspace, root); return; }
+if (args.Contains("--cr-sm-templates")) { await CrVerifiedSmChecks.Templates(workspace, root); return; }
+if (args.Contains("--cr-sm-preferences")) { await CrVerifiedSmChecks.Preferences(workspace, root); return; }
 if (args.Contains("--mvs-presence")) { await MvsPresenceChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-single-station")) { await SmSingleStationChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-arrival-cameras")) { await Ipc.Verification.SmArrivalCameraChecks.Run(workspace, root); return; }
@@ -364,8 +380,8 @@ catch (InvalidDataException ex)
         "invalid Production launch refuses before constructing a source or starting a simulation fallback");
 }
 catch (InvalidOperationException ex) when (!OperatingSystem.IsWindows() && ex.Message == "Protected Production drafts require Windows")
-{ Pass(true, "non-Windows Production refuses protected persistence before any reference device can start"); }
+{ Pass(productionResources == 0, "non-Windows Production refuses protected persistence before any reference device can start"); }
 catch (InvalidOperationException ex) when (OperatingSystem.IsWindows() && ex.Message == "生产模式缺少受保护的管理模式授权服务；请使用同版安装器安装或修复。")
-{ Pass(true, "Windows Production refuses the missing protected management service before reference devices; installed service qualification is separate"); }
+{ Pass(productionResources == 0, "Windows Production refuses the missing protected management service before reference devices; installed service qualification is separate"); }
 await ResourceRisks.Run(workspace, root);
 Console.WriteLine("PASS AC17 COMPLETE: full reference chains, identity, weight correlation, restart/unknown, old configuration and no repeated external action");

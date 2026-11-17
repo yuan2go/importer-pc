@@ -38,7 +38,7 @@ sealed class HistoryRetentionWindow : StartupWorkflowWindow
         Action("备份并清理过期记录…", async () =>
         {
             var original = plan ?? throw new InvalidOperationException("先预检当前计划");
-            if (destination.Text != original.BackupDestination) throw new InvalidOperationException("备份目标已改变，重新预检");
+            if (!System.IO.Path.GetFullPath(destination.Text).Equals(original.BackupDestination, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) throw new InvalidOperationException("备份目标已改变，重新预检");
             if (MessageBox.Show(this, "将按预检结果清理，保留 " + original.Days + " 天。\n完整备份：" + original.BackupDestination + "\n未处理完的作业不会删除。", "确认清理过期记录", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
             // Until a trusted terminal arrives, only inspection may be used, even on a known helper failure.
             UnknownOutcome = true;

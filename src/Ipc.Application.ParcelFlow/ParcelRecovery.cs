@@ -53,8 +53,9 @@ public static partial class ParcelRecovery
             if (!ExtensionSchema.IsHash(file.Value) || !File.Exists(RecoveryFiles.Resolve(recovery, file.Key)) || Wire.FileHash(RecoveryFiles.Resolve(recovery, file.Key), token) != file.Value)
                 throw new InvalidDataException("Recovery custody file missing/changed/unsafe: " + file.Key);
         }
-        var actual = RecoveryFiles.Inventory(recovery, token);
-        if (!actual.Keys.Order(StringComparer.Ordinal).SequenceEqual(manifest.Files.Keys.Order(StringComparer.Ordinal))) throw new InvalidDataException("Recovery custody file set changed");
+        var actual = RecoveryFiles.Enumerate(recovery, null, false, token).Where(n => n != "COMPLETED.json").ToArray();
+        RecoveryFiles.ValidateNames(recovery, actual, token);
+        if (!actual.Order(StringComparer.Ordinal).SequenceEqual(manifest.Files.Keys.Order(StringComparer.Ordinal))) throw new InvalidDataException("Recovery custody file set changed");
         using (var rounds = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder
         { DataSource = new Uri(source).AbsoluteUri + "?immutable=1", Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
         {

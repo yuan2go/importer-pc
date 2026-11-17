@@ -5,7 +5,11 @@ using System.Text;
 namespace Ipc.Platform;
 
 public sealed record DeploymentRestoreCommit(string Status, string OperationId, DeploymentLocation Previous,
-    DeploymentLocation Next, string HandoffSha256, string? SupervisionLedgerSha256, string OriginalSeedBase64, string RestoredSeed);
+    DeploymentLocation Next, string HandoffSha256, string? SupervisionLedgerSha256, string OriginalSeedBase64, string RestoredSeed)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? CredentialMigrationIdentity { get; init; }
+}
 
 public static partial class WindowsDeploymentSetup
 {
@@ -133,7 +137,14 @@ public static partial class WindowsDeploymentSetup
         var sid = new SecurityIdentifier(record.Next.RuntimeAccountSid);
         var seed = Path.Combine(record.Next.ConfigurationDirectory, "business.json"); MachineRuntimePolicy.RequireProtectedEvidence(seed);
         PreviewDataAccess(record.Next.DataRoot, record.Next.RuntimeAccountSid);
-        ManagementModeBroker.CopyCredentialsForMigration(record.Previous.DataRoot, record.Next.DataRoot);
+        if (record.CredentialMigrationIdentity is null)
+        {
+            ManagementModeBroker.CopyCredentialsForMigration(record.Previous.DataRoot, record.Next.DataRoot);
+            record = record with { CredentialMigrationIdentity = ManagementModeBroker.MigrationCredentialIdentity(record.Next.DataRoot) };
+            WriteProtected(RestoreCommitFile(record.Next.ApplicationId, record.OperationId), record, sid);
+        }
+        else if (record.CredentialMigrationIdentity != ManagementModeBroker.MigrationCredentialIdentity(record.Next.DataRoot))
+            throw new InvalidDataException("原恢复的管理密码身份已变化或缺失，保留现状核对，不重新复制。");
         ManagementModeBroker.Install(record.Next.DataRoot, Path.Combine(record.Next.ReleaseRoot, "app"));
         ExecuteRestoreCommit(record, () => Current(record.Next.ApplicationId), () => File.ReadAllBytes(seed),
             bytes => WriteProtectedBytes(seed, bytes, sid),

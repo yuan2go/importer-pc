@@ -430,8 +430,13 @@ public partial class ParcelViewModel
         if (ParameterEditor is { } identityEditor && !await identityEditor.PrepareCameraIdentitiesAsync()) return;
         if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         var expected = RequireDraftRevision(); var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature();
+        var authority = configurationAuthority; var document = ConfigurationDraft;
         var result = await SubmitConfigurationAsync(expected, candidate);
-        if (result.Status is "PendingRestart" or "Effective") { savedEditorSignature = signature; savedCandidate = Wire.Encode(candidate); ConfigurationDraft = savedCandidate; }
+        if (result.Status is "PendingRestart" or "Effective")
+        {
+            savedEditorSignature = signature; savedCandidate = Wire.Encode(candidate);
+            if (configurationAuthority == authority && ConfigurationDraft == document && ConfigurationEditSignature() == signature) ConfigurationDraft = savedCandidate;
+        }
     }
     public async Task LoadStructuredFromJsonAsync()
     {

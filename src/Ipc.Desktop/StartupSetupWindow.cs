@@ -63,7 +63,10 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         this.prepareMedia = prepareMedia;
         ConcludeInstallation = (request, progress, token) => ParcelStartupServices.ContinueInstallationAsync(media ?? throw new InvalidOperationException("请先核验完整介质。"), request, false, progress, token);
         if (ApplicationId == "sportmaster") RepairRegistration = async (request, progress, token) =>
-            _ = await ParcelStartupServices.ContinueInstallationAsync(media ?? throw new InvalidOperationException("请先核验完整介质。"), request, true, progress, token);
+        {
+            var result = await ParcelStartupServices.ContinueInstallationAsync(media ?? throw new InvalidOperationException("请先核验完整介质。"), request, true, progress, token);
+            if (result.Status != "Completed") throw new InstallationOutcomeUnknownException(result.Detail);
+        };
         if (businessVersion is not null) { VersionLabel.Text = "版本: " + (ApplicationId == "sportmaster" ? "SM " : "") + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
         back = Action("上一步", () =>
         {
@@ -127,7 +130,9 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             if (CanCleanPreparation && preparedConfigurationDirectory is { } directory && Directory.Exists(directory))
             {
-                File.Delete(Path.Combine(directory, "business.json")); Directory.Delete(directory);
+                try { File.Delete(Path.Combine(directory, "business.json")); Directory.Delete(directory); }
+                catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+                { System.Diagnostics.Trace.TraceError("Installation preparation cleanup incomplete; retained {0}: {1}", directory, error); }
             }
         };
         Closing += (_, _) => { if (preparing is not null) { CloseAfterCancellation = true; preparing.Cancel(); Message("正在取消安装文件准备，请稍候…"); } };
@@ -413,6 +418,11 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             if (outcomeUnknown) { Render(); Message(error.Message); return; }
             installing = false; failed = false; reviewed = null; step = media is null ? 0 : 1;
             Render(); Message(error.Message); return;
+        }
+        if (outcomeUnknown && originalInspection?.Status == "CommittedNeedsSystemRepair")
+        {
+            installing = false; failed = false; failureMessage = error.Message;
+            Render(); return;
         }
         if (outcomeUnknown)
         {

@@ -35,10 +35,13 @@ public sealed class DesktopRecoveryMigration : IDisposable
     }
     public void Dispose()
     {
-        if (disposed) return; List<Exception> errors = [];
-        foreach (var owner in owners.AsEnumerable().Reverse()) try { owner.Dispose(); } catch (Exception e) { errors.Add(e); }
+        disposed = true; List<Exception> errors = [];
+        for (var i = owners.Count - 1; i >= 0; i--)
+        {
+            if (i == 0 && registrationFile is not null && errors.Count != 0) break;
+            try { owners[i].Dispose(); owners.RemoveAt(i); } catch (Exception e) { errors.Add(e); }
+        }
         if (errors.Count != 0) throw new AggregateException("Recovery migration ownership release failed", errors);
-        disposed = true;
     }
 }
 public static partial class DesktopRecoverySupervisor
@@ -121,6 +124,13 @@ public static partial class WindowsDeploymentSetup
             if (stopped is not null) migration.HoldStoppedSource(stopped);
             migration.HoldRegistration(owner, file, expectedRegistrationHash); return migration;
         }
-        catch { owner?.Dispose(); stopped?.Dispose(); throw; }
+        catch (Exception original)
+        {
+            try { stopped?.Dispose(); }
+            catch (Exception cleanup) { throw new AggregateException("Migration preparation and stopped-owner release failed; registration ownership retained", original, cleanup); }
+            try { owner?.Dispose(); }
+            catch (Exception cleanup) { throw new AggregateException("Migration preparation and registration release failed", original, cleanup); }
+            throw;
+        }
     }
 }

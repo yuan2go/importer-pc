@@ -41,6 +41,9 @@ public static class ParcelDetailSheets
     static string Explanation(ParcelOperation op, ParcelPresentationTone tone)
     {
         if (op.DebugRequest is not null) return "这是调试页手动发送的一次请求，不计入正常供包。";
+        if (op.State == ParcelState.PlcAccepted) return "控制器已接收，物理处理是否完成仍待确认。";
+        if (op.State == ParcelState.Abandoned) return "本件已取消，原请求与实际结果独立保留。";
+        if (op.State == ParcelState.UnpackRequired) return "本件需要拆包处理，请按当前作业说明核对。";
         if (ParcelPresentation.RcsNotDelivered(op)) return "请求没有送达 RCS，RCS 没有收到这件包裹。请先检查 RCS 连接；软件不会自动重发。";
         return tone switch
         {
@@ -83,7 +86,7 @@ public static class ParcelDetailSheets
         {
             var seconds = (reply.At - stage.Request.PreparedAt).TotalSeconds;
             rows.Add(new("返回时间", Time(reply.At) + (seconds >= 0 ? "（用时 " + seconds.ToString("0.00") + " 秒）" : "")));
-            rows.Add(new("送达 RCS", reply.TransportSucceeded ? "是" : "否", !reply.TransportSucceeded));
+            rows.Add(new(name == "取格口" ? "送达 RCS" : "送达目标服务", reply.TransportSucceeded ? "是" : reply.SenderDelivery == SenderDeliveryEvidence.ConnectionRefusedBeforeBody ? "否" : "未确认", !reply.TransportSucceeded));
             rows.Add(new("RCS 确认收到", Known(reply.ProtocolAcknowledged), reply.ProtocolAcknowledged != true));
             rows.Add(new(name == "取格口" ? "分配格口" : "处理结果", reply.BusinessAccepted switch { true => reply.Slot is { Length: > 0 } slot ? "是 · " + slot : "是", false => "否", null => "未回报" }, reply.BusinessAccepted != true));
             rows.Add(new("包裹落格", reply.PhysicalCompleted switch { true => "已落格", false => "未落格", null => "RCS 不回报，以现场为准" }, reply.PhysicalCompleted == false));

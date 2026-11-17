@@ -36,6 +36,8 @@ internal static class StationSessionReportReader
             return new(id, r.GetInt64(1), r.GetString(2), start, Parse(r.GetString(4)), r.IsDBNull(5) ? null : Parse(r.GetString(5)), duration,
                 open || r.GetString(2) == "Closed", r.GetInt32(7) != 0 || open && Math.Abs((now - start).TotalMilliseconds - duration) > 5000);
         }
+        try
+        {
         var current = Shift("id=$value", currentId) ?? throw new InvalidOperationException("当前运行班次尚未建立");
         var selected = query.Range == StationReportRange.CurrentShift ? current : query.Range == StationReportRange.PreviousShift ? Shift("seq<$value", current.Sequence) : null;
         var zone = TimeZoneInfo.FindSystemTimeZoneById(policy.TimeZoneId);
@@ -52,8 +54,6 @@ internal static class StationSessionReportReader
             c.Parameters.AddWithValue("$shift", selected?.Id ?? ""); c.Parameters.AddWithValue("$details", Key(detailsFrom)); return c;
         }
         List<StationPositionTotals> totals = []; List<StationMetricBucket> buckets = []; List<StationReasonCount> reasons = [];
-        try
-        {
             using (var c = Scoped("SELECT position,sum(recognitions),sum(requests),sum(assigned),sum(rejected),sum(unknown_count),sum(manual_requests) FROM " +
                 (calendar ? "station_metric_buckets" : "station_shift_totals") + " WHERE " + scope + " GROUP BY position"))
             using (var r = c.ExecuteReader()) while (r.Read()) totals.Add(new(r.GetString(0), r.GetInt64(1), r.GetInt64(2), r.GetInt64(3), r.GetInt64(4), r.GetInt64(5), r.GetInt64(6)));

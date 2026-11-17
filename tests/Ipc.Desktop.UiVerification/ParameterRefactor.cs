@@ -123,7 +123,7 @@ static partial class Program
         Check(vm.ParameterEditor.Issues.Any(i => i.Path == "DiagnosticLogDays"), "complete validation retains the real invalid retention field");
         control.ShowReview();
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-        var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("日志保留天数") && !text.Text.Contains("DiagnosticLogDays"));
+        var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("日志最长保留时间") && !text.Text.Contains("DiagnosticLogDays"));
         Check(error.IsVisible && error.IsEnabled, "the current check-results page exposes the real field-location action");
         error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
         Check(days.IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects data settings and focuses the invalid field while preserving barcode inputs");
@@ -157,6 +157,7 @@ static partial class Program
         Capture("parameters-drivers");
         if (interactive)
         {
+            Directory.CreateDirectory(Path.Combine(root, ".artifacts/parameter-refactor"));
             File.WriteAllText(Path.Combine(root, ".artifacts/parameter-refactor/INTERACTIVE.txt"), evidence);
             var closed = new TaskCompletionSource(); window.Closed += (_, _) => closed.TrySetResult(); await closed.Task;
         }

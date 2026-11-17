@@ -58,7 +58,7 @@ def sha(path):
 
 def verify_release(root):
     root = ordinary(root)
-    manifest = read_json(root / 'ASSEMBLY.json')
+    manifest_bytes = (root / 'ASSEMBLY.json').read_bytes()
     files = {}
     inventory = root / 'SHA256SUMS'
     if inventory.stat().st_size > 4 * 1024 * 1024:
@@ -69,6 +69,9 @@ def verify_release(root):
         if not re.fullmatch('[a-fA-F0-9]{64}', digest) or not p.is_relative_to(root) or name.casefold() in files or sha(p).lower() != digest.lower():
             raise ValueError('Frozen release inventory differs: ' + name)
         files[name.casefold()] = digest
+    if files.get('assembly.json', '').lower() != hashlib.sha256(manifest_bytes).hexdigest():
+        raise ValueError('Release identity must be present in the verified inventory')
+    manifest = json.loads(manifest_bytes)
     if 'desktop/ipc.desktop.exe' not in files or not re.fullmatch('[a-f0-9]{40}', manifest['SourceCommit']):
         raise ValueError('A frozen desktop delivery is required')
     return manifest
@@ -224,11 +227,18 @@ def collect(args):
                     if stale < -1 or stale > 5:
                         failures['SupervisionStaleOrClockChanged'] += 1
                     is_normal = now - started >= warmup
+                    collected_at = utc()
+                    line = json.dumps(dict(CollectedAt=collected_at, ElapsedSeconds=now-started, Normal=is_normal, **sample), separators=(',', ':')) + '\n'
+                    length = len(line.encode('utf-8'))
+                    if written + length > plan['MaxEvidenceBytes']:
+                        failures['EvidenceQuotaReached'] += 1; break
+                    log.write(line); log.flush()
+                    written += length; samples += 1
                     if is_normal:
                         observe_resources(sample, resource_trends, camera_states)
                         if normal_start is None:
-                            normal_start = utc(); first_normal = progress; resource_start = sample['Resource']; normal_tick = now
-                        normal_end = utc(); last_normal = progress; resource_end = sample['Resource']; last_normal_tick = now
+                            normal_start = collected_at; first_normal = progress; resource_start = sample['Resource']; normal_tick = now
+                        normal_end = collected_at; last_normal = progress; resource_end = sample['Resource']; last_normal_tick = now
                         if progress['Stopping'] or progress.get('Failure') or progress.get('SupervisionFailure'):
                             failures['RuntimeFaultOrStopping'] += 1
                         if not progress['Ui']:
@@ -259,11 +269,6 @@ def collect(args):
                                 failures['BackgroundTerminalOrFault'] += 1
                             if not task.get('LastProgress') or (dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(task['LastProgress'])).total_seconds() * 1000 > plan['MaximumWorkerStallMs']:
                                 failures['BackgroundProgressStall'] += 1
-                    line = json.dumps(dict(CollectedAt=utc(), ElapsedSeconds=now-started, Normal=is_normal, **sample), separators=(',', ':')) + '\n'
-                    written += len(line.encode('utf-8'))
-                    if written > plan['MaxEvidenceBytes']:
-                        failures['EvidenceQuotaReached'] += 1; break
-                    log.write(line); log.flush(); samples += 1
                     if normal_tick is not None and now - normal_tick >= normal_seconds:
                         break
                 except (OSError, ValueError, KeyError) as error:
@@ -404,6 +409,33 @@ def observed_delta(collection, field):
     return result
 
 
+def validate_normal_samples(collection, samples):
+    first = last = None
+    count = 0
+    for sample in samples:
+        count += 1
+        progress = sample.get('Progress') or {}
+        if progress.get('RuntimeId') != collection['RuntimeId']:
+            raise ValueError('Sample runtime identity differs; restart segments cannot be joined')
+        if not isinstance(sample.get('Normal'), bool):
+            raise ValueError('Raw sample normal-segment flag is missing')
+        if sample['Normal']:
+            if first is None:
+                first = sample
+            last = sample
+    if collection.get('Samples') != count or first is None:
+        raise ValueError('Raw samples do not establish the recorded normal interval')
+    for key, sample, at in [('FirstNormal', first, 'NormalStart'), ('LastNormal', last, 'NormalEnd')]:
+        if collection.get(key) != sample['Progress']:
+            raise ValueError('Normal endpoint progress differs from retained samples: ' + key)
+        if dt.datetime.fromisoformat(collection[at]) != dt.datetime.fromisoformat(sample['CollectedAt']):
+            raise ValueError('Normal endpoint time differs from retained samples: ' + at)
+    elapsed = last['ElapsedSeconds'] - first['ElapsedSeconds']
+    if not math.isfinite(elapsed) or elapsed < 0 or not math.isclose(elapsed, collection['ActualNormalSeconds'], abs_tol=1e-6):
+        raise ValueError('Normal duration differs from retained samples')
+    return count
+
+
 def analyze(args):
     from stability_business_evidence import analyze_business
     collection_root = ordinary(args.collection)
@@ -424,21 +456,10 @@ def analyze(args):
     if not isinstance(actual, (int, float)) or not math.isfinite(actual) or actual < 0:
         raise ValueError('Invalid actual observation duration')
     sample_file = collection_root / 'samples.jsonl'
-    sample_count = 0
+    if not sample_file.is_file():
+        raise ValueError('Missing raw samples; normal interval cannot be established')
+    sample_count = validate_normal_samples(collection, json_lines(sample_file))
     sample_issues = []
-    if sample_file.exists():
-        for sample in json_lines(sample_file):
-            sample_count += 1
-            progress = sample.get('Progress') or {}
-            if progress.get('RuntimeId') != collection['RuntimeId']:
-                raise ValueError('Sample runtime identity differs; restart segments cannot be joined')
-    else:
-        sample_issues.append('Missing raw samples')
-    if collection.get('Samples') is not None and collection['Samples'] != sample_count:
-        sample_issues.append('Raw sample count differs from collector receipt')
-    for segment in ('FirstNormal', 'LastNormal'):
-        if collection.get(segment, {}).get('RuntimeId') != collection['RuntimeId']:
-            raise ValueError('Normal segment runtime identity differs')
     verified = verify_backup(database, args.verifier)
     if shutil.disk_usage(output.parent).free < verified['MinimumFreeBytes']:
         raise ValueError('Analysis volume reserve unavailable; preserve backup')

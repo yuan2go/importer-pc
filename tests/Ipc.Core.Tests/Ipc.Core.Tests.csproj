@@ -5,6 +5,9 @@
     <TargetFramework>net10.0-windows</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../src/Ipc.Platform/Ipc.Platform.csproj" />
+    <Compile Include="../Ipc.Verification/CommercialRemovalVerification.cs" Link="CommercialRemovalVerification.cs" />
+    <Compile Include="../Ipc.Desktop.UiVerification/UiVerificationArguments.cs" Link="UiVerificationArguments.cs" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.5.2" />
     <PackageReference Include="MSTest.TestFramework" Version="4.5.2" />

@@ -9,7 +9,7 @@ public static class DiagnosticText
 {
     static readonly Regex sensitiveKey = new("password|passwd|proof|token|secret|authorization|api[-_]?key|credential|private[-_]?key", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50));
     static readonly Regex sensitiveValue = new(
-        """(?i)((?:password|passwd|proof|token|secret|authorization|api[-_]?key|credential)["']?\s*[:=]\s*)(?:"(?:\\.|[^"\\])*(?:"|$)|'(?:\\.|[^'\\])*(?:'|$)|[^\s,;}]+)|(?:Bearer|Basic)\s+[A-Za-z0-9+/=._-]+""",
+        """(?i)((?:password|passwd|proof|token|secret|authorization|api[-_]?key|credential|private[-_]?key)["']?\s*[:=]\s*)(?:"(?:\\.|[^"\\])*(?:"|$)|'(?:\\.|[^'\\])*(?:'|$)|[^\s,;}]+)|(?:Bearer|Basic)\s+[A-Za-z0-9+/=._-]+""",
         RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50));
     static readonly Regex userInfo = new(@"([A-Za-z][A-Za-z0-9+.-]*://)[^/@\s]+:[^/@\s]+@",
         RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50));
@@ -38,7 +38,7 @@ public static class DiagnosticText
             // Debug request/response bodies can themselves be JSON strings. Clean
             // their keys too, with a bounded nesting/size budget; never rewrite custody.
             if (depth < 4 && text.Length <= 65536 && text.TrimStart() is { Length: > 0 } trimmed && trimmed[0] is '{' or '[')
-                try { return JsonValue.Create(Clean(JsonNode.Parse(text), depth + 1)?.ToJsonString() ?? text); } catch (JsonException) { }
+                try { return JsonValue.Create(Clean(JsonNode.Parse(text), depth + 1)?.ToJsonString() ?? text); } catch (Exception error) when (error is JsonException or ArgumentException) { }
             return JsonValue.Create(Text(text));
         }
         return node;
@@ -46,6 +46,6 @@ public static class DiagnosticText
     public static string Protect(string line)
     {
         try { return Clean(JsonNode.Parse(line))?.ToJsonString(new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }) ?? line; }
-        catch (JsonException) { return Text(line); }
+        catch (Exception error) when (error is JsonException or ArgumentException) { return Text(line); }
     }
 }

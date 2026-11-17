@@ -6,12 +6,15 @@ if (-not $IsWindows) { throw 'This fixture uses the actual Windows WPF/DPAPI bin
 $repository = Split-Path $PSScriptRoot -Parent
 $Media = (Resolve-Path -LiteralPath $Media).Path
 $Output = [IO.Path]::GetFullPath($Output)
+if ($Output.TrimEnd('\','/').Equals($Media.TrimEnd('\','/'), [StringComparison]::OrdinalIgnoreCase) -or
+    $Output.StartsWith($Media.TrimEnd('\','/') + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw 'Evidence output must be outside the frozen medium.' }
 if (Test-Path -LiteralPath $Output) { throw 'Choose a new evidence directory' }
 $release = Get-Content -LiteralPath (Join-Path $Media 'app/application-release.json') -Raw | ConvertFrom-Json
 if ($release.ApplicationId -ne 'sportmaster' -or $release.SourceCommit -notmatch '^[0-9a-f]{40}$') { throw 'Expected a frozen Sportmaster Windows medium' }
 $FixtureCommit = (& git -C $repository rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0 -or $release.SourceCommit -ne $FixtureCommit) { throw 'Only media built from the current commit can be verified; historical evidence remains frozen' }
 $inventory = @{}
+$originalInventoryHash=(Get-FileHash -LiteralPath (Join-Path $Media 'SHA256SUMS')).Hash
 foreach ($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')) {
     if ($line -notmatch '^([0-9A-Fa-f]{64})  (.+)$') { throw 'Invalid frozen inventory' }
     $relative = $Matches[2]; $hash = $Matches[1]
@@ -86,8 +89,8 @@ New-Item -ItemType Directory -Path $syntheticFixtureRoot -Force | Out-Null
 
 & $Dotnet run --project (Join-Path $Output 'MediaVerification.csproj') -- $Media $fixtureWorkspace (Join-Path $Output 'synthetic-data') *> (Join-Path $Output 'RUN.log')
 $result = $LASTEXITCODE
-$unchanged = $true
+$unchanged = (Get-FileHash -LiteralPath (Join-Path $Media 'SHA256SUMS')).Hash -eq $originalInventoryHash
 foreach ($relative in $inventory.Keys) { if ((Get-FileHash -LiteralPath (Join-Path $Media $relative)).Hash -ne $inventory[$relative]) { $unchanged = $false } }
 $binaries = @($references | ForEach-Object { [ordered]@{File=$_.Name;Sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
-[ordered]@{Status=if ($result -eq 0 -and $unchanged) {'PASS'} else {'FAIL'};SourceCommit=$release.SourceCommit;FixtureCommit=$FixtureCommit;MediumInventorySha256=(Get-FileHash -LiteralPath (Join-Path $Media 'SHA256SUMS')).Hash;UnchangedMedium=$unchanged;Binaries=$binaries;Scope='SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS';WindowsInstallation='NOT_RUN';Equipment='BLOCKED';ExitCode=$result} | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $Output 'RESULT.json') -Encoding utf8NoBOM
+[ordered]@{Status=if ($result -eq 0 -and $unchanged) {'PASS'} else {'FAIL'};SourceCommit=$release.SourceCommit;FixtureCommit=$FixtureCommit;MediumInventorySha256=$originalInventoryHash;UnchangedMedium=$unchanged;Binaries=$binaries;Scope='SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS';WindowsInstallation='NOT_RUN';Equipment='BLOCKED';ExitCode=$result} | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $Output 'RESULT.json') -Encoding utf8NoBOM
 if ($result -ne 0 -or -not $unchanged) { throw 'Frozen-medium verification failed; retained RUN.log and original evidence' }

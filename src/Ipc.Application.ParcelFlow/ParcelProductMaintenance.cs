@@ -104,7 +104,7 @@ public sealed partial class ParcelStartupMaintenance
                 RecoveryFiles.RequireOrdinaryAncestors(station);
                 if (++count > 1024) return "历史根超过核对预算，所有版本和数据保留。";
                 var area = Path.Combine(station, definition.Id); RecoveryFiles.RequireOrdinaryAncestors(area);
-                if (Directory.Exists(area) && !Path.GetFullPath(area).Equals(Path.GetFullPath(current), StringComparison.OrdinalIgnoreCase) &&
+                if (Directory.Exists(area) && !Path.GetFullPath(area).Equals(Path.GetFullPath(current), OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) &&
                     Directory.EnumerateFileSystemEntries(area).Any())
                     return "存在其他站或模式的原业务根，不能由当前已结状态证明其原实现和记录不再被引用；所有版本和数据保留。";
             }
@@ -208,7 +208,7 @@ public sealed partial class ParcelStartupMaintenance
             if (File.Exists(backup + ".deleting.json"))
             {
                 try { originalDeletion = ParcelRecovery.ReadSetDeletion(backup); }
-                catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
+                catch (Exception error) when (error is Microsoft.Data.Sqlite.SqliteException or IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
                 {
                     Authorize(); result.Add(new(backup, "InvalidOrIncomplete", null, 0, null, "原删除记录无法核验，原件保留：" + error.Message)); continue;
                 }
@@ -229,7 +229,7 @@ public sealed partial class ParcelStartupMaintenance
                 }
                 string? deletionIdentity = null; var deletionReason = "";
                 try { deletionIdentity = ParcelRecovery.PlanSetDeletion(backup, definition.Id, Authorize, token).Identity; }
-                catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException)
+                catch (Exception error) when (error is Microsoft.Data.Sqlite.SqliteException or IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException)
                 { Authorize(); deletionReason = error.Message; }
                 result.Add(new(backup, "OrphanDatabase", null, new FileInfo(backup).Length, deletionIdentity, "缺少同名恢复目录；不能恢复或交付。" + (deletionIdentity is null ? "业务身份无法核验，原文件保留：" + deletionReason : "可明确删除这一个已核验业务身份的孤立数据库，其他内容保留。"))); continue;
             }
@@ -244,7 +244,7 @@ public sealed partial class ParcelStartupMaintenance
                     (originalStatus == "NotStarted" ? "原删除已在提交前取消。" : "") + "完整备份已核验：" + config.StationId + " · " + config.Mode + "；数据库及恢复文件须作为一份保管。")
                 { OriginalDeletionStatus = originalStatus });
             }
-            catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
+            catch (Exception error) when (error is Microsoft.Data.Sqlite.SqliteException or IOException or InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
             {
                 Authorize();
                 string? deletionIdentity = null; var deletionDetail = "范围无法核验，原件保留。";
@@ -254,7 +254,7 @@ public sealed partial class ParcelStartupMaintenance
                     deletionIdentity = deletion.Identity;
                     deletionDetail = "可明确删除原清单内仍存在的已核验范围；清单外内容保留。";
                 }
-                catch (Exception scopeError) when (scopeError is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
+                catch (Exception scopeError) when (scopeError is Microsoft.Data.Sqlite.SqliteException or IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
                 { Authorize(); deletionDetail += "原因：" + scopeError.Message; }
                 result.Add(new(backup, originalDeletion is null ? "InvalidOrIncomplete" : "Deleting", null, 0, deletionIdentity,
                     "完整集核验失败：" + error.Message + "；" + deletionDetail)

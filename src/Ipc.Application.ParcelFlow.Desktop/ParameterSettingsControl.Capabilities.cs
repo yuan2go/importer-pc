@@ -49,7 +49,8 @@ public sealed partial class ParameterSettingsControl
                 var jump = new Button { Content = "前往" + (camera ?? ParameterOwnership.CategoryName(ParameterOwnership.Category(component, p.Field.Key))), Style = (Style)Resources["ParameterQuietAction"] };
                 jump.Click += (_, _) => NavigateTo(component.InstanceId + "/" + p.Field.Key); DockPanel.SetDock(jump, Dock.Right); row.Children.Add(jump);
                 var value = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, Padding = new(0), MinHeight = 28 };
-                value.SetBinding(TextBox.TextProperty, new Binding("Value") { Source = p, Mode = BindingMode.OneWay });
+                if (p.IsSensitive) value.Text = "已隐藏";
+                else value.SetBinding(TextBox.TextProperty, new Binding("Value") { Source = p, Mode = BindingMode.OneWay });
                 var item = new StackPanel(); item.Children.Add(Text((camera is null ? "" : camera + " · ") + ParameterLabel(p))); item.Children.Add(value); row.Children.Add(item); references.Children.Add(row);
             }
             page.Body.Children.Add(Text("心跳正常只说明 RCS 可以连接；格口未确认的包裹不会自动重发。"));
@@ -154,11 +155,11 @@ public sealed partial class ParameterSettingsControl
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
         var form = Form(page, draft.Kind == "observation" ? "连接" : isRcs ? "协议与心跳" : null);
         var advanced = new List<CapabilityParameter>();
-        var engine = draft.Parameters.FirstOrDefault(p => p.Field.Key == "reader.engine");
-        if (engine is not null)
+        var dependencies = draft.Provider.Parameters.Select(p => p.AppliesWhenKey).OfType<string>().Append("reader.engine").ToHashSet(StringComparer.Ordinal);
+        foreach (var dependency in draft.Parameters.Where(p => dependencies.Contains(p.Field.Key)))
         {
             PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName == nameof(CapabilityParameter.Value)) Render(); };
-            engine.PropertyChanged += changed; unsubscribe.Add(() => engine.PropertyChanged -= changed);
+            dependency.PropertyChanged += changed; unsubscribe.Add(() => dependency.PropertyChanged -= changed);
         }
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {

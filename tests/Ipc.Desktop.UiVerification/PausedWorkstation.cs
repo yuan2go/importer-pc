@@ -51,7 +51,9 @@ static partial class Program
             Check(resume.IsVisible && resume.IsEnabled && h.Peer.Requests.Count == 0 && vm.Left.CenteredStateTitle == "供包已暂停",
                 "pause retains a guarded resume action and picture reads create no requests");
             var observed = h.App.WorkerProgress().Single(p => p.Position == "left").ObservedOnly;
-            h.Api(h.Left).EnqueueNative(blockedPixels, 2, [Symbol("SYNTH-PAUSED-CODE", 50)]);
+            var laterPixels = blockedPixels with { Data = blockedPixels.Data.Select(value => (byte)(255 - value)).ToArray() };
+            Check(!laterPixels.Data.SequenceEqual(blockedPixels.Data), "later acquisition has distinct image bytes");
+            h.Api(h.Left).EnqueueNative(laterPixels, 2, [Symbol("SYNTH-PAUSED-CODE", 50)]);
             await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").ObservedOnly > observed));
             Check((await h.App.ReadParcelPictureAsync(new(ObservationId: blocked.Observation.Id), default)).Image!.Gray8.SequenceEqual(blockedPixels.Data),
                 "repeated paused observations retain their exact diagnostic image rather than substitute live video");
@@ -71,8 +73,9 @@ static partial class Program
             var prior = vm.Right.Operation!; var round = vm.Right.CurrentRound!.Id; var sent = h.Peer.Requests.Count;
             Check(vm.Right.CanConfirmPlacementRemoval && vm.Right.CenteredStateInstruction == "请先取下包裹，再确认",
                 "the visual-degraded unresolved round exposes targeted manual removal");
+            var beforeChangedCandidates = h.Handled(h.Right);
             h.Api(h.Right).EnqueueNative(rejectedPixels, 3, [Symbol("SYNTH-NEXT-A", 20), Symbol("SYNTH-NEXT-B", 100)]);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Right].Timings.Snapshot().RecentFrames.Any(f => f.Number == 3)));
+            await h.WaitFrameAsync(h.Right, 3, beforeChangedCandidates);
             await vm.RefreshAsync();
             Check(vm.Right.CurrentRound?.Id == round && vm.Right.Operation?.Id == prior.Id && h.Peer.Requests.Count == sent && vm.Left.ShowConfirmedTask,
                 "changed candidates after submission cannot replace the current Unknown or create another call");
@@ -81,20 +84,40 @@ static partial class Program
                 "software pause preserves the current unresolved original and submit guard");
             resume.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Until(() => vm.Snapshot?.Paused == false);
             await h.TrayAsync(h.Right, TrayPresence.Absent); await vm.RefreshAsync();
-            Check(vm.Right.CurrentRound is null && !vm.Right.CanConfirmPlacementRemoval && !vm.Right.CanSubmitBarcode,
-                "trusted absence ends the local round while preserving the original remote fence");
+            await Until(() => vm.Right.CurrentRound is null && !vm.Right.CanSubmitBarcode);
+            Check(!vm.Right.CanConfirmPlacementRemoval,
+                "trusted absence ends the local round while the unresolved remote binding remains fenced");
             var rightControl = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, vm.Right));
             var client = (Grid)window.FindName("ClientArea");
             Check(Inside((TextBlock)rightControl.FindName("CenteredInstruction"), client) &&
                 Inside(Descendants(rightControl).OfType<Button>().Single(b => Equals(b.Content, "查看详情")), client),
                 "compact exception keeps its instructions and details reachable");
-            await Until(() => vm.Right.CurrentRound is null && !vm.Right.CanSubmitBarcode);
             Check(vm.Right.CenteredStateTitle == "请求待核对" && !vm.Right.CanViewCurrentPicture && vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == sent,
-                "targeted confirmation resets only that round without replay");
-            await SmRoundFixture.NextVehicleAsync(h.App, "right");
+                "removal resets local ownership without replay or erasing the independent remote fence");
+            await SmRoundFixture.ReconcileRemoteAsync(h.App, "right", "SYNTHETIC original task and binding are settled; peer confirms no delayed work and disabled membership applied");
+            var disabled = await h.App.SnapshotAsync();
+            await SmRoundFixture.EnableAsync(h.App, "right");
+            await h.App.CheckRcsHeartbeatAsync(default);
+            await Until(() => vm.Right.CanSubmitBarcode);
+            await SmRoundFixture.NextVehicleAsync(h.App, "right"); await h.TrayAsync(h.Right, TrayPresence.Present);
+            await h.WaitForCameraAdmissionAsync(h.Right);
             h.Peer.ReplySlot = "B-02";
-            h.Api(h.Right).EnqueueNative(rejectedPixels, 4, [Symbol("SYNTH-UNKNOWN", 150)]);
-            await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Slot == "B-02");
+            // A preview call already in flight at enablement owns its original policy.
+            // Continue the actual frame stream until one new capture is delivered.
+            try
+            {
+                var delivered = false;
+                for (uint frame = 4; frame < 10 && !delivered; frame++)
+                {
+                    var before = h.Handled(h.Right);
+                    h.Api(h.Right).EnqueueNative(rejectedPixels, frame, [Symbol("SYNTH-UNKNOWN", 150)]);
+                    await h.WaitFrameAsync(h.Right, frame, before);
+                    delivered = h.Factory.Sources[h.Right].Timings.Snapshot().RecentFrames.Single(read => read.Number == frame).Delivered;
+                }
+                Check(delivered, "a fresh post-enable capture reaches the current admission policy");
+                await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Slot == "B-02");
+            }
+            catch { File.WriteAllText(Path.Combine(evidence, "post-recovery-state.json"), Wire.Encode(new { Snapshot = await h.App.SnapshotAsync(), Timing = h.Factory.Sources[h.Right].Timings.Snapshot() })); throw; }
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity!.HistoricalUnknown == 1);
             Check(vm.Right.Operation?.Id != prior.Id && Wire.Encode((await h.App.OperationAsync(prior.Id))?.Wcs) == Wire.Encode(prior.Wcs) &&
                 h.Peer.Requests.Count == sent + 1 && vm.Left.ShowConfirmedTask,
@@ -127,7 +150,7 @@ static partial class Program
         await VerifyInterruptedPauseCard(root, evidence, lines);
         lines.Add("Native WPF with synthetic camera frames and loopback RCS; physical SDK camera, customer RCS and site acceptance not run.");
     }
-    static string SeedInterruptedCameraInputs(CameraRoundHarness h)
+    static string SeedInterruptedCameraInputs(CameraRoundHarness h, List<string>? seeded = null)
     {
         var folder = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster");
         var originalId = Wire.Id();
@@ -141,7 +164,8 @@ static partial class Program
                 var body = Wire.Encode(new { Observation = observation, Operator = (object?)null, ReceivedAt = observation.ObservedAt });
                 using var insert = db.CreateCommand();
                 insert.CommandText = "INSERT INTO parcel_ingress(id,position,received_at,state,body,body_hash,session,detail) VALUES($id,$position,$at,'Interrupted',$body,$hash,'synthetic-prior-run','Synthetic old camera receipt')";
-                insert.Parameters.AddWithValue("$id", position == "left" ? originalId : Wire.Id());
+                var inputId = position == "left" ? originalId : Wire.Id(); seeded?.Add(inputId);
+                insert.Parameters.AddWithValue("$id", inputId);
                 insert.Parameters.AddWithValue("$position", position); insert.Parameters.AddWithValue("$at", observation.ObservedAt.ToString("O"));
                 insert.Parameters.AddWithValue("$body", body); insert.Parameters.AddWithValue("$hash", Wire.Hash(body)); insert.ExecuteNonQuery();
             }
@@ -154,7 +178,7 @@ static partial class Program
     {
         await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "interrupted-pause"), nativeResults: true);
         await h.StartAsync(); await h.App.ExitManagementModeAsync(); await h.App.DisposeAsync();
-        var originalId = SeedInterruptedCameraInputs(h);
+        List<string> seeded = []; var originalId = SeedInterruptedCameraInputs(h, seeded);
         await h.StartAsync(authorizeManagement: false); await h.WaitForCameraAdmissionAsync();
         var window = new SupplyStationWindow(h.App, null, "standard"); window.Show();
         try
@@ -182,7 +206,7 @@ static partial class Program
                 var file = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster", "diagnostics", "runtime.jsonl");
                 using var reader = new StreamReader(new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete));
                 var log = reader.ReadToEnd();
-                return Task.FromResult(log.Contains("已自动跳过上次未完成的扫码") && log.Contains(originalId));
+                return Task.FromResult(log.Split('\n').Any(entry => entry.Contains("已自动跳过上次未完成的扫码") && seeded.Count == 2 && seeded.All(entry.Contains)));
             });
             lines.Add("PASS PAUSED-CARD automatic skip logs retain original input identity without claiming an old request was not sent");
             if (h.Peer.Requests.Count != 0) throw new InvalidOperationException("Startup replayed an old source");

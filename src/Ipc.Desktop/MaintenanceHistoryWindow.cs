@@ -23,8 +23,8 @@ sealed class MaintenanceHistoryWindow : StartupWorkflowWindow
         Note("按原操作核对安装、回滚、恢复、卸载和清理；查询不执行续办。原提交、当前部署关系及当前余项分别显示。机器记录读取需要 Windows 管理员授权。");
         Body.Children.Add(operations); Body.Children.Add(detail);
         operations.SelectionChanged += (_, _) => { selected = null; detail.Text = "点击“核对所选结果”读取原部署及实际余项；选择不会执行维护。"; UpdateActions(); };
-        previous = Action("上一页", async () => { offset = Math.Max(0, offset - 12); await ReadPage(); }, readOnly: true);
-        next = Action("下一页", async () => { offset += 12; await ReadPage(); }, readOnly: true);
+        previous = Action("上一页", () => ReadPageAt(Math.Max(0, offset - 12)), readOnly: true);
+        next = Action("下一页", () => ReadPageAt(offset + 12), readOnly: true);
         inspect = Action("核对所选结果", InspectSelected, readOnly: true);
         resume = Action("继续原清单清理", async () =>
         {
@@ -43,9 +43,11 @@ sealed class MaintenanceHistoryWindow : StartupWorkflowWindow
             AutomationProperties.SetAutomationId(button, "MaintenanceHistory." + id);
         Loaded += async (_, _) => await Run(ReadPage); UpdateActions();
     }
-    async Task ReadPage()
+    Task ReadPage() => ReadPageAt(offset);
+    async Task ReadPageAt(int requestedOffset)
     {
-        page = await Task.Run(() => ReadHistory(offset)); selected = null;
+        var result = await Task.Run(() => ReadHistory(requestedOffset));
+        offset = requestedOffset; page = result; selected = null;
         operations.ItemsSource = page.Items.Select(p => Kind(p.Kind) + " · 原记录：" + StatusText(p.RecordedStatus) + "\n操作：" + p.OperationId + "\n原部署：" + (p.Deployment?.SourceCommit ?? p.OriginalScope ?? "证据待核对") + "\n记录时间：" + (p.At?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "未记录")).ToArray();
         detail.Text = page.Items.Length == 0 ? "没有此页历史记录。" : "选择原操作，核对结果和原部署。";
     }

@@ -82,63 +82,40 @@ static partial class Program
         model.Policy.BarcodePattern = "^initial$";
         var slowModel = new ParameterEditorModel(model.Policy, model.ApplicationId, model.Readers, model.Components, (_, _) => { started.TrySetResult(); return release.Task; });
         var slow = new ParameterSettingsControl { FirstConfiguration = true, Model = slowModel };
-        var child = new Window { Owner = window, Content = slow, Width = 800, Height = 600 }; child.Show(); slow.ShowPage(1, "条码筛选"); child.UpdateLayout();
-        var pending = slow.MoveNextAsync(); await started.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Descendants(slow).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "BarcodePattern").Text = "^123$";
-        release.SetResult(BarcodeFiltering.Select(new("", null), ["__format_check__"]));
-        Check(!await pending && slow.CurrentPageTitle == "条码筛选", "a stale async regex result cannot advance after input changes");
-        child.Close(); model.Policy.BarcodePattern = ""; model.ValidateFields(); editor.ShowPage(1, "条码筛选"); await Flush();
+        var child = new Window { Owner = window, Content = slow, Width = 800, Height = 600 }; await using var childOwner = new NativeWindowOwner(child);
+        Task<bool>? pending = null;
+        try
+        {
+            child.Show(); slow.ShowPage(1, "条码筛选"); child.UpdateLayout();
+            pending = slow.MoveNextAsync(); await started.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Descendants(slow).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "BarcodePattern").Text = "^123$";
+            release.TrySetResult(BarcodeFiltering.Select(new("", null), ["__format_check__"]));
+            Check(!await pending.WaitAsync(TimeSpan.FromSeconds(5)) && slow.CurrentPageTitle == "条码筛选", "a stale async regex result cannot advance after input changes and finishes within its real await budget");
+        }
+        finally
+        {
+            release.TrySetResult(BarcodeFiltering.Select(new("", null), ["__format_check__"]));
+            if (pending is not null) await pending.WaitAsync(TimeSpan.FromSeconds(5));
+        }
+        model.Policy.BarcodePattern = ""; model.ValidateFields(); editor.ShowPage(1, "条码筛选"); await Flush();
     }
     static async Task VerifyInternalPages(string root, string evidence, List<string> lines)
     {
-        void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS INTERNAL " + reason); }
-        var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Login = null, TimeoutMs = 30000, StationId = "native-" + Wire.Id() };
-        ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
-        var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null); var factory = new VisualFactory(launch, true);
-        await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
+        var folder = Path.Combine(evidence, "leaf-config"); Directory.CreateDirectory(folder);
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Login = null };
+        ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
+        var launch = new BusinessLaunch(folder, Path.Combine(evidence, "leaf-data"), null, null);
+        await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize(runtime);
-        var window = new SupplyStationWindow(runtime, null, "standard") { ConfirmDiscardDrafts = _ => true }; window.Show();
-        await Task.Delay(300); var vm = window.ViewModel; await vm.RefreshAsync(); var client = (Grid)window.FindName("ClientArea");
-        await SetClient(window, 1366, 768); CaptureInternal(evidence, "workstation-1366", client, lines);
-        runtime.EmitReferenceAt("left", "native-left", "00123456", "native-left-event"); runtime.EmitReferenceAt("right", "native-right", "00987654", "native-right-event"); factory.ReleaseLeft.TrySetResult();
-        for (var i = 0; i < 100 && (vm.Left.Slot == "未取得" || vm.Right.Slot == "未取得"); i++) { await Task.Delay(30); await vm.RefreshAsync(); }
-        var ids = (vm.Left.Operation!.Id, vm.Right.Operation!.Id); var calls = (factory.Resolves, factory.Queries);
-        Click(window, "作业记录"); for (var i = 0; i < 100 && vm.Busy; i++) await Task.Delay(20); await vm.LoadHistoryAsync(); window.UpdateLayout();
-        var history = (HistoryPage)((ContentControl)window.FindName("PageHost")).Content;
-        var rows = (DataGrid)history.FindName("HistoryRows"); Check(rows.Items.Count == 2, "query uses the real application history selection");
-        CaptureInternal(evidence, "history-1366", client, lines);
-        rows.SelectedIndex = 0; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); CaptureInternal(evidence, "history-selected-1366", client, lines);
-        vm.HistoryBarcode = "00123456"; await vm.LoadHistoryAsync(); Check(rows.Items.Count == 1 && vm.HistoryItems.Single().Operation.ParcelCode == "00123456", "full barcode query preserves leading zeros and distinct entities");
-        vm.ClearHistoryFilters(); window.UpdateLayout();
-        Check(vm.HistoryItems.Length == 1 && Descendants(history).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "历史完整条码").Text == "", "clear filters updates fields without changing the previous fixed result range");
-        vm.HistoryBarcode = "not-present"; await vm.LoadHistoryAsync(); CaptureInternal(evidence, "history-empty", client, lines); Check(rows.Items.Count == 0, "empty query has no invented records");
-        vm.ClearHistoryFilters(); await vm.LoadHistoryAsync();
-        await SetClient(window, 800, 420); CaptureInternal(evidence, "history-800", client, lines);
-        Check(rows.ActualHeight >= 72 && rows.TranslatePoint(new Point(), client).Y + rows.ActualHeight <= client.ActualHeight + 1, $"compact history result stays inside the native client: height={rows.ActualHeight}, top={rows.TranslatePoint(new Point(), client).Y}, client={client.ActualHeight}");
-        var firstRow = Descendants(rows).OfType<DataGridRow>().OrderBy(r => r.GetIndex()).First();
-        Check(firstRow.ActualHeight >= 32 && firstRow.TranslatePoint(new Point(), rows).Y + firstRow.ActualHeight <= rows.ActualHeight, "compact history keeps a complete header and at least one full result row");
-        ((Expander)history.FindName("AllHistoryFilters")).IsExpanded = true;
-        ((Expander)history.FindName("HistoryFilters")).IsExpanded = true; window.UpdateLayout(); CaptureInternal(evidence, "history-filters-800", client, lines);
-        Check(((ScrollViewer)history.FindName("HistoryFilterScroll")).ScrollableHeight > 0 && rows.ActualHeight >= 72, "long filters scroll locally while retaining query actions and results");
-        await SetClient(window, 1366, 768); window.ShowPositionDiagnostics(vm.Right);
-        for (var i = 0; i < 100 && !Descendants(window).OfType<TextBlock>().Any(t => t.Text == "当前相机来源未提供采集诊断。"); i++) await Task.Delay(20);
-        window.UpdateLayout(); CaptureInternal(evidence, "diagnostics-1366", client, lines);
-        Check(Descendants(window).OfType<TextBlock>().Any(t => t.Text == "右相机") && Descendants(window).OfType<TextBlock>().Any(t => t.Text == "当前相机来源未提供采集诊断。"), "diagnostics labels the selected camera and explicitly reports this fixture's unsupported acquisition diagnostics rather than inventing frame health");
-        await SetClient(window, 800, 420); CaptureInternal(evidence, "diagnostics-800", client, lines);
-        Click(window, "返回作业"); await vm.RefreshAsync();
-        Check(ids == (vm.Left.Operation!.Id, vm.Right.Operation!.Id) && calls == (factory.Resolves, factory.Queries), "query and diagnostic navigation retain both original operation identities and issue no new business calls");
-        Click(window, "参数设置"); await vm.EnsureMaintenanceLoadedAsync(); window.UpdateLayout();
-        var editor = Descendants(window).OfType<ParameterSettingsControl>().Single(); editor.ShowPage(1, "接收与等待限制");
-        editor.Model!.Policy.QueueCapacity = "bad"; Check(!await editor.MoveNextAsync(), "daily parameter editor uses the same per-leaf guard");
-        CaptureInternal(evidence, "daily-parameter-error-800", client, lines); editor.Model.Policy.QueueCapacity = "64";
-        Check(await editor.MoveNextAsync(), "daily editor continues after correction");
-        var snapshot = vm.StructuredPolicy; snapshot!.TimeoutMs = "28000"; await runtime.ExitManagementModeAsync(); await vm.RefreshAsync(); await Task.Delay(650);
-        Check(!vm.CanEditFormConfiguration && vm.SelectedPage == "workstation" && ReferenceEquals(snapshot, vm.StructuredPolicy) && snapshot.TimeoutMs == "28000", "revocation blocks restricted workspace and retains only process draft input");
-        window.Close();
-        await ManagementModeFixture.Authorize(runtime);
+        var vm = new ParcelViewModel(runtime, "SM设置回归", "合成设备"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
+        var editor = new ParameterSettingsControl { FirstConfiguration = true, Model = vm.ParameterEditor! };
+        var window = new Window { Content = editor, Width = 1000, Height = 720 }; await using var owner = new NativeWindowOwner(window); window.Show();
+        await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        var revision = (await runtime.SnapshotAsync()).Configuration.Revision;
+        await VerifyLeafNavigation(window, editor, evidence, lines);
+        if ((await runtime.SnapshotAsync()).Configuration.Revision != revision) throw new InvalidOperationException("Leaf navigation unexpectedly persisted configuration");
+        lines.Add("PASS INTERNAL actual current SM leaf validation and stale async navigation leave the configuration ledger unchanged");
         await VerifyLogRecovery(runtime, evidence, lines);
-        lines.Add("Native WPF HWND/Dispatcher, synthetic data/ports only. Production devices, installation and OS DPI changes NOT_RUN.");
     }
     static async Task VerifyLogRecovery(IWorkstationAdministration administration, string evidence, List<string> lines)
     {

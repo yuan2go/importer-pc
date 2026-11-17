@@ -46,9 +46,10 @@ public partial class ParcelViewModel
             if (reader.Driver is "hikrobot-idmvs" or "hikrobot-mvs-reader" || extension?.PackageId == "hikrobot.idmvs-reader")
             {
                 status = ready ? "SDK 连接已确认" : status;
-                notice += (notice.Length == 0 ? "" : "\n") + ((reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode", "observe-only") == "observe-only"
+                var mode = (reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode", reader.Driver == "hikrobot-mvs-reader" ? "read-result" : "observe-only");
+                notice += (notice.Length == 0 ? "" : "\n") + (mode == "observe-only"
                     ? "仅观察，不创建供包作业。已连接不代表能读到条码。"
-                    : (reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode") == "read-result" ? snapshot.ApplicationId == "sportmaster"
+                    : mode == "read-result" ? snapshot.ApplicationId == "sportmaster"
                         ? "物理在位证据独立于条码识别；可信移出结束轮次，同轮最多一次请求。取得格口不代表物理包裹完成。"
                         : "逐次识别结果上报已选择，相同条码也会交给 RCS 去重。读码请求不代表物理包裹完成。"
                     : "已选择触发关联方式。已连接不代表包裹分割准确。");

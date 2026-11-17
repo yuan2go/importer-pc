@@ -43,10 +43,10 @@ public static partial class WindowsDeploymentSetup
         if (!ExtensionSchema.IsId(application)) throw new InvalidDataException("无效的应用身份。");
         var directory = Path.Combine(MachineRoot, "deployments");
         if (!Directory.Exists(directory)) return null; // Read-only on a new machine.
+        using var lease = new FileStream(Path.Combine(directory, application + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
         var files = Directory.EnumerateFiles(directory, application + ".setup-*.json").Take(1025).ToArray();
         if (files.Length > 1024) throw new InvalidDataException("安装历史超过核对预算，原件保留。");
         if (files.Length == 0) return null;
-        using var lease = new FileStream(Path.Combine(directory, application + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
         var current = Current(application);
         var history = ReadDeploymentHistory(application);
         var pending = new List<InstallationContinuation>();

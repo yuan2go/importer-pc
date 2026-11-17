@@ -8,7 +8,8 @@ public sealed partial class ParcelRuntime
     {
         var authority = Management.Require();
         if (!Guid.TryParseExact(command.CommandId, "N", out _) || !Guid.TryParseExact(command.RoundId, "N", out _)) throw new ArgumentException("调试清理命令身份无效。");
-        await gate.WaitAsync(owned).ConfigureAwait(false);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(owned, token);
+        await gate.WaitAsync(linked.Token).ConfigureAwait(false);
         try
         {
             authority.ThrowIfCancellationRequested(); Management.Require();
@@ -89,7 +90,9 @@ public sealed partial class ParcelRuntime
                 round.Operation = op.Id; Volatile.Write(ref readRound, round); retired?.Cancel.Dispose();
                 op = ((IParcelExecution)this).PrepareWcs(op);
                 Save(op, "OperatorDebugRequestPrepared", "冻结人工请求，未执行外呼。");
-                repository.CompleteCommand(receipt, new("RoundPrepared", "手工请求已准备；不自动发送。", repository.Revision + 1));
+                if (op.Wcs is null) round.Detail = "人工请求未能准备，未发送：" + op.Reason;
+                repository.CompleteCommand(receipt, new(op.Wcs is null ? "PreparationBlocked" : "RoundPrepared",
+                    op.Wcs is null ? round.Detail : "手工请求已准备；不自动发送。", repository.Revision + 1));
                 return RoundProjection();
             }
             catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "OperatorDebugPrepare"); throw; }

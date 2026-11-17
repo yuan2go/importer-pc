@@ -95,7 +95,12 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 };
                 if (CurrentRound(state.PositionId) is { } round)
                     EndSmRound(round, "OperatorDisabledPosition", positionControl: completed);
-                else repository.Commit(null, "PositionSupplyChanged", "", positionControl: completed);
+                else
+                {
+                    var cycle = ReleaseSmPlacementClaim(SmCycle(state.PositionId));
+                    repository.Commit(null, "PositionSupplyChanged", "", positionControl: completed, cycle: cycle);
+                    smCycles[state.PositionId] = cycle;
+                }
                 positionControls[state.PositionId] = completed;
                 RefreshSmHeartbeat();
                 WriteRuntimeLog("投递位启停", "本轮请求及结果保存结束，投递位已停用", completed);
@@ -148,7 +153,12 @@ public sealed partial class ParcelRuntime : IStationPositionControl
             // local use does not claim an empty tray or rearm automatic submission.
             if (state.Mode == StationPositionMode.Disabled && round is not null)
                 EndSmRound(round, "OperatorDisabledPosition", command: command, positionControl: state, commandResult: receipt);
-            else repository.Commit(null, "PositionSupplyChanged", "", command: command, commandResult: receipt, positionControl: state);
+            else
+            {
+                var cycle = state.Mode == StationPositionMode.Disabled ? ReleaseSmPlacementClaim(SmCycle(request.PositionId)) : null;
+                repository.Commit(null, "PositionSupplyChanged", "", command: command, commandResult: receipt, positionControl: state, cycle: cycle);
+                if (cycle is not null) smCycles[request.PositionId] = cycle;
+            }
             positionControls[request.PositionId] = state;
             membershipConfirmations.Remove(request.PositionId);
             arrivalConfirmations.Remove(request.PositionId);

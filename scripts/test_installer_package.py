@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 from importlib.util import spec_from_file_location, module_from_spec
 
@@ -13,6 +14,24 @@ spec.loader.exec_module(installer)
 
 
 class InstallerPackageTests(unittest.TestCase):
+    def test_delivery_copy_is_published_only_after_complete_verification(self):
+        source = self.path.parent / 'source.exe'; source.write_bytes(b'SYNTHETIC complete executable')
+        output = self.path.parent / 'delivered.exe'
+        def interrupted(incoming, outgoing):
+            outgoing.write(b'partial')
+            self.assertFalse(output.exists())
+            raise OSError('synthetic destination full')
+        with patch.object(installer.shutil, 'copyfileobj', side_effect=interrupted):
+            with self.assertRaisesRegex(OSError, 'destination full'):
+                installer.publish_installer(source, output)
+        self.assertFalse(output.exists())
+        self.assertEqual(list(self.path.parent.glob('.ipc-installer-*')), [])
+        self.assertEqual(installer.publish_installer(source, output), hashlib.sha256(source.read_bytes()).hexdigest())
+        self.assertEqual(output.read_bytes(), source.read_bytes())
+        with self.assertRaises(FileExistsError):
+            installer.publish_installer(source, output)
+        self.assertEqual(output.read_bytes(), source.read_bytes())
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.path = Path(self.temporary.name) / 'medium.zip'

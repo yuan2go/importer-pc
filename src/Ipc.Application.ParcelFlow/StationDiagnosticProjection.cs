@@ -98,7 +98,7 @@ internal sealed class StationDiagnosticProjection
     public static object EnvironmentSummary(string dataRoot)
     {
         long? free = null, total = null;
-        try { var disk = new DriveInfo(Path.GetPathRoot(Path.GetFullPath(dataRoot))!); free = disk.AvailableFreeSpace; total = disk.TotalSize; }
+        try { var disk = ParcelStorageVolume.Read(dataRoot); free = disk.Free; total = disk.Total; }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException) { }
         object[] networks = [];
         var networkStatus = "Collected";

@@ -278,7 +278,7 @@ public static partial class ParcelStartupServices
                 break;
             case "Stage": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).StageAsync(request.ExpectedHash!, request.Candidate!, request.Reason!); break;
             case "RepairInitial": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).RepairInitialAsync(request.ExpectedHash!, request.Candidate!, request.Reason!); break;
-            case "SaveDraft": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).SaveDraftAsync(request.ExpectedHash!, request.DraftHash, request.Editor!); break;
+            case "SaveDraft": return Wire.Encode(await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).SaveDraftAsync(request.ExpectedHash!, request.DraftHash, request.Editor!));
             case "PlanChange": return Wire.Encode(await Core(request.Launch!, installer: true).PlanChangeAsync(request.Reason!, request.Destination, execution ?? throw new InvalidOperationException("Missing plan execution")));
             case "PrepareChange": return Wire.Encode(await Core(request.Launch!, installer: true).ExecuteChangeAsync(request.ExpectedHash!, request.Reason!, request.Destination!, null, execution));
             case "Backup":
@@ -398,7 +398,9 @@ public static partial class ParcelStartupServices
             {
                 var modeRoot = Path.Combine(request.DataRoot, mode); DeploymentPaths.RequireOrdinaryAncestors(modeRoot);
                 if (!Directory.Exists(modeRoot)) continue;
-                foreach (var station in Directory.EnumerateDirectories(modeRoot).Take(257))
+                var stations = Directory.EnumerateDirectories(modeRoot).Take(258).ToArray();
+                if (stations.Length > 257) throw new InvalidDataException("所选数据根的站点目录超出核对预算，不能确认原身份；原目录保留，请由维护人员核对。");
+                foreach (var station in stations)
                 {
                     DeploymentPaths.RequireOrdinaryAncestors(station);
                     var directory = Path.Combine(station, request.ApplicationId); DeploymentPaths.RequireOrdinaryAncestors(directory);
@@ -614,9 +616,8 @@ public static partial class ParcelStartupServices
         public async Task<StartupSavedDraft> SaveDraftAsync(string expectedConfigurationHash, string? expectedDraftHash, StartupEditorState editor)
         {
             RequireManagementMode();
-            if (OperatingSystem.IsWindows()) await ElevateAsync(new("SaveDraft", launch, expectedConfigurationHash, Editor: editor, DraftHash: expectedDraftHash));
+            if (OperatingSystem.IsWindows()) return Wire.Decode<StartupSavedDraft>(await ElevateAsync(new("SaveDraft", launch, expectedConfigurationHash, Editor: editor, DraftHash: expectedDraftHash)) ?? throw new IOException("Draft receipt unavailable"));
             else return await core.SaveDraftAsync(expectedConfigurationHash, expectedDraftHash, editor);
-            return await core.ReadDraftAsync() ?? throw new IOException("Draft receipt unavailable");
         }
         public async Task<StartupMaintenanceDocument> RepairInitialAsync(string expectedHash, ParcelConfiguration candidate, string reason)
         {

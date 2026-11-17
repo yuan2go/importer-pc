@@ -84,7 +84,14 @@ public static partial class WindowsDeploymentSetup
             var intent = PrepareRestoreIntentCore(application, backup, backupIdentity, targetRoot, targetDirectory);
             return new(intent, lease, stopped);
         }
-        catch { lease?.Dispose(); stopped.Dispose(); throw; }
+        catch (Exception original)
+        {
+            try { stopped.Dispose(); }
+            catch (Exception cleanup) { throw new AggregateException("Restore preparation and stopped-owner release failed; registration ownership retained", original, cleanup); }
+            try { lease?.Dispose(); }
+            catch (Exception cleanup) { throw new AggregateException("Restore preparation and registration release failed", original, cleanup); }
+            throw;
+        }
     }
 
     public static IDisposable HoldRestoreInspection(string application)

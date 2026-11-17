@@ -75,11 +75,12 @@ public sealed partial class ParcelRuntime
             var input = latestInputs.GetValueOrDefault(p.Id);
             var current = p.CurrentOperation is { } currentId ? operations.GetValueOrDefault(currentId) ?? repository.ReadOperation(currentId) : null;
             var cameraReasons = new List<string>(p.BlockingReasons);
+            var automaticReadBlock = AutomaticCameraReadBlock(p.ReaderDeviceId);
             if (ParcelConnectionSetup.IsDeferred(Effective, p.ReaderDeviceId)) cameraReasons.Add("CameraNotConfigured");
             if (health?.IsValid(now) != true) cameraReasons.Add("CameraConfirmationUnavailable");
             if (!PositionMaintenanceClear(p.Id)) cameraReasons.Add("CameraResourceMaintenance");
             if (!AdmissionCapabilitiesReady(p.Id)) cameraReasons.Add("RequiredCapabilityUnavailable");
-            if (reader?.Source is IObservationInspectionSource && !AutomaticCameraReadsAllowed(p.ReaderDeviceId)) cameraReasons.Add("RcsRemoteConfirmationUnavailable");
+            if (reader?.Source is IObservationInspectionSource && automaticReadBlock is not null) cameraReasons.Add(automaticReadBlock);
             if (!ImageCapacityAvailable()) cameraReasons.Add("ImageCapacityUnavailable");
             return new
             {
@@ -122,7 +123,8 @@ public sealed partial class ParcelRuntime
                     Suspended = p.CameraConnectionSuspended,
                     DecodePolicy = p.SupplyControl?.Mode == StationPositionMode.Disabled ? "Disabled" : ManagementWorkspaceOpen ? "ManagementExplicitReadOnly" :
                         p.SupplyControl?.Mode == StationPositionMode.Disabling ? "CurrentRequestDrainPreviewOnly" :
-                        AutomaticCameraReadsAllowed(p.ReaderDeviceId) ? "Automatic" : "RcsUnavailablePreviewOnly"
+                        automaticReadBlock is null ? "Automatic" : automaticReadBlock == "RcsRemoteConfirmationUnavailable" ? "RcsUnavailablePreviewOnly" : "ArrivalBoundaryPreviewOnly",
+                    DecodeBlockReason = automaticReadBlock
                 },
                 VehicleNumber = p.Vehicle?.VehicleNo,
                 VehicleStatus = p.Vehicle?.Status,

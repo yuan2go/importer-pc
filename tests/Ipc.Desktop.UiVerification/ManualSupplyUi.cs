@@ -93,8 +93,8 @@ static partial class Program
                 await CameraRoundHarness.Until(async () =>
                 {
                     await Flush();
-                    return vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "等待下一车" &&
-                        vm.Right.ShowCenteredState && vm.Right.CenteredStateTitle == "等待下一车";
+                    return vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "等待取件" &&
+                        vm.Right.ShowCenteredState && vm.Right.CenteredStateTitle == "等待取件";
                 });
                 Check(leftEntry.Text == "" && entry.Text == "" && !vm.Left.HasCurrentInput && !vm.Left.ShowConfirmedTask && !vm.Left.CanSubmitBarcode &&
                     vm.Snapshot!.Positions!.All(p => p.PlacementClearedAt is null) &&
@@ -117,7 +117,10 @@ static partial class Program
                     await Until(() => vm.Left.Operation is null && !vm.Left.CanSubmitBarcode && !vm.Busy);
                     Check(!removal.IsVisible && !vm.Left.HasCurrentInput && leftEntry.Text == "" && vm.Right.CenteredStateTitle == "相机不可用，可人工扫码" && h.Peer.Requests.Count == 3,
                         "the removal action clears only the affected card and sends no request");
-                    await h.NextVehicleAsync("left"); await Until(() => vm.Left.CanSubmitBarcode);
+                    await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC original invalid-slot response task is now settled; no delayed binding remains and withdrawal applied");
+                    var disabled = await h.App.SnapshotAsync();
+                    await h.App.SetPositionEnabledAsync(new(Ipc.Platform.Wire.Id(), disabled.RuntimeId, "left", disabled.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+                    await h.App.CheckRcsHeartbeatAsync(default); await Until(() => vm.Left.CanSubmitBarcode);
                     h.Peer.ReplySlot = "SYNTH-NEXT";
                     leftEntry.Text = "000123458";
                     leftSubmit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -169,7 +172,7 @@ static partial class Program
             var load = Descendants(panel).OfType<Button>().Single(b => Equals(b.Content, "查询轮次"));
             async Task Query(string value)
             {
-                reason.SelectedValue = value; load.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                reason.SelectedValue = value; table.ItemsSource = null; load.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 await CameraRoundHarness.Until(async () => { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); return load.IsEnabled; });
                 if (table.ItemsSource is null) throw new InvalidOperationException("Native history query did not populate rows: " + window.ViewModel.Message);
             }
@@ -252,7 +255,7 @@ static partial class Program
                 journal = string.Join("\n", Directory.GetFiles(folder, "runtime.jsonl", SearchOption.AllDirectories).Select(File.ReadAllText));
                 return journal.Contains(invalid.CommandId);
             });
-            Check(journal.Contains("ArgumentException") && journal.Contains("PositionId") && journal.Contains("left"),
+            Check(journal.Split('\n').Where(line => !string.IsNullOrWhiteSpace(line)).Any(line => { using var entry = System.Text.Json.JsonDocument.Parse(line); var text = entry.RootElement.GetRawText(); return text.Contains(invalid.CommandId) && text.Contains("ArgumentException") && text.Contains("PositionId") && text.Contains("left"); }),
                 "Application retains command, position and original exception evidence in diagnostic log");
         }
         finally { window.Close(); }

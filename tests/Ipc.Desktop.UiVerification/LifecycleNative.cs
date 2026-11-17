@@ -80,16 +80,16 @@ static partial class Program
             await vm.RequestActivationAsync!();
             await CloseCompleted(() => stopCalls == 1 && window.IsEnabled);
             Check(window.IsVisible && stopCalls == 1 && reopen == 0 && vm.Message.Contains("仍持有资源"), "failed owner stop retains the original native window and prevents reopen; visible=" + window.IsVisible + "; reopen=" + reopen + "; message=" + vm.Message);
+            await OpenFieldSettingsForVerification(window);
             var originalRequests = (await app.SnapshotAsync()).Operations.ToDictionary(o => o.Id, o => Wire.Encode(o.Wcs));
             Check(originalRequests.Count == 3, "three specific original operations exist before activation");
-            await OpenFieldSettingsForVerification(window);
             await vm.RefreshAsync();
             await vm.RequestActivationAsync!();
             await CloseCompleted(() => !window.IsVisible && reopen == 1);
             Check(!window.IsVisible && stopCalls == 2 && reopen == 1 && replacement is not null, "successful resource release permits exactly one controlled replacement");
+            await ManagementModeFixture.Authorize(replacement!);
             var activated = await replacement!.SnapshotAsync();
             Check(activated.Configuration.Effective.TimeoutMs == b.TimeoutMs && activated.Configuration.Pending is null && activated.Operations.Select(o => o.Id).Order().SequenceEqual(originalRequests.Keys.Order()) && activated.Operations.All(o => o.FrozenConfiguration.TimeoutMs == c.TimeoutMs && Wire.Encode(o.Wcs) == originalRequests[o.Id]), "real restart reads back B and retains the complete original operation set and frozen requests on A");
-            await ManagementModeFixture.Authorize(replacement);
             // The current product uses the SM workstation; paused classic-shell businesses are outside this activation fixture.
             await replacement.DisposeAsync(); replacement = null;
         }

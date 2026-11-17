@@ -131,6 +131,7 @@ internal static partial class Program
         await h.StartAsync(ready); var initial = await h.App.SnapshotAsync();
         if (!(await h.App.ManagementModeStatusAsync()).Configured) await h.App.ConfigureManagementPasswordAsync(OperationsPassword);
         var endpoint = new OperationsServer(Installation(), (IParcelPresentationSource)h.App, initial, h.App, () => new Ipc.Application.ParcelFlow.ParcelStartupMaintenance(h.Launch, new Ipc.Application.Sportmaster.SportmasterFlow(), () => h.Factory));
+        Task<bool>? backupPreparation = null; TaskCompletionSource? backupRelease = null;
         try
         {
             await Reject(() => Task.Run(async () =>
@@ -148,6 +149,19 @@ internal static partial class Program
                     endpoint = command == "stale" ? new OperationsServer(Installation(), new SilentPresentation(),
                         snapshot with { PublishedTicks = Stopwatch.GetTimestamp() - Stopwatch.Frequency * 6 }) :
                         new OperationsServer(Installation(), (IParcelPresentationSource)h.App, snapshot, h.App, () => new Ipc.Application.ParcelFlow.ParcelStartupMaintenance(h.Launch, new Ipc.Application.Sportmaster.SportmasterFlow(), () => h.Factory));
+                }
+                if (command == "prepare-backup")
+                {
+                    if (backupPreparation is not null) throw new InvalidOperationException("Original backup fixture is still held");
+                    var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                    var release = backupRelease = new(TaskCreationOptions.RunContinuationsAsynchronously);
+                    backupPreparation = h.AfterMonitorDrain(async () => { entered.TrySetResult(); await release.Task; return true; });
+                    if (await Task.WhenAny(entered.Task, backupPreparation) != entered.Task) await backupPreparation;
+                    await entered.Task.WaitAsync(TimeSpan.FromSeconds(10));
+                }
+                if (command == "release-backup")
+                {
+                    backupRelease!.TrySetResult(); await backupPreparation!; backupRelease = null; backupPreparation = null;
                 }
                 if (command == "hold-debug") h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
                 if (command == "wait-debug-send") await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1));
@@ -189,7 +203,12 @@ internal static partial class Program
                 Console.WriteLine("DONE");
             }
         }
-        finally { await endpoint.DisposeAsync(); }
+        finally
+        {
+            backupRelease?.TrySetResult();
+            try { if (backupPreparation is not null) await backupPreparation; }
+            finally { await endpoint.DisposeAsync(); }
+        }
     }
     sealed class SilentPresentation : IParcelPresentationSource, IParcelPresentationSubscription
     {
@@ -310,8 +329,13 @@ internal static partial class Program
             await remote.CommandAsync(new(Wire.Id(), paused.Revision, "Pause", Value: "Synthetic operations backup integration"));
             var catalog = Path.Combine(root, "backup-catalog"); Directory.CreateDirectory(catalog);
             var backup = Path.Combine(catalog, "station.db");
-            var backupReceipt = await remote.BackupAsync(backup);
-            Check(backupReceipt.Status == "BackupCreated", "online backup is created only by the original production owner after explicit pause");
+            // Use the existing pre-reservation seam, preserving the real busy
+            // fence and sending exactly once after the original monitor drains.
+            await Command(owner, "prepare-backup");
+            BusinessReceipt backupReceipt;
+            try { backupReceipt = await remote.BackupAsync(backup); }
+            finally { await Command(owner, "release-backup"); }
+            Check(backupReceipt.Status == "BackupCreated", "online backup is created only by the original production owner after explicit pause: " + backupReceipt.Status + "; " + backupReceipt.Reason);
             var sets = (ICompleteBackupSetMaintenance)remote;
             var progress = new CollectedProgress();
             var selected = (await sets.ListBackupsAsync(catalog, progress, default)).Single();

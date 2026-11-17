@@ -192,10 +192,11 @@ static class InstalledLifecycleWindows
         }
         Check(Wire.FileHash(Path.Combine(supervisionRoot, "state.json")) == initialLedger, "original supervision bytes retained across disabled reinstall");
         var migrationTarget = Path.Combine(dataParent, appId + "-restored"); WindowsDeploymentSetup.PrepareRestoreDataRoot(migrationTarget);
-        using (var migration = WindowsDeploymentSetup.PrepareRecoveryMigration(repair, migrationTarget, Wire.FileHash(WindowsDeploymentSetup.Registration(appId))))
+        var migrationRegistrationHash = Wire.FileHash(WindowsDeploymentSetup.Registration(appId));
+        using (var migration = WindowsDeploymentSetup.PrepareRecoveryMigration(repair, migrationTarget, migrationRegistrationHash))
         {
             var refused = false; try { Install(Request(mediaA)); } catch (IOException) { refused = true; }
-            Check(refused && Wire.FileHash(WindowsDeploymentSetup.Registration(appId)) == recoveryRefusalHash &&
+            Check(refused && Wire.FileHash(WindowsDeploymentSetup.Registration(appId)) == migrationRegistrationHash &&
                 Wire.FileHash(Path.Combine(DesktopRecoverySupervisor.StateDirectory(repair with { DataRoot = migrationTarget }), "state.json")) == initialLedger,
                 "prepared migration holds actual protected deployment writer lease before any business source fence");
         }

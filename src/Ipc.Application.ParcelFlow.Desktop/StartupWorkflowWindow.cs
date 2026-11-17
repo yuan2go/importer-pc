@@ -154,4 +154,3 @@ public abstract partial class StartupWorkflowWindow : Window
     { var picker = new OpenFileDialog { Title = title, Filter = filter }; return picker.ShowDialog(owner) == true ? picker.FileName : null; }
     protected void CompleteDialog() { Busy = false; DialogResult = true; }
 }
-

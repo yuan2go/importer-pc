@@ -40,7 +40,7 @@ internal sealed class OperationsViewFixture : Window
         Workspace = new(application, () => Task.CompletedTask, () => true, () => Task.CompletedTask);
         Workspace.NavigationRequested += (_, target) => Navigate(target switch { "parameters" => "maintenance", "debug" => "diagnostics", _ => target });
         ViewModel = Field<SupplyStationViewModel>("model"); DataContext = ViewModel;
-        NameScope.SetNameScope(this, new NameScope()); RegisterName("ClientArea", client); 
+        NameScope.SetNameScope(this, new NameScope()); RegisterName("ClientArea", client);
         client.Children.Add(Workspace); Content = client;
         // Round-CAS tests mount a second view inside the first fixture's
         // explicit scope. That view owns neither its workspace nor its grant.

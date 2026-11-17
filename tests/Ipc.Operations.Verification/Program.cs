@@ -211,7 +211,7 @@ internal static partial class Program
     static async Task ControlInflight()
     {
         await using var control = new OperationsControlClient(Installation());
-        await control.ConnectAsync(default); var remote = Remote(control);
+        await control.ConnectAsync(default); IParcelApplication remote = Remote(control);
         await ((IWorkstationAdministration)remote).EnterManagementSessionAsync(OperationsPassword);
         await ((IManagementWorkspace)remote).SetManagementWorkspaceAsync(Wire.Id(), true, default);
         var snapshot = await remote.SnapshotAsync();

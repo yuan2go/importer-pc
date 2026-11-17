@@ -106,7 +106,11 @@ static class OperatorAdministration
         await app.CapabilitiesAsync();
         await app.ExitManagementModeAsync();
         await Reject<UnauthorizedAccessException>(() => app.CapabilitiesAsync(), "optional operator login disabled still protects parameter reads");
-        Check((await app.SnapshotAsync()).Configuration.Effective.Wcs!.Parameters.Count == 0, "operator snapshot cannot expose the editable provider configuration");
+        var onsite = (await app.SnapshotAsync()).Configuration.Effective;
+        var expectedOnsite = seed.Wcs!.Parameters.Where(p => SmParameterOwnership.FieldParameter(p.Key)).ToArray();
+        Check(onsite.Wcs!.Parameters.Count == expectedOnsite.Length && expectedOnsite.All(p => onsite.Wcs.Parameters.TryGetValue(p.Key, out var value) && value == p.Value) &&
+            ParcelBindings.Readers(onsite).All(r => r.Parameters is null || r.Parameters.Keys.All(SmParameterOwnership.FieldParameter)),
+            "operator settings expose exact onsite values only; professional provider parameters remain protected");
         await Reject<UnauthorizedAccessException>(() => app.ValidateConfigurationAsync(seed), "direct candidate validation rejects inactive management mode");
         Check((await app.StageConfigurationAsync(initial.Configuration.Revision, seed, "test")).Status == "Rejected", "direct save cannot reuse a revoked mode grant");
         await app.EnterManagementModeAsync(password);

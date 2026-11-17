@@ -110,7 +110,7 @@ internal static class SmRoundFixture
     }
 }
 
-internal sealed class ManualSupplyHarness : IAsyncDisposable
+internal sealed partial class ManualSupplyHarness : IAsyncDisposable
 {
     public readonly CameraRoundHarness.RoundPeer Peer = new();
     public readonly BusinessLaunch Launch;
@@ -151,7 +151,6 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         ExtensionStore.AtomicWrite(Path.Combine(config, "business.json"), Config);
         Launch = new(config, Path.Combine(folder, "data"), null, null);
     }
-    public Task<T> AfterMonitorDrain<T>(Func<Task<T>> action) => LifecycleOptimization.AfterMonitorDrain(App, action);
     public async Task StartAsync(bool ready = true, string? rcsImplementationFingerprint = null)
     {
         Factory = new(Launch) { CameraSource = CameraSource };

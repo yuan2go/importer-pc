@@ -171,3 +171,97 @@ if ($expectedVc90 -eq 'AlreadyAvailable') {
     if ($process.ExitCode -notin 0,3010 -or !$products.Count) { throw "Bundled VC++ 2008 silent installation did not register: $($process.ExitCode)" }
     Write-Output "PASS standalone: bundled VC++ 2008 registered after quiet installation, exit $($process.ExitCode)."
 }
+
+# Exercise installed apphosts and protected registrations in this disposable
+# image. No camera, RCS, primary business instance or business database is started.
+$operationsProbeSource = @'
+using System.Diagnostics;
+using Ipc.Platform;
+var location = WindowsDeploymentSetup.Current("sportmaster")!;
+var desktop = Path.Combine(location.ReleaseRoot, "desktop");
+foreach (var name in new[] { InstallationIdentity.DesktopExecutable, InstallationIdentity.OperationsExecutable })
+    if (!File.Exists(Path.Combine(desktop, name))) throw new Exception("Missing installed entry: " + name);
+var registration = WindowsDeploymentSetup.Registration("sportmaster");
+var before = Wire.FileHash(registration);
+var databases = Directory.GetFiles(location.DataRoot, "*.db", SearchOption.AllDirectories);
+async Task<Process> Open()
+{
+    var child = Process.Start(new ProcessStartInfo(Path.Combine(desktop, InstallationIdentity.OperationsExecutable))
+        { UseShellExecute = false, CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden })!;
+    try
+    {
+        var deadline = Stopwatch.StartNew();
+        while (deadline.Elapsed < TimeSpan.FromSeconds(20))
+        {
+            child.Refresh();
+            if (child.HasExited) throw new Exception("Installed operations exited before its window: " + child.ExitCode);
+            if (child.MainWindowHandle != IntPtr.Zero && child.MainWindowTitle == InstallationIdentity.OperationsDisplayName) return child;
+            await Task.Delay(50);
+        }
+        throw new TimeoutException("Installed operations window did not open");
+    }
+    catch { if (!child.HasExited) { child.Kill(true); await child.WaitForExitAsync(); } child.Dispose(); throw; }
+}
+async Task Released()
+{
+    var deadline = Stopwatch.StartNew();
+    while (true)
+    {
+        try { using var maintenance = DeploymentProgramUse.Maintain(location); return; }
+        catch (IOException error) when ((error.HResult & 0xffff) is 32 or 33 && deadline.Elapsed < TimeSpan.FromSeconds(5)) { await Task.Delay(25); }
+    }
+}
+using (var child = await Open())
+{
+    try
+    {
+        using (var business = ApplicationRootOwnership.AcquireRuntime("sportmaster", location.DataRoot)) { }
+        var blocked = false;
+        try { using var maintenance = DeploymentProgramUse.Maintain(location); }
+        catch (IOException error) when ((error.HResult & 0xffff) is 32 or 33) { blocked = true; }
+        if (!blocked) throw new Exception("Live installed observer did not protect program files");
+        if (!child.CloseMainWindow()) throw new Exception("Could not request normal operations close");
+        await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
+        if (child.ExitCode != 0) throw new Exception("Operations did not close normally");
+    }
+    finally { if (!child.HasExited) { child.Kill(true); await child.WaitForExitAsync(); } }
+}
+await Released();
+using (var child = await Open()) { child.Kill(true); await child.WaitForExitAsync(); }
+await Released();
+if (before != Wire.FileHash(registration) || !databases.SequenceEqual(Directory.GetFiles(location.DataRoot, "*.db", SearchOption.AllDirectories)))
+    throw new Exception("Operations changed registration or created a business database");
+Console.WriteLine("PASS INSTALLED-OPERATIONS " + InstallationIdentity.DisplayName + ": both EXEs installed; native offline tool; normal/crash file-use release; business owner remains free; no database startup");
+'@
+function Verify-InstalledOperations([string]$mediaRoot, [string]$name) {
+    $probe = Join-Path $evidence "installed-operations-$name"
+    New-Item -ItemType Directory -Path $probe | Out-Null
+    $platform = Join-Path $mediaRoot 'app/Ipc.Platform.dll'
+    "<Project Sdk=`"Microsoft.NET.Sdk`"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><ImplicitUsings>enable</ImplicitUsings></PropertyGroup><ItemGroup><Reference Include=`"Ipc.Platform`"><HintPath>$platform</HintPath></Reference></ItemGroup></Project>" | Set-Content -LiteralPath "$probe/Probe.csproj"
+    $operationsProbeSource | Set-Content -LiteralPath "$probe/Program.cs"
+    dotnet build "$probe/Probe.csproj" -c Release -v quiet > "$probe/build.log" 2>&1
+    if ($LASTEXITCODE) { Get-Content "$probe/build.log" -Tail 20; throw 'Installed operations probe build failed' }
+    dotnet "$probe/bin/Release/net10.0-windows/Probe.dll" > "$probe/result.log" 2>&1
+    if ($LASTEXITCODE) { Get-Content "$probe/result.log" -Tail 25; throw 'Actual installed operations verification failed' }
+    Get-Content "$probe/result.log"
+}
+Verify-InstalledOperations -mediaRoot "$verificationRoot/media" -name 'ordinary'
+$formalRegistrationHash = (Get-FileHash -LiteralPath $registration).Hash
+$testArea = 'D:/ProgramData/ImporterPcTest'
+New-Item -ItemType Directory -Path "$testArea/DeploymentLogs" -Force | Out-Null
+python scripts/package-application.py --application sportmaster --target win-x64 --output "$verificationRoot/test-media" --source-branch ci/runtime-install --test-instance --verification-without-vendor-runtime --vc-redist $inputRoot > "$evidence/build-test-media.log" 2>&1
+if ($LASTEXITCODE) { Get-Content "$evidence/build-test-media.log" -Tail 20; throw 'Test-identity two-program medium build failed' }
+python scripts/package-installer.py --media "$verificationRoot/test-media.zip" --output "$verificationRoot/test-installer" --test-instance > "$evidence/build-test-installer.log" 2>&1
+if ($LASTEXITCODE) { Get-Content "$evidence/build-test-installer.log" -Tail 20; throw 'Test-identity installer build failed' }
+$testInstaller = (Get-ChildItem -LiteralPath "$verificationRoot/test-installer" -File -Filter '*.exe' | Select-Object -First 1).FullName
+$testOperation = [Guid]::NewGuid().ToString('N')
+$testProcess = Start-Process -FilePath $testInstaller -ArgumentList @('/quiet', '/norestart', "/operationid=$testOperation", "/log=$testArea/DeploymentLogs/install.jsonl") -PassThru -Wait -WindowStyle Hidden
+if ($testProcess.ExitCode) { throw "Test installation failed: $($testProcess.ExitCode)" }
+Verify-InstalledOperations -mediaRoot "$verificationRoot/test-media" -name 'test'
+if ((Get-FileHash -LiteralPath $registration).Hash -ne $formalRegistrationHash) { throw 'Test installation changed the ordinary deployment registration' }
+$testProcess = Start-Process -FilePath $testInstaller -ArgumentList @('/quiet', '/uninstall', '/norestart', "/operationid=$([Guid]::NewGuid().ToString('N'))", "/log=$testArea/DeploymentLogs/uninstall.jsonl") -PassThru -Wait -WindowStyle Hidden
+if ($testProcess.ExitCode) { throw "Independent test uninstall failed: $($testProcess.ExitCode)" }
+if ((Get-FileHash -LiteralPath $registration).Hash -ne $formalRegistrationHash -or !(Test-Path -LiteralPath (Join-Path $deployment.ReleaseRoot 'desktop/Ipc.Operations.Desktop.exe'))) {
+    throw 'Independent test uninstall changed the ordinary installation'
+}
+Write-Output 'PASS TWO-INSTALLATIONS ordinary/test two-EXE identities coexist; each tool uses its own protected registration; test uninstall preserves ordinary deployment.'

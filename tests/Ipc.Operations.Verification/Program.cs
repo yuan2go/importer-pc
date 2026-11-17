@@ -291,6 +291,7 @@ internal static class Program
     }
     static void Ui(bool waitForCrash, bool expectOffline, bool cancelOnQuery)
     {
+        using var programUse = new OperationsToolLease(Installation());
         var app = new System.Windows.Application();
         app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Presentation.Wpf;component/Themes/Workstation.xaml", UriKind.Relative) });
         var window = new OperationsWindow(Installation());

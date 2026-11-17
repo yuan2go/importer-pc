@@ -191,8 +191,8 @@ def main() -> None:
     (output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
     (output / 'summary.md').write_text(markdown(summary), encoding='utf-8')
     total = summary['total']
-    print(f"PASS COVERAGE: 4 product modules; {total['covered']}/{total['valid']} unique source lines; "
-          f"{total['percent']:.2f}%; six required files executed; wrappers/Windows/SDK qualification excluded")
+    print(f"PASS COVERAGE: {len(MODULES)} product modules; {total['covered']}/{total['valid']} unique source lines; "
+          f"{total['percent']:.2f}%; {len(REQUIRED_FILES)} required files executed; wrappers/Windows/SDK qualification excluded")
 
 
 if __name__ == '__main__':

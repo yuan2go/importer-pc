@@ -9,6 +9,6 @@
    <TextBox x:Name="ReadOnlySettings" Style="{DynamicResource ReadonlyValue}" Margin="0,16,0,0"/>
    <TextBlock TextWrapping="Wrap" Text="开始修改时验证管理密码。保存继续核验完整配置、并发修订和实际设备责任；保存不等于已生效。" Foreground="{DynamicResource Muted}" Margin="0,20,0,0"/>
   </StackPanel></ScrollViewer><ContentControl x:Name="EditorHost" Visibility="Collapsed"/></Grid>
-  <Border Grid.Row="2" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="20,10"><DockPanel><Button Content="关闭设置" DockPanel.Dock="Right" Click="Close_Click"/><TextBlock x:Name="SettingsFeedback" Text="{Binding WorkFeedback}" Margin="0,0,16,0" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/></DockPanel></Border>
+  <Border Grid.Row="2" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="20,10"><DockPanel><StackPanel DockPanel.Dock="Right" Orientation="Horizontal"><Button x:Name="ReturnToWorkstation" Content="返回作业" Click="Return_Click" Margin="0,0,8,0"/><Button Content="关闭设置" Click="Close_Click"/></StackPanel><TextBlock x:Name="SettingsFeedback" Text="{Binding WorkFeedback}" Margin="0,0,16,0" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/></DockPanel></Border>
  </Grid>
 </Window>

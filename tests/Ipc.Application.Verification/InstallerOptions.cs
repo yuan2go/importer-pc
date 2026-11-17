@@ -35,7 +35,7 @@ static class InstallerOptions
                 Check(Wire.Decode<WindowsDeploymentRequest>(serialized).Shortcuts == selected && Wire.Hash(serialized) != Wire.Hash(Wire.Encode(request)), $"request binds explicit menu={menu} desktop={icon} in reviewed identity");
                 var registered = Wire.Decode<DeploymentLocation>(Wire.Encode(location with { Shortcuts = selected }));
                 var plan = DeploymentShortcuts.Plan(registered, programs, desktop);
-                Check(plan.Length == (menu ? 3 : 0) + (icon ? 1 : 0) && plan.All(p => p.Target == Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe") && p.WorkingDirectory == location.ReleaseRoot), $"registered menu={menu} desktop={icon} targets installed release");
+                Check(plan.Length == (menu ? 2 : 0) + (icon ? 1 : 0) && plan.All(p => p.Arguments == "" && new[] { InstallationIdentity.DesktopExecutable, InstallationIdentity.OperationsExecutable }.Contains(Path.GetFileName(p.Target)) && p.WorkingDirectory == location.ReleaseRoot), $"registered menu={menu} desktop={icon} targets installed release");
             }
         if (!OperatingSystem.IsWindows()) { Console.WriteLine("NOT_RUN Windows COM shortcuts"); return; }
         DeploymentShortcuts.Create(location with { Shortcuts = new(false, false) }, programs, desktop);
@@ -45,7 +45,8 @@ static class InstallerOptions
         void ReleaseDirectory(DeploymentLocation deployment)
         {
             var directory = Path.Combine(deployment.ReleaseRoot, "desktop"); Directory.CreateDirectory(directory);
-            File.WriteAllText(Path.Combine(directory, "Ipc.Desktop.exe"), "synthetic shortcut target; never executed");
+            File.WriteAllText(Path.Combine(directory, InstallationIdentity.DesktopExecutable), "synthetic shortcut target; never executed");
+            File.WriteAllText(Path.Combine(directory, InstallationIdentity.OperationsExecutable), "synthetic observer target; never executed");
         }
         ReleaseDirectory(chosen);
         Check(Path.GetFileName(DeploymentShortcuts.Plan(chosen, programs, desktop).Last().Path) == "菜鸟供包台.lnk", "desktop name is exactly the product name without module, commit or deployment suffix");

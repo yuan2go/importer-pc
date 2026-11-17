@@ -1,6 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using System.Windows.Input;
+using System.Text.Json;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster.Desktop;
@@ -35,7 +37,7 @@ static partial class Program
             Press((Button)settings.FindName("EditSettings"));
             await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible));
             var login = System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Single();
-            await Until(() => Descendants(login).OfType<PasswordBox>().Any(p => p.Name == "ManagementPassword" && p.IsVisible));
+            await Until(() => Descendants(login).OfType<PasswordBox>().Any(p => p.Name == "ManagementPassword" && p.IsVisible && p.IsEnabled));
             return login;
         }
         async Task Authenticate(StationSettingsWindow settings)
@@ -43,7 +45,8 @@ static partial class Program
             var login = await BeginEdit(settings);
             Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
             Press(Descendants(login).OfType<Button>().Single(b => b.Name == "EnterManagementMode"));
-            await Until(() => !login.IsVisible && ((ContentControl)settings.FindName("EditorHost")).IsVisible && vm.HasLoadedConfiguration && !vm.Busy);
+            try { await Until(() => !login.IsVisible && ((ContentControl)settings.FindName("EditorHost")).IsVisible && vm.HasLoadedConfiguration && !vm.Busy); }
+            catch (TimeoutException error) { throw new InvalidOperationException($"Settings login visible={login.IsVisible}; entered={login.Entered}; authorized={vm.IsManagementMode}; fresh={vm.Fresh}; loaded={vm.HasLoadedConfiguration}; busy={vm.Busy}; feedback={vm.Message}", error); }
         }
         var first = await Open();
         CaptureInternal(evidence, "settings-independent-readonly", first, lines);
@@ -69,10 +72,33 @@ static partial class Program
         var second = await Open(); await Authenticate(second);
         Check(ReferenceEquals(editor, ((ContentControl)second.FindName("EditorHost")).Content) && vm.StructuredPolicy.StationCode == "SYNTH-UNSAVED-SETTINGS",
             "reopening reuses original controls and draft after a new password verification");
-        var submitted = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-SETTINGS-PARCEL"), default);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Id == submitted.OperationId && o.Wcs?.State == StageState.Accepted));
-        var original = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == submitted.OperationId).Wcs!.Request;
-        Check(submitted.Status == "Admitted" && h.Peer.Requests.Count == 1, "the original Application can submit exactly once while settings are being edited");
+        var back = (Button)second.FindName("ReturnToWorkstation");
+        await BarcodeNativeKeyboard.ClickAsync(second, back, new Point(12, 12));
+        await Until(() => window.IsActive);
+        Check(window.IsEnabled && second.IsVisible && vm.StructuredPolicy.StationCode == "SYNTH-UNSAVED-SETTINGS",
+            "returning to the enabled workstation keeps the modeless editor and its unsaved draft");
+        var right = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Right));
+        var barcode = (TextBox)right.FindName("BarcodeEntry");
+        var textEvents = 0; var enterEvents = 0;
+        barcode.PreviewTextInput += (_, _) => textEvents++;
+        barcode.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler((_, e) => { if (e.Key == Key.Enter) enterEvents++; }), true);
+        barcode.Focus(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        const string pdaCode = "000123456789";
+        await BarcodeNativeKeyboard.SendAsync(window, barcode, pdaCode.Select(c => (ushort)c).Append((ushort)0x0d).ToArray());
+        await Until(() => vm.Right.SlotAvailable && !vm.Busy);
+        var submitted = vm.Right.Operation!;
+        var original = submitted.Wcs!.Request;
+        Check(h.Peer.Requests.Count == 1 && textEvents == pdaCode.Length && enterEvents == 1 &&
+            JsonDocument.Parse(h.Peer.Requests.Single()).RootElement.GetProperty("source").GetString() == "PDA",
+            "native SendInput reaches the workstation HWND, text/Enter handlers and exactly one PDA request while settings stay open");
+        var left = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Left));
+        var manual = (TextBox)left.FindName("BarcodeEntry");
+        manual.Focus(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        foreach (var digit in "000987") { await BarcodeNativeKeyboard.SendAsync(window, manual, [(ushort)digit]); await Task.Delay(300); }
+        await BarcodeNativeKeyboard.SendAsync(window, manual, [0x0d]);
+        await Until(() => vm.Left.SlotAvailable && !vm.Busy);
+        Check(h.Peer.Requests.Count == 2 && h.Peer.Requests.Any(body => JsonDocument.Parse(body).RootElement.GetProperty("source").GetString() == "MANUAL"),
+            "native slow keyboard input uses the original MANUAL route without closing or pausing the settings draft");
         await vm.RefreshAsync();
         Check(await vm.PrepareConfigurationReviewAsync(), "the complete existing candidate validates without a prior management pause");
         var review = new ConfigurationSaveReviewWindow(second, vm);
@@ -83,7 +109,7 @@ static partial class Program
         Check(vm.Snapshot!.Configuration.Pending?.StationCode == "SYNTH-UNSAVED-SETTINGS" && !vm.Snapshot.Paused,
             "saving uses original Pending/CAS behavior and leaves actual production pause unchanged: " + vm.ConfigurationSubmissionOutcome + " / " + vm.Message);
         review.Close();
-        Check(Wire.Encode((await h.App.OperationAsync(submitted.OperationId!))!.Wcs!.Request) == Wire.Encode(original) && h.Peer.Requests.Count == 1,
+        Check(Wire.Encode((await h.App.OperationAsync(submitted.Id))!.Wcs!.Request) == Wire.Encode(original) && h.Peer.Requests.Count == 2,
             "configuration editing cannot rewrite or resend an original request");
         await vm.RequestActivationAsync!();
         await vm.RequestRetentionAsync!();

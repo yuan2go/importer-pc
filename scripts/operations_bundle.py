@@ -4,8 +4,8 @@ from pathlib import Path
 import shutil
 
 
-def merge_operations(observer: Path, desktop: Path):
-    if not (observer / 'Ipc.Operations.Desktop.exe').is_file():
+def merge_operations(observer: Path, desktop: Path, executable='Ipc.Operations.Desktop.exe'):
+    if not (observer / executable).is_file():
         raise ValueError('Operations apphost is missing')
     libraries = json.loads((observer / 'Ipc.Operations.Desktop.deps.json').read_bytes())['libraries']
     forbidden = ('Ipc.Assembly/', 'Ipc.Application.ParcelFlow/', 'Ipc.Application.Sportmaster/',

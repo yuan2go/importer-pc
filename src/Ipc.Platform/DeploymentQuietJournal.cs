@@ -168,7 +168,7 @@ public static partial class WindowsDeploymentSetup
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority(); intent.Validate();
         if (intent.ApplicationId != "sportmaster") throw new NotSupportedException("当前静默幂等账仅用于SM。");
-        ApplicationRootOwnership.RequireWindowsStorage(intent.RequestedDataRoot ?? Current(intent.ApplicationId)?.DataRoot ?? @"D:\ProgramData\ImporterPc\data", @"D:\CainiaoSupplyStation");
+        ApplicationRootOwnership.RequireWindowsStorage(intent.RequestedDataRoot ?? Current(intent.ApplicationId)?.DataRoot ?? InstallationIdentity.DefaultDataRoot, InstallationIdentity.DefaultProgramRoot);
         var sid = new SecurityIdentifier(MachineRuntimePolicy.SharedUsersSid);
         var directory = Path.Combine(MachineRoot, "deployments");
         // A new quiet install must establish machine policy before creating its journal.
@@ -223,8 +223,8 @@ public static partial class WindowsDeploymentSetup
                         throw new InstallationOutcomeUnknownException("原程序事务身份已经存在，须核对该次，不能添加另一份静默命令。");
                     var current = Current(intent.ApplicationId);
                     RequireQuietLogOutsideManagedRoots(intent.LogFile, [MachineRoot, WindowsStoragePaths.AdministratorRoot,
-                        current?.DataRoot ?? intent.RequestedDataRoot ?? @"D:\ProgramData\ImporterPc\data",
-                        current is null ? @"D:\CainiaoSupplyStation" : Path.GetDirectoryName(Path.GetDirectoryName(current.ReleaseRoot))!]);
+                        current?.DataRoot ?? intent.RequestedDataRoot ?? InstallationIdentity.DefaultDataRoot,
+                        current is null ? InstallationIdentity.DefaultProgramRoot : Path.GetDirectoryName(Path.GetDirectoryName(current.ReleaseRoot))!]);
                     record = new(1, intent, "Reserved", ExpectedRegistrationHash: current is null ? null : Wire.FileHash(Registration(intent.ApplicationId)));
                     WriteProtected(file, record, sid, overwrite: false);
                 }
@@ -301,6 +301,7 @@ public static partial class WindowsDeploymentSetup
 
     internal static void RequireQuietLogOutsideManagedRoots(string log, IEnumerable<string> roots)
     {
+        InstallationIdentity.RequireExternalFilePath(log);
         DeploymentPaths.RequireOrdinaryAncestors(log);
         if (roots.Any(root => TrustedProgramRoots.Contains(root, log)))
             throw new ArgumentException("部署日志须位于程序、配置、数据和机器政策根之外；不把日志写入受管库存。");

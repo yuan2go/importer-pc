@@ -10,6 +10,7 @@ internal static class CameraOriginalExport
     internal static CameraInspectionExport Write(CameraOriginalImage image, string destination, long reserve, CancellationToken token)
     {
         var full = Path.GetFullPath(destination);
+        InstallationIdentity.RequireExternalFilePath(full);
         if (!full.StartsWith("D:\\", StringComparison.OrdinalIgnoreCase) || !full.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("原图导出必须为D盘PNG文件。");
         RecoveryFiles.RequireOrdinaryAncestors(full);
         RecoveryFiles.RequireOrdinaryAncestors(full + ".json");

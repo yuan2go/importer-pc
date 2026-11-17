@@ -24,6 +24,13 @@ class OperationsBundleTests(unittest.TestCase):
         self.assertEqual((self.desktop / 'Ipc.Platform.dll').read_bytes(), b'shared-platform')
         self.assertEqual((self.desktop / 'Ipc.Operations.Desktop.exe').read_bytes(), b'synthetic-apphost')
 
+    def test_test_installation_keeps_its_own_apphost(self):
+        name = 'Ipc.Operations.Desktop.Test.exe'
+        (self.observer / 'Ipc.Operations.Desktop.exe').rename(self.observer / name)
+        merge_operations(self.observer, self.desktop, name)
+        self.assertTrue((self.desktop / name).is_file())
+        self.assertFalse((self.desktop / 'Ipc.Operations.Desktop.exe').exists())
+
     def test_conflicting_shared_build_is_rejected_before_copy(self):
         (self.desktop / 'Ipc.Platform.dll').write_bytes(b'other-build')
         with self.assertRaisesRegex(ValueError, 'shared bytes differ'):

@@ -52,6 +52,11 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
     (ParcelConfiguration Seed, ConfigurationRevision<ParcelConfiguration>? Envelope, string Directory, string File, string Hash) ReadState(bool authorize = true)
     {
         if (authorize) Authorize();
+        if (definition.Id == "sportmaster")
+        {
+            InstallationIdentity.RequireDataRoot(launch.DataRoot);
+            InstallationIdentity.RequireIndependentPath(launch.ConfigurationDirectory);
+        }
         var seedMissing = !File.Exists(Seed);
         var seedBytes = seedMissing ? null : ReadBytes(Seed);
         var seed = seedBytes is null ? definition.InitialConfiguration() : Wire.Decode<ParcelConfiguration>(Text(seedBytes));

@@ -12,6 +12,8 @@
 - [当前代码与验证边界](runtime/current-contract-cleanup-01.md)、[当前格式与版本](runtime/version-compatibility-01.md)
 - [SM参数、默认与保存](runtime/parameter-inheritance-02.md)、[首次配置与日常设置](runtime/parameter-guidance-startup-01.md)
 - [管理模式](runtime/management-mode-01.md)、[独立只读运维工具、IPC 与工作站设置](design/sm-readonly-operations.md)
+- [管理模式](runtime/management-mode-01.md)
+- [SM 正式与测试安装实例隔离](design/sm-test-instance-isolation.md)
 - [安装、卸载与生命周期](runtime/lifecycle-ux-current-guidance-01.md)
 - [MVS 软件识别](runtime/mvs-software-reader-01.md)
 - [海康原生识码与安装依赖](design/mvid-native-reader.md)

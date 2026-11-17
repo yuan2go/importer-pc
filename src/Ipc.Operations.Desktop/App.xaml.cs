@@ -13,7 +13,7 @@ public partial class App : System.Windows.Application
             if (e.Args.Length != 0) throw new InvalidOperationException("请从当前安装入口打开，运维工具不接受目录或业务命令参数。");
             var installation = await Task.Run(() => OperationsInstallation.Load(AppContext.BaseDirectory));
             lease = new(installation);
-            MainWindow = new OperationsWindow(installation); ShutdownMode = ShutdownMode.OnMainWindowClose; MainWindow.Show();
+            MainWindow = new OperationsWindow(installation); ShutdownMode = ShutdownMode.OnMainWindowClose; MainWindow.Title = Ipc.Platform.InstallationIdentity.OperationsDisplayName; MainWindow.Show();
         }
         catch (Exception error)
         {

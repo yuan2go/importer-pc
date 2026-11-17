@@ -291,6 +291,7 @@ public sealed partial class ParcelStartupMaintenance
     void RequireBackupSetBoundary(string path)
     {
         Authorize(); path = Path.GetFullPath(path); RecoveryFiles.RequireOrdinaryAncestors(path);
+        InstallationIdentity.RequireExternalFilePath(path);
         var forbidden = new List<string> { launch.ConfigurationDirectory, AppContext.BaseDirectory, WindowsDeploymentSetup.MachineRoot };
         var dataRoots = new List<(string Root, string Application)> { (launch.DataRoot, definition.Id) };
         if (OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")))

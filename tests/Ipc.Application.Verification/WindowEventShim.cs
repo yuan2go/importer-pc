@@ -55,7 +55,7 @@ namespace System.Windows
 }
 namespace System.Windows.Controls
 {
-    public class TextBlock { public string Text { get; set; } = ""; public object? ToolTip { get; set; } }
+    public class TextBlock { public string Text { get; set; } = ""; public object? ToolTip { get; set; } public System.Windows.Visibility Visibility { get; set; } }
     public class ColumnDefinition;
     public class Grid
     {
@@ -138,6 +138,7 @@ namespace Ipc.Application.Sportmaster.Desktop
         StationStatisticsControl? statistics;
         System.Windows.FrameworkElement? exceptions;
         readonly System.Windows.Controls.TextBlock StationClock = new();
+        readonly System.Windows.Controls.TextBlock TestInstallationLabel = new();
         bool offlineMaintenanceRequested;
         public Func<Task>? OpenMaintenanceOwnerAsync { get; set; }
         System.Windows.FrameworkElement CreateExceptions() => new();

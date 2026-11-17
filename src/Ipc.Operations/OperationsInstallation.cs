@@ -14,11 +14,12 @@ public sealed class OperationsInstallation
     internal string WorkstationExecutable { get; }
     internal string ToolExecutable { get; }
     readonly Action verifyCurrent;
+    internal Func<IDisposable> AcquireProgramUse { get; }
 
-    internal OperationsInstallation(DeploymentLocation location, string workstation, string tool, Action verifyCurrent)
+    internal OperationsInstallation(DeploymentLocation location, string workstation, string tool, Action verifyCurrent, Func<IDisposable> acquireProgramUse)
     {
         Location = location; WorkstationExecutable = Path.GetFullPath(workstation); ToolExecutable = Path.GetFullPath(tool);
-        Identity = Wire.Hash(Wire.Encode(location)); this.verifyCurrent = verifyCurrent;
+        Identity = Wire.Hash(Wire.Encode(location)); this.verifyCurrent = verifyCurrent; AcquireProgramUse = acquireProgramUse;
     }
 
     public static OperationsInstallation Load(string directory)
@@ -28,13 +29,13 @@ public sealed class OperationsInstallation
         var desktop = Path.Combine(current.ReleaseRoot, "desktop");
         if (!Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar).Equals(desktop, StringComparison.OrdinalIgnoreCase))
             throw new UnauthorizedAccessException("运维入口不属于当前安装。");
-        var installation = new OperationsInstallation(current, Path.Combine(desktop, "Ipc.Desktop.exe"),
-            Path.Combine(desktop, "Ipc.Operations.Desktop.exe"), () =>
+        var installation = new OperationsInstallation(current, Path.Combine(desktop, InstallationIdentity.DesktopExecutable),
+            Path.Combine(desktop, InstallationIdentity.OperationsExecutable), () =>
             {
                 var registered = WindowsDeploymentSetup.Current("sportmaster");
                 if (registered is null || registered.LifecycleState != "Installed" || Wire.Encode(registered) != Wire.Encode(current))
                     throw new UnauthorizedAccessException("安装登记已变化，请关闭并从当前安装重新打开。");
-            });
+            }, () => DeploymentProgramUse.Observe(current.ReleaseRoot));
         installation.RequireRead();
         // Pin the release manifest to the protected inventory, then verify the managed
         // code/apphosts the two hosts can load. Vendor SDKs are never loaded by this tool.
@@ -48,7 +49,7 @@ public sealed class OperationsInstallation
             document.RootElement.GetProperty("ReleaseRoot").GetString() != current.ReleaseRoot)
             throw new InvalidDataException("安装库存归属不符。");
         var files = document.RootElement.GetProperty("Files");
-        foreach (var name in new[] { "Ipc.Desktop.exe", "Ipc.Operations.Desktop.exe", "application-release.json" }
+        foreach (var name in new[] { InstallationIdentity.DesktopExecutable, InstallationIdentity.OperationsExecutable, "application-release.json" }
             .Concat(Directory.EnumerateFiles(desktop, "*.dll").Select(Path.GetFileName)!)
             .Concat(Directory.EnumerateFiles(desktop, "*.json").Select(Path.GetFileName)!))
         {

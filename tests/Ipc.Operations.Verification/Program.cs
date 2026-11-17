@@ -51,7 +51,7 @@ internal static class Program
         return new(location, peer ?? executable, peer ?? executable, () =>
         {
             if (File.Exists(Path.Combine(root, "registration-changed"))) throw new UnauthorizedAccessException("Synthetic replacement registration");
-        });
+        }, () => DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [root], true));
     }
     static Process Child(string role, bool otherExecutable = false)
     {
@@ -177,7 +177,16 @@ internal static class Program
         await Reject(() => Task.Run(() => OperationsInstallation.Load(AppContext.BaseDirectory)), "source/unregistered tool cannot claim installed authority");
         using var leaseChild = Child("lease"); await Ready(leaseChild);
         await Reject(() => Task.Run(() => { using var lease = new OperationsToolLease(Installation()); }), "second tool process cannot acquire the UI singleton");
+        await Reject(() => Task.Run(() => { using var maintenance = DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [root], false); }),
+            "an offline observer protects its program files without owning a business database");
+        using (var otherRelease = DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [Path.Combine(root, "other-release")], false))
+            Check(true, "an observer does not block maintenance of unrelated program roots");
         leaseChild.Kill(); await leaseChild.WaitForExitAsync();
+        using (var maintenance = DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [root], false))
+        {
+            await Reject(() => Task.Run(() => { using var observer = new OperationsToolLease(Installation()); }), "maintenance blocks a new observer until its program-file operation ends");
+            Check(true, "abnormal observer exit releases the actual program-file guard");
+        }
         using (var recovered = new OperationsToolLease(Installation())) Check(true, "Windows releases singleton after abnormal tool exit");
         using var server = Child("server");
         try
@@ -193,7 +202,7 @@ internal static class Program
             }
             await Reject(() => new OperationsClient(Installation(Path.Combine(root, "wrong.exe"))).ReadAsync(default), "client rejects unregistered server apphost");
             await Reject(() => Raw(request, TokenImpersonationLevel.Anonymous), "actual anonymous client identity cannot obtain runtime state");
-            var denied = new OperationsInstallation(Location() with { RuntimeAccountSid = "S-1-5-21-1-2-3-99999" }, executable, executable, () => { });
+            var denied = new OperationsInstallation(Location() with { RuntimeAccountSid = "S-1-5-21-1-2-3-99999" }, executable, executable, () => { }, () => DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [root], true));
             await Reject(() => Task.Run(() => denied.RequireRead()), "unassigned Windows account has no online or offline read authority");
             using (var unapproved = Child("unapproved", otherExecutable: true))
             {

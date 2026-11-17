@@ -180,7 +180,7 @@ static class ShortcutLifecycle
             Directory.CreateDirectory(Path.GetDirectoryName(plan[2].Path)!);
             File.WriteAllText(plan[2].Path, "user file preserved"); var hash = Wire.FileHash(plan[2].Path);
             Reject(() => DeploymentShortcuts.Create(location, menu, desktop), "projection failure is reported after earlier entries were created");
-            Check(File.Exists(plan[0].Path) && File.Exists(plan[1].Path) && !File.Exists(plan[3].Path) && Wire.FileHash(plan[2].Path) == hash,
+            Check(plan.Length == 3 && File.Exists(plan[0].Path) && File.Exists(plan[1].Path) && Wire.FileHash(plan[2].Path) == hash,
                 "partial projection retains completed entries and original conflicting bytes");
             var retained = plan[2].Path + ".preserved";
             File.Move(plan[2].Path, retained); // Explicit fixture-owner conflict resolution, never product auto-adoption.

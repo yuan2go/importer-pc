@@ -95,4 +95,5 @@ public partial class StationSettingsWindow : Window
         finally { closing = false; IsEnabled = true; }
     }
     void Close_Click(object sender, RoutedEventArgs e) => Close();
+    void Return_Click(object sender, RoutedEventArgs e) => (Owner as SupplyStationWindow)?.ReturnToWorkstation();
 }

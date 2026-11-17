@@ -11,14 +11,20 @@ public static class DeploymentShortcuts
     {
         var options = location.Shortcuts ?? throw new InvalidDataException("部署缺少明确的快捷方式选项；保留原登记并使用当前安装计划。");
         var business = location.ApplicationId switch { "sportmaster" => "SM供包业务", "direct-plc" => "设备直连业务", "wcs-to-plc" => "调度转发业务", _ => location.ApplicationId };
-        var id = "菜鸟供包台 · " + business + " · " + location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
-        var target = System.IO.Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe");
+        var id = InstallationIdentity.DisplayName + " · " + business + " · " + location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
+        var target = System.IO.Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable);
         var result = new List<DeploymentShortcut>();
-        if (options.StartMenu)
+        if (options.StartMenu && location.ApplicationId == "sportmaster")
+        {
+            result.Add(new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, InstallationIdentity.DisplayName + ".lnk"), target, "", location.ReleaseRoot));
+            result.Add(new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, InstallationIdentity.OperationsDisplayName + ".lnk"),
+                System.IO.Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.OperationsExecutable), "", location.ReleaseRoot));
+        }
+        else if (options.StartMenu)
             foreach (var entry in new[] { (Name: "运行", Args: ""), (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
-                result.Add(new(System.IO.Path.Combine(programs, "菜鸟供包台", (location.ApplicationId == "sportmaster" ?
-                    entry.Args == "" ? "菜鸟供包台" : "菜鸟供包台 · " + entry.Name : id + " · " + entry.Name) + ".lnk"), target, entry.Args, location.ReleaseRoot));
-        if (options.Desktop) result.Add(new(System.IO.Path.Combine(desktop, "菜鸟供包台.lnk"), target, "", location.ReleaseRoot));
+                result.Add(new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, (location.ApplicationId == "sportmaster" ?
+                    entry.Args == "" ? InstallationIdentity.DisplayName : InstallationIdentity.DisplayName + " · " + entry.Name : id + " · " + entry.Name) + ".lnk"), target, entry.Args, location.ReleaseRoot));
+        if (options.Desktop) result.Add(new(System.IO.Path.Combine(desktop, InstallationIdentity.DisplayName + ".lnk"), target, "", location.ReleaseRoot));
         return result.ToArray();
     }
 
@@ -26,21 +32,22 @@ public static class DeploymentShortcuts
     public static void Create(DeploymentLocation location, string programs, string desktop, DeploymentLocation? previous = null)
     {
         var plan = Plan(location, programs, desktop);
-        if (plan.Length == 0) return;
         foreach (var entry in plan)
         {
             DeploymentPaths.RequireOrdinaryAncestors(entry.Path); Directory.CreateDirectory(System.IO.Path.GetDirectoryName(entry.Path)!);
             var exists = ExistingShortcutFile(entry.Path);
             using var link = new ShellLinkFile(exists ? entry.Path : null);
             if (exists && (!string.Equals(link.TargetPath, entry.Target, StringComparison.OrdinalIgnoreCase) || link.Arguments != entry.Arguments) &&
-                !((location.ApplicationId == "sportmaster" || entry.Arguments == "" && System.IO.Path.GetFileName(entry.Path) == "菜鸟供包台.lnk") && link.Arguments == entry.Arguments &&
+                !((location.ApplicationId == "sportmaster" || entry.Arguments == "" && System.IO.Path.GetFileName(entry.Path) == InstallationIdentity.DisplayName + ".lnk") && link.Arguments == entry.Arguments &&
                   PreviousOwnsTarget(location, previous, link.TargetPath)))
                 throw new IOException("保留目标不同的既有快捷方式：" + entry.Path);
             link.TargetPath = entry.Target; link.Arguments = entry.Arguments; link.WorkingDirectory = entry.WorkingDirectory;
-            link.Description = location.ApplicationId == "sportmaster" ? "菜鸟供包台" : "菜鸟供包台 · " + location.ApplicationId; link.SetIcon(entry.Target, 0); link.Save(entry.Path);
+            link.Description = location.ApplicationId == "sportmaster" ? InstallationIdentity.DisplayName : InstallationIdentity.DisplayName + " · " + location.ApplicationId; link.SetIcon(entry.Target, 0); link.Save(entry.Path);
         }
-        RemoveOwned(LegacySmMenu(location, programs));
-        if (previous is not null) RemoveOwned(LegacySmMenu(previous, programs));
+        var candidates = OwnedCandidates(location, programs, desktop)
+            .Concat(previous is null ? [] : OwnedCandidates(previous, programs, desktop));
+        RemoveOwned(candidates.Where(c => !plan.Any(p => string.Equals(p.Path, c.Path, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(p.Target, c.Target, StringComparison.OrdinalIgnoreCase) && p.Arguments == c.Arguments)));
     }
 
     [SupportedOSPlatform("windows")]
@@ -61,14 +68,23 @@ public static class DeploymentShortcuts
         }
         return previous.ApplicationId == current.ApplicationId && previous.RuntimeAccountSid == current.RuntimeAccountSid &&
             string.Equals(System.IO.Path.GetFullPath(previous.DataRoot), System.IO.Path.GetFullPath(current.DataRoot), StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(target, System.IO.Path.Combine(previous.ReleaseRoot, "desktop", "Ipc.Desktop.exe"), StringComparison.OrdinalIgnoreCase);
+            new[] { InstallationIdentity.DesktopExecutable, InstallationIdentity.OperationsExecutable }.Any(name =>
+                string.Equals(target, System.IO.Path.Combine(previous.ReleaseRoot, "desktop", name), StringComparison.OrdinalIgnoreCase));
     }
 
     [SupportedOSPlatform("windows")]
     public static void Remove(DeploymentLocation location, string programs, string desktop)
     {
-        var files = Plan(location with { Shortcuts = new(true, true) }, programs, desktop).Concat(LegacySmMenu(location, programs));
-        RemoveOwned(files);
+        RemoveOwned(OwnedCandidates(location, programs, desktop));
+    }
+
+    static IEnumerable<DeploymentShortcut> OwnedCandidates(DeploymentLocation location, string programs, string desktop)
+    {
+        foreach (var entry in Plan(location with { Shortcuts = new(true, true) }, programs, desktop).Concat(LegacySmMenu(location, programs))) yield return entry;
+        if (location.ApplicationId == "sportmaster")
+            foreach (var entry in new[] { (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
+                yield return new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, InstallationIdentity.DisplayName + " · " + entry.Name + ".lnk"),
+                    System.IO.Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable), entry.Args, location.ReleaseRoot);
     }
 
     // Exact names from the registered installation only. Never sweep menu folders
@@ -76,10 +92,10 @@ public static class DeploymentShortcuts
     static IEnumerable<DeploymentShortcut> LegacySmMenu(DeploymentLocation location, string programs)
     {
         if (location.ApplicationId != "sportmaster") yield break;
-        var id = "菜鸟供包台 · SM供包业务 · sportmaster · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
+        var id = InstallationIdentity.DisplayName + " · SM供包业务 · sportmaster · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
         foreach (var entry in new[] { (Name: "运行", Args: ""), (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
-            yield return new(System.IO.Path.Combine(programs, "菜鸟供包台", id + " · " + entry.Name + ".lnk"),
-                System.IO.Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe"), entry.Args, location.ReleaseRoot);
+            yield return new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, id + " · " + entry.Name + ".lnk"),
+                System.IO.Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable), entry.Args, location.ReleaseRoot);
     }
 
     [SupportedOSPlatform("windows")]

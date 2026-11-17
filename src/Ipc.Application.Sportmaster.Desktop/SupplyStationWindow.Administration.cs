@@ -98,9 +98,17 @@ public partial class SupplyStationWindow
         try
         {
             var settings = new StationSettingsWindow(ViewModel, maintenance) { Owner = this };
-            settingsWindow = settings; settings.ShowDialog();
+            settingsWindow = settings;
+            settings.Closed += (_, _) => { if (settingsWindow == settings) settingsWindow = null; EnforceManagementModeView(); };
+            settings.Show();
         }
-        finally { settingsWindow = null; EnforceManagementModeView(); }
+        catch (Exception error) { ViewModel.Message = ChineseInterfaceText.ParameterMessage(error.Message, "设置窗口未能打开，原输入保留。"); }
+    }
+    internal void ReturnToWorkstation()
+    {
+        SetPage("workstation"); Activate();
+        // Switching windows clears the lane selection. The operator selects the
+        // intended lane again, using its card or F2/F3; never silently route PDA.
     }
     async Task RenewManagementAsync()
     {

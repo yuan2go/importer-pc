@@ -11,6 +11,8 @@ namespace Ipc.Platform;
 // Machine installation choice, never a per-user/environment override of authority.
 public static class WindowsStoragePaths
 {
+    // Only the isolated verifier supplies an OS-user-directory substitute.
+    internal static Func<string>? UserRootForVerification = null;
     public const string DefaultProtectedAnchor = @"D:\ImporterPc";
     public static string CanonicalDirectory(string path)
     {
@@ -90,27 +92,61 @@ public static class WindowsStoragePaths
             var acl = new DirectorySecurity(); acl.SetOwner(admin); acl.SetAccessRuleProtection(true, false);
             acl.AddAccessRule(new(system, FileSystemRights.FullControl, inherit, PropagationFlags.None, AccessControlType.Allow));
             acl.AddAccessRule(new(admin, FileSystemRights.FullControl, inherit, PropagationFlags.None, AccessControlType.Allow));
-            // Users may create their own SID folder, but cannot edit siblings or
-            // the protected anchor. Only its creator inherits write access.
-            acl.AddAccessRule(new(users, FileSystemRights.ReadAndExecute | FileSystemRights.CreateDirectories, InheritanceFlags.None, PropagationFlags.None, AccessControlType.Allow));
-            acl.AddAccessRule(new(creator, FileSystemRights.FullControl, inherit, PropagationFlags.InheritOnly, AccessControlType.Allow));
+            acl.AddAccessRule(new(users, FileSystemRights.ReadAndExecute, InheritanceFlags.None, PropagationFlags.None, AccessControlType.Allow));
             directory.Create(acl);
         }
         var current = directory.GetAccessControl(AccessControlSections.Access | AccessControlSections.Owner);
         if (((SecurityIdentifier)current.GetOwner(typeof(SecurityIdentifier))!).Value is not ("S-1-5-18" or "S-1-5-32-544"))
             throw new UnauthorizedAccessException("个人偏好父目录须由安装管理员持有；保留原目录。");
-        bool canCreate = false, creatorOwns = false;
+        bool legacyCreate = false;
         foreach (FileSystemAccessRule rule in current.GetAccessRules(true, true, typeof(SecurityIdentifier)))
         {
             var sid = ((SecurityIdentifier)rule.IdentityReference).Value;
-            if (sid == users.Value) canCreate = true;
-            if (sid == creator.Value) creatorOwns = true;
+            if (sid == users.Value && (rule.FileSystemRights & FileSystemRights.CreateDirectories) != 0) legacyCreate = true;
             if (rule.AccessControlType != AccessControlType.Allow || sid is not ("S-1-5-18" or "S-1-5-32-544") &&
-                !(sid == users.Value && rule.FileSystemRights == (FileSystemRights.ReadAndExecute | FileSystemRights.CreateDirectories | FileSystemRights.Synchronize) && rule.InheritanceFlags == InheritanceFlags.None) &&
+                !(sid == users.Value && (rule.FileSystemRights == (FileSystemRights.ReadAndExecute | FileSystemRights.Synchronize) || rule.FileSystemRights == (FileSystemRights.ReadAndExecute | FileSystemRights.CreateDirectories | FileSystemRights.Synchronize)) && rule.InheritanceFlags == InheritanceFlags.None) &&
                 !(sid == creator.Value && rule.FileSystemRights == FileSystemRights.FullControl && rule.InheritanceFlags == inherit && rule.PropagationFlags == PropagationFlags.InheritOnly))
                 throw new UnauthorizedAccessException("个人偏好父目录权限不符合按用户隔离要求；保留原ACL，由安装修复核对。");
         }
-        if (!canCreate || !creatorOwns) throw new UnauthorizedAccessException("个人偏好父目录缺少按用户创建权限；保留原ACL，由安装修复核对。");
+        if (legacyCreate)
+        {
+            // Remove only the verified former provisioning permissions. Existing
+            // SID folders and their contents remain unchanged and are checked below.
+            current.PurgeAccessRules(users); current.PurgeAccessRules(creator);
+            current.AddAccessRule(new(users, FileSystemRights.ReadAndExecute, InheritanceFlags.None, PropagationFlags.None, AccessControlType.Allow));
+            directory.SetAccessControl(current);
+        }
+    }
+    [SupportedOSPlatform("windows")]
+    internal static string ProvisionUserRoot(string windowsSid)
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        var account = new SecurityIdentifier(windowsSid);
+        if (!account.IsAccountSid()) throw new UnauthorizedAccessException("Windows用户身份无效。");
+        var parent = Path.Combine(ProtectedAnchor ?? throw new InvalidDataException("缺少受保护存储位置。"), "UserData");
+        PrepareUserDataDirectory(parent);
+        var path = Path.Combine(parent, account.Value);
+        DeploymentPaths.RequireOrdinaryAncestors(path);
+        var directory = new DirectoryInfo(path);
+        if (!directory.Exists) directory.Create(MachineRuntimeSetup.DirectoryAcl(account, FileSystemRights.FullControl));
+        RequireUserDirectory(path, account.Value);
+        return path;
+    }
+    [SupportedOSPlatform("windows")]
+    internal static void RequireUserDirectory(string path, string windowsSid)
+    {
+        DeploymentPaths.RequireOrdinaryAncestors(path);
+        var security = new DirectoryInfo(path).GetAccessControl(AccessControlSections.Access | AccessControlSections.Owner);
+        var owner = ((SecurityIdentifier)security.GetOwner(typeof(SecurityIdentifier))!).Value;
+        if (owner != windowsSid && owner is not ("S-1-5-18" or "S-1-5-32-544")) throw new UnauthorizedAccessException("个人目录所有者与Windows用户不符，保留原目录，请使用安装修复核对。");
+        const FileSystemRights mutation = FileSystemRights.Write | FileSystemRights.Delete | FileSystemRights.DeleteSubdirectoriesAndFiles | FileSystemRights.ChangePermissions | FileSystemRights.TakeOwnership;
+        foreach (FileSystemAccessRule rule in security.GetAccessRules(true, true, typeof(SecurityIdentifier)))
+        {
+            var sid = ((SecurityIdentifier)rule.IdentityReference).Value;
+            if (rule.AccessControlType == AccessControlType.Allow && (rule.FileSystemRights & mutation) != 0 &&
+                sid != windowsSid && sid is not ("S-1-5-18" or "S-1-5-32-544"))
+                throw new UnauthorizedAccessException("个人目录可被其他Windows用户修改，保留原目录，请使用安装修复核对。");
+        }
     }
     [SupportedOSPlatform("windows")]
     internal static void PrepareProtectedDirectory(string path, SecurityIdentifier account)
@@ -132,14 +168,41 @@ public static class WindowsStoragePaths
     public static string MachineRoot => ProtectedAnchor is { } root ? Path.Combine(root, "Machine") : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
     public static string AdministratorRoot => ProtectedAnchor is { } root ? Path.Combine(root, "Administrators") : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc.Administrators");
     public static string ProgramRoot(string product) => ProtectedAnchor is { } root ? Path.Combine(root, "Programs", product) : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), product);
+    // Address discovery for an installer before any deployment exists. This
+    // grants no write authority; consumers of personal files still use UserRoot.
+    public static string UserRootPath
+    {
+        get
+        {
+            if (UserRootForVerification is { } substitute) return Path.GetFullPath(substitute());
+            if (OperatingSystem.IsWindows() && ProtectedAnchor is { } root)
+            {
+                using var identity = WindowsIdentity.GetCurrent();
+                var sid = identity.User?.Value ?? throw new UnauthorizedAccessException("Windows用户身份不可用。");
+                return Path.Combine(root, "UserData", sid);
+            }
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc");
+        }
+    }
     public static string UserRoot
     {
         get
         {
+            if (UserRootForVerification is { } substitute) return Path.GetFullPath(substitute());
             if (OperatingSystem.IsWindows() && ProtectedAnchor is { } root)
             {
                 using var identity = WindowsIdentity.GetCurrent();
-                return Path.Combine(root, "UserData", identity.User?.Value ?? throw new UnauthorizedAccessException("Windows用户身份不可用。"));
+                var sid = identity.User?.Value ?? throw new UnauthorizedAccessException("Windows用户身份不可用。");
+                var path = Path.Combine(root, "UserData", sid);
+                if (!Directory.Exists(path))
+                {
+                    if (new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator)) return ProvisionUserRoot(sid);
+                    var deployment = WindowsDeploymentSetup.Current("sportmaster") ?? throw new UnauthorizedAccessException("个人目录尚未准备，请先完成供包台安装。");
+                    _ = ManagementModeBroker.Call<string>(deployment.DataRoot, new("ProvisionUserRoot"));
+                }
+                MachineRuntimePolicy.RequireProtectedAcl(new DirectoryInfo(Path.Combine(root, "UserData")), null);
+                RequireUserDirectory(path, sid);
+                return path;
             }
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc");
         }

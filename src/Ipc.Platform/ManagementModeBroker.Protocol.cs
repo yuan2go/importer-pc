@@ -7,7 +7,9 @@ namespace Ipc.Platform;
 public sealed record ManagementModeRpcRequest(string Action, string? Token = null, string? Password = null,
     string? RequestHash = null, ManagementModeDelegation? Grant = null, bool Consume = false,
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] int? OperationSeconds = null,
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? NewPassword = null, ManagementPasswordRecoveryChallenge? Recovery = null);
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? NewPassword = null, ManagementPasswordRecoveryChallenge? Recovery = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] ManagementExportPublication? Export = null);
+public sealed record ManagementExportPublication(string Temporary, string Destination, long Length, string Sha256);
 public sealed record ManagementModeRpcReply(JsonElement Value, string? Error = null, string? Code = null);
 public sealed record ManagementModeSessionGrant(string SessionId, string Token, DateTimeOffset ExpiresAt);
 
@@ -32,7 +34,7 @@ public static partial class ManagementModeBroker
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("管理模式授权服务需要Windows。");
         using var budget = new CancellationTokenSource(request.Action == "Status" && !starting ? TimeSpan.FromMilliseconds(500) : TimeSpan.FromSeconds(10));
-        using var pipe = new NamedPipeClientStream(".", PipeName(root), PipeDirection.InOut, PipeOptions.Asynchronous, TokenImpersonationLevel.Impersonation);
+        using var pipe = new NamedPipeClientStream(".", PipeName(root), PipeAccessRights.ReadWrite | PipeAccessRights.Synchronize, PipeOptions.Asynchronous, TokenImpersonationLevel.Impersonation, HandleInheritability.None);
         try { pipe.ConnectAsync(starting ? 5000 : request.Action == "Status" ? 100 : 2000, budget.Token).GetAwaiter().GetResult(); }
         catch (Exception error) when (error is TimeoutException or OperationCanceledException)
         { throw new IOException("管理授权服务暂时不可用，请稍后重试；持续失败时请用完整安装包修复。原密码和配置保留。", error); }
@@ -47,6 +49,8 @@ public static partial class ManagementModeBroker
         {
             if (response.Code == "BootstrapRequiresInstaller") throw new ManagementModeBootstrapRequiredException(response.Error);
             if (response.Code == "Unauthorized") throw new UnauthorizedAccessException(response.Error);
+            if (response.Code == "ExportInvalidData") throw new InvalidDataException(response.Error);
+            if (response.Code == "ExportIoFailure") throw new IOException(response.Error);
             throw new InvalidOperationException(response.Error);
         }
         return response.Value.Deserialize<T>()!;
@@ -116,10 +120,12 @@ public sealed partial class LocalManagementMode
     { SessionId = active ? sessionId : null };
     bool RemoteEnter(string password)
     {
+        long intent; lock (sync) intent = ++managementIntent;
         var grant = Rpc<ManagementModeSessionGrant?>(new("Enter", Password: password));
         if (grant is null) return false;
         lock (sync)
         {
+            if (intent != managementIntent) throw new UnauthorizedAccessException("管理操作已改变，本次较早的授权结果未采用，请重新验证。");
             Revoke(); revoked = new(); active = true; sessionSecret = grant.Token; enteredAt = grant.ExpiresAt.AddMinutes(-15); expires = grant.ExpiresAt;
             if (expires > Now) revoked.CancelAfter(expires - Now);
             sessionId = grant.SessionId; knownConfigured = true; knownLegacy = false; knownAvailable = true;
@@ -143,13 +149,17 @@ public sealed partial class LocalManagementMode
             active = true; sessionId = s.SessionId; credentialHash = s.Credential.Hash; sessionSecret = token; enteredAt = s.SessionEnteredAt ?? until.AddMinutes(-15); expires = until; return true;
         }
     }
-    internal object? HandleBrokerRequest(ManagementModeRpcRequest request, bool installer, string? windowsSid = null, ManagementRecoveryCaller? recoveryCaller = null)
+    internal object? HandleBrokerRequest(ManagementModeRpcRequest request, bool installer, string? windowsSid = null, ManagementRecoveryCaller? recoveryCaller = null, Action<Action>? publishExport = null)
     {
         if (!serviceAuthority) throw new UnauthorizedAccessException("仅受保护管理模式服务可以处理此请求。");
         callerWindowsSid = windowsSid;
         var authenticated = AdoptBrokerToken(request.Token);
         switch (request.Action)
         {
+            case "ProvisionUserRoot":
+                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                return WindowsStoragePaths.ProvisionUserRoot(windowsSid ?? throw new UnauthorizedAccessException("Windows调用身份缺失。"));
+            case "PublishExport": return Commit(() => { (publishExport ?? throw new UnauthorizedAccessException("缺少导出调用身份。"))(RequireGrantDuringCommit); return true; });
             case "Status":
                 var status = Status(); return authenticated ? status : status with { Active = false, ExpiresAt = null, SessionId = null };
             case "ConfigurePassword":

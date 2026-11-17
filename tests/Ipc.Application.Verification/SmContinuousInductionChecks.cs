@@ -16,7 +16,7 @@ internal static class SmContinuousInductionChecks
     {
         await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "continuous"), deferred: false, mode: RunMode.Simulation);
         ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config with
-        { BarcodeFilter = new("GOOD-[0-9]+", "BOTTOM-[0-9]+"), ReadTimeoutMs = 1000 });
+        { BarcodeFilter = new("GOOD-[0-9]+", "BOTTOM-[0-9]+"), ReadTimeoutMs = 1000, TimeoutMs = 30000 });
         await h.StartAsync();
         foreach (var camera in h.Factory.Cameras.Values) camera.ConfirmConnected();
         var left = h.Factory.Cameras[h.Config.Topology!.Readers[0].DeviceId];
@@ -59,6 +59,8 @@ internal static class SmContinuousInductionChecks
         Check(h.Peer.HeartbeatRequests.Count == beforeHeartbeats + 20 && HeartbeatWrites() == beforeWrites,
             "20 actual unchanged heartbeats retain durable membership intent with zero additional intent writes");
         var vehicle = Lane(await h.App.SnapshotAsync()).Arrival!;
+        // The deliberate repeated wall-clock stamp spans several physical drills;
+        // keep it inside the explicit input-delivery budget, independent of 1000ms reading.
         var repeatedWallTime = DateTimeOffset.UtcNow;
         var emptyDraft = await h.Command("left", "GOOD-1");
         // N03/N04/E01/E02/E06: no-code, illegal and multiple-code parcels can all
@@ -71,12 +73,13 @@ internal static class SmContinuousInductionChecks
             var oldFrame = left.Capture(["GOOD-1"]);
             await Deliver(left.Capture([], new(TrayPresence.Absent, "qualified-controlled-empty")) with { ObservedAt = repeatedWallTime });
             await Ready();
-            Check(h.Peer.Requests.IsEmpty && Lane(await h.App.SnapshotAsync()) is { BarcodeInput.Camera: true, BarcodeInput.Manual: true } lane &&
+            Check(h.Peer.Requests.IsEmpty && Lane(await h.App.SnapshotAsync()) is { CurrentRoundId: null, BarcodeInput.Camera: true, BarcodeInput.Manual: true } lane &&
                 lane.Arrival!.Generation == vehicle.Generation && lane.Arrival.VehicleNo == vehicle.VehicleNo,
                 "unsent exception restores real same-car automatic/manual readiness, without enable/disable");
             await Deliver(oldFrame);
-            Check((await h.App.SubmitParcelBarcodeAsync(oldCommand, default)).Status == "Conflict" && h.Peer.Requests.IsEmpty,
-                "old capture and PDA command cannot cross same-car removal");
+            var staleCommand = await h.App.SubmitParcelBarcodeAsync(oldCommand, default);
+            Check(staleCommand.Status == "Conflict" && h.Peer.Requests.IsEmpty,
+                "old capture and PDA command cannot cross same-car removal: " + Wire.Encode(new { staleCommand, Lane = Lane(await h.App.SnapshotAsync()), Requests = h.Peer.Requests.ToArray(), oldCommand, oldFrame }));
             Check((await h.App.SubmitParcelBarcodeAsync(emptyDraft, default)).Status == "Conflict" && Lane(await h.App.SnapshotAsync()).CurrentRoundId is null,
                 "empty-lane input identity changes on each physical ending even with repeated wall-clock timestamps");
             emptyDraft = await h.Command("left", "GOOD-1");
@@ -106,8 +109,9 @@ internal static class SmContinuousInductionChecks
         Check(accepted.Wcs is { Attempts: 1, State: StageState.Accepted } && h.Peer.Requests.Count == 1,
             "N01/N02 same-code next physical parcel automatically sends exactly one real HTTP request");
         await Removed(); await Ready(); await Read("GOOD-2");
-        Check(h.Peer.Requests.Count == 1 && !Lane(await h.App.SnapshotAsync()).Admit,
-            "N05/R05 accepted car remains occupied after physical removal; no second dispatch");
+        var sameCarNext = await Result((await h.App.SnapshotAsync()).Rounds.Single().OperationId!);
+        Check(h.Peer.Requests.Count == 2 && sameCarNext.ArrivalGeneration == accepted.ArrivalGeneration && sameCarNext.Id != accepted.Id,
+            "N05 removal ends an accepted parcel and admits exactly one independent next parcel on the same car");
 
         await h.NextVehicleAsync(); await Ready();
         // E09: continue only the same capture-time occupied interval. Clock is real.
@@ -119,7 +123,7 @@ internal static class SmContinuousInductionChecks
             "E09 fast deadline expires once while original physical identity remains eligible for bounded continuation");
         await Deliver(left.Capture(["GOOD-9"]) with { ContinuousPresenceTicks = firstPresent });
         await Result((await h.App.SnapshotAsync()).Rounds.Single().OperationId!);
-        Check(h.Peer.Requests.Count == 2, "E09 valid late decode automatically dispatches once in the original reliable round");
+        Check(h.Peer.Requests.Count == 3, "E09 valid late decode automatically dispatches once in the original reliable round");
         await h.NextVehicleAsync(); await Ready();
         firstPresent = Stopwatch.GetTimestamp(); await Presence(TrayPresence.Present, firstPresent);
         await Presence(TrayPresence.Unknown);
@@ -127,31 +131,35 @@ internal static class SmContinuousInductionChecks
         var lateOriginal = left.Capture(["GOOD-10"]) with { ContinuousPresenceTicks = firstPresent };
         await Presence(TrayPresence.Present); // Empty hysteresis retains Present but withdraws continuity.
         await Deliver(lateOriginal);
-        Check(h.Peer.Requests.Count == 2 && (await h.App.SnapshotAsync()).Rounds.Single().OperationId is null,
+        Check(h.Peer.Requests.Count == 3 && (await h.App.SnapshotAsync()).Rounds.Single().OperationId is null,
             "expired delayed original decode cannot submit after continuity is withdrawn before the 800ms physical ending");
         var replacement = Stopwatch.GetTimestamp(); await Presence(TrayPresence.Present, replacement);
         await Deliver(left.Capture(["GOOD-10"]) with { ContinuousPresenceTicks = replacement });
-        Check(h.Peer.Requests.Count == 2 && (await h.App.SnapshotAsync()).Rounds.Single() is { OperationId: null, SafeContinuation: false },
+        Check(h.Peer.Requests.Count == 3 && (await h.App.SnapshotAsync()).Rounds.Single() is { OperationId: null, SafeContinuation: false },
             "E10 broken continuity cannot grant a fresh automatic window to a suspected replacement");
         await Removed(); await Ready();
 
-        // R04/R02/S02/S04: local ending and durable remote uncertainty are independent.
+        // Rejection evidence remains attached to the old request, not the lane.
         h.Peer.Mode = "reject"; await Read("GOOD-11");
         var rejected = await Result((await h.App.SnapshotAsync()).Rounds.Single().OperationId!);
-        await Removed();
-        Check(Lane(await h.App.SnapshotAsync()) is { CurrentRoundId: null, Admit: false, Arrival.TargetOperation: not null, Arrival.RecoveryReason: not null },
-            "R04 unspecified refusal ends physically but preserves the per-lane remote fence");
+        await Removed(); await Ready();
+        Check(Lane(await h.App.SnapshotAsync()) is { CurrentRoundId: null, Admit: true, Arrival.TargetOperation: null, Arrival.RecoveryReason: null },
+            "R04 physical removal releases a refused parcel without maintenance or an enable/disable cycle");
         h.Peer.Mode = "assigned";
         var right = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "GOOD-12"), default);
         await Result(right.OperationId!);
-        Check(right.Status == "Admitted" && h.Peer.Requests.Count == 4, "S02 right remains productive while left refusal is fenced");
+        Check(right.Status == "Admitted" && h.Peer.Requests.Count == 5, "S02 right remains productive independently of the left refusal");
         await ManagementModeFixture.Authorize(h.App);
         var frozen = (await h.App.ReadCameraOperationDetailAsync(rejected.Id, default))!.Original.Wcs!.Request.IntegrationRequest!.Body;
         await h.App.DisposeAsync(); await h.StartAsync();
         await ManagementModeFixture.Authorize(h.App);
-        Check(!Lane(await h.App.SnapshotAsync()).Admit && Lane(await h.App.SnapshotAsync()).Arrival!.TargetOperation == rejected.Id &&
-            (await h.App.ReadCameraOperationDetailAsync(rejected.Id, default))!.Original.Wcs!.Request.IntegrationRequest!.Body == frozen && h.Peer.Requests.Count == 4,
-            "S04 physical end and restart do not lose refusal responsibility, rewrite original bytes or replay HTTP");
-        Console.WriteLine("R03 NOT_RUN: customer no-side-effect rejection contract not supplied; no whitelist inferred from success/code/msg");
+        Check(Lane(await h.App.SnapshotAsync()).BarcodeInput?.Manual == true && Lane(await h.App.SnapshotAsync()).Arrival!.TargetOperation is null &&
+            (await h.App.ReadCameraOperationDetailAsync(rejected.Id, default))!.Original.Wcs!.Request.IntegrationRequest!.Body == frozen && h.Peer.Requests.Count == 5,
+            "S04 restart preserves ended-placement admission and exact refusal evidence without replaying HTTP");
+        await h.App.ExitManagementModeAsync();
+        var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-11"), default);
+        await Result(next.OperationId!);
+        Check(next.Status == "Admitted" && next.OperationId != rejected.Id && h.Peer.Requests.Count == 6,
+            "the same barcode after removal and restart belongs to a new independent task");
     }
 }

@@ -63,9 +63,9 @@
       const c = glob[i];
       if (c === '*') {
         if (glob[i + 1] === '*') {
-          re += '.*';
           i += 2;
-          if (glob[i] === '/') i += 1;
+          if (glob[i] === '/') { re += '(?:.*/)?'; i += 1; }
+          else re += '.*';
         } else {
           re += '[^/]*';
           i += 1;
@@ -152,6 +152,7 @@
       addSuffixes(knownPages[0]);
       return [...candidates];
     }
+    if (knownPages.length > 1) return [...candidates];
 
     const prefixes = [];
     for (const entry of Array.isArray(roots) ? roots : []) {
@@ -216,6 +217,7 @@
 
     for (const entry of asArray(config.ignoreValues)) {
       if (!entry || typeof entry !== 'object') continue;
+      if (typeof entry.rule !== 'string' || typeof entry.value !== 'string') continue;
       const rule = normalizeIgnoreRule(entry.rule);
       const value = normalizeIgnoreValue(entry.value);
       if (!rule || !value) continue;

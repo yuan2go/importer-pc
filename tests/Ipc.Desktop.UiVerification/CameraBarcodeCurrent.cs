@@ -86,15 +86,18 @@ static partial class Program
             await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-RCS-0003"));
             await Until(() => p.Operation?.Wcs?.State == StageState.Dispatching, "held original");
             var held = p.Operation!; var heldRequest = Wire.Encode(held.Wcs!.Request);
-            await Next(h.Left); await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-LATEST-0004")); await Resolved("SYNTH-LATEST-0004");
-            var currentId = p.CurrentRound!.Id;
-            Check(!h.Peer.Hold.Task.IsCompleted && h.Peer.Requests.Count == 4 && picture.IsEnabled && tasks.IsVisible,
-                "next same-position round receives its result while the removed original remains in flight");
+            await Next(h.Left); await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-LATEST-0004"));
+            Check(p.CurrentRound is null && !h.Peer.Hold.Task.IsCompleted && h.Peer.Requests.Count == 3 && !p.ShowConfirmedTask,
+                "new vehicle does not release the same-position send fence while the original remote binding is unconfirmed");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; h.Peer.HoldWhen = null;
             await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(held.Id))?.Wcs?.State == StageState.Accepted);
             await vm.RefreshAsync();
-            Check(p.CurrentRound?.Id == currentId && entry.Text == "SYNTH-LATEST-0004" && Wire.Encode((await h.App.OperationAsync(held.Id))!.Wcs!.Request) == heldRequest && h.Peer.Requests.Count == 4,
-                "late old success only completes its record and leaves the current image, task and barcode intact");
+            Check(p.CurrentRound is null && Wire.Encode((await h.App.OperationAsync(held.Id))!.Wcs!.Request) == heldRequest && h.Peer.Requests.Count == 3,
+                "late old success only completes its original record and cannot submit the new parcel");
+            await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-LATEST-0004")); await Resolved("SYNTH-LATEST-0004");
+            var currentId = p.CurrentRound!.Id;
+            Check(p.CurrentRound?.Id == currentId && entry.Text == "SYNTH-LATEST-0004" && picture.IsEnabled && tasks.IsVisible && h.Peer.Requests.Count == 4,
+                "a fresh observation submits the current round once after the original binding is confirmed");
             await Frame(h.Left, CameraRoundHarness.EmptyTray);
             Check(p.CurrentRound?.Id == currentId && p.ShowConfirmedTask, "a no-code frame is not qualified removal");
             await SmRoundFixture.NextVehicleAsync(h.App, "left"); await vm.RefreshAsync();

@@ -45,7 +45,7 @@ class CompatibilityTests(unittest.TestCase):
         run = CombinationRun(output, command, optional_features=optional, attached_upload=attached)
         run.bind(root, identity, config)
         run.effective(config)
-        operation={'Id':'operation-one','State':'PlcAccepted'}
+        operation={'Id':'operation-one','State':'PlcAccepted', 'Plc': {'State': 'Accepted', 'Request': {'Id': 'request-one', 'Payload': 'frozen synthetic bytes'}}}
         if optional: operation.update(Capture={'State':'Accepted'},Upload={'State':'Accepted'})
         for runtime in ['before-restart', 'after-restart']:
             run.event({'Status': 'Started', 'Business': config['ApplicationId']})
@@ -126,6 +126,38 @@ class CompatibilityTests(unittest.TestCase):
             app_binary.write_bytes(original)
             run.events_path.write_text('rewritten run events')
             with self.assertRaisesRegex(ValueError,'events differ'): verify_record(output,root)
+
+    def test_restart_requires_the_same_original_and_frozen_request_in_each_run(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary); root = base / 'package'; root.mkdir()
+            config, _, identity = self.fixture(root)
+            output = base / 'run.json'; run = self.completed_run(output, root, config, identity)
+            original_record = json.loads(output.read_bytes())
+            original_events = [json.loads(line) for line in run.events_path.read_text().splitlines()]
+            for change in ('missing-before', 'changed-request'):
+                events = copy.deepcopy(original_events)
+                snapshots = [row['Value'] for row in events if 'Operations' in row['Value']]
+                if change == 'missing-before': snapshots[0]['Operations'] = []
+                else: snapshots[1]['Operations'][0]['Plc']['Request']['Payload'] = 'another request'
+                run.events_path.write_text(''.join(json.dumps(row) + '\n' for row in events))
+                record = dict(original_record, EventsSha256=sha(run.events_path))
+                output.write_text(json.dumps(record))
+                with self.subTest(change=change), self.assertRaisesRegex(ValueError, 'Original.*(absent|changed)'):
+                    verify_record(output, root)
+
+    def test_bind_rejects_a_release_with_a_stale_policy_hash(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary); root = base / 'package'; root.mkdir()
+            config, _, identity = self.fixture(root)
+            release_file = root / 'app/application-release.json'
+            release = json.loads(release_file.read_bytes()); release['CompatibilitySha256'] = 'F' * 64
+            release_file.write_text(json.dumps(release))
+            run = CombinationRun(base / 'run.json', ['actual-smoke'])
+            try:
+                with self.assertRaisesRegex(ValueError, 'matching business release'):
+                    run.bind(root, identity, config)
+            finally:
+                run.finish(error=ValueError('Expected stale-policy refusal'))
 
     def test_failure_and_interruption_never_become_pass(self):
         with tempfile.TemporaryDirectory() as temporary:

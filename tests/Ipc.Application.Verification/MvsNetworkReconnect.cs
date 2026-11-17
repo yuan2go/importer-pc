@@ -60,8 +60,9 @@ internal static class MvsNetworkReconnect
                 Check(!snapshot.Paused && !(await h.App.ManagementModeStatusAsync()).Active, stage + " recovery needs no operator command, pause or management session");
                 Check((stage == "StopGrabbing" ? left.StopError : left.CloseError) == UdpReceive, stage + " recovery does not depend on the broken stream error clearing");
                 Volatile.Write(ref left.StopError, 0); Volatile.Write(ref left.CloseError, 0);
+                var beforeHandled = h.Handled(h.Left);
                 left.Enqueue(CameraRoundHarness.Barcode("NETWORK-UNKNOWN"), 1);
-                await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= (stage == "StopGrabbing" ? 2 : 3)));
+                await h.WaitFrameAsync(h.Left, 1, beforeHandled);
                 snapshot = await h.App.SnapshotAsync();
                 Check(Wire.Encode(snapshot.Operations.Single(o => o.Id == original.Id).Wcs) == frozen && h.Peer.Requests.Count(r => r.Contains("NETWORK-UNKNOWN", StringComparison.Ordinal)) == 1,
                     stage + " recovery preserves the frozen Unknown request and never resends it");

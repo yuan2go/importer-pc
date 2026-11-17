@@ -13,6 +13,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
     CameraInspectionStore? inspectionStore;
     DateTimeOffset nextInspectionRetention;
     Task? inspectionRetention;
+    int inspectionExpiryQueued;
     bool singleReadInspection;
     void InitializeCameraInspection()
     {
@@ -141,11 +142,18 @@ public sealed partial class ParcelRuntime : ICameraInspection
             if (command.CloseReadRounds && (!singleReadInspection || readRound?.Id != command.ExpectedRoundId))
                 throw new CameraReadRoundConflictException("扫码轮次已变化；本窗口不结束其他窗口的当前轮次。");
             await EndReadRoundAsync(t, command.SessionId).ConfigureAwait(false);
-            foreach (var source in current.Sources) await ApplyInspectionAsync(source, null, t).ConfigureAwait(false);
-            if (inspectionStore is { } store) await store.FlushAsync(t).ConfigureAwait(false);
-            authority.ThrowIfCancellationRequested(); Management.Require();
-            Volatile.Write(ref collectingInspection, null);
-            InspectionStore.State(command.SessionId, "Closed", "调试采集已结束；正常供包与原请求责任保持。", close: true);
+            t.ThrowIfCancellationRequested(); authority.ThrowIfCancellationRequested(); Management.Require();
+            List<Exception> errors = []; var detached = true;
+            foreach (var source in current.Sources)
+                try { await ApplyInspectionAsync(source, null, CancellationToken.None).ConfigureAwait(false); }
+                catch (Exception error) { errors.Add(error); detached = false; }
+            try { if (inspectionStore is { } store) await store.FlushAsync(CancellationToken.None).ConfigureAwait(false); }
+            catch (Exception error) { errors.Add(error); }
+            Volatile.Write(ref collectingInspection, detached ? null : current with { Expires = DateTimeOffset.MinValue });
+            try { InspectionStore.State(command.SessionId, errors.Count == 0 ? "Closed" : "Faulted", errors.Count == 0
+                ? "调试采集已结束；正常供包与原请求责任保持。" : "调试停止未完整结束，原资源保留并继续清理；请查看诊断记录。", close: detached); }
+            catch (Exception error) { errors.Add(error); }
+            if (errors.Count != 0) throw new AggregateException("调试采集停止未完整结束。", errors);
             Diagnostic("相机调试", "调试采集已结束", detail: Wire.Encode(new { Session = command.SessionId, Command = command, Actor = ManagementEvidence }));
             return InspectionStore.Status(command.SessionId, false);
         }
@@ -174,8 +182,8 @@ public sealed partial class ParcelRuntime : ICameraInspection
         var current = Volatile.Read(ref collectingInspection); if (current is null) return;
         var expired = current.Authority.IsCancellationRequested || current.Expires <= DateTimeOffset.UtcNow || System.Diagnostics.Stopwatch.GetElapsedTime(current.StartedTicks) >= current.Lifetime;
         if (!expired && inspectionStore?.Fault is null) return;
+        if (Interlocked.CompareExchange(ref inspectionExpiryQueued, 1, 0) != 0) return;
         if (readRound?.Session == current.Id) readRound.Cancel.Cancel();
-        Volatile.Write(ref collectingInspection, null);
         auxiliary.Add(Task.Run(async () =>
         {
             await inspectionControl.WaitAsync().ConfigureAwait(false);
@@ -184,12 +192,13 @@ public sealed partial class ParcelRuntime : ICameraInspection
                 // Closing the original management window already restores its
                 // sources under inspectionControl. A queued expiry cleanup for
                 // that closed session must not clear the live SDK buffers again.
-                if (collectingInspection is null && (!workspaceInspectionSessions.ContainsKey(current.Id) || ManagementWorkspaceOpen))
+                if (ReferenceEquals(collectingInspection, current) && (!workspaceInspectionSessions.ContainsKey(current.Id) || ManagementWorkspaceOpen))
                     foreach (var source in current.Sources) await ApplyInspectionAsync(source, null, CancellationToken.None).ConfigureAwait(false);
+                if (ReferenceEquals(collectingInspection, current)) Volatile.Write(ref collectingInspection, null);
                 inspectionStore?.State(current.Id, expired ? "Expired" : "Faulted", "调试采集已停止；原请求保留，正常供包状态未改变。", close: true);
             }
             catch (Exception error) { inspectionStoreFailure = "调试停止回执未保存，请导出诊断记录。"; Diagnostic("相机调试", "调试停止未完成", "警告", error.ToString()); }
-            finally { inspectionControl.Release(); }
+            finally { inspectionControl.Release(); Interlocked.Exchange(ref inspectionExpiryQueued, 0); }
         }));
     }
 }

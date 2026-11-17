@@ -62,16 +62,20 @@ static partial class ReliabilityHardening
             using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim(); int first = 0;
             reader.BeforeSourceRead = () => { if (Interlocked.Increment(ref first) == 1) { entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException(); } };
             var pending = Task.Run(() => reader.ContextAsync(page.Selection, page.Entries[0].Location, 0, 0, default));
-            Check(entered.Wait(TimeSpan.FromSeconds(3)), mode + " context owns a real pinned file before cancellation");
             try
             {
+                Check(entered.Wait(TimeSpan.FromSeconds(3)), mode + " context owns a real pinned file before cancellation");
                 if (mode == "dispose") reader.Dispose();
                 else if (mode == "revoke") authority.Exit();
                 else for (var i = 0; i < 4; i++) await reader.QueryAsync(query, null, 0, default);
                 Check(!pending.IsCompleted && reader.OpenSources >= 1, mode + " retains active file ownership while cancellation is pending");
             }
-            finally { release.Set(); }
-            try { await pending; throw new Exception("Cancelled context published"); } catch (OperationCanceledException) { }
+            finally
+            {
+                release.Set();
+                try { await pending; } catch (OperationCanceledException) { }
+            }
+            Check(pending.IsCanceled, mode + " cancelled context cannot publish");
             reader.Dispose();
             Check(reader.OpenSources == 0, mode + " final read exit releases all pinned sources and selection CTS");
             using var exclusive = new FileStream(file, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
@@ -92,21 +96,28 @@ static partial class ReliabilityHardening
     {
         var clock = new ControlledTime(); int attempts = 0;
         await using var journal = new RuntimeJournal(root, _ => { }, null, clock);
+        bool Contains(string entry) => journal.ReadTail(null, null).Entries.Any(e =>
+        {
+            using var document = JsonDocument.Parse(e.Text);
+            return document.RootElement.TryGetProperty("Event", out var name) && name.GetString() == entry;
+        });
         journal.BeforeAppend = () => { if (Interlocked.Increment(ref attempts) == 1) throw new IOException("Synthetic write failure"); };
         journal.Write(new { Event = "failure" }); await Until(() => JournalCount(journal, "Dropped") == 1);
         clock.Move(TimeSpan.FromHours(-12), TimeSpan.FromSeconds(2));
         journal.Write(new { Event = "after-wall-clock-rollback" });
-        await Until(() => JournalCount(journal, "Written") + JournalCount(journal, "Dropped") >= 2);
+        await Until(() => Contains("after-wall-clock-rollback"));
         Console.WriteLine($"MEASURE H02 time rollback_hours=12; monotonic_seconds=2; attempts={attempts}; written={JournalCount(journal, "Written")}");
-        Check(JournalCount(journal, "Written") == 1, "wall-clock rollback cannot postpone the one-second diagnostic recovery interval");
+        Check(Contains("after-wall-clock-rollback"), "wall-clock rollback cannot postpone the one-second diagnostic recovery interval");
+        var dropped = JournalCount(journal, "Dropped");
         journal.BeforeAppend = () => throw new IOException("Synthetic second failure");
-        journal.Write(new { Event = "failure-again" }); await Until(() => JournalCount(journal, "Dropped") == 2);
+        journal.Write(new { Event = "failure-again" }); await Until(() => JournalCount(journal, "Dropped") > dropped);
         clock.Move(TimeSpan.FromDays(2), TimeSpan.Zero);
         journal.BeforeAppend = () => Interlocked.Increment(ref attempts);
-        journal.Write(new { Event = "wall-clock-jump" }); await Until(() => JournalCount(journal, "Written") + JournalCount(journal, "Dropped") >= 4);
-        Check(JournalCount(journal, "Written") == 1, "wall-clock jump cannot bypass the monotonic recovery backoff");
+        dropped = JournalCount(journal, "Dropped");
+        journal.Write(new { Event = "wall-clock-jump" }); await Until(() => JournalCount(journal, "Dropped") > dropped);
+        Check(!Contains("wall-clock-jump"), "wall-clock jump cannot bypass the monotonic recovery backoff");
         clock.Move(TimeSpan.Zero, TimeSpan.FromSeconds(2)); journal.Write(new { Event = "elapsed" });
-        await Until(() => JournalCount(journal, "Written") == 2);
+        await Until(() => Contains("elapsed"));
         var now = DateTimeOffset.UtcNow;
         var health = new DeviceState("synthetic", "epoch", 1, DeviceHealth.Ready, now, now, now.AddSeconds(1), "controlled");
         Check(health.IsValid(now) && !health.IsValid(now.AddHours(-1)) && !health.IsValid(now.AddHours(1)),

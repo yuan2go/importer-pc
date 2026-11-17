@@ -29,7 +29,7 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
         try { read(); }
         catch (Exception e) when (StorageError(e)) { readFailures[path] = "当前值未能读取，原文件保留；请检查本机偏好文件与访问权限后重新打开。诊断：" + DiagnosticText.Protect(e.Message); }
     }
-    static bool StorageError(Exception e) => e is System.IO.IOException or UnauthorizedAccessException or System.Text.Json.JsonException or ArgumentException or InvalidOperationException;
+    static bool StorageError(Exception e) => e is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException or ArgumentException or InvalidOperationException;
     public bool CanEdit(string path) => !readFailures.ContainsKey(path);
     public string ReadFailure(string path) => readFailures.GetValueOrDefault(path, "");
     public PresentationPreferences.WindowOpeningMode OpeningMode { get => mode; set { if (mode == value) return; mode = value; Changed(); } }
@@ -38,7 +38,15 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
     public bool WindowChanged => savedMode.HasValue && mode != savedMode || uncertain.Contains("WindowOpeningMode");
     public bool HasChanges => WindowChanged || savedPace.HasValue && pace != savedPace || savedVolume.HasValue && volume != savedVolume || uncertain.Count != 0;
     public string Signature => $"{mode}/{pace}/{volume}";
-    static string UserIdentity => OperatingSystem.IsWindows() ? System.Security.Principal.WindowsIdentity.GetCurrent().User!.Value : Environment.UserName;
+    static string UserIdentity
+    {
+        get
+        {
+            if (!OperatingSystem.IsWindows()) return Environment.UserName;
+            using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+            return identity.User!.Value;
+        }
+    }
     public void Capture(IDictionary<string, string> values)
     {
         values["preference.user"] = UserIdentity;

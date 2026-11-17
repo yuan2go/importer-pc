@@ -222,6 +222,27 @@ public sealed partial class SoftwareLogControl : UserControl
         detailPanel.IsExpanded = false;
         detail.Clear(); detailPanel.Visibility = Visibility.Collapsed;
     }
+    readonly HashSet<Task> serviceOperations = [];
+    bool suspended;
+    async Task<T> TrackService<T>(Task<T> operation)
+    {
+        lock (serviceOperations) serviceOperations.Add(operation);
+        try { return await operation; }
+        finally { lock (serviceOperations) serviceOperations.Remove(operation); }
+    }
+    public async Task SuspendAndDrainAsync()
+    {
+        suspended = true; Revoke();
+        while (true)
+        {
+            Task[] pendingOperations; lock (serviceOperations) pendingOperations = serviceOperations.ToArray();
+            if (pendingOperations.Length == 0) return;
+            try { await Task.WhenAll(pendingOperations); }
+            catch { /* Every operation reports its own outcome; drain still owns all remaining calls. */ }
+        }
+    }
+    public void ResumeAfterCancelledClose()
+    { suspended = false; if (IsLoaded) { diagnosticsClosed = false; diagnosticTimer.Start(); UpdateActions(); } }
     public void Revoke()
     {
         RevokeRuntimeDiagnostics();
@@ -249,19 +270,20 @@ public sealed partial class SoftwareLogControl : UserControl
     int ContextSize() => int.TryParse(context.Text, out var value) && value is >= 0 and <= 200 ? value : throw new InvalidOperationException("上下文条数须为0～200。");
     async Task Run(Func<Task> action)
     {
-        if (busy) return;
+        if (busy || suspended) return;
         var version = viewVersion;
         var owner = new CancellationTokenSource(); pending = owner; busy = true; diagnosticText.Clear(); diagnostics.Visibility = Visibility.Collapsed; diagnostics.IsExpanded = false;
         status.Text = "正在处理…"; empty.Text = "正在查询…"; UpdateActions();
         try
         {
-            if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException("请重新进入管理模式。");
+            if (!(await TrackService(service.ManagementModeStatusAsync())).Authorized) throw new UnauthorizedAccessException("请重新进入管理模式。");
             pending.Token.ThrowIfCancellationRequested(); await action();
         }
         catch (OperationCanceledException) when (version != viewVersion) { }
         catch (Exception) when (version != viewVersion) { /* A revoked page cannot publish an old failure. */ }
         catch (OperationCanceledException) { status.Text = "操作已取消或超时，请重试。"; }
         catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { status.Text = "正则执行超时，请缩短表达式或改用普通关键词。"; }
+        catch (UnauthorizedAccessException) { Revoke(); status.Text = "管理权限已失效，请重新进入管理模式。"; }
         catch (Exception error)
         {
             status.Text = error is UnauthorizedAccessException ? "管理权限已失效，请重新进入管理模式。"
@@ -273,19 +295,27 @@ public sealed partial class SoftwareLogControl : UserControl
     }
     async Task Load(int requestedOffset)
     {
-        var page = await service.QueryLogsAsync(query ?? throw new InvalidOperationException("请先查询。"), selection, requestedOffset, pending!.Token);
-        var token = pending.Token;
+        var token = pending!.Token; var original = selection;
+        var page = await TrackService(service.QueryLogsAsync(query ?? throw new InvalidOperationException("请先查询。"), original, requestedOffset, token));
+        var adopted = false;
+        try
+        {
         var formatted = await Task.Run(() =>
         {
             var values = new Dictionary<string, string>();
             foreach (var entry in page.Entries) { token.ThrowIfCancellationRequested(); values.TryAdd(entry.Text, SoftwareLogText.Summary(entry.Text)); }
             return (Summaries: values, Terminal: SoftwareLogText.Format(page.Entries, token));
         }, token);
-        if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
-        token.ThrowIfCancellationRequested(); selection = page.Selection; offset = requestedOffset; more = page.HasMore;
+        if (!(await TrackService(service.ManagementModeStatusAsync())).Authorized) throw new UnauthorizedAccessException();
+        token.ThrowIfCancellationRequested(); selection = page.Selection; adopted = true; offset = requestedOffset; more = page.HasMore;
         summary.Values = formatted.Summaries; results.SelectedItem = null; results.ItemsSource = page.Entries;
         terminal.Text = historyTerminalText = page.Entries.Length == 0 ? "当前范围内没有匹配日志。" : formatted.Terminal; terminal.ScrollToHome(); ClearDetail();
         status.Text = "第" + (offset / 200 + 1) + "页 · " + page.Entries.Length + "条" + (more ? " · 还有下一页" : " · 已到末页") + "\n" + string.Join("\n", page.Notices.Select(QueryTime.DisplayNotice));
+        }
+        finally
+        {
+            if (!adopted && page.Selection != original && service is ISoftwareLogSelectionLifetime lifetime) lifetime.ReleaseLogSelection(page.Selection);
+        }
     }
     async Task ShowOriginal(SoftwareLogEntry entry)
     {
@@ -295,7 +325,7 @@ public sealed partial class SoftwareLogControl : UserControl
         detail.Text = "正在读取原文…"; detailPanel.Visibility = Visibility.Visible;
         try
         {
-            var authorized = (await service.ManagementModeStatusAsync()).Authorized;
+            var authorized = (await TrackService(service.ManagementModeStatusAsync())).Authorized;
             token.ThrowIfCancellationRequested();
             if (version != detailVersion || !ReferenceEquals(SelectedEntry, entry)) return;
             if (!authorized) { Revoke(); return; }
@@ -312,9 +342,9 @@ public sealed partial class SoftwareLogControl : UserControl
     {
         if (selection is null || SelectedEntry is not { } entry) return;
         formatting?.Cancel(); var version = ++detailVersion; var token = pending!.Token;
-        var size = ContextSize(); var result = await service.LogContextAsync(selection, entry.Location, size, size, token);
+        var size = ContextSize(); var result = await TrackService(service.LogContextAsync(selection, entry.Location, size, size, token));
         var text = await Task.Run(() => SoftwareLogText.Format(result.Entries, token), token);
-        if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
+        if (!(await TrackService(service.ManagementModeStatusAsync())).Authorized) throw new UnauthorizedAccessException();
         token.ThrowIfCancellationRequested();
         if (version != detailVersion || !ReferenceEquals(SelectedEntry, entry)) return;
         detailPanel.Header = "前后日志";
@@ -327,7 +357,7 @@ public sealed partial class SoftwareLogControl : UserControl
         if (entries.Length == 0) return;
         var token = pending!.Token;
         var text = await Task.Run(() => string.Join(Environment.NewLine, entries.Select(entry => entry.Text)), token);
-        if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
+        if (!(await TrackService(service.ManagementModeStatusAsync())).Authorized) throw new UnauthorizedAccessException();
         token.ThrowIfCancellationRequested();
         try { Clipboard.SetText(text); }
         catch (System.Runtime.InteropServices.ExternalException error)
@@ -346,9 +376,11 @@ public sealed partial class SoftwareLogControl : UserControl
         var picker = new SaveFileDialog { FileName = "software-logs-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".jsonl", Filter = "软件日志|*.jsonl" };
         if (picker.ShowDialog(Window.GetWindow(this)) != true) return;
         var originalSelection = selection;
+        var token = pending!.Token; var version = viewVersion;
         if (MessageBox.Show(Window.GetWindow(this), (range ? "导出该时间段内的全部日志，不受关键词、级别、来源筛选影响。" : "导出当前筛选出的全部日志（含所选前后条数）。") + "\n" + effectiveRange.Text + "\n目标：" + picker.FileName, "确认导出范围", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
-        var count = await service.ExportLogsAsync(originalSelection, picker.FileName, range, ContextSize(), pending!.Token); pending.Token.ThrowIfCancellationRequested();
-        if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
+        var count = await TrackService(service.ExportLogsAsync(originalSelection, picker.FileName, range, ContextSize(), token)); token.ThrowIfCancellationRequested();
+        if (!(await TrackService(service.ManagementModeStatusAsync())).Authorized) throw new UnauthorizedAccessException();
+        token.ThrowIfCancellationRequested(); if (version != viewVersion) return;
         exportedFile = picker.FileName; status.Text = "已导出" + count + "条原始记录：" + exportedFile + "。可点击“打开导出位置”查看。";
     }
 }

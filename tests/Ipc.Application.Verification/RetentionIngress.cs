@@ -128,7 +128,18 @@ static class RetentionIngress
             var deleteSeconds = timer.Elapsed.TotalSeconds; db.Open();
             Check(Scalar(db, "SELECT count(*) FROM parcel_ingress") == 9 && Scalar(db, "SELECT count(*) FROM parcel_ingress_audits") == 9 &&
                 Scalar(db, "SELECT count(*) FROM parcel_audit WHERE event='ComponentInput'") == 9, "inputs and only their associated audits are retired atomically");
-            Check(Scalar(db, "SELECT count(*) FROM parcel_retired_inputs WHERE body_hash NOT IN ('" + Wire.Hash("{\"Measurement\":{\"AdmissionId\":\"retired\"}}") + "','" + Wire.Hash("{\"Observation\":{\"AdmissionId\":\"retired\"}}") + "')") == 0, "every retired input hash retained");
+            using (var retired = db.CreateCommand())
+            {
+                retired.CommandText = "SELECT id,body_hash FROM parcel_retired_inputs ORDER BY id";
+                using var rows = retired.ExecuteReader();
+                for (var index = 1; index <= count; index++)
+                {
+                    var body = index % 2 == 0 ? "{\"Measurement\":{\"AdmissionId\":\"retired\"}}" : "{\"Observation\":{\"AdmissionId\":\"retired\"}}";
+                    if (!rows.Read() || rows.GetString(0) != Id(index) || rows.GetString(1) != Wire.Hash(body))
+                        throw new InvalidDataException("Retired identity/hash mismatch at " + index);
+                }
+                Check(!rows.Read(), "exact retired identity/hash set retained");
+            }
             using var integrity = db.CreateCommand(); integrity.CommandText = "PRAGMA integrity_check"; Check(integrity.ExecuteScalar() as string == "ok", "post-delete integrity");
             reports.Add(new { Count = count, OriginalPlan = oldPlan, Plan = plan, BeforeVm = beforeVm, AfterVm = afterVm, SelectSeconds = selectSeconds, DeleteSeconds = deleteSeconds, Commits = commits });
         }
@@ -193,8 +204,10 @@ static class RetentionIngress
             var path = Create(Path.Combine(root, point), 600); var deletes = 0;
             using (var repo = new ParcelRepository(Path.GetDirectoryName(path)!, "sportmaster"))
             {
-                repo.Boundary = p => { if (p == point && (point != "AfterRetentionInputDelete" || ++deletes == 257)) throw new IOException("Injected " + point); };
-                try { repo.ExpireHistoryCore(new SportmasterFlow(), 7, Now, new string('A', 64), () => { }); throw new Exception("Fault missing"); } catch (IOException) { }
+                var injected = new IOException("Injected " + point); var reached = false;
+                repo.Boundary = p => { if (p == point && (point != "AfterRetentionInputDelete" || ++deletes == 257)) { reached = true; throw injected; } };
+                try { repo.ExpireHistoryCore(new SportmasterFlow(), 7, Now, new string('A', 64), () => { }); throw new Exception("Fault missing"); } catch (IOException error) when (ReferenceEquals(error, injected)) { }
+                Check(reached, "requested retention boundary injected: " + point);
             }
             using (var db = Open(path))
             {
@@ -249,24 +262,19 @@ static class RetentionIngress
         var bulk = Path.Combine(root, "backup-cancel-source.db");
         using (var db = Database.Open(bulk)) Exec(db, "CREATE TABLE payload(body BLOB); INSERT INTO payload VALUES(zeroblob(67108864)); PRAGMA wal_checkpoint(TRUNCATE)");
         var bulkHash = Wire.FileHash(bulk); var partial = Path.Combine(root, "backup-cancel-partial.db");
-        using var duringCopy = new CancellationTokenSource(); using var started = new ManualResetEventSlim();
-        var observer = Task.Factory.StartNew(() =>
-        {
-            started.Set(); var elapsed = Stopwatch.StartNew();
-            while (elapsed.Elapsed < TimeSpan.FromSeconds(20))
-            {
-                if (File.Exists(partial) && new FileInfo(partial).Length >= 1048576) { duringCopy.Cancel(); return; }
-                Thread.Sleep(1);
-            }
-            throw new TimeoutException("Backup did not start copying pages");
-        }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-        started.Wait();
+        using var duringCopy = new CancellationTokenSource(); var copiedBeforeCancel = false;
         using (var db = Open(bulk))
         {
-            try { Database.Backup(db, partial, duringCopy.Token); throw new Exception("Executing backup ignored cancellation"); }
-            catch (OperationCanceledException) { Check(true, "paged backup cancels after copying begins"); }
+            try
+            {
+                Database.Backup(db, partial, duringCopy.Token, (copied, total) =>
+                {
+                    if (copied > 0 && copied < total) { copiedBeforeCancel = true; duringCopy.Cancel(); }
+                });
+                throw new Exception("Executing backup ignored cancellation");
+            }
+            catch (OperationCanceledException) { Check(copiedBeforeCancel, "paged backup cancels after a nonfinal copy step"); }
         }
-        observer.GetAwaiter().GetResult();
         using (var exclusive = new FileStream(partial, FileMode.Open, FileAccess.ReadWrite, FileShare.None)) { }
         Check(Wire.FileHash(bulk) == bulkHash && !File.Exists(partial + ".recovery/COMPLETED.json"), "interrupted backup preserves source bytes and cannot publish complete custody");
     }

@@ -67,26 +67,26 @@ static partial class SportmasterRcs
                 mode + " retains real original response and cannot claim a no-delivery exception");
         }
         var dropped = new TcpListener(IPAddress.Loopback, 0); dropped.Start(); var droppedPort = ((IPEndPoint)dropped.LocalEndpoint).Port;
+        using var receiveBudget = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         var received = Task.Run(async () =>
         {
             // The service owns an independent real heartbeat connection. Answer
             // that protocol before selecting the destination body to drop.
-            using var receiveBudget = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             while (true)
             {
                 using var socket = await dropped.AcceptTcpClientAsync(receiveBudget.Token); using var stream = socket.GetStream();
                 var header = new List<byte>(); var one = new byte[1];
                 while (!System.Text.Encoding.ASCII.GetString(header.ToArray()).EndsWith("\r\n\r\n", StringComparison.Ordinal))
-                { if (await stream.ReadAsync(one) != 1 || header.Count > 16384) throw new IOException("Incomplete synthetic header"); header.Add(one[0]); }
+                { if (await stream.ReadAsync(one, receiveBudget.Token) != 1 || header.Count > 16384) throw new IOException("Incomplete synthetic header"); header.Add(one[0]); }
                 var text = System.Text.Encoding.ASCII.GetString(header.ToArray());
                 var length = int.Parse(text.Split("\r\n").Single(s => s.StartsWith("Content-Length:", StringComparison.OrdinalIgnoreCase)).Split(':')[1].Trim());
-                var body = new byte[length]; await stream.ReadExactlyAsync(body);
+                var body = new byte[length]; await stream.ReadExactlyAsync(body, receiveBudget.Token);
                 var bodyText = System.Text.Encoding.UTF8.GetString(body);
                 if (bodyText.Contains("sorter.task.station_heartbeat", StringComparison.Ordinal))
                 {
                     var response = System.Text.Encoding.UTF8.GetBytes(Response(bodyText, "assigned"));
-                    await stream.WriteAsync(System.Text.Encoding.ASCII.GetBytes($"HTTP/1.1 200 OK\r\nContent-Length: {response.Length}\r\nConnection: close\r\n\r\n"));
-                    await stream.WriteAsync(response); continue;
+                    await stream.WriteAsync(System.Text.Encoding.ASCII.GetBytes($"HTTP/1.1 200 OK\r\nContent-Length: {response.Length}\r\nConnection: close\r\n\r\n"), receiveBudget.Token);
+                    await stream.WriteAsync(response, receiveBudget.Token); continue;
                 }
                 socket.Client.LingerState = new(true, 0); return bodyText;
             }
@@ -100,6 +100,11 @@ static partial class SportmasterRcs
             catch (IOException) { Check(true, "connection reset after body remains delivery/outcome unknown"); }
             Check(await received.WaitAsync(TimeSpan.FromSeconds(3)) == r.IntegrationRequest.Body, "lost-response peer received exact original frozen body once");
         }
-        finally { dropped.Stop(); }
+        finally
+        {
+            receiveBudget.Cancel(); dropped.Stop();
+            try { await received.WaitAsync(TimeSpan.FromSeconds(3)); }
+            catch (Exception error) when (error is OperationCanceledException or SocketException or IOException) { }
+        }
     }
 }

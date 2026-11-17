@@ -35,7 +35,6 @@ public sealed partial class ParcelRepository
     }
     void ValidateIntegrationIntentCommit(ParcelOperation operation, Microsoft.Data.Sqlite.SqliteTransaction transaction)
     {
-        if (operation.Wcs?.Request.IntegrationRequest is not { } wire) return;
         using var prior = db.CreateCommand(); prior.Transaction = transaction;
         prior.CommandText = "SELECT json_extract(body,'$.Wcs.Request') FROM parcel_operations WHERE id=$id" +
             (" UNION ALL SELECT json_extract(body,'$.Wcs.Request') FROM parcel_archives WHERE id=$id");
@@ -43,10 +42,12 @@ public sealed partial class ParcelRepository
         var original = prior.ExecuteScalar();
         if (original is string json)
         {
-            if (Wire.Encode(Wire.Decode<FrozenRequest>(json)) != Wire.Encode(operation.Wcs.Request))
+            var frozen = Wire.Decode<FrozenRequest>(json);
+            if ((frozen.IntegrationRequest is not null || operation.Wcs?.Request.IntegrationRequest is not null) && Wire.Encode(frozen) != Wire.Encode(operation.Wcs?.Request))
                 throw new InvalidDataException("Original external intent cannot be replaced by a new allocation");
         }
-        else RequireNewIntegrationRequestId(wire.RequestId);
+        if (operation.Wcs?.Request.IntegrationRequest is not { } wire) return;
+        if (original is not string) RequireNewIntegrationRequestId(wire.RequestId);
         RegisterIntegrationRequestOwner(operation, transaction);
     }
     public long OperationSequence(string id)
@@ -261,8 +262,9 @@ public sealed partial class ParcelRepository
 
 public sealed partial class ParcelRuntime
 {
-    bool ArchiveEligible(ParcelOperation op) => op.OriginalFrame?.State != "Pending" && IsSettled(op) && !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) &&
-        !repository!.PendingReceipts().Any(x => x.Operation == op.Id) && op.Upload?.State is not (StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
+    bool ArchiveEligible(ParcelOperation op) => ArchiveEligible(op, repository!.PendingReceipts().Select(r => r.Operation).ToHashSet(StringComparer.Ordinal));
+    bool ArchiveEligible(ParcelOperation op, HashSet<string> pending) => op.OriginalFrame?.State != "Pending" && IsSettled(op) && !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) &&
+        !pending.Contains(op.Id) && op.Upload?.State is not (StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
     int? projectedCapacity;
     long HistoricalUnknownCount => (archiveCount?.HistoricalUnknown ?? 0);
     int UnresolvedCapacity => Id == "sportmaster" ? smCurrentRounds.Count : projectedCapacity ?? operations.Values.Count(x => !ArchiveEligible(x));
@@ -283,10 +285,12 @@ public sealed partial class ParcelRuntime
     {
         var threshold = Id == "sportmaster" ? Retention.ResidentHistory : Math.Min(Retention.ResidentHistory, Effective.MaximumOperations);
         if (!requested && operations.Count < threshold) return;
-        var candidates = operations.Values.Where(ArchiveEligible).OrderBy(x => x.ObservedAt).Take(256).Select(x => x.Id).ToArray();
+        var pending = repository!.PendingReceipts().Select(r => r.Operation).ToHashSet(StringComparer.Ordinal);
+        var candidates = operations.Values.Where(op => ArchiveEligible(op, pending)).OrderBy(x => x.ObservedAt).Take(256).Select(x => x.Id).ToArray();
         if (candidates.Length == 0 && command is null) return;
-        repository!.Archive(candidates, reason ?? "Resident working-set high-water policy", command);
-        RemoveArchivedFromRuntime(candidates);
+        var revision = repository!.ArchiveRevision;
+        try { repository.Archive(candidates, reason ?? "Resident working-set high-water policy", command); }
+        finally { if (repository.ArchiveRevision != revision) RemoveArchivedFromRuntime(candidates); }
     }
 
     void RemoveArchivedFromRuntime(string[] candidates, int unknowns = 0)

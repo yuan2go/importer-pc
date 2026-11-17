@@ -37,7 +37,8 @@ public partial class HistoryPage
         AllHistoryFilters.Expanded += (_, e) => { if (ReferenceEquals(e.OriginalSource, AllHistoryFilters)) toggleFilters.Content = "收起筛选"; }; AllHistoryFilters.Collapsed += (_, e) => { if (ReferenceEquals(e.OriginalSource, AllHistoryFilters)) toggleFilters.Content = "更多筛选"; };
         HistoryQueryActions.Children.Insert(3, toggleFilters);
         var unknown = new Button { Content = "筛选格口未确认", MinHeight = 44, Margin = new(0, 0, 8, 4) };
-        unknown.Click += async (_, _) => { if (DataContext is ParcelViewModel vm) { vm.HistoryState = nameof(ParcelState.WcsUnknown); await vm.RunAsync(() => vm.LoadHistoryAsync(), "按原状态查询格口未确认作业"); } };
+        unknown.SetBinding(IsEnabledProperty, "CanStartOperation");
+        unknown.Click += async (_, _) => { if (DataContext is ParcelViewModel vm && vm.CanStartOperation) { vm.HistoryState = nameof(ParcelState.WcsUnknown); await vm.RunAsync(() => vm.LoadHistoryAsync(), "按原状态查询格口未确认作业"); } };
         if (AllHistoryFilters.Content is ScrollViewer { Content: Panel more }) more.Children.Add(unknown);
     }
 }

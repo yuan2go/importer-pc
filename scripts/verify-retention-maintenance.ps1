@@ -63,6 +63,7 @@ function Invoke-Observed([string]$Name,[string]$Executable,[string[]]$Arguments,
  $start=[Diagnostics.ProcessStartInfo]::new($Executable);$start.UseShellExecute=$false;$start.CreateNoWindow=$true;$start.WindowStyle='Hidden';$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
  foreach($arg in $Arguments){$start.ArgumentList.Add($arg)}
  $watch=[Diagnostics.Stopwatch]::StartNew();$process=[Diagnostics.Process]::Start($start)
+ try {
  $stdout=$process.StandardOutput.ReadToEndAsync();$stderr=$process.StandardError.ReadToEndAsync()
  $tick=[DateTimeOffset]::MinValue
  while(-not $process.WaitForExit(1000)){
@@ -75,8 +76,11 @@ function Invoke-Observed([string]$Name,[string]$Executable,[string[]]$Arguments,
  if($entry.PeakWorkingSet -eq 0){$entry.PeakWorkingSet=$null}
  [IO.File]::WriteAllText((Join-Path $Evidence ($Name+'.out.log')),$stdout.GetAwaiter().GetResult(),[Text.UTF8Encoding]::new($false))
  [IO.File]::WriteAllText((Join-Path $Evidence ($Name+'.err.log')),$stderr.GetAwaiter().GetResult(),[Text.UTF8Encoding]::new($false))
- $process.Dispose();$result.Runs+=,$entry;Save-Result
+ $result.Runs+=,$entry;Save-Result
  return $entry
+ } finally {
+  try { if(!$process.HasExited){$process.Kill($true);$process.WaitForExit()} } finally {$process.Dispose()}
+ }
 }
 try {
  Save-Result

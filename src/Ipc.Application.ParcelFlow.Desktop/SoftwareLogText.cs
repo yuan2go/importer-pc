@@ -47,7 +47,7 @@ static class SoftwareLogText
             }
             Visit(json.RootElement, "");
         }
-        catch (JsonException) { }
+        catch (Exception error) when (error is JsonException or InvalidOperationException or KeyNotFoundException) { }
         return text.ToString();
     }
     public static string Summary(string text)
@@ -55,6 +55,16 @@ static class SoftwareLogText
         try
         {
             using var json = JsonDocument.Parse(text);
+            if (json.RootElement.ValueKind == JsonValueKind.Object && json.RootElement.TryGetProperty("Source", out var heartbeatSource) &&
+                heartbeatSource.GetString() == "RCS心跳" && json.RootElement.TryGetProperty("Detail", out var heartbeat) && heartbeat.ValueKind == JsonValueKind.Object)
+            {
+                string Field(string key) => heartbeat.TryGetProperty(key, out var v) && v.ValueKind != JsonValueKind.Null ? v.ToString() : "—";
+                var confirmed = heartbeat.TryGetProperty("ProtocolConfirmed", out var protocol) && protocol.ValueKind == JsonValueKind.True;
+                var cars = heartbeat.TryGetProperty("Vehicles", out var vehicles) && vehicles.ValueKind == JsonValueKind.Array
+                    ? string.Join("；", vehicles.EnumerateArray().Select(v => v.GetProperty("CameraCode").GetString() + "：" + v.GetProperty("VehicleNo").GetString() + " / " + v.GetProperty("Status").GetString())) : "";
+                return OneLine("心跳请求 " + Field("RequestId") + " · HTTP " + Field("HttpStatus") + " · " + (confirmed ? "协议已确认" : "协议未确认") +
+                    " · " + Field("ElapsedMs") + " ms" + (cars.Length == 0 ? " · 未返回小车" : " · " + cars) + (confirmed ? "" : " · " + Field("Failure")));
+            }
             if (json.RootElement.ValueKind == JsonValueKind.Object && json.RootElement.TryGetProperty("Source", out var diagnosticSource) &&
                 diagnosticSource.GetString() is "RCS请求" or "相机识码" or "扫码与准入" &&
                 json.RootElement.TryGetProperty("Detail", out var diagnosticDetail) && diagnosticDetail.ValueKind is JsonValueKind.String or JsonValueKind.Object)
@@ -102,7 +112,7 @@ static class SoftwareLogText
                     if (Plain(name) is { } item) return OneLine(item);
             }
         }
-        catch (JsonException) { }
+        catch (Exception error) when (error is JsonException or InvalidOperationException or KeyNotFoundException) { }
         return OneLine(text);
     }
     // Camera device ids read as the station's own names.

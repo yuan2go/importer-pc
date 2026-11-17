@@ -102,7 +102,7 @@ public static partial class WindowsDeploymentSetup
             if (new FileInfo(file).Length > 4 * 1024 * 1024) throw new InvalidDataException("安装记录超出读取预算");
             return ProjectInstallation(request, File.ReadAllText(file), Current(request.ApplicationId), ReadDeploymentHistory(request.ApplicationId));
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or JsonException)
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or JsonException or KeyNotFoundException or InvalidOperationException or ArgumentException)
         { return new("Unknown", "尚未取得可核验的原操作终态。安装记录缺失或暂时无法读取；请稍后再次核对，禁止重复提交。"); }
     }
     internal static InstallationInspection ProjectInstallation(WindowsDeploymentRequest request, string journal, DeploymentLocation? current, DeploymentTransition[]? history = null)
@@ -131,7 +131,10 @@ public static partial class WindowsDeploymentSetup
         }
         if (state != "Failed" && history is not null && original is not null && DeploymentPrecedes(original, current, history))
             return new("Superseded", "原安装已被后续卸载、安装或恢复接管取代；原提交证据保留，不修复或启用退役程序。", original, plan);
-        if (current?.DeploymentPlanIdentity == committedIdentity && current.SourceCommit != request.SourceCommit)
+        if (current?.DeploymentPlanIdentity == committedIdentity &&
+            (!InstallationLocationMatches(request, root, current, committedIdentity) || original is not null &&
+                (!string.Equals(Path.GetFullPath(current.ReleaseRoot), Path.GetFullPath(original.ReleaseRoot), StringComparison.OrdinalIgnoreCase) ||
+                 !string.Equals(Path.GetFullPath(current.ConfigurationDirectory), Path.GetFullPath(original.ConfigurationDirectory), StringComparison.OrdinalIgnoreCase))))
             return new("Unknown", "原安装身份与当前程序来源冲突；保留原记录，不能推断安装完成。");
         DeploymentLocation? Previous()
         {

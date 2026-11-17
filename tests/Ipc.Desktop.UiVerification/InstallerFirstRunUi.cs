@@ -148,11 +148,14 @@ static partial class Program
                 reviewEntered.TrySetResult(); return reviewRelease.Task.GetAwaiter().GetResult();
             }));
         Click(window, "下一步"); await Idle(window); window.UpdateLayout();
-        Check(Descendants(window).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "安装预检详情").Text.Contains("[已隐藏]") && !Text(window).Contains("SYNTHETIC_RETRY_SECRET"),
+        Check(Descendants(window).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "安装预检详情").Text.Contains("[已隐藏]") && !Descendants(window).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "安装预检详情").Text.Contains("SYNTHETIC_RETRY_SECRET") && !Text(window).Contains("SYNTHETIC_RETRY_SECRET"),
             "real retry failure replaces old diagnostics and protects sensitive fields in summary and copyable details");
-        Click(window, "下一步"); await reviewEntered.Task.WaitAsync(TimeSpan.FromSeconds(3));
-        Check(!Descendants(window).OfType<TextBox>().Any(b => AutomationProperties.GetName(b) == "安装预检详情"), "retry clears old preflight details before the real review task completes");
-        reviewRelease.SetResult(request); await Idle(window);
+        try
+        {
+            Click(window, "下一步"); await reviewEntered.Task.WaitAsync(TimeSpan.FromSeconds(3));
+            Check(!Descendants(window).OfType<TextBox>().Any(b => AutomationProperties.GetName(b) == "安装预检详情"), "retry clears old preflight details before the real review task completes");
+        }
+        finally { reviewRelease.TrySetResult(request); await Idle(window); }
         Check(reviewCalls == 2 && observedReview == (original.RuntimeAccountSid, longData, launch.ConfigurationDirectory, longProgram, false, 0),
             "successful retry reviews the exact preserved paths and account without seed replacement or fabricated packages");
         request = (WindowsDeploymentRequest)type.GetField("reviewed", flags)!.GetValue(window)!;
@@ -293,6 +296,7 @@ static partial class Program
         Check(repairs == 1 && installCalls == 2 && ReferenceEquals(type.GetField("reviewed", flags)!.GetValue(window), request) &&
             !(bool)type.GetField("failed", flags)!.GetValue(window)! && !(bool)type.GetProperty("CanCleanPreparation")!.GetValue(window)!,
             "failed repair preserves the same committed operation and its preparation without repeating installation");
+        File.WriteAllText(Path.Combine(evidence, "repair-failure-visible.json"), System.Text.Json.JsonSerializer.Serialize(new { Text = Text(window), Buttons = Descendants(window).OfType<Button>().Where(button => button.IsVisible).Select(button => button.Content?.ToString()).ToArray(), Failure = type.GetField("failureMessage", flags)!.GetValue(window), Inspection = type.GetField("originalInspection", flags)!.GetValue(window) }));
         Check(Text(window).Contains("安装结果待确认") && Text(window).Contains("安装已完成，但开始菜单") &&
             (string)type.GetField("failureMessage", flags)!.GetValue(window)! == "合成：原系统入口修复失败" &&
             !Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "返回安装选项")) &&

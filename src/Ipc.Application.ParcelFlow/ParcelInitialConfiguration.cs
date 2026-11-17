@@ -23,7 +23,7 @@ public sealed partial class ParcelRepository
             {
                 var op = item.Operation;
                 if (flow.Id == "sportmaster" && item.Archived && IsSmUnknownHistoryCandidate(op)) continue;
-                if (!(flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected) || op.RecoveryRequired ||
+                if (op.OriginalFrame?.State == "Pending" || !(flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected) || op.RecoveryRequired ||
                     op.FrozenConfiguration.Images is not null && !op.ImageReleased ||
                     new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(x => x.State is not (StageState.Accepted or StageState.Rejected or StageState.Cancelled))) return false;
             }

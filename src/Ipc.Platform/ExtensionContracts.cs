@@ -54,9 +54,9 @@ public interface ISyntheticObservationInput
 public static class ExtensionSchema
 {
     public static bool IsId(string? value) => value is { Length: >= 1 and <= 64 } &&
-        Regex.IsMatch(value, "^[a-z][a-z0-9.-]*$", RegexOptions.CultureInvariant);
+        Regex.IsMatch(value, "^[a-z][a-z0-9.-]*\\z", RegexOptions.CultureInvariant);
     public static bool IsVersion(string? value) => value is { Length: >= 5 and <= 32 } &&
-        Regex.IsMatch(value, "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$", RegexOptions.CultureInvariant);
+        Regex.IsMatch(value, "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\z", RegexOptions.CultureInvariant);
     public static bool IsHash(string? value) => value?.Length == 64 && value.All(char.IsAsciiHexDigit);
     public static string[] ValidateDefinition(ParameterField[] fields)
     {
@@ -94,6 +94,7 @@ public static class ExtensionSchema
         {
             if (!IsApplicable(fields, values, f)) continue;
             var value = values.GetValueOrDefault(f.Key) ?? f.Default;
+            if (f.ReadOnly && value != f.Default) errors.Add(f.Key + ": read-only schema value changed");
             var conditionValue = f.RequiredWhenKey is null ? null : values.GetValueOrDefault(f.RequiredWhenKey) ?? fields.FirstOrDefault(x => x.Key == f.RequiredWhenKey)?.Default;
             if (string.IsNullOrEmpty(value))
             {
@@ -101,7 +102,6 @@ public static class ExtensionSchema
                 else if (f.Required || f.RequiredWhenKey is not null && conditionValue == f.RequiredWhenEquals) errors.Add(f.Key + ": required");
                 continue;
             }
-            if (f.ReadOnly && value != f.Default) errors.Add(f.Key + ": read-only schema value changed");
             errors.AddRange(ValidateValue(f, value));
         }
         return errors.ToArray();
@@ -112,7 +112,7 @@ public static class ExtensionSchema
     static IEnumerable<string> ValidateValue(ParameterField f, string value)
     {
         var valid = f.Type == "string-list"
-            ? value.Length <= f.MaximumLength * f.MaximumItems + 8 * f.MaximumItems
+            ? value.Length <= 6L * f.MaximumLength * f.MaximumItems + 3L * f.MaximumItems + 2
             : value.Length <= f.MaximumLength && !value.Any(char.IsControl);
         valid &= f.Type switch
         {
@@ -135,7 +135,7 @@ public static class ExtensionSchema
             return items.Length <= field.MaximumItems && items.All(x => x is not null && x.Length <= field.MaximumLength && !x.Any(char.IsControl)) &&
                 (field.Choices is null || items.All(x => field.Choices.Contains(x, StringComparer.Ordinal)) && items.Distinct(StringComparer.Ordinal).Count() == items.Length);
         }
-        catch (System.Text.Json.JsonException) { return false; }
+        catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException) { return false; }
     }
     public static Dictionary<string, string> EffectiveValues(ExtensionModule module, ExtensionInstance instance) =>
         module.Parameters.Where(x => instance.Parameters.ContainsKey(x.Key) || x.Default is not null)

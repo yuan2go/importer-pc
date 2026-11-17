@@ -1,6 +1,7 @@
 #requires -Version 7.0
 param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet')
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'verification-evidence.ps1')
 if(-not $IsWindows){throw 'Actual Windows SCM/System/restricted-token verification requires Windows'}
 $Media=(Resolve-Path -LiteralPath $Media).Path; $Output=[IO.Path]::GetFullPath($Output)
 if(Test-Path -LiteralPath $Output){throw 'A new evidence directory is required'}
@@ -15,6 +16,7 @@ foreach($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')){
  if(-not $path.StartsWith($Media+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) -or $inventory.ContainsKey($relative)){throw 'Unsafe or duplicate medium inventory'}
  if((Get-FileHash -LiteralPath $path).Hash -ne $hash){throw "Changed medium: $relative"};$inventory[$relative]=$hash
 }
+Assert-MediumInventory $Media $inventory
 $fixture=& git -C $repo show ($release.SourceCommit+':tests/Ipc.Application.Verification/AdministratorBoundary.cs')
 if($LASTEXITCODE -ne 0){throw 'Frozen service boundary fixture unavailable'}
 [IO.File]::WriteAllLines((Join-Path $Output 'AdministratorBoundary.cs'),[string[]]$fixture)

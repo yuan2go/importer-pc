@@ -118,6 +118,7 @@ public sealed partial class ParcelRepository
                     audit.Parameters.AddWithValue("$detail", Wire.Encode(new { OriginalBody = body, OriginalSha256 = Wire.Hash(body), Basis = "Original committed terminal replies or inspected never-sent cancellation; independent receipt/image/package custody unchanged" })); audit.ExecuteNonQuery();
                 }
                 tx.Commit();
+                Revision++;
             }
         }
     }

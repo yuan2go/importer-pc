@@ -181,6 +181,26 @@ def verify_run_events(record, events_path):
     starts = [event for event in events if event.get('Status') == 'Started']
     if len(starts) < 2 or any(event.get('Business') != record['Application'] for event in starts) or len({s.get('RuntimeId') for s in snapshots} - {None}) < 2:
         raise ValueError('Original run snapshots do not prove selected application restart')
+    start_indices = [i for i, event in enumerate(events) if event.get('Status') == 'Started']
+    originals = []
+    runtime_ids = []
+    for number, start in enumerate(start_indices):
+        stop = start_indices[number + 1] if number + 1 < len(start_indices) else len(events)
+        observed = [(event, op) for event in events[start + 1:stop] for op in event.get('Operations', [])
+                    if op.get('Id') == record.get('OperationId') and event in snapshots]
+        if not observed:
+            raise ValueError('Original result operation is absent from one of the claimed restart runs')
+        snapshot, original = observed[-1]
+        originals.append(original); runtime_ids.append(snapshot.get('RuntimeId'))
+    if None in runtime_ids or len(set(runtime_ids)) != len(runtime_ids):
+        raise ValueError('Original operation snapshots do not belong to distinct restart runtimes')
+    phases = {phase: originals[0][phase]['Request'] for phase in ('Wcs', 'Plc', 'Capture', 'Upload')
+              if isinstance(originals[0].get(phase), dict) and isinstance(originals[0][phase].get('Request'), dict)}
+    if not phases:
+        raise ValueError('Original result has no frozen phase request before restart')
+    for original in originals[1:]:
+        if any((original.get(phase) or {}).get('Request') != request for phase, request in phases.items()):
+            raise ValueError('Original frozen phase request changed across restart snapshots')
     config = snapshots[0]['Configuration']['Effective']
     verify_execution(record, events, config)
     images = config.get('Images')
@@ -219,7 +239,7 @@ class CombinationRun:
         self.initial_config = initial_config
         release = json.loads((root / 'app/application-release.json').read_bytes())
         declaration = json.loads((root / 'app/application-compatibility.json').read_bytes())
-        if release['SchemaVersion'] != 2 or identity['BusinessVersion'] != release['BusinessVersion'] or identity['SourceCommit'] != release['SourceCommit'] or identity['CompatibilitySha256'] != sha(root / 'app/application-compatibility.json'):
+        if release['SchemaVersion'] != 2 or identity['BusinessVersion'] != release['BusinessVersion'] or identity['SourceCommit'] != release['SourceCommit'] or identity['CompatibilitySha256'] != sha(root / 'app/application-compatibility.json') or release.get('CompatibilitySha256') != identity['CompatibilitySha256']:
             raise ValueError('Combination evidence requires matching business release schema2')
         self.declaration = declaration
         self.record.update(Application=release['ApplicationId'], BusinessVersion=release['BusinessVersion'], SourceCommit=release['SourceCommit'],
@@ -278,6 +298,8 @@ def verify_record(record_path, root, effective_configuration=None):
     if (r['Application'], r['BusinessVersion'], r['SourceCommit']) != (release['ApplicationId'], release['BusinessVersion'], release['SourceCommit']):
         raise ValueError('Record business release identity differs')
     identity = json.loads((root/'ASSEMBLY.json').read_bytes())
+    if release.get('CompatibilitySha256') != sha(root/'app/application-compatibility.json') or identity.get('CompatibilitySha256') != release.get('CompatibilitySha256'):
+        raise ValueError('Release and assembly compatibility policy hashes differ')
     if identity.get('Target') != r['Target'] or identity.get('SourceCommit') != r['SourceCommit'] or identity.get('BusinessVersion') != r['BusinessVersion']:
         raise ValueError('Record execution target/business differs from actual candidate identity')
     providers = selected_providers(config)

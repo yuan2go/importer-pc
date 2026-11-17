@@ -16,11 +16,18 @@ static class DecodeTiltBenchmark
     const int Width = 3072, Height = 2048;
     internal static void Run(string[] args)
     {
+        int Option(string name, int fallback)
+        {
+            var at = Array.IndexOf(args, name);
+            if (at < 0) return fallback;
+            if (at + 1 >= args.Length || !int.TryParse(args[at + 1], out var value) || value < 1)
+                throw new ArgumentException(name + " requires a positive integer");
+            return value;
+        }
+        var rounds = Option("--rounds", 3); var scale = Option("--scale", 3);
         var cache = Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? throw new InvalidOperationException("D-drive restored cache required");
         var library = NativeLibrary.Load(Path.Combine(cache, OperatingSystem.IsWindows() ? "zxingcpp/0.5.3/runtimes/win-x64/native/ZXing.dll" : "zxingcpp/0.5.3/runtimes/linux-x64/native/libZXing.so"));
         NativeLibrary.SetDllImportResolver(typeof(BarcodeReader).Assembly, (name, _, _) => name is "ZXing" or "ZXing.dll" ? library : 0);
-        int Option(string name, int fallback) => args.Contains(name) ? int.Parse(args[Array.IndexOf(args, name) + 1]) : fallback;
-        var rounds = Option("--rounds", 3); var scale = Option("--scale", 3);
         var settings = new ReaderSettings(["Code128", "Code39", "EAN13"], true);
         var decoder = new SoftwareDecoder("utf-8", () => { }, settings: settings); decoder.Prepare();
         using var native = new BarcodeReader { Formats = settings.NativeFormats(), TryHarder = true, TryRotate = true, TryInvert = true, TryDownscale = true, MinLineCount = 2 };
@@ -94,7 +101,8 @@ static class DecodeTiltBenchmark
         }
         if (Token() != "P5") throw new InvalidDataException("Only binary PGM (P5) frames");
         int w = int.Parse(Token()), h = int.Parse(Token()); if (Token() != "255") throw new InvalidDataException("Only 8-bit PGM");
-        at++;
+        if (bytes[at] == '\r' && at + 1 < bytes.Length && bytes[at + 1] == '\n') at += 2;
+        else at++;
         return (bytes.AsSpan(at, w * h).ToArray(), w, h);
     }
     // Label patch: white paper with quiet zone, bar height 40% of the symbol width, light blur, then rotated onto texture.

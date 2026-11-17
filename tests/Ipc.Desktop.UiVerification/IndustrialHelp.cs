@@ -71,7 +71,8 @@ static partial class Program
         {
             Check(zip.Entries.Count == 4 && zip.GetEntry("event-index.json") is null && zip.GetEntry("station.json") is null,
                 "actual exported ZIP excludes detailed log/configuration/operation artifacts");
-            using var manifest = JsonDocument.Parse(zip.GetEntry("manifest.json")!.Open());
+            using var manifestStream = zip.GetEntry("manifest.json")!.Open();
+            using var manifest = JsonDocument.Parse(manifestStream);
             Check(manifest.RootElement.GetProperty("Authority").GetString() == "Operator" && manifest.RootElement.GetProperty("Status").GetString() == "Partial",
                 "actual ordinary profile and missing-source status preserved");
         }

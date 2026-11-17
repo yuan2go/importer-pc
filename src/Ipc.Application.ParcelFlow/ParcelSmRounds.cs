@@ -20,6 +20,18 @@ public sealed partial class ParcelRuntime
     SmParcelRound? CurrentRound(string position) => smCurrentRounds.TryGetValue(position, out var id) ? smRounds.GetValueOrDefault(id) : null;
     SmPositionCycle SmCycle(string position) => smCycles.GetValueOrDefault(position) ?? new(position, false, TrayPresence.Unknown, null, 0, Wire.Id(), null);
     bool SmRoundOwns(ParcelOperation op) => op.RoundId is null || CurrentRound(op.PositionId!)?.Id == op.RoundId;
+    // A local physical ending releases the parcel claim, not an unresolved
+    // remote call: the protocol identifies only station/camera, so even a new
+    // vehicle can still be bound by that old call after a local timeout.
+    SmPositionCycle ReleaseSmPlacementClaim(SmPositionCycle cycle) => cycle with
+    {
+        SubmittedOperation = null, SubmissionAttempted = false,
+        TargetOperation = cycle.TargetOperation is { } id &&
+            (operations.GetValueOrDefault(id) ?? repository!.ReadOperation(id))?.Wcs is { } stage &&
+            (stage.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled || SmRequestNotDelivered(stage))
+            ? null : cycle.TargetOperation,
+        RecoveryCause = cycle.RecoveryCause & ~SmRemoteRecoveryCause.RequestMayBind
+    };
     readonly Dictionary<string, DateTimeOffset> smPresenceTimes = [];
     readonly Dictionary<string, long> smPresenceCaptureTicks = [];
     readonly Dictionary<string, long?> smContinuousPresence = [];
@@ -104,6 +116,7 @@ public sealed partial class ParcelRuntime
             };
             blockedInputs.TryRemove(round.PositionId, out _); blockedInputPictures.Remove(round.PositionId);
         }
+        if (physicallyRemoved || reason == "OperatorDisabledPosition") cycle = ReleaseSmPlacementClaim(cycle);
         var ended = round with { Version = round.Version + 1, State = SmRoundState.Ended, EndedAt = StationTime.GetUtcNow(), EndReason = reason };
         ParcelOperation? operation = null;
         if (round.OperationId is { } id && operations.TryGetValue(id, out var op))
@@ -119,8 +132,6 @@ public sealed partial class ParcelRuntime
                     Reason = "Round ended before first RCS attempt; no dispatch",
                     Wcs = op.Wcs is { } wcs ? wcs with { State = StageState.Cancelled } : null
                 };
-                if (physicallyRemoved && cycle.SubmittedOperation == op.Id)
-                    cycle = cycle with { SubmittedOperation = null, SubmissionAttempted = false };
             }
         }
         StoreSmRound(ended, "RoundEnded", cycle, operation, command, positionControl, commandResult);
@@ -136,7 +147,6 @@ public sealed partial class ParcelRuntime
             smContinuousPresence.Remove(round.PositionId);
             MaintainSmArrivalCaptures();
         }
-        ReleaseUndeliveredSmClaim(round.PositionId);
     }
     void MaintainSmRounds()
     {
@@ -150,17 +160,6 @@ public sealed partial class ParcelRuntime
         }
         foreach (var round in smRounds.Values.Where(r => r.EndedAt is not null &&
             (r.OperationId is null || !smExecutions.Contains(r.OperationId))).ToArray()) smRounds.Remove(round.Id);
-    }
-    void ReleaseUndeliveredSmClaim(string position)
-    {
-        var cycle = SmCycle(position);
-        if (CurrentRound(position) is not null || cycle.AutoSuppressed || cycle.TargetOperation is not null ||
-            cycle.SubmittedOperation is not { } id || smExecutions.Contains(id) ||
-            activeStages.Any(s => s.StartsWith(id + ":", StringComparison.Ordinal)) ||
-            (operations.GetValueOrDefault(id) ?? repository!.ReadOperation(id))?.Wcs is not { } stage ||
-            !SmRequestNotDelivered(stage) ||
-            repository!.HasPendingReceipt(id)) return;
-        StoreSmCycle(cycle with { SubmittedOperation = null, SubmissionAttempted = false }, "UndeliveredClaimReleasedAfterRemoval");
     }
     SmParcelRound CheckSmReadDeadline(SmParcelRound round)
     {
@@ -222,7 +221,16 @@ public sealed partial class ParcelRuntime
                 }, "RoundImageInterrupted");
         foreach (var position in positions.Keys)
             if (repository!.Cycle(position) is { } cycle)
+            {
                 smCycles[position] = cycle with { Presence = TrayPresence.Unknown };
+                // Restore the recorded physical ending, while preserving any
+                // unresolved remote target even when its operation is archived.
+                if (!cycle.AutoSuppressed || !PositionSupplyEnabled(position))
+                {
+                    var released = ReleaseSmPlacementClaim(smCycles[position]);
+                    if (released != smCycles[position]) StoreSmCycle(released, "EndedPlacementClaimReleased");
+                }
+            }
             else StoreSmCycle(SmCycle(position), "PositionCycleInitialized");
         foreach (var round in repository!.Rounds(currentOnly: true))
         {
@@ -248,7 +256,6 @@ public sealed partial class ParcelRuntime
                 StoreSmRound(round with { Version = round.Version + 1, AutoExpired = true, State = SmRoundState.ReadException, ReadOutcome = "ReadWindowExpired" }, "UnsubmittedArrivalRestored");
             else EndSmRound(round, "InterruptedOnRestart");
         }
-        foreach (var position in positions.Keys) ReleaseUndeliveredSmClaim(position);
     }
     SmParcelRound? SmRoundAfterOperation(ParcelOperation op)
     {
@@ -311,11 +318,8 @@ public sealed partial class ParcelRuntime
             }
             else if (cycle.AutoSuppressed)
             {
-                var submitted = cycle.SubmittedOperation is { } id ? operations.GetValueOrDefault(id) ?? repository!.ReadOperation(id) : null;
-                var neverAttempted = submitted is not null && (submitted.Wcs is null || submitted.Wcs.Attempts == 0);
-                cycle = cycle with { AutoSuppressed = false, ClearedAt = observation.ObservedAt, PlacementGeneration = Wire.Id(),
-                    SubmittedOperation = neverAttempted ? null : cycle.SubmittedOperation,
-                    SubmissionAttempted = neverAttempted ? false : cycle.SubmissionAttempted };
+                cycle = ReleaseSmPlacementClaim(cycle) with
+                { AutoSuppressed = false, ClearedAt = observation.ObservedAt, PlacementGeneration = Wire.Id() };
                 StoreSmCycle(cycle, "TrayRemovalAfterDisplay");
                 confirmedEmptyTrays[position] = observation.ObservedAt;
                 arrivalCaptures.TryRemove(positions[position].ReaderDeviceId, out _);
@@ -324,7 +328,6 @@ public sealed partial class ParcelRuntime
             else if (SmCycle(position).Presence != presence)
                 StoreSmCycle(cycle, "TrayPresenceObserved");
             else smCycles[position] = cycle;
-            ReleaseUndeliveredSmClaim(position);
             return;
         }
         // Freshness stays in memory. Persist physical transitions, not one audit
@@ -502,13 +505,21 @@ public sealed partial class ParcelRuntime
             if (cycle is not null) smCycles[position] = cycle;
         }
         catch { frame?.Dispose(); throw; }
-        operations[op.Id] = op; admissionPositions.TryAdd(op.AdmissionId, position); ApplySmRound(claimed); PublishInput(admitted);
-        if (frame is not null) ScheduleOriginalFrame(op, frame);
-        if (!manual && RetainInputPicture(observation, reader) is { } original) smRoundPictures[round.Id] = original;
-        if (op.FrozenConfiguration.Images is not null && reader.Source is IReaderImageCapture capture && op.Acquisition is { } identity)
-            capture.RetainAcquisition(identity, "operation:" + op.Id);
+        operations[op.Id] = op; admissionPositions.TryAdd(op.AdmissionId, position); ApplySmRound(claimed);
+        // The durable claim owns an execution before auxiliary publication can fail.
+        // It cannot enter until this command releases gate; storage failures still fence sending.
         smExecutions.Add(op.Id); activeStages.Add(op.Id + ":RoundExecution");
         auxiliary.Add(ExecuteSmRoundAsync(op.Id));
+        try
+        {
+            if (frame is not null) { ScheduleOriginalFrame(op, frame); frame = null; }
+            Boundary?.Invoke("BeforeSmInputPublication");
+            PublishInput(admitted);
+            if (!manual && RetainInputPicture(observation, reader) is { } original) smRoundPictures[round.Id] = original;
+            if (op.FrozenConfiguration.Images is not null && reader.Source is IReaderImageCapture capture && op.Acquisition is { } identity)
+                capture.RetainAcquisition(identity, "operation:" + op.Id);
+        }
+        finally { frame?.Dispose(); }
         await Task.CompletedTask;
         return new(ObservationDisposition.Admitted, admitted.Reason, op.Id, round.Id, admitted);
     }
@@ -528,12 +539,8 @@ public sealed partial class ParcelRuntime
         }
         finally
         {
-            try
-            {
-                activeStages.Remove(operation + ":RoundExecution"); smExecutions.Remove(operation);
-                ReleaseUndeliveredSmClaim(operations[operation].PositionId!);
-            }
-            finally { gate.Release(); }
+            activeStages.Remove(operation + ":RoundExecution"); smExecutions.Remove(operation);
+            gate.Release();
         }
     }
     public Task<SmRoundHistoryPage> RoundHistoryAsync(string? position = null, int limit = 100, string? search = null, DateTimeOffset? from = null, DateTimeOffset? to = null) => OwnedRead(async token =>
@@ -554,20 +561,25 @@ public sealed partial class ParcelRuntime
     {
         if (round.OriginalFrame is not null || observation.OperatorInput is not null || reader.Source is not IOriginalFrameSource source) return;
         var identity = observation.Acquisition;
+        if (!originalFrameWriters.Wait(0))
+        {
+            StoreSmRound(round with { Version = round.Version + 1, OriginalFrame = new("Failed", identity, 0, 0,
+                "images/original-frames/round." + round.Id + ".png", StationTime.GetUtcNow(), Failure: "原图写入容量已满，本轮未保留像素。") }, "RoundImageFailed");
+            return;
+        }
         IOriginalFrameLease pixels;
         try { pixels = source.RetainOriginalFrame(identity); }
-        catch (Exception error) when (error is IOException or InvalidOperationException)
-        { Diagnostic("原图留档", "本轮原图不可用", "警告", "Round=" + round.Id + "; " + error); return; }
+        catch (Exception error)
+        { originalFrameWriters.Release(); Diagnostic("原图留档", "本轮原图不可用", "警告", "Round=" + round.Id + "; " + error); return; }
         var metadata = new OriginalFrameArchive("Pending", identity, pixels.Width, pixels.Height,
             "images/original-frames/round." + round.Id + ".png", StationTime.GetUtcNow());
         try { StoreSmRound(round with { Version = round.Version + 1, OriginalFrame = metadata }, "RoundImagePrepared"); }
-        catch { pixels.Dispose(); throw; }
+        catch { pixels.Dispose(); originalFrameWriters.Release(); throw; }
         var key = "round:" + round.Id + ":OriginalFrame";
         activeStages.Add(key);
         auxiliary.Add(Task.Run(async () =>
         {
             OriginalFrameArchive result;
-            await originalFrameWriters.WaitAsync().ConfigureAwait(false);
             try
             {
                 if (BeforeSmRoundImageForVerification is { } before) await before(round.Id).ConfigureAwait(false);

@@ -30,17 +30,39 @@ public static partial class ParcelStartupServices
         using var writer = new StreamWriter(pipe, new UTF8Encoding(false, true), 1024, leaveOpen: true) { AutoFlush = true };
         using var reader = new StreamReader(pipe, new UTF8Encoding(false, true), true, 1024, leaveOpen: true);
         var writes = new object(); Exception? protocolFailure = null; var observations = 0;
+        var outbound = System.Threading.Channels.Channel.CreateBounded<string>(64);
+        MaintenanceExecution? executing = null;
+        var outputTask = Task.Run(async () =>
+        {
+            try
+            {
+                await foreach (var line in outbound.Reader.ReadAllAsync())
+                {
+                    using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                    await writer.WriteLineAsync(line.AsMemory(), deadline.Token).ConfigureAwait(false);
+                }
+            }
+            catch (Exception error)
+            {
+                lock (writes) protocolFailure ??= error;
+                outbound.Writer.TryComplete(error); executing?.TryCancel();
+                pipe.Dispose(); // Abort the stalled I/O and wake the control reader.
+            }
+        });
         void Send(object value, bool observation = false)
         {
             lock (writes)
             {
                 if (observation && ++observations > 1900) { protocolFailure ??= new IOException("维护观察帧超出预算"); return; }
-                try { writer.WriteLine(JsonSerializer.Serialize(value)); }
-                catch (IOException error) when (observation) { protocolFailure ??= error; }
+                if (!outbound.Writer.TryWrite(JsonSerializer.Serialize(value)))
+                { protocolFailure ??= new IOException("维护观察通道未及时接收，原操作结果须核对。"); executing?.TryCancel(); }
             }
         }
+        try
+        {
         using var execution = CancellableMaintenance(request.Action) ? new MaintenanceExecution(new ImmediateProgress<MaintenanceProgress>(p =>
             Send(new { Status = "MaintenanceProgress", RequestSha256 = hash, Stage = p.Stage.ToString(), p.ProcessedBytes, p.TotalBytes, p.CanCancel }, true))) : null;
+        executing = execution;
         using var controlLifetime = new CancellationTokenSource();
         var decision = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         async Task ReadControls()
@@ -105,6 +127,8 @@ public static partial class ParcelStartupServices
         var terminal = BoundMaintenanceTerminal(status, hash, errorText, result);
         if (terminal.Status == "Unknown") Environment.ExitCode = 2;
         Send(new { Status = terminal.Status, RequestSha256 = hash, Error = terminal.Error, Result = terminal.Result });
+        }
+        finally { outbound.Writer.TryComplete(); await outputTask.ConfigureAwait(false); }
     }
     internal static void DisposeMaintenanceWriter(StreamWriter writer, bool terminalCandidate, bool aborted)
     {

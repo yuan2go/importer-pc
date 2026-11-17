@@ -60,8 +60,9 @@ public sealed partial class LocalManagementMode
         {
             using var held = LockStore();
             var store = Read();
+            var original = (store.RecoveryChallenges ?? []).SingleOrDefault(c => c.Id == operationId);
             return new(operationId, store.LastRecoveryOperation == operationId ? store.LastRecoveryRevision ?? store.CredentialRevision : store.CredentialRevision, store.LastRecoveryOperation == operationId,
-                !(store.RecoveryChallenges ?? []).Any(c => c.Id == operationId && c.ExpiresAt > Now));
+                original is not null && original.ExpiresAt <= Now && original.CredentialRevision == store.CredentialRevision);
         }
     }
 

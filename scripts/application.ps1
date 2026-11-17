@@ -15,6 +15,16 @@ Set-StrictMode -Version Latest
 if (-not $IsWindows -or [Environment]::OSVersion.Version.Major -ne 10 -or [Environment]::OSVersion.Version.Build -lt 14393 -or [Runtime.InteropServices.RuntimeInformation]::OSArchitecture -ne 'X64' -or [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture -ne 'X64') {
     throw 'Functional baseline matches GUI: Windows 10.0 build 14393+ with native x64 OS/process / PowerShell 7. Device and 24x7 qualification are separate.'
 }
+function Quote-WindowsArgument([string]$Value) {
+ if($Value.Contains([char]0)){throw 'NUL is not a process argument'}
+ $text=[Text.StringBuilder]::new('"');$slashes=0
+ foreach($character in $Value.ToCharArray()){
+  if($character -eq '\'){$slashes++;continue}
+  $count=if($character -eq '"'){$slashes*2+1}else{$slashes}
+  [void]$text.Append(('\'*$count));[void]$text.Append($character);$slashes=0
+ }
+ [void]$text.Append(('\'*($slashes*2)));[void]$text.Append('"');return $text.ToString()
+}
 function Ordinary([string]$Path) {
     $pathInfo = [IO.DirectoryInfo]::new([IO.Path]::GetFullPath($Path))
     while ($null -ne $pathInfo) {
@@ -106,7 +116,7 @@ switch ($Action) {
         $shell = New-Object -ComObject WScript.Shell
         try {
             $link = $shell.CreateShortcut($File); $link.TargetPath = (Get-Process -Id $PID).Path
-            $link.Arguments = '-NoProfile -File "' + (Join-Path $Release 'application.ps1') + '" -Action Run -DataRoot "' + $DataRoot + '" -Configuration "' + $Configuration + '" -Ui ' + $Ui
+            $link.Arguments = (@('-NoProfile','-File',(Join-Path $Release 'application.ps1'),'-Action','Run','-DataRoot',$DataRoot,'-Configuration',$Configuration,'-Ui',$Ui) | ForEach-Object {Quote-WindowsArgument $_}) -join ' '
             $link.WorkingDirectory = $Release; $link.Description = $assembly.ApplicationId + ' / ' + $assembly.SourceCommit; $link.Save()
         } finally { [void][Runtime.InteropServices.Marshal]::ReleaseComObject($shell) }
         Get-Item -LiteralPath $File

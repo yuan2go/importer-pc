@@ -33,6 +33,7 @@ static class LiveDeviceCleanup
             catch (AggregateException) { }
             if (!h.App.HasUnreleasedResources) failures.Add("Repeated cleanup failure released application ownership: candidate=" + candidateFailure);
             if (failures.Count == 0) Console.WriteLine("PASS CLEANUP repeated release failure keeps shutdown retryable and application ownership retained: candidate=" + candidateFailure);
+            calls = failed.ReleaseCalls;
             await h.App.DisposeAsync();
             if (failed.ReleaseCalls <= calls || h.App.HasUnreleasedResources)
                 failures.Add("Shutdown lost the failed owner: candidate=" + candidateFailure);

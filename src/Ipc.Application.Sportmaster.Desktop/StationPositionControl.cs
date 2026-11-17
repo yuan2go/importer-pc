@@ -46,7 +46,12 @@ public sealed partial class SupplyStationPositionViewModel
             if (receipt.Status != "Persisted") owner.Message = "本位状态已变化，请查看当前提示。";
         }
         catch (Exception) { owner.Message = "未能确认取下，请按当前轮次核对原结果，不重复提交。"; }
-        finally { removalBusy = false; await owner.RefreshAsync(); }
+        finally
+        {
+            removalBusy = false;
+            try { await owner.RefreshAsync(); }
+            catch (Exception error) { owner.MarkReadFailure("取下确认后的状态读取失败：" + error.Message); }
+        }
     }
     public string DisableLabel => SupplyDisabling ? "停用中…" : "停用";
     public string SupplyStateText => SupplyEnabled ? "本位已启用" : SupplyDisabling ? "本位停用中" : "本位已停用";

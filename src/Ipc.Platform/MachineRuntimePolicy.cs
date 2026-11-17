@@ -45,6 +45,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
         RequireExtensionInstallerAuthority();
         var machine = WindowsStoragePaths.MachineRoot;
         var file = Path.Combine(machine, "runtime-policy.json");
+        TrustedProgramRoots.RequireAncestors(machine);
         RejectLinks(machine); RejectLinks(file); RequireProtectedAcl(new DirectoryInfo(machine), null); RequireProtectedAcl(new FileInfo(file), null);
         var policy = Wire.Decode<MachineRuntimePolicy>(File.ReadAllText(file));
         var leases = Path.Combine(machine, "leases");
@@ -97,6 +98,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
         var policyFile = Path.Combine(machine, "runtime-policy.json");
         if (!Directory.Exists(machine) || !File.Exists(policyFile))
             throw new InvalidDataException("Windows deployment requires a maintainer-installed machine runtime policy and designated runtime account");
+        TrustedProgramRoots.RequireAncestors(machine);
         RejectLinks(machine); RejectLinks(policyFile);
         RequireProtectedAcl(new DirectoryInfo(machine), null);
         RequireProtectedAcl(new FileInfo(policyFile), null);

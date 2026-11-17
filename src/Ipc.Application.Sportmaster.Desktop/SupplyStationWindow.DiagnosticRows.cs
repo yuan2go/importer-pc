@@ -123,7 +123,7 @@ public partial class SupplyStationWindow
                 : "剩余空间未确认。请检查 D 盘并等待状态更新。";
         });
 
-        var logState = ProductText("详细日志状态未确认"); var toggle = new Button { Content = "开启详细日志 30 分钟", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+        var logState = ProductText("详细日志状态未确认"); var toggle = new Button { Content = "开启详细日志 30 分钟", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, IsEnabled = false };
         var logDetails = new StackPanel(); logDetails.Children.Add(logState); logDetails.Children.Add(toggle);
         diagnosticLogDetails = logDetails; // shown inside the page's single "技术详情" section
         CancellationTokenSource? lifetime = null; long generation = 0; bool reading = false, setting = false;
@@ -157,15 +157,16 @@ public partial class SupplyStationWindow
         }
         toggle.Click += async (_, _) =>
         {
-            if (setting || lifetime is null || ViewModel.Application is not IRuntimeDiagnosticsControl api) return;
+            if (setting || lifetime is null || current is null || ViewModel.Application is not IRuntimeDiagnosticsControl api) return;
             setting = true; toggle.IsEnabled = false;
-            try { await ViewModel.RequireManagementModeAsync(); await api.SetDebugLoggingAsync(current?.DebugEnabled != true); }
+            var enabled = !current.DebugEnabled; var originalGeneration = generation; var token = lifetime.Token;
+            try { await ViewModel.RequireManagementModeAsync(); if (generation != originalGeneration || token.IsCancellationRequested) return; await api.SetDebugLoggingAsync(enabled); }
             catch (Exception error) { logState.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "日志设置结果未确认，请等待状态自动更新。"); }
             finally { setting = false; await Read(); }
         };
         var poll = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) }; poll.Tick += async (_, _) => { UpdateActions(); await Read(); };
         panel.Loaded += async (_, _) => { generation++; lifetime = new(); ViewModel.PropertyChanged += changed; UpdateActions(); poll.Start(); await Read(); };
-        panel.Unloaded += (_, _) => { generation++; poll.Stop(); ViewModel.PropertyChanged -= changed; lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; current = null; };
+        panel.Unloaded += (_, _) => { generation++; poll.Stop(); ViewModel.PropertyChanged -= changed; lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; current = null; toggle.IsEnabled = false; toggle.Content = "详细日志状态未确认"; };
         return panel;
     }
 }

@@ -18,6 +18,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     PackageUseLease? use;
     ResourceLease? devices;
     readonly List<IAsyncDisposable> constructed = [];
+    readonly List<IAsyncDisposable> failedLiveCleanup = [];
     readonly List<FileStream> prerequisiteHolds = [];
     internal Action<string>? Boundary { get; set; }
     internal Action<string> RequireProductionManagement { get; init; } = ManagementModeBroker.RequireProduction;
@@ -208,7 +209,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             if (sharedReader is null) continue;
             if (position?.ReaderDeviceId != sharedReader.DeviceId) throw new InvalidDataException("Capture cannot borrow another position's physical reader");
             if (sharedReader.Driver == "tcp-line") throw new InvalidDataException("TCP条码连接不提供图像采集能力");
-            if (sharedReader.Driver == "manual" && camera.Package is not null || sharedReader.Driver != "manual" &&
+            if (!sharedReader.Driver.StartsWith("extension:", StringComparison.Ordinal) ? camera.Package is not null :
                 c.Extensions!.Instances.Single(x => "extension:" + x.Id == sharedReader.Driver).PackageId != camera.Package?.Id)
                 throw new InvalidDataException("Shared capture implementation must belong to the same exact reader package");
         }
@@ -556,6 +557,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         if (!transferred || c.ApplicationId != "sportmaster" || c.Extensions is { Packages.Length: > 0 } || qualification is not null) return null;
         Dictionary<string, IControlledObservationSource> readers = [];
         Dictionary<string, string> hashes = [];
+        IWcsPort? liveWcs = null;
         try
         {
             foreach (var id in readerIds)
@@ -565,20 +567,29 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
                 var source = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.CreateReader(binding); readers.Add(id, source);
                 if (source.DeviceId != id) throw new InvalidDataException("Reader returned the wrong stable identity");
             }
-            IWcsPort? wcs = null;
             if (integration)
             {
                 if (c.Wcs is not { Package: null, Implementation: "sportmaster-rcs" } w || ParcelConnectionSetup.IsDeferred(c, w.InstanceId)) return Release();
-                var service = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(w); service.ConfigureRuntime(c); wcs = service;
+                var service = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(w); liveWcs = service; service.ConfigureRuntime(c);
                 hashes.Add(w.InstanceId, BuiltInFingerprint(service.GetType()));
             }
-            return new(readers, wcs, hashes);
+            return new(readers, liveWcs, hashes);
         }
-        catch { Release(); throw; }
+        catch (Exception original)
+        {
+            try { Release(); }
+            catch (Exception cleanup) { throw new AggregateException("Live device construction and cleanup failed; factory retains failed owners", original, cleanup); }
+            throw;
+        }
         ParcelLiveDevices? Release()
         {
-            foreach (var reader in readers.Values) try { reader.DisposeAsync().AsTask().GetAwaiter().GetResult(); } catch (Exception) { /* not started; nothing acquired */ }
-            readers.Clear(); return null;
+            List<Exception> failures = [];
+            foreach (var resource in readers.Values.Cast<IAsyncDisposable>().Concat(liveWcs is null ? [] : new IAsyncDisposable[] { liveWcs }))
+                try { resource.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+                catch (Exception error) { failedLiveCleanup.Add(resource); failures.Add(error); }
+            readers.Clear(); liveWcs = null;
+            if (failures.Count != 0) throw new AggregateException("Live candidate cleanup failed; factory retains owners", failures);
+            return null;
         }
 #else
         return null;
@@ -602,6 +613,11 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     }
     public async ValueTask DisposeAsync()
     {
+        List<Exception> liveFailures = [];
+        foreach (var resource in failedLiveCleanup.ToArray())
+            try { await resource.DisposeAsync().ConfigureAwait(false); failedLiveCleanup.Remove(resource); }
+            catch (Exception error) { liveFailures.Add(error); }
+        if (liveFailures.Count != 0) throw new AggregateException("Live candidate release remains incomplete", liveFailures);
 #if SPORTMASTER
         // Lookups are factory-owned even when normal device ports were transferred
         // to the runtime. A failed release must retain all enclosing leases.

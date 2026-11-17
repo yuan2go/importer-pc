@@ -66,7 +66,7 @@ public sealed class DateTimeInput : UserControl
             if (Timestamp.Length == 0) { invalidDate = null; date.SelectedDate = null; date.Text = ""; hint.Text = EmptyTimestampHint; }
             else if (TryRead(Timestamp, out var value))
             {
-                var local = value.ToLocalTime(); invalidDate = null; date.SelectedDate = local.Date; clock.Text = local.ToString("HH:mm:ss");
+                var local = value.ToLocalTime(); invalidDate = null; date.SelectedDate = local.Date; clock.Text = local.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
                 hint.Text = value.Ticks % TimeSpan.TicksPerSecond != 0 ? "含小数秒，完整值见“更多 → 精确时间”。" : "";
             }
             else { invalidDate = Timestamp; hint.Text = "时间无效。请重新选择日期，或修正精确时间。"; }

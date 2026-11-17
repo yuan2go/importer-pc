@@ -177,6 +177,14 @@ def _check_file(label, filepath, search_cols, output_cols, problems):
         problems.append(f"[{label}] failed to parse {filepath.name}: {e}")
         return
 
+    valid_rows = []
+    for number, row in enumerate(rows, start=2):
+        if None in row or any(not isinstance(value, str) for value in row.values()):
+            problems.append(f"[{label}] {filepath.name}: malformed row width at row {number}")
+        else:
+            valid_rows.append(row)
+    rows = valid_rows
+
     header_set = set(headers)
     for col in set(search_cols) | set(output_cols):
         if col not in header_set:
@@ -446,15 +454,27 @@ def _configured_font_names(config):
     return set(re.findall(r"'([^']+)'", config))
 
 
+def _weight_range(value):
+    if re.fullmatch(r"[1-9]\d{0,3}(?:\.\.[1-9]\d{0,3})?", value) is None:
+        return set()
+    ends = [int(part) for part in value.split("..")]
+    low, high = ends[0], ends[-1]
+    return {str(weight) for weight in range(low, high + 1)} if 1 <= low <= high <= 1000 else set()
+
+
 def _imported_weights(family_declarations):
     weights = set()
     for declaration in family_declarations:
         if ":" not in declaration or "@" not in declaration:
             continue
-        _, axis_values = declaration.split(":", 1)
-        axes, values = axis_values.split("@", 1)
-        if "wght" in axes:
-            weights.update(FONT_WEIGHT.findall(values))
+        axes, values = declaration.split(":", 1)[1].split("@", 1)
+        names = axes.split(",")
+        if "wght" not in names:
+            continue
+        for instance in values.split(";"):
+            coordinates = instance.split(",")
+            if len(coordinates) == len(names):
+                weights.update(_weight_range(coordinates[names.index("wght")]))
     return weights
 
 
@@ -543,12 +563,15 @@ def _check_font_catalog(rows, licenses, typography, problems):
         if not styles:
             problems.append(f"[catalog:google-fonts:{family}] Styles cannot be empty")
         available[family] = {style.removesuffix("i") for style in styles}
+        axis = re.search(r"(?:^|[;,|]\s*)wght:\s*(\d+\.\.\d+)", row.get("Variable Axes", ""))
+        if axis:
+            available[family].update(_weight_range(axis.group(1)))
 
     source = licenses.get("source")
     if (not isinstance(source, dict)
             or source.get("repository") != "https://github.com/google/fonts"
             or source.get("metadataFile") != "METADATA.pb"
-            or not GOOGLE_FONTS_REVISION.fullmatch(source.get("revision", ""))):
+            or not isinstance(source.get("revision"), str) or not GOOGLE_FONTS_REVISION.fullmatch(source["revision"])):
         problems.append("[catalog:google-font-licenses] invalid source revision")
     entries = licenses.get("families")
     excluded = licenses.get("excludedFamilies")
@@ -563,12 +586,13 @@ def _check_font_catalog(rows, licenses, typography, problems):
             continue
         name = item.get("name")
         if (not isinstance(name, str) or not name or name in licensed_names
-                or item.get("license") not in FONT_LICENSES
+                or not isinstance(item.get("license"), str) or item.get("license") not in FONT_LICENSES
                 or item.get("status") != "active"
                 or not _catalog_date(item.get("date_added"))
                 or not _catalog_date(item.get("verifiedAt"))):
             problems.append(f"[catalog:google-font-licenses:{name}] invalid active family")
-        licensed_names.add(name)
+        if isinstance(name, str) and name:
+            licensed_names.add(name)
     if licensed_names != family_set:
         problems.append("[catalog:google-font-licenses] active families must match google-fonts.csv")
     excluded_names = set()
@@ -581,7 +605,8 @@ def _check_font_catalog(rows, licenses, typography, problems):
                 or not _valid_google_fonts_exclusion_source(source)
                 or not _catalog_date(item.get("verifiedAt"))):
             problems.append(f"[catalog:google-font-licenses:{name}] invalid exclusion")
-        excluded_names.add(name)
+        if isinstance(name, str) and name:
+            excluded_names.add(name)
 
     for row in typography:
         pairing = row.get("Font Pairing Name", "")
@@ -606,7 +631,7 @@ def _check_phosphor_catalog(curated, manifest, problems):
     if (source.get("reactPackage"), source.get("reactVersion")) != ("@phosphor-icons/react", "2.1.10"):
         problems.append("[catalog:phosphor] unpinned React package")
     if (manifest.get("status") != "active" or not _catalog_date(manifest.get("verifiedAt"))
-            or set(manifest.get("weights", [])) != PHOSPHOR_WEIGHTS
+            or not isinstance(manifest.get("weights"), list) or any(not isinstance(value, str) for value in manifest["weights"]) or set(manifest["weights"]) != PHOSPHOR_WEIGHTS
             or imports != {"clientModule": "@phosphor-icons/react", "ssrModule": "@phosphor-icons/react/ssr"}
             or not isinstance(icons, list) or manifest.get("iconCount") != len(icons)):
         problems.append("[catalog:phosphor] invalid snapshot metadata")
@@ -615,12 +640,14 @@ def _check_phosphor_catalog(curated, manifest, problems):
     for item in icons:
         name = item.get("name") if isinstance(item, dict) else None
         component = item.get("component") if isinstance(item, dict) else None
-        if (not name or name in names or not component or component in components
+        if (not isinstance(name, str) or not name or name in names
+                or not isinstance(component, str) or not component or component in components
                 or item.get("clientImport") != f'import {{ {component} }} from "@phosphor-icons/react"'
                 or item.get("ssrImport") != f'import {{ {component} }} from "@phosphor-icons/react/ssr"'):
             problems.append(f"[catalog:phosphor:{name}] invalid identity or imports")
-        names[name] = component
-        components.add(component)
+        if isinstance(name, str) and isinstance(component, str):
+            names[name] = component
+            components.add(component)
     phosphor_rows = [row for row in curated if row.get("Library") == "Phosphor"]
     if manifest.get("curatedValidatedCount") != len(phosphor_rows):
         problems.append("[catalog:phosphor] curated validation count is stale")
@@ -633,10 +660,16 @@ def _check_phosphor_catalog(curated, manifest, problems):
 
 
 def _check_catalog_summary(summary, licenses, phosphor, problems):
+    def read_available(path):
+        try:
+            return _read_rows(path)
+        except (csv.Error, UnicodeDecodeError, OSError) as error:
+            problems.append(f"[catalog:summary] unavailable dataset {path.name}: {error}")
+            return [], []
     if not _catalog_date(summary.get("verifiedAt")):
         problems.append("[catalog:summary] invalid verifiedAt")
     counts = summary.get("counts") if isinstance(summary.get("counts"), dict) else {}
-    styles = _read_rows(DATA_DIR / "styles.csv")[1]
+    styles = read_available(DATA_DIR / "styles.csv")[1]
     expected = {
         "styles": {
             "total": len(styles),
@@ -645,18 +678,18 @@ def _check_catalog_summary(summary, licenses, phosphor, problems):
             "supplemental": sum(row.get("Status") == "supplemental" for row in styles),
             "deprecated": sum(row.get("Status") == "deprecated" for row in styles),
         },
-        "products": len(_read_rows(DATA_DIR / "products.csv")[1]),
-        "palettes": len(_read_rows(DATA_DIR / "colors.csv")[1]),
-        "reasoningProfiles": len(_read_rows(DATA_DIR / REASONING_FILE)[1]),
-        "fontPairings": len(_read_rows(DATA_DIR / "typography.csv")[1]),
-        "googleFonts": len(_read_rows(DATA_DIR / "google-fonts.csv")[1]),
-        "curatedIcons": len(_read_rows(DATA_DIR / "icons.csv")[1]),
+        "products": len(read_available(DATA_DIR / "products.csv")[1]),
+        "palettes": len(read_available(DATA_DIR / "colors.csv")[1]),
+        "reasoningProfiles": len(read_available(DATA_DIR / REASONING_FILE)[1]),
+        "fontPairings": len(read_available(DATA_DIR / "typography.csv")[1]),
+        "googleFonts": len(read_available(DATA_DIR / "google-fonts.csv")[1]),
+        "curatedIcons": len(read_available(DATA_DIR / "icons.csv")[1]),
         "upstreamPhosphorIcons": phosphor.get("iconCount"),
-        "uxGuidelines": len(_read_rows(DATA_DIR / "ux-guidelines.csv")[1]),
-        "motionPresets": len(_read_rows(DATA_DIR / "motion.csv")[1]),
-        "chartTypes": len(_read_rows(DATA_DIR / "charts.csv")[1]),
+        "uxGuidelines": len(read_available(DATA_DIR / "ux-guidelines.csv")[1]),
+        "motionPresets": len(read_available(DATA_DIR / "motion.csv")[1]),
+        "chartTypes": len(read_available(DATA_DIR / "charts.csv")[1]),
         "stacks": len(STACK_CONFIG),
-        "stackGuidelines": sum(len(_read_rows(DATA_DIR / config["file"])[1]) for config in STACK_CONFIG.values()),
+        "stackGuidelines": sum(len(read_available(DATA_DIR / config["file"])[1]) for config in STACK_CONFIG.values()),
     }
     for key, value in expected.items():
         if counts.get(key) != value:
@@ -665,9 +698,11 @@ def _check_catalog_summary(summary, licenses, phosphor, problems):
     for name in ("google-fonts.csv", "google-font-licenses.json", "icons.csv", "phosphor-icons-upstream.json"):
         # Line endings are normalized so the check matches
         # generate-catalog-summary.py on CRLF checkouts too.
-        digest = hashlib.sha256(
-            (DATA_DIR / name).read_bytes().replace(b"\r\n", b"\n")
-        ).hexdigest()
+        try:
+            digest = hashlib.sha256((DATA_DIR / name).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+        except OSError as error:
+            problems.append(f"[catalog:summary] unavailable snapshot {name}: {error}")
+            continue
         if snapshots.get(name) != {"sha256": digest}:
             problems.append(f"[catalog:summary] stale snapshot for {name}")
     policy = summary.get("promotionPolicy")
@@ -677,7 +712,7 @@ def _check_catalog_summary(summary, licenses, phosphor, problems):
         problems.append("[catalog:summary] invalid promotion policy")
     pending = sorted(
         ({"family": item.get("name"), "reason": item.get("reason")}
-         for item in licenses.get("excludedFamilies", []) if isinstance(item, dict)),
+         for item in (licenses.get("excludedFamilies") or []) if isinstance(item, dict) and isinstance(item.get("name"), str)),
         key=lambda item: (item.get("family") or "").casefold(),
     )
     if summary.get("pendingCandidates") != pending:
@@ -786,7 +821,7 @@ def _valid_provenance_source(source, source_index, identity, problems):
         return False
 
     source_type, ref = source.get("type"), source.get("ref")
-    if source_type not in PROVENANCE_SOURCE_TYPES or not isinstance(ref, str):
+    if (not isinstance(source_type, str) or source_type not in PROVENANCE_SOURCE_TYPES) or not isinstance(ref, str):
         problems.append(f"[provenance] invalid source for {identity}")
         return False
     if source_type == "official":
@@ -840,7 +875,7 @@ def _check_stack_freshness_contract(stack, rows, problems):
 
 
 def _valid_dataset_source_key(source_file, source_key, identity, problems):
-    if source_file not in CORE_PROVENANCE_FILES:
+    if (not isinstance(source_file, str) or source_file not in CORE_PROVENANCE_FILES):
         problems.append(f"[provenance] unknown dataset-contract sourceFile for {identity}")
         return False
     path = DATA_DIR / source_file
@@ -871,7 +906,7 @@ def _valid_dataset_source_key(source_file, source_key, identity, problems):
 
 
 def _valid_catalog_source_key(source_file, source_key, identity, problems):
-    if source_file not in CATALOG_PROVENANCE_FILES:
+    if (not isinstance(source_file, str) or source_file not in CATALOG_PROVENANCE_FILES):
         problems.append(f"[provenance] unknown catalog sourceFile for {identity}")
         return False
     if not (DATA_DIR / source_file).is_file():
@@ -915,15 +950,15 @@ def _check_provenance(reasoning, styles, problems):
             problems.append(f"[provenance] record {index} must be an object")
             continue
         identity = (record.get("entityKind"), record.get("entityId"))
-        if identity[0] not in PROVENANCE_KINDS or not isinstance(identity[1], str) or not identity[1]:
+        if (not isinstance(identity[0], str) or identity[0] not in PROVENANCE_KINDS) or not isinstance(identity[1], str) or not identity[1]:
             problems.append(f"[provenance] invalid identity at record {index}")
             continue
         if identity in identities:
             problems.append(f"[provenance] duplicate identity {identity}")
         identities.add(identity)
-        if record.get("status") not in PROVENANCE_STATUSES:
+        if (not isinstance(record.get("status"), str) or record.get("status") not in PROVENANCE_STATUSES):
             problems.append(f"[provenance] invalid status for {identity}")
-        if record.get("sla") not in PROVENANCE_SLAS:
+        if (not isinstance(record.get("sla"), str) or record.get("sla") not in PROVENANCE_SLAS):
             problems.append(f"[provenance] invalid sla for {identity}")
         if not _valid_date(record.get("verifiedAt")):
             problems.append(f"[provenance] invalid verifiedAt for {identity}")
@@ -933,7 +968,7 @@ def _check_provenance(reasoning, styles, problems):
             problems.append(f"[provenance] sourceKey object required for {identity}")
         applies_to = record.get("appliesTo")
         if (not isinstance(applies_to, list) or not applies_to
-                or any(value not in PROVENANCE_APPLIES_TO for value in applies_to)):
+                or any(not isinstance(value, str) or value not in PROVENANCE_APPLIES_TO for value in applies_to)):
             problems.append(f"[provenance] invalid appliesTo for {identity}")
         confidence = record.get("confidence")
         if not _valid_confidence(confidence):
@@ -953,11 +988,17 @@ def _check_provenance(reasoning, styles, problems):
             )
         source_key = record.get("sourceKey")
         source_key = source_key if isinstance(source_key, dict) else {}
-        if identity[0] == "reasoning" and source_key.get("UI_Category"):
-            covered.add(source_key["UI_Category"])
-        if identity[0] == "style" and source_key.get("Style ID"):
-            covered_styles.add(source_key["Style ID"])
         source_key_valid = True
+        if identity[0] in ("reasoning", "style"):
+            key = "UI_Category" if identity[0] == "reasoning" else "Style ID"
+            value = source_key.get(key)
+            if not isinstance(value, str) or not value:
+                problems.append(f"[provenance] invalid {key} for {identity}")
+                source_key_valid = False
+            elif identity[0] == "reasoning":
+                covered.add(value)
+            else:
+                covered_styles.add(value)
         if identity[0] == "dataset-contract":
             source_key_valid = _valid_dataset_source_key(
                 record.get("sourceFile"), source_key, identity, problems

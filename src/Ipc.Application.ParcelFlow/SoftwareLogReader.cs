@@ -12,7 +12,24 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
 {
     internal long ScannedLines;
     internal Action? BeforeSourceRead { get; set; }
-    sealed record Source(string Id, string Name, FileStream Stream, long Length);
+    sealed record Source(string Id, string Name, FileStream Stream, long Length)
+    {
+        public System.Collections.Concurrent.ConcurrentDictionary<long, string> Blocks { get; } = new();
+    }
+    static async Task<int> ReadBlock(Source source, long offset, byte[] buffer, CancellationToken token)
+    {
+        var wanted = (int)Math.Min(buffer.Length, source.Length - offset); var read = 0;
+        while (read < wanted)
+        {
+            var count = await RandomAccess.ReadAsync(source.Stream.SafeFileHandle, buffer.AsMemory(read, wanted - read), offset + read, token).ConfigureAwait(false);
+            if (count == 0) throw new IOException("原日志范围已缺失，请重新查询。");
+            read += count;
+        }
+        var hash = Convert.ToHexString(SHA256.HashData(buffer.AsSpan(0, read)));
+        if (!source.Blocks.TryAdd(offset, hash) && source.Blocks[offset] != hash)
+            throw new IOException("原日志快照内容已变化，请重新查询。");
+        return read;
+    }
     sealed class Selection(SoftwareLogQuery query, Source[] sources, CancellationToken authority)
     {
         public SoftwareLogQuery Query { get; } = query;
@@ -176,11 +193,13 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
         // Exports must not overwrite any managed software/credential/business source.
         var relative = Path.GetRelativePath(protectedRoot ?? Path.GetDirectoryName(diagnostics)!, destination);
         if (!Path.IsPathRooted(relative) && relative != ".." && !relative.StartsWith(".." + Path.DirectorySeparatorChar)) throw new IOException("请选择业务数据目录之外的导出位置。");
+        using var publication = new ExportPublication(destination);
         var temporary = destination + "." + Guid.NewGuid().ToString("N") + ".partial"; long count = 0;
+        string hash; long length;
         try
         {
-            await using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None, 16384, true))
-            await using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
+            await using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 16384, true))
+            await using (var writer = new StreamWriter(stream, new UTF8Encoding(false), leaveOpen: true))
             {
                 await writer.WriteLineAsync(DiagnosticText.Protect(JsonSerializer.Serialize(new { Format = "ImporterPc.SoftwareLog.v1", s.Query, AllInTimeRange = range, Context = context, Sources = s.Sources.Select(f => new { f.Id, f.Name, f.Length }), Notices = Notices(s) })).AsMemory(), budget.Token);
                 var prior = new Queue<SoftwareLogEntry>(); var matcher = Matcher(s.Query); int remaining = 0; string? group = null; long lastOrdinal = -1, ordinal = 0;
@@ -200,8 +219,10 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
                     prior.Enqueue(e); if (prior.Count > context) prior.Dequeue(); ordinal++;
                 }
                 await writer.FlushAsync(budget.Token); stream.Flush(true);
+                length = stream.Length; stream.Position = 0;
+                hash = Convert.ToHexString(await System.Security.Cryptography.SHA256.HashDataAsync(stream, budget.Token).ConfigureAwait(false));
             }
-            budget.Token.ThrowIfCancellationRequested(); management.Commit(() => { budget.Token.ThrowIfCancellationRequested(); File.Move(temporary, destination, false); return true; }); return count;
+            budget.Token.ThrowIfCancellationRequested(); management.PublishExport(publication, temporary, length, hash); return count;
         }
         finally { if (File.Exists(temporary)) File.Delete(temporary); }
     }

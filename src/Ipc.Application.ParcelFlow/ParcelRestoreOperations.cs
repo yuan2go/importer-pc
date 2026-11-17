@@ -116,7 +116,7 @@ public sealed partial class ParcelStartupMaintenance
             var plan = ParcelRecovery.PlanRestore(intent.Backup, intent.TargetDirectory, Authorize, execution, intent);
             return Result(plan.State, "原复制未完成；续办复用原身份，核验已有文件，损坏的已知残件先隔离保管。");
         }
-        catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidOperationException)
+        catch (Exception error) when (error is Microsoft.Data.Sqlite.SqliteException or IOException or InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidOperationException)
         { return Result("Unknown", "原结果待核实，原件保留：" + error.Message); }
     }
 }

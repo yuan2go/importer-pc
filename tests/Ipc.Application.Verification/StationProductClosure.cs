@@ -127,7 +127,7 @@ static class StationProductClosure
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App); api = h.App;
         var retryNow = DateTimeOffset.UtcNow.AddDays(10); h.App.CleanupClockForVerification = new FixedClock(retryNow);
         await h.App.CheckAutomaticCleanupAsync(retryNow);
-        Check((await api.ReadCleanupStatusAsync()).State == "维护状态待核对" && Wire.FileHash(stateFile) == stateHash && (await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == true),
+        Check((await api.ReadCleanupStatusAsync()).State == "执行状态读取失败" && Wire.FileHash(stateFile) == stateHash && (await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == true),
             "corrupt optional maintenance state disables deletion, preserves exact bytes and keeps eligible manual business available");
         Console.WriteLine("PC21 ROOT=" + root);
     }

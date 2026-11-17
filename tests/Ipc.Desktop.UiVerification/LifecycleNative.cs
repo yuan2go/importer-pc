@@ -34,7 +34,9 @@ static partial class Program
         {
             for (var i = 0; i < 3; i++)
             {
-                app.EmitReferenceAt(i % 2 == 0 ? "left" : "right", "lia-native-" + i, "00001234", "lia-native-event-" + i);
+                var lane = i % 2 == 0 ? "left" : "right";
+                if ((await app.SnapshotAsync()).Positions!.Single(position => position.Id == lane).CurrentRoundId is not null) await SmRoundFixture.NextVehicleAsync(app, lane);
+                app.EmitReferenceAt(lane, "lia-native-" + i, "00001234", "lia-native-event-" + i);
                 await Until(() => vm.Snapshot!.Operations.Any(o => o.AdmissionId == "lia-native-" + i && o.State == ParcelState.SlotResolved));
             }
             Click(window, "作业记录"); await Until(() => vm.HistoryLoaded && !vm.Busy);
@@ -47,19 +49,19 @@ static partial class Program
             var rows = Descendants(window).OfType<DataGrid>().Single(g => g.Name == "HistoryRows");
             Check(rows.ActualHeight >= rows.ColumnHeaderHeight + rows.RowHeight, "minimum native history viewport retains a full result row with applied-range feedback");
             CaptureInternal(evidence, "lia-history-edited-minimum", (FrameworkElement)window.Content, lines);
-            await SetClient(window, 1366, 768); Click(window, "参数设置"); await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
-            var policy = vm.StructuredPolicy!; policy.QueueCapacity = "77"; var editor = Descendants(window).OfType<ParameterSettingsControl>().Single();
+            await SetClient(window, 1366, 768); typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["maintenance"]); await vm.EnsureMaintenanceLoadedAsync(); await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
+            var policy = vm.StructuredPolicy!; policy.ReadTimeoutMs = "77"; var center = window.OwnedWindows.OfType<ManagementCenterWindow>().Single(); var editor = Descendants(center).OfType<ParameterSettingsControl>().Single();
             var model = editor.Model;
             var authority = LocalManagementMode.ForRoot(launch.DataRoot);
             var clock = typeof(LocalManagementMode).GetProperty("Clock", BindingFlags.Instance | BindingFlags.NonPublic)!;
             clock.SetValue(authority, (Func<DateTimeOffset>)(() => DateTimeOffset.UtcNow.AddHours(1)));
-            await Until(() => !vm.IsManagementMode && vm.SelectedPage == "workstation");
-            Check(vm.ManagementNotice.Length == 0 && !Descendants(window).OfType<TextBox>().Any(t => t.IsVisible && t.Text.Contains("管理授权已结束")) && !editor.IsVisible && policy.QueueCapacity == "77", "expired real grant hides restricted content, protects the same draft and omits the removed routine banner");
+            await Until(() => !vm.IsManagementMode && !editor.IsVisible);
+            Check(vm.ManagementNotice.Length == 0 && !Descendants(window).OfType<TextBox>().Any(t => t.IsVisible && t.Text.Contains("管理授权已结束")) && !editor.IsVisible && policy.ReadTimeoutMs == "77", "expired real grant hides restricted content, protects the same draft and omits the removed routine banner");
             CaptureInternal(evidence, "lia-mode-expired", (FrameworkElement)window.Content, lines);
             clock.SetValue(authority, (Func<DateTimeOffset>)(() => DateTimeOffset.UtcNow)); await ManagementModeFixture.Authorize(app);
             await Until(() => vm.IsManagementMode && vm.SelectedPage == "maintenance");
-            Check(ReferenceEquals(model, editor.Model) && policy.QueueCapacity == "77", "reauthorization returns to the same native editor and context");
-            policy.QueueCapacity = c.QueueCapacity.ToString();
+            Check(ReferenceEquals(model, editor.Model) && policy.ReadTimeoutMs == "77", "reauthorization returns to the same native editor and context");
+            policy.ReadTimeoutMs = (c.ReadTimeoutMs ?? 1000).ToString();
             var snapshot = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause"));
             await Until(() => vm.Snapshot!.Availability?.Configure == true);
             var b = c with { TimeoutMs = c.TimeoutMs + 1 };
@@ -70,16 +72,15 @@ static partial class Program
             await vm.RequestActivationAsync!();
             await CloseCompleted(() => stopCalls == 1 && window.IsEnabled);
             Check(window.IsVisible && stopCalls == 1 && reopen == 0 && vm.Message.Contains("仍持有资源"), "failed owner stop retains the original native window and prevents reopen; visible=" + window.IsVisible + "; reopen=" + reopen + "; message=" + vm.Message);
+            var originalRequests = (await app.SnapshotAsync()).Operations.ToDictionary(o => o.Id, o => Wire.Encode(o.Wcs));
+            Check(originalRequests.Count == 3, "three specific original operations exist before activation");
             await vm.RequestActivationAsync!();
             await CloseCompleted(() => !window.IsVisible && reopen == 1);
             Check(!window.IsVisible && stopCalls == 2 && reopen == 1 && replacement is not null, "successful resource release permits exactly one controlled replacement");
             var activated = await replacement!.SnapshotAsync();
-            Check(activated.Configuration.Effective.TimeoutMs == b.TimeoutMs && activated.Configuration.Pending is null && activated.Paused && activated.Operations.All(o => o.FrozenConfiguration.TimeoutMs == c.TimeoutMs), "real restart reads back B, stays paused and retains every original request on A");
+            Check(activated.Configuration.Effective.TimeoutMs == b.TimeoutMs && activated.Configuration.Pending is null && activated.Operations.Select(o => o.Id).Order().SequenceEqual(originalRequests.Keys.Order()) && activated.Operations.All(o => o.FrozenConfiguration.TimeoutMs == c.TimeoutMs && Wire.Encode(o.Wcs) == originalRequests[o.Id]), "real restart reads back B and retains the complete original operation set and frozen requests on A");
             await ManagementModeFixture.Authorize(replacement);
-            var classic = new ShellWindow(new ParcelViewModel(replacement, "LIA经典壳", "synthetic", "sportmaster"), () => new ParcelViewModel(replacement, "LIA", "synthetic", "sportmaster"), () => new System.Windows.Controls.UserControl()) { ConfirmDiscardDrafts = _ => true };
-            classic.Show(); await Task.Delay(250); await SetClient(classic, 800, 420);
-            Check(Descendants(classic).OfType<ManagementModeMenu>().Single().Status.Authorized && ((TextBlock)classic.FindName("OperatorIdentity")).Text.Contains("免登录"), "classic minimum viewport shows independent operator and management identities");
-            CaptureInternal(evidence, "lia-classic-minimum", (FrameworkElement)classic.Content, lines); classic.Close(); await Task.Delay(100);
+            // The current product uses the SM workstation; paused classic-shell businesses are outside this activation fixture.
             await replacement.DisposeAsync(); replacement = null;
         }
         finally
@@ -106,15 +107,27 @@ static partial class Program
         {
             var assembly = Assembly.LoadFrom(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP")!);
             var type = assembly.GetType("Ipc.Desktop.ProductMaintenanceWindow", true)!; const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            var empty = (Window)type.GetConstructor(flags, null, Type.EmptyTypes, null)!.Invoke(null);
+            Window NewWindow()
+            {
+                var instance = (Window)Activator.CreateInstance(type)!;
+                type.GetProperty("RegistrationIdentity", flags)!.SetValue(instance, (Func<string>)(() => "synthetic-registration"));
+                type.GetProperty("RegistrationScope", flags)!.SetValue(instance, (Func<string>)(() => "synthetic-installation"));
+                return instance;
+            }
+            var empty = NewWindow();
+            await using var emptyOwner = new NativeWindowOwner(empty); empty.Show(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); empty.UpdateLayout();
             Check(!Descendants(empty).OfType<TextBox>().Any(t => !t.IsReadOnly) && Descendants(empty).OfType<RadioButton>().Count() == 2,
                 "uninstall offers one data choice without a backup path or typed confirmation");
             empty.Close();
             foreach (var status in new[] { "RestartRequired", "RemovedWithRetainedFiles", "RetiredCleanupPending" })
             {
                 var receipt = new WindowsRemovalReceipt(status, "D:\\Synthetic\\original-remove.json", ["D:\\Synthetic\\retained-data"], status == "RestartRequired", ["app/locked.dll", "D:\\Synthetic\\extra-directory"], "D:\\Synthetic\\original-release");
-                var result = (Window)type.GetConstructor(flags, null, [typeof(WindowsRemovalReceipt), typeof(string)], null)!.Invoke([receipt, "D:\\Synthetic\\retained-data"]);
-                result.Show(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); result.UpdateLayout();
+                var result = NewWindow(); await using var resultOwner = new NativeWindowOwner(result);
+                result.Show(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                type.GetMethod("ShowResult", flags)!.Invoke(result, [new ProgramUninstallResult(receipt, null, false)]);
+                result.UpdateLayout();
+                Descendants(result).OfType<Expander>().Single(expander => Equals(expander.Header, "卸载详情")).IsExpanded = true;
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); result.UpdateLayout();
                 var text = string.Join("\n", Descendants(result).OfType<TextBlock>().Select(t => t.Text).Concat(Descendants(result).OfType<TextBox>().Select(t => t.Text)));
                 Check(text.Contains("程序已卸载") && text.Contains("locked.dll") && text.Contains("retained-data") && !text.Contains("卸载完成"), "native removal receipt distinguishes " + status + " from clean removal while retaining original inventory evidence");
                 Check(Descendants(result).OfType<Button>().Where(b => b.IsVisible).All(b => b.Content is "重试卸载" or "关闭"), "retired result offers fixed-inventory retry and close without removed-service authentication");

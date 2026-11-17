@@ -21,16 +21,16 @@ static partial class SportmasterRcs
             try { await service.StartAsync(default); throw new Exception("Started without runtime context"); }
             catch (InvalidDataException) { Check(peer.Requests.IsEmpty, "missing station/driver configuration refuses start before network I/O"); }
             service.ConfigureRuntime(config);
+            var schedule = new RequestClock(); service.HeartbeatScheduleForVerification = schedule;
             peer.ResponseHold = new(TaskCreationOptions.RunContinuationsAsynchronously);
-            var clock = Stopwatch.StartNew();
             await Task.WhenAll(Enumerable.Range(0, 8).Select(_ => service.StartAsync(default)));
             await Until(() => peer.Requests.Count == 1);
             Check(peer.Requests.Count == 1, "repeated start owns one immediate initial heartbeat and one loop");
             Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "local lifecycle cannot fabricate a typed remote connection confirmation");
             Check((await service.HealthAsync(default)) is { RemoteConfirmedAt: null, RemoteValidUntil: null }, "health reads before first response cannot fabricate remote timestamps");
             peer.ResponseHold.TrySetResult(); peer.ResponseHold = null;
-            await Until(() => peer.Requests.Count == 1);
-            Check(clock.Elapsed < TimeSpan.FromSeconds(8) && RcsRequestPolicy.HeartbeatMs(binding) == 1000, "initial connectivity check is independent of the default one-second periodic interval");
+            await Healthy(service); await Until(() => schedule.PendingTimers == 1);
+            Check(peer.Requests.Count == 1 && RcsRequestPolicy.HeartbeatMs(binding) == 1000, "the initial heartbeat completes before any periodic clock tick");
             var exchange = peer.Requests.Single();
             using var json = JsonDocument.Parse(exchange.Body); var envelope = json.RootElement;
             var data = envelope.GetProperty("data").EnumerateArray().ToArray();
@@ -48,6 +48,15 @@ static partial class SportmasterRcs
             await Healthy(service);
             Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived, "actual successful heartbeat sets typed response evidence independently of display wording");
             Check((await service.HealthAsync(default)).Detail.Contains("unconfirmed", StringComparison.Ordinal), "HTTP delivery never fabricates an application acknowledgement");
+            for (var tick = 0; tick < 2; tick++)
+            {
+                var sent = peer.Requests.Count;
+                schedule.Advance(999); await Task.Delay(20);
+                Check(peer.Requests.Count == sent, "no periodic heartbeat is sent before the controlled one-second deadline");
+                schedule.Advance(1);
+                await Until(() => peer.Requests.Count == sent + 1 && schedule.PendingTimers == 1);
+                Check(peer.Requests.Count == sent + 1, "each controlled periodic tick owns exactly one heartbeat");
+            }
             var evidence = await service.HealthAsync(default);
             var time = new TimeStorageFaultChecks.ManualTime { Utc = evidence.RemoteValidUntil!.Value.AddTicks(1) };
             service.HeartbeatTimeForVerification = time;
@@ -77,10 +86,21 @@ static partial class SportmasterRcs
             var first = peer.Requests.Last().Body;
             peer.Mode = "redirect"; await Until(async () => (await service.HealthAsync(default)).Detail.Contains("302", StringComparison.Ordinal));
             Check((await service.HealthAsync(default)).Detail.Contains("302", StringComparison.Ordinal), "heartbeat does not follow redirects");
+            peer.Mode = "assigned";
+            var originalDestination = Request(binding); originalDestination = originalDestination with { IntegrationRequest = service.PrepareRequest(originalDestination, 1) };
+            var originalOutcome = await service.ResolveSlotAsync(originalDestination, default); var outcomeWire = Wire.Encode(originalOutcome);
+            var destinationCount = peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal));
             peer.Mode = "timeout"; await Until(async () => (await service.HealthAsync(default)).Detail.Contains("timeout", StringComparison.Ordinal));
-            Check(true, "stalled heartbeat times out and leaves destination outcomes untouched");
-            peer.Mode = "assigned"; await service.ReconnectAsync(default);
-            Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "reconnect clears the old response confirmation before a new heartbeat");
+            Check(originalOutcome.BusinessAccepted == true && Wire.Encode(originalOutcome) == outcomeWire && peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal)) == destinationCount,
+                "stalled heartbeat leaves the actual original destination response and send count unchanged");
+            peer.Mode = "assigned"; var responseHold = peer.ResponseHold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            try
+            {
+                var sent = peer.Requests.Count; await service.ReconnectAsync(default);
+                await Until(() => peer.Requests.Count > sent);
+                Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "reconnect clears the old response confirmation while the new heartbeat response is held");
+            }
+            finally { responseHold.TrySetResult(); peer.ResponseHold = null; }
             await Healthy(service);
             var last = peer.Requests.Last().Body;
             using var before = JsonDocument.Parse(first); using var after = JsonDocument.Parse(last);
@@ -195,6 +215,20 @@ static partial class SportmasterRcs
         Check(snapshot.Configuration.Effective.Wcs!.Parameters.Count == 0 && snapshot.Positions!.Single(p => p.Id == "left").Vehicle?.Status == "IDLE" &&
             snapshot.Positions!.Single(p => p.Id == "right").Vehicle?.Status == "TASKING",
             "Application projects the correct vehicle per position without exposing editable configuration to operators");
+        var display = new Ipc.Application.Sportmaster.Desktop.SupplyStationViewModel(station.App);
+        await display.AcceptPublishedSnapshotAsync(snapshot with
+        {
+            Positions = snapshot.Positions!.Select(p => p with
+            {
+                Admit = false, BarcodeInput = p.BarcodeInput! with { Camera = false, Manual = false },
+                Arrival = p.Arrival! with { RecoveryReason = "SYNTHETIC placement blocker", Submitted = true }
+            }).ToArray()
+        });
+        Check(display.Left.VehicleStatusText.Contains(snapshot.Positions!.Single(p => p.Id == "left").Vehicle!.VehicleNo) &&
+            display.Left.VehicleStatusText.Contains("空闲，等待就绪") &&
+            display.Right.VehicleStatusText.Contains(snapshot.Positions!.Single(p => p.Id == "right").Vehicle!.VehicleNo) &&
+            display.Right.VehicleStatusText.Contains("工作中"),
+            "a blocked or submitted parcel cannot replace the actual heartbeat vehicle number and status on either lane");
         var receipt = await station.App.SubmitParcelBarcodeAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "right", "SYNTH-WORKING-AGV", ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedArrivalGeneration = snapshot.Positions!.Single(p => p.Id == "right").Arrival!.Generation, ExpectedPlacementBoundary = snapshot.Positions!.Single(p => p.Id == "right").Arrival!.PlacementBoundary }, default);
         Check(receipt.Status == "Admitted", "a working vehicle is informational and cannot block a real manual admission");
         await Until(async () => (await station.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
@@ -233,7 +267,7 @@ static partial class SportmasterRcs
     static async Task Until(Func<Task<bool>> predicate)
     {
         using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(8));
-        while (!await predicate()) await Task.Delay(20, deadline.Token);
+        while (!await predicate().WaitAsync(deadline.Token)) await Task.Delay(20, deadline.Token);
     }
     static Task Healthy(SportmasterRcsTaskService service) => Until(async () =>
     {

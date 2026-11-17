@@ -30,7 +30,7 @@ public sealed partial class ParameterSettingsControl
     {
         if (page is null || !page.Available) return;
         var priorSelecting = selectingPage; selectingPage = true;
-        try { if (FirstConfiguration) { categoryScope = page.Category; directoryView?.Refresh(); } directory.SelectedItem = page; currentPage = page; RefreshStepBar(); lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; directory.ScrollIntoView(page); }
+        try { if (FirstConfiguration || categoryScope is not null && categoryScope != page.Category) { categoryScope = page.Category; directoryView?.Refresh(); } directory.SelectedItem = page; currentPage = page; RefreshStepBar(); lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; directory.ScrollIntoView(page); }
         finally { selectingPage = priorSelecting; }
         UpdateDirectoryVisibility();
         SelectedPageChanged?.Invoke(this, EventArgs.Empty);

@@ -4,7 +4,12 @@ static class CommercialRemovalVerification
 {
     public static void Run(string root)
     {
+        root = Path.GetFullPath(root);
+        if (Directory.Exists(root) || File.Exists(root)) throw new IOException("Choose a new isolated removal fixture directory");
         Directory.CreateDirectory(root);
+        var link = Path.Combine(root, "release", "linked"); var linked = false;
+        try
+        {
         void Check(bool value, string message) { if (!value) throw new Exception(message); Console.WriteLine("PASS " + message); }
         var release = Path.Combine(root, "release"); Directory.CreateDirectory(Path.Combine(release, "app"));
         var owned = Path.Combine(release, "app", "owned.txt"); File.WriteAllText(owned, "synthetic inventory");
@@ -57,13 +62,23 @@ static class CommercialRemovalVerification
         catch (InvalidDataException) { Check(true, "inspection validates original inventory even after root deletion"); }
         var outside = Path.Combine(root, "outside"); Directory.CreateDirectory(outside); File.WriteAllText(Path.Combine(outside, "retain.txt"), "outside original tree");
         Directory.CreateDirectory(release);
-        Directory.CreateSymbolicLink(Path.Combine(release, "linked"), outside);
-        try { WindowsDeploymentSetup.ObserveRemoval(original, ["app/owned.txt"]); throw new Exception("Inspection followed a link"); }
-        catch (IOException) { Check(File.ReadAllText(Path.Combine(outside, "retain.txt")) == "outside original tree", "inspection refuses linked descendants without following or modifying outside data"); }
-        Directory.Delete(Path.Combine(release, "linked"));
+        try { Directory.CreateSymbolicLink(link, outside); linked = true; }
+        catch (Exception error) when (OperatingSystem.IsWindows() && (error is UnauthorizedAccessException || error is IOException && (error.HResult & 0xFFFF) == 1314)) { Console.WriteLine("NOT_RUN symlink subcase: caller lacks Windows symbolic-link privilege; remaining removal checks continue"); }
+        if (linked)
+        {
+            try { WindowsDeploymentSetup.ObserveRemoval(original, ["app/owned.txt"]); throw new Exception("Inspection followed a link"); }
+            catch (IOException) { Check(File.ReadAllText(Path.Combine(outside, "retain.txt")) == "outside original tree", "inspection refuses linked descendants without following or modifying outside data"); }
+            finally { Directory.Delete(link); linked = false; }
+        }
         for (var i = 0; i < 32769; i++) File.WriteAllText(Path.Combine(release, i + ".txt"), "synthetic");
         try { WindowsDeploymentSetup.ObserveRemoval(original, ["app/owned.txt"]); throw new Exception("Inspection exceeded budget"); }
         catch (InvalidDataException) { Check(Directory.EnumerateFiles(release).Count() == 32769, "oversized read-only observation refuses completion and preserves every extra file"); }
         Console.WriteLine("NOT_RUN protected uninstall entry, ARP/UAC and actual reboot deletion; this fixture only calls the internal inventory kernel.");
+        }
+        finally
+        {
+            if (linked) Directory.Delete(link); // Delete only the junction object, never its target.
+            Directory.Delete(root, recursive: true); // This invocation created this exact new fixture root.
+        }
     }
 }

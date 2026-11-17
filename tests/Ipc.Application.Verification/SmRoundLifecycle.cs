@@ -67,14 +67,17 @@ internal static class SmRoundLifecycle
                 return receipt.Status == "Persisted" && Current(await h.App.SnapshotAsync()) is null;
             });
             Check(Current(await h.App.SnapshotAsync()) is null, "explicit removal ends only its target round");
-            var lane = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left");
-            if (lane.Arrival!.TargetOperation is { } targetOperation && (await h.App.OperationAsync(targetOperation))?.Wcs?.State == StageState.Rejected)
+            var ended = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left");
+            if (ended.Arrival!.TargetOperation is not null)
             {
-                Check(!lane.Admit, "physical removal does not erase the refusal's unspecified remote effects");
-                await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC refusal response fully completed; peer confirms original task settled and withdrawal applied");
-                var state = await h.App.SnapshotAsync();
-                await h.App.SetPositionEnabledAsync(new(Wire.Id(), state.RuntimeId, "left", state.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+                await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity!.ManagedExecutions == 0);
+                await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC original remote execution and binding are settled; no delayed work remains and withdrawal applied");
+                var disabled = await h.App.SnapshotAsync();
+                await h.App.SetPositionEnabledAsync(new(Wire.Id(), disabled.RuntimeId, "left", disabled.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+                await h.App.CheckRcsHeartbeatAsync(default);
             }
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival!.TargetOperation is null,
+                "removal releases only the ended parcel's lane claim");
             await NextVehicle();
         }
         var s = await Observe([]);
@@ -150,7 +153,8 @@ internal static class SmRoundLifecycle
             observedOnly.GetProperty("Input").ValueKind == JsonValueKind.Null && Current(card)?.SelectedCode == "GOOD-304" &&
             card.Inputs!.Single(x => x.PositionId == "left").Observation.OperatorInput?.CommandId == supplemented.OperatorInput?.CommandId &&
             h.App.WorkerProgress().Single(x => x.Position == "left").Dispositions.GetValueOrDefault("AutoRepeatSuppressed") > 0,
-            "suppressed observations share receipt/log/counter semantics while retaining the PDA barcode and current parcel card");
+            "suppressed observations share receipt/log/counter semantics while retaining the PDA barcode and current parcel card: " + Wire.Encode(new
+            { observedOnly, Round = Current(card), Input = card.Inputs!.Single(x => x.PositionId == "left"), Original = supplemented.OperatorInput, Worker = h.App.WorkerProgress().Single(x => x.Position == "left") }));
         await NextVehicle();
 
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -183,19 +187,24 @@ internal static class SmRoundLifecycle
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 4));
             var snapshot = await h.App.SnapshotAsync(); var oldTarget = snapshot.Positions!.Single(p => p.Id == "left").PlacementRemovalOperation;
             await NextVehicle();
+            await Observe(["GOOD-401"]);
+            Check(Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.Count == 4,
+                "T08 replacement vehicle cannot admit the next parcel before the old binding is confirmed");
+            var right = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "GOOD-402"), default);
+            var rightResult = await Resolved(right.OperationId!);
+            Check(h.Peer.Requests.Count == 5, "T13 right-position B completes while departed left A still owns its original call");
+            h.Peer.Hold.TrySetResult(); await Resolved(a.OperationId!);
+            Check(Current(await h.App.SnapshotAsync()) is null && (await h.App.OperationAsync(rightResult.Id))!.Slot == rightResult.Slot,
+                "T09 late departed A result does not claim the new left vehicle or overwrite independently completed right B");
             s = await Observe(["GOOD-401"]); var b = Current(s)!;
             var bResult = await Resolved(b.OperationId!);
-            Check(h.Peer.Requests.Count == 5 && !h.Peer.Hold.Task.IsCompleted && bResult.Slot is not null,
-                "T08 same-position B actually receives a result while departed A is still in flight");
-            var right = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "GOOD-402"), default);
-            await Resolved(right.OperationId!);
-            Check(h.Peer.Requests.Count == 6, "T13 right-position manual input completes independently of held left A");
+            Check(h.Peer.Requests.Count == 6 && bResult.Slot is not null,
+                "T08 same-position B receives a result only after departed A's binding is confirmed");
+
             var before = await h.App.SnapshotAsync();
             var stale = await h.App.CommandAsync(new(Wire.Id(), before.Revision, "ConfirmPlacementRemoval", "left", oldTarget));
             Check(stale.Status != "Persisted" && Current(await h.App.SnapshotAsync())?.Id == b.Id, "T10 an old removal button cannot end B");
-            h.Peer.Hold.TrySetResult(); await Resolved(a.OperationId!);
-            Check(Current(await h.App.SnapshotAsync())?.Id == b.Id && (await h.App.OperationAsync(bResult.Id))!.Slot == bResult.Slot,
-                "T09 late A result stays in A's record and cannot replace B");
+
         }
         finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; h.Peer.HoldWhen = null; }
         await Remove();
@@ -222,14 +231,14 @@ internal static class SmRoundLifecycle
         var refused = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-600"), default); await Resolved(refused.OperationId!);
         var failedRound = Current(await h.App.SnapshotAsync())!;
         s = await Observe([], TrayPresence.Absent);
-        Check(Current(s) is null && !s.Positions!.Single(p => p.Id == "left").Admit, "T12 reliable absence ends manual failure automatically while remote refusal remains protected");
+        Check(Current(s) is null && s.Positions!.Single(p => p.Id == "left").Arrival!.TargetOperation is null, "T12 reliable absence ends manual failure and releases its placement claim");
         await Remove();
         s = await Observe(["GOOD-601"]);
         await Resolved(Current(s)!.OperationId!);
         var degradedFailure = Current(await h.App.SnapshotAsync())!;
         s = await Observe([], TrayPresence.Absent);
-        Check(!degradedFailure.Manual && Current(s) is null && !s.Positions!.Single(p => p.Id == "left").Admit,
-            "T12 fresh reliable absence automatically ends a formerly degraded camera failure, not its remote responsibility");
+        Check(!degradedFailure.Manual && Current(s) is null && s.Positions!.Single(p => p.Id == "left").Arrival!.TargetOperation is null,
+            "T12 fresh reliable absence automatically ends a formerly degraded camera failure and releases its claim");
         await Remove(); h.Peer.Mode = "assigned";
 
         await Observe([], TrayPresence.Present);
@@ -240,7 +249,7 @@ internal static class SmRoundLifecycle
         await Resolved(visualPdaFailure.OperationId!);
         var visualFailureRound = Current(await h.App.SnapshotAsync())!;
         s = await Observe([], TrayPresence.Absent);
-        Check(!visualFailureRound.Manual && Current(s) is null && !s.Positions!.Single(p => p.Id == "left").Admit,
+        Check(!visualFailureRound.Manual && Current(s) is null && s.Positions!.Single(p => p.Id == "left").Arrival!.TargetOperation is null,
             "T12 PDA origin does not require another click after reliable empty evidence ends its round");
         await Remove(); h.Peer.Mode = "assigned";
 
@@ -260,7 +269,8 @@ internal static class SmRoundLifecycle
         Check((await h.App.RoundHistoryAsync()).Items.All(x => x.OperationId is null || x.AttemptStarted || x.EndReason == "OperatorConfirmedRemoval"),
             "T17 round history distinguishes attempted requests from locally closed unsent intents");
 
-        // Already-ended manual requests cannot revive a confirmation branch.
+        // Ending a parcel does not decide its remote outcome or release an
+        // unknown binding. Confirm it before admitting the replacement parcel.
         foreach (var mode in new[] { "reject", "malformed", "timeout" })
         {
             var baseline = h.Peer.Requests.Count;
@@ -271,15 +281,21 @@ internal static class SmRoundLifecycle
                 var old = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-700"), default);
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == baseline + 1));
                 await NextVehicle();
+                var blocked = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-701"), default);
+                Check(blocked.Status == "Rejected" && h.Peer.Requests.Count == baseline + 1,
+                    "replacement parcel remains fenced while the old " + mode + " outcome is pending");
+                h.Peer.Mode = mode == "timeout" ? "assigned" : mode;
+                if (mode == "timeout") await Resolved(old.OperationId!);
+                h.Peer.Hold.TrySetResult(); var oldResult = await Resolved(old.OperationId!);
+                h.Peer.Mode = "assigned";
+                await Remove();
                 var newer = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-701"), default);
                 await Resolved(newer.OperationId!);
                 var newerRound = Current(await h.App.SnapshotAsync())!;
-                h.Peer.Mode = mode == "timeout" ? "assigned" : mode;
-                if (mode == "timeout") await Resolved(old.OperationId!);
-                h.Peer.Hold.TrySetResult(); await Resolved(old.OperationId!);
                 var after = Current(await h.App.SnapshotAsync())!;
-                Check(after.Id == newerRound.Id && !after.RequireRemoval && h.Peer.Requests.Count == baseline + 2,
-                    "T09/T12 late old " + mode + " stays in its original record without reviving a removal branch");
+                Check(after.Id == newerRound.Id && !after.RequireRemoval && h.Peer.Requests.Count == baseline + 2 &&
+                    (await h.App.OperationAsync(old.OperationId!))!.Wcs!.State == oldResult.Wcs!.State,
+                    "T09/T12 ended " + mode + " outcome stays original while a proven-safe replacement uses its own round");
             }
             finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; h.Peer.HoldWhen = null; h.Peer.Mode = "assigned"; }
             await Remove();
@@ -341,40 +357,37 @@ internal static class SmRoundLifecycle
         }
         finally { imageRelease.TrySetResult(); h.App.BeforeSmRoundImageForVerification = null; }
         await Remove();
-        h.App.SmExecutionCapacityForVerification = 2;
         h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        h.Peer.HoldWhen = body => body.Contains("GOOD-930", StringComparison.Ordinal) || body.Contains("GOOD-931", StringComparison.Ordinal);
+        h.Peer.HoldWhen = body => body.Contains("GOOD-930", StringComparison.Ordinal);
         var beforeCapacity = h.Peer.Requests.Count;
         try
         {
-            foreach (var code in new[] { "GOOD-930", "GOOD-931" })
-            {
-                var receipt = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", code), default);
-                await WaitOperation(receipt.OperationId!, op => op.Wcs?.State == StageState.Dispatching);
-                await Remove();
-            }
-            var capacityRound = Current(await Observe(["GOOD-932"]))!;
-            Check(capacityRound.OperationId is null && capacityRound.ReadOutcome == "ExecutionCapacityBlocked" && h.Peer.Requests.Count == beforeCapacity + 2,
-                "T13 actual task saturation refuses before claiming/sending and retains a correctable current round");
+            var held = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-930"), default);
+            await WaitOperation(held.OperationId!, op => op.Wcs?.State == StageState.Dispatching);
+            await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
+            await NextVehicle();
+            var blocked = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-932"), default);
+            Check(blocked.Status == "Rejected" && Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.Count == beforeCapacity + 1,
+                "an ended in-flight parcel retains its remote fence instead of allowing multiple unresolved targets on the lane");
             await h.NextVehicleAsync("right");
             var other = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "GOOD-933"), default);
             await Resolved(other.OperationId!);
-            Check(h.Peer.Requests.Count == beforeCapacity + 3 && !h.Peer.Hold.Task.IsCompleted,
-                "T13 a saturated left execution allowance cannot consume the right position's allowance");
+            Check(h.Peer.Requests.Count == beforeCapacity + 2 && !h.Peer.Hold.Task.IsCompleted,
+                "a fenced left request cannot consume the right position's submission opportunity");
             h.Peer.Hold.TrySetResult();
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity!.ManagedExecutions == 0);
             var rightRemoval = await h.App.SnapshotAsync();
             var capacitySubmission = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-934", ParcelBarcodeInputKind.PdaKeyboard), default);
             var completed = await Resolved(capacitySubmission.OperationId!);
-            Check(completed.RoundId == capacityRound.Id && h.Peer.Requests.Count == beforeCapacity + 4,
-                "T13 draining actual owners releases capacity and permits one PDA claim in the same unsent round");
+            Check(completed.Id != held.OperationId && h.Peer.Requests.Count == beforeCapacity + 3,
+                "the original accepted reply releases the independent fence and permits one new PDA task");
             Check((await h.App.CommandAsync(new(Wire.Id(), rightRemoval.Revision, "ConfirmPlacementRemoval", "right",
                 rightRemoval.Positions!.Single(p => p.Id == "right").PlacementRemovalOperation))).Status == "Persisted" &&
-                Current(await h.App.SnapshotAsync())?.Id == capacityRound.Id,
+                Current(await h.App.SnapshotAsync())?.Id == completed.RoundId,
                 "T10 another lane's receipt revision cannot invalidate an exact round/version removal or clear its neighbor");
             await Remove();
         }
-        finally { h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; h.Peer.HoldWhen = null; h.App.SmExecutionCapacityForVerification = 128; }
+        finally { h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; h.Peer.HoldWhen = null; }
         await ManagementModeFixture.Authorize(h.App);
         var beforeBackup = await h.App.SnapshotAsync();
         Check((await h.App.CommandAsync(new(Wire.Id(), beforeBackup.Revision, "Pause"))).Status == "Persisted", "T17 backup uses the original paused custody fence");
@@ -506,23 +519,30 @@ internal static class SmRoundLifecycle
             await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
             Check(sources[h.Left].Present(), "T18 qualified presence arrives before the slow " + (native ? "native" : "software") + " decode");
             await CameraRoundHarness.Until(async () => Current(await h.App.SnapshotAsync()) is not null);
-            using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
-            void Hold() { entered.Set(); release.Wait(); }
+            var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var exited = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            void Hold() { entered.TrySetResult(); try { release.Task.GetAwaiter().GetResult(); } finally { exited.TrySetResult(); } }
             if (native) h.Api(h.Left).BeforeAcquireReturn = Hold; else h.Factory.Decoders[h.Left].BeforeDecode = Hold;
             try
             {
                 var pixels = CameraRoundHarness.Barcode("SYNTH-SLOW-ROUND");
                 if (native) h.Api(h.Left).EnqueueNative(pixels, 1, [new("SYNTH-SLOW-ROUND", "Code128", [new(10, 10), new(400, 10), new(400, 100), new(10, 100)], 0)]);
                 else h.Api(h.Left).Enqueue(pixels, 1);
-                Check(entered.Wait(TimeSpan.FromSeconds(5)), "T18 actual acquisition/decoder enters the controlled slow boundary");
+                await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                Check(true, "T18 actual acquisition/decoder enters the controlled slow boundary");
                 await CameraRoundHarness.Until(async () => Current(await h.App.SnapshotAsync())?.AutoExpired == true);
-                release.Set();
+                release.TrySetResult();
                 await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(w => w.Position == "left").Processed >= 2));
                 var round = Current(await h.App.SnapshotAsync());
                 Check(round is { AutoExpired: true, OperationId: null } && h.Peer.Requests.IsEmpty,
                     "T18 deadline advances without another decoded frame and rejects the late " + (native ? "native" : "software") + " result");
             }
-            finally { release.Set(); h.Api(h.Left).BeforeAcquireReturn = null; h.Factory.Decoders[h.Left].BeforeDecode = null; }
+            finally
+            {
+                release.TrySetResult(); h.Api(h.Left).BeforeAcquireReturn = null; h.Factory.Decoders[h.Left].BeforeDecode = null;
+                if (entered.Task.IsCompleted) await exited.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            }
         }
     }
 }

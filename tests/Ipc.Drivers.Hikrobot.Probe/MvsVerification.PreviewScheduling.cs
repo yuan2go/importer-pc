@@ -28,9 +28,9 @@ internal static partial class MvsVerification
         try
         {
             if (!ThreadPool.SetMinThreads(1, minimumIo) || !ThreadPool.SetMaxThreads(2, maximumIo)) throw new InvalidOperationException("Cannot constrain this isolated probe process");
-            left.StartControlledAsync("left-epoch", _ => true, h => ready[h.DeviceId] = h.Health == DeviceHealth.Ready, default).GetAwaiter().GetResult();
+            left.StartControlledAsync("left-epoch", _ => true, h => ready[h.DeviceId] = h.Health == DeviceHealth.Ready, default).WaitAsync(TimeSpan.FromSeconds(5)).GetAwaiter().GetResult();
             if (!enteredLeft.Wait(TimeSpan.FromSeconds(5))) throw new TimeoutException("Left acquisition never entered SDK wait");
-            right.StartControlledAsync("right-epoch", _ => true, h => ready[h.DeviceId] = h.Health == DeviceHealth.Ready, default).GetAwaiter().GetResult();
+            right.StartControlledAsync("right-epoch", _ => true, h => ready[h.DeviceId] = h.Health == DeviceHealth.Ready, default).WaitAsync(TimeSpan.FromSeconds(5)).GetAwaiter().GetResult();
             if (!enteredRight.Wait(TimeSpan.FromSeconds(5))) throw new TimeoutException("Right acquisition never entered SDK wait");
             Check(ready.Count == 2 && ready.Values.All(r => r) && left.ReadDiagnostics().Frames == 1 && right.ReadDiagnostics().Frames == 1,
                 "both cameras are online with valid frames while their next SDK acquisitions are in flight");
@@ -48,7 +48,8 @@ internal static partial class MvsVerification
         {
             // Restore scheduling before cleanup even on the expected negative run.
             ThreadPool.SetMaxThreads(maximum, maximumIo); ThreadPool.SetMinThreads(minimum, minimumIo); release.Set();
-            left.DisposeAsync().AsTask().GetAwaiter().GetResult(); right.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            try { left.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+            finally { right.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
         }
     }
 }

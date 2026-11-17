@@ -42,20 +42,20 @@ public sealed partial class ParcelRuntime
         var oldSessions = change.Readers.ToDictionary(id => id, id => readers[id]);
         var oldWcs = change.Integration ? current.Wcs : null;
         string[] resources = [.. change.Readers, .. oldWcs is null ? Array.Empty<string>() : [DeviceKey(oldWcs)]];
-        // Fence admission on the affected positions/service before any device call.
-        foreach (var resource in resources) maintainedResources.TryAdd(resource, 0);
-        if (oldWcs is not null)
-        {
-            portEpochs.AddOrUpdate(oldWcs.InstanceId, 1, (_, value) => value + 1);
-            Volatile.Write(ref automaticCameraRcsHealth, null);
-            if (capabilityHealth.TryGetValue(oldWcs.InstanceId, out var original)) RecordCapabilityHealth(original with { Ready = false, Detail = "Reconnecting with saved settings" });
-        }
         var names = string.Join("、", change.Readers.Select(ReaderName).Concat(oldWcs is null ? [] : ["RCS"]));
-        repository.Commit(null, "LiveDeviceApplyStarted", Wire.Encode(new { Devices = resources, Actor = ManagementEvidence, CandidateHash = audit.CandidateHash }));
         var stoppedOld = false;
         var adopted = false;
         try
         {
+            // Candidate ownership and every installed fence share the same cleanup boundary.
+            foreach (var resource in resources) maintainedResources.TryAdd(resource, 0);
+            if (oldWcs is not null)
+            {
+                portEpochs.AddOrUpdate(oldWcs.InstanceId, 1, (_, value) => value + 1);
+                Volatile.Write(ref automaticCameraRcsHealth, null);
+                if (capabilityHealth.TryGetValue(oldWcs.InstanceId, out var original)) RecordCapabilityHealth(original with { Ready = false, Detail = "Reconnecting with saved settings" });
+            }
+            repository.Commit(null, "LiveDeviceApplyStarted", Wire.Encode(new { Devices = resources, Actor = ManagementEvidence, CandidateHash = audit.CandidateHash }));
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, Management.Require()); budget.CancelAfter(Effective.TimeoutMs);
             // A new RCS range is registered before any request can use it; an overlap rejects the save untouched.
             if (built.Wcs is IWcsRequestPreparer preparer)
@@ -97,14 +97,15 @@ public sealed partial class ParcelRuntime
                 throw new InvalidOperationException("设备未能及时停止，设置未保存；原设置保留。请在诊断页检查设备连接后再保存。", error);
             }
 
-            // Swap the ports, then make the candidate effective before the replacements start,
-            // so every observation they deliver is read with the saved settings.
+            // Publish the configuration before transferring candidate ownership. A failed
+            // write keeps the original sessions fenced and the unadopted candidates releasable.
             var readerPorts = (current.Readers ?? new Dictionary<string, IControlledObservationSource> { [current.Reader.DeviceId] = current.Reader })
                 .ToDictionary(x => x.Key, x => built.Readers.GetValueOrDefault(x.Key) ?? x.Value);
+            var replacementSessions = change.Readers.ToDictionary(id => id, id => new ObservationSession(built.Readers[id]));
+            configuration.ApplyLive(expectedRevision, candidate);
             ports = current with { Reader = readerPorts[current.Reader.DeviceId], Readers = readerPorts, Wcs = built.Wcs ?? current.Wcs };
             adopted = true;
-            foreach (var id in change.Readers) readers[id] = new(built.Readers[id]);
-            configuration.ApplyLive(expectedRevision, candidate);
+            foreach (var (id, session) in replacementSessions) readers[id] = session;
             DisableUnconfiguredPositions();
             if (built.Wcs is not null)
             {
@@ -175,10 +176,10 @@ public sealed partial class ParcelRuntime
         }
         catch (Exception error) when (!adopted)
         {
-            Diagnostic("设备通信", "保存设置未完成", "警告", error.ToString());
             try { await DisposeCandidatesAsync(built).ConfigureAwait(false); }
             catch (Exception cleanup) { throw new InvalidOperationException("设备清理未完成，设置未保存；请关闭供包台重试释放后再保存。", new AggregateException(error, cleanup)); }
-            if (stoppedOld) throw new InvalidOperationException("原设备释放未完成，设置未保存；请关闭供包台重试释放后再保存。", error);
+            Diagnostic("设备通信", "保存设置未完成", "警告", error.ToString());
+            if (stoppedOld) throw new InvalidOperationException("设备切换未完成，设置未保存，原配置保留；请关闭供包台核对后重新打开。", error);
             throw;
         }
         finally { if (!stoppedOld || adopted) foreach (var resource in resources) maintainedResources.TryRemove(resource, out _); }

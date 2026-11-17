@@ -69,6 +69,10 @@ internal static class SmRuntimeResponsibility
             var receipt = await app.CommandAsync(new(Wire.Id(), s.Revision, "ConfirmPlacementRemoval", op.PositionId,
                 s.Positions!.Single(p => p.Id == op.PositionId).PlacementRemovalOperation));
             Check(receipt.Status == "Persisted", "explicit removal confirms the identified original placement");
+            await SmRoundFixture.ReconcileRemoteAsync(app, op.PositionId!, "SYNTHETIC peer original execution and target binding are settled; no delayed work remains and withdrawal applied");
+            var disabled = await app.SnapshotAsync(); var lane = disabled.Positions!.Single(p => p.Id == op.PositionId);
+            await app.SetPositionEnabledAsync(new(Wire.Id(), disabled.RuntimeId, op.PositionId!, lane.SupplyControl!.Revision, true), default);
+            await app.CheckRcsHeartbeatAsync(default);
             await SmRoundFixture.NextVehicleAsync(app, op.PositionId!);
         }
 
@@ -158,13 +162,18 @@ internal static class SmRuntimeResponsibility
             Check(rejected.Inputs!.Single(input => input.PositionId == "left").BarcodeSelection?.Outcome == "NoMatchingCode" &&
                 station.Peer.Requests.Count == priorSends, "a barcode rejected by the effective rules never reaches RCS");
 
+            await CameraRoundHarness.Until(() =>
+            {
+                using var progress = System.Text.Json.JsonDocument.Parse(Wire.Encode(app.RuntimeProgress()));
+                return Task.FromResult(progress.RootElement.GetProperty("Execution").GetProperty("ManagedExecutions").GetInt32() == 0 && progress.RootElement.GetProperty("Execution").GetProperty("ActiveStageOwners").GetInt32() == 0);
+            });
             station.Peer.Hold.TrySetResult();
             await CameraRoundHarness.Until(() => Task.FromResult(station.Peer.BusinessRepliesAttempted >= priorSends));
             var after = await app.SnapshotAsync();
             Check(after.Positions!.Single(p => p.Id == "right").CurrentOperation == currentId &&
                 after.Operations.Single(op => op.Id == currentId).Slot == "CURRENT-CHUTE" &&
                 station.Peer.Requests.Count == priorSends && station.Peer.Requests.Count(body => body.Contains(oldBarcode)) == 1,
-                "late HTTP replies do not cross onto the current parcel or replay any original");
+                "server writes after the original client calls ended do not cross onto the current parcel or replay any original");
             var records = (await app.HistoryAsync()).Items.Where(item => item.Operation.Wcs?.State == StageState.Unknown).ToArray();
             Check(records.Length == 4 && records.All(item => item.Archived) &&
                 Wire.Encode(records.Single(item => item.Operation.Id == originalId).Operation.Wcs!.Request) == originalRequest,

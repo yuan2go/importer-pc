@@ -106,9 +106,10 @@ static partial class Program
             await gate.WaitAsync(); var sw = Stopwatch.StartNew(); var read = Task.Run(runtime.SnapshotAsync);
             await Task.Delay(50); gate.Release(); await read; contention.Add(sw.Elapsed.TotalMilliseconds);
         }
+        await using var nativeWindows = new NativeWindowOwners();
         var windows = new List<SupplyStationWindow>(); var idle = new List<object>();
         var firstRender = Stopwatch.StartNew();
-        var window = (SupplyStationWindow)Presentation.Create(runtime, null, "standard"); windows.Add(window); window.Show();
+        var window = (SupplyStationWindow)Presentation.Create(runtime, null, "standard"); windows.Add(window); nativeWindows.Track(window); window.Show();
         await window.ViewModel.RefreshDisplayAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
         var windowToReadyMs = firstRender.Elapsed.TotalMilliseconds;
         var refresh = new List<double>(); var notifications = 0;
@@ -120,7 +121,7 @@ static partial class Program
         }
         for (var count = 1; count <= 2; count++)
         {
-            if (count == 2) { var child = (SupplyStationWindow)Presentation.Create(runtime, null, "standard"); windows.Add(child); child.Show(); }
+            if (count == 2) { var child = (SupplyStationWindow)Presentation.Create(runtime, null, "standard"); windows.Add(child); nativeWindows.Track(child); child.Show(); }
             await Task.Delay(1500);
             var process = Process.GetCurrentProcess(); process.Refresh();
             var cpu = process.TotalProcessorTime; var alloc = GC.GetTotalAllocatedBytes(true); var memory = process.PrivateMemorySize64;

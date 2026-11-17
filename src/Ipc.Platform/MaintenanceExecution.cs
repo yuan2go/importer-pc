@@ -26,6 +26,8 @@ public sealed class MaintenanceExecution : IDisposable
     readonly IProgress<MaintenanceProgress>? progress;
     bool requested, committing, finished, disposed;
     int signalling;
+    int signallingThread;
+    bool deferredDisposal;
     internal Action? BeforeCancellationSignalForVerification { get; set; }
     public MaintenanceExecution(IProgress<MaintenanceProgress>? progress = null, CancellationToken token = default)
     {
@@ -42,10 +44,10 @@ public sealed class MaintenanceExecution : IDisposable
         {
             if (committing || finished || disposed) return false;
             if (requested) return true;
-            requested = true; signalling++;
+            requested = true; signalling++; signallingThread = Environment.CurrentManagedThreadId;
         }
         try { BeforeCancellationSignalForVerification?.Invoke(); cancellation.Cancel(); return true; }
-        finally { lock (gate) { signalling--; Monitor.PulseAll(gate); } }
+        finally { lock (gate) { signalling--; signallingThread = 0; if (deferredDisposal) cancellation.Dispose(); Monitor.PulseAll(gate); } }
     }
     public void Checkpoint()
     {
@@ -100,6 +102,8 @@ public sealed class MaintenanceExecution : IDisposable
         lock (gate)
         {
             finished = true;
+            if (signalling != 0 && signallingThread == Environment.CurrentManagedThreadId)
+            { disposed = true; deferredDisposal = true; return; }
             while (signalling != 0) Monitor.Wait(gate);
             if (disposed) return;
             disposed = true; cancellation.Dispose();

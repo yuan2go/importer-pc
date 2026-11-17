@@ -67,6 +67,11 @@ public sealed partial class ParameterSettingsControl
         try
         {
             var results = await FirstConfigurationReadiness.CheckNetworkAsync(cameras, target, CancellationToken.None);
+            var fingerprint = FirstConfigurationReadiness.Fingerprint(cameras, target);
+            if (fingerprint != FirstConfigurationReadiness.Fingerprint(CameraSlots(), RcsTarget()))
+            {
+                networkResults.Children.Clear(); networkResults.Children.Add(Text("检查期间地址已改变，请重新检查当前设置。")); networkFingerprint = null; return;
+            }
             networkResults.Children.Clear();
             if (results.Length == 0) networkResults.Children.Add(Text("还没有填写相机或 RCS 地址，无需检查。"));
             foreach (var result in results)
@@ -76,7 +81,7 @@ public sealed partial class ParameterSettingsControl
                 networkResults.Children.Add(line);
             }
             networkResults.Children.Add(Text("检查时间 " + DateTime.Now.ToString("HH:mm:ss")));
-            networkFingerprint = FirstConfigurationReadiness.Fingerprint(cameras, target);
+            networkFingerprint = fingerprint;
         }
         finally { networkChecking = false; button.IsEnabled = true; }
     }

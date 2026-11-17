@@ -25,7 +25,10 @@ MAX_REPORT_BYTES = 32 * 1024 * 1024
 
 
 def is_link(path: Path) -> bool:
-    value = path.lstat()
+    try:
+        value = path.lstat()
+    except FileNotFoundError:
+        return False
     return stat.S_ISLNK(value.st_mode) or bool(getattr(value, 'st_file_attributes', 0) & getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0))
 
 
@@ -174,12 +177,15 @@ def main() -> None:
     if is_link(output):
         raise ValueError('Coverage output directory is a link')
     canonical = output / 'product.cobertura.xml'
+    for name in ('product.cobertura.xml', 'summary.json', 'summary.md'):
+        if is_link(output / name):
+            raise ValueError('Coverage output entry is a link')
     if canonical.exists() and hashlib.sha256(canonical.read_bytes()).hexdigest() != digest:
         raise ValueError('Refusing to overwrite a different source coverage report')
     if not canonical.exists():
         shutil.copyfile(report, canonical)
     for name in ('summary.json', 'summary.md'):
-        if (output / name).exists() and is_link(output / name):
+        if is_link(output / name):
             raise ValueError('Coverage summary output is a link')
     (output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
     (output / 'summary.md').write_text(markdown(summary), encoding='utf-8')

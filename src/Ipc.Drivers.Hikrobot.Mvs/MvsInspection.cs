@@ -137,6 +137,7 @@ internal sealed partial class MvsAcquisition : IObservationInspectionSource
             // Preserve suppression identity after collection failure. Never silently
             // convert the same isolated frame to a business observation.
             if (inspection?.Id == registration.Id) inspection = registration with { Receive = _ => false, CaptureImages = false };
+            if (afterCacheCutover?.Id == registration.Id) afterCacheCutover = afterCacheCutover with { Receive = _ => false, CaptureImages = false };
         }
     }
 }

@@ -9,6 +9,8 @@ try {
     }
 } finally { $identity.Dispose() }
 
+& "$PSScriptRoot/initialize-disposable-windows-volume.ps1"
+
 $verificationRoot = 'D:/sm-vc-acceptance'
 $evidence = Join-Path $verificationRoot 'evidence'
 $inputRoot = Join-Path $verificationRoot 'redist'
@@ -59,8 +61,20 @@ function Vc90Files {
 $before = [ordered]@{Vc2010 = Test-Path -LiteralPath $systemRuntime; Vc90 = @(Vc90Files)}
 $before | ConvertTo-Json | Set-Content -LiteralPath "$evidence/before.json"
 if ($before.Vc2010) { throw 'Verification requires the x64 VC++ 2010 runtime to be absent before install' }
-$expectedVc90 = if ($before.Vc90.Count) { 'AlreadyAvailable' } else { 'Installed' }
-Write-Output "PASS baseline: x64 VC++ 2010 is absent. VC++ 2008 assembly: $($before.Vc90 -join ', '). Expected VC++ 2008 result: $expectedVc90."
+# Use the actual packaged implementation and exact activation manifest. Merely
+# finding some VC90 files in WinSxS does not prove this binding can activate.
+$probeRoot=Join-Path $evidence 'vc90-activation-probe'
+New-Item -ItemType Directory -Path $probeRoot | Out-Null
+[IO.File]::WriteAllText((Join-Path $probeRoot 'Probe.csproj'),'<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework></PropertyGroup></Project>')
+[IO.File]::WriteAllText((Join-Path $probeRoot 'Program.cs'),'var assembly=System.Reflection.Assembly.LoadFrom(args[0]);var method=assembly.GetType("Ipc.Platform.SmVcRuntimeSetup",true).GetMethod("CanLoadVc90",System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.NonPublic);System.Console.WriteLine((bool)method.Invoke(null,new object[]{args[1]})?"Available":"Missing");')
+& dotnet build (Join-Path $probeRoot 'Probe.csproj') --nologo *> (Join-Path $evidence 'vc90-probe-build.log')
+if($LASTEXITCODE){throw 'Could not build the read-only actual activation probe'}
+$activationManifest=Join-Path $verificationRoot 'media/prerequisites/vc90-probe.manifest'
+$availability=& dotnet (Join-Path $probeRoot 'bin/Debug/net10.0/Probe.dll') (Join-Path $verificationRoot 'media/app/Ipc.Platform.dll') $activationManifest
+if($LASTEXITCODE -ne 0 -or $availability -notin 'Available','Missing'){throw 'Actual VC90 activation probe failed'}
+$expectedVc90=if($availability -eq 'Available'){'AlreadyAvailable'}else{'Installed'}
+[ordered]@{Expected=$expectedVc90;ActualActivation=$availability;ManifestSha256=(Get-FileHash -LiteralPath $activationManifest).Hash;PlatformSha256=(Get-FileHash -LiteralPath (Join-Path $verificationRoot 'media/app/Ipc.Platform.dll')).Hash}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $evidence 'vc90-activation.json')
+Write-Output "PASS baseline: VC++ 2010 absent; exact packaged VC90 activation=$availability; expected=$expectedVc90."
 
 $installer = (Get-ChildItem -LiteralPath "$verificationRoot/installer" -File -Filter '*.exe' | Select-Object -First 1).FullName
 function Install-Verification([string]$name, [string]$vc90, [string]$vc100, [string[]]$extra) {

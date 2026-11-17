@@ -11,6 +11,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed class ManagementModeWindow : Window
 {
+    bool closed;
     public bool Entered { get; private set; }
     public ManagementModeWindow(IWorkstationAdministration service, string? entryName = null) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
         service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync, entryName)
@@ -75,7 +76,7 @@ public sealed class ManagementModeWindow : Window
         var timer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         async Task Refresh()
         {
-            var previous = current; current = await status();
+            var previous = current; var latest = await status(); if (closed) return; current = latest;
             if (previous.Authorized && !current.Authorized || previous.Configured != current.Configured || !current.Available) ClearSecrets();
             Title = heading.Text = !current.Available ? "管理模式不可用" : current.Authorized ? "管理模式" : current.Configured ? entryName is null ? "验证管理密码" : "进入" + entryName : "设置管理密码";
             state.Text = current.HasUnsupportedCredentials ? "管理密码文件缺失或无法识别，请联系部署负责人处理。" : !current.Available ? "管理模式服务不可用，请用原安装包修复软件。" : current.Authorized ? "管理模式已开启 · " + current.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出\n进入或退出管理模式不影响正在进行的作业。" : current.Configured ? "输入管理密码以继续配置。管理模式 15 分钟后自动退出。" : "用于保护参数设置，请妥善保管。";
@@ -118,9 +119,9 @@ public sealed class ManagementModeWindow : Window
         };
         leave.Click += async (_, _) => await Run(async () => { await exit(); closeAfter = true; });
         save.Click += async (_, _) => { var password = next.Password; var repeated = nextConfirm.Password; await Run(async () => { if (password != repeated) throw new InvalidDataException("两次新管理密码不一致。"); await change(password); closeAfter = true; }); };
-        Loaded += async (_, _) => { try { await Refresh(); proof.Focus(); Keyboard.Focus(proof); } catch (Exception error) { feedback.Text = error.Message; enterButton.IsEnabled = false; } timer.Start(); };
+        Loaded += async (_, _) => { timer.Start(); try { await Refresh(); if (!closed) { proof.Focus(); Keyboard.Focus(proof); } } catch (Exception error) { if (!closed) { feedback.Text = error.Message; enterButton.IsEnabled = false; } } };
         timer.Tick += async (_, _) => { if (busy || refreshing) return; refreshing = true; try { await Refresh(); } catch (Exception error) { ClearSecrets(); body.IsEnabled = false; changeTools.Visibility = Visibility.Collapsed; enterButton.IsEnabled = false; leave.IsEnabled = false; feedback.Text = error.Message; } finally { refreshing = false; } };
         Closing += (_, e) => e.Cancel = busy;
-        Closed += (_, _) => { ClearSecrets(); timer.Stop(); };
+        Closed += (_, _) => { closed = true; ClearSecrets(); timer.Stop(); };
     }
 }

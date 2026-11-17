@@ -51,12 +51,13 @@ public sealed partial class ParcelRuntime
         {
             if (query.OperationId is not null || query.ObservationId is not null || !Guid.TryParseExact(roundId, "N", out _))
                 throw new ArgumentException("必须提供准确的单一轮次身份。");
-            SmParcelRound? round;
+            SmParcelRound? round; string? roundOperatorSession;
             await gate.WaitAsync(owned).ConfigureAwait(false);
             try
             {
                 if (Id != "sportmaster" || !SessionValid || stopped) throw new InvalidOperationException("当前轮次图片读取不可用。");
                 round = repository!.Round(roundId);
+                roundOperatorSession = currentOperator?.SessionId;
             }
             finally { gate.Release(); }
             if (round?.OriginalFrame is not { State: "Saved" } original)
@@ -67,6 +68,14 @@ public sealed partial class ParcelRuntime
             var png = await File.ReadAllBytesAsync(file, owned).ConfigureAwait(false);
             if (png.Length != original.Length || Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(png)) != original.FileSha256)
                 throw new InvalidDataException("Round image original hash differs");
+            await gate.WaitAsync(owned).ConfigureAwait(false);
+            try
+            {
+                owned.ThrowIfCancellationRequested();
+                if (stopped || !SessionValid || currentOperator?.SessionId != roundOperatorSession)
+                    throw new InvalidOperationException("操作员会话已变化，请重新读取本轮图片。");
+            }
+            finally { gate.Release(); }
             return new ParcelPictureResult("Available", "本轮保存的完整原图。", null, null, null)
             { Archived = new(null, original, png) { RoundId = roundId } };
         }

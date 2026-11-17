@@ -29,10 +29,14 @@ static class LatencyProjectionChecks
         using var releaseCount = new ManualResetEventSlim();
         runtime.Boundary = p => { if (p == "ArchiveCountReading") { counting.TrySetResult(); releaseCount.Wait(); } };
         var snapshot = Task.Run(runtime.SnapshotAsync);
-        await counting.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        var command = runtime.CommandAsync(new(Wire.Id(), repo.Revision, "Pause"));
-        await command.WaitAsync(TimeSpan.FromSeconds(5)); // Independent count cannot own the business coordinator.
-        releaseCount.Set(); var first = await snapshot;
+        ParcelSnapshot first;
+        try
+        {
+            await counting.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            var command = runtime.CommandAsync(new(Wire.Id(), repo.Revision, "Pause"));
+            await command.WaitAsync(TimeSpan.FromSeconds(5)); // Independent count cannot own the business coordinator.
+        }
+        finally { releaseCount.Set(); first = await snapshot.WaitAsync(TimeSpan.FromSeconds(5)); runtime.Boundary = null; }
         Check(first.Capacity!.Archived == 1 && first.Paused, "history revision refresh is exact and scalar I/O is outside the gate");
         var encodes = 0;
         runtime.Boundary = p => { if (p == "SnapshotEncoding") Interlocked.Increment(ref encodes); };
@@ -50,13 +54,16 @@ static class LatencyProjectionChecks
         runtime.Boundary = p => { if (p == "SnapshotGateAcquired") { entered.TrySetResult(); release.Wait(); } };
         var authority = new ManagementModeStatus(true, true, DateTimeOffset.UtcNow.AddMinutes(1));
         var shared1 = SharedSnapshotRead.Read(runtime, authority, new object());
-        await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        var shared2 = SharedSnapshotRead.Read(runtime, authority, new object());
-        Check(ReferenceEquals(shared1, shared2), "concurrent windows share one in-flight detached projection");
-        var differentAuthority = SharedSnapshotRead.Read(runtime, authority with { Active = false }, new object());
-        Check(!ReferenceEquals(shared1, differentAuthority), "a different authority generation cannot join the earlier privileged read");
-        release.Set(); await Task.WhenAll(shared1, shared2, differentAuthority);
-        runtime.Boundary = null;
+        List<Task<ParcelSnapshot>> reads = [shared1];
+        try
+        {
+            await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            var shared2 = SharedSnapshotRead.Read(runtime, authority, new object()); reads.Add(shared2);
+            Check(ReferenceEquals(shared1, shared2), "concurrent windows share one in-flight detached projection");
+            var differentAuthority = SharedSnapshotRead.Read(runtime, authority with { Active = false }, new object()); reads.Add(differentAuthority);
+            Check(!ReferenceEquals(shared1, differentAuthority), "a different authority generation cannot join the earlier privileged read");
+        }
+        finally { release.Set(); await Task.WhenAll(reads).WaitAsync(TimeSpan.FromSeconds(5)); runtime.Boundary = null; }
         var probe = new SportmasterUi.SnapshotProbe(runtime);
         var vm = new ParcelViewModel(probe, "classic", "sportmaster"); await vm.RefreshAsync();
         var delayed = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);

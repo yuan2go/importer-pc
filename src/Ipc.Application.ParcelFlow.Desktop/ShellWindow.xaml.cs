@@ -142,6 +142,7 @@ public partial class ShellWindow : Window
         {
             // Close cannot re-enter a native WPF Closing event even when every drain task is already complete.
             await System.Windows.Threading.Dispatcher.Yield();
+            await Task.WhenAll(affected.Select(x => (x.PageHost.Content as SoftwareLogControl)?.SuspendAndDrainAsync() ?? Task.CompletedTask)).WaitAsync(TimeSpan.FromSeconds(5));
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause, x.vm.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;
@@ -172,7 +173,7 @@ public partial class ShellWindow : Window
             retentionRequested = false;
             closing = false;
             foreach (var window in affected.Where(x => !x.closed && windows.Contains(x)))
-            { window.closing = false; window.IsEnabled = true; window.timer.Start(); }
+            { window.closing = false; window.IsEnabled = true; (window.PageHost.Content as SoftwareLogControl)?.ResumeAfterCancelledClose(); window.timer.Start(); }
         }
     }
 }

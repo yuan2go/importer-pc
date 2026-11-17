@@ -153,8 +153,7 @@ public partial class MaintenancePage : UserControl
         if (picker.ShowDialog(Window.GetWindow(this)) != true) return;
         await vm.RunAsync(async () =>
         {
-            await using var file = new FileStream(picker.FileName, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, useAsync: true);
-            await using var writer = new StreamWriter(file); await writer.WriteAsync(Wire.Encode(template));
+            await Task.Run(() => ExtensionStore.AtomicWriteBytes(picker.FileName, System.Text.Encoding.UTF8.GetBytes(Wire.Encode(template))));
             vm.Message = "设置模板已导出，不含编号、设备地址、密码和业务数据。";
         }, "导出设置模板");
     }
@@ -166,8 +165,12 @@ public partial class MaintenancePage : UserControl
         ParcelViewModel.TemplatePreview? preview = null;
         await vm.RunAsync(async () =>
         {
-            if (new FileInfo(picker.FileName).Length > 4 * 1024 * 1024) throw new InvalidDataException("模板超出配额");
-            preview = vm.PreviewSiteTemplate(Wire.Decode<StartupSiteTemplate>(await File.ReadAllTextAsync(picker.FileName)));
+            await using var file = new FileStream(picker.FileName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true);
+            var bytes = new byte[4 * 1024 * 1024 + 1];
+            var count = await file.ReadAtLeastAsync(bytes, bytes.Length, throwOnEndOfStream: false);
+            if (count == bytes.Length) throw new InvalidDataException("模板超出配额");
+            using var reader = new StreamReader(new MemoryStream(bytes, 0, count, writable: false));
+            preview = vm.PreviewSiteTemplate(Wire.Decode<StartupSiteTemplate>(reader.ReadToEnd()));
         }, "对比模板与当前设置");
         if (preview is null) return;
         var dialog = new Window

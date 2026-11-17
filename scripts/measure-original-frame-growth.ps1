@@ -4,7 +4,6 @@ param(
  [ValidateRange(1,30)][int]$RetentionDays=7
 )
 $ErrorActionPreference='Stop'
-. (Join-Path $PSScriptRoot 'project-environment.ps1')
 $frameRoot=(Resolve-Path -LiteralPath $OriginalFramesDirectory).ProviderPath
 if ($frameRoot -notmatch '^D:\\' -or -not (Test-Path -LiteralPath $frameRoot -PathType Container)) {throw '请指定D盘实际原帧目录'}
 $frameCursor=Get-Item -LiteralPath $frameRoot

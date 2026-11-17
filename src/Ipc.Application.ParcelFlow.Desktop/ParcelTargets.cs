@@ -160,9 +160,10 @@ public partial class ParcelViewModel
         Interlocked.Increment(ref historyGeneration); historyLoading = false; historyFailure = null; historyLoaded = false; historyReadAt = null;
         CancelHistoryRead();
         HistoryItems = []; nextHistory = null; selectedHistory = null;
+        HistoryMetricsSummary = HistoryMetricsDetail = compactHistoryMetrics = "";
         historySelection = null; appliedHistorySignature = null; CancelHistoryExport();
         historyCursors.Clear(); historyPageIndex = 0; historicalPositions.Clear();
-        Changed(nameof(HistoryItems)); Changed(nameof(SelectedHistory)); NotifyHistory();
+        Changed(nameof(HistoryItems)); Changed(nameof(SelectedHistory)); Changed(nameof(HistoryMetricsSummary)); Changed(nameof(HistoryMetricsDetail)); Changed(nameof(HistoryLoaded)); NotifyHistory();
     }
     void NotifyHistory() { foreach (var name in new[] { nameof(CompactHistoryStatus), nameof(UsesHistoryPaging), nameof(HistoryLoading), nameof(HistoryStatus), nameof(HasNextHistory), nameof(HasPreviousHistory), nameof(HistoryFiltersChanged), nameof(AppliedHistoryRange), nameof(HistoryRangeSummary), nameof(CanExportHistory) }) Changed(name); }
     public async Task QuerySelectedAsync()
@@ -212,17 +213,19 @@ public partial class ParcelViewModel
         RequireFreshSnapshot();
         var op = Selected ?? throw new InvalidOperationException("请先在记录中选择作业");
         var generation = selectionGeneration;
+        receiptInventoryOwner = null; receiptInventoryIds = [];
         var command = new BusinessCommand(Wire.Id(), Snapshot!.Revision, "ReceiptResponsibilities", op.Id);
         var r = await ServiceAsync(() => application.CommandAsync(command));
         if (generation != selectionGeneration || Selected?.Id != op.Id) return;
-        ReceiptInventory = r.Reason;
-        receiptInventoryOwner = r.Status == "ReceiptResponsibilities" ? op.Id : null;
-        if (receiptInventoryOwner is not null)
+        var ids = Array.Empty<string>();
+        if (r.Status == "ReceiptResponsibilities")
         {
             using var json = System.Text.Json.JsonDocument.Parse(r.Reason);
-            receiptInventoryIds = json.RootElement.EnumerateArray().Select(x => x.GetProperty("Id").GetString()!).ToArray();
+            ids = json.RootElement.EnumerateArray().Select(x => x.GetProperty("Id").GetString()!).ToArray();
+            if (ids.Any(id => !Guid.TryParseExact(id, "N", out _))) throw new InvalidOperationException("扫描记录身份未核对，请重新读取。");
         }
-        else receiptInventoryIds = [];
+        ReceiptInventory = r.Reason; receiptInventoryIds = ids;
+        receiptInventoryOwner = r.Status == "ReceiptResponsibilities" ? op.Id : null;
         Changed(nameof(ReceiptInventory));
     }
     public async Task ReconcileReceiptAsync()

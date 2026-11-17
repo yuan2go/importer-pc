@@ -35,7 +35,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            if (stopped || repository is null || currentOperator is null || operations.Values.Any(x => !IsSettled(x)) || Volatile.Read(ref pendingObservations) != 0)
+            if (stopped || authenticating || repository is null || currentOperator is null || operations.Values.Any(x => !IsSettled(x)) || Volatile.Read(ref pendingObservations) != 0)
                 return new("Rejected", "No session or original unfinished operations remain protected", repository?.Revision ?? 0);
             repository.Commit(null, "OperatorLoggedOut", Wire.Encode(currentOperator)); session.Clear();
             return new("LoggedOut", "New admission requires authentication; old snapshots retained", repository.Revision);

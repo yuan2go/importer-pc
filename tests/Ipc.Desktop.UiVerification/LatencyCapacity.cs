@@ -104,6 +104,8 @@ static partial class Program
             else if (point == "SnapshotGateReleasing") lock (gateTimes) gateTimes.Add(Stopwatch.GetElapsedTime(entered).TotalMilliseconds);
         };
         var cases = new List<object>();
+        try
+        {
         foreach (var resident in new[] { 200, 800 })
         {
             ParcelOperation rich;
@@ -134,13 +136,14 @@ static partial class Program
             {
                 var snapshots = new List<double>(); var details = 0;
                 var setup = Stopwatch.StartNew();
+                await using var nativeWindows = new NativeWindowOwners();
                 var windows = new List<Window>(); var models = new List<ParcelViewModel>();
                 for (var i = 0; i < count; i++)
                 {
                     var vm = new ParcelViewModel(runtime, "Synthetic performance", "sportmaster");
                     typeof(ParcelViewModel).GetProperty("DetailMeasurement", hidden)!.SetValue(vm, (Action)(() => Interlocked.Increment(ref details)));
                     var window = new Window { Title = "Synthetic isolated latency " + i, ShowActivated = false, ShowInTaskbar = false, Width = 900, Height = 650, Content = new HistoryPage { DataContext = vm } };
-                    windows.Add(window); models.Add(vm); window.Show();
+                    windows.Add(window); nativeWindows.Track(window); models.Add(vm); window.Show();
                     await vm.RefreshAsync(); vm.Selected = vm.Operations.Single(x => x.Id == rich.Id);
                 }
                 await Task.WhenAll(models.Select(vm => vm.DrainAsync()));
@@ -158,13 +161,16 @@ static partial class Program
                     }
                 });
                 var allocated = GC.GetTotalAllocatedBytes(true); var gen2 = GC.CollectionCount(2); var startedAt = DateTimeOffset.UtcNow; var duration = Stopwatch.StartNew();
+                try
+                {
                 while (duration.Elapsed < TimeSpan.FromSeconds(seconds))
                 {
                     var watch = Stopwatch.StartNew(); await Task.WhenAll(models.Select(vm => vm.RefreshAsync()));
                     snapshots.Add(watch.Elapsed.TotalMilliseconds);
                     await Task.Delay(500);
                 }
-                probeEnd.Cancel(); await probe;
+                }
+                finally { probeEnd.Cancel(); await probe; }
                 cases.Add(new { Resident = resident, Windows = count, WindowSetupMs = setup.Elapsed.TotalMilliseconds, Started = startedAt, Ended = DateTimeOffset.UtcNow, WallMs = duration.Elapsed.TotalMilliseconds,
                     RefreshBatches = Stats(snapshots), GateHeld = Stats(gateTimes), SnapshotEncodes = encodes, DetailEvaluations = details, DispatcherWait = Stats(gaps),
                     AllocationBytes = GC.GetTotalAllocatedBytes(true) - allocated, Gen2Collections = GC.CollectionCount(2) - gen2 });
@@ -173,7 +179,8 @@ static partial class Program
                 Console.WriteLine("LATENCY CASE resident=" + resident + " windows=" + count + " completed");
             }
         }
-        runtime.Boundary = null;
+        }
+        finally { runtime.Boundary = null; }
         if (args.Contains("--latency-assert"))
         {
             using var measured = JsonDocument.Parse(File.ReadAllText(Path.Combine(output, "MEASUREMENTS.json")));

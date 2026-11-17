@@ -23,11 +23,21 @@ static class InstallerStorageMatrix
         var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = true, Verb = "runas", WindowStyle = ProcessWindowStyle.Hidden, WorkingDirectory = Environment.CurrentDirectory };
         foreach (var arg in Prefix.Concat(["--installation-storage-helper", name, Path.GetFullPath(source), Path.GetFullPath(evidence)])) start.ArgumentList.Add(arg);
         using var child = await WindowsMaintenanceProcess.StartAsync(start, pipe, connected, budget.Token);
+        try
+        {
+        await connected;
         await pipe.WriteAsync(new byte[] { 1 }, budget.Token);
         using var reader = new StreamReader(pipe);
         while (await reader.ReadLineAsync(budget.Token) is { } line) Console.WriteLine(line);
         await child.WaitForExitAsync(budget.Token);
         if (child.ExitCode != 0) throw new Exception("Isolated Windows matrix failed; evidence retained at " + evidence);
+        }
+        finally
+        {
+            try { using var process = Process.GetProcessById(child.Id); if (!process.HasExited) process.Kill(entireProcessTree: true); }
+            catch (ArgumentException) { /* The owned child has already exited. */ }
+            await child.WaitForExitAsync(CancellationToken.None).WaitAsync(TimeSpan.FromSeconds(10));
+        }
     }
     public static async Task Helper(string[] args)
     {
@@ -76,6 +86,8 @@ static class InstallerStorageMatrix
         var rootsPath = Path.Combine(WindowsDeploymentSetup.MachineRoot, "trusted-program-roots.json");
         var rootsBytes = File.ReadAllBytes(rootsPath); var originalRoots = Wire.Decode<string[]>(System.Text.Encoding.UTF8.GetString(rootsBytes));
         var ownedRoots = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        List<Exception> cleanupFailures = [];
+        void Cleanup(Action cleanup) { try { cleanup(); } catch (Exception error) { cleanupFailures.Add(error); } }
         var sourceBytes = Directory.GetFiles(source, "*", SearchOption.AllDirectories).Sum(f => new FileInfo(f).Length);
         var cVolume = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles))!;
         var serviceUsesC = string.Equals(Path.GetPathRoot(WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator")), cVolume, StringComparison.OrdinalIgnoreCase);
@@ -140,7 +152,12 @@ static class InstallerStorageMatrix
                     void VerifyOrdinaryAccess(DeploymentLocation location)
                     {
                         using var ordinary = OrdinaryRuntimeProcess.Start(Environment.ProcessPath!, [.. Prefix, "--installation-storage-ordinary-child", Path.Combine(location.ReleaseRoot, "app", "Ipc.Platform.dll"), data], Environment.CurrentDirectory);
-                        Check(ordinary.Wait(30000) == 0 && File.Exists(Path.Combine(data, "ordinary-result.txt")), mode + " actual ordinary account reads program, cannot modify it, writes an image sample on D and queries service");
+                        try { Check(ordinary.Wait(30000) == 0 && File.Exists(Path.Combine(data, "ordinary-result.txt")), mode + " actual ordinary account reads program, cannot modify it, writes an image sample on D and queries service"); }
+                        finally
+                        {
+                            try { using var process = Process.GetProcessById(checked((int)ordinary.Id)); if (!process.HasExited) { process.Kill(entireProcessTree: true); if (!process.WaitForExit(10000)) throw new TimeoutException("Owned ordinary child did not stop"); } }
+                            catch (ArgumentException) { }
+                        }
                     }
                     if (freshDOnly)
                     {
@@ -202,17 +219,22 @@ static class InstallerStorageMatrix
                 }
                 finally
                 {
-                    if (brokerCreated) ManagementModeBroker.RemoveIfUnused(data);
-                    if (WindowsDeploymentSetup.Current(appId) is { LifecycleState: "Installed" }) WindowsDeploymentSetup.Remove(appId, Wire.FileHash(WindowsDeploymentSetup.Registration(appId)), _ => { }, _ => { });
+                    Cleanup(() => { if (brokerCreated) ManagementModeBroker.RemoveIfUnused(data); });
+                    Cleanup(() => { if (WindowsDeploymentSetup.Current(appId) is { LifecycleState: "Installed" }) WindowsDeploymentSetup.Remove(appId, Wire.FileHash(WindowsDeploymentSetup.Registration(appId)), _ => { }, _ => { }); });
                     foreach (var release in releases.Distinct(StringComparer.OrdinalIgnoreCase))
                     {
+                        Cleanup(() =>
+                        {
                         var full = Path.GetFullPath(release);
                         if (!full.StartsWith(Path.Combine(program, "releases") + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Refuse cleanup outside the fixture's exact program root");
                         var cleanup = WindowsDeploymentSetup.CleanRemovalInventory(full, medium.Files.Keys.Append("deployment-location.json").Append("deployment-retired.json").ToArray(), _ => false);
                         Check(!cleanup.RestartRequired && cleanup.Remaining.Length == 0, mode + " only the exact synthetic release inventory removed; no recursive C/data cleanup");
+                        });
                     }
                     foreach (var host in ownedHosts)
                     {
+                        Cleanup(() =>
+                        {
                         var full = Path.GetFullPath(host);
                         var hostParent = Path.Combine(WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator"), "hosts") + Path.DirectorySeparatorChar;
                         if (!full.StartsWith(hostParent, StringComparison.OrdinalIgnoreCase) || !Path.GetFileName(full).StartsWith(medium.SourceCommit + "-", StringComparison.Ordinal))
@@ -229,12 +251,18 @@ static class InstallerStorageMatrix
                             }
                             catch (Win32Exception) when (waiting.Elapsed < TimeSpan.FromSeconds(15)) { Thread.Sleep(50); }
                         }
+                        });
                     }
                 }
             }
         }
         finally
         {
+            if (cleanupFailures.Count != 0)
+            {
+                File.WriteAllText(Path.Combine(evidence, "CLEANUP-FAILED.json"), Wire.Encode(cleanupFailures.Select(error => error.ToString()).ToArray()));
+                throw new AggregateException("Owned fixture cleanup is incomplete; protected trust evidence remains for the retained resources", cleanupFailures);
+            }
             // Restore only this fixture's additions under the existing writer lease.
             // A concurrent change is preserved and fails the proof instead of being overwritten.
             using var lease = new FileStream(Path.Combine(WindowsDeploymentSetup.MachineRoot, "trusted-program-roots.lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);

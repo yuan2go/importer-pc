@@ -17,6 +17,7 @@ async Task Until(Func<bool> condition)
 }
 async Task Check(string name, Func<Task> test)
 {
+    using var watchdog = new Timer(_ => Environment.FailFast("Simulation body/cleanup exceeded deadline: " + name), null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan);
     try { await test(); passed++; Console.WriteLine("PASS " + name); }
     catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex); }
 }

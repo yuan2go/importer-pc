@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -49,7 +49,8 @@ static partial class Program
             {
                 clock.Advance();
                 await h.NextVehicleAsync(side);
-                await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == side).CurrentRoundId is null);
+                var expected = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == side).Arrival!.Generation;
+                await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == side) is { CurrentRoundId: null } lane && lane.Arrival?.Generation == expected);
             }
 
             const string a = "000123450001", b = "000123450002";
@@ -145,6 +146,9 @@ static partial class Program
             finally { hold.TrySetResult(); h.Peer.Hold = null; }
             await Accepted("000123450008");
 
+            // The deliberately typed draft during the held request remains operator-owned.
+            // Explicitly discard it before starting the independent malformed-reply case.
+            entry.ContextMenu.Items.OfType<MenuItem>().Single(item => Equals(item.Header, "清空输入")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             await NextRound(); h.Peer.Mode = "malformed"; entry.Focus(); await Flush(); await Text("000123450006", enter: true);
             await Until(() => !entry.IsReadOnly && !vm.Busy && vm.Left.Operation?.Wcs?.State == StageState.Unknown);
             var unknown = vm.Left.Operation!; var unknownSends = h.Peer.Requests.Count;
@@ -209,6 +213,17 @@ static partial class Program
                 }
                 Check(otherWindow.ViewModel.Right.CurrentRound?.Id == round && otherWindow.ViewModel.Right.Operation?.Id == vm.Right.Operation?.Id,
                     "two native WPF windows project the same Application-owned current round");
+                await NextRound("right");
+                var competingFirst = await h.Command("right", "RACE-PDA-A", ParcelBarcodeInputKind.PdaKeyboard);
+                var contender = competingFirst with { CommandId = Wire.Id(), Barcode = "RACE-PDA-B", Kind = ParcelBarcodeInputKind.Keyboard };
+                Check(competingFirst.CommandId != contender.CommandId && competingFirst.ExpectedArrivalGeneration == contender.ExpectedArrivalGeneration && competingFirst.ExpectedPlacementBoundary == contender.ExpectedPlacementBoundary,
+                    "two distinct commands target the same fresh physical placement");
+                var raced = await Task.WhenAll(h.App.SubmitParcelBarcodeAsync(competingFirst, default), h.App.SubmitParcelBarcodeAsync(contender, default));
+                Check(raced.Count(r => r.Status == "Admitted") == 1 && raced.Count(r => r.Status is "Rejected" or "Conflict") == 1, "one and only one competing first admission wins the fresh round: " + Wire.Encode(raced));
+                await Until(() => vm.Right.ShowConfirmedTask && h.Peer.Requests.Count == sends + 1);
+                var acceptedRace = raced.Single(r => r.Status == "Admitted");
+                Check(h.Peer.Requests.Count == sends + 1 && vm.Right.Operation?.Id == acceptedRace.OperationId, "the winning command owns the sole wire request and current result");
+                sends = h.Peer.Requests.Count; round = vm.Right.CurrentRound!.Id;
                 var duplicate = await h.Command("right", scanned, ParcelBarcodeInputKind.PdaKeyboard);
                 var receipts = await Task.WhenAll(h.App.SubmitParcelBarcodeAsync(duplicate, default), h.App.SubmitParcelBarcodeAsync(duplicate, default));
                 Check(receipts.All(r => r.Status == "Rejected") && h.Peer.Requests.Count == sends && vm.Right.CurrentRound.Id == round,
@@ -266,14 +281,25 @@ static class BarcodeNativeKeyboard
     [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] static extern short GetAsyncKeyState(int key);
     [DllImport("user32.dll", SetLastError = true)] static extern bool SetCursorPos(int x, int y);
+    [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr window);
+    [DllImport("user32.dll")] static extern bool BringWindowToTop(IntPtr window);
+    [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr window, out uint process);
+    [DllImport("kernel32.dll")] static extern uint GetCurrentThreadId();
+    [DllImport("user32.dll")] static extern bool AttachThreadInput(uint source, uint target, bool attach);
     static async Task WaitForForegroundAsync(Window window)
     {
         var handle = new WindowInteropHelper(window).Handle;
         var budget = System.Diagnostics.Stopwatch.StartNew();
         // A background process's Activate() can be refused by Windows. Wait for
         // actual activation; never inject input into another foreground app.
-        while (window.IsVisible && (!window.IsActive || GetForegroundWindow() != handle) && budget.Elapsed < TimeSpan.FromSeconds(30))
+        while (window.IsVisible && (!window.IsActive || GetForegroundWindow() != handle) && budget.Elapsed < TimeSpan.FromSeconds(10))
+        {
+            var foregroundThread = GetWindowThreadProcessId(GetForegroundWindow(), out _); var currentThread = GetCurrentThreadId();
+            var attached = foregroundThread != 0 && foregroundThread != currentThread && AttachThreadInput(currentThread, foregroundThread, true);
+            try { BringWindowToTop(handle); SetForegroundWindow(handle); window.Activate(); }
+            finally { if (attached) AttachThreadInput(currentThread, foregroundThread, false); }
             await Task.Delay(50);
+        }
     }
     public static async Task ClickAsync(Window window, FrameworkElement target, Point offset)
     {

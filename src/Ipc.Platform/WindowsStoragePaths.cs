@@ -168,6 +168,22 @@ public static class WindowsStoragePaths
     public static string MachineRoot => ProtectedAnchor is { } root ? Path.Combine(root, "Machine") : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
     public static string AdministratorRoot => ProtectedAnchor is { } root ? Path.Combine(root, "Administrators") : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc.Administrators");
     public static string ProgramRoot(string product) => ProtectedAnchor is { } root ? Path.Combine(root, "Programs", product) : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), product);
+    // Address discovery for an installer before any deployment exists. This
+    // grants no write authority; consumers of personal files still use UserRoot.
+    public static string UserRootPath
+    {
+        get
+        {
+            if (UserRootForVerification is { } substitute) return Path.GetFullPath(substitute());
+            if (OperatingSystem.IsWindows() && ProtectedAnchor is { } root)
+            {
+                using var identity = WindowsIdentity.GetCurrent();
+                var sid = identity.User?.Value ?? throw new UnauthorizedAccessException("Windows用户身份不可用。");
+                return Path.Combine(root, "UserData", sid);
+            }
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc");
+        }
+    }
     public static string UserRoot
     {
         get

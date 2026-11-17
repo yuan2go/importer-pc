@@ -91,7 +91,7 @@ static class RetentionQualification
         var config = Path.Combine(output, "config"); Directory.CreateDirectory(config); Save(Path.Combine(config, "business.json"), c);
         var launch = new BusinessLaunch(config, Path.Combine(output, "data"), null, null);
         ParcelOperation operation;
-        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => RequireReference(c) })
+        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => RequireReference(c) })
         {
             await app.StartAsync(default);
             Check(app.EmitReferenceAt("left", "synthetic-seed-admission", "SYNTHETIC-RETENTION-SEED", "synthetic-seed-event"), "actual reference ingress accepted for seed");

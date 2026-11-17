@@ -911,6 +911,17 @@
         "ExistingBehaviorSuite (\"--cr-report-boundaries\")",
         "ExistingBehaviorSuite (\"--cr-report-cameras\")"
       ]
+    },
+    "cold_install": {
+      "scope": "Unregistered installer reads the current Windows personal address without provisioning; actual personal files retain original authority checks. Synthetic retention seed uses the existing controlled reference factory, not real machine leases.",
+      "core_boundary_passed": 1,
+      "trx_sha256": "99e54be81f538e19b2c38d8e3cd672a6140bafd76f8e4d042a4b0663b8a43062",
+      "build_log_sha256": {
+        "premerge-build-cold-storage.log": "d6ca4a9fba8178567dd1a620f9d2f256ede69c56b6753c8a850bbe88a369f2c6",
+        "premerge-build-cold-ui.log": "917830aa8533e9ea1a670626dda20fbaf79fed6a2ee8a2aee800975542240c85",
+        "premerge-build-installer3.log": "048a2c35cf18768b75ca42612bb11a5849be1d0821b2cbf77f8b07fdadc00734"
+      },
+      "ci_qualification": "Real unregistered-machine and protected lifecycle checks require disposable Windows CI; not executed on the user PC."
     }
   }
 }

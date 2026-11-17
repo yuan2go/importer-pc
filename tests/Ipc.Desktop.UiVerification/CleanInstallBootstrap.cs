@@ -21,8 +21,8 @@ static partial class Program
         var delegateType = type.GetConstructors().Single().GetParameters()[1].ParameterType;
         var parameters = delegateType.GetMethod("Invoke")!.GetParameters().Select(p => Expression.Parameter(p.ParameterType, p.Name)).ToArray();
         var prepare = Expression.Lambda(delegateType, Expression.Constant(Task.FromResult(media)), parameters).Compile();
-        var launch = new BusinessLaunch("", Path.Combine(WindowsStoragePaths.UserRoot, "data"), null, null);
-        var window = (Window)Activator.CreateInstance(type, new object?[] { launch, prepare, "1.11.1" })!;
+        var launch = new BusinessLaunch("", Path.Combine(WindowsStoragePaths.UserRootPath, "data"), null, null);
+        var window = (Window)Activator.CreateInstance(type, new object?[] { launch, prepare, BusinessCompatibility.VersionOf(typeof(Ipc.Application.Sportmaster.SportmasterFlow).Assembly) })!;
         try
         {
             window.Show();

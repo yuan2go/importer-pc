@@ -53,8 +53,10 @@ internal static partial class Program
                 Press(FindButton("连接并验证管理密码…"));
                 await Until(() => app.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible));
                 var login = app.Windows.OfType<ManagementModeWindow>().Single(w => w.IsVisible);
+                await Until(() => Visuals(login).OfType<PasswordBox>().Any(p => p.Name == "ManagementPassword" && p.IsVisible && p.IsEnabled));
                 Visuals(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = OperationsPassword;
-                Press(Visuals(login).OfType<Button>().Single(b => b.Name == "EnterManagementMode"));
+                var enter = Visuals(login).OfType<Button>().Single(b => b.Name == "EnterManagementMode");
+                await Until(() => enter.IsVisible && enter.IsEnabled); Press(enter);
                 var workspace = Visuals(window).OfType<OperationsWorkspaceControl>().Single();
                 var model = (SupplyStationViewModel)workspace.DataContext;
                 try { await Until(() => !login.IsVisible && model.HasLoadedConfiguration && model.Fresh && model.IsManagementMode); }

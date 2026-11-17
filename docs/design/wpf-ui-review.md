@@ -10,6 +10,31 @@
 
 当前资源入口为 `src/Ipc.Desktop/Themes/Workstation.xaml` 和 `src/Ipc.Presentation.Wpf/UiTypography.cs`、`TypographyScale.cs`。沿宿主实际加载路径确认使用者。颜色复用主题语义键，字体沿用已交付的 Noto Sans CJK SC Regular/Medium，不另建调色盘、字号表或字体平台。
 
+## 外部 UI 组件参考与 WPF 落地
+
+外部组件展示站点只提供**交互模式和视觉审查素材**，不作为可直接接入的 WPF 组件库。默认先复用实际装配的 `Workstation.xaml`、`SupplyStationTheme.xaml`、`UiTypography` 和已有控件/命令。参考顺序依次为业务状态清晰度、操作效率、可访问性、再到细节打磨；不先选动画再适配业务。
+
+| 参考 | 可以借鉴 | 本项目明确不采用 |
+|---|---|---|
+| shadcn/ui | 可复制的控件规范、按钮层级、表单及固定底部动作组 | React/HTML/Tailwind 源码、另建主题/控件框架 |
+| beUI | 通知、错误反馈、操作结果可复制的组织方式 | Web 动画引擎、持续运动的状态卡片 |
+| Transitions | 明确且可中断的非业务导航反馈 | RCS/扫码/设备状态过渡动画、延迟显示告警 |
+| Beautiful UI | 将来 AI 运维建议的证据、人工审批与只读呈现模式 | 让 Agent 直接控制 PLC/RCS、覆盖当前真实状态 |
+| Rare UI | 仅评审局部密度与层级表达 | 创意视觉特效、营销样式、未经核验许可的组件代码 |
+
+不自动下载第三方组件、字体、图标、CSS、JS 或 UI 运行时；确需引入时先核验源项目/具体组件的授权、维护、安全、离线分发和目标环境，再单独审查。不因参考站点的示例而改写仓库当前产品范围、依赖或原生交付方式。
+
+### 已落地的可复用模式
+
+- `Workstation.xaml` 提供 `OperatorActionFooter`（固定底栏）、`OperatorCopyableNotice`（可选中、键盘可达的只读消息）和 `OperatorStatusBadge`（用于**明确的暂停状态**）。只复用已有色彩和字体资源，不建立第二套设计 tokens。
+- 管理中心将“自动供包及读码已暂停”作为单一高辨识度状态提示，真实授权/暂停由 Application 决定；管理反馈保留原文、选择和滚动，未定义反馈时收起。
+- 退出窗口复用底栏样式但保持原 `580×340` DIP、右侧动作组、默认取消、Esc/×取消及关停守卫；作业区的 RCS 原消息继续可选中、居中显示、长文滚动，不更改任何格口/异常/Unknown 判断。
+- 供包操作页不添加逐帧动画、计时轮播或状态闪烁：新的视觉效果不得占用采集/输入/回包关键线程，也不得延后页面呈现本次状态事实。现有双工位及原请求语义优先于视觉效果。
+
+### 变更的必要验证
+
+按受影响范围复用现有 `--management-center`、`--station-exit-dialog`、`--home-centered-states` 和 `--chute-readability`，重点核对暂停状态、可复制原文、固定底栏、长中文及低高度布局、键盘焦点、100%/125%/150% DPI。构建/原生 WPF/SDK/客户 RCS/现场验收分别陈述实际结果，不用静态资源或文档审查代替运行证据。未做设备联调时不可宣称达到工业现场验收。
+
 ## 从 Hallmark 保留什么
 
 本适配参考 Hallmark 2.0.0 固定提交 `407fa689f4a276f2fd389208d271d0fef08f5058`，只采用审查方法。完整来源与许可见 [来源记录](../../.agents/skills/hallmark-wpf/UPSTREAM.json)。

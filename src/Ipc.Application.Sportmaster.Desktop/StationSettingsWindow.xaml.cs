@@ -44,7 +44,7 @@ public partial class StationSettingsWindow : Window
         var c = snapshot.Configuration.Effective;
         var host = c.Wcs is { } rcs && Uri.TryCreate(rcs.Target, UriKind.Absolute, out var uri) ?
             new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri.GetLeftPart(UriPartial.Authority) : "待配置";
-        ReadOnlySettings.Text = "本站：" + c.StationId + "\n供包台编号：" + (c.StationCode ?? c.StationId) + "\nRCS 主机：" + host +
+        ReadOnlySettings.Text = "本站：" + c.StationId + "\n供包台编号：" + (string.IsNullOrWhiteSpace(c.StationCode) ? "待配置" : c.StationCode) + "\nRCS 主机：" + host +
             "\n仓 ID（已保存值）：" + (c.Wcs?.Parameters.GetValueOrDefault("zone-id") ?? "未单独保存") +
             "\n生产线 ID（已保存值）：" + (c.Wcs?.Parameters.GetValueOrDefault("project-id") ?? "未单独保存") +
             "\n配置修订：" + snapshot.Configuration.Revision + (snapshot.HasPendingConfiguration == true ? " · 有已保存待生效设置" : " · 无待生效设置") +

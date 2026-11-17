@@ -111,12 +111,6 @@ public partial class SupplyStationWindow
         // Switching windows clears the lane selection. The operator selects the
         // intended lane again, using its card or F2/F3; never silently route PDA.
     }
-    bool ActivateSettingsWindow()
-    {
-        if (settingsWindow is not { } settings) return false;
-        if (!settings.IsVisible) settings.Show();
-        settings.Activate(); return true;
-    }
     async Task RenewManagementAsync()
     {
         if (ViewModel.Application is not IWorkstationAdministration service) return;

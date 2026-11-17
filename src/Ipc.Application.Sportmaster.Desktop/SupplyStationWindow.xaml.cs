@@ -197,6 +197,12 @@ public partial class SupplyStationWindow : Window
         }
         catch (Exception error) { ViewModel.Message = "尚未进入配置生效流程：" + error.Message; }
     }
+    bool ActivateSettingsWindow()
+    {
+        if (settingsWindow is not { } settings) return false;
+        if (!settings.IsVisible) settings.Show();
+        settings.Activate(); return true;
+    }
     async void ClosingWindow(object? sender, CancelEventArgs e)
     {
         if (closeReady || closed) return;

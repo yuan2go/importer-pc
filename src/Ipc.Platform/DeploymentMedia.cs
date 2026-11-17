@@ -15,6 +15,8 @@ public sealed record DeploymentLocation(string ApplicationId, string SourceCommi
 }
 public sealed record DeploymentMedia(string Root, string ApplicationId, string SourceCommit, Dictionary<string, string> Files)
 {
+    public static string InventoryIdentity(DeploymentMedia media) => Wire.Hash(string.Join("\n",
+        media.Files.OrderBy(p => p.Key, StringComparer.Ordinal).Select(p => p.Key + "\t" + p.Value.ToUpperInvariant())));
     // A byte inventory is integrity evidence, not publisher trust. The maintainer selects trusted media.
     public static DeploymentMedia Inspect(string root, string application) => Inspect(root, application, CancellationToken.None);
     public static DeploymentMedia Inspect(string root, string application, CancellationToken token)
@@ -57,7 +59,7 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
         {
             DeploymentPaths.RequireOrdinaryAncestors(inventory);
             if (new FileInfo(inventory).Length > 4 * 1024 * 1024) throw new InvalidDataException("Media inventory quota exceeded");
-            var entries = File.ReadAllLines(inventory); if (entries.Length > 16384) throw new InvalidDataException("Media file quota exceeded");
+            var entries = File.ReadAllLines(inventory); if (entries.Length > 16383) throw new InvalidDataException("Media file quota exceeded");
             var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var line in entries)
             {

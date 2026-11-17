@@ -31,6 +31,12 @@ public static class DeploymentBatch
         string? receipt = null; bool ownsReceipt = false; int code = 2;
         void Result(object value)
         { if (ownsReceipt) ExtensionStore.AtomicWrite(receipt!, value); }
+        void FailureResult(object value)
+        {
+            try { Result(value); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+            { Console.Error.WriteLine("部署回执写入失败，须按原操作核对：" + WindowsInstallationError.Capture(error).Message); }
+        }
         try
         {
             if (args.Length is not (4 or 5) || args[2] != "--receipt" || args.Length == 5 && args[4] != "--preflight") throw new ArgumentException("--deployment-plan <plan.json> --receipt <new-receipt.json> [--preflight]");
@@ -73,11 +79,11 @@ public static class DeploymentBatch
             }
         }
         catch (OriginalOperationExistsException error)
-        { code = 10; Result(new { Status = "OriginalOperationNeedsInspection", ExitCode = code, error.OperationFile, OriginalDataRetained = true, DeviceOrBusinessStarted = false }); }
+        { code = 10; FailureResult(new { Status = "OriginalOperationNeedsInspection", ExitCode = code, error.OperationFile, OriginalDataRetained = true, DeviceOrBusinessStarted = false }); }
         catch (UnauthorizedAccessException)
-        { code = 5; Result(new { Status = "AuthorizationRequired", ExitCode = code, OriginalDataRetained = true }); }
+        { code = 5; FailureResult(new { Status = "AuthorizationRequired", ExitCode = code, OriginalDataRetained = true }); }
         catch (Exception error)
-        { code = error is ArgumentException or InvalidDataException or System.Text.Json.JsonException or FormatException ? 2 : 10; Result(new { Status = "FailedOrNeedsRecovery", ExitCode = code, ErrorCode = error.GetType().Name, OriginalDataRetained = true }); }
+        { code = error is ArgumentException or InvalidDataException or System.Text.Json.JsonException or FormatException ? 2 : 10; FailureResult(new { Status = "FailedOrNeedsRecovery", ExitCode = code, ErrorCode = error.GetType().Name, OriginalDataRetained = true }); }
         Environment.ExitCode = code; return true;
     }
 }

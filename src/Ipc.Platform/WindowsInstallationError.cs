@@ -20,7 +20,7 @@ public sealed record WindowsInstallationError(string Type, string Message, int H
         error.InnerException is { } inner ? NativeCode(inner) : null;
     internal static string Safe(string value)
     {
-        try { return DiagnosticText.Protect(value[..Math.Min(value.Length, 16000)]); }
+        try { var protectedText = DiagnosticText.Protect(value); return protectedText[..Math.Min(protectedText.Length, 16000)]; }
         catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { return "诊断脱敏超时；原操作结果需核对。"; }
     }
 }

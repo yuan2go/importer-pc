@@ -24,7 +24,7 @@ internal static class InstallationReceipts04
         var rollback = Op();
         Write("rollback", rollback, new { SchemaVersion = 1, Status = "Failed", At = "2026-10-01T08:00:00+00:00", ErrorCode = "x", Plan = new { Identity = "p" } });
         Write("prune", Op(), new { Status = "Deleted; rm -rf", At = "2026-10-02T08:00:00+00:00" });
-        Write("remove", Op(), "{ not json");
+        File.WriteAllText(Path.Combine(folder, $"sportmaster.remove-{Op()}.json"), "{ not json");
         File.WriteAllText(Path.Combine(folder, "sportmaster.remove-not-a-guid.json"), "{}");
         File.WriteAllText(Path.Combine(folder, $"sportmaster.setup-{Op().ToUpperInvariant()}.json"), "{\"Status\":\"Committed\"}");
         File.WriteAllText(Path.Combine(folder, $"direct-plc.setup-{Op()}.json"), "{\"Status\":\"Committed\"}");

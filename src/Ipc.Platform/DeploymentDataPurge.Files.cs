@@ -88,6 +88,7 @@ public static partial class WindowsDeploymentSetup
     public static void DeleteReviewedFile(string path, string expectedSha256)
     {
         if (!ExtensionSchema.IsHash(expectedSha256)) throw new InvalidDataException("删除文件缺少实际字节身份。");
+        if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("按核验句柄删除仅支持 Windows；原文件保留。");
         DeleteReviewedPath(path, expectedSha256);
     }
 

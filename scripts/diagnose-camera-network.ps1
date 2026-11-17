@@ -26,7 +26,7 @@ if (($EnableIcmpProbe -or $EnableTcpProbe) -and $CameraAddress.Count -eq 0) { th
 if ($EnableTcpProbe -and $CameraPort.Count -ne $CameraAddress.Count) { throw 'Active TCP requires explicit CameraPort; configuration alone never authorizes probes.' }
 foreach ($address in $CameraAddress) {
     $parsed = $null
-    if (-not [System.Net.IPAddress]::TryParse($address, [ref]$parsed) -or $parsed.AddressFamily -ne [System.Net.Sockets.AddressFamily]::InterNetwork) { throw 'CameraAddress must be an explicit IPv4 address.' }
+    if (-not [System.Net.IPAddress]::TryParse($address, [ref]$parsed) -or $parsed.AddressFamily -ne [System.Net.Sockets.AddressFamily]::InterNetwork -or $parsed.ToString() -cne $address) { throw 'CameraAddress must be a canonical dotted-decimal IPv4 address.' }
 }
 if ($OutputDirectory -notmatch '^[dD]:[\\/]' -or [System.IO.Path]::GetPathRoot([System.IO.Path]::GetFullPath($OutputDirectory)) -ne 'D:\') { throw 'OutputDirectory must be an absolute local D: path.' }
 if (Test-Path -LiteralPath $OutputDirectory) { throw 'Choose a new output directory; existing evidence is never overwritten.' }
@@ -36,9 +36,15 @@ function Read-Section([string]$Name, [scriptblock]$Action) {
     catch { $errorsFound.Add([pscustomobject]@{ Section=$Name; Error=$_.Exception.GetType().Name; Code=$_.FullyQualifiedErrorId }); @() }
 }
 function Read-Json([string]$Path) {
-    $file = Get-Item -LiteralPath $Path
-    if ($file.Length -gt 4MB) { throw 'Evidence file exceeds 4 MiB budget.' }
-    Get-Content -LiteralPath $Path -Raw -Encoding UTF8 | ConvertFrom-Json
+    $stream = [IO.File]::Open($Path,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::Read)
+    try {
+        if ($stream.Length -gt 4MB) { throw 'Evidence file exceeds 4 MiB budget.' }
+        $memory = New-Object IO.MemoryStream
+        try { $stream.CopyTo($memory); $bytes=$memory.ToArray() } finally { $memory.Dispose() }
+    } finally { $stream.Dispose() }
+    $sha=[Security.Cryptography.SHA256]::Create()
+    try { $hash=[BitConverter]::ToString($sha.ComputeHash($bytes)).Replace('-','') } finally { $sha.Dispose() }
+    [pscustomobject]@{ Json=([Text.Encoding]::UTF8.GetString($bytes).TrimStart([char]0xFEFF) | ConvertFrom-Json); Sha256=$hash }
 }
 function IPv4-Mask([int]$PrefixLength) {
     $octets = @()
@@ -71,8 +77,8 @@ if ($ReleaseDirectory) {
         if (-not (Test-Path -LiteralPath $filePath)) { $errorsFound.Add([pscustomobject]@{ Section=('Deployment-' + $relative); Error='FileNotFoundException'; Code='MissingDeploymentEvidence' }); continue }
         if (Test-Path -LiteralPath $filePath) {
             $deployment += @(Read-Section ('Deployment-' + $relative) {
-                $json = Read-Json $filePath
-                [pscustomobject]@{ File=$relative; Sha256=(Get-FileHash -LiteralPath $filePath -Algorithm SHA256).Hash;
+                $snapshot = Read-Json $filePath; $json=$snapshot.Json
+                [pscustomobject]@{ File=$relative; Sha256=$snapshot.Sha256;
                     SourceCommit=$json.SourceCommit; ApplicationId=$json.ApplicationId; BusinessVersion=$json.BusinessVersion; Version=$json.Version; Rid=$json.Rid }
             })
         }
@@ -85,7 +91,7 @@ for ($n=0; $n -lt $CameraAddress.Count; $n++) {
 }
 $configSummary = @(Read-Section 'ConfigurationSummary' {
     if ($ConfigurationFile) {
-        $envelope = Read-Json $ConfigurationFile
+        $snapshot = Read-Json $ConfigurationFile; $envelope=$snapshot.Json
         $effective = $envelope.Effective
         $kind = 'AuthoritativeEnvelope'; if ($null -eq $effective) { $effective=$envelope; $kind='SeedOrCandidate_NOT_EFFECTIVE' }
         $readerList = @($effective.Topology.Readers); if ($readerList.Count -eq 0 -or $null -eq $readerList[0]) { $readerList=@($effective.Reader) }
@@ -101,7 +107,7 @@ $configSummary = @(Read-Section 'ConfigurationSummary' {
             $parsed = $null
             if ($ip -and [System.Net.IPAddress]::TryParse($ip,[ref]$parsed)) { $targets.Add($row) }
         }
-        [pscustomobject]@{ Kind=$kind; FileSha256=(Get-FileHash -LiteralPath $ConfigurationFile -Algorithm SHA256).Hash;
+        [pscustomobject]@{ Kind=$kind; FileSha256=$snapshot.Sha256;
             Revision=$envelope.Revision; Status=$envelope.Status; HasPending=($null -ne $envelope.Pending); ConfirmationRequired=$envelope.Confirmation.Required;
             Schema=$effective.SchemaVersion; Application=$effective.ApplicationId; Mode=$effective.Mode; Readers=$bindings; RunningConnectionsProven=$false }
     }

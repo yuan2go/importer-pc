@@ -87,7 +87,7 @@ static partial class Program
             var entry = (TextBox)left.FindName("BarcodeEntry");
             Check(message.IsVisible && message.Text == "无设备可用" && message.FontSize == waitingTitle.FontSize &&
                 subtitle.Text == "本件暂不能分配格口" && step.FontSize < message.FontSize &&
-                step.Text == "请取下包裹后人工判断，再确认\n本位请求待核对，请通知维护人员；取件不会撤销原调度" && divider.IsVisible && divider.ActualWidth > 0 &&
+                step.Text == "请取下包裹后人工判断，再确认\n取下后本件结束，可继续处理下一件" && divider.IsVisible && divider.ActualWidth > 0 &&
                 ((Button)left.FindName("ConfirmManualPlacementRemoval")).IsVisible &&
                 !((Border)right.FindName("CenteredRcsDivider")).IsVisible &&
                 entry.Text == "SYNTH-NO-DEST-UI" && !((DockPanel)left.FindName("DetailedStatus")).IsVisible &&
@@ -97,6 +97,15 @@ static partial class Program
                 "confirmed refusal has one original title with waiting-size typography, a quieter manual next step, and an independent ready position");
 
             var basis = (await h.App.SnapshotAsync()) with { PublishedTicks = System.Diagnostics.Stopwatch.GetTimestamp() };
+            var membership = new SupplyStationViewModel(h.App);
+            await membership.AcceptPublishedSnapshotAsync(basis with
+            {
+                Positions = basis.Positions!.Select(p => p.Id == "left" ? p with
+                { Arrival = p.Arrival! with { RecoveryReason = "SYNTHETIC outstanding heartbeat membership" } } : p).ToArray()
+            });
+            Check(membership.Left.CenteredRcsRejection && membership.Left.CenteredStateInstruction.Contains("请取下包裹") &&
+                membership.Left.CenteredStateInstruction.Contains("本位心跳成员仍待核对") && !membership.Left.CenteredStateInstruction.Contains("可继续处理下一件"),
+                "membership recovery remains an independent blocker after removing a refused parcel");
             var conflict = new SupplyStationViewModel(h.App);
             await conflict.AcceptPublishedSnapshotAsync(basis with { Operations = basis.Operations.Select(o =>
                 o.Id == receipt.OperationId ? o with { Wcs = o.Wcs! with { State = StageState.Conflict } } : o).ToArray() });
@@ -107,10 +116,6 @@ static partial class Program
             async Task Reject(string code, string original, string title)
             {
                 await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
-                await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC peer confirms refused original settled and withdrawal applied");
-                var state = await h.App.SnapshotAsync();
-                await h.App.SetPositionEnabledAsync(new(Wire.Id(), state.RuntimeId, "left", state.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
-                await h.NextVehicleAsync("left");
                 h.Peer.RejectionMessage = original;
                 var request = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", code), default);
                 await Until(() => position.Operation?.Id == request.OperationId && position.CenteredRcsRejection && message.IsVisible && message.Text == title);
@@ -157,7 +162,18 @@ static partial class Program
                 ApplicationCommands.Copy.Execute(null, message);
                 Check(Clipboard.GetText() == longMessage, "native Copy puts the complete Chinese, English and multiline response on the clipboard");
             }
-            finally { if (priorClipboard is null) Clipboard.Clear(); else Clipboard.SetDataObject(priorClipboard, true); }
+            finally
+            {
+                // Windows may still own the clipboard immediately after Copy.
+                // Restore the same original data after yielding; keep a finite
+                // cleanup budget and fail if ownership never becomes available.
+                for (var attempt = 0; ; attempt++)
+                {
+                    try { if (priorClipboard is null) Clipboard.Clear(); else Clipboard.SetDataObject(priorClipboard, true); break; }
+                    catch (System.Runtime.InteropServices.COMException error) when (error.HResult == unchecked((int)0x800401D0) && attempt < 4)
+                    { await Task.Delay(100); }
+                }
+            }
             var requestCount = h.Peer.Requests.Count;
             var scan = new TextCompositionEventArgs(Keyboard.PrimaryDevice, new TextComposition(InputManager.Current, message, "7"))
             { RoutedEvent = TextCompositionManager.PreviewTextInputEvent };
@@ -167,7 +183,7 @@ static partial class Program
             var snapshot = await h.App.SnapshotAsync();
             await h.App.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause"));
             await Until(() => vm.Snapshot?.Paused == true);
-            Check(message.IsVisible && message.Text == longMessage && step.Text == "请取下包裹后人工判断，再确认\n本位请求待核对，请通知维护人员；取件不会撤销原调度" &&
+            Check(message.IsVisible && message.Text == longMessage && step.Text == "请取下包裹后人工判断，再确认\n供包仍暂停，处理完成后再上件" &&
                 !position.CanSubmitBarcode && h.Peer.Requests.Count == requestCount, "pause retains the manual refusal and its original request while allowing physical removal: " + step.Text);
             window.Close(); await Until(() => !window.IsVisible);
         }

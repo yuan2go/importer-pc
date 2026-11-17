@@ -83,19 +83,27 @@ static class AcquisitionLifecycle
         Observation? observation = null;
         await source.StartControlledAsync(Wire.Id(), o => { observation = o; return true; }, _ => { }, CancellationToken.None);
         source.Emit("Read", "active", ["0001"]);
-        var capture = camera.CaptureAsync(Request(observation!, binding), CancellationToken.None);
-        var incoming = await server.GetContextAsync().WaitAsync(TimeSpan.FromSeconds(2));
+        using var captureStop = new CancellationTokenSource(TimeSpan.FromSeconds(8));
+        var capture = camera.CaptureAsync(Request(observation!, binding), captureStop.Token);
+        System.Net.HttpListenerContext? incoming = null;
         try
         {
+            incoming = await server.GetContextAsync().WaitAsync(TimeSpan.FromSeconds(2));
             source.ReleaseAcquisition(Identity(observation!), "observation:" + observation!.Id);
             Check(source.RetainedAcquisitionCount == 1, "active capture pins original even after its last observation owner releases");
             try { await source.DisposeAsync(); throw new Exception("disposed active capture"); }
             catch (InvalidOperationException ex) when (ex.Message.Contains("captures still active")) { }
             Check(!capture.IsCompleted && source.RetainedAcquisitionCount == 1, "source disposal refuses to erase active original and permits cleanup retry");
+            incoming.Response.StatusCode = 503; incoming.Response.Close();
+            try { await capture.WaitAsync(TimeSpan.FromSeconds(2)); throw new Exception("HTTP error swallowed"); }
+            catch (IOException) { }
         }
-        finally { incoming.Response.StatusCode = 503; incoming.Response.Close(); }
-        try { await capture.WaitAsync(TimeSpan.FromSeconds(2)); throw new Exception("HTTP error swallowed"); }
-        catch (IOException) { }
+        finally
+        {
+            incoming?.Response.Close(); captureStop.Cancel();
+            try { await capture.WaitAsync(TimeSpan.FromSeconds(3)); }
+            catch (Exception error) when (error is IOException or OperationCanceledException) { }
+        }
         Check(source.RetainedAcquisitionCount == 0, "failed asynchronous capture propagates error and releases only its completed pin");
         await source.DisposeAsync();
     }
@@ -106,7 +114,16 @@ static class AcquisitionLifecycle
         throw new Exception("P2 timeout: " + Wire.Encode(await app.SnapshotAsync()));
     }
     static async Task<BusinessReceipt> Command(ParcelRuntime app, string kind, string? owner = null, string? value = null)
-    { var s = await app.SnapshotAsync(); return await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner, value)); }
+    {
+        for (var retry = 0; retry < 10; retry++)
+        {
+            var s = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(2));
+            var result = await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner, value)).WaitAsync(TimeSpan.FromSeconds(3));
+            if (result.Status == "Conflict") continue;
+            Check(result.Status == "Persisted", kind + " command is actually accepted: " + result.Reason); return result;
+        }
+        throw new InvalidOperationException("fixture command revision did not converge: " + kind);
+    }
     static async Task RuntimeCases(string workspace, string root)
     {
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/optional/sportmaster/business.json")));
@@ -141,7 +158,7 @@ static class AcquisitionLifecycle
             await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
             var before = await app.SnapshotAsync();
             var reconnect = app.ReconnectDeviceAsync(left.DeviceId);
-            await Task.Delay(100);
+            await Wait(app, s => s.BlockingReasons.Contains("MaintenanceInProgress:" + left.DeviceId));
             var during = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(2));
             Check(!reconnect.IsCompleted && left.Epoch == before.Devices!.Single(x => x.DeviceId == left.DeviceId).Epoch, "left reconnect waits for in-flight capture while snapshots remain readable");
             factory.Release.TrySetResult();
@@ -167,10 +184,14 @@ static class AcquisitionLifecycle
             s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "unknown" && o.Capture?.State == StageState.Unknown));
             op = s.Operations.Single(o => o.AdmissionId == "unknown");
             Check(left.RetainedAcquisitionCount == 1 && !op.ImageReleased, "lost capture reply preserves unknown acquisition ownership");
+            var captures = factory.Captures.GetValueOrDefault(op.Capture!.Request.Id);
+            var queries = factory.Queries.GetValueOrDefault(op.Capture.Request.Id);
             await app.ReconcileAsync(op.Id);
             await Command(app, "ContinuePrepared", op.Id);
             await Wait(app, x => x.Operations.Single(o => o.Id == op.Id).ImageReleased);
-            Check(left.RetainedAcquisitionCount == 0 && (await app.SnapshotAsync()).Operations.Single(o => o.Id == op.Id).Capture!.Attempts == 1, "original query recovers capture without resend and terminal cleanup releases owner");
+            Check(left.RetainedAcquisitionCount == 0 && (await app.SnapshotAsync()).Operations.Single(o => o.Id == op.Id).Capture!.Attempts == 1 &&
+                factory.Captures.GetValueOrDefault(op.Capture.Request.Id) == captures && factory.Queries.GetValueOrDefault(op.Capture.Request.Id) == queries + 1,
+                "original query recovers capture without resend and terminal cleanup releases owner");
             // The backpressure journey already covers accepted-but-business-blocked ingress.
             await Command(app, "Pause");
             Check(app.EmitReferenceAt("left", "paused", "0001", "paused"), "paused observation can enter queue for explicit business rejection");
@@ -198,6 +219,7 @@ static class AcquisitionLifecycle
         public Dictionary<string, ManualObservationSource>? Readers;
         public readonly TaskCompletionSource Entered = new(TaskCreationOptions.RunContinuationsAsynchronously), Release = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public bool LoseNextReply;
+        public readonly System.Collections.Concurrent.ConcurrentDictionary<string, int> Captures = new(), Queries = new();
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
         public ParcelPorts Create(ParcelConfiguration c)
@@ -223,12 +245,14 @@ static class AcquisitionLifecycle
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
         public async Task<StageReply> CaptureAsync(FrozenRequest r, CancellationToken t)
         {
+            owner.Captures.AddOrUpdate(r.Id, 1, (_, count) => count + 1);
             if (r.AdmissionId == "slow") { owner.Entered.TrySetResult(); await owner.Release.Task; }
             var reply = await inner.CaptureAsync(r, t);
             if (owner.LoseNextReply) { owner.LoseNextReply = false; throw new IOException("Injected reply loss after original capture"); }
             return reply;
         }
-        public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
+        public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t)
+        { owner.Queries.AddOrUpdate(r.Id, 1, (_, count) => count + 1); return inner.QueryAsync(r, t); }
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }

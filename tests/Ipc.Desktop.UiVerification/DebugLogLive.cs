@@ -39,13 +39,18 @@ static partial class Program
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new HierarchyRcsFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default);
+        await runtime.StartAsync(default); SmRoundFixture.Register(runtime, launch, config);
         bool denied = false; try { await runtime.SetDebugLoggingAsync(true); } catch (UnauthorizedAccessException) { denied = true; }
         Check(denied, "ordinary mode cannot enable detailed runtime logging");
         await ManagementModeFixture.Authorize(runtime);
         Check(!(await runtime.DiagnosticSettingsAsync()).DebugEnabled, "every new runtime starts with detailed logging off");
         async Task<ParcelOperation> Scan(string position, string admission, string code, ParcelState expected = ParcelState.SlotResolved)
         {
+            var current = await runtime.SnapshotAsync();
+            if (current.Positions!.Single(lane => lane.Id == position) is { } lane && (lane.CurrentRoundId is not null || lane.Arrival?.Submitted == true)) await SmRoundFixture.NextVehicleAsync(runtime, position);
+            await runtime.CheckRcsHeartbeatAsync(default);
+            try { await Until(async () => (await runtime.SnapshotAsync()).Positions!.Single(lane => lane.Id == position).BarcodeInput?.Camera == true); }
+            catch { File.WriteAllText(Path.Combine(evidence, "failed-admission-" + admission + ".json"), Wire.Encode(await runtime.SnapshotAsync())); throw; }
             Check(runtime.EmitReferenceAt(position, admission, code, "event-" + admission), "synthetic input accepted: " + admission);
             await Until(async () => (await runtime.SnapshotAsync()).Operations.Any(o => o.AdmissionId == admission && o.State == expected));
             return (await runtime.SnapshotAsync()).Operations.Single(o => o.AdmissionId == admission);
@@ -81,7 +86,7 @@ static partial class Program
             "unknown protocol result and explicit rejection retain original requests and diagnostic response evidence");
         var service = DispatchProxy.Create<IRuntimeLogUiFixture, RuntimeLogUiProbe>(); var probe = (RuntimeLogUiProbe)(object)service; probe.Inner = runtime;
         var control = new SoftwareLogControl(service); var client = new Grid(); client.Children.Add(control);
-        var window = new Window { Content = client, Width = 1100, Height = 700 }; NameScope.SetNameScope(window, new NameScope()); window.RegisterName("ClientArea", client); window.Show();
+        var window = new Window { Content = client, Width = 1100, Height = 700 }; NameScope.SetNameScope(window, new NameScope()); window.RegisterName("ClientArea", client); await using var windowOwner = new NativeWindowOwner(window); window.Show();
         var debug = Descendants(control).OfType<CheckBox>().Single(c => AutomationProperties.GetAutomationId(c) == "DebugLoggingMode");
         var follow = Descendants(control).OfType<CheckBox>().Single(c => AutomationProperties.GetName(c) == "实时跟随日志");
         var mode = Descendants(control).OfType<ComboBox>().Single(c => AutomationProperties.GetName(c) == "日志显示方式");
@@ -108,7 +113,7 @@ static partial class Program
             "manually entered historical cutoff stays fixed instead of silently expanding to now");
         Click(window, "全部日志"); Click(window, "最近1小时"); Click(window, "查询"); await Until(() => Task.FromResult(export.IsEnabled));
         mode.SelectedIndex = 1; follow.IsChecked = true;
-        await Until(() => Task.FromResult(terminal.Text.Contains("原请求响应详情")));
+        await Until(() => Task.FromResult(terminal.Text.Contains(later.Wcs!.Request.Id) && terminal.Text.Contains("原始时间：")));
         Check(!export.IsEnabled, "live follow disables the visible export menu even when a prior fixed query was exportable");
         Check(captured.Entries.Any(e =>
         {
@@ -130,7 +135,11 @@ static partial class Program
         CaptureInternal(evidence, "terminal-live-800", window, lines);
         debug.IsChecked = false; await Until(async () => !(await runtime.DiagnosticSettingsAsync()).DebugEnabled && debug.IsEnabled);
         Check(!debug.IsChecked!.Value, "unchecking the page parameter immediately disables detailed logging");
-        var disabled = await Scan("right", "debug-disabled-again", "000123"); await Task.Delay(150);
+        var disabled = await Scan("right", "debug-disabled-again", "000123");
+        var journal = (RuntimeJournal)typeof(ParcelRuntime).GetField("journal", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(runtime)!;
+        // A marker on the same journal queue proves all earlier trace writes drained.
+        var marker = "debug-disable-drained-" + Wire.Id(); journal.Write(new { Event = marker });
+        await Until(async () => (await runtime.ReadDiagnosticTailAsync(null, null, default)).Entries.Any(entry => entry.Text.Contains(marker)));
         var tail = await runtime.ReadDiagnosticTailAsync(null, null, default);
         Check(!tail.Entries.Any(e => e.Text.Contains("\"Level\":\"调试\"") && e.Text.Contains(disabled.Id)), "new operations after disabling no longer generate debug stage traces");
         var page = await runtime.QueryLogsAsync(new(DateTimeOffset.Now.AddMinutes(-10), DateTimeOffset.Now.AddMinutes(1), Level: "调试"), null, 0, default);
@@ -187,18 +196,18 @@ static partial class Program
         check(!journal.ReadTail(null, null).Entries.Any(e => e.Text.Contains(secret)) && !File.ReadAllText(Path.Combine(root, "runtime.jsonl")).Contains(secret), "nested JSON bodies and partial quoted sensitive fields are redacted in files and live views");
         using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
         var hook = typeof(RuntimeJournal).GetProperty("BeforeAppend", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        try
+        {
         hook.SetValue(journal, (Action)(() => { entered.Set(); release.Wait(); }));
         journal.Write(new { Event = "hold-writer" });
         await Task.Run(() => { if (!entered.Wait(TimeSpan.FromSeconds(5))) throw new TimeoutException(); });
-        try
-        {
             for (int i = 0; i < 400; i++) journal.WriteDebug(new { Level = "调试", Event = "pressure", Number = i });
             journal.Write(new { Event = "ordinary-event-still-admitted" });
             using var status = JsonDocument.Parse(Wire.Encode(journal.Status));
             check(status.RootElement.GetProperty("DebugDropped").GetInt64() > 0 && status.RootElement.GetProperty("Dropped").GetInt64() == 0,
                 "debug pressure is counted and leaves capacity for ordinary logs without blocking callers");
         }
-        finally { hook.SetValue(journal, null); release.Set(); }
+        finally { hook.SetValue(journal, null); release.Set(); await journal.DisposeAsync(); }
     }
 }
 

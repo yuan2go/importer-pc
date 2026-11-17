@@ -28,7 +28,7 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
                     MaximumDispatchMs = Maximum,
                     P95UpperBoundMs = Percentile(.95),
                     P99UpperBoundMs = Percentile(.99),
-                    HistogramCounts = Milliseconds.Select((count, upper) => new { UpperMs = upper, Count = count }).Where(b => b.Count != 0).ToArray(),
+                    HistogramCounts = Milliseconds.Select((count, upper) => new { UpperMs = upper == 2048 ? Maximum : upper, Count = count }).Where(b => b.Count != 0).ToArray(),
                     Histogram = "1ms upper bounds; values above 2047ms use observed maximum; independent 500ms probe"
                 };
             }

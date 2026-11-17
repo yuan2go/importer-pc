@@ -27,6 +27,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     public ObservationPreviewLease? ReadPreviewLease() => disposeRequested ? null : preview.ReadLease();
     readonly ExtensionContext context;
     readonly IMvsApi api;
+    internal Action<uint, byte[]>? FrameCopiedForVerification { get; set; }
     readonly IMonoBarcodeDecoder? decoder;
     bool Recognizes => decoder is not null || api.ReturnsDecodedFrames;
     string FramePrefix => api.ReturnsDecodedFrames ? "mvid" : "mvs";
@@ -287,6 +288,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                 var copyStarted = Stopwatch.GetTimestamp();
                                 length = checked((int)(frame.Width * frame.Height)); pixels = ArrayPool<byte>.Shared.Rent(length);
                                 Marshal.Copy(frame.Data, pixels, 0, length);
+                                FrameCopiedForVerification?.Invoke(frame.Number, pixels);
                                 copyMs = Stopwatch.GetElapsedTime(copyStarted).TotalMilliseconds; Timings.Record("image.rent-copy", copyMs);
                             }
                         }
@@ -299,10 +301,19 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         catch { if (pixels is not null) { ArrayPool<byte>.Shared.Return(pixels, true); pixels = null; } throw; }
                         finally
                         {
-                            PhaseTo("free-image-buffer"); var releaseStarted = Stopwatch.GetTimestamp();
+                            Exception? phaseFailure = null;
+                            try { PhaseTo("free-image-buffer"); }
+                            catch (Exception error) { phaseFailure = error; if (pixels is not null) { ArrayPool<byte>.Shared.Return(pixels, true); pixels = null; } }
+                            var releaseStarted = Stopwatch.GetTimestamp();
                             try { api.Release(); }
-                            catch { if (pixels is not null) { ArrayPool<byte>.Shared.Return(pixels, true); pixels = null; } throw; }
+                            catch (Exception error)
+                            {
+                                if (pixels is not null) { ArrayPool<byte>.Shared.Return(pixels, true); pixels = null; }
+                                if (phaseFailure is not null) throw new AggregateException(phaseFailure, error);
+                                throw;
+                            }
                             finally { releaseMs = Stopwatch.GetElapsedTime(releaseStarted).TotalMilliseconds; Timings.Record("sdk.release", releaseMs); }
+                            if (phaseFailure is not null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(phaseFailure).Throw();
                         }
                         // Release the borrowed SDK image before calling Application. Presence
                         // continues while recognition is paused, including drain/management.
@@ -353,7 +364,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             if (!matches) throw new ObservationConnectionException("MVS原相机身份不匹配。", new IOException("Original camera unavailable"));
                         }
                         using (Timings.Measure("health.trigger-readback"))
-                            if (!api.ReturnsDecodedFrames && (triggerRequirement == "on" && api.EnumValue("TriggerMode") != 1 || triggerRequirement == "off" && api.EnumValue("TriggerMode") != 0))
+                            if (!api.ReturnsDecodedFrames && (Recognizes ? api.EnumValue("TriggerMode") != 0 : triggerRequirement == "on" && api.EnumValue("TriggerMode") != 1 || triggerRequirement == "off" && api.EnumValue("TriggerMode") != 0))
                                 throw new IOException("MVS device trigger setting changed");
                         healthFrames = Frames;
                         PhaseTo(!Recognizes ? "acquiring-decoder-unavailable" : "reading"); Publish(!Recognizes ? DeviceHealth.Unknown : DeviceHealth.Ready); poll.Restart();
@@ -408,12 +419,13 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     }
     async Task StopCore()
     {
+        List<Exception> terminatedFailures = [];
+        void Phase(string value) { try { PhaseTo(value); } catch (Exception error) { terminatedFailures.Add(error); } }
         preview.Clear();
         cancel?.Cancel();
-        PhaseTo("stop-requested");
+        Phase("stop-requested");
         // Wait for the actual GetImageBuffer/health call, not a cancelled wrapper.
         CompleteDecodePipeline();
-        List<Exception> terminatedFailures = [];
         foreach (var owned in new[] { worker, decodeWorker }.OfType<Task>())
         {
             try { await owned.ConfigureAwait(false); }
@@ -429,7 +441,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
         // A failed host notification must not prevent native teardown. Native
         // errors still retain the original owner and stop at the failed step.
         Report(DeviceHealth.Stopping);
-        if (api.HasFrame) { PhaseTo("retry-free-original-buffer"); await Task.Run(api.Release).ConfigureAwait(false); }
+        if (api.HasFrame) { Phase("retry-free-original-buffer"); await Task.Run(api.Release).ConfigureAwait(false); }
         // StopGrabbing and CloseDevice are transitions, not releases. After GigE packet loss
         // they can fail (e.g. 0x80000214 UDP receive, 0x80000003 call order) on a stream that
         // is already broken; retrying them only repeats the error. Record the error and go on:
@@ -440,14 +452,14 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
             try { await Task.Run(call).ConfigureAwait(false); }
             catch (IOException error) { transitions.Add(stage + ": " + error.Message); }
         }
-        if (grabbing) { PhaseTo("stop-grabbing"); await Transition("StopGrabbing", api.Stop).ConfigureAwait(false); grabbing = false; }
-        if (opened) { PhaseTo("close"); await Transition("CloseDevice", api.Close).ConfigureAwait(false); opened = false; }
+        if (grabbing) { Phase("stop-grabbing"); await Transition("StopGrabbing", api.Stop).ConfigureAwait(false); grabbing = false; }
+        if (opened) { Phase("close"); await Transition("CloseDevice", api.Close).ConfigureAwait(false); opened = false; }
         if (transitions.Count != 0) lock (gate) teardown = string.Join("; ", transitions);
-        if (created) { PhaseTo("destroy"); await Task.Run(api.Destroy).ConfigureAwait(false); created = false; }
-        if (initialized) { PhaseTo("finalize"); await Task.Run(api.Shutdown).ConfigureAwait(false); initialized = false; }
+        if (created) { Phase("destroy"); await Task.Run(api.Destroy).ConfigureAwait(false); created = false; }
+        if (initialized) { Phase("finalize"); await Task.Run(api.Shutdown).ConfigureAwait(false); initialized = false; }
         decoder?.Release();
         lease?.Dispose(); lease = null; worker = null; decodeWorker = null; cancel?.Dispose(); cancel = null;
-        PhaseTo("stopped"); Report(DeviceHealth.Stopped); health = null;
+        Phase("stopped"); Report(DeviceHealth.Stopped); health = null;
         if (terminatedFailures.Count != 0)
             throw new IOException("MVS native teardown completed; " + (healthReportFailed ? "health receiver failed; " : "") +
                 "original worker/health errors retained", new AggregateException(terminatedFailures));

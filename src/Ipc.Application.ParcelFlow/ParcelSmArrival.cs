@@ -78,14 +78,15 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
         var cycle = SmCycle(position);
         if (cycle.RecoveryReason is not null) return cycle.RecoveryReason;
         if (cycle.TargetOperation is { } target && target != exceptOperation)
-            return "请求待核对：本位原请求的远端目标责任未确认，请联系维护核对，勿重复提交。";
+            return CurrentRound(position)?.OperationId == target ? "本件已请求格口，请先取下包裹结束本件，勿重复提交。" :
+                "原取格口请求的远端绑定尚未确认，本位暂不能请求下一件；请停用本位并联系维护核对原请求是否已绑定或取消。";
         if (debug && CurrentRound(position)?.OperationId is { } production && production != exceptOperation)
             return "本位生产请求尚未结束；请先处理本位原责任，再明确接管调试。";
         if (!SmArrivalConfirmed(position)) return "等待小车确认；保留输入，确认后再提交。";
         if (cycle.AutoSuppressed && CurrentRound(position) is null && cycle.SubmittedOperation is null)
             return "等待可信取件边界；显示结束不证明包裹已取下。";
         if (cycle.SubmittedOperation is { } submitted && submitted != exceptOperation)
-            return "本车已有提交责任，等待下一车；取件不会撤销原调度。";
+            return "本件已提交，请先取下包裹结束本件，再处理下一件。";
         if (debug && !PositionSupplyEnabled(position)) return "调试真实发送须先启用并确认本位小车；不能向已撤车的位置发送。";
         return null;
     }
@@ -105,7 +106,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
             // Startup owns configuration/recovery writes before its workers are
             // published. Do not let the integration's immediate first tick race
             // those writes on the repository's single connection.
-            if (!Volatile.Read(ref stationStartupCompleted) || configurationSaving || stopping.IsCancellationRequested) return null;
+            if (!Volatile.Read(ref stationStartupCompleted) || fatalStorage.Task.IsCompleted || configurationSaving || stopping.IsCancellationRequested) return null;
             if (repository is null || stopped) throw new OperationCanceledException("Runtime stopped", token);
             var members = new List<SmHeartbeatMember>();
             foreach (var position in positions.Keys)
@@ -118,8 +119,6 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
                     cause |= SmRemoteRecoveryCause.MembershipMayApply;
                 if (uncertain is { } old && old != included)
                     cause |= SmRemoteRecoveryCause.MembershipMayApply;
-                if (!HeartbeatIncludes(position) && cycle.TargetOperation is not null)
-                    cause |= SmRemoteRecoveryCause.RequestMayBind;
                 var next = cycle with
                 {
                     HeartbeatPending = requestId, HeartbeatIncluded = included, HeartbeatConfiguration = SmHeartbeatPositionConfiguration(position), UncertainMembership = uncertain, HeartbeatMaintenanceLease = false,
@@ -147,6 +146,24 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
+            WriteRuntimeLog("RCS心跳", "心跳实际响应", new
+            {
+                intent.RequestId, intent.Configuration, intent.Controls, intent.MaintenanceLease, Members = intent.Members,
+                confirmation.AttemptStartedAt, confirmation.Target, confirmation.HttpResponded, confirmation.HttpStatus,
+                confirmation.ProtocolConfirmed,
+                ReceivedAt = confirmation.ResponseBody is null ? (DateTimeOffset?)null : confirmation.ReceivedAt,
+                ValidUntil = confirmation.ProtocolConfirmed ? (DateTimeOffset?)confirmation.ValidUntil : null, confirmation.ElapsedMs,
+                Request = DiagnosticFragment(confirmation.RequestBody, 32768), Response = DiagnosticFragment(confirmation.ResponseBody, 32768),
+                confirmation.ResponseBytes, confirmation.ResponseComplete, confirmation.Failure, confirmation.Vehicles,
+                ConfigurationCurrent = intent.Configuration == SmHeartbeatConfiguration,
+                Positions = positions.Keys.Select(p => new
+                {
+                    PositionId = p, CurrentControlRevision = PositionControl(p).Revision,
+                    CurrentMember = UsesSmArrival(p) && HeartbeatIncludes(p),
+                    SentMember = intent.Members.Any(m => m.PositionId == p),
+                    ControlCurrent = intent.Controls.GetValueOrDefault(p, -1) == PositionControl(p).Revision
+                }).ToArray()
+            }, confirmation.ProtocolConfirmed ? "信息" : "警告");
             if (repository is null || intent.Configuration != SmHeartbeatConfiguration) return;
             if (intent.MaintenanceLease && backupInProgress)
             {
@@ -154,7 +171,6 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
                 if (maintenanceHeartbeatPending?.RequestId == intent.RequestId) maintenanceHeartbeatPending = null;
                 return; // Frozen lease is already durable in both source and backup.
             }
-            WriteRuntimeLog("RCS心跳", "心跳实际响应", new { intent.RequestId, confirmation.HttpResponded, confirmation.ProtocolConfirmed, confirmation.ReceivedAt, confirmation.ValidUntil, Members = intent.Members });
             foreach (var position in positions.Keys)
             {
                 var member = intent.Members.SingleOrDefault(m => m.PositionId == position);
@@ -193,17 +209,10 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
                 arrivalConfirmations[position] = vehicle;
                 if (cycle.VehicleNo != vehicle.VehicleNo && cycle.RecoveryReason is null)
                 {
-                    // Without withdrawal, the RCS hold contract makes a changed
-                    // vehicle evidence that the old request already bound its car.
-                    if (cycle.TargetOperation is not null && cycle.Withdrawn)
-                    {
-                        StoreSmCycle(cycle with { RecoveryCause = cycle.RecoveryCause | SmRemoteRecoveryCause.RequestMayBind }, "ArrivalRecoveryBlocked");
-                        continue;
-                    }
-                    var next = cycle with
+                    var next = ReleaseSmPlacementClaim(cycle) with
                     {
                         Generation = Wire.Id(), PlacementGeneration = Wire.Id(), VehicleNo = vehicle.VehicleNo, ArrivalAt = vehicle.ReceivedAt,
-                        ArrivalEvidence = "heartbeat:" + intent.RequestId, SubmittedOperation = null, SubmissionAttempted = false, TargetOperation = null,
+                        ArrivalEvidence = "heartbeat:" + intent.RequestId,
                         AutoSuppressed = false, Presence = TrayPresence.Unknown, Epoch = null, Sequence = 0,
                         Evidence = null, ClearedAt = vehicle.ReceivedAt, Withdrawn = false
                     };
@@ -211,9 +220,9 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
                         EndSmRound(round, "VehicleChanged", replacementCycle: next);
                     else
                     {
-                        repository!.Commit(null, "VehicleArrived", Wire.Encode(new { Cycle = next, BoundOperation = cycle.TargetOperation ?? cycle.SubmittedOperation, Proof = "RCS binds current car before releasing it; this lane was not withdrawn" }), cycle: next);
+                        repository!.Commit(null, "VehicleArrived", Wire.Encode(new { Cycle = next, PreviousOperation = cycle.TargetOperation ?? cycle.SubmittedOperation, Proof = "Confirmed vehicle change ends the previous placement; original request outcome is independent" }), cycle: next);
                         smCycles[position] = next;
-                        WriteRuntimeLog("小车到位", "车辆到位与原目标绑定已核对", new { Position = position, Cycle = next, BoundOperation = cycle.TargetOperation ?? cycle.SubmittedOperation });
+                        WriteRuntimeLog("小车到位", "新车到位，上一件已结束", new { Position = position, Cycle = next, PreviousOperation = cycle.TargetOperation ?? cycle.SubmittedOperation });
                     }
                     arrivalVisualBaselines.Remove(position);
                     smPresenceTimes.Remove(position); smPresenceCaptureTicks.Remove(position); blockedInputs.TryRemove(position, out _); blockedInputPictures.Remove(position);
@@ -238,12 +247,13 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
             if (arrivalCaptures.TryGetValue(reader.Source.DeviceId, out var current) && current.Generation == generation && current.Epoch == reader.Epoch)
             {
                 arrivalCaptures[reader.Source.DeviceId] = current with { Until = until };
-                continue;
+                if (current.Ready || current.Failure is null || current.MinimumCaptureTicks > 0 && System.Diagnostics.Stopwatch.GetElapsedTime(current.MinimumCaptureTicks) < TimeSpan.FromSeconds(1)) continue;
             }
             if (reader.Health?.IsValid(DateTimeOffset.UtcNow) != true || reader.Source is not IProductionArrivalSource source ||
                 !arrivalBoundaryWorkers.Add(reader.Source.DeviceId)) continue;
             var boundaryTicks = System.Diagnostics.Stopwatch.GetTimestamp();
-            var boundary = new ProductionArrivalCapture(generation, Wire.Id());
+            // Reapply only the same local cache-cutover identity, never an RCS request.
+            var boundary = new ProductionArrivalCapture(generation, current?.Generation == generation && current.Epoch == reader.Epoch ? current.BoundaryId! : Wire.Id());
             arrivalCaptures[reader.Source.DeviceId] = new(generation, reader.Epoch, false, until, MinimumCaptureTicks: boundaryTicks, BoundaryId: boundary.BoundaryId);
             var epoch = reader.Epoch;
             auxiliary.Add(Task.Run(async () =>
@@ -285,7 +295,8 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
         return new(cycle.VehicleNo, cycle.Generation, !UsesSmArrival(position) || SmArrivalConfirmed(position), cycle.SubmittedOperation is not null,
             SmArrivalConfirmed(position) && capture is { Ready: true } && capture.Generation == cycle.Generation &&
                 capture.Epoch == readers[positions[position].ReaderDeviceId].Epoch && capture.Until > DateTimeOffset.UtcNow,
-            cycle.RecoveryReason ?? (CurrentRound(position) is null && cycle.TargetOperation is not null ? "原请求的远端目标责任待核对；请停用本位，维护核对后恢复。" : null), cycle.TargetOperation)
+            cycle.RecoveryReason ?? (CurrentRound(position) is null && cycle.TargetOperation is not null ?
+                "本件已结束，原请求的远端绑定尚未确认；请停用本位并联系维护核对原请求是否已绑定或取消，再处理下一件。" : null), cycle.TargetOperation)
         { Configured = PositionHasRcsCode(position), CaptureFailure = capture?.Failure is not null ? "相机换车边界未确认；可核对后人工提交，或联系维护检查相机。" : null,
             SubmissionAttempted = cycle.SubmissionAttempted, PlacementBoundary = cycle.PlacementGeneration ?? cycle.Generation, RecoveryToken = cycle.RecoveryToken, PlacementClosed = UsesSmArrival(position) && cycle.AutoSuppressed && cycle.SubmittedOperation is null && CurrentRound(position) is null };
     }
@@ -299,12 +310,8 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
             (cycle.TargetOperation is null || cycle.TargetOperation == op.Id))
             return [cycle with { TargetOperation = op.Id, SubmissionAttempted = true, SubmittedOperation = op.Id }];
         if (cycle.TargetOperation == op.Id && op.Wcs is { } stage &&
-            (stage.State is StageState.Accepted || SmRequestNotDelivered(stage)))
+            (stage.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled || SmRequestNotDelivered(stage)))
             return [cycle with { TargetOperation = null }];
-        // The customer's success=false fields do not promise no task, no binding
-        // or no future effect. Preserve this target independently of the parcel.
-        if (cycle.TargetOperation == op.Id && op.Wcs?.State == StageState.Rejected)
-            return [cycle with { RecoveryCause = cycle.RecoveryCause | SmRemoteRecoveryCause.RequestMayBind }];
         return [];
     }
     bool SmTargetDispatchAllowed(ParcelOperation op) => Id != "sportmaster" ||
@@ -315,7 +322,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
         var authority = Management.Require();
         if (!Guid.TryParseExact(request.CommandId, "N", out _) || request.PositionId is not ("left" or "right") ||
             string.IsNullOrWhiteSpace(request.ExternalEvidence) || request.ExternalEvidence.Length > 2048 || request.ExternalEvidence.Any(char.IsControl))
-            throw new ArgumentException("请填写客户RCS原请求已结束及本位调度状态的外部核对依据。");
+            throw new ArgumentException("请填写客户RCS原请求已绑定或取消、旧心跳成员变更已收口及本位停用状态的外部核对依据。");
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
@@ -331,7 +338,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
                 PositionDrainRequired(p) || SmCycle(p).HeartbeatPending is not null || arrivalBoundaryWorkers.Contains(positions[p].ReaderDeviceId)))
                 return new("Rejected", "先停用本位并等实际成员移除确认、调用及回执收口，再核对客户RCS。", repository.Revision);
             var next = related.Select(p => SmCycle(p) with { RecoveryCause = SmRemoteRecoveryCause.None, TargetOperation = null, UncertainMembership = null, RecoveryToken = Wire.Id() }).ToArray();
-            var receipt = new BusinessReceipt("Accepted", "已记录外部核对；仍须启用并等可信新车到位。同车已提交事实保留。", repository.Revision + 1);
+            var receipt = new BusinessReceipt("Accepted", "已记录原请求及心跳成员核对；启用并等待本位小车确认后可继续。", repository.Revision + 1);
             repository.Commit(null, "RemoteTargetRecoveryConfirmed", Wire.Encode(new { request, Actor = ManagementEvidence }), command: command, commandResult: receipt, cycles: next);
             foreach (var confirmed in next) smCycles[confirmed.PositionId] = confirmed;
             return receipt;

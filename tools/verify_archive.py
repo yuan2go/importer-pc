@@ -121,10 +121,11 @@ def markdown(text):
             end += 1
         if depth == 0:
             refs.append(re.split(r'\s+["\x27]', clean[start:end - 1])[0].replace('\\(', '(').replace('\\)', ')'))
-    definitions = dict(re.findall(r'^\s*\[([^\]]+)\]:\s*<?(\S+?)>?(?:\s|$)', clean, re.M))
+    normalize_label = lambda value: ' '.join(value.split()).casefold()
+    definitions = {normalize_label(label): target for label, target in re.findall(r'^\s*\[([^\]]+)\]:\s*<?(\S+?)>?(?:\s|$)', clean, re.M)}
     refs.extend(definitions.values())
     for label, key in re.findall(r'\[([^\]]+)\]\[([^\]]*)\]', clean):
-        if (key or label) not in definitions:
+        if normalize_label(key or label) not in definitions:
             refs.append('missing-reference-definition:' + (key or label))
     ids = set()
     counts = Counter()
@@ -193,11 +194,17 @@ def verify(root, manifest_path, scope, registry_path=None):
     def fail(code, path):
         errors.append({'code': code, 'path': str(path)})
     manifest = json.loads(manifest_path.read_text())
+    if not isinstance(manifest, dict) or not isinstance(manifest.get('self_verification'), dict):
+        raise ValueError('Manifest must contain self-verification policy')
+    if not isinstance(manifest['self_verification'].get('excluded_from_file_records'), list) or any(not isinstance(x, str) for x in manifest['self_verification']['excluded_from_file_records']):
+        raise ValueError('Invalid self-verification exclusions')
     exclusions = set(manifest['self_verification']['excluded_from_file_records'])
     # Exclusion policy is deliberately narrow; arbitrary directories cannot disappear.
     if exclusions != {'docs/manifest.json', 'docs/manifest.sha256'}:
         raise ValueError('self exclusions must be exactly the manifest and its checksum')
     rows = manifest['files']
+    if not isinstance(rows, list) or any(not isinstance(row, dict) or not isinstance(row.get('path'), str) or not isinstance(row.get('sha256'), str) for row in rows):
+        raise ValueError('Manifest files must be records with string paths and hashes')
     names = [r['path'] for r in rows]
     if len(names) != len(set(names)):
         fail('duplicate_manifest_path', manifest_path.relative_to(root))
@@ -231,6 +238,12 @@ def verify(root, manifest_path, scope, registry_path=None):
     if len(checksum) != 2 or checksum[1] != 'manifest.json' or checksum[0] != digest(manifest_path.read_bytes()):
         fail('manifest_checksum', 'docs/manifest.sha256')
     policy = json.loads(registry_path.read_text()) if registry_path else {}
+    if not isinstance(policy, dict):
+        raise ValueError('Reference registry must be an object')
+    for category, required in [('exceptions', ('source', 'target')), ('package_exceptions', ('container', 'part')), ('locators', ('path',)), ('historical_omissions', ('path',))]:
+        entries = policy.get(category, [])
+        if not isinstance(entries, list) or any(not isinstance(entry, dict) or any(not isinstance(entry.get(key), str) for key in required) for entry in entries):
+            raise ValueError('Invalid reference registry records: ' + category)
     exceptions = {(r['source'], r['target']): r for r in policy.get('exceptions', [])}
     used = set()
     package_exceptions = {(r['container'], r['part']): r for r in policy.get('package_exceptions', [])}
@@ -274,6 +287,11 @@ def verify(root, manifest_path, scope, registry_path=None):
         suffix = f.suffix.lower()
         counts['files'] += 1
         try:
+            if suffix == '.svg':
+                for target in svg_references(f.read_bytes()):
+                    if not target.startswith('#'):
+                        reference(f, target)
+                counts['svg'] += 1
             if suffix in ('.dll', '.exe', '.msi', '.ttf', '.otf', '.woff', '.woff2', '.odttf'):
                 if rel not in REVIEWED_FONTS or digest(f.read_bytes()) != REVIEWED_FONTS[rel]:
                     fail('excluded_binary', rel)
@@ -283,6 +301,8 @@ def verify(root, manifest_path, scope, registry_path=None):
                     for b in value:
                         if not all(isinstance(b.get(k), (int, float)) and b[k] > 0 for k in ('width', 'height')):
                             raise ValueError('invalid board dimensions')
+                        if not isinstance(b['objects'], list) or any(not isinstance(o, dict) for o in b['objects']):
+                            raise ValueError('board objects must be an object list')
                         for o in b['objects']:
                             if o.get('type') == 'svg':
                                 for target in svg_references(o['svg']):
@@ -369,7 +389,7 @@ def verify(root, manifest_path, scope, registry_path=None):
     # Explicit evidence locators are checked independently of textual link syntax.
     for r in policy.get('locators', []):
         target = root / r['path']
-        if not safe_name(r['path']) or not target.is_file() or target.is_symlink():
+        if not safe_name(r['path']) or not target.is_file() or target.is_symlink() or not target.resolve().is_relative_to(root):
             fail('missing_evidence_locator', r['path'])
         elif r.get('sha256') and digest(target.read_bytes()) != r['sha256']:
             fail('evidence_identity', r['path'])

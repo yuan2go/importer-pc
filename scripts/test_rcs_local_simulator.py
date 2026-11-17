@@ -1,6 +1,7 @@
 import concurrent.futures
 from contextlib import closing
 import hashlib
+import http.client
 import json
 from pathlib import Path
 import sqlite3
@@ -14,6 +15,38 @@ from urllib.request import Request, urlopen
 
 
 class LocalRcs(unittest.TestCase):
+    def test_rejected_unread_post_closes_connection_and_large_identity_is_rejected(self):
+        self.start()
+        from urllib.parse import urlsplit
+        parsed = urlsplit(self.endpoint)
+        for path, body in [('/unknown', b'unread payload'), (parsed.path, b'x' * 65537)]:
+            connection = http.client.HTTPConnection(parsed.hostname, parsed.port, timeout=2)
+            try:
+                connection.request('POST', path, body)
+                reply = connection.getresponse()
+                self.assertIn(reply.status, (404, 413))
+                self.assertEqual(reply.getheader('Connection'), 'close')
+                reply.read()
+                self.assertIsNone(connection.sock)
+            finally:
+                connection.close()
+        with self.assertRaises(HTTPError) as rejected:
+            self.post([], identity=9223372036854775808)
+        self.assertEqual(rejected.exception.code, 400)
+        self.assertEqual(self.status()['requests'], 0)
+
+    def test_partial_body_read_has_an_accepted_socket_deadline(self):
+        import socket
+        from urllib.parse import urlsplit
+        self.start()
+        endpoint = urlsplit(self.endpoint)
+        with socket.create_connection((endpoint.hostname, endpoint.port), timeout=5) as peer:
+            peer.sendall(b'POST /rcs/sorter/api HTTP/1.1\r\nHost: localhost\r\nContent-Length: 100\r\n\r\n{')
+            # A separate status request remains usable while this body is incomplete.
+            self.assertEqual(self.status()['requests'], 0)
+            self.assertEqual(peer.recv(1), b'')
+        self.assertEqual(self.status()['requests'], 0)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='ipc-synthetic-rcs-')
         self.addCleanup(self.temp.cleanup)

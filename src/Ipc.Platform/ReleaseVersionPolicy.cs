@@ -4,7 +4,7 @@ namespace Ipc.Platform;
 
 public static class ReleaseVersionPolicy
 {
-    static readonly Regex version = new(@"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$",
+    static readonly Regex version = new(@"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?\z",
         RegexOptions.NonBacktracking | RegexOptions.CultureInvariant);
 
     public static int Compare(string left, string right)

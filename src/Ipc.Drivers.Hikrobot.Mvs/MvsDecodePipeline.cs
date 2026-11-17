@@ -130,6 +130,7 @@ internal sealed partial class MvsAcquisition
         MvsOriginalFrames.Frame? original = null;
         string[] codes;
         RecognitionSymbol[] symbols;
+        Exception? feedbackFailure = null;
         byte[]? inspectionOriginal = null;
         Observation? nativeObservation = null;
         if (api.ReturnsDecodedFrames && frame.NativeRejection is null && frame.NativeSymbols is { Length: > 0 } nativeSymbols)
@@ -198,7 +199,8 @@ internal sealed partial class MvsAcquisition
             codes = symbols.Select(symbol => symbol.Text).ToArray();
             if ((decoder?.PreservesInput ?? true) && codes.Length > 0) CopyOriginal();
             lock (gate) { decodeCompleted++; decodedCandidates += codes.Length; decodeWindow.Decoded(codes.Length > 0); lastDecodeAt = DateTimeOffset.UtcNow; }
-            PublishReadFeedback(frame.Number, observedAt, decodedTicks, codes.Length, scene: work.Scene, formats: symbols.Select(s => s.Format).ToArray(), codes: codes);
+            try { PublishReadFeedback(frame.Number, observedAt, decodedTicks, codes.Length, scene: work.Scene, formats: symbols.Select(s => s.Format).ToArray(), codes: codes); }
+            catch (Exception error) { feedbackFailure = error; }
         }
         catch { original?.Dispose(); throw; }
         var observationIdentity = codes.Length == 0 ? null : nativeObservation?.Id ?? Wire.Id();
@@ -272,5 +274,6 @@ internal sealed partial class MvsAcquisition
             Undelivered = null;
             lock (gate) { recognized++; candidates += codes.Length; }
         }
+        if (feedbackFailure is not null) throw new IOException("Read-feedback callback failed after preserving the original recognition handoff", feedbackFailure);
     }
 }

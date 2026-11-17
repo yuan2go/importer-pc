@@ -103,20 +103,27 @@ internal static class DualCameraPerformance
             Check(h.Peer.Requests.Count == 1, "reobserving the held parcel creates no second request");
             await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEXT-READY"), 3);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).LastReturnedFrame == 3));
+            Check(!hold.Task.IsCompleted && h.Peer.Requests.Count == 1,
+                "removal and a new vehicle preserve the independent send fence while the original remote binding is unconfirmed");
+            h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-RIGHT-INDEPENDENT"), 1);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-RIGHT-INDEPENDENT" && o.State == ParcelState.SlotResolved));
+            Check(!hold.Task.IsCompleted && h.Peer.Requests.Count == 2, "the other position completes while the original left request remains in flight");
+            hold.TrySetResult();
+            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(first.Id))?.State == ParcelState.SlotResolved);
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEXT-READY"), 4);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NEXT-READY" && o.State == ParcelState.SlotResolved));
             var before = await h.App.SnapshotAsync();
             var next = before.Operations.Single(o => o.ParcelCode == "SYNTH-NEXT-READY");
-            Check(!hold.Task.IsCompleted && before.Operations.Single(o => o.Id == first.Id).Wcs!.State == StageState.Dispatching && h.Peer.Requests.Count == 2,
-                "a fresh different parcel on the same position gets its own result while the predecessor is still in flight");
+            Check(before.Operations.Single(o => o.Id == first.Id).Wcs!.State == StageState.Accepted && h.Peer.Requests.Count == 3,
+                "the next parcel gets an independent result after the original response confirms its remote binding");
             Check(before.Configuration.Effective.MaximumOperations == 1 && before.Capacity is { Available: true, Unresolved: >= 1 },
                 "an old pending-operation limit of one cannot block the next SM parcel or rewrite the saved configuration");
             Check(before.Positions!.Single(p => p.Id == "left").CurrentOperation == next.Id,
                 "the card follows the new parcel rather than the predecessor's unfinished call");
-            hold.TrySetResult();
-            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(first.Id))?.State == ParcelState.SlotResolved);
             var after = await h.App.SnapshotAsync();
             Check(Wire.Encode((await h.App.OperationAsync(first.Id))!.Wcs!.Request) == original &&
-                after.Positions!.Single(p => p.Id == "left").CurrentOperation == next.Id && h.Peer.Requests.Count == 2,
+                after.Positions!.Single(p => p.Id == "left").CurrentOperation == next.Id && h.Peer.Requests.Count == 3,
                 "the late reply updates only its frozen original request and does not replace the new parcel's card or resend either request");
         }
         finally { hold.TrySetResult(); }

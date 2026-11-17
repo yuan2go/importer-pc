@@ -53,7 +53,7 @@ internal sealed class StationExceptionsControl : UserControl
         workspace.SizeChanged += (_, _) => { var wide = workspace.ActualWidth >= 1000; workspace.ColumnDefinitions[0].Width = new(wide ? 3 : 1, GridUnitType.Star); workspace.ColumnDefinitions[1].Width = wide ? new(2, GridUnitType.Star) : new(0); Grid.SetColumn(inspector, wide ? 1 : 0); Grid.SetRow(inspector, wide ? 0 : 1); inspector.Margin = wide ? new(20, 0, 0, 0) : new(0, 12, 0, 0); };
         grid.SelectionChanged += (_, _) => Select();
         category.SelectionChanged += async (_, _) => { before = null; if (IsLoaded) await Run(() => Refresh()); };
-        Loaded += async (_, _) => { lifetime = new(); generation++; vm.PropertyChanged += Changed; await Run(() => Refresh()); timer.Start(); };
+        Loaded += async (_, _) => { lifetime = new(); var loaded = ++generation; vm.PropertyChanged += Changed; await Run(() => Refresh()); if (IsLoaded && loaded == generation && lifetime?.IsCancellationRequested == false) timer.Start(); };
         Unloaded += (_, _) => { generation++; timer.Stop(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; vm.PropertyChanged -= Changed; };
         timer.Tick += async (_, _) => { if (!busy) await Run(() => Refresh()); };
         AutomationProperties.SetName(category, "异常类别"); AutomationProperties.SetName(grid, "异常记录，选中后在下方查看原请求和处理建议");

@@ -22,9 +22,12 @@ public partial class ParcelViewModel
         readFailure = reason; readFailureMessage = "状态读取失败，旧快照仅供参考：" + ReadFailureDisplay; Message = readFailureMessage;
         RefreshFreshness();
     }
-    void SnapshotReadApplied(long id)
+    void SnapshotReadApplied(long id, long publishedTicks)
     {
-        AdvanceReadId(ref appliedReadId, id); lastRead = DateTimeOffset.UtcNow; lastReadTick = System.Diagnostics.Stopwatch.GetTimestamp(); readFailure = null; lastReadError = null;
+        AdvanceReadId(ref appliedReadId, id);
+        lastReadTick = publishedTicks > 0 ? publishedTicks : System.Diagnostics.Stopwatch.GetTimestamp();
+        lastRead = DateTimeOffset.UtcNow - System.Diagnostics.Stopwatch.GetElapsedTime(lastReadTick);
+        readFailure = null; lastReadError = null;
         if (Message == readFailureMessage) Message = "";
         readFailureMessage = null; RefreshFreshness();
     }

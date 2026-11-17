@@ -56,6 +56,7 @@ static class InstallationConfigurationChecks
         Check(Wire.FileHash(ledger) == malformedHash && !Directory.Exists(Path.Combine(root, "malformed-output")), "failed preparation preserves the complete original and creates no replacement");
         File.WriteAllText(ledger, Wire.Encode(CurrentConfigurationFixture.Create(19, initial, (ParcelConfiguration?)null, "Effective", (string?)null)));
         Reject(() => InstallationConfiguration.Prepare(initial, installed, Path.Combine(root, "wrong-identity")), "saved configuration with another station identity cannot be copied into this station");
+        File.WriteAllText(ledger, Wire.Encode(CurrentConfigurationFixture.Create(19, effective, (ParcelConfiguration?)null, "Effective", (string?)null)));
         Directory.CreateDirectory(Path.Combine(data, "Simulation", "second-station", "sportmaster"));
         Reject(() => InstallationConfiguration.Prepare(initial, installed, Path.Combine(root, "ambiguous")), "multiple existing stations cannot be replaced by a guessed default identity");
         var empty = installed with { DataRoot = Path.Combine(root, "no-original-data") };

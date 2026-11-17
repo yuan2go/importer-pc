@@ -51,11 +51,12 @@ public partial class ParcelViewModel
     async Task BuildDetailsAsync()
     {
         detailsWorker = true;
+        var generation = detailsGeneration;
         try
         {
             while (Selected is { } operation)
             {
-                var key = detailsRevision; var generation = detailsGeneration;
+                var key = detailsRevision; generation = detailsGeneration;
                 var structured = structuredDetailsVisible && !Equals(structuredPublished, key);
                 var raw = rawDetailsVisible && IsManagementMode && !Equals(rawPublished, key);
                 if (detailsAuthorityPending || !structured && !raw) break;
@@ -84,11 +85,12 @@ public partial class ParcelViewModel
         }
         catch (Exception)
         {
+            if (generation != detailsGeneration) return;
             // Formatting is a local projection of already-read data; reselecting rebuilds it.
             detailsText = structuredDetailsText = "详情暂时没能整理出来，请重新选择这条记录。"; structuredSheet = null;
             Changed(nameof(Details)); Changed(nameof(StructuredDetails)); Changed(nameof(StructuredSheet));
         }
-        finally { detailsWorker = false; }
+        finally { detailsWorker = false; if (generation != detailsGeneration) RefreshDetailsProjection(); }
     }
     public async Task<string> FullDetailsAsync()
     {

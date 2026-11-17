@@ -140,6 +140,7 @@ static partial class SportmasterRcs
             var frozen = s.Operations.ToDictionary(o => o.Id, o => Wire.Encode(o.Wcs!.Request));
             fake.Enqueue(new(new byte[200 * 100], 200, 100), 6);
             for (var i = 0; i < 100 && !factory.Source!.ConfirmationSource.Contains("emptyFrames=1"); i++) await Task.Delay(20);
+            Check(factory.Source!.ConfirmationSource.Contains("emptyFrames=1"), "the selected blank frame actually reaches read completion before its no-request assertion");
             s = await app.SnapshotAsync();
             Check(s.Operations.Length == 3 && s.Operations.All(o => frozen[o.Id] == Wire.Encode(o.Wcs!.Request)), "blank video creates no request and original request bytes remain unchanged");
             await Task.Delay(3100);
@@ -229,6 +230,7 @@ static partial class SportmasterRcs
     {
         readonly ParcelCapabilityFactory inner = new(launch, BusinessCompatibility.Read(typeof(SportmasterFlow).Assembly), typeof(SportmasterFlow).Assembly);
         public MvsAcquisition? Source;
+        public TimeProvider? RequestClock;
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void ValidateStructure(ParcelConfiguration c) => inner.ValidateStructure(c);
         public void Validate(ParcelConfiguration c)
@@ -243,6 +245,7 @@ static partial class SportmasterRcs
             var mapped = c.Topology!.Readers.Select(r => r with { Driver = "manual", Parameters = null }).ToArray();
             var reference = c with { Reader = mapped.Single(r => r.DeviceId == c.Reader.DeviceId), Topology = c.Topology with { Readers = mapped } };
             var ports = new P0SimulationFactory(launch).Create(reference);
+            if (RequestClock is { } clock) ((Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService)ports.Wcs!).RequestTimeForVerification = clock;
             var readers = new Dictionary<string, IControlledObservationSource>(ports.Readers!);
             readers[c.Reader.DeviceId].DisposeAsync().AsTask().GetAwaiter().GetResult();
             Source = new(new(c.Reader.DeviceId, c.Reader.DeviceId, c.Reader.Parameters!), fake is null ? new MvsApi() : fake,

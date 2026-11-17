@@ -38,8 +38,9 @@ static class OperatorAdministration
         Check(!simple.ObserveRemoteStatus(replacementToken, new(true, false, null)).Authorized && replacementGrant.IsCancellationRequested,
             "confirmed rejection of the current token still revokes management authority");
         simple.Enter("11111");
+        var currentGrant = simple.Require(); Check(!currentGrant.IsCancellationRequested, "the password replacement begins with a live current grant");
         simple.ChangePassword("22222");
-        Check(simpleGrant.IsCancellationRequested && !simple.Status().Authorized && !simple.Enter("11111") && simple.Enter("22222"), "five-digit replacement revokes old authorization and authenticates only the new password");
+        Check(currentGrant.IsCancellationRequested && !simple.Status().Authorized && !simple.Enter("11111") && simple.Enter("22222"), "five-digit replacement revokes the actual current authorization and authenticates only the new password");
         Check(!File.ReadAllText(Path.Combine(simpleRoot, "security/management-mode.json")).Contains("\"11111\"") && !File.ReadAllText(Path.Combine(simpleRoot, "security/management-mode.json")).Contains("\"22222\""), "numeric passwords are not persisted in plaintext");
         Check(!admin.Status().Configured && !admin.Status().Authorized, "no default management password opens the mode");
         await Reject<UnauthorizedAccessException>(() => Task.Run(() => admin.Require()), "direct service calls reject before management-password setup");
@@ -143,19 +144,35 @@ static class OperatorAdministration
         await Reject<UnauthorizedAccessException>(() => reader.ContextAsync(page.Selection, page.Entries[0].Location, 1, 1, default), "revoked sessions cannot read previously opened context");
         await Reject<UnauthorizedAccessException>(() => reader.ExportAsync(page.Selection, Path.Combine(root, "revoked.jsonl"), false, 0, default), "revoked sessions cannot export an old selection");
         await app.EnterManagementModeAsync(password);
-        File.WriteAllText(activeFile, string.Join("\n", Enumerable.Range(0, 15000).Select(i => Line(i, true))) + "\n");
-        var queryTask = app.QueryLogsAsync(q, null, 0, default);
-        app.EmitReferenceAt("left", "ops-left", "LEFT-CODE", "ops-left-observation"); app.EmitReferenceAt("right", "ops-right", "RIGHT-CODE", "ops-right-observation");
+        var runtimeLogs = Path.Combine(data, seed.Mode.ToString(), seed.StationId, "sportmaster", "diagnostics");
+        File.WriteAllText(Path.Combine(runtimeLogs, "runtime.jsonl.3"), string.Join("\n", Enumerable.Range(0, 15000).Select(i => Line(i, true))) + "\n");
+        var applicationReader = (SoftwareLogReader)typeof(ParcelRuntime).GetField("logReader", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(app)!;
+        using var readEntered = new ManualResetEventSlim(); using var readRelease = new ManualResetEventSlim();
+        applicationReader.BeforeSourceRead = () => { readEntered.Set(); if (!readRelease.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException("Application log reader was not released"); };
         ParcelSnapshot state = await app.SnapshotAsync();
-        for (int i = 0; i < 150 && state.Operations.Count(o => o.State == ParcelState.SlotResolved) < 2; i++) { await Task.Delay(20); state = await app.SnapshotAsync(); }
-        await queryTask;
-        Check(state.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2 && state.Operations.Single(o => o.PositionId == "left").ParcelCode == "LEFT-CODE" && state.Operations.Single(o => o.PositionId == "right").ParcelCode == "RIGHT-CODE", "both feeding positions advance correctly while querying logs without the business gate: " + string.Join("; ", state.BlockingReasons));
-        var all = await reader.QueryAsync(q, null, 0, default);
-        var streaming = reader.ExportAsync(all.Selection, Path.Combine(root, "feeding-export.jsonl"), false, 0, default);
-        await SmRoundFixture.NextVehicleAsync(app, "left");
-        app.EmitReferenceAt("left", "ops-left-next", "LEFT-NEXT", "ops-left-next-event");
-        for (int i = 0; i < 150; i++) { state = await app.SnapshotAsync(); if (state.Operations.Any(o => o.ParcelCode == "LEFT-NEXT" && o.State == ParcelState.SlotResolved)) break; await Task.Delay(20); }
-        Check(await streaming == 15000 && state.Operations.Any(o => o.ParcelCode == "LEFT-NEXT" && o.State == ParcelState.SlotResolved), "streaming complete export and another admitted parcel both finish without sharing the business lock");
+        var queryTask = app.QueryLogsAsync(q, null, 0, default);
+        SoftwareLogPage all;
+        try
+        {
+            Check(readEntered.Wait(TimeSpan.FromSeconds(5)), "actual Application query has entered its 15000-record diagnostic fixture");
+            app.EmitReferenceAt("left", "ops-left", "LEFT-CODE", "ops-left-observation"); app.EmitReferenceAt("right", "ops-right", "RIGHT-CODE", "ops-right-observation");
+            for (int i = 0; i < 150 && state.Operations.Count(o => o.State == ParcelState.SlotResolved) < 2; i++) { await Task.Delay(20); state = await app.SnapshotAsync(); }
+            Check(!queryTask.IsCompleted && state.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2 && state.Operations.Single(o => o.PositionId == "left").ParcelCode == "LEFT-CODE" && state.Operations.Single(o => o.PositionId == "right").ParcelCode == "RIGHT-CODE", "both feeding positions advance while the actual Application query is still blocked outside the business gate");
+        }
+        finally { readRelease.Set(); try { all = await queryTask.WaitAsync(TimeSpan.FromSeconds(10)); } finally { applicationReader.BeforeSourceRead = null; } }
+        Check(all.Entries.Length == 200 && all.HasMore, "the held Application query owns the large fixture, beyond the first page");
+        readEntered.Reset(); readRelease.Reset();
+        applicationReader.BeforeSourceRead = () => { readEntered.Set(); if (!readRelease.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException("Application export was not released"); };
+        var streaming = app.ExportLogsAsync(all.Selection, Path.Combine(root, "feeding-export.jsonl"), false, 0, default);
+        try
+        {
+            Check(readEntered.Wait(TimeSpan.FromSeconds(5)), "actual Application export has entered its frozen source read");
+            await SmRoundFixture.NextVehicleAsync(app, "left");
+            app.EmitReferenceAt("left", "ops-left-next", "LEFT-NEXT", "ops-left-next-event");
+            for (int i = 0; i < 150; i++) { state = await app.SnapshotAsync(); if (state.Operations.Any(o => o.ParcelCode == "LEFT-NEXT" && o.State == ParcelState.SlotResolved)) break; await Task.Delay(20); }
+            Check(!streaming.IsCompleted && state.Operations.Any(o => o.ParcelCode == "LEFT-NEXT" && o.State == ParcelState.SlotResolved), "new parcel finishes while the actual Application export remains held");
+        }
+        finally { readRelease.Set(); try { Check(await streaming.WaitAsync(TimeSpan.FromSeconds(10)) == 15000, "complete Application export retains all 15000 fixture rows"); } finally { applicationReader.BeforeSourceRead = null; app.ReleaseLogSelection(all.Selection); } }
         // Observing SlotResolved does not prove the external continuation has
         // drained. Pause can also refuse a stale revision; never ignore its receipt.
         BusinessReceipt? pauseReceipt = null;
@@ -170,13 +187,14 @@ static class OperatorAdministration
         var pausedAudit = await app.SnapshotAsync();
         for (var i = 0; i < 150 && pausedAudit.Availability?.Configure != true; i++) { await Task.Delay(20); pausedAudit = await app.SnapshotAsync(); }
         Check(pausedAudit.Paused && pausedAudit.Availability?.Configure == true, "audit setup waits for paused, authorized and drained configuration availability: " + string.Join("; ", pausedAudit.BlockingReasons));
+        var expectedAuthorization = admin.Evidence ?? throw new InvalidOperationException("Expected a live management authorization before auditing the save");
         var unchanged = await app.StageConfigurationAsync(pausedAudit.Configuration.Revision, pausedAudit.Configuration.Effective, "Synthetic mode evidence audit");
         Check(unchanged.Status == "Unchanged", "management mode preserves the existing unified save and complete-candidate guard for an unchanged revision; receipt=" + unchanged);
         using (var auditDb = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(data, "Simulation", seed.StationId, "sportmaster/sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
         {
             auditDb.Open(); using var command = auditDb.CreateCommand(); command.CommandText = "SELECT body FROM parcel_configuration_audit ORDER BY rowid DESC LIMIT 1";
             var evidence = Wire.Decode<ConfigurationChangeAudit>((string)command.ExecuteScalar()!);
-            Check(evidence.Actor is null && evidence.Authorization?.SessionId == admin.Evidence?.SessionId, "parameter audit records a separate management-mode grant without inventing an operator account");
+            Check(evidence.Actor is null && evidence.Authorization is { SessionId.Length: > 0 } auditAuthorization && auditAuthorization.SessionId == expectedAuthorization.SessionId, "parameter audit records a separate nonempty management-mode grant without inventing an operator account");
         }
         await app.StopAsync(default);
         var unknownConfig = Path.Combine(root, "unknown-config"); Directory.CreateDirectory(unknownConfig);

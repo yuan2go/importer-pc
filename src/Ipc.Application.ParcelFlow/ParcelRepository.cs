@@ -245,6 +245,15 @@ public sealed partial class ParcelRepository : IDisposable
         }
         if (operation is not null)
         {
+            using (var identity = db.CreateCommand())
+            {
+                identity.Transaction = tx;
+                identity.CommandText = "SELECT admission,observation,position FROM parcel_history_index WHERE id=$id";
+                identity.Parameters.AddWithValue("$id", operation.Id);
+                using var original = identity.ExecuteReader();
+                if (original.Read() && (original.GetString(0) != operation.AdmissionId || original.GetString(1) != operation.ObservationId || original.GetString(2) != (operation.PositionId ?? "main")))
+                    throw new InvalidDataException("Original operation identity cannot be replaced");
+            }
             ValidateIntegrationIntentCommit(operation, tx);
             {
                 using var prior = db.CreateCommand(); prior.Transaction = tx;
@@ -330,9 +339,9 @@ public sealed partial class ParcelRepository : IDisposable
         TouchStationShift(tx);
         Boundary?.Invoke("BeforeBusinessCommit:" + eventName);
         tx.Commit();
-        Boundary?.Invoke("AfterBusinessCommit:" + eventName);
         if (operation?.Wcs?.Request.IntegrationRequest is { } allocated) lastIntegrationRequestId = Math.Max(lastIntegrationRequestId, allocated.RequestId);
         Revision++; if (paused is not null) Paused = paused.Value;
+        Boundary?.Invoke("AfterBusinessCommit:" + eventName);
         if (pauseEvidence is not null) { LastSoftwarePause = pauseEvidence; SoftwarePauseCommitted?.Invoke(pauseEvidence); }
         ProjectionChanged?.Invoke();
     }
@@ -345,13 +354,19 @@ public sealed partial class ParcelRepository : IDisposable
     }
     public void StoreRaw(string occurrence, StageReply reply, ParcelCallEvidence? call = null)
     {
-        ExtensionStore.AtomicWrite(Path.Combine(rawRoot, occurrence + ".json"), reply);
+        using var tx = db.BeginTransaction();
+        using (var original = db.CreateCommand())
+        {
+            original.Transaction = tx; original.CommandText = "SELECT state FROM parcel_receipts WHERE id=$id";
+            original.Parameters.AddWithValue("$id", occurrence);
+            if (original.ExecuteScalar() as string != "Awaiting") throw new InvalidDataException("Receipt occurrence cannot be reused");
+        }
+        ExtensionStore.AtomicWriteBytes(Path.Combine(rawRoot, occurrence + ".json"), System.Text.Encoding.UTF8.GetBytes(Wire.Encode(reply)), overwrite: false);
         if (Boundary is not null)
         {
             using var hook = db.CreateCommand(); hook.CommandText = "SELECT stage FROM parcel_receipts WHERE id=$id"; hook.Parameters.AddWithValue("$id", occurrence);
             Boundary("AfterRawFileDurable:" + (string)hook.ExecuteScalar()!);
         }
-        using var tx = db.BeginTransaction();
         using var cmd = db.CreateCommand(); cmd.Transaction = tx; cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state='Awaiting'";
         cmd.Parameters.AddWithValue("$id", occurrence); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply)));
         if (cmd.ExecuteNonQuery() != 1) throw new InvalidDataException("Receipt occurrence cannot be reused");
@@ -435,7 +450,7 @@ public sealed partial class ParcelRepository : IDisposable
     public void RecoverRaw(string id, StageReply reply)
     {
         using var tx = db.BeginTransaction();
-        using var cmd = db.CreateCommand(); cmd.Transaction = tx; cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state IN ('Awaiting','RawDurable')";
+        using var cmd = db.CreateCommand(); cmd.Transaction = tx; cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND ((state='Awaiting' AND raw_hash IS NULL) OR (state IN ('Awaiting','RawDurable') AND raw_hash=$hash))";
         cmd.Parameters.AddWithValue("$id", id); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply)));
         if (cmd.ExecuteNonQuery() != 1) throw new InvalidDataException("Original recovery occurrence changed");
         RegisterReplyIdentity(OccurrenceRequest(id, tx), reply, tx); Boundary?.Invoke("BeforeRecoveredReplyIdentityCommit"); tx.Commit();

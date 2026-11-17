@@ -42,7 +42,10 @@
 
   function createLiveBrowserSessionState({ prefix, storage, idFactory }) {
     if (!prefix) throw new Error('prefix required');
-    const store = storage || root.localStorage;
+    let store = storage;
+    if (!store) {
+      try { store = root.localStorage; } catch { /* Storage can be unavailable in a sandboxed page. */ }
+    }
     const makeId = idFactory || function () { return randomId8(); };
     const sessionKey = prefix + '-session';
     const handledKey = sessionKey + '-handled';

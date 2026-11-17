@@ -49,12 +49,16 @@ static partial class Program
                 await Until(() => action.IsVisible && action.IsEnabled);
                 Check(action.IsVisible && action.IsEnabled, id + " is reachable in its actual native page; visible=" + action.IsVisible + "; enabled=" + action.IsEnabled + "; busy=" + window.ViewModel.Busy);
                 bool cancelled = false, duplicateDisabled = false;
-                var owner = new WindowInteropHelper(center).Handle;
+                var owner = new WindowInteropHelper(center).Handle; var mainOwner = new WindowInteropHelper(window).Handle;
+                var modalDeadline = System.Diagnostics.Stopwatch.StartNew();
                 var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
                 timer.Tick += (_, _) => BackupDialogNative.EnumThreadWindows(BackupDialogNative.GetCurrentThreadId(), (handle, _) =>
                 {
                     var name = new StringBuilder(64); BackupDialogNative.GetClassName(handle, name, name.Capacity);
-                    if (name.ToString() != "#32770" || BackupDialogNative.GetWindow(handle, 4) != owner) return true;
+                    if (name.ToString() != "#32770") return true;
+                    var dialogOwner = BackupDialogNative.GetWindow(handle, 4);
+                    if (dialogOwner != owner && dialogOwner != mainOwner) return true;
+                    if (modalDeadline.Elapsed > TimeSpan.FromSeconds(5)) { BackupDialogNative.SendMessage(handle, 0x10, 0, 0); return true; }
                     // Close only this test window's native file dialog. No path
                     // is selected, confirmed, typed or written.
                     duplicateDisabled = !action.IsEnabled; cancelled = true; BackupDialogNative.SendMessage(handle, 0x10, 0, 0); return true;

@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Ipc.Assembly;
 using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Platform;
 namespace Ipc.Desktop;
 
@@ -50,7 +51,9 @@ public partial class App : System.Windows.Application
                 Shutdown(2); return;
             }
             crashDiagnostics.SetContext("supervisor:" + e.Args.ElementAtOrDefault(1), "no-business-connections", "supervising");
-            await DesktopRecoverySupervisor.HandleAsync(e.Args); Shutdown(Environment.ExitCode); return;
+            try { await DesktopRecoverySupervisor.HandleAsync(e.Args); Shutdown(Environment.ExitCode); }
+            catch (Exception error) { crashDiagnostics.Report("Supervisor.StartupFailed", error); Shutdown(2); }
+            return;
         }
         recoveryChild = e.Args.FirstOrDefault() == "--recovery-child";
         var arguments = recoveryChild ? e.Args[1..] : e.Args;
@@ -258,12 +261,16 @@ public partial class App : System.Windows.Application
         ShutdownMode = ShutdownMode.OnExplicitShutdown; startup = new ParcelStartupWindow(); MainWindow = startup;
         Dispatcher.BeginInvoke(new Action(async () =>
         {
+            try
+            {
             var center = new MaintenanceCenterWindow(selected!.Business); MainWindow = center; center.ShowDialog();
             selected = selected with { Business = center.SelectedLaunch };
             MainWindow = startup;
             if (center.UninstallLaunched) { startup.AllowClose = true; Shutdown(); }
             else if (center.RetryRequested) await StartSelected();
             else { startup.AfterMaintenance(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected()); startup.Show(); }
+            }
+            catch (Exception error) { ShowStoppedFailure(error); }
         }));
         return Task.CompletedTask;
     }
@@ -273,11 +280,23 @@ public partial class App : System.Windows.Application
         ShutdownMode = ShutdownMode.OnExplicitShutdown; startup = new ParcelStartupWindow(); MainWindow = startup;
         Dispatcher.BeginInvoke(new Action(() =>
         {
+            try
+            {
             var service = (IStartupRetentionMaintenance)ParcelStartupServices.Maintenance(selected!.Business);
             new HistoryRetentionWindow(service, ParcelStartupServices.ManagementMode(selected.Business)).ShowDialog();
             startup.AfterMaintenance(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected()); startup.Show();
+            }
+            catch (Exception error) { ShowStoppedFailure(error); }
         }));
         return Task.CompletedTask;
+    }
+    void ShowStoppedFailure(Exception error)
+    {
+        crashDiagnostics.Report("StoppedMaintenance.OpenFailed", error);
+        MainWindow = startup;
+        startup.Fail("离线维护入口未能打开：" + ChineseInterfaceText.ParameterMessage(error.Message),
+            () => { startup.AllowClose = true; Shutdown(2); return Task.CompletedTask; }, () => StartSelected(), () => Repair(), ShowSetup);
+        startup.Show();
     }
     async Task StopAsync()
     {
@@ -301,8 +320,10 @@ public partial class App : System.Windows.Application
     }
     async Task DetachFatalObservationAsync()
     {
-        fatalObservationStop?.Cancel();
-        if (fatalObservation is not null) await fatalObservation;
-        fatalObservationStop?.Dispose(); fatalObservationStop = null; fatalObservation = null;
+        var cancellation = fatalObservationStop; var observation = fatalObservation;
+        fatalObservationStop = null; fatalObservation = null;
+        try { cancellation?.Cancel(); if (observation is not null) await observation; }
+        catch (Exception error) { System.Diagnostics.Trace.TraceError("Fatal monitor ended with a fault after owner shutdown: {0}", error); }
+        finally { cancellation?.Dispose(); }
     }
 }

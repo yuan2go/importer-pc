@@ -38,7 +38,15 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
     public bool WindowChanged => savedMode.HasValue && mode != savedMode || uncertain.Contains("WindowOpeningMode");
     public bool HasChanges => WindowChanged || savedPace.HasValue && pace != savedPace || savedVolume.HasValue && volume != savedVolume || uncertain.Count != 0;
     public string Signature => $"{mode}/{pace}/{volume}";
-    static string UserIdentity => OperatingSystem.IsWindows() ? System.Security.Principal.WindowsIdentity.GetCurrent().User!.Value : Environment.UserName;
+    static string UserIdentity
+    {
+        get
+        {
+            if (!OperatingSystem.IsWindows()) return Environment.UserName;
+            using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+            return identity.User!.Value;
+        }
+    }
     public void Capture(IDictionary<string, string> values)
     {
         values["preference.user"] = UserIdentity;

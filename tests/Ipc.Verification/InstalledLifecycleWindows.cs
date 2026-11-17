@@ -162,12 +162,15 @@ static class InstalledLifecycleWindows
         var supervisionRoot = DesktopRecoverySupervisor.StateDirectory(first);
         var initialLedger = Wire.FileHash(Path.Combine(supervisionRoot, "state.json"));
         Check(File.ReadAllText(Path.Combine(supervisionRoot, "state.json")).Contains("New"), "trusted first installation publishes complete initial supervision without enabling automatic launch");
-        Directory.Move(supervisionRoot, supervisionRoot + ".retained");
         var data = Path.Combine(dataRoot, "original-request.json"); File.WriteAllText(data, "SYNTHETIC original request and response custody");
         var dataHash = Wire.FileHash(data); var configHash = Wire.FileHash(Path.Combine(first.ConfigurationDirectory, "business.json"));
         var rootsFile = Path.Combine(machine, "trusted-program-roots.json"); var rootsHash = Wire.FileHash(rootsFile);
+        DeploymentLocation repair;
+        Directory.Move(supervisionRoot, supervisionRoot + ".retained");
+        try
+        {
         VerifyOrdinary(first, "first");
-        var repair = Install(Request(mediaA));
+        repair = Install(Request(mediaA));
         VerifyMaintenanceHelper(repair);
         try { WindowsDeploymentSetup.RequireProtectedMaintenanceHelper(appId, Path.Combine(first.MaintenanceRoot!, "app"), ["Ipc.Assembly.exe"]); throw new Exception("Retired helper cache accepted"); }
         catch (UnauthorizedAccessException) { Check(true, "superseded cache cannot impersonate the current installed maintenance helper"); }
@@ -178,7 +181,15 @@ static class InstalledLifecycleWindows
         var recoveryRefusalHash = Wire.FileHash(WindowsDeploymentSetup.Registration(appId));
         try { Install(Request(mediaA) with { Recovery = new(Enabled: true) }); throw new Exception("Missing previous supervision accepted"); }
         catch (IOException) { Check(Wire.FileHash(WindowsDeploymentSetup.Registration(appId)) == recoveryRefusalHash && !Directory.Exists(supervisionRoot), "enabling an existing installation refuses missing supervision before registration changes"); }
-        Directory.Move(supervisionRoot + ".retained", supervisionRoot);
+        }
+        finally
+        {
+            if (Directory.Exists(supervisionRoot + ".retained"))
+            {
+                if (Directory.Exists(supervisionRoot)) throw new IOException("New supervision evidence appeared; retain both original directories");
+                Directory.Move(supervisionRoot + ".retained", supervisionRoot);
+            }
+        }
         Check(Wire.FileHash(Path.Combine(supervisionRoot, "state.json")) == initialLedger, "original supervision bytes retained across disabled reinstall");
         var migrationTarget = Path.Combine(dataParent, appId + "-restored"); WindowsDeploymentSetup.PrepareRestoreDataRoot(migrationTarget);
         using (var migration = WindowsDeploymentSetup.PrepareRecoveryMigration(repair, migrationTarget, Wire.FileHash(WindowsDeploymentSetup.Registration(appId))))

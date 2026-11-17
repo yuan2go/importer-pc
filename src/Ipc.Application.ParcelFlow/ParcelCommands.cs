@@ -5,19 +5,22 @@ namespace Ipc.Application.ParcelFlow;
 public sealed partial class ParcelRuntime
 {
     readonly SemaphoreSlim shutdown = new(1, 1);
-    public async Task<ParcelSnapshot> SnapshotAsync()
+    public Task<ParcelSnapshot> SnapshotAsync() => SnapshotAsync(CancellationToken.None);
+    internal async Task<ParcelSnapshot> SnapshotAsync(CancellationToken token)
     {
         string encoded;
         while (true)
         {
-            await RefreshArchiveCountAsync().ConfigureAwait(false);
-            await gate.WaitAsync().ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            await RefreshArchiveCountAsync(token).ConfigureAwait(false);
+            await gate.WaitAsync(token).ConfigureAwait(false);
             if (archiveCount?.Revision == repository?.ArchiveRevision) break;
             gate.Release(); // Archive changed while the independent count was read.
         }
         try
         {
             Boundary?.Invoke("SnapshotGateAcquired");
+            token.ThrowIfCancellationRequested();
             MaintainSmRounds();
             if (configuration is null || repository is null) throw new InvalidOperationException("Application has not started");
             ObjectDisposedException.ThrowIf(disposed, this);
@@ -91,6 +94,7 @@ public sealed partial class ParcelRuntime
                 Rounds = Id == "sportmaster" ? smCurrentRounds.Values.Select(id => smRounds[id] with { SafeContinuation = SmSafeContinuation(smRounds[id]) }).ToArray() : [],
                 AutomaticCleanup = Id == "sportmaster" ? CleanupStatusSnapshot() : null
             };
+            token.ThrowIfCancellationRequested();
             encoded = EncodeSnapshot(WithReadFeedbackSnapshot(projection));
         }
         finally
@@ -100,6 +104,7 @@ public sealed partial class ParcelRuntime
             finally { gate.Release(); }
         }
         // Deserialize the detached UI copy after releasing the business gate.
+        token.ThrowIfCancellationRequested();
         return Wire.Decode<ParcelSnapshot>(encoded) with { PublishedTicks = System.Diagnostics.Stopwatch.GetTimestamp() };
     }
     public async Task<BusinessProjection> QueryAsync()

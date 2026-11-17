@@ -245,7 +245,7 @@ static partial class Program
             var visual = new DrawingVisual(); using (var drawing = visual.RenderOpen()) { drawing.DrawRectangle(w.Background ?? Brushes.White, null, new Rect(0, 0, target.ActualWidth, target.ActualHeight)); drawing.DrawRectangle(new VisualBrush(target) { ViewboxUnits = BrushMappingMode.Absolute, Viewbox = new Rect(0, 0, target.ActualWidth, target.ActualHeight), Stretch = Stretch.Fill }, null, new Rect(0, 0, target.ActualWidth, target.ActualHeight)); }
             bitmap.Render(visual); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap)); using var file = File.Create(Path.Combine(evidence, name + ".png")); encoder.Save(file);
         }
-        static void Click(Window w, string label) => Descendants(w).OfType<Button>().First(b => (b.Content as string) == label).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        static void Click(Window w, string label) => Descendants(w).OfType<Button>().First(b => b.IsVisible && b.IsEnabled && (b.Content as string) == label).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     }
 
     sealed class StartupMaintenanceProbe(StartupMaintenanceDocument document) : IStartupMaintenance

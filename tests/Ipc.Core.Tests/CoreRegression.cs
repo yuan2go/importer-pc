@@ -36,6 +36,8 @@ public sealed class CoreRegression
     [TestCategory("Core")]
     [DataRow("--sm-parameters")]
     [DataRow("--cr-sm-removal")]
+    [DataRow("--cr-report-boundaries")]
+    [DataRow("--cr-report-cameras")]
     [DataRow("--cr-sm-dispatch")]
     [DataRow("--cr-sm-live-devices")]
     [DataRow("--cr-sm-backup-ownership")]

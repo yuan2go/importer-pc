@@ -11,6 +11,7 @@ namespace Ipc.Presentation.Wpf
 }
 namespace System.Windows
 {
+    public static class MessageBox { public static void Show(Window owner, string message, string title) { } }
     public class RoutedEventArgs : EventArgs;
     public class SizeChangedEventArgs : EventArgs;
     public delegate void SizeChangedEventHandler(object sender, SizeChangedEventArgs e);
@@ -103,7 +104,7 @@ namespace Ipc.Application.ParcelFlow.Desktop
         public static bool ConfirmDiscard(System.Windows.Window window, int count) => false;
         public static Task<bool> ReviewUnsavedAsync(System.Windows.Window window, int count, Func<Task>? save, string action) => Task.FromResult(false);
     }
-    public class SoftwareLogControl(Ipc.Application.Contracts.IWorkstationAdministration service) : System.Windows.FrameworkElement { public Ipc.Application.Contracts.IWorkstationAdministration Service { get; } = service; public event EventHandler<string>? OperationRequested { add { } remove { } } public Task ShowOperationAsync(string id) => Task.CompletedTask; }
+    public class SoftwareLogControl(Ipc.Application.Contracts.IWorkstationAdministration service) : System.Windows.FrameworkElement { public Ipc.Application.Contracts.IWorkstationAdministration Service { get; } = service; public event EventHandler<string>? OperationRequested { add { } remove { } } public Task ShowOperationAsync(string id) => Task.CompletedTask; public Task SuspendAndDrainAsync() => Task.CompletedTask; public void ResumeAfterCancelledClose() { } }
     public class HistoryPage { public object? DataContext { get; set; } public event EventHandler<string>? LogsRequested { add { } remove { } } public void ShowTaskDetails() { } }
     public static class ProductBrand { public static void Apply(System.Windows.Window window) { } }
     public class MaintenancePage

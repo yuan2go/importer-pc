@@ -89,11 +89,30 @@ internal static class ParcelStorageVolume
 {
     public static ParcelRecoveryCapacity Plan(string destination, long copyBytes, long reserve)
     {
-        var path = Path.GetFullPath(destination);
-        var drive = DriveInfo.GetDrives().Where(d => path == d.Name.TrimEnd(Path.DirectorySeparatorChar) ||
-            path.StartsWith(d.Name.EndsWith(Path.DirectorySeparatorChar) ? d.Name : d.Name + Path.DirectorySeparatorChar, StringComparison.Ordinal))
-            .OrderByDescending(d => d.Name.Length).First();
-        var free = drive.AvailableFreeSpace;
+        var free = Read(destination).Free;
         return new(copyBytes, reserve, free, free - copyBytes - reserve, free >= checked(copyBytes + reserve));
     }
+    internal static (long Free, long Total) Read(string destination)
+    {
+        var path = Path.GetFullPath(destination);
+        while (true)
+        {
+            try { if ((File.GetAttributes(path) & FileAttributes.Directory) != 0) break; }
+            catch (Exception error) when (error is FileNotFoundException or DirectoryNotFoundException) { }
+            path = Path.GetDirectoryName(path) ?? throw new IOException("未能核对目标存储卷。");
+        }
+        if (OperatingSystem.IsWindows())
+        {
+            if (!GetDiskFreeSpace(path, out var available, out var total, out _))
+                throw new IOException("未能读取目标存储卷容量。", new System.ComponentModel.Win32Exception(System.Runtime.InteropServices.Marshal.GetLastWin32Error()));
+            return (checked((long)available), checked((long)total));
+        }
+        var drive = DriveInfo.GetDrives().Where(d => path == d.Name.TrimEnd(Path.DirectorySeparatorChar) ||
+            path.StartsWith(d.Name.EndsWith(Path.DirectorySeparatorChar) ? d.Name : d.Name + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+            .OrderByDescending(d => d.Name.Length).FirstOrDefault() ?? throw new IOException("未能核对目标存储卷。");
+        return (drive.AvailableFreeSpace, drive.TotalSize);
+    }
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", EntryPoint = "GetDiskFreeSpaceExW", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
+    [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+    static extern bool GetDiskFreeSpace(string directory, out ulong available, out ulong total, out ulong free);
 }

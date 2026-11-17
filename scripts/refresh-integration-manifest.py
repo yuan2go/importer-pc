@@ -22,7 +22,8 @@ def main():
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     path = Path("docs/manifest.json")
-    current = json.loads(path.read_text(encoding="utf-8-sig"))
+    manifest_bytes = git("show", ":docs/manifest.json") if args.check else path.read_bytes()
+    current = json.loads(manifest_bytes.decode("utf-8-sig"))
     work_package = args.work_package or current.get("work_package")
     if not work_package or not work_package.startswith("WP-IPC-"):
         raise SystemExit("An explicit WP-IPC work package identity is required")
@@ -89,8 +90,8 @@ def main():
     if args.check:
         if set(rows) != {name for name, _ in entries}:
             raise SystemExit("Manifest path inventory differs from staged tree")
-        expected = hashlib.sha256(path.read_bytes()).hexdigest() + "  manifest.json"
-        if Path("docs/manifest.sha256").read_text().strip() != expected:
+        expected = hashlib.sha256(manifest_bytes).hexdigest() + "  manifest.json"
+        if git("show", ":docs/manifest.sha256").decode("ascii").strip() != expected:
             raise SystemExit("Manifest checksum differs")
         print("PASS canonical staged manifest: " + str(len(entries)) + " files")
         return

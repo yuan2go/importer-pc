@@ -34,10 +34,27 @@ static partial class SportmasterRcs
             peer.Mode = "timeout"; var before = peer.Requests.Count(b => b.Body.Contains("dest_request")); var watch = Stopwatch.StartNew();
             try { await service.ResolveSlotAsync(Prepare(1), default); throw new Exception("Unbounded RCS request"); }
             catch (TimeoutException) { Check(watch.Elapsed < TimeSpan.FromSeconds(2) && peer.Requests.Count(b => b.Body.Contains("dest_request")) == before + 1, "component times out without a caller deadline and sends only once"); }
-            using (var cancelled = new CancellationTokenSource(50))
+            using (var cancelled = new CancellationTokenSource())
             {
-                try { await service.ResolveSlotAsync(Prepare(2), cancelled.Token); throw new Exception("Caller cancellation lost"); }
-                catch (OperationCanceledException) { Check(true, "caller cancellation is not mistaken for component timeout"); }
+                var controlled = new RequestClock(); service.RequestTimeForVerification = controlled;
+                Task<StageReply>? pending = null;
+                try
+                {
+                    var sent = peer.Requests.Count(b => b.Body.Contains("dest_request"));
+                    pending = service.ResolveSlotAsync(Prepare(2), cancelled.Token);
+                    await Until(() => peer.Requests.Count(b => b.Body.Contains("dest_request")) == sent + 1);
+                    controlled.Advance(299); cancelled.Cancel();
+                    try { await pending.WaitAsync(TimeSpan.FromSeconds(3)); throw new Exception("Caller cancellation lost"); }
+                    catch (OperationCanceledException) { Check(peer.Requests.Count(b => b.Body.Contains("dest_request")) == sent + 1,
+                        "caller cancellation completes while the controlled component deadline remains unexpired, without another send"); }
+                }
+                finally
+                {
+                    cancelled.Cancel();
+                    try { if (pending is not null) await pending.WaitAsync(TimeSpan.FromSeconds(3)); }
+                    catch (OperationCanceledException) { }
+                    finally { service.RequestTimeForVerification = TimeProvider.System; }
+                }
             }
             peer.Mode = "body-timeout";
             var partial = await service.ResolveSlotAsync(Prepare(3), default);
@@ -123,13 +140,24 @@ static partial class SportmasterRcs
                 if (mode != "reject") Check(!s.Positions!.Single(p => p.Id == "left").Admit, mode + " keeps the current placement guarded");
                 if (mode is "missing-chute" or "blank-chute" or "malformed" or "wrong-id")
                 {
+                    await ManagementModeFixture.Authorize(app);
+                    op = (await app.OperationAsync(op.Id))!;
                     var originalRequest = Wire.Encode(op.Wcs!.Request);
                     var sent = peer.Requests.Count(b => b.Body.Contains("dest_request"));
                     var processed = app.WorkerProgress().Single(w => w.Position == "left").Processed;
                     app.EmitReferenceAt("left", "same-placement-" + mode, "SYNTH-0001", Wire.Id());
                     await CameraRoundHarness.Until(() => Task.FromResult(app.WorkerProgress().Single(w => w.Position == "left").Processed > processed));
                     Check(peer.Requests.Count(b => b.Body.Contains("dest_request")) == sent, mode + " repeated observation of the same placement does not send again");
+                    Check(peer.Requests.Any(x => x.Body.Contains(op.Wcs!.Request.IntegrationRequest!.RequestId.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)),
+                        mode + " synthetic peer retains the exact original request for explicit external cancellation");
+                    await SmRoundFixture.ReconcileRemoteAsync(app, "left", peer.CancelOriginal(op.Wcs!.Request.IntegrationRequest!.RequestId));
+                    var disabled = await app.SnapshotAsync();
+                    var control = disabled.Positions!.Single(p => p.Id == "left").SupplyControl!;
+                    var enabled = await SmRoundFixture.EnableAsync(app, "left");
+                    Check(enabled.Status == "Accepted", mode + " enables only after explicit original remote reconciliation: " + enabled.Status + "/" + enabled.Reason);
                     await SmRoundFixture.NextVehicleAsync(app, "left");
+                    await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
+                        { CameraConnectionSuspended: false, Arrival: { CameraBoundaryReady: true } });
                     peer.Mode = "assigned"; peer.ResponseTransform = null;
                     app.EmitReferenceAt("left", "changed-placement-" + mode, "SYNTH-0002", Wire.Id());
                     var changed = await Wait(app, x => x.Operations.Any(o => o.ParcelCode == "SYNTH-0002" && o.State == ParcelState.SlotResolved) && x.Capacity?.HistoricalUnknown == 1);

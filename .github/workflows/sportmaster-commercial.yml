@@ -549,6 +549,9 @@ jobs:
             D:/scd/evidence/query-filters/*
             D:/scd/evidence/operator-workspace/*
             D:/scd/evidence/debug-log-live/*
+            D:/scd/evidence/stability-seed/**
+            D:/scd/evidence/installer-first-run/**
+            D:/scd/evidence/lifecycle/**
             D:/scd/administrator-broker/RESULT.json
             D:/scd/administrator-broker/RUN.log
             D:/scd/maintenance-helper/RESULT.json

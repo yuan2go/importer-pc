@@ -32,7 +32,7 @@ public partial class ParameterSettingsControl
             {
                 string[] selected;
                 try { selected = Wire.Decode<string[]>(parameter.Value); }
-                catch (JsonException) { selected = []; }
+                catch (Exception error) when (error is JsonException or System.IO.InvalidDataException) { selected = []; }
                 foreach (var check in checks) check.IsChecked = selected.Contains((string)check.Tag, StringComparer.Ordinal);
                 section.Header = selected.Length == 1 && selected[0] == "All" ? "当前：全部码制" : selected.Length == 0 ? "请选择需要识别的码制" : "当前：" + string.Join("、", selected);
             }

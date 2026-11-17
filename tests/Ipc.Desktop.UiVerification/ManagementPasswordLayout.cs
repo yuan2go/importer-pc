@@ -46,7 +46,11 @@ static partial class Program
                 Check(show.TransformToAncestor(bodyScroll).TransformBounds(new Rect(show.RenderSize)).Bottom <= bodyScroll.ActualHeight, "reveal option can be reached at " + width + "x" + height);
                 Capture(dialog, name);
             }
-            show.IsChecked = true; show.IsChecked = false;
+            proof.Password = confirm.Password = "SYNTHETIC-NONEMPTY-REVEAL";
+            show.IsChecked = true;
+            var plaintext = Descendants(dialog).OfType<TextBox>().Where(x => System.Windows.Automation.AutomationProperties.GetName(x).StartsWith("显示")).ToArray();
+            Check(plaintext.Length == 2 && plaintext.All(x => x.Text == "SYNTHETIC-NONEMPTY-REVEAL"), "reveal exposes both populated synthetic passwords before concealment");
+            show.IsChecked = false;
             Check(Descendants(dialog).OfType<TextBox>().Where(x => System.Windows.Automation.AutomationProperties.GetName(x).StartsWith("显示")).All(x => x.Text.Length == 0), "concealment clears plain password buffers");
         }
         finally { dialog.Close(); }

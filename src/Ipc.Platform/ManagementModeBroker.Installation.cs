@@ -9,15 +9,35 @@ namespace Ipc.Platform;
 public static partial class ManagementModeBroker
 {
     [SupportedOSPlatform("windows")]
+    internal static string MigrationCredentialIdentity(string root)
+    {
+        var directory = ProtectedRoot(root); var file = Path.Combine(directory, "management-mode.json");
+        if (!File.Exists(file))
+        {
+            if (File.Exists(Path.Combine(directory, "MODE-CONFIGURED"))) throw new InvalidDataException("原管理密码文件缺失，不能补建。");
+            return Wire.Hash("NoConfiguredCredential");
+        }
+        MachineRuntimePolicy.RequireProtectedEvidence(file);
+        using var input = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+        if (input.Length > 1024 * 1024) throw new InvalidDataException("管理凭据超过核对预算。");
+        using var document = System.Text.Json.JsonDocument.Parse(input); var value = document.RootElement;
+        return Wire.Hash(Wire.Encode(new { Credential = value.GetProperty("Credential"), Revision = value.TryGetProperty("CredentialRevision", out var revision) ? revision.GetInt64() : 1 }));
+    }
+    [SupportedOSPlatform("windows")]
     public static void CopyCredentialsForMigration(string originalRoot, string targetRoot)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         var original = ProtectedRoot(originalRoot); var target = ProtectedRoot(targetRoot);
         if (original.Equals(target, StringComparison.OrdinalIgnoreCase)) return;
+        if (!Directory.Exists(original)) return;
+        using var originalLease = new FileInfo(Path.Combine(original, "management-mode.json.lock")).Create(FileMode.OpenOrCreate,
+            FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.None, MachineRuntimeSetup.FileAcl(new("S-1-5-18")));
         var names = new[] { "MODE-CONFIGURED", "PROVISIONED", "administrators.json", "management-mode.json" };
         var present = names.Where(n => File.Exists(Path.Combine(original, n))).ToArray(); if (present.Length == 0) return;
         if (present.Contains("MODE-CONFIGURED") && !present.Contains("management-mode.json") || present.Contains("PROVISIONED") && !present.Contains("administrators.json")) throw new InvalidDataException("原管理模式或历史凭据缺失，保留原根修复，不能创建新密码覆盖。");
         ProtectedDirectory(Path.GetDirectoryName(target)!, true); ProtectedDirectory(target, true);
+        using var targetLease = new FileInfo(Path.Combine(target, "management-mode.json.lock")).Create(FileMode.OpenOrCreate,
+            FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.None, MachineRuntimeSetup.FileAcl(new("S-1-5-18")));
         if (names.Except(present).Any(n => File.Exists(Path.Combine(target, n)))) throw new InvalidOperationException("恢复目标有来源中不存在的管理凭据，不能覆盖；请核对原责任。");
         var inputs = new List<(string Name, FileStream Stream)>();
         try
@@ -71,6 +91,9 @@ public static partial class ManagementModeBroker
         dataRoot = trace.Run("ResolveDataRoot", "GetFinalPathNameByHandleW", () => CanonicalRoot(requestedDataRoot));
         var serviceName = trace.Run("ResolveServiceIdentity", "GetFinalPathNameByHandleW", () => ServiceName(dataRoot));
         trace.Identify(serviceName, dataRoot);
+        ProtectedDirectory(Path.GetDirectoryName(ProtectedRoot(dataRoot))!, true); ProtectedDirectory(ProtectedRoot(dataRoot), true);
+        using var installationOwner = new FileInfo(Path.Combine(ProtectedRoot(dataRoot), "service-installation.lease")).Create(FileMode.OpenOrCreate,
+            FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.None, MachineRuntimeSetup.FileAcl(new("S-1-5-18")));
         sourceApp = trace.Run("ResolveSourcePath", "Path.GetFullPath", () => Path.GetFullPath(sourceApp));
         if (dataRoot.Contains('"')) throw new InvalidDataException("认证服务数据目录无效。");
         var executable = trace.Run("PrepareVerifiedHost", "VerifyAndCopyHostFiles", () =>
@@ -117,6 +140,14 @@ public static partial class ManagementModeBroker
             return handle;
         });
         var previous = existing.IsInvalid ? null : trace.Run("ReadPreviousRegistration", "QueryServiceConfigW", () => ReadCommand(existing));
+        using var previousRecovery = existing.IsInvalid ? null : new RecoverySnapshot(existing);
+        var previousRunning = false;
+        if (!existing.IsInvalid)
+        {
+            if (!QueryServiceStatusEx(existing, 0, out var previousStatus, Marshal.SizeOf<ServiceProcessStatus>(), out _)) throw NativeFailure("QueryServiceStatusEx(snapshot)");
+            if (previousStatus.CurrentState is not (1 or 4)) throw new InvalidOperationException("原授权服务正在切换，请等待后重试安装。");
+            previousRunning = previousStatus.CurrentState == 4;
+        }
         var displayName = "供包台管理模式授权 " + serviceName[^24..][..8];
         using var service = trace.Run("OpenOrCreateService", existing.IsInvalid ? "CreateServiceW" : "OpenServiceW", () =>
         {
@@ -139,7 +170,12 @@ public static partial class ManagementModeBroker
             trace.Recover(() =>
             {
                 if (previous is not null)
-                { Stop(service); if (!ChangeServiceConfig(service, uint.MaxValue, 2, 1, previous, null, IntPtr.Zero, null, null, null, null)) throw NativeFailure("ChangeServiceConfigW(restore)"); Start(service); }
+                {
+                    Stop(service);
+                    if (!ChangeServiceConfig(service, uint.MaxValue, previous.Start, previous.Error, previous.Command, null, IntPtr.Zero, null, null, null, previous.DisplayName)) throw NativeFailure("ChangeServiceConfigW(restore)");
+                    previousRecovery!.Restore(service);
+                    if (previousRunning) Start(service);
+                }
                 else { Stop(service); if (!DeleteService(service)) throw NativeFailure("DeleteService"); }
             }, original);
             throw;
@@ -183,15 +219,21 @@ public static partial class ManagementModeBroker
         }
         throw new TimeoutException("管理模式授权服务未在期限内完成状态切换；原凭据保留。");
     }
+    sealed record ServiceRegistration(string Command, uint Start, uint Error, string? DisplayName);
     [SupportedOSPlatform("windows")]
-    static string ReadCommand(ServiceHandle service)
+    static ServiceRegistration ReadCommand(ServiceHandle service)
     {
         var queried = QueryServiceConfig(service, IntPtr.Zero, 0, out var needed);
         var code = Marshal.GetLastWin32Error();
         if (!queried && code != 122) throw NativeFailure("QueryServiceConfigW(size)", code);
         if (needed is < 1 or > 65536) throw new InvalidDataException("认证服务登记超出限制。");
         var buffer = Marshal.AllocHGlobal((int)needed);
-        try { if (!QueryServiceConfig(service, buffer, needed, out _)) throw NativeFailure("QueryServiceConfigW"); return Marshal.PtrToStringUni(Marshal.PtrToStructure<ServiceConfig>(buffer).BinaryPath) ?? throw new InvalidDataException("认证服务登记缺失。"); }
+        try
+        {
+            if (!QueryServiceConfig(service, buffer, needed, out _)) throw NativeFailure("QueryServiceConfigW");
+            var config = Marshal.PtrToStructure<ServiceConfig>(buffer);
+            return new(Marshal.PtrToStringUni(config.BinaryPath) ?? throw new InvalidDataException("认证服务登记缺失。"), config.Start, config.Error, Marshal.PtrToStringUni(config.DisplayName));
+        }
         finally { Marshal.FreeHGlobal(buffer); }
     }
     [StructLayout(LayoutKind.Sequential)] struct ServiceConfig { public uint Type, Start, Error; public IntPtr BinaryPath, Group; public uint Tag; public IntPtr Dependencies, Account, DisplayName; }

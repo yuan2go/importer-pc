@@ -114,11 +114,12 @@ public static partial class DesktopRecoverySupervisor
         MachineRuntimePolicy.RequireRuntimeIdentity();
         if (IsBlocked(location)) throw new InvalidOperationException("连续启动失败已停止自动重启；请由安装维护修复系统入口。告警：" + AlertFile(location));
         ValidatePresentationArguments(presentationArguments);
-        ExtensionStore.AtomicWrite(Path.Combine(StateDirectory(location), "presentation.json"), presentationArguments, createDirectory: false);
+        using (var presentationOwner = new ResourceLease(StateDirectory(location), ["presentation-request"], createDirectory: false))
+            ExtensionStore.AtomicWrite(Path.Combine(StateDirectory(location), "presentation.json"), presentationArguments, createDirectory: false);
+        DesktopRecoveryInstallation.RunRegistered(location);
         var started = Stopwatch.GetTimestamp();
         while (Stopwatch.GetElapsedTime(started) < TimeSpan.FromSeconds(8))
         {
-            DesktopRecoveryInstallation.RunRegistered(location);
             Thread.Sleep(100); // Caller uses Task.Run; never block the WPF dispatcher.
             var state = Read(location);
             if (state.Status is "Blocked" or "Launching" && Stopwatch.GetElapsedTime(started) > TimeSpan.FromSeconds(2))
@@ -146,12 +147,6 @@ public static partial class DesktopRecoverySupervisor
         if (location.LifecycleState != "Installed" || location.Recovery?.Enabled != true) { Environment.ExitCode = 0; return true; }
         if (!string.Equals(Path.GetFullPath(AppContext.BaseDirectory).TrimEnd(Path.DirectorySeparatorChar),
             Path.Combine(location.ReleaseRoot, "desktop"), StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Supervisor belongs to a different release");
-        var presentationFile = Path.Combine(StateDirectory(location), "presentation.json"); DeploymentPaths.RequireOrdinaryAncestors(presentationFile);
-        if (File.Exists(presentationFile))
-        {
-            if (new FileInfo(presentationFile).Length > 4096) throw new InvalidDataException("Presentation request exceeds budget");
-            presentation = Wire.Decode<string[]>(File.ReadAllText(presentationFile)); ValidatePresentationArguments(presentation); File.Delete(presentationFile);
-        }
         Environment.ExitCode = await RunAsync(location, () => WindowsDeploymentSetup.Current(location.ApplicationId), presentation).ConfigureAwait(false);
         return true;
     }
@@ -194,6 +189,15 @@ public static partial class DesktopRecoverySupervisor
         }
         using (owner)
         {
+            using (var presentationOwner = new ResourceLease(directory, ["presentation-request"], createDirectory: false))
+            {
+                var presentationFile = Path.Combine(directory, "presentation.json"); DeploymentPaths.RequireOrdinaryAncestors(presentationFile);
+                if (File.Exists(presentationFile))
+                {
+                    if (new FileInfo(presentationFile).Length > 4096) throw new InvalidDataException("Presentation request exceeds budget");
+                    presentation = Wire.Decode<string[]>(File.ReadAllText(presentationFile)); ValidatePresentationArguments(presentation); File.Delete(presentationFile);
+                }
+            }
             State state;
             try { state = Read(location); }
             catch (Exception error) when (LedgerError(error))

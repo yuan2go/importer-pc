@@ -25,7 +25,11 @@ static partial class Program
     {
         if (args.Contains("--operator-administration") || args.Contains("--login-session")) { Console.Error.WriteLine("Unsupported verification argument; use --management-mode for management authorization"); return 2; }
 #if P0_CRASH_HOOKS
-        if (args.FirstOrDefault() == "--p0-dispatcher-child") return P0Dispatcher.Child(args[1]);
+        if (args.FirstOrDefault() == "--p0-dispatcher-child") return args.Length == 2 ? P0Dispatcher.Child(args[1]) : 2;
+#endif
+        try { args = UiVerificationArguments.Normalize(args); }
+        catch (ArgumentException error) { Console.Error.WriteLine(error.Message); return 2; }
+        #if P0_CRASH_HOOKS
         if (args.Contains("--p0-crash-hooks")) return P0Dispatcher.Parent();
 #endif
         var root = Path.GetFullPath(args.FirstOrDefault() ?? ".");
@@ -38,7 +42,10 @@ static partial class Program
         var preferenceRoot = typeof(PresentationPreferences).GetField("UserRootForVerification", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!;
         var previousPreferenceRoot = preferenceRoot.GetValue(null);
         preferenceRoot.SetValue(null, (Func<string>)(() => Path.Combine(evidence, "user-preferences")));
+        var previousUserRoot = WindowsStoragePaths.UserRootForVerification;
+        WindowsStoragePaths.UserRootForVerification = () => Path.Combine(evidence, "isolated-user-root");
         var lines = new List<string>();
+        using var verificationWatchdog = new Timer(_ => Environment.FailFast("Native verification exceeded its modal/cleanup deadline: " + string.Join(" ", args)), null, TimeSpan.FromMinutes(3), Timeout.InfiniteTimeSpan);
         var desktop = new System.Windows.Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
         desktop.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Desktop.UiVerification;component/Themes/Workstation.xaml", UriKind.Relative) });
         desktop.Startup += async (_, _) =>
@@ -113,7 +120,6 @@ static partial class Program
                 {
                     if (!args.Contains("--baseline")) await VerifyTypography(evidence, lines);
                     await VerifyTaskHierarchy(root, evidence, lines, args.Contains("--baseline"));
-                    if (!args.Contains("--baseline")) await VerifyHierarchyChain(root, evidence, lines, args.Contains("--interactive"));
                 }
                 else if (args.Contains("--dual-camera-diagnostics")) await VerifyDualCameraDiagnostics(root, evidence, lines);
                 else if (args.Contains("--internal-pages")) await VerifyInternalPages(root, evidence, lines);
@@ -148,7 +154,7 @@ static partial class Program
             finally { File.WriteAllLines(Path.Combine(evidence, "WINDOWS-WPF.log"), lines); Directory.CreateDirectory(Path.Combine(root, ".artifacts")); File.WriteAllText(Path.Combine(root, ".artifacts/WINDOWS-WPF-EVIDENCE.txt"), evidence); }
         };
         try { return desktop.Run(); }
-        finally { preferenceRoot.SetValue(null, previousPreferenceRoot); }
+        finally { WindowsStoragePaths.UserRootForVerification = previousUserRoot; preferenceRoot.SetValue(null, previousPreferenceRoot); }
     }
     static async Task Verify(string root, string evidence, List<string> lines, bool syntheticIdentity = false)
     {
@@ -177,6 +183,7 @@ static partial class Program
             var stops = 0; var stopCalls = 0; var failNextStop = false;
             var classic = CreateSharedShellForVerification(application);
             var alternate = (SupplyStationWindow)Presentation.Create(application, null, "standard", "supply-station", async () => { stopCalls++; if (failNextStop) { failNextStop = false; throw new IOException("SYNTHETIC owner stop failed"); } await runtime.StopAsync(CancellationToken.None); stops++; });
+            await using var windowOwners = new NativeWindowOwners(); windowOwners.Track(classic); windowOwners.Track(alternate);
             classic.Show(); alternate.Show(); await Task.Delay(1200);
             Check(classic is ShellWindow && alternate.ViewModel.Fresh, "shared Shell and current Sportmaster window load actual resources and snapshots");
             Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "two current windows share the same actual Application");

@@ -80,7 +80,7 @@ static partial class Program
                 lines.Add($"CLIPBOARD expectedLength={expected.Length}; actualLength={actual.Length}; expectedSha256={Fingerprint(expected)}; actualSha256={Fingerprint(actual)}; publishedSequence={publishedSequence}; observedSequence={observedSequence}; requests={h.Peer.Requests.Count}");
                 Check(actual == expected && h.Peer.Requests.Count == 1, "copy returns the exact upstream response text and sends nothing");
             }
-            finally { descriptor.RemoveValueChanged(feedback, copied); if (priorClipboard is null) Clipboard.Clear(); else Clipboard.SetDataObject(priorClipboard, true); }
+            finally { descriptor.RemoveValueChanged(feedback, copied); if (publishedSequence != 0 && ManualDebugClipboardSequence() == publishedSequence) { if (priorClipboard is null) Clipboard.Clear(); else Clipboard.SetDataObject(priorClipboard, true); } }
             send.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => !Field<bool>(control, "busy"));
             Check(h.Peer.Requests.Count == 1, "native original-result lookup does not send a second HTTP request");

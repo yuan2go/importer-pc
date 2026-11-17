@@ -34,10 +34,11 @@ static partial class Program
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var requested = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var finish = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); Task? running = null;
         try
         {
-            var running = Run(async (p, t) => { calls++; late = p; p.Report(new(MaintenanceStage.CopyingCustody, 4096, 16384, true)); using var subscription = t.Register(() => requested.TrySetResult()); entered.SetResult(); await release.Task; throw new MaintenanceCancelledException("合成资源已释放，取消完成。"); });
-            await entered.Task; await Until(() => readout.Text.Contains("4,096"));
+            running = Run(async (p, t) => { calls++; late = p; p.Report(new(MaintenanceStage.CopyingCustody, 4096, 16384, true)); using var subscription = t.Register(() => requested.TrySetResult()); entered.SetResult(); await release.Task; throw new MaintenanceCancelledException("合成资源已释放，取消完成。"); });
+            await entered.Task.WaitAsync(TimeSpan.FromSeconds(5)); await Until(() => readout.Text.Contains("4,096"));
             Check((bool)busy.GetValue(window)! && !body.IsEnabled && !actions.IsEnabled && cancel.IsEnabled && readout.IsEnabled && readout.IsReadOnly, "real native window keeps source, target, byte observations and cancellation readable while ordinary actions are disabled");
             await Until(() => Descendants(window).OfType<TextBlock>().Any(t => t.Text.StartsWith("已用时 ") && !t.Text.StartsWith("已用时 0 ")));
             Check((bool)busy.GetValue(window)!, "actual elapsed-time observations continue while the backend is deliberately waiting");
@@ -46,22 +47,22 @@ static partial class Program
             var bounds = cancel.TransformToAncestor(window).TransformBounds(new Rect(cancel.RenderSize));
             Check(cancel.ActualHeight >= 44 && bounds.Bottom < window.ActualHeight && readout.ActualHeight >= 54, "supported minimum maintenance window retains the actual cancellation target and selectable status");
             CaptureInternal(evidence, "maintenance-progress-minimum", window, lines);
-            cancel.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await requested.Task;
+            cancel.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await requested.Task.WaitAsync(TimeSpan.FromSeconds(5));
             Check((bool)busy.GetValue(window)! && !cancel.IsEnabled && readout.Text.Contains("等待"), "requesting cancellation does not claim completion or release the busy owner");
             window.Close(); Check(window.IsVisible, "real close guard rejects closing before operation cleanup completes");
-            release.SetResult(); await running;
-            Check(!(bool)busy.GetValue(window)! && body.IsEnabled && readout.Text.Contains("已取消，未做更改") && !readout.Text.Contains("回滚成功"), "only the typed terminal cancellation releases the native operation and retains original context");
+            release.SetResult(); await running.WaitAsync(TimeSpan.FromSeconds(5));
+            Check(!(bool)busy.GetValue(window)! && body.IsEnabled && readout.Text.Contains("已确认取消本次操作") && readout.Text.Contains("取消不回滚已完成的步骤") && !readout.Text.Contains("回滚成功"), "only the typed terminal cancellation releases the native operation and retains original context");
             var terminal = readout.Text; late!.Report(new(MaintenanceStage.CopyingCustody, 16384, 16384, true)); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             Check(readout.Text == terminal && !cancel.IsVisible, "late queued progress cannot overwrite the verified terminal result or reenable cancellation");
-            var committed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var finish = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-            running = Run(async (p, t) => { p.Report(new(MaintenanceStage.PublishingRestore, null, null, false)); committed.SetResult(); await finish.Task; }); await committed.Task; await Until(() => readout.Text.Contains("不可取消"));
-            Check(!cancel.IsEnabled && (bool)busy.GetValue(window)!, "commit-stage observations disable cancellation while the real completion remains pending"); finish.SetResult(); await running;
+            var committed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            running = Run(async (p, t) => { p.Report(new(MaintenanceStage.PublishingRestore, null, null, false)); committed.SetResult(); await finish.Task; }); await committed.Task.WaitAsync(TimeSpan.FromSeconds(5)); await Until(() => readout.Text.Contains("不可取消"));
+            Check(!cancel.IsEnabled && (bool)busy.GetValue(window)!, "commit-stage observations disable cancellation while the real completion remains pending"); finish.SetResult(); await running.WaitAsync(TimeSpan.FromSeconds(5));
             await Run((p, t) => { calls++; throw new InstallationOutcomeUnknownException("合成回执中断"); }); var before = calls;
             await Run((p, t) => { calls++; return Task.CompletedTask; });
             Check((bool)parent.GetField("UnknownOutcome", flags)!.GetValue(window)! && calls == before && readout.Text.Contains("结果未确认"), "the shared maintenance entry rejects a second submission after unknown outcome, including paths that bypass Action");
             CaptureInternal(evidence, "maintenance-unknown", window, lines);
         }
-        finally { release.TrySetResult(); window.Close(); }
+        finally { release.TrySetResult(); finish.TrySetResult(); if (running is not null) await running.WaitAsync(TimeSpan.FromSeconds(5)); window.Close(); }
         await VerifyMaintenanceProtocol(lines);
     }
     static async Task VerifyMaintenanceProtocol(List<string> lines)

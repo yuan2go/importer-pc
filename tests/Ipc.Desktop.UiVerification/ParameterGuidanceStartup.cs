@@ -17,6 +17,17 @@ static partial class Program
     {
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS PGS01-WPF " + reason); }
         async Task Flush() => await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        var overrideRoot = typeof(PresentationPreferences).GetField("UserRootForVerification", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!;
+        var oldOverride = overrideRoot.GetValue(null); overrideRoot.SetValue(null, (Func<string>)(() => Path.Combine(evidence, "user-preferences")));
+        var preference = Path.Combine(evidence, "user-preferences", "presentation", "sportmaster.window.json");
+        byte[]? previous = null; var preferenceCaptured = false; Window? window = null;
+        SupplyStationWindow? workstation = null;
+        try
+        {
+        Check(Path.GetPathRoot(preference)!.Equals(Path.GetPathRoot(evidence), StringComparison.OrdinalIgnoreCase), "local preference is isolated under the evidence root");
+            previous = File.Exists(preference) ? File.ReadAllBytes(preference) : null; preferenceCaptured = true;
+            if (File.Exists(preference)) File.Delete(preference);
+            PresentationPreferences.SaveWindowMode("sportmaster", PresentationPreferences.WindowOpeningMode.Window);
         var initial = new SportmasterFlow().InitialConfiguration();
         var launch = new BusinessLaunch(Path.Combine(evidence, "config"), Path.Combine(evidence, "data"), null, null);
         await using var factory = new ParcelCapabilityFactory(launch);
@@ -24,16 +35,9 @@ static partial class Program
         var model = draft.CreateParameterEditor((p, codes) => Task.FromResult(BarcodeFiltering.Select(p, codes)));
         var editor = new ParameterSettingsControl { FirstConfiguration = true, Model = model };
         var client = new Grid(); client.Children.Add(editor);
-        var window = new Window { Content = client, Title = "合成首配参数 · PGS01", Width = 1100, Height = 740 };
+        window = new Window { Content = client, Title = "合成首配参数 · PGS01", Width = 1100, Height = 740 };
+        await using var windowOwner = new NativeWindowOwner(window);
         NameScope.SetNameScope(window, new NameScope()); window.RegisterName("ClientArea", client);
-        var overrideRoot = typeof(PresentationPreferences).GetField("UserRootForVerification", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!;
-        var oldOverride = overrideRoot.GetValue(null); overrideRoot.SetValue(null, (Func<string>)(() => Path.Combine(evidence, "user-preferences")));
-        var preference = Path.Combine(evidence, "user-preferences", "presentation", "sportmaster.window.json");
-        Check(Path.GetPathRoot(preference)!.Equals(Path.GetPathRoot(evidence), StringComparison.OrdinalIgnoreCase), "local preference is isolated under the evidence root");
-        var previous = File.Exists(preference) ? File.ReadAllBytes(preference) : null;
-        SupplyStationWindow? workstation = null;
-        try
-        {
             window.Show(); await Flush();
             var summaryRcs = model.Components.Single(ParameterOwnership.IsRcs);
             var originalTarget = summaryRcs.Target;
@@ -102,6 +106,7 @@ static partial class Program
             await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { } };
             await app.StartAsync(default);
             workstation = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true };
+            await using var workstationOwner = new NativeWindowOwner(workstation);
             workstation.Show(); await Flush(); await workstation.ViewModel.RefreshAsync();
             Check(workstation.WindowStyle == WindowStyle.None && workstation.WindowState == WindowState.Maximized && workstation.ResizeMode == ResizeMode.NoResize,
                 "the actual workstation opens in game-style borderless full screen");
@@ -120,9 +125,12 @@ static partial class Program
         }
         finally
         {
-            window.Close(); workstation?.Close();
-            if (previous is null) { if (File.Exists(preference)) File.Delete(preference); } else File.WriteAllBytes(preference, previous);
-            overrideRoot.SetValue(null, oldOverride);
+            try
+            {
+                try { window?.Close(); if (workstation?.IsVisible == true) await new NativeWindowOwner(workstation).DisposeAsync(); }
+                finally { if (preferenceCaptured) { if (previous is null) { if (File.Exists(preference)) File.Delete(preference); } else File.WriteAllBytes(preference, previous); } }
+            }
+            finally { overrideRoot.SetValue(null, oldOverride); }
         }
     }
 

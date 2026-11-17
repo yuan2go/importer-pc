@@ -17,6 +17,7 @@ internal static class CameraOriginalExport
             throw new IOException("原图导出空间不足；保留业务存储余量，不创建导出件。");
         if (File.Exists(full) || File.Exists(full + ".json")) throw new IOException("目标已存在，请选择新的文件名。");
         var temporary = full + "." + Wire.Id() + ".partial"; var metadata = full + ".json";
+        using var owner = new ResourceLease(Path.GetDirectoryName(full)!, ["camera-original-export:" + full.ToUpperInvariant()]);
         try
         {
             using (var file = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None, 65536, FileOptions.WriteThrough))
@@ -38,7 +39,7 @@ internal static class CameraOriginalExport
             var hash = Wire.FileHash(temporary); var size = new FileInfo(temporary).Length; token.ThrowIfCancellationRequested();
             // Publish the provenance first. Its explicit PendingImage state means a
             // crash between the two names cannot claim a complete PNG export.
-            ExtensionStore.AtomicWrite(metadata, new { State = "PendingImage", Original = image.Metadata, PngSha256 = hash, Bytes = size });
+            ExtensionStore.AtomicWriteBytes(metadata, System.Text.Encoding.UTF8.GetBytes(Wire.Encode(new { State = "PendingImage", Original = image.Metadata, PngSha256 = hash, Bytes = size })), overwrite: false);
             File.Move(temporary, full, overwrite: false);
             ExtensionStore.AtomicWrite(metadata, new { State = "Complete", Original = image.Metadata, PngSha256 = hash, Bytes = size });
             return new(full, hash, size, 1, 0);

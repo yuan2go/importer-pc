@@ -12,7 +12,7 @@ public sealed class CapabilityParameter(ParameterField field, string value) : IN
     public ParameterField Field { get; } = field;
     public bool IsList => Field.Type == "string-list";
     public bool IsSensitive => Field.Sensitive || Field.Type == "secret-reference";
-    public int EditorMaximumLength => IsList ? checked(Field.MaximumLength * Field.MaximumItems + 8 * Field.MaximumItems) : Field.MaximumLength;
+    public int EditorMaximumLength => IsList ? checked(6 * Field.MaximumLength * Field.MaximumItems + 3 * Field.MaximumItems + 2) : Field.MaximumLength;
     public string EditorLabel => IsList && Field.Choices is null ? Field.Label.Replace("（每行一项）", "") + "（结构化数组）" : Field.Label;
     public string EditorHelp => IsList && Field.Choices is not null ? Field.Description ?? "勾选需要启用的项目，统一审阅保存。" : IsList ? "结构化字符串数组，例如 [\"标签1\",\"标签2\"]；最多" + Field.MaximumItems + "项，每项最多" + Field.MaximumLength + "字符；保留空项和转义。" :
         Field.Description ?? (Field.Type switch
@@ -45,11 +45,14 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
         public bool ConfigureLater { get; init; }
         public string? ProposedProviderIdentity { get; init; }
+        public Dictionary<string, string>? ParameterBaseline { get; init; }
+        public bool PreserveOmittedDefaults { get; init; }
     }
     static string Identity(CapabilityDescriptor? p) => p is null ? "" : Wire.Encode(new { p.Kind, p.Implementation, p.Version, p.Contract, p.Package, p.Module });
-    public Saved CaptureRaw() => new(Kind, Role, originalBinding, Identity(Provider), InstanceId, Target, Contract, Enabled, Bound, Parameters.ToDictionary(p => p.Field.Key, p => p.Value)) { ConfigureLater = ConfigureLater, ProposedProviderIdentity = proposedProvider is null ? null : Identity(proposedProvider) };
+    public Saved CaptureRaw() => new(Kind, Role, originalBinding, Identity(Provider), InstanceId, Target, Contract, Enabled, Bound, Parameters.ToDictionary(p => p.Field.Key, p => p.Value)) { ConfigureLater = ConfigureLater, ProposedProviderIdentity = proposedProvider is null ? null : Identity(proposedProvider), ParameterBaseline = new(originalParameters), PreserveOmittedDefaults = preserveOmittedDefaults };
     public static CapabilityDraft RestoreRaw(Saved state, CapabilityDescriptor[] providers)
     {
+        if (state.ParameterBaseline is null) throw new System.IO.InvalidDataException("草稿缺少当前参数保留状态，原草稿保留，请重新核对设置。");
         var draft = new CapabilityDraft(state.Kind, providers, state.Original, state.Bound, state.Role);
         if (state.ProviderIdentity.Length > 0)
         {
@@ -59,6 +62,9 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         else draft.Provider = null;
         draft.InstanceId = state.Instance; draft.Target = state.Target; draft.Contract = state.Contract; draft.Enabled = state.Enabled;
         draft.ConfigureLater = state.ConfigureLater;
+        draft.originalParameters.Clear();
+        foreach (var item in state.ParameterBaseline) draft.originalParameters[item.Key] = item.Value;
+        draft.preserveOmittedDefaults = state.PreserveOmittedDefaults;
         foreach (var p in draft.Parameters) p.Value = state.Parameters.GetValueOrDefault(p.Field.Key, p.Value);
         if (state.ProposedProviderIdentity is { } proposed)
             draft.ProposeProvider(draft.Providers.SingleOrDefault(p => Identity(p) == proposed) ?? throw new InvalidOperationException("草稿中待切换的精确提供者缺失；原输入保留"));
@@ -163,7 +169,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         if (binding?.Contract == RcsRequestPolicy.Contract) binding = RcsRequestPolicy.NormalizeHeartbeat(binding);
         Kind = kind; Role = role ?? kind; Providers = providers.Where(x => x.Kind == kind).ToArray();
         InstanceId = binding?.InstanceId ?? kind + ".one"; Target = binding?.Target ?? "reference://" + kind + "/one"; Contract = binding?.Contract ?? "";
-        Provider = binding is null ? Providers.FirstOrDefault() : Providers.SingleOrDefault(x => x.Implementation == binding.Implementation && x.Version == binding.Version && x.Package == binding.Package && x.Module == binding.Module);
+        Provider = binding is null ? Providers.FirstOrDefault() : Providers.SingleOrDefault(x => x.Implementation == binding.Implementation && x.Version == binding.Version && x.Package == binding.Package && x.Module == binding.Module && x.Contract == binding.Contract);
         if (binding is not null) foreach (var p in Parameters) p.Value = binding.Parameters.GetValueOrDefault(p.Field.Key) ?? p.Field.Default ?? "";
         if (binding is not null) { preserveOmittedDefaults = true; OriginalProviderIdentity = binding.Implementation + " @ " + binding.Version + " · " + (binding.Package?.ManifestSha256 ?? "内置参考") + " · " + binding.Module; Contract = binding.Contract; foreach (var pair in binding.Parameters) originalParameters[pair.Key] = pair.Value; }
         Enabled = binding?.Enabled ?? false; Bound = bound;

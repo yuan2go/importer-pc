@@ -55,7 +55,7 @@ public sealed partial class SoftwareLogReader
                 while (offset < source.Length)
                 {
                     token.ThrowIfCancellationRequested(); management.Require();
-                    var count = await RandomAccess.ReadAsync(source.Stream.SafeFileHandle, buffer.AsMemory(0, (int)Math.Min(buffer.Length, source.Length - offset)), offset, token).ConfigureAwait(false);
+                    var count = await ReadBlock(source, offset, buffer, token).ConfigureAwait(false);
                     if (count == 0) throw new IOException("原日志范围已缺失，请重新查询。");
                     for (var i = 0; i < count; i++)
                     {

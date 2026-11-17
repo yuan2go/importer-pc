@@ -197,6 +197,8 @@ internal sealed partial class StationDebugControl : UserControl
     async Task PrepareManualAsync(CancellationToken token)
     {
         if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复当前运行状态读取。");
+        if (prepareCommand is { } pending && (pending.PositionId != position || pending.RuntimeId != snapshot.RuntimeId))
+            throw new InvalidOperationException("请返回原投递位核对上次准备结果；不把原命令用于当前投递位。");
         var command = prepareCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, position, requestBarcode.Text, observed?.Id)
         { ExpectedArrivalGeneration = snapshot.Positions?.SingleOrDefault(p => p.Id == position)?.Arrival?.Generation };
         var owner = lifetime; var version = generation; var scanSession = ownedScanSession;
@@ -234,9 +236,9 @@ internal sealed partial class StationDebugControl : UserControl
                 await CloseScanScopeAsync(oldSession, observed?.Id);
             beginCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, CameraInspectionMode.ObserveProduction, "单次扫码调试", new()) { SingleReadRounds = true };
             var entered = await vm.ServiceAsync(() => Inspection.BeginCameraInspectionAsync(beginCommand, token));
+            ownedScanSession = entered.SessionId; ownedScanRound = observed?.Id;
             if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
             scope = entered;
-            ownedScanSession = entered.SessionId; ownedScanRound = observed?.Id;
             beginCommand = null;
             // The begin receipt is followed by an authoritative status read, including the round mode.
             var confirmed = await vm.ServiceAsync(() => Inspection.CameraInspectionStatusAsync(token));
@@ -246,9 +248,13 @@ internal sealed partial class StationDebugControl : UserControl
         if (scope?.SessionId is not { } session) throw new InvalidOperationException("未读取到当前调试会话。");
         beginCommand = null; // An authoritative active scope settles a lost begin receipt.
         armCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, session, Position.ReaderId, observed?.Id ?? current?.Id);
+        if (armCommand.DeviceId != Position.ReaderId || armCommand.SessionId != session || armCommand.RuntimeId != snapshot.RuntimeId)
+            throw new InvalidOperationException("原扫码命令属于另一相机或会话，请核对原轮次。");
         CameraReadRound value;
         try { value = await vm.ServiceAsync(() => Rounds.ArmCameraReadAsync(armCommand, token)); }
         catch (CameraReadRoundConflictException) { armCommand = null; throw; }
+        ownedScanSession = armCommand.SessionId; ownedScanRound = armCommand.CommandId;
+        if (value.Id != armCommand.CommandId) throw new CameraReadRoundConflictException("原扫码命令已结束，当前是另一轮；请查看原记录。");
         if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
         armCommand = null; sendCommand = null; requestDirty = false; manualDrafts.Remove(position); observed = current = value;
         ownedScanSession = value.SessionId; ownedScanRound = value.Id;
@@ -259,7 +265,10 @@ internal sealed partial class StationDebugControl : UserControl
         if (!authoritative || !vm.Fresh || current is not { Id: { } id, RequestHash: { } hash } value || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复轮次读取，再查看本轮请求。");
         if (sendCommand is null && (requestDirty || !value.ManualRequest && loadedFrame != value.Frame?.Id)) throw new InvalidOperationException("请先准备当前条码的请求；扫码请求还需查看本轮图片。");
         sendCommand ??= new(Wire.Id(), snapshot.RuntimeId, id, hash);
+        if (sendCommand.RuntimeId != snapshot.RuntimeId || sendCommand.RoundId != id || sendCommand.RequestHash != hash)
+            throw new InvalidOperationException("原发送结果须按原轮次核对，不能转投当前轮次。");
         var returned = await vm.ServiceAsync(() => Rounds.SendCameraRoundAsync(sendCommand, token));
+        if (returned.Id == id) sendCommand = null;
         if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
         current = returned; authoritative = true; await PublishRoundAsync(current, token);
         if (returned.SendAttempts == 0)
@@ -277,7 +286,8 @@ internal sealed partial class StationDebugControl : UserControl
         if (!active || busy || batch is not null) return;
         busy = true; var ownership = lifetime!; var token = ownership.Token;
         var completion = actionFinished = new(TaskCreationOptions.RunContinuationsAsynchronously); Buttons();
-        try { await vm.RequireManagementModeAsync(); await action(token); }
+        var actionGeneration = generation;
+        try { await vm.RequireManagementModeAsync(); if (!active || token.IsCancellationRequested || actionGeneration != generation || !vm.IsManagementMode) return; await action(token); }
         catch (OperationCanceledException) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = "已停止等待。请求可能已发出，调试状态未变；请查看本轮结果。"; } }
         catch (Exception error) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, DebugFailure); } }
         finally { busy = false; completion.TrySetResult(); if (active) { Buttons(); await PollAsync(); } }
@@ -327,7 +337,7 @@ internal sealed partial class StationDebugControl : UserControl
             photo.Width = imageLayer.Width = marks.Width = frame.Width; photo.Height = imageLayer.Height = marks.Height = frame.Height;
             fit = true; ApplyZoom(); DrawMarks(); photoCaption.Text = "已锁定本轮照片 · 帧 " + frame.FrameNumber + " · " + frame.CapturedAt.ToLocalTime().ToString("HH:mm:ss.fff") + "\n下一件不会覆盖。";
         }
-        if (value.Frame is null) ClearPhoto(); Buttons();
+        if (value.Frame?.Id != loadedFrame || value.Frame?.ImageAvailable != true) ClearPhoto(); Buttons();
     }
     void ShowResponse(CameraReadRound value)
     {
@@ -453,7 +463,13 @@ internal sealed partial class StationDebugControl : UserControl
             if (Math.Abs(area) < 1) polygon.StrokeThickness = 4 / zoom;
         }
     }
-    public void SelectPosition(string value) { position = value == "right" ? "right" : "left"; generation++; authoritative = false; ClearRoundDisplay(); livePreview.SelectDevice(Position.ReaderId); camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus; evidence.SelectPosition(position); Buttons(); }
+    public void SelectPosition(string value)
+    {
+        value = value == "right" ? "right" : "left";
+        if (value != position && (busy || prepareCommand is not null || armCommand is not null || sendCommand is not null))
+        { feedback.Text = "请先在本位核对原调试命令结果，再切换相机。"; return; }
+        position = value; generation++; authoritative = false; ClearRoundDisplay(); livePreview.SelectDevice(Position.ReaderId); camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus; evidence.SelectPosition(position); Buttons();
+    }
     public void Revoke() { Deactivate(); ClearRoundDisplay(); evidence.Revoke(); }
     async Task CloseScanScopeAsync(string session, string? round)
     {

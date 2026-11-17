@@ -18,6 +18,7 @@ public sealed partial class SupplyStationPositionViewModel
     // Manual input has its own source and remains usable while the camera sees no code.
     bool CameraNoCode => false;
     DeviceState? fastReaderState;
+    Guid fastReaderRuntime;
     DeviceState? CurrentReaderState
     {
         get
@@ -131,6 +132,7 @@ public sealed partial class SupplyStationPositionViewModel
         if (runtime != owner.Snapshot?.RuntimeId || value.DeviceId != ReaderId ||
             fastReaderState is { } old && old.UpdatedAt > value.UpdatedAt) return;
         fastReaderState = value;
+        fastReaderRuntime = runtime;
         Update(owner.Snapshot, DateTimeOffset.UtcNow, owner.Fresh, owner.ViewportReady);
     }
     internal void ApplyCameraReadFeedback(Guid runtime, ParcelCameraReadFeedback value) { }
@@ -144,7 +146,7 @@ public sealed partial class SupplyStationPositionViewModel
         if (ShowConfirmedTask && Operation is { } success && CurrentRound is { } round && recentResult?.Operation != success.Id)
             recentResult = new(snapshot!.RuntimeId, ReaderId, round.Id, round.ArrivalGeneration, success.Id, success.Slot!, success.ParcelCode ?? "", TaskId, Stopwatch.GetTimestamp());
         if (readFeedback?.RuntimeId != snapshot?.RuntimeId || readFeedback?.DeviceId != ReaderId) readFeedback = null;
-        if (fastReaderState?.DeviceId != ReaderId) fastReaderState = null;
+        if (fastReaderRuntime != snapshot?.RuntimeId || fastReaderState?.DeviceId != ReaderId) fastReaderState = null;
         if (fastReaderState is { } state && snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == ReaderId) is { } acknowledged &&
             acknowledged.Epoch == state.Epoch && acknowledged.UpdatedAt >= state.UpdatedAt) fastReaderState = null;
         if (snapshot?.ReadFeedbacks.SingleOrDefault(r => r.PositionId == PositionId) is { } read) ApplyReadFeedback(read);

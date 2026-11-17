@@ -20,13 +20,17 @@ for path in paths:
 characters.discard(" ")
 characters = sorted(characters, key=ord)
 rows = []
-for path in sorted((root / "src/Ipc.Presentation.Wpf/Fonts").glob("*.otf")):
+fonts = sorted((root / "src/Ipc.Presentation.Wpf/Fonts").glob("*.otf"))
+if not fonts:
+    raise FileNotFoundError('No bundled fonts found; coverage was not inspected')
+for path in fonts:
     font = TTFont(path)
     cmap = font.getBestCmap()
     rows.append({"file": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                  "weight": font["OS/2"].usWeightClass, "version": font["name"].getDebugName(5),
                  "missing": [c for c in characters if ord(c) not in cmap],
                  "rocketAbsentForNativeFallbackProbe": 0x1F680 not in cmap})
+    font.close()
 result = {"SourceCommit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
           "Scope": "CJK source-character superset plus explicit mixed-script sample; comments included; external logs unbounded",
           "Sample": sample, "SourceFileCount": len(paths), "Characters": "".join(characters),

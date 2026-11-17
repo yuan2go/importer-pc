@@ -1,6 +1,7 @@
 #requires -Version 7.0
 param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive,[switch]$AuditPerformance,[switch]$ParameterV3,[switch]$ManagementMode,[switch]$CleanInstallBootstrap,[switch]$StartupExperience,[switch]$ParameterGuidanceStartup,[switch]$ParameterShellPolish,[switch]$TaskHierarchy,[switch]$Win11Stability,[switch]$ReliabilityLogs,[switch]$WorkstationStatusLogs,[switch]$OperatorWorkspace,[switch]$QueryFilters,[switch]$StationSettings,[switch]$DebugLogLive,[switch]$StabilitySeedUpgrade,[switch]$InstallerFirstRunUi,[switch]$LifecycleUx)
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'verification-evidence.ps1')
 if (-not $IsWindows) { throw 'Run native WPF verification on Windows; it does not provision policy or operate equipment' }
 $Media=(Resolve-Path -LiteralPath $Media).Path
 $Output=[IO.Path]::GetFullPath($Output)
@@ -19,6 +20,7 @@ foreach($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')) {
  if((Get-FileHash -LiteralPath $path).Hash -ne $hash){throw "Changed medium: $relative"}
  $inventory[$relative]=$hash
 }
+Assert-MediumInventory $Media $inventory
 $refs=@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'Ipc.*.dll')+@(Get-Item -LiteralPath (Join-Path $Media 'desktop/Ipc.Application.ParcelFlow.Desktop.dll'))+@(Get-Item -LiteralPath (Join-Path $Media 'desktop/Ipc.Application.Sportmaster.Desktop.dll'))+@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'Microsoft.Data.Sqlite*.dll')
 $refs+=@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'SQLitePCLRaw*.dll')
 $refs+=@(Get-Item -LiteralPath (Join-Path $Media 'desktop/Ipc.Desktop.dll'))

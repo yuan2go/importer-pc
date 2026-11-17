@@ -79,7 +79,10 @@ public sealed class ParcelPictureWindow : Window
         viewport.PreviewMouseWheel += (_, e) => { if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return; e.Handled = true; Scale(zoom * (e.Delta > 0 ? 1.25 : .8)); };
         viewport.PreviewMouseLeftButtonDown += (_, e) =>
         {
-            if (frame is null || e.OriginalSource is System.Windows.Controls.Primitives.Thumb) return;
+            if (frame is null) return;
+            for (var source = e.OriginalSource as DependencyObject; source is not null;
+                source = source is System.Windows.Media.Visual ? System.Windows.Media.VisualTreeHelper.GetParent(source) : LogicalTreeHelper.GetParent(source))
+                if (source is System.Windows.Controls.Primitives.ScrollBar) return;
             pan = e.GetPosition(viewport); startX = viewport.HorizontalOffset; startY = viewport.VerticalOffset; viewport.CaptureMouse(); e.Handled = true;
         };
         viewport.MouseMove += (_, e) => { if (pan is not { } start || !viewport.IsMouseCaptured) return; var p = e.GetPosition(viewport); viewport.ScrollToHorizontalOffset(startX + start.X - p.X); viewport.ScrollToVerticalOffset(startY + start.Y - p.Y); };

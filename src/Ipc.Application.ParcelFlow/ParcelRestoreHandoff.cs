@@ -42,7 +42,7 @@ public sealed partial class ParcelStartupMaintenance
         var sourceExists = Directory.Exists(source);
         if (definition.Id == "sportmaster" && Directory.Exists(launch.DataRoot) && OtherRootBlocker(source) is { } otherRoot)
             throw new InvalidDataException(otherRoot);
-        using var sourceOwner = sourceExists && ownership is null ? new ResourceLease(source, ["application-owner"]) : null;
+        using var sourceOwner = sourceExists && !(definition.Id == "sportmaster" && OperatingSystem.IsWindows()) ? new ResourceLease(source, ["application-owner"]) : null;
         using var targetOwner = new ResourceLease(target, ["application-owner"]);
         using var targetCopy = CopyForMaintenance(target);
         if (ParcelRepository.ReadStorageVersion(targetCopy.Database, definition.Id) != ParcelRepository.CurrentStorageVersion)

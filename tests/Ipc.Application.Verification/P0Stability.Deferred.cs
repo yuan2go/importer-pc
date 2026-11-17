@@ -96,7 +96,10 @@ static partial class SportmasterRcs
                         var mapping = RcsConfigurationValidation.HeartbeatMapping(c);
                         Check(mapping.Length == readers.Count(r => !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)), "mapping excludes deferred readers");
                         await using var service = new SportmasterRcsTaskService(binding); service.ConfigureRuntime(c);
-                        var before = peer.Requests.Count; await service.StartAsync(default); await Task.Delay(1250); await service.StopAsync(default);
+                        service.HeartbeatScheduleForVerification = new SportmasterRcs.RequestClock();
+                        var before = peer.Requests.Count; await service.StartAsync(default);
+                        if (mapping.Length != 0) await CameraRoundHarness.Until(() => Task.FromResult(peer.Requests.Count > before));
+                        await service.StopAsync(default);
                         var sent = peer.Requests.Skip(before).ToArray();
                         Check(mapping.Length == 0 ? sent.Length == 0 : sent.Length == 1, "zero active readers send no heartbeat; active readers send one batch");
                         if (sent.Length != 0)

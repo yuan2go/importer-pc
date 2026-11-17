@@ -21,7 +21,7 @@ internal static class LiveDevices30
         await h.StartAsync();
         uint frame = 0;
         long Processed(string position) => h.App.WorkerProgress().Single(p => p.Position == position).Processed;
-        async Task Read(string device, string position, string code)
+        async Task Read(string device, string position, string code, bool present = false)
         {
             await CameraRoundHarness.Until(async () =>
             {
@@ -29,6 +29,7 @@ internal static class LiveDevices30
                 return state.Positions!.Single(p => p.Id == position).BarcodeInput?.Camera == true && state.Health.Any(c => c.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived);
             });
             await h.TrayAsync(device, TrayPresence.Absent);
+            if (present) await h.TrayAsync(device, TrayPresence.Present);
             var before = Processed(position);
             h.Api(device).Enqueue(CameraRoundHarness.Barcode(code), ++frame);
             await CameraRoundHarness.Until(() => Task.FromResult(Processed(position) > before));
@@ -58,14 +59,19 @@ internal static class LiveDevices30
         var revision = (await h.App.SnapshotAsync()).Configuration.Revision;
 
         // 1. A new left camera address: only the left camera reconnects, nothing restarts.
-        var receipt = await Save(c => WithReader(c, h.Left, "device.ip", "192.0.2.41"));
+        var oldStoppedAtNewStart = false;
+        h.Factory.ConfigureApi = (device, api) => { if (device == h.Left) api.BeforeStart = () => { oldStoppedAtNewStart = oldLeftApi.Stops > 0; Check(oldStoppedAtNewStart, "old left camera is stopped at the actual replacement Start call"); }; };
+        BusinessReceipt receipt;
+        try { receipt = await Save(c => WithReader(c, h.Left, "device.ip", "192.0.2.41")); }
+        finally { h.Factory.ConfigureApi = null; }
+
         var snapshot = await h.App.SnapshotAsync();
         Check(receipt.Status == "Effective" && receipt.Reason.Contains("左相机", StringComparison.Ordinal) && snapshot.Configuration.Pending is null &&
             snapshot.Configuration.Effective.Topology!.Readers.Single(r => r.DeviceId == h.Left).Parameters!["device.ip"] == "192.0.2.41" &&
             snapshot.Configuration.Revision == revision + 1, "a left camera address is saved as effective in one revision without a pending restart");
         Check(h.Factory.ReaderBuilds == 1 && h.Factory.WcsBuilds == 0 && ReferenceEquals(h.Factory.Sources[h.Right], rightSource) && !ReferenceEquals(h.Factory.Sources[h.Left], oldLeft),
             "only the left camera is rebuilt; the right camera and RCS connection are the same objects");
-        Check(oldLeftApi.Stops > 0, "the replaced left camera was stopped before the new one started");
+        Check(oldStoppedAtNewStart && h.Api(h.Left).Starts == 1, "the actual replacement started once after the original stopped");
         await CameraRoundHarness.Until(() => Online(h.Left));
         await Read(h.Left, "left", "LIVE30-L-2"); await Requested(h.Peer, "LIVE30-L-2");
         Check(true, "the reconnected left camera reads and requests a chute with the saved address");
@@ -116,6 +122,12 @@ internal static class LiveDevices30
         Check(receipt.Status == "Effective" && snapshot.Configuration.Effective.BarcodeFilter?.Pattern == "^LIVE30-.*$" && snapshot.Configuration.Pending is null,
             "a camera change together with new barcode rules applies both at once");
         await CameraRoundHarness.Until(() => Online(h.Right));
+        var beforeFiltered = secondRcs.Requests.Count;
+        await Read(h.Right, "right", "REJECT-BY-LIVE-RULE", present: true);
+        var filtered = await h.App.SnapshotAsync();
+        Check(filtered.Inputs!.Single(i => i.PositionId == "right").BarcodeSelection?.Outcome == "NoMatchingCode" && secondRcs.Requests.Count == beforeFiltered,
+            "the replaced camera applies the saved allow rule to real decoded candidates before RCS");
+        await Read(h.Right, "right", "LIVE30-R-AFTER-FILTER"); await Requested(secondRcs, "LIVE30-R-AFTER-FILTER");
 
         // The two RCS fields whose descriptor used to promise a mandatory restart
         // use the same live path, retaining provider identity and both camera sessions.

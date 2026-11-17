@@ -18,23 +18,23 @@ public sealed partial class ParcelRuntime : IRuntimeDiagnosticsControl
         return Task.FromResult(Volatile.Read(ref diagnosticSettings));
     });
     public Task<RuntimeDiagnosticSettings> SetDebugLoggingAsync(bool enabled) => OwnedAdministration(token =>
-        Task.FromResult(Management.Commit(() =>
         {
             token.ThrowIfCancellationRequested(); _ = DiagnosticJournal;
             lock (diagnosticSettingsSync)
             {
+                Management.Require();
                 var prior = diagnosticSettings;
-                if (prior.DebugEnabled == enabled) return prior;
+                if (prior.DebugEnabled == enabled) return Task.FromResult(prior);
                 var next = new RuntimeDiagnosticSettings(enabled, checked(prior.Revision + 1), DateTimeOffset.UtcNow)
                 { ExpiresAt = enabled ? DateTimeOffset.UtcNow + DebugLoggingLifetime : null };
+                Volatile.Write(ref debugStarted, System.Diagnostics.Stopwatch.GetTimestamp());
                 Volatile.Write(ref diagnosticSettings, next);
                 debugExpiry?.Dispose(); debugExpiry = null;
-                debugStarted = System.Diagnostics.Stopwatch.GetTimestamp();
                 if (enabled) debugExpiry = new Timer(_ => ExpireDebugLogging(next.Revision), null, DebugLoggingLifetime, Timeout.InfiniteTimeSpan);
                 Diagnostic("诊断日志", enabled ? "调试模式已开启" : "调试模式已关闭", detail: "立即生效；仅当前运行实例，重启后关闭。修订=" + next.Revision);
-                return next;
+                return Task.FromResult(next);
             }
-        })));
+        });
     void ExpireDebugIfDue()
     {
         var value = Volatile.Read(ref diagnosticSettings);

@@ -34,7 +34,8 @@ public sealed partial class ParcelRuntime
         var reader = readers[device];
         if (reader.Health?.IsValid(DateTimeOffset.UtcNow) != true) return ParcelInputBlockReason.ReaderConfirmationExpired;
         if (AdmissionCapabilityBlock(position) is { } capability) return capability;
-        if (reader.Source is IObservationInspectionSource && !AutomaticCameraReadsAllowed(device)) return ParcelInputBlockReason.RcsUnavailable;
+        if (reader.Source is IObservationInspectionSource && AutomaticCameraReadBlock(device) is { } readBlock)
+            return readBlock == "RcsRemoteConfirmationUnavailable" ? ParcelInputBlockReason.RcsUnavailable : ParcelInputBlockReason.VehicleUnconfirmed;
         if (Id == "sportmaster") return null;
         var original = operations.Values.FirstOrDefault(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) &&
             (NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x)));

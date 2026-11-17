@@ -71,7 +71,8 @@ static partial class ArchitectureQuality
                     "held Monitor rejection creates no Query and preserves original Awaiting, owner, image and frozen requests");
             }
             finally { health!.Release.TrySetResult(); }
-            var drained = await Wait(a, s => s.Availability?.Configure == true);
+            var priorConfirmation = ready.Health.Single(h => h.InstanceId == c.Wcs!.InstanceId).ConfirmedAt;
+            var drained = await Wait(a, s => s.Health.Single(h => h.InstanceId == c.Wcs!.InstanceId).ConfirmedAt > priorConfirmation);
             Check(drained.Revision == ready.Revision, "same Monitor probe drains before successful maintenance; no unknown external call retried");
             var outcome = await Command(a, "ReconcileReceipt", occurrence, "Original receiver outcome checked; absent local original remains independent");
             Console.WriteLine("Receipt custody query result: " + Wire.Encode(outcome));

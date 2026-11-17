@@ -44,7 +44,11 @@ $listener=New-Object System.Net.Sockets.TcpListener([System.Net.IPAddress]::Loop
 try {
     $port=$listener.LocalEndpoint.Port
     & $scriptPath -CameraAddress '127.0.0.1' -CameraPort $port -EnableTcpProbe -EnableIcmpProbe -OutputDirectory (Join-Path $OutputRoot 'loopback')
-    $peer=$listener.AcceptTcpClient()
+    $probeEvidence=Get-Content -LiteralPath (Join-Path $OutputRoot 'loopback\network-evidence.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    Check (@($probeEvidence.Probes | Where-Object { $_.Status -eq 'Connected' }).Count -eq 1) 'owned TCP probe connected before fixture accept'
+    $accept=$listener.AcceptTcpClientAsync()
+    if (-not $accept.Wait(3000)) { throw 'Owned TCP fixture accept timed out' }
+    $peer=$accept.GetAwaiter().GetResult(); $peer.ReceiveTimeout=3000
     try { Check ($peer.GetStream().ReadByte() -eq -1) 'explicit loopback TCP probe closes without sending any application bytes' } finally { $peer.Close() }
     $probe=Get-Content -LiteralPath (Join-Path $OutputRoot 'loopback\network-evidence.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     Check (@($probe.Probes | Where-Object { $_.Kind -eq 'TCP' -and $_.Status -eq 'Connected' -and -not $_.ApplicationPayloadSent }).Count -eq 1) 'explicit TCP probe reports actual local and remote endpoints'

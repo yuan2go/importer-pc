@@ -2,24 +2,33 @@ param([ValidateSet('all','application','native','desktop')][string]$Phase='all')
 Set-Location -LiteralPath (Split-Path -Parent $PSScriptRoot)
 $ErrorActionPreference='Stop'
 . ./scripts/project-environment.ps1
+. ./scripts/verification-evidence.ps1
 $taskReports=[System.Collections.Generic.List[object]]::new()
 $taskSource=(& git rev-parse HEAD).Trim()
 if ((& git status --porcelain -- src tests scripts)) { throw 'Commit product/test/tool sources before frozen verification' }
 $taskLogRoot=Join-Path (Get-Location) ('.artifacts/sm-product-closure-21/'+$taskSource)
 $taskScope='SQLite/built-in loopback RCS/ZXing, Windows native WPF; physical MVS/customer RCS/target IPC/field/24x7 NOT_RUN'
 New-Item -ItemType Directory -Path $taskLogRoot -Force | Out-Null
+function Require-Source {
+ $head=(& git rev-parse HEAD);if($LASTEXITCODE -ne 0 -or $head.Trim() -ne $taskSource){throw 'Source commit changed during frozen verification'}
+ $dirty=(& git status --porcelain -- src tests scripts);if($LASTEXITCODE -ne 0 -or $dirty){throw 'Source tree changed during frozen verification'}
+}
 function Run-Check([string]$Name,[string[]]$Arguments,[bool]$Native=$false) {
  if ((& git status --porcelain -- src tests scripts)) { throw 'Frozen product/test/tool sources changed during verification; retain intermediate evidence and rerun from a clean commit' }
+ Require-Source
+ if($Native){Reset-NativeEvidence (Get-Location).Path}
  $taskLog=Join-Path $taskLogRoot ($Name+'.log')
  & dotnet @Arguments *> $taskLog
  $taskCode=$LASTEXITCODE
+ Copy-Item -LiteralPath $taskLog -Destination ($taskLog+'.console')
+ Require-Source
  if($Native -and (Test-Path .artifacts/WINDOWS-WPF-EVIDENCE.txt)) {
-  $taskNative=Get-Content .artifacts/WINDOWS-WPF-EVIDENCE.txt -Raw
-  $taskNative=$taskNative.Trim()
+  $taskNative=Read-NativeEvidence (Get-Location).Path
   Copy-Item -LiteralPath (Join-Path $taskNative 'WINDOWS-WPF.log') -Destination $taskLog -Force
   $taskReports.Add(@{name=$Name;exit=$taskCode;evidence=$taskNative;passes=@(Select-String -LiteralPath $taskLog -Pattern '^PASS').Count})
- }else{$taskReports.Add(@{name=$Name;exit=$taskCode;passes=@(Select-String -LiteralPath $taskLog -Pattern '^PASS').Count})}
+ }elseif($Native){$taskReports.Add(@{name=$Name;exit=$taskCode;evidence_gap='No fresh native evidence';passes=0})}else{$taskReports.Add(@{name=$Name;exit=$taskCode;passes=@(Select-String -LiteralPath $taskLog -Pattern '^PASS').Count})}
  @{source_commit=$taskSource;scope=$taskScope;results=@($taskReports.ToArray())} | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $taskLogRoot ($Phase+'-summary.json')) -Encoding utf8
+ Require-Source
  Write-Output "$Name exit=$taskCode"
  if($taskCode -ne 0){Get-Content -LiteralPath $taskLog -Tail 12}
 }
@@ -40,5 +49,7 @@ if($Phase -in @('all','native')) {
  }
 }
 if($Phase -in @('all','desktop')) {Run-Check 'build-desktop-sm' @('build','src/Ipc.Desktop','-c','Release','-p:BusinessModule=Sportmaster','-p:RestoreLockedMode=true','-m:1','-nr:false','--verbosity','quiet')}
+Require-Source
+Require-Source
 Write-Output ('EVIDENCE='+$taskLogRoot)
-if(@($taskReports|Where-Object exit -ne 0).Count){exit 1}
+if(@($taskReports|Where-Object { $_.exit -ne 0 -or $_.evidence_gap }).Count){exit 1}

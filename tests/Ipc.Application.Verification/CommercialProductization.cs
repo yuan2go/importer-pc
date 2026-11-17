@@ -291,7 +291,8 @@ static class CommercialProductization
         var reopenedFactory = new SyntheticFactory(launch);
         await using (var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory) { RuntimeIdentityPreflight = () => { } })
         {
-            await reopened.StartAsync(default); var recovered = (await reopened.SnapshotAsync()).Operations.Single();
+            await reopened.StartAsync(default); var restarted = await reopened.SnapshotAsync(); var recovered = restarted.Operations.Single();
+            Check(restarted.Configuration.Pending is null && restarted.Configuration.Effective.Wcs!.Target == changed.Wcs!.Target, "restarted configuration activates the actual changed WCS target before original recovery is assessed");
             Check(Wire.Encode(recovered.Wcs!.Request) == Wire.Encode(original.Wcs!.Request) && reopenedFactory.Sends == 0 && recovered.Wcs.State == StageState.Unknown,
                 "restart with changed candidate retains original request/payload/target/contract and never reexecutes Unknown");
         }
@@ -346,7 +347,7 @@ static class CommercialProductization
         repository.Commit(Op(first.ParcelCode, 2), "synthetic", "same code different entity");
         var formula = Op("=HYPERLINK(\"https://invalid.example\")", 3); repository.Commit(formula, "synthetic", "formula input");
         var filter = new ParcelHistoryFilter(From: at, ToExclusive: at.AddSeconds(4)); var selection = repository.SelectHistory(filter);
-        repository.Commit(Op("AFTER-SNAPSHOT", 4), "synthetic", "outside fixed boundary");
+        repository.Commit(Op("AFTER-SNAPSHOT", 2), "synthetic", "inside date range but after the fixed commit boundary");
         using var reader = new ParcelHistoryReader(Path.Combine(directory, c.ApplicationId + ".db"));
         var page = reader.Page(selection, long.MaxValue, 2); var next = reader.Page(selection, page.NextBeforeSequence!.Value, 2);
         Check(page.Items.Length == 2 && next.Items.Length == 1 && page.Items.Concat(next.Items).Select(x => x.Operation.Id).Distinct().Count() == 3, "stable filtered cursor preserves separate same-code entities and excludes later admissions");

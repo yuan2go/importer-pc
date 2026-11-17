@@ -119,7 +119,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationSource
                     json = ticks != deliveredTicks ? encoded : null; deliveredTicks = ticks;
                     error = failure; id = version; published = ticks;
                     feedback = (ParcelReadFeedback[])reads.Clone(); devices = (DeviceState[])readers.Clone();
-                    camera = (ParcelCameraReadFeedback[])cameraReads.Clone();
+                    camera = cameraReads.Select(c => c with { Frame = c.Frame with { Codes = c.Frame.Codes?.ToArray(), Formats = c.Frame.Formats?.ToArray() } }).ToArray();
                 }
                 // Each subscriber receives a detached mutable-array graph. The only shared
                 // business projection is an immutable string; deserialization never holds a gate.

@@ -18,13 +18,12 @@ static partial class SportmasterRcs
         var images = directory is null ? SyntheticLatencyImages() : LoadLatencyPgms(directory);
         if (images.Length is < 1 or > 256) throw new ArgumentException("1..256 bounded Mono8 inputs required");
         var reference = args.Contains("--reference-contrast");
-        var decoder = new SoftwareDecoder("utf-8", PrepareZxingFixture, reference ? OriginalScalarContrast : null); decoder.Prepare();
+        var decoder = new SoftwareDecoder("utf-8", PrepareZxingFixture, reference ? OriginalScalarContrast : null);
         var samples = new List<object>();
         var compareSearch = args.Contains("--compare-fast-search");
         var searchComparisons = new List<object>();
         var searchMatches = true;
         var fast = compareSearch ? new SoftwareDecoder("utf-8", PrepareZxingFixture, searchOptionsForVerification: r => r.TryHarder = false) : null;
-        fast?.Prepare();
         var counts = new Dictionary<int, string[]>();
         using var process = Process.GetCurrentProcess();
         var cpu = process.TotalProcessorTime;
@@ -32,6 +31,7 @@ static partial class SportmasterRcs
         var clock = Stopwatch.StartNew();
         try
         {
+            decoder.Prepare(); fast?.Prepare();
             for (var pass = 0; pass < repeats; pass++)
                 for (var index = 0; index < images.Length; index++)
                 {
@@ -92,11 +92,11 @@ static partial class SportmasterRcs
                 Samples = samples,
                 Boundary = "Includes first-call cold sample; input file IO and copying excluded from DecodeMs; no camera exposure/transport/SDK or Application timings"
             };
-            ExtensionStore.AtomicWrite(output, result);
+            ExtensionStore.AtomicWriteBytes(output, System.Text.Encoding.UTF8.GetBytes(Wire.Encode(result)), overwrite: false);
             Console.WriteLine("MVS_LATENCY_MEASURED images=" + images.Length + "; repeats=" + repeats + "; no live camera/production acceptance");
             Console.WriteLine("TimingOutput=" + output);
         }
-        finally { decoder.Release(); fast?.Release(); }
+        finally { try { decoder.Release(); } finally { fast?.Release(); } }
     }
     static void OriginalScalarContrast(byte[] pixels, int length)
     {
@@ -154,9 +154,9 @@ static partial class SportmasterRcs
         PrepareZxingFixture();
         var production = new SoftwareDecoder("utf-8", PrepareZxingFixture);
         var reference = new SoftwareDecoder("utf-8", PrepareZxingFixture, OriginalScalarContrast);
-        production.Prepare(); reference.Prepare();
         try
         {
+            production.Prepare(); reference.Prepare();
             for (var value = 0; value <= 255; value++)
             {
                 var constant = Enumerable.Repeat((byte)value, 64 * 64).ToArray();

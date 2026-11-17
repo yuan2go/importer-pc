@@ -174,8 +174,11 @@ public static partial class WindowsDeploymentSetup
             if (!TrustedProgramRoots.Contains(Path.Combine(MachineRoot, "deployments"), operation) || new FileInfo(operation).Length > 4 * 1024 * 1024) throw new InvalidDataException("Unsafe removal journal");
             plan = Wire.Decode<RemovalState>(File.ReadAllText(operation));
             ValidateRemovalState(plan, location);
-            originalMediaFiles ??= InstalledInventory(location);
-            if (!plan.Files.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(originalMediaFiles.Append("deployment-location.json").Append("deployment-retired.json").Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase))
+            if (originalMediaFiles is null && location.MaintenanceRoot is not null) originalMediaFiles = InstalledInventory(location);
+            // A cache-less deployment already froze its verified media list in
+            // this protected journal before retirement. Partial deletion cannot
+            // reconstruct media or require a cache that this installation never had.
+            if (originalMediaFiles is not null && !plan.Files.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(originalMediaFiles.Append("deployment-location.json").Append("deployment-retired.json").Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase))
                 throw new InvalidDataException("原卸载清单与同源完整介质不一致，拒绝清理；原件保留");
         }
         try

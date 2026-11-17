@@ -165,11 +165,11 @@ class TestSearchDomains(unittest.TestCase):
             "minimalism-and-swiss-style", minimal["results"][0]["Style ID"]
         )
 
-    def test_unknown_programmatic_domain_keeps_legacy_style_fallback(self):
-        result = search("minimalism", domain="unknown", max_results=1)
-        self.assertEqual(result["domain"], "unknown")
-        self.assertEqual(result["file"], CSV_CONFIG["style"]["file"])
-        self.assertGreater(result["count"], 0)
+    def test_unknown_programmatic_domain_is_rejected(self):
+        result = search("glass", domain="typo-domain")
+        self.assertIn("Unknown domain", result["error"])
+        self.assertEqual("typo-domain", result["domain"])
+        self.assertNotIn("results", result)
 
     def test_unsupported_icon_library_abstains_instead_of_returning_other_library(self):
         result = search("lucide icon", diagnostics=True)

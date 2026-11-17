@@ -67,6 +67,7 @@ public sealed partial class ParcelRuntime : IStationRcsHeartbeat
                 await gate.WaitAsync(stopping.Token).ConfigureAwait(false);
                 try
                 {
+                    if (!CapabilityPorts().Any(p => ReferenceEquals(p, port))) return;
                     if (!PortMaintenanceClear(port)) continue;
                     var epoch = portEpochs.GetValueOrDefault(port.InstanceId);
                     var health = await ExternalPortAsync(port, () => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false);

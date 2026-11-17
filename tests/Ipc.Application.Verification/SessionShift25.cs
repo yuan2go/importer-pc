@@ -12,7 +12,7 @@ static class SessionShift25
     static StationReportQuery Detail(StationReportRange range = StationReportRange.CurrentShift) => new(range);
     public static async Task Run(string workspace, string root)
     {
-        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "live"), true); await h.StartAsync();
+        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "live"), true) { StationClock = new FixedReportClock(DateTimeOffset.UtcNow) }; await h.StartAsync();
         var api = (IStationSessionStatistics)h.App;
         var first = await api.ReadSessionStatisticsAsync(Detail(), default);
         Check(first.Shift is { Status: "Open", ElapsedReliable: true } && first.Totals.Sum(x => x.Requests) == 0, "successful business startup owns one durable empty shift");
@@ -84,6 +84,7 @@ static class SessionShift25
     }
     static SqliteConnection Open(string file, bool readOnly = false)
     { var c = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = file, Mode = readOnly ? SqliteOpenMode.ReadOnly : SqliteOpenMode.ReadWriteCreate, Pooling = false }.ToString()); c.Open(); return c; }
+    sealed class FixedReportClock(DateTimeOffset utc) : TimeProvider { public override DateTimeOffset GetUtcNow() => utc; }
     sealed class Clock(DateTimeOffset utc) : TimeProvider
     { long ticks; public override long TimestampFrequency => TimeSpan.TicksPerSecond; public override long GetTimestamp() => ticks; public override DateTimeOffset GetUtcNow() => utc; public void Advance(TimeSpan value) { ticks += value.Ticks; utc += value; } public void MoveUtc(TimeSpan value) => utc += value; }
     static void Attribution(string root, ParcelConfiguration config)

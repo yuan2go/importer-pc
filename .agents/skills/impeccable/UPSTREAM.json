@@ -256,7 +256,40 @@
   ],
   "local_adaptations": [
     "SKILL.md WPF scope",
-    "WPF.md native workflow"
+    "WPF.md native workflow",
+    "2026-11-17: explicit local CR patches listed in local_cr_patches; original upstream hashes identify the imported source, not patched installed bytes"
   ],
-  "hash_basis": "Exact upstream Git blob bytes, not autocrlf checkout bytes"
+  "hash_basis": "Exact upstream Git blob bytes, not autocrlf checkout bytes",
+  "local_cr_patches": [
+    {
+      "path": "scripts/impeccable",
+      "installed_sha256": "c2284c04cd73a8c4a41c42707930a754abe448ce709fc1da0235a6a9946793cb",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    },
+    {
+      "path": "scripts/live-browser-dom.js",
+      "installed_sha256": "d004f80693a8812ee947e31936892a0054eb612ad36218a565038c2fabba947c",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    },
+    {
+      "path": "scripts/live-browser-ignores.js",
+      "installed_sha256": "db39da9f6cdeee90da48200ed3fde8e662257fd4d247ae8896a12c33f74d0b66",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    },
+    {
+      "path": "scripts/live-browser-session.js",
+      "installed_sha256": "f058f82177b0984062a1b4dc979aa152d424b7226dd5adefa1ad7170034d2acb",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    },
+    {
+      "path": "scripts/tests/local-cr-regressions.test.mjs",
+      "installed_sha256": "35021183280c6fb4b2e1bd52f585d993d13fee31e1cb447bd0989af176b5cce3",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    },
+    {
+      "path": "scripts/tests/test_local_launcher.py",
+      "installed_sha256": "c180b4235a57f0bbebc9c17d9f65aa03e0d2fed89adf36c80cdd6f7898cac96e",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    }
+  ]
 }

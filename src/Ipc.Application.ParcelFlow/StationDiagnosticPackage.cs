@@ -79,7 +79,7 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
             if (detailed)
             {
                 notices.Add("仅包含当前保留范围内的白名单摘要；不能证明最近24小时日志完整。");
-                var snapshot = await SnapshotAsync().ConfigureAwait(false);
+                var snapshot = await SnapshotAsync(cancellation).ConfigureAwait(false);
                 cancellation.ThrowIfCancellationRequested();
                 Add("station.json", "RuntimeSnapshot", "Collected", projection.Station(snapshot));
                 if (snapshot.Operations.Length > 100) notices.Add("作业索引仅收集最近100条；完整业务记录未进入诊断包。");
@@ -144,6 +144,7 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
                 Limits = new { Bytes = DiagnosticByteLimit, Events = DiagnosticEventLimit, Seconds = 60 }
             })));
             if (files.Values.Sum(b => (long)b.Length) > DiagnosticByteLimit) throw new IOException("诊断清单超过预算，未发布文件。");
+            using var publication = new ExportPublication(destination);
             using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None, 65536, FileOptions.WriteThrough))
             {
                 using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
@@ -167,10 +168,10 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
             {
                 cancellation.ThrowIfCancellationRequested();
                 _ = DiagnosticDestination(destination);
-                File.Move(temporary, destination, overwrite: false);
+                publication.Publish(temporary, receipt.Bytes, receipt.Sha256);
                 return true;
             }
-            if (detailed) Management.Commit(Publish);
+            if (detailed) Management.PublishExport(publication, temporary, receipt.Bytes, receipt.Sha256);
             else Publish();
             return receipt;
         }

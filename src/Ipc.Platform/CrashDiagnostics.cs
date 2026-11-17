@@ -15,6 +15,8 @@ public sealed class CrashDiagnostics : IDisposable
     string? progressFile;
     long unobserved, lastUnobservedWrite;
     int fatal, disposed;
+    int fatalThread, permanentFailure;
+    readonly ManualResetEventSlim fatalRecorded = new();
     public long UnobservedCount => Interlocked.Read(ref unobserved);
     public string? LastWriteFailure { get; private set; }
     public CrashDiagnostics(string directory, string version, string sourceCommit)
@@ -26,6 +28,7 @@ public sealed class CrashDiagnostics : IDisposable
     public void SetContext(string instance, string epochs, string recentState)
         => Volatile.Write(ref context, new(Clip(instance, 256), Clip(epochs, 8192), Clip(recentState, 8192)));
     public void SetProgressFile(string path) => Volatile.Write(ref progressFile, Path.GetFullPath(path));
+    public void Report(string kind, Exception error) => Record(kind, error, false);
     static string Clip(string value, int length) => value.Length <= length ? value : value[..length] + " [truncated diagnostic preview]";
     string? LatestProgress()
     {
@@ -82,11 +85,19 @@ public sealed class CrashDiagnostics : IDisposable
     [DoesNotReturn]
     public void Fatal(string kind, Exception error, bool preventRestart = false)
     {
-        if (Interlocked.Exchange(ref fatal, 1) != 0) Environment.FailFast("Recursive fatal exception", error);
+        if (preventRestart) Interlocked.Exchange(ref permanentFailure, 1);
+        if (Interlocked.CompareExchange(ref fatal, 1, 0) != 0)
+        {
+            if (Volatile.Read(ref fatalThread) != Environment.CurrentManagedThreadId) fatalRecorded.Wait(TimeSpan.FromSeconds(5));
+            if (Volatile.Read(ref permanentFailure) != 0) Environment.Exit(PermanentStorageExitCode);
+            Environment.FailFast("Fatal exception while another fatal report owns diagnostics", error);
+        }
+        Volatile.Write(ref fatalThread, Environment.CurrentManagedThreadId);
         var flushed = Record(kind, error, true, preventRestart);
+        fatalRecorded.Set();
         // A known permanent storage fault is a controlled fatal exit. No dump
         // write is attempted on a potentially full/corrupt volume.
-        if (preventRestart) Environment.Exit(PermanentStorageExitCode);
+        if (Volatile.Read(ref permanentFailure) != 0) Environment.Exit(PermanentStorageExitCode);
         if (OperatingSystem.IsWindows()) FailFastWindows(flushed);
         Environment.FailFast("Fatal desktop exception; diagnostics flushed=" + flushed, error);
     }

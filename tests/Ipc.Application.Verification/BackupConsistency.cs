@@ -48,14 +48,20 @@ internal static class BackupConsistency
             entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Backup interleaving not released");
         };
         var backup = Path.Combine(root, "external.db"); Task<BusinessReceipt> work = null!;
-        await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
-        {
-            work = h.App.BackupAsync(backup, cancellation.Token);
-            Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(10))), "backup entered custody boundary after real monitor reservation drained");
-            return true;
-        });
         try
         {
+            await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
+            {
+                work = h.App.BackupAsync(backup, cancellation.Token);
+                try { Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(10))), "backup entered custody boundary after real monitor reservation drained"); }
+                catch
+                {
+                    release.Set();
+                    await work;
+                    throw;
+                }
+                return true;
+            });
             Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(10))), "backup reached deterministic " + (cancel || fail ? "snapshot" : "inventory") + " boundary");
             // Real driver/decoder empty-frame completion, not decode-start counts.
             var first = DateTimeOffset.UtcNow;
@@ -74,7 +80,17 @@ internal static class BackupConsistency
             if (cancel) cancellation.Cancel();
             if (fail) File.WriteAllText(backup + ".recovery/configuration.json", "synthetic destination collision");
         }
-        finally { release.Set(); }
+        finally
+        {
+            release.Set();
+            try
+            {
+                if (work is not null) await work;
+            }
+            catch (OperationCanceledException) when (cancel) { }
+            catch (IOException) when (fail) { }
+            finally { h.App.BackupBoundary = null; }
+        }
         if (cancel || fail)
         {
             try { await work; throw new Exception("Incomplete backup returned success"); }
@@ -156,7 +172,7 @@ internal static class BackupConsistency
             await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
             {
                 try { await h.App.BackupAsync(manualDestination); throw new Exception("Target copy fault returned success"); }
-                catch (BackupCopyFailure error)
+                catch (BackupCopyFailure error) when (mode != "custody-destination")
                 {
                     Check(error.SourceFailure is null && error.SourceCheckCompleted && error.InnerException is SqliteException sql &&
                         sql.SqliteErrorCode == (mode == "full" ? SQLitePCL.raw.SQLITE_FULL : SQLitePCL.raw.SQLITE_IOERR),
@@ -267,8 +283,7 @@ internal static class BackupConsistency
                 Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(5))), "manual backup holds custody fence while schedule is due");
                 await h.App.CheckScheduledBackupAsync(due);
             }
-            finally { release.Set(); }
-            await manual;
+            finally { release.Set(); try { await manual; } finally { h.App.BackupBoundary = null; } }
             return true;
         });
         h.App.BackupBoundary = null;

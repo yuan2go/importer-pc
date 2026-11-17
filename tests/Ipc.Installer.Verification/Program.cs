@@ -9,8 +9,13 @@ var checks = 0;
 void Check(bool value, string reason) { if (!value) throw new InvalidOperationException(reason); checks++; Console.WriteLine("PASS " + reason); }
 var workspace = Path.Combine(Path.GetTempPath(), "ipc-installer-tests-" + Guid.NewGuid().ToString("N"));
 Directory.CreateDirectory(workspace);
-byte[] Zip(Dictionary<string, byte[]> files, string? extra = null, int attributes = 0)
+byte[] Zip(Dictionary<string, byte[]> files, string? extra = null, int attributes = 0, bool listExtra = false)
 {
+    if (listExtra && extra is not null)
+    {
+        files = new(files);
+        files["SHA256SUMS"] = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(files["SHA256SUMS"]) + Convert.ToHexString(SHA256.HashData(new byte[] { 1 })) + "  " + extra + "\n");
+    }
     using var output = new MemoryStream();
     using (var zip = new ZipArchive(output, ZipArchiveMode.Create, true))
     {
@@ -64,10 +69,10 @@ try
     }
     foreach (var name in new[] { "../escape", "/absolute", "C:/drive", "a\\escape", "a/../escape", "a//file", "a/file.", "a/file ", "CON.txt", "AUX/file", "a/evil:stream", "a/COM1" })
     {
-        var bad = Zip(files, name); await Reject(bad, Descriptor(bad), "unsafe path rejected: " + name);
+        var bad = Zip(files, name, listExtra: true); await Reject(bad, Descriptor(bad), "unsafe path rejected: " + name);
     }
-    var duplicate = Zip(files, "DESKTOP/ipc.desktop.EXE"); await Reject(duplicate, Descriptor(duplicate), "Windows case-insensitive duplicate paths rejected");
-    var link = Zip(files, "link", 0xA000 << 16); await Reject(link, Descriptor(link), "symbolic-link archive entry rejected");
+    var duplicate = Zip(files, "DESKTOP/ipc.desktop.EXE", listExtra: true); await Reject(duplicate, Descriptor(duplicate), "Windows case-insensitive duplicate paths rejected");
+    var link = Zip(files, "link", 0xA000 << 16, listExtra: true); await Reject(link, Descriptor(link), "symbolic-link archive entry rejected");
     var missing = new Dictionary<string, byte[]>(files); missing.Remove("desktop/Ipc.Desktop.exe");
     var missingZip = Zip(missing); await Reject(missingZip, Descriptor(missingZip), "missing inventoried executable rejected");
     var unlisted = Zip(files, "unlisted.dll"); await Reject(unlisted, Descriptor(unlisted), "unlisted program file rejected");

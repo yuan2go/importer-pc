@@ -124,10 +124,10 @@ public static class ProductValidation
         path = "";
         if (string.IsNullOrWhiteSpace(relative) || relative.Length > 1024 || relative.IndexOfAny(Path.GetInvalidPathChars()) >= 0 || Path.IsPathRooted(relative) || relative.Contains('\\') || relative.Contains(':') ||
             relative.Split('/').Any(x => x is "" or "." or "..")) return false;
-        var fullRoot = Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar);
+        var fullRoot = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
         path = Path.GetFullPath(Path.Combine(fullRoot, relative));
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-        if (!path.StartsWith(fullRoot + Path.DirectorySeparatorChar, comparison)) return false;
+        if (!path.StartsWith(Path.EndsInDirectorySeparator(fullRoot) ? fullRoot : fullRoot + Path.DirectorySeparatorChar, comparison)) return false;
         // Reject symlinks/reparse points at every component, not only the assembly itself.
         var current = fullRoot;
         try

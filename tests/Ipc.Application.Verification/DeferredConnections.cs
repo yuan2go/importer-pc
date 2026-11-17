@@ -104,7 +104,7 @@ static partial class SportmasterRcs
             {
                 await app.StartAsync(default); await AcceptConfigured(mask);
                 var s = await app.SnapshotAsync();
-                var allowed = !ParcelConnectionSetup.BlocksWork(c);
+                var allowed = (mask & 4) == 0 && (mask & 3) != 3;
                 if (allowed) s = await DeferredWait(app, x => x.Availability!.Resume);
                 Check((allowed ? s.Availability!.Resume : !s.Availability!.Admit && !s.Availability.Resume) && s.Operations.Length == 0 && s.Configuration.Confirmation?.Required == false,
                     prefix + "runtime confirms configuration and requires RCS plus at least one configured ready camera");

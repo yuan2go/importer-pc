@@ -98,9 +98,10 @@ static partial class ArchitectureQuality
         ReviewFactory? f = null; var c = Config("sportmaster"); c = c with { Wcs = c.Wcs! with { Parameters = new(c.Wcs.Parameters) { ["reply-mode"] = "lose-after-commit" } } };
         await using var app = await Open(c, "review-maintenance", inner => f = new(inner) { HoldReconnect = true });
         app.EmitReferenceAt("left", "review-original-query", "003", "review-query-source"); var original = (await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.WcsUnknown)).Operations.Single();
-        await Maintenance(app); var reconnect = app.ReconnectDeviceAsync(c.Wcs!.InstanceId); await f!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        await Maintenance(app); Task<BusinessReceipt>? reconnect = null;
         try
         {
+            reconnect = app.ReconnectDeviceAsync(c.Wcs!.InstanceId); await f!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
             var s = await app.SnapshotAsync(); Check(!s.Availability!.Resume && s.Positions!.All(p => !p.Admit), "R05 shared service maintenance closes Resume and every dependent position");
             var resume = await Command(app, "Resume"); Check(resume.Status == "Rejected", "R05 explicit Resume cannot bypass maintained shared WCS");
             app.EmitReferenceAt("right", "review-during-maintenance", "003", "review-maint-source"); await Task.Delay(100);
@@ -108,8 +109,8 @@ static partial class ArchitectureQuality
             Check(query.Status == "MaintenanceInProgress" && f.CallsDuringReconnect == 0 && (await app.SnapshotAsync()).Operations.Length == 1, "R05 no new Submit or original Query enters a WCS with reconnect in flight");
             Check((await app.OperationAsync(original.Id))!.Wcs!.Attempts == 1, "R05 maintained original retains its single sending attempt");
         }
-        finally { f.Release.TrySetResult(); }
-        var result = await reconnect; Check(result.Status == "Reconnected" && (await app.SnapshotAsync()).Paused, "R05 successful maintenance retains actual software pause");
+        finally { f!.Release.TrySetResult(); if (reconnect is not null) await reconnect; }
+        var result = await reconnect!; Check(result.Status == "Reconnected" && (await app.SnapshotAsync()).Paused, "R05 successful maintenance retains actual software pause");
     }
     static async Task ReviewIndependentMaintenance()
     {
@@ -126,12 +127,13 @@ static partial class ArchitectureQuality
         };
         ReviewFactory? f = null;
         await using var app = await Open(c, "review-independent-maintenance", inner => f = new(inner) { HoldCamera = left.InstanceId, HoldWcs = true });
+        Task<BusinessReceipt>? reconnect = null;
+        try
+        {
         app.EmitReferenceAt("right", "review-existing-right", "005", "review-existing-right-source"); await f!.CallEntered.Task.WaitAsync(TimeSpan.FromSeconds(2));
         await Maintenance(app);
         Check((await app.ReconnectDeviceAsync(c.Wcs!.InstanceId)).Status == "Rejected", "R05 selected service rejects maintenance until its original active call drains");
-        var reconnect = app.ReconnectDeviceAsync(left.InstanceId); await f.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
-        try
-        {
+        reconnect = app.ReconnectDeviceAsync(left.InstanceId); await f.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
             var s = await app.SnapshotAsync(); Check(s.Availability!.Resume && !s.Positions!.Single(p => p.Id == "left").Admit, "R05 unrelated active WCS does not prevent left-camera maintenance or independent Resume");
             Check((await Command(app, "Resume")).Status == "Persisted", "R05 independent right position resumes while left resource remains fenced");
             f.CallRelease.TrySetResult(); await Wait(app, x => x.Operations.Single(o => o.AdmissionId == "review-existing-right").State == ParcelState.SlotResolved);
@@ -141,8 +143,8 @@ static partial class ArchitectureQuality
             app.EmitReferenceAt("left", "review-blocked-left", "007", "review-blocked-left-source"); await Task.Delay(80);
             Check((await app.SnapshotAsync()).Operations.All(o => o.AdmissionId != "review-blocked-left") && f.CallsDuringReconnect == 0, "R05 right progresses while maintained left cannot admit or call its camera");
         }
-        finally { f.CallRelease.TrySetResult(); f.Release.TrySetResult(); }
-        var result = await reconnect; var final = await app.SnapshotAsync();
+        finally { f!.CallRelease.TrySetResult(); f.Release.TrySetResult(); if (reconnect is not null) await reconnect; }
+        var result = await reconnect!; var final = await app.SnapshotAsync();
         Check(result.Status == "MaintenanceIncomplete" && !final.Paused && final.Health.Single(h => h.InstanceId == left.InstanceId).Ready == false, "R05 late provider return reports timeout and actual unpaused state without inventing maintenance success");
     }
     static async Task ReviewOfflineConsumers()

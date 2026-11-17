@@ -249,6 +249,8 @@ Verify-InstalledOperations -mediaRoot "$verificationRoot/media" -name 'ordinary'
 $formalRegistrationHash = (Get-FileHash -LiteralPath $registration).Hash
 $testArea = 'D:/ProgramData/ImporterPcTest'
 New-Item -ItemType Directory -Path "$testArea/DeploymentLogs" -Force | Out-Null
+Set-Acl -LiteralPath $testArea -AclObject $protected
+Set-Acl -LiteralPath "$testArea/DeploymentLogs" -AclObject $protected
 python scripts/package-application.py --application sportmaster --target win-x64 --output "$verificationRoot/test-media" --source-branch ci/runtime-install --test-instance --verification-without-vendor-runtime --vc-redist $inputRoot > "$evidence/build-test-media.log" 2>&1
 if ($LASTEXITCODE) { Get-Content "$evidence/build-test-media.log" -Tail 20; throw 'Test-identity two-program medium build failed' }
 python scripts/package-installer.py --media "$verificationRoot/test-media.zip" --output "$verificationRoot/test-installer" --test-instance > "$evidence/build-test-installer.log" 2>&1
@@ -256,11 +258,19 @@ if ($LASTEXITCODE) { Get-Content "$evidence/build-test-installer.log" -Tail 20; 
 $testInstaller = (Get-ChildItem -LiteralPath "$verificationRoot/test-installer" -File -Filter '*.exe' | Select-Object -First 1).FullName
 $testOperation = [Guid]::NewGuid().ToString('N')
 $testProcess = Start-Process -FilePath $testInstaller -ArgumentList @('/quiet', '/norestart', "/operationid=$testOperation", "/log=$testArea/DeploymentLogs/install.jsonl") -PassThru -Wait -WindowStyle Hidden
-if ($testProcess.ExitCode) { throw "Test installation failed: $($testProcess.ExitCode)" }
+if (Test-Path -LiteralPath "$testArea/DeploymentLogs/install.jsonl") { Copy-Item -LiteralPath "$testArea/DeploymentLogs/install.jsonl" -Destination "$evidence/test-install.jsonl" }
+if ($testProcess.ExitCode) {
+    if (Test-Path -LiteralPath "$evidence/test-install.jsonl") { Get-Content -LiteralPath "$evidence/test-install.jsonl" -Tail 12 }
+    throw "Test installation failed: $($testProcess.ExitCode)"
+}
 Verify-InstalledOperations -mediaRoot "$verificationRoot/test-media" -name 'test'
 if ((Get-FileHash -LiteralPath $registration).Hash -ne $formalRegistrationHash) { throw 'Test installation changed the ordinary deployment registration' }
 $testProcess = Start-Process -FilePath $testInstaller -ArgumentList @('/quiet', '/uninstall', '/norestart', "/operationid=$([Guid]::NewGuid().ToString('N'))", "/log=$testArea/DeploymentLogs/uninstall.jsonl") -PassThru -Wait -WindowStyle Hidden
-if ($testProcess.ExitCode) { throw "Independent test uninstall failed: $($testProcess.ExitCode)" }
+if (Test-Path -LiteralPath "$testArea/DeploymentLogs/uninstall.jsonl") { Copy-Item -LiteralPath "$testArea/DeploymentLogs/uninstall.jsonl" -Destination "$evidence/test-uninstall.jsonl" }
+if ($testProcess.ExitCode) {
+    if (Test-Path -LiteralPath "$evidence/test-uninstall.jsonl") { Get-Content -LiteralPath "$evidence/test-uninstall.jsonl" -Tail 12 }
+    throw "Independent test uninstall failed: $($testProcess.ExitCode)"
+}
 if ((Get-FileHash -LiteralPath $registration).Hash -ne $formalRegistrationHash -or !(Test-Path -LiteralPath (Join-Path $deployment.ReleaseRoot 'desktop/Ipc.Operations.Desktop.exe'))) {
     throw 'Independent test uninstall changed the ordinary installation'
 }

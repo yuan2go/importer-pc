@@ -60,7 +60,7 @@ internal static partial class Program
                 try { await Until(() => !login.IsVisible && model.HasLoadedConfiguration && model.Fresh && model.IsManagementMode); }
                 catch (Exception error)
                 {
-                    var diagnostic = Visuals(window).OfType<Expander>().First(e => Equals(e.Header, "操作诊断"));
+                    var diagnostic = Visuals(window).OfType<Expander>().First(e => Equals(e.Header, "授权与诊断"));
                     diagnostic.IsExpanded = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                     throw new InvalidOperationException($"Native login/load state: login={login.IsVisible}; loaded={model.HasLoadedConfiguration}; fresh={model.Fresh}; grant={model.IsManagementMode}; message={model.Message}; diagnostic={Visuals(window).OfType<TextBox>().FirstOrDefault(b => AutomationProperties.GetAutomationId(b) == "Operations.Failure")?.Text}", error);
                 }

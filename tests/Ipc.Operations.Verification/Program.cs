@@ -41,6 +41,7 @@ internal static partial class Program
             if (role is "server" or "server-restart") { Server(role != "server-restart").GetAwaiter().GetResult(); return 0; }
             if (role == "unapproved") { Unapproved().GetAwaiter().GetResult(); return 0; }
             if (role == "control-crash") { ControlCrash().GetAwaiter().GetResult(); return 0; }
+            if (role == "control-inflight") { ControlInflight().GetAwaiter().GetResult(); return 0; }
             Run().GetAwaiter().GetResult(); return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }
@@ -144,6 +145,22 @@ internal static partial class Program
                         snapshot with { PublishedTicks = Stopwatch.GetTimestamp() - Stopwatch.Frequency * 6 }) :
                         new OperationsServer(Installation(), (IParcelPresentationSource)h.App, snapshot, h.App, () => new Ipc.Application.ParcelFlow.ParcelStartupMaintenance(h.Launch, new Ipc.Application.Sportmaster.SportmasterFlow(), () => h.Factory));
                 }
+                if (command == "hold-debug") h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+                if (command == "wait-debug-send") await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1));
+                if (command == "release-debug") { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
+                if (command == "verify-debug-crash")
+                {
+                    await h.App.EnterManagementSessionAsync(OperationsPassword);
+                    var prepared = Wire.Decode<CameraReadRound>(File.ReadAllText(Path.Combine(root, "prepared-debug.json")));
+                    await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(prepared.OperationId!))?.Wcs?.State is StageState.Accepted or StageState.Unknown);
+                    var original = (await h.App.OperationAsync(prepared.OperationId!))!;
+                    Check(original.Wcs is { Attempts: 1 } && original.Wcs.Request.IntegrationRequest!.Body == prepared.RequestBody && h.Peer.Requests.Count == 1,
+                        "tool death during actual HTTP retains exactly one frozen original debug attempt and its real result");
+                    var accepted = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "AFTER-DEBUG-CRASH"), default);
+                    await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved));
+                    Check(accepted.Status == "Admitted" && h.Peer.Requests.Count == 2 && h.Peer.Requests.Count(body => body == prepared.RequestBody) == 1,
+                        "other position continues legitimate supply without replaying the crashed tool request");
+                }
                 if (command == "submit")
                 {
                     var receipt = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-OPS-0001"), default);
@@ -189,6 +206,45 @@ internal static partial class Program
         var result = await ((IManagementWorkspace)remote).SetManagementWorkspaceAsync(Wire.Id(), true, default);
         Check(result.Status is "Paused" or "PausedWithCameraWarning", "explicit debug establishes the original management workspace");
         Console.WriteLine("READY"); await Task.Delay(Timeout.Infinite);
+    }
+
+    static async Task ControlInflight()
+    {
+        await using var control = new OperationsControlClient(Installation());
+        await control.ConnectAsync(default); var remote = Remote(control);
+        await ((IWorkstationAdministration)remote).EnterManagementSessionAsync(OperationsPassword);
+        await ((IManagementWorkspace)remote).SetManagementWorkspaceAsync(Wire.Id(), true, default);
+        var snapshot = await remote.SnapshotAsync();
+        var round = await ((ICameraReadRounds)remote).PrepareManualRcsRequestAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "right", "CRASH-DURING-HTTP", null)
+        { ExpectedArrivalGeneration = snapshot.Positions!.Single(p => p.Id == "right").Arrival!.Generation }, default);
+        File.WriteAllText(Path.Combine(root, "prepared-debug.json"), Wire.Encode(round));
+        var sending = ((ICameraReadRounds)remote).SendCameraRoundAsync(new(Wire.Id(), snapshot.RuntimeId, round.Id!, round.RequestHash!), default);
+        Console.WriteLine("READY"); await sending; await Task.Delay(Timeout.Infinite);
+    }
+    static async Task VerifyInflightCrash()
+    {
+        var previous = root; root = Path.Combine(root, "inflight-crash"); Directory.CreateDirectory(root);
+        using var owner = Child("server"); Process? tool = null;
+        try
+        {
+            await Ready(owner); await Command(owner, "hold-debug");
+            tool = Child("control-inflight"); await Ready(tool); await Command(owner, "wait-debug-send");
+            tool.Kill(); await tool.WaitForExitAsync(); await Command(owner, "release-debug");
+            var observer = new OperationsClient(Installation());
+            await CameraRoundHarness.Until(async () => (await observer.ReadAsync(default)).Positions.Single(p => p.Id == "left").Admit);
+            await Command(owner, "verify-debug-crash");
+            await owner.StandardInput.WriteLineAsync("stop"); await owner.StandardInput.FlushAsync();
+            await owner.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(20));
+            Check(owner.ExitCode == 0, "inflight crash owner shuts down with original responsibilities retained: " + await ErrorText(owner));
+            using var released = await ReleasedBusinessLease();
+        }
+        finally
+        {
+            if (tool is not null) { if (!tool.HasExited) { tool.Kill(); await tool.WaitForExitAsync(); } tool.Dispose(); }
+            if (!owner.HasExited) { owner.Kill(); await owner.WaitForExitAsync(); }
+            var errors = await ErrorText(owner); File.WriteAllText(Path.Combine(root, "owner.log"), errors);
+            root = previous;
+        }
     }
 
     static async Task VerifyControl(Process owner, OperationsClient observer)
@@ -301,6 +357,7 @@ internal static partial class Program
     }
     static async Task Run()
     {
+        await VerifyInflightCrash();
         using (var early = Child("ui-early-close"))
         {
             await early.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(20));

@@ -11,7 +11,8 @@ public partial class SupplyStationWindow
 {
     SoftwareLogControl? logs;
     ManagementCenterWindow? managementCenter;
-    Window ManagementDialogOwner => managementCenter is { IsVisible: true } center ? center : this;
+    StationSettingsWindow? settingsWindow;
+    Window ManagementDialogOwner => settingsWindow is { IsVisible: true } settings ? settings : managementCenter is { IsVisible: true } center ? center : this;
     bool ConfirmStationExit() => new SupplyStationExitWindow(ViewModel, activationRequested) { Owner = ManagementDialogOwner }.ShowDialog() == true;
     string dailyPage = "workstation";
     bool openingManagement, centerClosing, centerCloseReady;
@@ -79,6 +80,7 @@ public partial class SupplyStationWindow
     }
     async void ManagementMode_Click(object sender, RoutedEventArgs e)
     {
+        if (settingsWindow is not null) { ViewModel.Message = "请先关闭设置，再打开管理中心。未保存输入保留。"; return; }
         if (openingManagement) return;
         if (managementCenter is { } center) { if (center.IsVisible) center.Activate(); return; }
         openingManagement = true; ManagementCenterEntry.IsEnabled = false;
@@ -88,6 +90,25 @@ public partial class SupplyStationWindow
         }
         catch (Exception error) { ViewModel.Message = ChineseInterfaceText.ParameterMessage(error.Message, "管理中心未能打开，请稍后重试或检查管理授权服务。"); }
         finally { openingManagement = false; ManagementCenterEntry.IsEnabled = true; }
+    }
+    void StationSettings_Click(object sender, RoutedEventArgs e)
+    {
+        if (settingsWindow is not null) { settingsWindow.Activate(); return; }
+        if (openingManagement || managementCenter is not null) { ViewModel.Message = "请先关闭管理中心，再打开设置。"; return; }
+        try
+        {
+            var settings = new StationSettingsWindow(ViewModel, maintenance) { Owner = this };
+            settingsWindow = settings;
+            settings.Closed += (_, _) => { if (settingsWindow == settings) settingsWindow = null; EnforceManagementModeView(); };
+            settings.Show();
+        }
+        catch (Exception error) { ViewModel.Message = ChineseInterfaceText.ParameterMessage(error.Message, "设置窗口未能打开，原输入保留。"); }
+    }
+    internal void ReturnToWorkstation()
+    {
+        SetPage("workstation"); Activate();
+        // Switching windows clears the lane selection. The operator selects the
+        // intended lane again, using its card or F2/F3; never silently route PDA.
     }
     async Task RenewManagementAsync()
     {
@@ -109,7 +130,8 @@ public partial class SupplyStationWindow
             {
                 try { await AuthenticateManagementAsync(); }
                 catch (Exception) { ViewModel.Message = "管理密码验证未完成，请稍后重试。"; }
-            }, RenewManagementAsync, ManagePasswordAsync) { Owner = this };
+            }, RenewManagementAsync, ManagePasswordAsync)
+            { Owner = this };
             managementCenter = center;
             center.Closing += CloseManagementCenter;
             center.Closed += (_, _) =>

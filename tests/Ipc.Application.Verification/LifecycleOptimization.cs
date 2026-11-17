@@ -1,3 +1,4 @@
+using Ipc.Diagnostics;
 using System.Reflection;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;

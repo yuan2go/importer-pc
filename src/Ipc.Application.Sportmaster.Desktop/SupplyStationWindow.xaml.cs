@@ -94,6 +94,8 @@ public partial class SupplyStationWindow : Window
     }
     void SetPage(string page)
     {
+        if (settingsWindow is not null && page is "maintenance" or "diagnostics" or "logs" or "debug")
+        { ViewModel.Message = "请先关闭设置，再打开管理页面。未保存输入保留。"; return; }
         if (page is "maintenance" or "diagnostics" or "logs" or "debug" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
         if (page is "maintenance" or "diagnostics" or "logs" or "debug")
@@ -180,12 +182,14 @@ public partial class SupplyStationWindow : Window
     bool retentionRequested;
     async Task RequestRetention()
     {
+        if (root.settingsWindow is not null) { ViewModel.Message = "请先关闭设置，再进入到期维护。未保存输入保留。"; return; }
         try { await ViewModel.RequireManagementModeAsync(); await ViewModel.PauseAsync("进入历史清理前暂停"); await ViewModel.RefreshAsync(); if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停尚未确认"); if (root.OpenRetentionOwnerAsync is null) throw new InvalidOperationException("当前宿主没有独立维护入口"); root.retentionRequested = true; root.Close(); }
         catch (Exception error) { ViewModel.Message = "尚未进入到期维护：" + error.Message; }
     }
     bool activationRequested;
     async Task RequestActivation()
     {
+        if (root.settingsWindow is not null) { ViewModel.Message = "请先关闭设置，再重新打开供包台。未保存输入保留。"; return; }
         try
         {
             if (root.ReopenOwnerAsync is null) throw new InvalidOperationException("无法从这里重新打开，请稍后从桌面图标重新打开软件。");
@@ -197,6 +201,7 @@ public partial class SupplyStationWindow : Window
     {
         if (closeReady || closed) return;
         e.Cancel = true;
+        if (settingsWindow is not null) { settingsWindow.Activate(); ViewModel.Message = "请先关闭设置窗口，再退出供包台。未保存输入保留。"; return; }
         if (closing) return;
         closing = true;
         var generation = ++closeGeneration;

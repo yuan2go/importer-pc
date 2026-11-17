@@ -14,6 +14,8 @@ public interface IManagementMode
 }
 public interface IWorkstationAdministration
 {
+    Task<ManagementModeStatus?> EnterManagementSessionAsync(string password) => throw new NotSupportedException("当前管理服务不支持按窗口核验授权，请使用同版软件。");
+    Task ExitManagementModeAsync(string expectedSessionId) => throw new NotSupportedException("当前管理服务不支持按窗口结束授权，请使用同版软件。");
     Task<ManagementModeStatus> RenewManagementModeAsync() => throw new NotSupportedException("当前管理服务不支持续期，请重新验证管理密码。");
     Task<ManagementModeStatus> ManagementModeStatusAsync();
     Task ConfigureManagementPasswordAsync(string password);

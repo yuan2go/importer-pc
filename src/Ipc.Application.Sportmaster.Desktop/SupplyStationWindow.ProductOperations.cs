@@ -103,6 +103,7 @@ public partial class SupplyStationWindow
     }
     async Task RequestOfflineMaintenance()
     {
+        if (root.settingsWindow is not null) { ViewModel.Message = "请先关闭设置，再进入离线维护。未保存输入保留。"; return; }
         await ViewModel.RequireManagementModeAsync();
         if (root.OpenMaintenanceOwnerAsync is null) throw new InvalidOperationException("当前版本不支持离线维护");
         if (MessageBox.Show(ManagementDialogOwner, "将完全停止软件并关闭所有窗口，然后打开离线维护。业务数据保留。", "进入离线维护", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;

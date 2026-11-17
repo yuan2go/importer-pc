@@ -112,6 +112,7 @@ public static partial class WindowsDeploymentSetup
             if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(state)) > 32 * 1024 * 1024) throw new InvalidDataException("清理回执超过保存预算。");
             WriteProtected(path, state, sid);
         }
+        using var programUse = DeploymentProgramUse.MaintainRoots(record.Plan.Delete.Select(a => a.Root).Concat(record.Plan.Caches));
         return ApplyUninstallAssets(record, path, current, Save, root => TrustedProgramRoots.Contains(root, AppContext.BaseDirectory), execution);
     }
 

@@ -94,6 +94,7 @@ public static partial class ParcelStartupServices
                 catch (Exception error) { code = 1627; Console.Error.WriteLine("原静默命令租约释放未确认：" + error.GetType().Name); }
             }
         }
+        if (failureDetail is not null) Console.Error.WriteLine(Wire.Encode(new { OperationId = operationId, ExitCode = code, Result = result }));
         if (replay) Console.WriteLine(Wire.Encode(new { OperationId = operationId, ExitCode = code, Result = result, Reexecuted = false }));
         return code;
     }

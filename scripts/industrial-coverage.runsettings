@@ -17,6 +17,7 @@
                 <ModulePath>.*Ipc\.Application\.Contracts\.dll$</ModulePath>
                 <ModulePath>.*Ipc\.Application\.ParcelFlow\.dll$</ModulePath>
                 <ModulePath>.*Ipc\.Application\.Sportmaster\.dll$</ModulePath>
+                <ModulePath>.*Ipc\.Diagnostics\.dll$</ModulePath>
               </Include>
             </ModulePaths>
           </CodeCoverage>

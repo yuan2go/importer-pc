@@ -341,7 +341,14 @@
         "type": "Project",
         "dependencies": {
           "Ipc.Application.Contracts": "[1.0.0, )",
+          "Ipc.Diagnostics": "[1.0.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
+        }
+      },
+      "ipc.diagnostics": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
         }
       },
       "ipc.platform": {

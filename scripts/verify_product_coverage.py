@@ -12,7 +12,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ('Ipc.Platform', 'Ipc.Application.Contracts', 'Ipc.Application.ParcelFlow', 'Ipc.Application.Sportmaster')
+MODULES = ('Ipc.Platform', 'Ipc.Application.Contracts', 'Ipc.Application.ParcelFlow', 'Ipc.Application.Sportmaster', 'Ipc.Diagnostics')
 REQUIRED_FILES = (
     'src/Ipc.Platform/LocalManagementMode.PasswordRecovery.cs',
     'src/Ipc.Platform/DeploymentRollback.cs',
@@ -20,6 +20,7 @@ REQUIRED_FILES = (
     'src/Ipc.Platform/QuietDeploymentOutput.cs',
     'src/Ipc.Application.ParcelFlow/ParcelRuntime.cs',
     'src/Ipc.Application.ParcelFlow/StationDiagnosticPackage.cs',
+    'src/Ipc.Diagnostics/SoftwareLogReader.cs',
 )
 MAX_REPORT_BYTES = 32 * 1024 * 1024
 
@@ -83,7 +84,7 @@ def analyze(path: Path) -> dict:
         values = {key: hits for key, hits in lines.items() if key[0] == filename}
         critical[filename] = metrics(values)
     return {
-        'schema': 1, 'scope': 'four managed product assemblies; unique source-file/line pairs',
+        'schema': 1, 'scope': 'five managed product assemblies; unique source-file/line pairs',
         'wholeProductCoverage': False, 'testAssembliesIncluded': False,
         'modules': {name: metrics(modules[name]) for name in MODULES},
         'total': metrics(lines), 'requiredFiles': critical,
@@ -150,9 +151,9 @@ def markdown(summary: dict) -> str:
     value = summary['total']
     text += [f"| Scope total | {value['covered']} / {value['valid']} | {value['percent']:.2f}% |", '',
              'Source file + line number are deduplicated across classes and async/record mappings.',
-             'Four managed assemblies only; test wrappers are excluded. This is not whole-product coverage.',
+             'Five managed assemblies only; test wrappers are excluded. This is not whole-product coverage.',
              'Assembly orchestration, WPF, native/vendor SDK, Windows lifecycle and site acceptance are outside this measurement.',
-             'All six required security/recovery/diagnostic source files contain executed product lines.',
+             'All seven required security/recovery/diagnostic source files contain executed product lines.',
              'No arbitrary percentage target is used for this initial baseline; empty, missing and all-zero product results fail.', '']
     return '\n'.join(text)
 
@@ -190,8 +191,8 @@ def main() -> None:
     (output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
     (output / 'summary.md').write_text(markdown(summary), encoding='utf-8')
     total = summary['total']
-    print(f"PASS COVERAGE: 4 product modules; {total['covered']}/{total['valid']} unique source lines; "
-          f"{total['percent']:.2f}%; six required files executed; wrappers/Windows/SDK qualification excluded")
+    print(f"PASS COVERAGE: {len(MODULES)} product modules; {total['covered']}/{total['valid']} unique source lines; "
+          f"{total['percent']:.2f}%; {len(REQUIRED_FILES)} required files executed; wrappers/Windows/SDK qualification excluded")
 
 
 if __name__ == '__main__':

@@ -188,21 +188,41 @@ public sealed partial class LocalManagementMode
         var credential = Create(password);
         lock (sync) { using var held = LockStore(); var s = Read(); if (s.Credential is not null || File.Exists(legacyPath)) throw new UnauthorizedAccessException("已有管理密码或旧版凭据，不能重新设置覆盖。"); Save(s with { Credential = credential }, "ManagementPasswordConfigured"); MarkConfigured(); }
     }
-    public bool Enter(string password)
+    public bool Enter(string password) => EnterSession(password) is { Authorized: true };
+    public ManagementModeStatus? EnterSession(string password)
     {
         if (Remote) return RemoteEnter(password);
-        if (password.Length > 256) return false;
+        if (password.Length > 256) return null;
         Credential? credential;
-        lock (sync) { using var held = LockStore(); var s = Read(); CheckLock(s, Now); if (s.Credential is null) return false; credential = s.Credential; }
+        lock (sync) { using var held = LockStore(); var s = Read(); CheckLock(s, Now); if (s.Credential is null) return null; credential = s.Credential; }
         var verified = Verify(password, credential);
         lock (sync)
         {
             using var held = LockStore(); var s = Read(); var now = Now; CheckLock(s, now);
-            if (!verified || s.Credential != credential) { Failed(s, "ManagementModeEnterFailed"); return false; }
+            if (!verified || s.Credential != credential) { Failed(s, "ManagementModeEnterFailed"); return null; }
             var secret = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)); var id = Guid.NewGuid().ToString("N");
             Save(s with { Failures = 0, LockedUntil = default, SessionHash = ProofHash(secret), SessionId = id, SessionExpires = now.AddMinutes(15), SessionEnteredAt = now, Delegations = [] }, "ManagementModeEntered");
-            Revoke(); revoked = new(); active = true; credentialHash = credential.Hash; sessionId = id; sessionSecret = secret; enteredAt = now; expires = now.AddMinutes(15); revoked.CancelAfter(TimeSpan.FromMinutes(15)); return true;
+            Revoke(); revoked = new(); active = true; credentialHash = credential.Hash; sessionId = id; sessionSecret = secret; enteredAt = now; expires = now.AddMinutes(15); revoked.CancelAfter(TimeSpan.FromMinutes(15));
+            return new(true, true, expires) { SessionId = id };
         }
+    }
+    public void Exit(string expectedSessionId)
+    {
+        // Closing an older settings window must not revoke a replacement grant.
+        // Capture the original proof without holding the shared status lock
+        // across transport waits. A newer grant must survive the late reply.
+        string originalToken;
+        lock (sync)
+        {
+            if (!active || sessionId != expectedSessionId) return;
+            if (!Remote) { Exit(); return; }
+            managementIntent++;
+            originalToken = sessionSecret;
+        }
+        // Retain the original token if transport fails so an actual retry can
+        // inspect/revoke that grant instead of claiming exit from a local reset.
+        ManagementModeBroker.Call<bool>(dataRoot, new("Exit", Token: originalToken));
+        lock (sync) if (sessionId == expectedSessionId && sessionSecret == originalToken) Revoke();
     }
     public void Exit()
     {

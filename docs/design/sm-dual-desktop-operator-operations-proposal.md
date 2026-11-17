@@ -10,6 +10,8 @@
 - **供包运维工具**：面向实施/技术运维。左侧固定“运行总览、日志中心、设备调试、专业参数、维护中心”五个入口；默认仅查看，不因打开或认证而暂停生产。
 - 两者共享 WPF 字体、资源、状态语义和许可已核验的原生控件；针对用途采用不同布局与信息密度，不依赖 React、CSS、JS、WebView 或第三方动画运行时。
 
+资源装配要求：当前 Workstation.xaml 位于 Ipc.Desktop 宿主，不能依赖另一个 EXE 私有资源的偶然加载。将两个进程都需要的主题键/基础控件定义放在 Ipc.Presentation.Wpf 的可复用 WPF ResourceDictionary（或等效共享程序集资源），两个独立宿主通过明确的 pack URI 合并同一资源；SupplyStationTheme.xaml 继续负责 SM 特有作业卡，不在运维工具复制一份变体。先核对 PR #277 的三个新样式，再统一资源归属，避免重复定义。
+
 当前代码事实：业务运行实例在 src/Ipc.Desktop/ParcelApp.xaml.cs 启动，并经 ParcelAssembly.Create 持有资源；src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Administration.cs 的 EnsureManagementWorkspaceAsync 调用 IManagementWorkspace.SetManagementWorkspaceAsync 为当前弹窗建立整站暂停；受保护启动/维护宿主 ParcelStartupServices 明确不创建 IBusinessRuntime。新双程序必须先解决此进程边界，不可以把 UI 分离误认为业务运行已经独立。
 
 ## 2. 运行所有权与通信架构

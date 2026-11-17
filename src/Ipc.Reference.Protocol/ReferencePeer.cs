@@ -19,7 +19,8 @@ public sealed class ReferencePeer(CapabilityBinding binding, string root, string
         if (remote is null)
         {
             lease = new(DirectoryPath, ["reference-peer:" + binding.Target]);
-            if (Directory.EnumerateFiles(DirectoryPath, "*.new").Any()) throw new InvalidDataException("Interrupted reference custody write; preserve original files");
+            try { if (Directory.EnumerateFiles(DirectoryPath, "*.new").Any()) throw new InvalidDataException("Interrupted reference custody write; preserve original files"); }
+            catch { lease.Dispose(); lease = null; throw; }
         }
         running = true; return Task.CompletedTask;
     }
@@ -72,6 +73,7 @@ public sealed class ReferencePeer(CapabilityBinding binding, string root, string
             {
                 var prior = Wire.Decode<PeerEntry>(File.ReadAllText(path));
                 if (Wire.Encode(prior.Request) != wire) throw new InvalidDataException("Reference peer rejects reused identity with changed frozen content");
+                VerifyImage(prior.Reply, request.Id);
                 return prior.Reply;
             }
             var accepted = binding.Parameters.GetValueOrDefault("decision", "accept") == "accept";
@@ -128,11 +130,15 @@ public sealed class ReferencePeer(CapabilityBinding binding, string root, string
                 };
                 ExtensionStore.AtomicWrite(path, entry);
             }
-            if (entry.Reply.Image is { } image && (!File.Exists(Path.Combine(DirectoryPath, request.Id + ".png")) || Wire.FileHash(Path.Combine(DirectoryPath, request.Id + ".png")) != image.Sha256))
-                throw new InvalidDataException("Reference image custody missing or changed");
+            VerifyImage(entry.Reply, request.Id);
             return Wire.Decode<StageReply>(Wire.Encode(entry.Reply));
         }
         finally { gate.Release(); }
+    }
+    void VerifyImage(StageReply reply, string requestId)
+    {
+        if (reply.Image is { } image && (!File.Exists(Path.Combine(DirectoryPath, requestId + ".png")) || Wire.FileHash(Path.Combine(DirectoryPath, requestId + ".png")) != image.Sha256))
+            throw new InvalidDataException("Reference image custody missing or changed");
     }
     async Task<StageReply?> ExchangeAsync(string action, FrozenRequest request, ReadOnlyMemory<byte> content, CancellationToken token)
     {

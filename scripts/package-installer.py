@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -87,6 +88,30 @@ def inspect_medium(path, source):
                     ZipBytes=Path(path).stat().st_size, UnpackedBytes=total, FileCount=len(names))
 
 
+def publish_installer(source, output):
+    """Publish one closed, verified file without replacing an earlier delivery."""
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with source.open('rb') as original:
+        expected = hashlib.file_digest(original, 'sha256').hexdigest()
+    pending = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=output.parent, prefix='.ipc-installer-', delete=False) as target:
+            pending = Path(target.name)
+            with source.open('rb') as source_file:
+                shutil.copyfileobj(source_file, target)
+            target.flush()
+            os.fsync(target.fileno())
+        with pending.open('rb') as stream:
+            digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+        if digest != expected:
+            raise ValueError('Installer delivery copy differs from the complete published EXE')
+        os.link(pending, output)
+        return digest
+    finally:
+        if pending is not None:
+            pending.unlink(missing_ok=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--media', type=Path, required=True, help='Frozen win-x64 ZIP from package-application.py')
@@ -127,12 +152,7 @@ def main():
     published = [file for file in publish.iterdir() if file.is_file()]
     if len(published) != 1 or published[0].name != 'Ipc.Installer.exe':
         raise ValueError('Installer is not a standalone EXE: ' + repr([p.name for p in published]))
-    output.parent.mkdir(parents=True, exist_ok=True)
-    # Exclusive destination creation prevents accidentally replacing a prior delivery.
-    with published[0].open('rb') as source_file, output.open('xb') as target:
-        shutil.copyfileobj(source_file, target)
-    with output.open('rb') as stream:
-        digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+    digest = publish_installer(published[0], output)
     print(json.dumps(dict(Installer=str(output), Sha256=digest, SourceCommit=source, Payload=descriptor,
                          DeliveryFiles=1, Authenticode='NOT_SIGNED', ActualWindowsInstallation='NOT_RUN'), ensure_ascii=False))
 

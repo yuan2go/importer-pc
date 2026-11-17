@@ -17,8 +17,11 @@ static class AtomicStorageChecks
         using (var locker = Database.Open(file, false))
         {
             using var held = locker.BeginTransaction(deferred: false); var watch = Stopwatch.StartNew();
-            var pending = Task.Run(() => AtomicStorageWrite.Execute(db, tx => Write(tx, "busy")));
-            await Task.Delay(150); held.Commit(); await pending;
+            var attempts = 0; var retrying = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var pending = Task.Run(() => AtomicStorageWrite.Execute(db, tx => Write(tx, "busy"),
+                () => { if (Interlocked.Increment(ref attempts) >= 2) retrying.TrySetResult(); }));
+            try { await retrying.Task.WaitAsync(TimeSpan.FromSeconds(3)); }
+            finally { held.Commit(); await pending.WaitAsync(TimeSpan.FromSeconds(3)); }
             Check(Count("busy") == 1, "a real SQLite writer lock released inside budget yields exactly one durable row");
             Console.WriteLine("MEASURE sqlite_busy_recovery_ms=" + watch.Elapsed.TotalMilliseconds);
         }
@@ -86,7 +89,7 @@ static class AtomicStorageChecks
             StorageWriteFailure? exhausted = null; var budget = Stopwatch.StartNew();
             try { AtomicStorageWrite.Execute(db, tx => Write(tx, "exhausted")); }
             catch (StorageWriteFailure error) { exhausted = error; }
-            Check(exhausted?.Kind == StorageFailureKind.RetryBudgetExceeded && exhausted.Attempts <= 32 && Count("exhausted") == 0,
+            Check(exhausted?.Kind == StorageFailureKind.RetryBudgetExceeded && exhausted.Attempts <= 32 && budget.Elapsed <= TimeSpan.FromSeconds(6) && Count("exhausted") == 0,
                 "persistent rollback-safe failure exhausts a bounded monotonic budget with no row committed");
             using var pragma = db.CreateCommand(); pragma.CommandText = "PRAGMA synchronous";
             Check(Convert.ToInt64(pragma.ExecuteScalar()) == 2, "FULL durability is preserved");

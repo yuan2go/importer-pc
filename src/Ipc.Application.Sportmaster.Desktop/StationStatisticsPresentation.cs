@@ -43,11 +43,11 @@ internal sealed class StationHourlyChart : FrameworkElement
     TimeZoneInfo zone = TimeZoneInfo.Utc;
     int? target;
     public int? Target { get => target; set { target = value; InvalidateVisual(); } }
-    internal StationHourlyChart() { Height = 220; MinWidth = 180; AutomationProperties.SetName(this, "每小时取得格口图；左位蓝色，右位绿色，完整数值见下方小时明细"); }
+    internal StationHourlyChart() { Height = 220; MinWidth = 180; AutomationProperties.SetName(this, "每小时取得格口图；左位蓝色，右位绿色，合计深色；目标线对应合计，完整数值见下方小时明细"); }
     internal void Set(StationMetricBucket[] buckets, TimeZoneInfo timeZone, int? perHour)
     {
         zone = timeZone; target = perHour;
-        hours = buckets.GroupBy(b => new DateTimeOffset(b.Minute.UtcDateTime.Date.AddHours(b.Minute.UtcDateTime.Hour), TimeSpan.Zero)).OrderBy(g => g.Key).TakeLast(24).Select(g => new Hour(g.Key, g.Where(b => b.Position == "left").Sum(b => b.Assigned), g.Where(b => b.Position == "right").Sum(b => b.Assigned))).ToArray(); InvalidateVisual();
+        hours = buckets.GroupBy(b => { var local = TimeZoneInfo.ConvertTime(b.Minute, timeZone); return new DateTimeOffset(local.Year, local.Month, local.Day, local.Hour, 0, 0, local.Offset); }).OrderBy(g => g.Key).TakeLast(24).Select(g => new Hour(g.Key, g.Where(b => b.Position == "left").Sum(b => b.Assigned), g.Where(b => b.Position == "right").Sum(b => b.Assigned))).ToArray(); InvalidateVisual();
     }
     protected override void OnRender(DrawingContext dc)
     {
@@ -55,18 +55,19 @@ internal sealed class StationHourlyChart : FrameworkElement
         var ink = OperatorBrushes.Ink; var line = OperatorBrushes.Line;
         void Text(string text, double x, double y) => dc.DrawText(new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface(UiTypography.Interface, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal), 14, ink, VisualTreeHelper.GetDpi(this).PixelsPerDip), new(x, y));
         if (hours.Length == 0) { Text("当前范围暂无小时记录", 0, 40); return; }
-        var max = Math.Max(1d, Math.Max(hours.Max(h => Math.Max(h.Left, h.Right)), target ?? 0));
+        var max = Math.Max(1d, Math.Max(hours.Max(h => h.Left + h.Right), target ?? 0));
         const double top = 24, baseline = 172, left = 56;
         dc.DrawLine(new Pen(line, 1), new(left, baseline), new(width, baseline)); Text(max.ToString("N0"), 0, top); Text("0", 28, baseline - 14);
         var unit = (width - left) / hours.Length;
         for (var i = 0; i < hours.Length; i++)
         {
-            var h = hours[i]; var bar = Math.Clamp(unit * .3, 1, 26); var x = left + unit * i + (unit - bar * 2) / 2;
+            var h = hours[i]; var bar = Math.Clamp(unit * .24, 1, 26); var x = left + unit * i + (unit - bar * 3) / 2;
             dc.DrawRectangle(Brushes.SteelBlue, null, new(x, baseline - h.Left / max * (baseline - top), bar, h.Left / max * (baseline - top)));
             dc.DrawRectangle(Brushes.SeaGreen, null, new(x + bar, baseline - h.Right / max * (baseline - top), bar, h.Right / max * (baseline - top)));
+            dc.DrawRectangle(OperatorBrushes.Ink, null, new(x + bar * 2, baseline - (h.Left + h.Right) / max * (baseline - top), bar, (h.Left + h.Right) / max * (baseline - top)));
             if (i % Math.Max(1, (int)Math.Ceiling(65 / unit)) == 0) Text(TimeZoneInfo.ConvertTime(h.At, zone).ToString("HH:mm"), x, baseline + 5);
         }
         if (target is { } goal) { var y = baseline - goal / max * (baseline - top); dc.DrawLine(new Pen(ink, 1) { DashStyle = DashStyles.Dash }, new(left, y), new(width, y)); Text("目标 " + goal.ToString("N0"), left, 0); }
-        Text("最近最多24个有记录小时；完整范围见明细", left, 198);
+        Text("左位 · 右位 · 合计", left, 198);
     }
 }

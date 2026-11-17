@@ -40,6 +40,8 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
                 if (Id != "sportmaster" || stopped) throw new InvalidOperationException("供包台尚未就绪。");
                 if (open) Management.Require();
                 if (managementWorkspace is { } current && current != windowId) throw new InvalidOperationException("另一个管理窗口尚未关闭。");
+                if (open && managementWorkspace == windowId) return new BusinessReceipt("Opened", "原管理窗口已打开。", repository?.Revision ?? 0);
+                if (open && collectingInspection is not null) throw new InvalidOperationException("请先结束原调试采集，再打开管理窗口。");
                 if (!open && managementWorkspace is null) return new BusinessReceipt("Restored", "管理窗口已关闭。", repository?.Revision ?? 0);
                 // Close needs the original window identity, not a still-valid
                 // password lease; expiry must never strand a production fence.

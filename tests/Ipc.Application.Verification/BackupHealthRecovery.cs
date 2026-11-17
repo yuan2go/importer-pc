@@ -264,13 +264,22 @@ static class BackupHealthRecovery
             await using var server = new HealthServer(); var c = Config();
             c = c with { TimeoutMs = 2000, Wcs = c.Wcs! with { Parameters = new() { ["endpoint"] = server.Url } } };
             var (app, _) = Create(c, "stop-before-send"); await using var owned = app; await app.StartAsync(CancellationToken.None);
-            var count = server.HealthRequests; server.Mode = PeerMode.StallBody;
-            Check(app.EmitReference("shutdown-health", "00003", "shutdown-health"), "shutdown test observation queued");
-            var s = await Wait(app, x => x.Operations.SingleOrDefault()?.Wcs?.State == StageState.Prepared);
-            await server.WaitForHealth(count); await Command(app, "Pause");
-            await app.StopAsync(CancellationToken.None).WaitAsync(TimeSpan.FromSeconds(2)); s = await app.SnapshotAsync();
-            Check(s.State == "Stopped" && s.Operations.Single().Wcs is { State: StageState.Prepared, Attempts: 0, Failure: null },
-                "shutdown during first pre-send health drains ownership without inventing device failure or delivery");
+            var monitorEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var monitorRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            app.BeforeMonitorProbe = async (_, token) => { monitorEntered.TrySetResult(); await monitorRelease.Task.WaitAsync(token); };
+            try
+            {
+                await monitorEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                var count = server.HealthRequests; server.Mode = PeerMode.StallBody;
+                Check(app.EmitReference("shutdown-health", "00003", "shutdown-health"), "shutdown test observation queued");
+                var s = await Wait(app, x => x.Operations.SingleOrDefault()?.Wcs?.State == StageState.Prepared);
+                await server.WaitForHealth(count); await Command(app, "Pause");
+                Check(!monitorRelease.Task.IsCompleted, "the counted HTTP request belongs to the stage, with background monitoring held outside the business gate");
+                await app.StopAsync(CancellationToken.None).WaitAsync(TimeSpan.FromSeconds(2)); s = await app.SnapshotAsync();
+                Check(s.State == "Stopped" && s.Operations.Single().Wcs is { State: StageState.Prepared, Attempts: 0, Failure: null },
+                    "shutdown during first pre-send health drains ownership without inventing device failure or delivery");
+            }
+            finally { monitorRelease.TrySetResult(); app.BeforeMonitorProbe = null; }
         });
         await Case("shutdown-after-send", async () =>
         {
@@ -423,7 +432,7 @@ static class BackupHealthRecovery
                     var response = selected switch
                     {
                         PeerMode.OversizedDeclared => "HTTP/1.1 200 OK\r\nContent-Length: 1000000000\r\nConnection: close\r\n\r\n",
-                        PeerMode.OversizedChunked => "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n14\r\n" + marker + "XX\r\n0\r\n\r\n",
+                        PeerMode.OversizedChunked => "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n" + Encoding.ASCII.GetByteCount(marker + "XX").ToString("X", System.Globalization.CultureInfo.InvariantCulture) + "\r\n" + marker + "XX\r\n0\r\n\r\n",
                         PeerMode.Unavailable => "HTTP/1.1 503 Unavailable\r\nContent-Length: 0\r\nConnection: close\r\n\r\n",
                         _ => "HTTP/1.1 200 OK\r\nContent-Length: " + Encoding.ASCII.GetByteCount(marker) + "\r\nConnection: close\r\n\r\n" + (selected == PeerMode.Ready ? marker : selected == PeerMode.InvalidMarker ? new string('X', marker.Length) : "P")
                     };

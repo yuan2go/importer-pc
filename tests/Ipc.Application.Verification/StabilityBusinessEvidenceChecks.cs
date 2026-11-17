@@ -70,14 +70,15 @@ internal static partial class StabilityAnalysis
                 SourceCommit = new string('a', 40),
                 NormalStart = started,
                 NormalEnd = end,
-                ActualNormalSeconds = clock.Elapsed.TotalSeconds,
+                ActualNormalSeconds = (end - started).TotalSeconds,
+                Samples = 2,
                 Status = "SMOKE_ONLY",
                 FirstNormal = first,
                 LastNormal = final,
                 Failures = new { },
                 Ui = Array.Empty<object>()
             });
-            File.WriteAllText(Path.Combine(path, "samples.jsonl"), JsonSerializer.Serialize(new { Progress = final }, new JsonSerializerOptions(Wire.Json) { WriteIndented = false }) + "\n");
+            File.WriteAllText(Path.Combine(path, "samples.jsonl"), string.Join("\n", new[] { JsonSerializer.Serialize(new { Normal = true, Progress = first, CollectedAt = started, ElapsedSeconds = 0d }, new JsonSerializerOptions(Wire.Json) { WriteIndented = false }), JsonSerializer.Serialize(new { Normal = true, Progress = final, CollectedAt = end, ElapsedSeconds = (end - started).TotalSeconds }, new JsonSerializerOptions(Wire.Json) { WriteIndented = false }) }) + "\n");
             return path;
         }
         var manualOutput = Path.Combine(root, "manual-analysis.json");

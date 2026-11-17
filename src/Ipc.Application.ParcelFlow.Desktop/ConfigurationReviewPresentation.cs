@@ -42,9 +42,10 @@ public partial class ParcelViewModel
     {
         reviewedConfigurationSignature = null; NotifyConfigurationReview();
         if (HasUnconfirmedConfigurationSubmission) { Message = "上次保存结果未确认，请先查看保存结果。已填写的内容会保留。"; return false; }
+        if (HasUnsavedDisplayPreferences && Snapshot?.ApplicationId == "sportmaster" && SmPreferences.Validate() is { } preferenceError)
+        { Message = preferenceError; return false; }
         if (!HasUnsavedConfiguration && HasUnsavedDisplayPreferences && Snapshot?.ApplicationId == "sportmaster")
         {
-            if (SmPreferences.Validate() is { } error) { Message = error; return false; }
             reviewedConfigurationSignature = CurrentReviewSignature();
             reviewedConfigurationChanges = SmPreferences.Changes();
             configurationSubmissionOutcome = ""; NotifyConfigurationReview(); return true;

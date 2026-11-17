@@ -84,10 +84,27 @@ internal static class StationPositionControlChecks
             Check(h.Api(h.Left).Destroys == 1 && h.Api(h.Left).Finalizes == 1 && h.Api(h.Left).Opens == opens && h.Peer.Requests.Count == 1,
                 "disabled position actually releases camera handle and SDK and suppresses automatic reconnect");
             await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
-            // Heartbeat confirmation precedes the asynchronous SDK cache cutover.
-            // A frame queued before that boundary is intentionally discarded.
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
-                { CameraConnectionSuspended: false, Arrival: { Confirmed: true, CameraBoundaryReady: true } });
+            // Observe the real reconnect first, then explicitly confirm the latest
+            // membership. Automatic heartbeat scheduling has its own suite; this
+            // fixture must not queue its next frame against the retired SDK epoch.
+            await CameraRoundHarness.Until(async () =>
+            {
+                var connected = await h.App.SnapshotAsync();
+                return !connected.Positions!.Single(p => p.Id == "left").CameraConnectionSuspended &&
+                    connected.Devices!.Single(d => d.DeviceId == h.Left).IsValid(DateTimeOffset.UtcNow);
+            });
+            await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
+            try
+            {
+                await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
+                    { CameraConnectionSuspended: false, Arrival: { Confirmed: true, CameraBoundaryReady: true } });
+            }
+            catch (TimeoutException error)
+            {
+                var pending = await h.App.SnapshotAsync();
+                throw new TimeoutException("Reenabled camera did not confirm its boundary: " + Wire.Encode(new
+                { Position = pending.Positions!.Single(p => p.Id == "left"), pending.Devices, pending.Health, h.Api(h.Left).Opens, h.Api(h.Left).Clears }), error);
+            }
             Check(h.Api(h.Left).Opens == opens + 1 && (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Epoch == rightEpoch,
                 "enabling reconnects only the selected camera with a new session");
             await Deliver(CameraRoundHarness.Barcode("SYNTH-DRAIN"));
@@ -102,12 +119,15 @@ internal static class StationPositionControlChecks
         {
             await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
             h.Api(h.Left).DestroyError = unchecked((int)0x80000000);
+            try
+            {
             await h.App.SetPositionEnabledAsync(await Command(h.App, "left", false), default);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Stops > 0));
             await Task.Delay(1200);
             Check(!(await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CameraConnectionSuspended && h.Api(h.Left).Destroys == 0 && h.Api(h.Left).Opens == 1,
                 "failed handle destruction retains ownership without claiming disconnected or reconnecting");
-            h.Api(h.Left).DestroyError = 0; // Allow actual shutdown to release the original synthetic handle.
+            }
+            finally { h.Api(h.Left).DestroyError = 0; } // Actual shutdown must retry the original synthetic handle.
         }
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "unknown-disable")))
         {
@@ -188,11 +208,14 @@ internal static class StationPositionControlChecks
             h.Peer.ReplySlot = "SYNTH-NEXT";
             await h.StartAsync();
             snapshot = await h.App.SnapshotAsync();
-            Check(!snapshot.Paused && snapshot.Positions!.Single(p => p.Id == "left") is { CurrentOperation: null, BarcodeInput.Manual: false, Arrival.Submitted: true } &&
+            Check(!snapshot.Paused && snapshot.Positions!.Single(p => p.Id == "left") is { CurrentOperation: null, BarcodeInput.Manual: false, Arrival.Submitted: false } &&
+                snapshot.Positions!.Single(p => p.Id == "left").Arrival!.TargetOperation == old.Id &&
                 snapshot.Capacity?.HistoricalUnknown == 1 && snapshot.Operations.All(o => o.Id != old.Id) &&
                 Wire.Encode((await h.App.OperationAsync(old.Id))?.Wcs) == Wire.Encode(old.Wcs),
-                "a restart preserves historical custody and the submitted-car guard without pausing the station");
-            await h.NextVehicleAsync();
+                "a restart preserves historical custody and the independent remote fence without reviving local parcel ownership");
+            await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC original remote execution and binding are settled and disabled membership is confirmed");
+            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
+            await h.App.CheckRcsHeartbeatAsync(default);
             var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-MANUAL-RELEASE"), default);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
             Check(next.Status == "Admitted" && next.OperationId != old.Id && h.Peer.Requests.Count == 2,
@@ -303,6 +326,12 @@ internal static class StationPositionControlChecks
             (await h.App.SnapshotAsync()).Operations.All(o => o.Id != old.Id) && h.Peer.Requests.Count == 2,
             "after removal, the obsolete request is deleted from live work and history");
 
+        Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival!.TargetOperation == old.Id,
+            "retiring incompatible request details does not erase its independent remote binding fence");
+        await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC retired original task and binding are settled; no delayed work remains and withdrawal applied");
+        var disabled = await h.App.SnapshotAsync();
+        await h.App.SetPositionEnabledAsync(new(Wire.Id(), disabled.RuntimeId, "left", disabled.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+        await h.App.CheckRcsHeartbeatAsync(default);
         await h.NextVehicleAsync();
         var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-UPGRADE"), default);
         await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(next.OperationId!))?.State == ParcelState.SlotResolved);
@@ -324,9 +353,14 @@ internal static class StationPositionControlChecks
         h.Peer.ReplyVehicleStates = true;
         await h.StartAsync(); await h.App.ExitManagementModeAsync(); await h.WaitForCameraAdmissionAsync();
         await h.App.SetPositionEnabledAsync(await Command(h.App, "left", false), default);
-        var count = h.Peer.HeartbeatRequests.Count;
-        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.HeartbeatRequests.Count > count));
-        using (var json = JsonDocument.Parse(h.Peer.HeartbeatRequests.Last()))
+        string? memberRequest = null;
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.HeartbeatRequests.Any(body =>
+        {
+            using var document = JsonDocument.Parse(body); var members = document.RootElement.GetProperty("data");
+            if (members.GetArrayLength() != 1 || members[0].GetProperty("params").GetProperty("bcrCode").GetString() != h.Config.Wcs!.Parameters["right-bcr-code"]) return false;
+            memberRequest = body; return true;
+        })));
+        using (var json = JsonDocument.Parse(memberRequest!))
         {
             var data = json.RootElement.GetProperty("data");
             Check(data.GetArrayLength() == 1 && data.EnumerateArray().All(item => item.GetProperty("params").EnumerateObject().Count() == 3) &&
@@ -338,13 +372,13 @@ internal static class StationPositionControlChecks
         await h.App.SetPositionEnabledAsync(await Command(h.App, "right", false), default);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.All(p =>
             p.SupplyControl?.Mode == StationPositionMode.Disabled && p.CameraConnectionSuspended));
-        count = h.Peer.HeartbeatRequests.Count;
-        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.HeartbeatRequests.Count > count));
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.HeartbeatRequests.Any(body =>
+        { using var document = JsonDocument.Parse(body); return document.RootElement.GetProperty("data").GetArrayLength() == 0; })));
         var snapshot = await h.App.SnapshotAsync();
         Check(snapshot.Health.Single(health => health.InstanceId == h.Config.Wcs!.InstanceId).RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived &&
             snapshot.Positions!.All(p => p.Vehicle is null && p.BarcodeInput?.Manual == false),
             "both disabled cameras keep scheduled RCS connectivity without restoring vehicle cues or input admission");
-        count = h.Peer.HeartbeatRequests.Count;
+        var count = h.Peer.HeartbeatRequests.Count;
         await CameraRoundHarness.Until(async () => await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received);
         Check(h.Peer.HeartbeatRequests.Count > count && h.Peer.Requests.IsEmpty,
             "manual heartbeat also works when both lanes and their cameras are disabled");

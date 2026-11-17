@@ -87,6 +87,7 @@ public static class PresentationPreferences
     }
     public static void Save(string application, string surface, bool compact)
     {
+        if (surface is "audio" or "window" || surface.StartsWith("station-", StringComparison.Ordinal)) throw new InvalidDataException("请使用对应的专用偏好保存入口。");
         var file = FileFor(application, surface); _ = Read(application, surface);
         Directory.CreateDirectory(Path.GetDirectoryName(file)!); ExtensionStore.AtomicWrite(file, new Preference(1, compact)); DisplayChanged?.Invoke(application, surface, compact);
     }

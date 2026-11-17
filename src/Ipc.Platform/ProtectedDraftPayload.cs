@@ -31,8 +31,11 @@ public static class ProtectedDraftPayload
     public static string Read(string path)
     {
         DeploymentPaths.RequireOrdinaryAncestors(path);
-        if (new FileInfo(path).Length > 8 * 1024 * 1024) throw new InvalidDataException("Draft quota exceeded");
-        var bytes = File.ReadAllBytes(path);
+        using var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        const int maximum = 8 * 1024 * 1024;
+        var buffer = new byte[maximum + 1]; var count = file.ReadAtLeast(buffer, buffer.Length, throwOnEndOfStream: false);
+        if (count > maximum) throw new InvalidDataException("Draft quota exceeded");
+        var bytes = buffer.AsSpan(0, count).ToArray();
         return System.Text.Encoding.UTF8.GetString(OperatingSystem.IsWindows() ? Transform(bytes, false) : bytes);
     }
     public static void Write(string path, string value, bool portableSynthetic, string? runtimeSid = null)

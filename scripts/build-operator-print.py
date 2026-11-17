@@ -122,19 +122,28 @@ def verify_text(reader: PdfReader, sources: list[str], footer_text: str) -> int:
     if '\ufffd' in rendered:
         raise ValueError('Replacement glyph in searchable text')
     checked = 0
+    cursor = 0
     for source in sources:
+        in_code = False
         for line in source.splitlines():
             line = line.strip()
-            if not line or line.startswith('```'):
+            if line.startswith('```'):
+                in_code = not in_code
                 continue
-            cells = [c.strip() for c in line.strip('|').split('|')] if line.startswith('|') else [re.sub(r'^#{1,3} ', '', line)]
-            if all(re.fullmatch(r':?-+:?', c) for c in cells):
+            if not line: continue
+            cells = [line] if in_code else [c.strip() for c in line.strip('|').split('|')] if line.startswith('|') else [re.sub(r'^#{1,3} ', '', line)]
+            if not in_code and all(re.fullmatch(r':?-+:?', c) for c in cells):
                 continue
             for cell in cells:
-                expected = re.sub(r'\s+', '', unescape(markup(cell).replace('<b>', '').replace('</b>', '')))
-                if expected not in rendered:
+                expected = re.sub(r'\s+', '', cell if in_code else unescape(markup(cell).replace('<b>', '').replace('</b>', '')))
+                # Generated table headers can intervene after page breaks, but
+                # each source occurrence must still consume text in source order.
+                found = rendered.find(expected, cursor)
+                if found < 0:
                     raise ValueError('Source text missing from PDF: ' + cell[:100])
+                cursor = found + len(expected)
                 checked += 1
+        if in_code: raise ValueError('Unclosed source code block')
     embedded = set()
     for page in reader.pages:
         for reference in page['/Resources']['/Font'].values():
@@ -217,6 +226,9 @@ def content(source: str, card: bool) -> list:
         table_rows()
         if not stripped:
             paragraph()
+        elif in_code:
+            paragraph()
+            result.append(Paragraph(escape(stripped), style['note']))
         elif stripped.startswith('# '):
             paragraph()
             result.append(Paragraph(markup(stripped[2:]), style['title']))
@@ -233,9 +245,6 @@ def content(source: str, card: bool) -> list:
         elif re.match(r'^\d+\. ', stripped):
             paragraph()
             result.append(Paragraph(markup(stripped), style['body']))
-        elif in_code:
-            paragraph()
-            result.append(Paragraph(escape(stripped), style['note']))
         else:
             pending.append(stripped)
     if in_code:

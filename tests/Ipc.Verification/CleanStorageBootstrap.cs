@@ -14,7 +14,10 @@ static class CleanStorageBootstrap
         var root = WindowsStoragePaths.DefaultProtectedAnchor;
         var existed = Directory.Exists(root);
         var paths = new[] { WindowsStoragePaths.MachineRoot, WindowsStoragePaths.AdministratorRoot,
-            WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator"), WindowsStoragePaths.UserRoot };
+            WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator"), WindowsStoragePaths.UserRootPath };
+        using var caller = WindowsIdentity.GetCurrent();
+        if (paths[3] != Path.Combine(root, "UserData", caller.User!.Value))
+            throw new InvalidOperationException("Unregistered personal address must retain the actual Windows user identity");
         ApplicationRootOwnership.RequireWindowsStorage(@"D:\ProgramData\ImporterPc\data", @"D:\CainiaoSupplyStation");
         Console.WriteLine("PASS CLEAN-DEFAULTS actual SM installation precondition accepts clean-machine D defaults");
         if (WindowsStoragePaths.ProtectedAnchor != root || paths.Any(path => !path.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)))
@@ -69,7 +72,7 @@ static class CleanStorageBootstrap
             var anchor = WindowsStoragePaths.ProtectedAnchor ?? throw new InvalidOperationException("A saved protected storage location is required for this regression");
             Check(!Directory.Exists(anchor), "fixture is a saved location with no deployment directory");
             var program = WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation");
-            var data = Path.Combine(WindowsStoragePaths.UserRoot, "data");
+            var data = Path.Combine(WindowsStoragePaths.UserRootPath, "data");
             Check(WindowsDeploymentSetup.Current("sportmaster") is null, "missing deployment is read as not installed");
             TrustedProgramRoots.Preview(program, data);
             Check(!Directory.Exists(anchor), "location reading and managed installation preview create no directory or policy");

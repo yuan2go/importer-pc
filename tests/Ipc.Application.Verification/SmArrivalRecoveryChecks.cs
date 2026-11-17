@@ -189,7 +189,7 @@ internal static class SmArrivalRecoveryChecks
         if (saved.Status == "PendingRestart") { await h.App.DisposeAsync(); await h.StartAsync(); }
         await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
         s = await h.App.SnapshotAsync();
-        enabled = await h.App.SetPositionEnabledAsync(new(Wire.Id(), s.RuntimeId, "left", Lane(s).SupplyControl!.Revision, true), default);
+        enabled = await SmRoundFixture.EnableAsync(h.App, "left");
         Check(enabled.Status == "Accepted", "configured code permits deliberate enable while keeping its old disabled state until then");
         await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
         await CameraRoundHarness.Until(async () => Lane(await h.App.SnapshotAsync()).Arrival?.Confirmed == true);

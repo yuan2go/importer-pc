@@ -77,10 +77,14 @@ public sealed partial class RuntimeJournal : IAsyncDisposable
                         try
                         {
                             BeforeAppend?.Invoke();
-                            Maintain();
                             var line = System.Text.Json.JsonSerializer.Serialize(entry, new System.Text.Json.JsonSerializerOptions { Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } });
                             var protectedLine = DiagnosticText.Protect(line);
-                            await File.AppendAllTextAsync(path, protectedLine + Environment.NewLine);
+                            Capture(directory, () =>
+                            {
+                                MaintainFilesUnlocked(directory, Volatile.Read(ref retention).Days);
+                                File.AppendAllText(path, protectedLine + Environment.NewLine);
+                                return true;
+                            });
                             Interlocked.Add(ref writtenBytes, System.Text.Encoding.UTF8.GetByteCount(protectedLine + Environment.NewLine));
                             PublishTail(protectedLine, clock.GetUtcNow());
                             Interlocked.Increment(ref written); Interlocked.Exchange(ref progressTicks, DateTimeOffset.UtcNow.UtcTicks);
@@ -107,10 +111,14 @@ public sealed partial class RuntimeJournal : IAsyncDisposable
         DeploymentPaths.RequireOrdinaryAncestors(directory);
         if (createDirectory) Directory.CreateDirectory(directory);
         else if ((File.GetAttributes(directory) & FileAttributes.Directory) == 0) throw new IOException("Diagnostic directory unavailable");
-        MaintainFiles(directory, null);
         var bytes = System.Text.Encoding.UTF8.GetBytes(DiagnosticText.Protect(System.Text.Json.JsonSerializer.Serialize(metadata)) + "\n");
+        Capture(directory, () =>
+        {
+        MaintainFilesUnlocked(directory, null);
         using var stream = new FileStream(Path.Combine(directory, "runtime.jsonl"), FileMode.Append, FileAccess.Write, FileShare.ReadWrite | FileShare.Delete);
         stream.Write(bytes); stream.Flush(true);
+        return true;
+        });
     }
     static void MaintainFiles(string directory, int? days)
         => Capture(directory, () => { MaintainFilesUnlocked(directory, days); return true; });

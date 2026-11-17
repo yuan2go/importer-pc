@@ -101,8 +101,12 @@ static partial class ArchitectureQuality
             var vm = new ParcelViewModel(held, "并发草稿", "合成回归"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
             vm.StructuredPolicy!.ReadTimeoutMs = "16011"; vm.ConfigurationReason = "Synthetic structured save while editing";
             held.HoldNextStage = true; var save = vm.SaveStructuredConfigurationAsync();
-            await held.StageEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            vm.StructuredPolicy.ReadTimeoutMs = "16012"; held.StageRelease.TrySetResult(); await save;
+            try
+            {
+                await held.StageEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                vm.StructuredPolicy.ReadTimeoutMs = "16012";
+            }
+            finally { held.StageRelease.TrySetResult(); await save.WaitAsync(TimeSpan.FromSeconds(10)); }
             Check(vm.HasUnsavedConfiguration && vm.StructuredPolicy.ReadTimeoutMs == "16012" &&
                 (await app.SnapshotAsync()).Configuration.Pending!.ReadTimeoutMs == 16011,
                 "P2 structured save accepts only the captured draft and preserves newer unsaved edits");
@@ -163,12 +167,14 @@ static partial class ArchitectureQuality
         var b = a with { TimeoutMs = 1802 }; var jsonA = Wire.Encode(a); var jsonB = Wire.Encode(b);
         vm.ConfigurationDraft = jsonA; vm.ConfigurationReason = "Synthetic pending save while editing a newer JSON draft";
         held.HoldNextStage = true; var save = vm.SaveAdvancedConfigurationAsync();
+        try
+        {
         await held.StageEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
         vm.ConfigurationDraft = jsonB;
         await vm.EnsureMaintenanceLoadedAsync();
         Check(held.CatalogReads == 1 && vm.ConfigurationDraft == jsonB && !vm.AdvancedConfigurationReadOnly,
             "UXC03 repeated maintenance navigation preserves newer unsaved JSON, its authority and original CAS");
-        held.StageRelease.TrySetResult(); await save; await vm.RefreshAsync();
+        held.StageRelease.TrySetResult(); await save.WaitAsync(TimeSpan.FromSeconds(10)); await vm.RefreshAsync();
         Check((await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 1801 && vm.ConfigurationDraft == jsonB && vm.HasUnsavedConfiguration && vm.ConfigurationEditorState.Contains("已修改未保存"),
             "UXC03 a held actual Application save stages A while later edited B remains untouched and explicitly unsaved");
         var draftRevision = vm.DraftRevisionState;
@@ -192,6 +198,8 @@ static partial class ArchitectureQuality
             "UXC03 repeated navigation also preserves an unsaved structured form");
         await vm.LoadCapabilitiesAsync();
         Check(held.CatalogReads == 2 && vm.StructuredPolicy!.ReadTimeoutMs != "16007", "UXC03 only explicit reload replaces the current draft from saved Pending/Effective");
+        }
+        finally { held.StageRelease.TrySetResult(); await save.WaitAsync(TimeSpan.FromSeconds(10)); }
     }
     sealed class HeldConfigurationApplication(IParcelApplication inner) : IParcelApplication, IManagementModeFixtureForwarder
     {

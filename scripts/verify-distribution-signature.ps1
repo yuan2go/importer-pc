@@ -1,4 +1,4 @@
-#requires -Version 7.0
+#requires -Version 7.3
 param(
     [Parameter(Mandatory)][string]$Media,
     [Parameter(Mandatory)][string[]]$ApprovedSigner,

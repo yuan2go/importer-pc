@@ -155,25 +155,29 @@ static partial class Program
             var vm = window.ViewModel;
             for (var i = 0; i < 150 && !vm.IsManagementMode; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
             check(vm.IsManagementMode, "current draft-close fixture observes its real management grant before navigation");
-            Click(window, "参数设置");
-            for (var i = 0; i < 150 && (!vm.HasLoadedConfiguration || vm.Busy || vm.SelectedPage != "maintenance"); i++) await Task.Delay(20);
-            var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
+            typeof(SupplyStationWindow).GetMethod("Maintenance_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.Invoke(window, [window, new RoutedEventArgs()]);
+            for (var i = 0; i < 150 && (!vm.HasLoadedConfiguration || vm.Busy || !window.OwnedWindows.OfType<ManagementCenterWindow>().Any(center => center.IsVisible)); i++) await Task.Delay(20);
+            var center = window.OwnedWindows.OfType<ManagementCenterWindow>().Single();
+            var page = (MaintenancePage)((ContentControl)center.FindName("ManagementPageHost")).Content;
             var settings = Descendants(page).OfType<ParameterSettingsControl>().Single();
-            check(settings.ShowPage(1, "接收与等待限制"), "current business limits page is reachable");
+            check(settings.NavigateTo("ReadTimeoutMs"), "current automatic-reading deadline is reachable");
             window.UpdateLayout(); await Dispatcher.Yield();
-            var editor = Descendants(settings).OfType<TextBox>().Single(x => x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path == "TimeoutMs");
-            var policy = vm.StructuredPolicy!; var before = policy.TimeoutMs;
+            var editor = Descendants(settings).OfType<TextBox>().Single(x => x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path == "ReadTimeoutMs");
+            var policy = vm.StructuredPolicy!; var before = policy.ReadTimeoutMs;
             editor.Focus(); editor.Text = "SYNTHETIC invalid integer"; editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
-            check(policy.TimeoutMs == editor.Text && vm.HasUnsavedConfiguration && !vm.ParameterEditor!.ValidateFields() && vm.ParameterEditor.Issues.Any(x => x.Path == "TimeoutMs"),
+            check(policy.ReadTimeoutMs == editor.Text && vm.HasUnsavedConfiguration && !vm.ParameterEditor!.ValidateFields() && vm.ParameterEditor.Issues.Any(x => x.Path == "ReadTimeoutMs"),
                 "current validation rejects invalid numeric input while retaining the exact unsaved text");
+            center.Close();
+            for (var i = 0; i < 150 && (center.IsVisible || !window.IsEnabled); i++) await Task.Delay(20);
+            check(!center.IsVisible && window.IsEnabled && decisions == 0 && vm.HasUnsavedConfiguration, "closing management retains the full draft without an unrelated discard or workstation exit");
             Decision(false); window.Close();
             for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
-            check(exitDecisions == 1 && decisions == 1 && stops == 0 && window.IsVisible && window.IsEnabled && editor.Text == policy.TimeoutMs && vm.HasUnsavedConfiguration,
+            check(exitDecisions == 1 && decisions == 1 && stops == 0 && window.IsVisible && window.IsEnabled && editor.Text == policy.ReadTimeoutMs && vm.HasUnsavedConfiguration,
                 "canceled close preserves invalid input and the live owner without discarding the draft");
-            editor.Text = (int.Parse(before) + 1).ToString(); window.Close();
+            editor.Text = (int.Parse(before) + 1).ToString(); editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource(); window.Close();
             for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
-            check(exitDecisions == 2 && decisions == 2 && stops == 0 && window.IsVisible && policy.TimeoutMs == editor.Text && vm.HasUnsavedConfiguration,
-                "native close commits pending current text before the discard decision and preserves it by default");
+            check(exitDecisions == 2 && decisions == 2 && stops == 0 && window.IsVisible && policy.ReadTimeoutMs == editor.Text && vm.HasUnsavedConfiguration,
+                "another canceled workstation exit preserves the updated complete draft");
             Decision(true); window.Close();
             for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20);
             check(exitDecisions == 3 && decisions == 3 && !window.IsVisible && stops == 1, "explicit discard exits native Closing and stops the actual Application once");
@@ -347,13 +351,17 @@ static partial class Program
                 check(button.ActualHeight >= 44 && bounds.Bottom <= client.ActualHeight && bounds.Top >= 0, $"{ui} {target} fixed operation remains visible");
             }
             var pause = Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停供包")));
-            check(pause.IsEnabled && pause.ActualHeight >= 44, "independent Pause remains enabled and reachable");
+            check(pause.IsVisible && pause.IsEnabled && pause.ActualHeight >= 44 && Inside(pause, client), "independent Pause remains enabled and reachable");
             var dpi = VisualTreeHelper.GetDpi(window);
             File.AppendAllText(Path.Combine(evidence, "CLIENT-MATRIX.log"), $"{ui} target={target} client={client.ActualWidth}x{client.ActualHeight} dpi={dpi.DpiScaleX}/{dpi.DpiScaleY} os={Environment.OSVersion} account={Environment.UserName}\n");
             var bitmap = new RenderTargetBitmap((int)(client.ActualWidth * dpi.DpiScaleX), (int)(client.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
             bitmap.Render(client); var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap));
             using var stream = File.Create(Path.Combine(evidence, $"{ui}-client-{target.Item1}x{target.Item2}-unknown-rejection.png")); png.Save(stream);
         }
+        var unpaused = await vm.Application.SnapshotAsync();
+        var resumed = await vm.Application.CommandAsync(new(Wire.Id(), unpaused.Revision, "Resume"));
+        check(resumed.Status == "Persisted", ui + " confirms Resume before exercising geometry protection");
+        await vm.RefreshAsync(); check(vm.Snapshot?.Paused == false, ui + " is observably running immediately before the subminimum transition");
         await SetClient(window, 799, 419);
         for (var i = 0; i < 60 && vm.Snapshot?.Paused != true; i++) await Task.Delay(50);
         check(!vm.ViewportFits && !vm.CanUseWorkspace && vm.Snapshot!.Paused, ui + " actual subminimum client protects and requests software Pause");

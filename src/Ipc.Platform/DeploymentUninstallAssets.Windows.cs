@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Principal;
 
@@ -114,16 +112,7 @@ public static partial class WindowsDeploymentSetup
             if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(state)) > 32 * 1024 * 1024) throw new InvalidDataException("清理回执超过保存预算。");
             WriteProtected(path, state, sid);
         }
-        return ApplyUninstallAssets(record, path, current, Save, root => TrustedProgramRoots.Contains(root, AppContext.BaseDirectory), QueueUninstallCacheDeletion, execution);
+        return ApplyUninstallAssets(record, path, current, Save, root => TrustedProgramRoots.Contains(root, AppContext.BaseDirectory), execution);
     }
 
-    [SupportedOSPlatform("windows")]
-    static void QueueUninstallCacheDeletion(string path)
-    {
-        // Exact frozen paths only; no replacement, recursion, shell or reboot action.
-        if (!MoveUninstallCacheFile(@"\\?\" + Path.GetFullPath(path), null, 4)) throw new IOException("维护缓存的重启清理登记失败。", new Win32Exception(Marshal.GetLastWin32Error()));
-    }
-    [DllImport("kernel32.dll", EntryPoint = "MoveFileExW", CharSet = CharSet.Unicode, SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool MoveUninstallCacheFile(string path, string? target, uint flags);
 }

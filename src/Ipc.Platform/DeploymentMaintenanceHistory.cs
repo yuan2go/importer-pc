@@ -184,6 +184,6 @@ public static partial class WindowsDeploymentSetup
         RequireProtectedPruneFiles(record.Plan.Delete);
         return ApplyUninstallAssets(record, AssetRecordFile(application, operation), original,
             state => WriteProtected(AssetRecordFile(application, operation), state, new SecurityIdentifier(original.RuntimeAccountSid)),
-            root => TrustedProgramRoots.Contains(root, AppContext.BaseDirectory), QueueUninstallCacheDeletion, execution);
+            root => TrustedProgramRoots.Contains(root, AppContext.BaseDirectory), execution);
     }
 }

@@ -3,6 +3,13 @@ param([string]$Baseline='a43ecb86efdc78ddc48e7082dcb6f96848138a8b', [string]$Out
 $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'project-environment.ps1')
+. (Join-Path $PSScriptRoot 'verification-evidence.ps1')
+$candidate=(& git -C $repo rev-parse HEAD).Trim()
+function Require-Candidate {
+ $head=& git -C $repo rev-parse HEAD;if($LASTEXITCODE -ne 0 -or $head.Trim() -ne $candidate){throw 'Candidate commit changed'}
+ $dirty=& git -C $repo status --porcelain -- src tests scripts;if($LASTEXITCODE -ne 0 -or $dirty){throw 'Commit exact product/test/tool bytes before comparison'}
+}
+Require-Candidate
 if(-not $IsWindows){throw 'Native Windows WPF required'}
 if($Baseline -notmatch '^[a-f0-9]{40}$'){throw 'Full baseline commit required'}
 if(-not $Output){$Output=Join-Path $repo ('.artifacts/typography-comparison-'+[guid]::NewGuid().ToString('N'))}
@@ -36,12 +43,15 @@ try {
    $arguments=@($repo,'--typography-comparison')
    if($variant -eq 'baseline'){$binary=Join-Path $source $binary;$arguments+='--baseline'}
    if($variant -eq 'system'){$arguments+='--system-family'}
-   & dotnet $binary @arguments
+   Require-Candidate;Reset-NativeEvidence $repo
+   & dotnet $binary @arguments *> (Join-Path $Output ($variant+'.console.log'))
    $result=$LASTEXITCODE
+   try{$native=Read-NativeEvidence $repo}catch{@{ExitCode=$result;EvidenceGap=$_.Exception.Message}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $Output ($variant+'.failure.json'));throw}
    Copy-Item -LiteralPath (Join-Path $repo '.artifacts/WINDOWS-WPF-EVIDENCE.txt') -Destination (Join-Path $Output ($variant+'.txt'))
+   Require-Candidate
    if($result -ne 0){throw "$variant failed; original evidence pointer retained"}
   }
-  [ordered]@{BaselineProduction=$Baseline;CandidateSource=(& git rev-parse HEAD);FixtureSha256=(Get-FileHash -LiteralPath (Join-Path $Output 'private-fixture.json')).Hash;
+  [ordered]@{BaselineProduction=$Baseline;CandidateSource=$candidate;FixtureSha256=(Get-FileHash -LiteralPath (Join-Path $Output 'private-fixture.json')).Hash;
    BaselineAdaptation='Only comparison fixture and dispatcher added; original src/ untouched';Scope='Native synthetic typography comparison; no field/operator acceptance'} |
    ConvertTo-Json | Set-Content -LiteralPath (Join-Path $Output 'SOURCE.json') -Encoding utf8NoBOM
  } finally {Pop-Location}

@@ -174,6 +174,8 @@ def analyze_business(db, database, collection, dispositions, events, deadline):
                     ReceivedAt=received, CompletedAt=completed, CompletionInWindow=completed is not None and start <= instant(completed) <= end,
                     StateScope='BackupSnapshot', OriginalSha256=digest), ensure_ascii=False) + '\n'
                 output_bytes += len(line.encode('utf-8'))
+                if output_bytes > 2 * 1024**3:
+                    raise ValueError('Business evidence output capacity exceeded')
                 inputs.write(line)
 
         facts = {}
@@ -277,6 +279,10 @@ def analyze_business(db, database, collection, dispositions, events, deadline):
                     gap('AttemptRuntimeClockMissing', OperationId=owner, AuditSequence=seq)
                     continue
                 key = (owner, evidence['RequestId'])
+                if not at:
+                    unknown_attempt_time = True
+                    gap('AttemptTimeUnconfirmed', OperationId=owner, RequestId=evidence['RequestId'], AuditSequence=seq)
+                    continue
                 if key in seen_attempts:
                     raise ValueError('More than one first RCS attempt for one original request')
                 seen_attempts.add(key)

@@ -13,8 +13,15 @@ static class ApplicationArchitecture
     static void Check(bool pass, string reason) { if (!pass) throw new Exception("FAIL AA22: " + reason); Console.WriteLine("PASS AA22: " + reason); }
     static async Task<ParcelSnapshot> Wait(ParcelRuntime app, Func<ParcelSnapshot, bool> predicate)
     {
-        for (int i = 0; i < 250; i++) { var s = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(1)); if (predicate(s)) return s; await Task.Delay(20); }
-        throw new Exception("AA22 timeout: " + Wire.Encode(await app.SnapshotAsync()));
+        var deadline = System.Diagnostics.Stopwatch.StartNew(); ParcelSnapshot? last = null;
+        var budget = TimeSpan.FromSeconds(8);
+        while (deadline.Elapsed < budget)
+        {
+            last = await app.SnapshotAsync().WaitAsync(budget - deadline.Elapsed);
+            if (predicate(last)) return last;
+            await Task.Delay(TimeSpan.FromMilliseconds(20));
+        }
+        throw new TimeoutException("AA22 timeout: " + Wire.Encode(last));
     }
     public static async Task Run(string workspace, string root)
     {
@@ -199,7 +206,7 @@ static class ApplicationArchitecture
         BlockingFactory? partial = null;
         var failedPath = Path.Combine(root, "partial-start"); Directory.CreateDirectory(failedPath); ExtensionStore.AtomicWrite(Path.Combine(failedPath, "business.json"), sport);
         var failedLaunch = new BusinessLaunch(failedPath, Path.Combine(failedPath, "data"), null, null);
-        var failedApp = new ParcelRuntime(failedLaunch, new SportmasterFlow(), partial = new(new(failedLaunch), true));
+        await using var failedApp = new ParcelRuntime(failedLaunch, new SportmasterFlow(), partial = new(new(failedLaunch), true));
         try { await failedApp.StartAsync(CancellationToken.None); throw new Exception("second source startup unexpectedly passed"); }
         catch (IOException) { Check(failedApp.HasUnreleasedResources && partial.Readers!.Values.Sum(r => r.Starts) == 2, "second reader startup failure retains already-started first reader and downstream resources"); }
         await failedApp.DisposeAsync(); Check(partial.Readers!.Values.All(r => r.Disposed && r.Stops > 0), "partial startup disposes every returned source before factory/database release");
@@ -207,7 +214,7 @@ static class ApplicationArchitecture
         var constructionPath = Path.Combine(root, "partial-construction"); Directory.CreateDirectory(constructionPath); ExtensionStore.AtomicWrite(Path.Combine(constructionPath, "business.json"), sport);
         var constructionLaunch = new BusinessLaunch(constructionPath, Path.Combine(constructionPath, "data"), null, null);
         var partialFactory = new ParcelCapabilityFactory(constructionLaunch) { Boundary = point => { if (point.EndsWith(topology.Readers[1].DeviceId, StringComparison.Ordinal)) throw new IOException("Injected failure after second reader construction"); } };
-        var partialApp = new ParcelRuntime(constructionLaunch, new SportmasterFlow(), partialFactory);
+        await using var partialApp = new ParcelRuntime(constructionLaunch, new SportmasterFlow(), partialFactory);
         try { await partialApp.StartAsync(CancellationToken.None); throw new Exception("partial construction unexpectedly succeeded"); }
         catch (IOException) { Check(partialApp.HasUnreleasedResources, "real factory partial construction retains every acquired device lease"); }
         await partialApp.DisposeAsync();

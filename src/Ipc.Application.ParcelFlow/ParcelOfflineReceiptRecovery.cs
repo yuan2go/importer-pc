@@ -16,7 +16,7 @@ public static class ParcelOfflineReceiptRecovery
         using var owner = new ResourceLease(directory, ["application-owner"]);
         if (!ExtensionSchema.IsHash(expectedHash) || Wire.FileHash(database) != expectedHash || string.IsNullOrWhiteSpace(reason) || reason.Length > 1024)
             throw new InvalidDataException("Exact source database hash and inspection reason required");
-        if (Path.GetFileName(database) != definition.Id + ".db" || backup.StartsWith(directory + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+        if (Path.GetFileName(database) != definition.Id + ".db" || backup.StartsWith(directory + Path.DirectorySeparatorChar, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
             throw new InvalidDataException("Use original Application database and separate new backup destination");
         var wal = database + "-wal";
         if (File.Exists(wal) && new FileInfo(wal).Length > 0 && (!ExtensionSchema.IsHash(expectedWalHash) || Wire.FileHash(wal) != expectedWalHash))
@@ -122,7 +122,7 @@ public static class ParcelOfflineReceiptRecovery
         // Retain exact current configuration/package references in the complete backup.
         registerBackup?.Invoke(backup, envelope.Effective); if (envelope.Pending is { } pending) registerBackup?.Invoke(backup, pending);
         Directory.CreateDirectory(recovery); repository.Backup(backup);
-        foreach (var name in names) { token.ThrowIfCancellationRequested(); var target = RecoveryFiles.Resolve(recovery, name); Directory.CreateDirectory(Path.GetDirectoryName(target)!); RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory, name), target, hashes[name]); }
+        foreach (var name in names) { token.ThrowIfCancellationRequested(); var target = RecoveryFiles.Resolve(recovery, name); Directory.CreateDirectory(Path.GetDirectoryName(target)!); RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory, name), target, hashes[name], token); }
         ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), new ParcelRecoveryManifest(envelope.Effective.ApplicationId, Path.GetFileName(backup), Wire.FileHash(backup), hashes, DateTimeOffset.UtcNow, "Before original Query; current format and original bytes retained"));
         return Task.CompletedTask;
     }

@@ -26,15 +26,19 @@ static partial class Program
             try { while (true) { h.Api(h.Left).Enqueue(left, ++number); h.Api(h.Right).Enqueue(right, number); await Task.Delay(80, feed.Token); } }
             catch (OperationCanceledException) when (feed.IsCancellationRequested) { }
         });
-        var window = new SupplyStationWindow(h.App, null, "standard");
-        window.Show();
+        SupplyStationWindow? window = null;
         try
         {
+            window = new SupplyStationWindow(h.App, null, "standard");
+            await using var windowOwner = new NativeWindowOwner(window);
+            window.Show();
             await SetClient(window, 1366, 768);
             await Until(() => window.ViewModel.Fresh && window.ViewModel.IsManagementMode, "initial runtime projection");
             window.ShowPositionDebug(window.ViewModel.Left);
             await Dispatcher.Yield(); window.UpdateLayout();
-            var control = Descendants(window).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
+            Window Surface() => window.OwnedWindows.OfType<ManagementCenterWindow>().SingleOrDefault(center => center.IsVisible) ?? (Window)window;
+            for (var n = 0; n < 200 && !Descendants(Surface()).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"); n++) await Task.Delay(20);
+            var control = Descendants(Surface()).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             var live = Field<UserControl>(control, "livePreview"); var image = Field<Image>(live, "image");
             await Until(() => image.Source is not null, "online acquisition never reached native preview: " + Field<TextBlock>(live, "status").Text);
             Check((await h.App.CameraInspectionStatusAsync(default)).BusinessFenced == false && h.Peer.Requests.IsEmpty,
@@ -49,6 +53,9 @@ static partial class Program
             Check(true, "history tab unload and reload restore live video");
             typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["workstation"]);
             await Until(() => !live.IsLoaded && image.Source is null, "leaving debug did not stop preview");
+            await Until(() => !window.OwnedWindows.OfType<ManagementCenterWindow>().Any(center => center.IsVisible), "previous management owner did not close");
+            await h.AuthorizeAsync();
+            await Until(() => window.ViewModel.IsManagementMode, "new management grant did not reach the window");
             window.ShowPositionDebug(window.ViewModel.Left);
             await Until(() => live.IsLoaded && image.Source is not null, "cached debug page never resumed video");
             Check(true, "cached debug page resumes its own timer after leaving and reopening");
@@ -65,6 +72,6 @@ static partial class Program
                 "navigation and management reentry preserve the original SDK owners and never send requests");
             CaptureInternal(evidence, "preview-lifecycle", (Grid)window.FindName("ClientArea"), lines);
         }
-        finally { window.Close(); feed.Cancel(); await producer; }
+        finally { try { window?.Close(); } finally { feed.Cancel(); await producer; } }
     }
 }

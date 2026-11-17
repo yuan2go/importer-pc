@@ -21,8 +21,9 @@ public sealed partial class ParcelRuntime
         {
             var batch = operations.Values.Where(op => !obsoleteSmOriginals.Contains(op.Id) && CanRetainSmUnknown(op)).Take(128).ToArray();
             if (batch.Length == 0) return;
-            repository!.ArchiveSmUnknowns(batch);
-            RemoveArchivedFromRuntime(batch.Select(op => op.Id).ToArray(), unknowns: batch.Length);
+            var revision = repository!.ArchiveRevision;
+            try { repository.ArchiveSmUnknowns(batch); }
+            finally { if (repository.ArchiveRevision != revision) RemoveArchivedFromRuntime(batch.Select(op => op.Id).ToArray(), unknowns: batch.Length); }
             foreach (var op in batch)
                 WriteRuntimeLog("供包状态", "未确认格口已转入历史记录", new
                 {

@@ -79,16 +79,20 @@ public sealed partial class ParcelRepository
         using (var c = db.CreateCommand())
         {
             c.Transaction = tx;
-            c.CommandText = "SELECT r.id,r.raw_hash,a.body FROM parcel_receipts r LEFT JOIN parcel_archived_receipts a ON a.id=r.id WHERE r.raw_hash IS NOT NULL OR r.state='Committed'";
+            c.CommandText = "SELECT r.id,r.raw_hash,a.body,a.raw_hash FROM parcel_receipts r LEFT JOIN parcel_archived_receipts a ON a.id=r.id WHERE r.raw_hash IS NOT NULL OR r.state='Committed'";
             using var r = c.ExecuteReader();
             while (r.Read())
             {
                 token.ThrowIfCancellationRequested();
                 var file = RecoveryFiles.Resolve(directory, "receipts/" + r.GetString(0) + ".json");
                 var rawHash = r.IsDBNull(1) ? null : r.GetString(1);
+                if (!r.IsDBNull(2))
+                {
+                    using var archivedBytes = r.GetStream(2);
+                    if (r.IsDBNull(3) || r.GetString(3) != rawHash || Convert.ToHexString(SHA256.HashData(archivedBytes)) != rawHash) invalidRaw++;
+                }
                 if (File.Exists(file)) { RecoveryFiles.RequireOrdinaryAncestors(file); if (Wire.FileHash(file, token) != rawHash) invalidRaw++; }
                 else if (r.IsDBNull(2)) invalidRaw++;
-                else { using var bytes = r.GetStream(2); if (Convert.ToHexString(SHA256.HashData(bytes)) != rawHash) invalidRaw++; }
             }
         }
         var reasons = new List<string>();

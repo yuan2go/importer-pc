@@ -56,7 +56,7 @@ public static class StartupConfigurationFiles
         if (after.Any(x => x.Provider is null && x.Bound)) throw new InvalidDataException("配置需要的精确驱动或组件尚未安装；当前输入保留。");
         // Restore only known editor values onto the local original. Station, mode,
         // topology, contracts, immutable IDs and non-editor fields remain local.
-        return draft.WithRestored(source.Capture());
+        return draft.WithRestored(new(source.Capture().Values.Where(p => !p.Key.StartsWith("preference.", StringComparison.Ordinal)).ToDictionary(p => p.Key, p => p.Value)));
     }
 
     public static string Describe(StartupConfigurationDraft before, StartupConfigurationDraft after)

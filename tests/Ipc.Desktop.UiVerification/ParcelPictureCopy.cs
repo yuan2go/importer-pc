@@ -45,7 +45,11 @@ static partial class Program
             CaptureInternal(evidence, "parcel-picture-copy", (FrameworkElement)window.Content, lines);
             window.Close();
             window = Open(new(OperationId: "SYNTH-NO-IMAGE")); window.Show();
-            for (var i = 0; i < 40; i++) { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); await Task.Delay(25); }
+            var missingState = (TextBlock)typeof(ParcelPictureWindow).GetField("status", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(window)!;
+            var wait = System.Diagnostics.Stopwatch.StartNew();
+            do { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); await Task.Delay(20); }
+            while ((missingState.Text.Length == 0 || missingState.Text.StartsWith("正在读取")) && wait.Elapsed < TimeSpan.FromSeconds(5));
+            Check(missingState.Text.Length > 0 && !missingState.Text.StartsWith("正在读取") && Descendants(window).OfType<Image>().Single().Source is null, "missing-image request reaches a terminal empty result");
             Check(!Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "复制图片")).IsEnabled,
                 "a missing original cannot copy a previous parcel image");
         }

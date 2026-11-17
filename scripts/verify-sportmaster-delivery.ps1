@@ -1,6 +1,8 @@
 #requires -Version 7.0
 param([Parameter(Mandatory)][string]$Release,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet')
 $ErrorActionPreference='Stop'
+# This qualification intentionally observes a refused native production probe.
+$PSNativeCommandUseErrorActionPreference=$false
 if(-not $IsWindows){throw 'Native frozen-media journeys require Windows'}
 $Release=(Resolve-Path -LiteralPath $Release).Path
 $Output=[IO.Path]::GetFullPath($Output)

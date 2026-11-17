@@ -240,7 +240,7 @@ def _select_palette_for_mode(palettes: list, mode: str,
         for palette in palettes:
             if _palette_is_dark(palette):
                 return palette
-    return palettes[0]
+    return _derive_dark_palette(palettes[0]) if mode == "dark" else palettes[0]
 
 
 def _filter_anti_patterns_for_mode(anti_patterns: str, mode: str) -> str:
@@ -1118,7 +1118,7 @@ def format_master_md(design_system: dict) -> str:
     # Logic header
     lines.append("# Design System Master File")
     lines.append("")
-    lines.append("> **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.")
+    lines.append("> **LOGIC:** When building a specific page, first check `pages/[page-name].md`.")
     lines.append("> If that file exists, its rules **override** this Master file.")
     lines.append("> If not, strictly follow the rules below.")
     lines.append("")
@@ -1296,7 +1296,8 @@ def format_master_md(design_system: dict) -> str:
     lines.append("}")
     lines.append("")
     lines.append(".modal {")
-    lines.append("  background: white;")
+    lines.append(f"  background: {(colors.get('card') or colors.get('background') or '#FFFFFF')};")
+    lines.append(f"  color: {(colors.get('card_foreground') or colors.get('foreground') or '#0F172A')};")
     lines.append("  border-radius: 16px;")
     lines.append("  padding: 32px;")
     lines.append("  box-shadow: var(--shadow-xl);")
@@ -1420,7 +1421,7 @@ def format_page_override_md(design_system: dict, page_name: str, page_query: str
     lines.append(f"> **Generated:** {timestamp}")
     lines.append(f"> **Page Type:** {page_overrides.get('page_type', 'General')}")
     lines.append("")
-    lines.append("> ⚠️ **IMPORTANT:** Rules in this file **override** the Master file (`design-system/MASTER.md`).")
+    lines.append("> ⚠️ **IMPORTANT:** Rules in this file **override** the Master file (`../MASTER.md`).")
     lines.append("> Only deviations from the Master are documented here. For all other rules, refer to the Master.")
     lines.append("")
     lines.append("---")

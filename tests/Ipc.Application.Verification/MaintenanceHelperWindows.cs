@@ -117,6 +117,7 @@ static class MaintenanceHelperWindows
             await connected;using var reader=new StreamReader(server,new UTF8Encoding(false,true),true,1024,true);var writer=controlWriter=new StreamWriter(server,new UTF8Encoding(false,true),1024,true){AutoFlush=true};
             var ready=JsonDocument.Parse(await reader.ReadLineAsync(timeout.Token)??throw new IOException("Missing Ready"));
             Check(ready.RootElement.GetProperty("Status").GetString()=="Ready"&&ready.RootElement.GetProperty("RequestSha256").GetString()==hash,"controlled peer connects to the real protected helper and bound request");ready.Dispose();
+            if(scenario!="wrong-control") await writer.WriteLineAsync(JsonSerializer.Serialize(new{Command="Begin",RequestSha256=hash}));
             if(scenario=="wrong-control")
             {
                 await writer.WriteLineAsync(JsonSerializer.Serialize(new{Command="Begin",RequestSha256=new string('0',64)}));

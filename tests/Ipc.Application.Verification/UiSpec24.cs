@@ -27,7 +27,7 @@ static class UiSpec24
         var before = management.Status(); var originalEntered = management.Evidence!.EnteredAt; var authority = management.Require(); var delegation = management.Delegate(Wire.Hash("synthetic-operation"));
         clock = clock.AddMinutes(14); var renewed = management.Renew();
         Check(renewed.SessionId == before.SessionId && renewed.ExpiresAt == clock.AddMinutes(15) && !authority.IsCancellationRequested, "renewal preserves session ownership and reschedules its original authority token");
-        try { management.ValidateDelegation(delegation, Wire.Hash("synthetic-operation"), false); throw new Exception("old ticket extended"); } catch (UnauthorizedAccessException) { }
+        try { management.ValidateDelegation(delegation, Wire.Hash("synthetic-operation"), true); throw new Exception("old ticket extended"); } catch (UnauthorizedAccessException) { }
         Check(true, "renewal never extends an already-issued delegation deadline");
         Check(management.Evidence?.EnteredAt == originalEntered, "renewal preserves the original authentication timestamp in audit evidence");
         clock = clock.AddMinutes(16);

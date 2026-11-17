@@ -12,6 +12,24 @@ spec.loader.exec_module(archive)
 
 
 class ArchiveTests(unittest.TestCase):
+    def test_standalone_svg_references_and_malformed_board_are_checked(self):
+        (self.root / 'docs/icon.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg"><image href="missing.png"/></svg>')
+        (self.root / 'docs/board.json').write_text('[{"width":1,"height":1,"objects":[null]}]')
+        self.refresh()
+        codes = {item['code'] for item in self.check_archive()['errors']}
+        self.assertIn('missing_or_unsafe_reference', codes)
+        self.assertIn('ValueError', codes)
+
+    def test_malformed_manifest_container_is_a_validation_failure(self):
+        file = self.root / 'docs/manifest.json'
+        manifest = json.loads(file.read_text()); manifest['files'] = None; file.write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError, 'Manifest files'):
+            self.check_archive()
+
+    def test_markdown_reference_labels_normalize_case_and_spacing(self):
+        refs, _ = archive.markdown('[Guide][ DOC   GUIDE ]\n\n[doc guide]: guide.md\n')
+        self.assertEqual(refs, ['guide.md'])
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
@@ -75,10 +93,19 @@ class ArchiveTests(unittest.TestCase):
         (self.root / 'docs/a.css').write_text('x{background:url("absent.png")}')
         (self.root / 'docs/boards.json').write_text(json.dumps([{'width': 10, 'height': 10, 'objects': [
             {'type': 'svg', 'svg': '<svg><style>rect{fill:url(missing.png)}</style></svg>'}]}]))
-        (self.root / 'docs/link').symlink_to(self.root / 'README.md')
+        linked = True
+        try:
+            (self.root / 'docs/link').symlink_to(self.root / 'README.md')
+        except OSError as error:
+            if getattr(error, 'winerror', None) != 1314:
+                raise
+            linked = False
+            print('NOT_RUN native symlink subcase: Windows caller lacks symbolic-link privilege')
         self.refresh()
         codes = {x['code'] for x in self.check_archive()['errors']}
-        self.assertTrue({'missing_anchor', 'missing_or_unsafe_reference', 'symlink'} <= codes)
+        self.assertTrue({'missing_anchor', 'missing_or_unsafe_reference'} <= codes)
+        if linked:
+            self.assertIn('symlink', codes)
         self.assertTrue(any('boards.json -> missing.png' in x['path'] for x in self.check_archive()['errors']))
 
     def test_zip_traversal_link_crc_identity(self):

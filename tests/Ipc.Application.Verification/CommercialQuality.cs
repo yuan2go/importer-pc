@@ -198,16 +198,20 @@ static class CommercialQuality
     sealed class TimestampFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
     {
         int observations;
+        DateTimeOffset? baseline;
+        readonly object timeSync = new();
+        DateTimeOffset Timestamp(DateTimeOffset observed)
+        { lock (timeSync) { baseline ??= observed; return baseline.Value.AddMilliseconds(++observations > 1 ? -750 : 0); } }
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
         public CapabilityRequirements Requirements(CapabilityBinding b) => inner.Requirements(b);
-        public ParcelPorts Create(ParcelConfiguration c) { var p = inner.Create(c); var readers = p.Readers!.ToDictionary(x => x.Key, x => (IControlledObservationSource)new TimestampReader(x.Value, () => TimeSpan.FromMilliseconds(Interlocked.Increment(ref observations) > 1 ? -750 : 0))); return p with { Reader = readers[c.Reader.DeviceId], Readers = readers, Wcs = new LostSecondReply(p.Wcs!) }; }
+        public ParcelPorts Create(ParcelConfiguration c) { var p = inner.Create(c); var readers = p.Readers!.ToDictionary(x => x.Key, x => (IControlledObservationSource)new TimestampReader(x.Value, Timestamp)); return p with { Reader = readers[c.Reader.DeviceId], Readers = readers, Wcs = new LostSecondReply(p.Wcs!) }; }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
-    sealed class TimestampReader(IControlledObservationSource inner, Func<TimeSpan> offset) : IControlledObservationSource, ISyntheticObservationInput
+    sealed class TimestampReader(IControlledObservationSource inner, Func<DateTimeOffset, DateTimeOffset> timestamp) : IControlledObservationSource, ISyntheticObservationInput
     {
         public string DeviceId => inner.DeviceId; public string Epoch => inner.Epoch; public string ConfirmationSource => inner.ConfirmationSource;
-        public Task StartControlledAsync(string e, Func<Observation, bool> f, Action<DeviceHealthConfirmation> h, CancellationToken t) => inner.StartControlledAsync(e, o => f(o with { ObservedAt = o.ObservedAt + offset() }), h, t);
+        public Task StartControlledAsync(string e, Func<Observation, bool> f, Action<DeviceHealthConfirmation> h, CancellationToken t) => inner.StartControlledAsync(e, o => f(o with { ObservedAt = timestamp(o.ObservedAt) }), h, t);
         public bool Emit(string k, string a, string[] c, int? q, string s) => ((ISyntheticObservationInput)inner).Emit(k, a, c, q, s);
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t); public ValueTask DisposeAsync() => inner.DisposeAsync();
     }

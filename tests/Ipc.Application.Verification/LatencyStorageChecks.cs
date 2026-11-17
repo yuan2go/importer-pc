@@ -54,7 +54,7 @@ static class LatencyStorageChecks
 
         var database = Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, c.ApplicationId + ".db");
         var selection = await runtime.SelectHistoryAsync(new());
-        var pinned = new ParcelHistoryReader(database); _ = pinned.Page(selection, long.MaxValue, 1);
+        using var pinned = new ParcelHistoryReader(database); _ = pinned.Page(selection, long.MaxValue, 1);
         var samples = new List<JsonElement>();
         async Task Observe()
         {

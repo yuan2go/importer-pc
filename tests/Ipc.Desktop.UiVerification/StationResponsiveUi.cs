@@ -62,7 +62,9 @@ static partial class Program
                     ValueTask<ParcelPresentationUpdate> pending;
                     while (true) { pending = subscriptions[4].ReadAsync(wait.Token); if (!pending.IsCompleted) break; await pending; }
                     var concurrentRejected = false;
-                    try { await subscriptions[4].ReadAsync(default); } catch (InvalidOperationException) { concurrentRejected = true; }
+                    using var duplicateBudget = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+                    try { await subscriptions[4].ReadAsync(duplicateBudget.Token); } catch (InvalidOperationException) { concurrentRejected = true; }
+                    catch (OperationCanceledException) when (duplicateBudget.IsCancellationRequested) { }
                     wait.Cancel(); try { await pending; } catch (OperationCanceledException) { }
                     Check(concurrentRejected, "one in-flight read per subscriber prevents unbounded waiters and cancellation releases the actual pending read");
                 }

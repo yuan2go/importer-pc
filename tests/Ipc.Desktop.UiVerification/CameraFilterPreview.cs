@@ -63,7 +63,7 @@ static partial class Program
             var type = typeof(SupplyStationWindow).Assembly.GetType("Ipc.Application.Sportmaster.Desktop.StationDebugEvidenceControl", throwOnError: true)!;
             var control = (UserControl)Activator.CreateInstance(type, vm, (Func<string, Task>)(_ => Task.CompletedTask), (Func<string, Task>)(_ => Task.CompletedTask))!;
             void Revoke() => type.GetMethod("Revoke")!.Invoke(control, null);
-            var window = new Window { Title = "条码筛选语义 · 合成验证", Content = control, Width = 1024, Height = 768 };
+            var window = new Window { Title = "条码筛选语义 · 合成验证", Content = control, Width = 1024, Height = 768 }; await using var windowOwner = new NativeWindowOwner(window);
             window.Show();
             async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
             await Flush();

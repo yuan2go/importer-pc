@@ -79,9 +79,9 @@ public sealed class ParcelHistoryReader : IDisposable
     }
     public string[] Positions(ParcelHistorySelection selection)
     {
-        using var c = Command(selection, "SELECT DISTINCT coalesce(h.position,'main') FROM parcel_history_index h WHERE h.seq<=$upper ORDER BY 1 LIMIT 257");
+        using var c = Command(selection, "SELECT DISTINCT coalesce(h.position,'main')" + Source + Conditions(selection) + " ORDER BY 1 LIMIT 256");
         using var r = c.ExecuteReader(); List<string> result = [];
-        while (r.Read()) { cancellation.ThrowIfCancellationRequested(); if (result.Count == 256) throw new IOException("历史投递位超过256项，请用精确ID查询"); result.Add(r.GetString(0)); }
+        while (r.Read()) { cancellation.ThrowIfCancellationRequested(); result.Add(r.GetString(0)); }
         return result.ToArray();
     }
     public async Task<ParcelExportReceipt> Export(ParcelHistorySelection selection, string destination, CancellationToken token)

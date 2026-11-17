@@ -41,6 +41,7 @@ static class RcsOfflineCameraReads
             serial => new ResourceLease(Path.Combine(root, "preview-lease"), [serial]),
             phaseChanged: phase => { if (phase == "get-image-buffer" && api.Releases == 1) cycleDone.Set(); }, decoder: nativeResults ? null : decoder))
         {
+            source.FrameCopiedForVerification = api.RegisterCopiedFrame;
             await source.SetInspectionAsync(new("preview-only", false, _ => true, false) { DecodeAllowed = _ => readAllowed }, default);
             await source.StartControlledAsync("preview-race", _ => { Interlocked.Increment(ref inputs); return true; }, _ => { }, default);
             api.EnqueueNative(CameraRoundHarness.Barcode("SYNTH-RAW-PREVIEW"), 1,

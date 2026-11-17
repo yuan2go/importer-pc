@@ -140,17 +140,26 @@ static class UxCommercialPresentation
         vm.SetDetailsVisibility(true, true);
         var first = new TaskCompletionSource<ParcelHistoryPage>(TaskCreationOptions.RunContinuationsAsynchronously);
         var second = new TaskCompletionSource<ParcelHistoryPage>(TaskCreationOptions.RunContinuationsAsynchronously);
-        var entered = new SemaphoreSlim(0); var calls = 0;
+        using var entered = new SemaphoreSlim(0); var calls = 0;
         probe.History = _ => { var n = Interlocked.Increment(ref calls); entered.Release(); return n == 1 ? first.Task : second.Task; };
-        var older = vm.LoadHistoryAsync(); await entered.WaitAsync(TimeSpan.FromSeconds(2));
+        var older = vm.LoadHistoryAsync(); Task? newer = null;
+        try
+        {
+        Check(await entered.WaitAsync(TimeSpan.FromSeconds(2)), "first history read enters its provider");
         var overlapRefused = false;
         try { await vm.LoadHistoryAsync(); } catch (InvalidOperationException) { overlapRefused = true; }
         Check(overlapRefused && calls == 1 && vm.HistoryLoading && vm.HistoryStatus.Contains("读取"), "history retains one real in-flight owner and rejects overlapping reads");
         vm.CancelHistoryRead(); first.SetResult(new([new(1, false, a)], null)); await older;
         Check(vm.HistoryItems.Length == 0 && !vm.HistoryLoading, "cancelled current session cannot publish its late page after real drain");
-        var newer = vm.LoadHistoryAsync(); await entered.WaitAsync(TimeSpan.FromSeconds(2));
+        newer = vm.LoadHistoryAsync(); Check(await entered.WaitAsync(TimeSpan.FromSeconds(2)), "second history read enters its provider");
         second.SetResult(new([new(2, false, b)], null)); await newer;
         Check(vm.HistoryItems.Single().Operation.Id == b.Id && !vm.HistoryLoading, "late history result cannot replace newer page or busy state");
+        }
+        finally
+        {
+            first.TrySetResult(new([], null)); second.TrySetResult(new([], null));
+            await Task.WhenAll(newer is null ? [older] : new[] { older, newer }).WaitAsync(TimeSpan.FromSeconds(5));
+        }
         vm.SelectedHistory = vm.HistoryItems.Single(); probe.History = _ => Task.FromResult(new ParcelHistoryPage([new(2, false, b)], null)); await vm.LoadHistoryAsync();
         Check(vm.Selected?.Id == b.Id && vm.SelectedHistory?.Operation.Id == b.Id, "history refresh retains original selection and detail identity");
         probe.History = _ => Task.FromException<ParcelHistoryPage>(new IOException("SYNTHETIC history read failure"));
@@ -241,16 +250,20 @@ static class UxCommercialPresentation
         async Task Run()
         {
             using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim(); var serviceThread = 0; var changedOnUi = true;
-            probe.Read = () => { serviceThread = Environment.CurrentManagedThreadId; entered.Set(); release.Wait(); return Task.FromResult(snapshot); };
+            probe.Read = () => { serviceThread = Environment.CurrentManagedThreadId; entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(5))) throw new TimeoutException("Synthetic snapshot release timed out"); return Task.FromResult(snapshot); };
             var vm = new ParcelViewModel((IParcelApplication)(object)probe, "test", "test");
             vm.PropertyChanged += (_, _) => changedOnUi &= Environment.CurrentManagedThreadId == uiThread;
             var refresh = vm.RefreshAsync();
+            try
+            {
             // Management status is read before the snapshot. Keep this synthetic
             // dispatcher pumping while waiting for snapshot entry, as WPF does.
             Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(2))) && !refresh.IsCompleted && serviceThread != uiThread, "synchronously blocking snapshot service returns control without occupying the UI caller thread");
             var drain = vm.DrainAsync(); Check(!drain.IsCompleted, "close drain retains synchronous service ownership until actual completion");
             release.Set(); await refresh; await drain;
             Check(changedOnUi && vm.Fresh, "snapshot collection/property projection resumes on captured UI context");
+            }
+            finally { release.Set(); await refresh.WaitAsync(TimeSpan.FromSeconds(5)); await vm.DrainAsync().WaitAsync(TimeSpan.FromSeconds(5)); }
             probe.Read = () => Task.FromResult(snapshot);
             var command = new TaskCompletionSource<BusinessReceipt>(TaskCreationOptions.RunContinuationsAsynchronously);
             var action = vm.RunAsync(async () => { await vm.ServiceAsync(() => command.Task); });

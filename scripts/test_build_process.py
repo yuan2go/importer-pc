@@ -7,6 +7,9 @@ import sys
 import tempfile
 import time
 import unittest
+import threading
+from unittest.mock import patch
+import build_process
 
 
 class BuildProcessTests(unittest.TestCase):
@@ -46,6 +49,38 @@ class BuildProcessTests(unittest.TestCase):
 
     def test_cancellation_stops_real_descendants(self): self.exercise(True)
     def test_failure_stops_real_descendants(self): self.exercise(False)
+
+    @unittest.skipUnless(os.name == 'nt', 'Windows suspended-process ownership boundary')
+    def test_failed_job_assignment_terminates_the_actual_suspended_process(self):
+        launched = threading.Event()
+        owned = []
+        errors = []
+        original = OSError('synthetic job assignment failure')
+        real_popen = subprocess.Popen
+
+        def launch(*args, **kwargs):
+            child = real_popen(*args, **kwargs)
+            owned.append(child); launched.set()
+            return child
+
+        def run():
+            try: build_process.run([sys.executable, '-c', 'import time; time.sleep(30)'])
+            except BaseException as error: errors.append(error)
+
+        with patch.object(build_process.WindowsJob, 'assign', side_effect=original), patch.object(build_process.subprocess, 'Popen', side_effect=launch):
+            worker = threading.Thread(target=run)
+            worker.start()
+            try:
+                self.assertTrue(launched.wait(3))
+                worker.join(7)
+                self.assertFalse(worker.is_alive(), 'assignment failure must not wait indefinitely on an unowned suspended child')
+                self.assertIs(errors[0], original)
+                self.assertIsNotNone(owned[0].poll(), 'the actual suspended child must be terminated before failure returns')
+            finally:
+                for child in owned:
+                    if child.poll() is None: child.kill()
+                    child.wait(timeout=5)
+                worker.join(5)
 
 
 if __name__ == '__main__': unittest.main()

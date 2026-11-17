@@ -51,7 +51,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
     CameraFrameMetadata? selectedFrame;
     Row? selection;
     string position = "left", viewedSession = "", lastSessionState = "";
-    bool active, polling, busy, selecting, fit = true, businessInitialized, framesInitialized, historical;
+    bool active, polling, busy, selecting, fit = true, businessInitialized, framesInitialized, historical, historicalSession;
     long generation, selectionGeneration, commandGeneration, businessCursor, frameCursor, detailRevision = -1;
     int watchOffset;
     long businessOlder = long.MaxValue, businessNewer;
@@ -101,11 +101,11 @@ internal sealed class StationDebugEvidenceControl : UserControl
             if (dialog.ShowDialog(Window.GetWindow(this)) == true) { var value = await Api.ExportCameraOriginalAsync(frame.Id, dialog.FileName, t); Say("原图已导出：" + dialog.FileName); }
         });
         business.ItemsSource = businessRows; frames.ItemsSource = frameRows; tabs.Items.Add(new TabItem { Header = "业务扫描（原审计）", Content = business }); tabs.Items.Add(new TabItem { Header = "关联帧 / 未读码", Content = frames }); tabs.SelectedIndex = 0;
-        tabs.SelectionChanged += async (_, e) => { if (!ReferenceEquals(e.Source, tabs)) return; selection = null; selectionGeneration++; ClearImage(); await PollAsync(); };
+        tabs.SelectionChanged += async (_, e) => { if (!ReferenceEquals(e.Source, tabs)) return; generation++; selection = null; selectionGeneration++; business.SelectedItem = frames.SelectedItem = null; ClearImage(); inputEvidence.Clear(); requestEvidence.Clear(); result.Text = ""; await PollAsync(); };
         business.SelectionChanged += async (_, _) => await SelectRow(business.SelectedItem as Row); frames.SelectionChanged += async (_, _) => await SelectRow(frames.SelectedItem as Row);
         records.Children.Add(Title("连续扫描与请求结果")); records.Children.Add(tabs); records.Children.Add(coverage); records.Children.Add(Wrap(older, newer, latest, follow, pause)); records.Children.Add(result); records.Children.Add(record);
         pause.Click += (_, _) => { follow.IsChecked = follow.IsChecked != true; pause.Content = follow.IsChecked == true ? "暂停画面" : "继续画面"; };
-        older.Click += async (_, _) => await Page(true); newer.Click += async (_, _) => await Page(false); latest.Click += async (_, _) => { historical = false; follow.IsChecked = true; if (tabs.SelectedIndex == 0) businessInitialized = false; else framesInitialized = false; await PollAsync(); };
+        older.Click += async (_, _) => await Page(true); newer.Click += async (_, _) => await Page(false); latest.Click += async (_, _) => { historical = false; historicalSession = false; viewedSession = ""; lastSessionState = ""; follow.IsChecked = true; if (tabs.SelectedIndex == 0) businessInitialized = false; else framesInitialized = false; await PollAsync(); };
         record.Click += async (_, _) => await Run(_ => selection?.OperationId is { } id ? details(id) : Task.CompletedTask);
         var originals = new TabControl(); originals.Items.Add(new TabItem { Header = "原输入预览", Content = inputEvidence }); originals.Items.Add(new TabItem { Header = "请求与返回预览", Content = requestEvidence });
         records.Children.Add(new Expander { Header = "原始输入与请求证据（只读）", Content = originals }); body.Children.Add(workspace);
@@ -152,7 +152,8 @@ internal sealed class StationDebugEvidenceControl : UserControl
     async Task Run(Func<CancellationToken, Task> action)
     {
         if (!active || busy) return; busy = true; commandGeneration = generation; SetButtons();
-        try { await vm.RequireManagementModeAsync(); await action(lifetime!.Token); }
+        var ownership = lifetime!; var token = ownership.Token;
+        try { await vm.RequireManagementModeAsync(); if (!PublishCommand || !ReferenceEquals(ownership, lifetime) || token.IsCancellationRequested) return; await action(token); }
         catch (OperationCanceledException) { Say("已停止等待。如果已提交调试，请刷新查看状态；供包不会自动恢复。"); }
         catch (Exception error) { Say("操作未完成：" + error.Message + "\n请查看当前状态。"); }
         finally { busy = false; if (active) { SetButtons(); await PollAsync(); } }
@@ -172,7 +173,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
     }
     void ChangeSession(string id)
     {
-        generation++; selectionGeneration++; viewedSession = id; sessionId.Text = id; framesInitialized = false; frameCursor = 0; frameRows.Clear(); selection = null;
+        generation++; selectionGeneration++; historicalSession = true; viewedSession = id; sessionId.Text = id; framesInitialized = false; frameCursor = 0; frameRows.Clear(); selection = null;
         ClearImage(); inputEvidence.Clear(); requestEvidence.Clear(); result.Text = "";
     }
     void SetButtons()
@@ -200,7 +201,8 @@ internal sealed class StationDebugEvidenceControl : UserControl
             if (stateKey != lastSessionState)
             {
                 var items = await Api.ListCameraInspectionSessionsAsync(t); if (!Current(version)) return; lastSessionState = stateKey; var chosen = viewedSession; sessions.ItemsSource = items; sessions.SelectedItem = items.FirstOrDefault(x => x.Id == chosen);
-                if (viewedSession.Length == 0 && current.SessionId is { } id) { viewedSession = id; sessionId.Text = id; }
+                if (!historicalSession && current.SessionId is { } id && viewedSession != id)
+                { viewedSession = id; sessionId.Text = id; framesInitialized = false; frameCursor = 0; frameRows.Clear(); selection = null; selectionGeneration++; ClearImage(); }
             }
             if (!historical)
             {
@@ -231,7 +233,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
             if (follow.IsChecked == true && !historical && CurrentRows.FirstOrDefault() is { } newest && CurrentList.SelectedItem != newest)
             { selecting = true; CurrentList.SelectedItem = newest; selecting = false; }
             if (selection?.OperationId is { } selectedId && detailRevision != vm.Snapshot?.Revision) await RefreshOperation(selectedId, selectionGeneration, t);
-            if (selection is { } selected && selected.OperationId is null && (selected.Business?.ObservationId ?? selected.Frame?.ObservationId) is { } observation)
+            if (selection is { } selected && original is null && (selected.Business?.ObservationId ?? selected.Frame?.ObservationId) is { } observation)
             {
                 var selectionVersion = selectionGeneration; var frame = await Api.FindObservationFrameAsync(observation, t); if (!Current(version) || !Selected(selectionVersion)) return;
                 if (frame is not null) { if (original is null) await LoadFrame(frame, selectionVersion, t); if (frame.BusinessSequence > 0) { await LoadInput(frame.BusinessSequence, selected, selectionVersion, t); if (selected.OperationId is { } linkedId) await RefreshOperation(linkedId, selectionVersion, t); } }
@@ -245,15 +247,16 @@ internal sealed class StationDebugEvidenceControl : UserControl
     { foreach (var row in rows.OrderBy(x => x.Sequence)) if (!target.Any(x => x.Key == row.Key)) target.Insert(0, row); while (target.Count > 500) target.RemoveAt(target.Count - 1); }
     async Task Page(bool backwards)
     {
-        if (!active || busy || polling || tabs.SelectedIndex != 0 && CurrentRows.Count == 0) return; historical = true; follow.IsChecked = false; var version = generation; var rows = CurrentRows; var t = lifetime!.Token;
+        if (!active || busy || polling || tabs.SelectedIndex != 0 && CurrentRows.Count == 0) return; polling = true; historical = true; follow.IsChecked = false; var version = generation; var rows = CurrentRows; var list = CurrentList; var t = lifetime!.Token;
         try
         {
             if (tabs.SelectedIndex == 0) { var boundary = backwards ? businessOlder : businessNewer; if (backwards && boundary <= 0) { coverage.Text = "已到原审计起点。"; return; } var page = await Api.ReadCameraBusinessAsync(Position.ReaderId, backwards ? 0 : boundary, backwards ? boundary : null, 200, t); if (!Current(version)) return; if (page.FirstSequence == 0) { coverage.Text = "已到此方向的审计边界，保留当前页。"; return; } businessOlder = page.FirstSequence; businessNewer = page.LastSequence; rows.Clear(); Merge(rows, page.Rows.Select(x => new Row { Business = x })); }
             else { var page = await Api.ReadCameraFramesAsync(viewedSession, Position.ReaderId, backwards ? 0 : rows.Max(x => x.Sequence), backwards ? rows.Min(x => x.Sequence) : null, 200, t); if (!Current(version)) return; if (page.Rows.Length == 0) { coverage.Text = "已到此方向的记录边界，保留当前页。"; return; } rows.Clear(); Merge(rows, page.Rows.Select(x => new Row { Frame = x })); }
-            coverage.Text = $"历史分页：本页 {rows.Count} 条；新数据继续持久记录。点击“回到最新”追赶。"; if (rows.Count != 0) CurrentList.SelectedIndex = 0;
+            coverage.Text = $"历史分页：本页 {rows.Count} 条；新数据继续持久记录。点击“回到最新”追赶。"; if (rows.Count != 0) list.SelectedIndex = 0;
         }
         catch (OperationCanceledException) { }
         catch (Exception error) { if (Current(version)) feedback.Text = "分页未完成：" + error.Message; }
+        finally { polling = false; }
     }
     async Task SelectRow(Row? row)
     {

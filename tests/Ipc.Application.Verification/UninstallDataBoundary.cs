@@ -104,9 +104,10 @@ static class UninstallDataBoundary
 
         var outside = Station("outside"); var sentinel = Path.Combine(outside.DataRoot, "owned.db");
         var traversal = Station("traversal"); var traversalPlan = Plan(traversal);
-        var invalid = traversalPlan with { Delete = [new(traversal.DataRoot, new() { ["../outside-sentinel"] = new string('a', 64) })] };
+        var escape = Path.GetRelativePath(traversal.DataRoot, sentinel).Replace('\\', '/');
+        var invalid = traversalPlan with { Delete = [new(traversal.DataRoot, new() { [escape] = Wire.FileHash(sentinel) })] };
         var refused = false;
-        try { WindowsDeploymentSetup.ApplyDataPurge(Record(invalid), "synthetic-receipt", () => "registration", _ => { }, _ => { }); }
+        try { WindowsDeploymentSetup.ApplyDataPurge(Record(invalid) with { Status = "Purging" }, "synthetic-receipt", () => "registration", _ => { }, _ => { }); }
         catch (InvalidDataException) { refused = true; }
         Check(refused && File.Exists(sentinel), "invalid relative names cannot reach another synthetic root");
         Console.WriteLine("UNINSTALL-BOUNDARY assertions=" + assertions + "; failures=" + failures.Count + "; protected Windows uninstall/UAC/deployment NOT_RUN");

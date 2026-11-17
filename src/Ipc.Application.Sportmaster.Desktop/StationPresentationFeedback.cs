@@ -64,12 +64,14 @@ public partial class SupplyStationWindow
         catch (System.Threading.Channels.ChannelClosedException)
         {
             presentationEnded = true;
+            lock (presentationUiGate) { presentationSnapshotCancellation?.Cancel(); snapshotWaiting = null; pendingPresentation = null; }
             if (!token.IsCancellationRequested && !Dispatcher.HasShutdownStarted)
                 await Dispatcher.InvokeAsync(() => ViewModel.MarkReadFailure("实时状态来源已结束；旧结果不可用于投递。"));
         }
         catch (Exception error)
         {
             presentationEnded = true;
+            lock (presentationUiGate) { presentationSnapshotCancellation?.Cancel(); snapshotWaiting = null; pendingPresentation = null; }
             PresentationStreamFailure = error.GetType().Name + ": " + error.Message;
             if (!token.IsCancellationRequested && !Dispatcher.HasShutdownStarted)
                 await Dispatcher.InvokeAsync(() => ViewModel.MarkReadFailure("实时状态订阅中断：" + error.GetType().Name));
@@ -136,7 +138,7 @@ public partial class SupplyStationWindow
                     {
                         cancellation = CancellationTokenSource.CreateLinkedTokenSource(presentationLifetime.Token);
                         presentationSnapshotCancellation = cancellation;
-                        if (latestPresentation?.Failure is not null) cancellation.Cancel();
+                        if (presentationEnded || latestPresentation?.Failure is not null) cancellation.Cancel();
                     }
                     presentationSnapshotApply = ApplyPublishedSnapshotAsync(value, cancellation);
                     pendingRefresh = Task.WhenAll(pendingRefresh, presentationSnapshotApply);
@@ -158,6 +160,7 @@ public partial class SupplyStationWindow
     {
         try
         {
+            if (presentationEnded) return;
             await ViewModel.AcceptPublishedSnapshotAsync(value.Snapshot!, cancellation.Token);
             if (closing || closed) return;
             if (presentationEnded) { ViewModel.MarkReadFailure("实时状态订阅已结束；旧结果不可用于投递。"); return; }
@@ -219,7 +222,7 @@ public partial class SupplyStationPosition
     {
         soundRetry.Tick += (_, _) => TryPlayPendingSound();
         Loaded += (_, _) => ObservePresentation();
-        Unloaded += (_, _) => { presentationGeneration++; pendingSound = null; soundRetry.Stop(); if (compositionWaiter is not null) { CompositionTarget.Rendering -= compositionWaiter; compositionWaiter = null; measuring = false; } };
+        Unloaded += (_, _) => { presentationGeneration++; measuring = false; pendingSound = null; soundRetry.Stop(); if (compositionWaiter is not null) { CompositionTarget.Rendering -= compositionWaiter; compositionWaiter = null; } };
     }
     void ObservePresentation()
     {
@@ -278,7 +281,7 @@ public partial class SupplyStationPosition
             catch (Exception error) { CompositionFailure = error.GetType().Name + ": " + error.Message; }
             finally
             {
-                measuring = false;
+                if (generation == presentationGeneration) measuring = false;
                 // A newer read may replace this one before composition. Measure that
                 // current identity once; showing its cue again is independently deduped.
                 if (generation == presentationGeneration && readKey != p.ReadFeedbackKey) ObservePresentation();

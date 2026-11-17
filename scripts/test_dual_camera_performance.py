@@ -144,6 +144,52 @@ class Performance(unittest.TestCase):
         self.assertEqual(self.a.issues['STALE_PROGRESS'], 1)
         self.assertEqual(self.a.intervals['BothCamerasCapturedWithinInterval'], 1)
 
+    def test_first_late_camera_observation_establishes_its_own_baseline(self):
+        first = sample(0)
+        first['Snapshot']['Progress']['Connections'].pop(0)
+        self.a.feed(first)
+        late = sample(1, frames=[frame(100, 'old-before-observation')])
+        acquisition = late['Snapshot']['Progress']['Connections'][0]['Acquisition']
+        acquisition['Frames'] = acquisition['DecodeCompleted'] = 100
+        self.a.feed(late)
+        self.assertEqual(self.a.counters['left'].get('Frames', 0), 0)
+        self.assertEqual(self.a.db.execute('SELECT count(*) FROM frames').fetchone()[0], 0)
+
+    def test_connection_rate_spans_its_actual_missing_snapshot_interval(self):
+        self.a.feed(sample(0))
+        gap = sample(1)
+        gap['Snapshot']['Progress']['Connections'].pop(0)
+        self.a.feed(gap)
+        self.a.feed(sample(3))
+        rates = {(r['Scope'], r['Metric']): r for r in self.a.quantiles()}
+        self.assertEqual(rates['left', 'CaptureFramesPerSecond']['Mean'], 1)
+
+    def test_stage_reset_discards_the_old_baseline_and_labels_the_gap(self):
+        first = sample(1)
+        stage = first['Snapshot']['Progress']['Connections'][0]['Acquisition']['Performance']['Acquisition']['Stages']['sdk.acquire.frame']
+        stage.update(Count=100, TotalMs=200)
+        self.a.feed(first)
+        self.a.feed(sample(2))
+        self.a.feed(sample(3))
+        first, last = next(v for k, v in self.a.stage_totals.items() if k[1] == 'camera-L' and k[-1] == 'sdk.acquire.frame')
+        self.assertEqual(last['Count'] - first['Count'], 1)
+        self.assertEqual(last['TotalMs'] - first['TotalMs'], 2)
+        self.assertEqual(self.a.issues['STAGE_COUNTER_RESET'], 1)
+
+    def test_parseable_invalid_progress_is_recorded_without_attaching_a_snapshot(self):
+        with tempfile.TemporaryDirectory(prefix='ipc-malformed-progress-') as temp:
+            root = Path(temp)
+            (root / 'source').mkdir()
+            for index, text in enumerate(('null', '[]', '{"Progress":{},"Bad":NaN}', '{"Progress":{},"Bad":1e999}')):
+                progress = root / 'source/runtime-progress.json'; progress.write_text(text)
+                output = root / str(index)
+                result = subprocess.run([sys.executable, str(Path(p.__file__)), 'collect', '--progress', str(progress),
+                    '--output', str(output), '--scenario', 'dual', '--left-device', 'camera-L', '--right-device', 'camera-R',
+                    '--duration', '.21', '--warmup', '0', '--interval', '.2'], capture_output=True, timeout=5)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                rows = [json.loads(line) for line in (output / 'samples.jsonl').read_text().splitlines()]
+                self.assertTrue(rows and all('ReadError' in row and 'Snapshot' not in row for row in rows))
+
     def test_cli_collection_and_analysis_only_touch_explicit_output(self):
         with tempfile.TemporaryDirectory(prefix='ipc-performance-') as temp:
             root = Path(temp)

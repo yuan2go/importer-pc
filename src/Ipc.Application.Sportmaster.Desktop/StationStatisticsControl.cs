@@ -82,7 +82,7 @@ internal sealed class StationStatisticsControl : UserControl
         if (api is null || policyApi is null) throw new NotSupportedException("当前业务不提供运行班次统计");
         var token = lifetime!.Token; var version = generation; var selectedRange = (StationReportRange)range.SelectedIndex;
         var snapshot = await vm.Application.SnapshotAsync().WaitAsync(token);
-        if (!loadedPolicy)
+        if (!loadedPolicy || PolicySignature() == savedPolicySignature)
         {
             policy = snapshot.Configuration.Pending?.OperationsPolicy ?? snapshot.Configuration.Effective.OperationsPolicy ?? await policyApi.ReadOperationsPolicyAsync().WaitAsync(token);
             token.ThrowIfCancellationRequested(); policyRevision = snapshot.Configuration.Revision;
@@ -117,7 +117,7 @@ internal sealed class StationStatisticsControl : UserControl
         var receipt = await policyApi!.SaveOperationsPolicyAsync(policyRevision, updated);
         if (lifetime?.IsCancellationRequested != false) return;
         policyState.Text = receipt.Status + " · " + receipt.Reason + " 时区与清理设置保存后需重启生效。";
-        if (receipt.Status == "PendingRestart") { savedPolicySignature = PolicySignature(); policy = updated; policyRevision = (await vm.Application.SnapshotAsync()).Configuration.Revision; }
+        if (receipt.Status == "PendingRestart") { savedPolicySignature = PolicySignature(); policy = updated; policyRevision++; }
     }
     async Task Export()
     {

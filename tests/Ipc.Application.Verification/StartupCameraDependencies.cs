@@ -32,6 +32,7 @@ internal static class StartupCameraDependencies
         File.WriteAllText(Path.Combine(source, names[1]), "SYNTHETIC dependency " + names[1]);
         WindowsDeploymentSetup.RestoreCameraDependencyFiles(location, files);
         File.WriteAllText(Path.Combine(release, names[0]), "loaded corrupt file");
+        if (OperatingSystem.IsWindows())
         using (var loaded = new FileStream(Path.Combine(release, names[0]), FileMode.Open, FileAccess.Read, FileShare.Read))
         {
             try { WindowsDeploymentSetup.RestoreCameraDependencyFiles(location, files); throw new Exception("loaded dependency overwritten"); }

@@ -15,8 +15,19 @@ static class StateJournalChecks
     static string? Event(JsonElement entry) => entry.TryGetProperty("Event", out var e) ? e.GetString() : null;
     static async Task<JsonElement[]> Read(CameraRoundHarness h)
     {
-        var page = await h.App.QueryLogsAsync(new(DateTimeOffset.UtcNow.AddMinutes(-5), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }, null, 0, default);
-        try { return page.Entries.Select(e => Parse(e.Text)).ToArray(); }
+        var query = new SoftwareLogQuery(DateTimeOffset.UtcNow.AddMinutes(-5), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true };
+        var page = await h.App.QueryLogsAsync(query, null, 0, default);
+        try
+        {
+            List<JsonElement> entries = []; var offset = 0;
+            while (true)
+            {
+                entries.AddRange(page.Entries.Select(e => Parse(e.Text))); offset += page.Entries.Length;
+                if (!page.HasMore) return entries.ToArray();
+                if (page.Entries.Length == 0) throw new InvalidDataException("Log paging made no progress");
+                page = await h.App.QueryLogsAsync(query, page.Selection, offset, default);
+            }
+        }
         finally { h.App.ReleaseLogSelection(page.Selection); }
     }
     static async Task<JsonElement[]> WaitLog(CameraRoundHarness h, Func<JsonElement[], bool> found)
@@ -45,6 +56,31 @@ static class StateJournalChecks
         logs = await WaitLog(h, all => all.Any(e => Event(e) is "供包台状态变化" or "供包台状态快照" &&
             e.GetProperty("Sequence").GetInt64() > startup.GetProperty("Sequence").GetInt64() && Position(State(e), "left").GetProperty("CameraAdmission").GetBoolean()));
         Check(true, "a real heartbeat response records camera admission after the blocked startup baseline");
+        logs = await WaitLog(h, all => all.Any(e => Event(e) == "心跳实际响应" && Detail(e).GetProperty("ProtocolConfirmed").GetBoolean()));
+        var heartbeat = Detail(logs.Last(e => Event(e) == "心跳实际响应" && Detail(e).GetProperty("ProtocolConfirmed").GetBoolean()));
+        var heartbeatRequest = Parse(heartbeat.GetProperty("Request").GetProperty("Text").GetString()!);
+        var heartbeatResponse = Parse(heartbeat.GetProperty("Response").GetProperty("Text").GetString()!);
+        Check(heartbeatRequest.GetProperty("requestId").GetInt64() == heartbeat.GetProperty("RequestId").GetInt64() &&
+            heartbeatResponse.GetProperty("requestId").GetInt64() == heartbeat.GetProperty("RequestId").GetInt64() &&
+            heartbeat.GetProperty("HttpStatus").GetInt32() == 200 && heartbeat.GetProperty("ResponseComplete").GetBoolean() &&
+            heartbeat.GetProperty("Vehicles").GetArrayLength() == 2 && heartbeat.GetProperty("Positions").GetArrayLength() == 2 &&
+            heartbeat.GetProperty("ElapsedMs").GetDouble() >= 0,
+            "heartbeat log links actual request/response, HTTP status, completeness, elapsed time, vehicles and current lane membership");
+        Check(logs.Any(e => Event(e) == "心跳实际响应" && Detail(e).GetProperty("HttpStatus").ValueKind == JsonValueKind.Number &&
+            Detail(e).GetProperty("HttpStatus").GetInt32() == 503 && !Detail(e).GetProperty("ProtocolConfirmed").GetBoolean() &&
+            Detail(e).GetProperty("Failure").GetString() == "HTTP 503"),
+            "failed HTTP heartbeat retains its actual status and failure instead of a generic offline message");
+        h.Peer.HeartbeatTransform = _ => "{\"invalid\":true}";
+        Check(await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Failed, "malformed actual heartbeat is rejected");
+        logs = await WaitLog(h, all => all.Any(e => Event(e) == "心跳实际响应" &&
+            Detail(e).GetProperty("Response").GetProperty("Text").GetString() == "{\"invalid\":true}"));
+        var invalidHeartbeat = Detail(logs.Last(e => Event(e) == "心跳实际响应" &&
+            Detail(e).GetProperty("Response").GetProperty("Text").GetString() == "{\"invalid\":true}"));
+        Check(invalidHeartbeat.GetProperty("HttpStatus").GetInt32() == 200 && !invalidHeartbeat.GetProperty("ProtocolConfirmed").GetBoolean() &&
+            invalidHeartbeat.GetProperty("ResponseComplete").GetBoolean() && invalidHeartbeat.GetProperty("Failure").GetString() == "Heartbeat protocol acknowledgement invalid",
+            "HTTP success with invalid identity/protocol retains the exact body and protocol failure independently of connectivity");
+        h.Peer.HeartbeatTransform = null;
+        await h.WaitForCameraAdmissionAsync();
         var snapshot = await h.App.SnapshotAsync(); var pauseId = Wire.Id();
         Check((await h.App.CommandAsync(new(pauseId, snapshot.Revision, "Pause", Value: "SYNTH-WINDOW-PROTECTION"))).Status == "Persisted", "pause command is durably committed");
         logs = await WaitLog(h, all => all.Any(e => Event(e) == "软件暂停状态已记录"));
@@ -105,8 +141,10 @@ static class StateJournalChecks
         Check(logs.Any(e => e.TryGetProperty("Source", out var source) && source.GetString() == "作业" &&
             e.GetProperty("OperationId").GetString() == operation.Id && Detail(e).GetProperty("State").GetString() == "SlotResolved"),
             "ordinary key events retain correlated job-stage transitions");
-        logs = await WaitLog(h, all => all.Any(e => Event(e) == "供包台状态快照" && Detail(e).GetProperty("Trigger").GetString() == "RuntimeMonitor"));
-        Check(logs.Any(e => Event(e) == "供包台状态快照"), "stable state publishes a periodic reconstruction baseline without debug logging");
+        var stableSequence = logs.Where(e => e.TryGetProperty("Sequence", out _)).Max(e => e.GetProperty("Sequence").GetInt64());
+        logs = await WaitLog(h, all => all.Any(e => Event(e) == "供包台状态快照" && Detail(e).GetProperty("Trigger").GetString() == "RuntimeMonitor" &&
+            e.GetProperty("Sequence").GetInt64() > stableSequence && Position(State(e), "left").GetProperty("CurrentOperation") is { ValueKind: JsonValueKind.Object } currentOperation && currentOperation.GetProperty("OperationId").GetString() == operation.Id));
+        Check(true, "stable state publishes a newer periodic reconstruction baseline with the current operation without debug logging");
         var runtime = logs.Where(e => e.TryGetProperty("RuntimeId", out _)).ToArray();
         Check(runtime.All(e => e.GetProperty("RuntimeId").GetGuid() == snapshot.RuntimeId) &&
             runtime.Select(e => e.GetProperty("Sequence").GetInt64()).SequenceEqual(runtime.Select(e => e.GetProperty("Sequence").GetInt64()).Order()),

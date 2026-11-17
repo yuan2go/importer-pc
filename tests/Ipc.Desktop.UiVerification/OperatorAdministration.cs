@@ -44,7 +44,7 @@ static partial class Program
         var factory = new VisualFactory(launch, true);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default);
-        var window = new SupplyStationWindow(runtime, null, "standard") { ConfirmDiscardDrafts = _ => true }; window.Show();
+        var window = new SupplyStationWindow(runtime, null, "standard") { ConfirmDiscardDrafts = _ => true }; await using var windowOwner = new NativeWindowOwner(window); window.Show();
         async Task AwaitLogTask(string operation)
         {
             var queryButton = Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "查询"));
@@ -57,13 +57,13 @@ static partial class Program
         Check(!vm.IsManagementMode && vm.AccountDisplay.Length == 0 && !((FrameworkElement)window.FindName("AccountIdentity")).IsVisible && Descendants(window).OfType<ManagementModeMenu>().Single().Status.Authorized == false,
             "a login-free station shows no operator label; the management menu still shows the unauthorized state");
         Check(!Descendants(window).OfType<Button>().Any(b => b.IsVisible && b.Content is string s && (s == "参数设置" || s == "日志查询" || s.Contains("支持"))), "ordinary navigation has no administrator or support actions");
-        var identity = (TextBlock)window.FindName("AccountIdentity"); Check(identity.IsVisible && identity.ActualHeight >= identity.FontSize && !string.IsNullOrWhiteSpace(identity.Text), "operator identity remains readable beside the separate management menu");
+        var identity = (TextBlock)window.FindName("AccountIdentity"); Check(!identity.IsVisible && vm.AccountDisplay.Length == 0, "login-free workstation keeps operator identity hidden beside the management menu");
         runtime.EmitReferenceAt("left", "native-left", "00123456", "native-left-event"); runtime.EmitReferenceAt("right", "native-right", "00987654", "native-right-event"); factory.ReleaseLeft.TrySetResult();
         for (int i = 0; i < 100 && (vm.Left.Slot == "未取得" || vm.Right.Slot == "未取得"); i++) { await Task.Delay(30); await vm.RefreshAsync(); }
         Check(vm.Left.Barcode == "00123456" && vm.Right.Barcode == "00987654" && vm.Left.Slot != "未取得" && vm.Right.Slot != "未取得", "automatic normal feeding keeps both barcode/destination associations independent");
         Capture("ordinary-work-1366", client);
         await SetClient(window, 800, 420); Capture("ordinary-work-800", client);
-        Check(identity.IsVisible && identity.TranslatePoint(new Point(0, 0), client).X + identity.ActualWidth <= client.ActualWidth + 1, "identity stays within the minimum native client area");
+        Check(!identity.IsVisible && vm.AccountDisplay.Length == 0, "compact login-free workstation also keeps operator identity hidden");
         await SetClient(window, 1366, 768);
         var password = "Synthetic-" + Guid.NewGuid().ToString("N"); await runtime.ConfigureManagementPasswordAsync(password); await runtime.EnterManagementModeAsync(password); await vm.RefreshAsync();
         Check(vm.IsManagementMode && Descendants(window).OfType<ManagementModeMenu>().Single().Status.Authorized && !vm.AccountDisplay.Contains("native-admin") && vm.Snapshot!.CurrentOperator is null && !vm.Snapshot.Paused, "software administrator appears without changing frozen operator or pausing supply");

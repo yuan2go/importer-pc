@@ -57,12 +57,12 @@ internal static class ParcelMachineOrigin
                 static string Read(string path)
                 { RecoveryFiles.RequireOrdinaryAncestors(path); if (new FileInfo(path).Length > 65536) throw new InvalidDataException("来源接管链证据超出预算"); return File.ReadAllText(path); }
                 var proof = Wire.Decode<StartupRestoreHandoff>(Read(Path.Combine(directory, "restore-handoff.json")));
+                if (requireCurrentRegistration) ParcelRestoreEvidence.RequireDeploymentBinding(proof, directory, c, evidence);
+                else if (proof.TargetDirectory != directory || proof.MachinePolicyHash != evidence.PolicyIdentity())
+                    throw new InvalidDataException("原来源接管链的目标或机器身份不一致。");
                 if (proof.PurgedSource is { } purged)
                 {
                     evidence.VerifyPurge(purged);
-                    if (requireCurrentRegistration) ParcelRestoreEvidence.RequireDeploymentBinding(proof, directory, c, evidence);
-                    else if (proof.TargetDirectory != directory || proof.MachinePolicyHash != evidence.PolicyIdentity())
-                        throw new InvalidDataException("原来源接管链的目标或机器身份不一致。");
                     if (purged.SourceDirectory != proof.SourceDirectory || Wire.FileHash(file) != purged.MachineOriginSha256 ||
                         Wire.FileHash(Path.Combine(directory, "RESTORED-ISOLATED.json")) != proof.TargetManifestHash)
                         throw new InvalidDataException("清理来源与原机器密文或恢复标记不一致，不能补盖身份。");

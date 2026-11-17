@@ -41,7 +41,7 @@ static partial class Program
         }
         await using (var h = new CameraRoundHarness(root, Path.Combine(evidence, "camera-clear"), 15000))
         {
-            await h.StartAsync(); var window = new SupplyStationWindow(h.App, null, "standard"); window.Show();
+            await h.StartAsync(); await h.WaitForCameraAdmissionAsync(); var window = new SupplyStationWindow(h.App, null, "standard"); window.Show();
             try
             {
                 await SetClient(window, 1366, 768); var vm = window.ViewModel;
@@ -52,13 +52,15 @@ static partial class Program
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), 1); await Until(() => vm.Left.ShowConfirmedTask);
                 entry.Text = "DRAFT"; entry.Clear();
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), 2);
-                await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.2" && vm.Left.ShowConfirmedTask);
+                await Until(() => vm.Snapshot!.CameraReads.Any(read => read.Frame.FrameNumber == 2 && read.PositionId == "left") && vm.Left.ShowConfirmedTask);
                 Check(entry.Text == "SYNTH-SAME", "deleting a draft to empty resumes the camera observation for the same placement");
                 entry.ContextMenu.Items.OfType<MenuItem>().Single(m => Equals(m.Header, "清空输入")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), 3);
-                await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.3" && vm.Left.ShowConfirmedTask);
-                Check(entry.Text == "SYNTH-SAME" && h.Peer.Requests.Count == 1 && ParcelInputReasons.IsSamePlacement(vm.Left.Input!),
+                await Until(() => vm.Snapshot!.CameraReads.Any(read => read.Frame.FrameNumber == 3 && read.PositionId == "left") && vm.Left.ShowConfirmedTask);
+                Check(entry.Text == "SYNTH-SAME" && h.Peer.Requests.Count == 1 && vm.Left.Operation?.Wcs?.Attempts == 1,
                     "clearing text releases edit ownership but does not turn three observations of one placement into three RCS requests");
+                var soundCount = typeof(SupplyStationPosition).GetProperty("PlayedSuccessSounds", BindingFlags.Instance | BindingFlags.NonPublic)!;
+                int latestSoundBaseline = (int)soundCount.GetValue(control)!;
                 uint frameNumber = 4;
                 foreach (var size in new[] { (1366, 768), (800, 420) })
                 {
@@ -70,12 +72,18 @@ static partial class Program
                     h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), preparation);
                     await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Input?.Observation.SourceEventId == "mvs.frame." + preparation);
                     window.UpdateLayout(); var fieldHeight = fields.ActualHeight; var resultHeight = result.ActualHeight;
-                    if (size.Item1 == 1366) Check(fieldHeight > shortFieldHeight + 1, "long confirmed wave wraps into a taller measured task row before the stability check");
+                    if (size.Item1 == 1366)
+                    {
+                        var wave = (TextBox)control.FindName("WaveValue");
+                        Check(wave.Text == h.Peer.ReplyWaveNo && wave.IsReadOnly && wave.TextWrapping == TextWrapping.Wrap && fieldHeight >= 104,
+                            "long confirmed wave remains complete, selectable and wrapping in the required task region");
+                    }
                     var restingRequests = h.Peer.Requests.Count;
                     var restingFrame = frameNumber++; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), restingFrame);
-                    await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Input?.Observation.SourceEventId == "mvs.frame." + restingFrame);
+                    await Until(() => vm.Left.ShowConfirmedTask && vm.Snapshot!.CameraReads.Any(read => read.PositionId == "left" && read.Frame.FrameNumber == restingFrame));
                     Check(h.Peer.Requests.Count == restingRequests && Math.Abs(fields.ActualHeight - fieldHeight) < 1 && Math.Abs(result.ActualHeight - resultHeight) < 1,
                         $"{size.Item1} another observation of the resting placement preserves the confirmed task geometry without another request");
+                    latestSoundBaseline = (int)soundCount.GetValue(control)!;
                     var sends = h.Peer.Requests.Count; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
                     try
                     {
@@ -89,19 +97,30 @@ static partial class Program
                             $"{size.Item1} repeated reads during the new placement's pending request keep its geometry stable without another request");
                         Check(!vm.Left.ShowConfirmedTask && vm.Left.WaveNo == "—" && ((TextBox)control.FindName("CurrentSlot")).Text == "处理中…",
                             $"{size.Item1} stable layout never borrows the old task or assigned chute while the next request is pending");
+                        // Control only this fixture's previous channel timestamp;
+                        // exercise the real pending-sound timer and current result identity.
+                        var channels = (Dictionary<string, long>)typeof(SupplyStationPosition).GetField("soundChannels", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
+                        var soundGate = typeof(SupplyStationPosition).GetField("soundGate", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
+                        latestSoundBaseline = (int)soundCount.GetValue(control)!;
+                        lock (soundGate) channels[$"{vm.Snapshot!.RuntimeId}/left/Success"] = System.Diagnostics.Stopwatch.GetTimestamp();
                         h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
-                        await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Operation?.Id == pendingId && vm.Left.Input?.Observation.SourceEventId == "mvs.frame." + repeatedFrame);
+                        await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Operation?.Id == pendingId && vm.Snapshot!.CameraReads.Any(read => read.PositionId == "left" && read.Frame.FrameNumber == repeatedFrame));
                         Check(fields.IsVisible && h.Peer.Requests.Count == sends + 1, $"{size.Item1} completion restores the matching task with exactly one new HTTP request");
+                        var pendingSound = typeof(SupplyStationPosition).GetField("pendingSound", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control);
+                        Check((int)soundCount.GetValue(control)! == latestSoundBaseline && pendingSound is not null,
+                            "the matching result is deliberately cooldown-blocked before testing retry");
+                        await Until(() => (int)soundCount.GetValue(control)! > latestSoundBaseline);
+                        Check((int)soundCount.GetValue(control)! == latestSoundBaseline + 1 && vm.Left.Operation?.Id == pendingId,
+                            "the still-current result plays exactly once through its actual retry timer");
                     }
                     finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
                 }
-                var soundCount = typeof(SupplyStationPosition).GetProperty("PlayedSuccessSounds", BindingFlags.Instance | BindingFlags.NonPublic)!;
                 var right = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, vm.Right));
                 h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-RIGHT"), 1);
                 await Until(() => vm.Right.ShowConfirmedTask && (int)soundCount.GetValue(right)! == 1);
                 Check((int)soundCount.GetValue(right)! == 1, "right position success sound invocation is independent of left cooldown");
-                await Until(() => (int)soundCount.GetValue(control)! >= 2);
-                Check((int)soundCount.GetValue(control)! >= 2, "still-current deferred left result invokes its sound after cooldown without another read; audible hardware NOT_RUN");
+                await Until(() => (int)soundCount.GetValue(control)! > latestSoundBaseline);
+                Check((int)soundCount.GetValue(control)! > latestSoundBaseline, "still-current deferred left result invokes its sound after cooldown without another read; audible hardware NOT_RUN");
                 CaptureInternal(evidence, "chain20-camera-cleared-recovered", (Grid)window.FindName("ClientArea"), lines);
             }
             finally { window.Close(); }

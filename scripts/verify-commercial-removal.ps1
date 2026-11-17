@@ -1,6 +1,8 @@
 #requires -Version 7.0
 param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet')
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'verification-evidence.ps1')
+if (-not $IsWindows) { throw 'Real Windows sharing-violation verification requires Windows.' }
 $Media=(Resolve-Path -LiteralPath $Media).Path
 $Output=[IO.Path]::GetFullPath($Output)
 if(Test-Path -LiteralPath $Output){throw 'New evidence directory required'}
@@ -14,6 +16,7 @@ foreach($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')){
  if((Get-FileHash -LiteralPath $path).Hash -ne $hash){throw 'Changed media'}
  $inventory[$name]=$hash
 }
+Assert-MediumInventory $Media $inventory
 New-Item -ItemType Directory -Path $Output|Out-Null
 $source=& git -C (Split-Path $PSScriptRoot -Parent) show ($release.SourceCommit+':tests/Ipc.Verification/CommercialRemovalVerification.cs')
 if($LASTEXITCODE -ne 0){throw 'Frozen fixture unavailable'}

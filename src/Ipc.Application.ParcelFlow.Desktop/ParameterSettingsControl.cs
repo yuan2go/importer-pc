@@ -363,7 +363,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             PropertyChangedEventHandler handler = (_, e) => { if (e.PropertyName == nameof(CapabilityDraft.Provider)) Render(); };
             draft.PropertyChanged += handler; unsubscribe.Add(() => draft.PropertyChanged -= handler);
         }
-        if (FirstConfiguration || m.Issues.Count > 0) { EnsureReviewPage(); if (reviewContent is not null) reviewPage!.Body.Children.Add(reviewContent); }
+        if (FirstConfiguration || m.Issues.Count > 0 || reviewContent is not null) { EnsureReviewPage(); if (reviewContent is not null) reviewPage!.Body.Children.Add(reviewContent); }
         directoryView = new ListCollectionView(pages);
         if (FirstConfiguration) directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.Order), ListSortDirection.Ascending));
         else if (m.ApplicationId == "sportmaster") directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.TaskOrder), ListSortDirection.Ascending));

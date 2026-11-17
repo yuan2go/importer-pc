@@ -25,7 +25,11 @@ def capture(root, source, source_branch, application, version, target):
     if verified:
         subprocess.run(['git', 'check-ref-format', '--branch', source_branch], cwd=root,
                        check=True, stdout=subprocess.DEVNULL)
-        if git(root, 'rev-parse', '--verify', '--end-of-options', source_branch + '^{commit}') != source:
+        try:
+            branch_commit = git(root, 'rev-parse', '--verify', '--end-of-options', 'refs/heads/' + source_branch + '^{commit}')
+        except subprocess.CalledProcessError as error:
+            raise ValueError('Source branch must be an existing local branch') from error
+        if branch_commit != source:
             raise ValueError('Source branch and frozen HEAD must identify the same commit')
     if git(root, 'rev-parse', 'HEAD') != source:
         raise ValueError('Source branch and frozen HEAD must identify the same commit')

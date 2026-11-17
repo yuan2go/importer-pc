@@ -13,7 +13,10 @@ public static partial class ParcelRecovery
     // Shared by offline analysis and its CLI. No repository writable open, restore,
     // runtime or device activation; the format and custody rules have one owner.
     public static ParcelBackupInspection InspectAnalysisBackup(string source, FlowDefinition flow, CancellationToken token = default)
-        => InspectAnalysisBackup(source, flow, token, null);
+    {
+        using var lease = HoldBackupSet(source);
+        return InspectAnalysisBackup(source, flow, token, null);
+    }
     internal static ParcelBackupInspection InspectAnalysisBackup(string source, FlowDefinition flow, CancellationToken token, Action? authority)
     {
         source = Path.GetFullPath(source);

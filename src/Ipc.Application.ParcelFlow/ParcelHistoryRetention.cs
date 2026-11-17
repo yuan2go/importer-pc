@@ -32,7 +32,10 @@ public sealed partial class ParcelRepository
     internal bool RetentionDue(int days, DateTimeOffset now)
     {
         using var c = db.CreateCommand(); c.CommandText = "SELECT EXISTS(SELECT 1 FROM parcel_history_projection WHERE observed<julianday($cutoff)) OR EXISTS(SELECT 1 FROM sm_parcel_rounds WHERE active=0 AND julianday(json_extract(body,'$.EndedAt'))<julianday($cutoff) AND (json_extract(body,'$.Observation') IS NOT NULL OR json_extract(body,'$.OriginalFrame.State') IN ('Saved','Failed','Interrupted')))";
-        c.Parameters.AddWithValue("$cutoff", now.AddDays(-days).ToString("O")); return (long)c.ExecuteScalar()! != 0;
+        c.Parameters.AddWithValue("$cutoff", now.AddDays(-days).ToString("O"));
+        if ((long)c.ExecuteScalar()! != 0) return true;
+        c.CommandText = "SELECT EXISTS(" + ExpiredInputPageSql + ")"; c.Parameters.AddWithValue("$cursor", 0L);
+        return (long)c.ExecuteScalar()! != 0;
     }
     bool RetentionSettled(ParcelOperation op, FlowDefinition flow) => (op.RoundId is null || Round(op.RoundId)?.EndedAt is not null) && op.OriginalFrame?.State != "Pending" && HasTerminalRecoveryBasis(op, flow.Id) &&
         (flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected) && !op.RecoveryRequired &&
@@ -79,7 +82,7 @@ public sealed partial class ParcelRepository
     }
     internal static ParcelRetentionResult ExpireHistoryAuthorized(string database, string expectedHash, string backup, FlowDefinition flow,
         Action<string, ParcelConfiguration> registerBackup, bool compact, Action authority, CancellationToken cancellationToken = default,
-        Action<string>? phase = null)
+        Action<string>? phase = null, string? expectedConfigurationHash = null, int? expectedDays = null)
     {
         // Starts before hash, lease and repository initialization, and is never reset
         // by a phase. Cancellation cannot abandon rollback/handle/lease cleanup.
@@ -90,7 +93,7 @@ public sealed partial class ParcelRepository
         try
         {
             Phase("InspectOriginal");
-            var result = ExpireHistoryWithinBudget(database, expectedHash, backup, flow, registerBackup, compact, Check, budget.Token, Phase);
+            var result = ExpireHistoryWithinBudget(database, expectedHash, backup, flow, registerBackup, compact, Check, budget.Token, Phase, expectedConfigurationHash, expectedDays);
             Phase("Disposed");
             return result;
         }
@@ -98,14 +101,20 @@ public sealed partial class ParcelRepository
         { throw new OperationCanceledException("History maintenance budget exhausted; preserve complete backup and committed retirement facts", ex, budget.Token); }
     }
     static ParcelRetentionResult ExpireHistoryWithinBudget(string database, string expectedHash, string backup, FlowDefinition flow,
-        Action<string, ParcelConfiguration> registerBackup, bool compact, Action authority, CancellationToken cancellationToken, Action<string> phase)
+        Action<string, ParcelConfiguration> registerBackup, bool compact, Action authority, CancellationToken cancellationToken, Action<string> phase,
+        string? expectedConfigurationHash, int? expectedDays)
     {
         database = Path.GetFullPath(database); RecoveryFiles.RequireOrdinaryAncestors(database);
         var directory = Path.GetDirectoryName(database)!; using var lease = new ResourceLease(directory, ["application-owner"]);
         authority(); if (Wire.FileHash(database, cancellationToken) != expectedHash) throw new InvalidDataException("Original database hash changed; inspect again");
         if (File.Exists(database + "-wal") && new FileInfo(database + "-wal").Length != 0) throw new InvalidOperationException("Nonempty WAL requires orderly matching-release shutdown before retention");
-        var envelope = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(Path.Combine(directory, "configuration.json")));
-        if (envelope.Effective.ApplicationId != flow.Id || envelope.Effective.Retention?.HistoryDays is not (>= 7 and <= 30) || envelope.Confirmation?.Required == true)
+        var configurationBytes = File.ReadAllBytes(Path.Combine(directory, "configuration.json"));
+        if (expectedConfigurationHash is not null && Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(configurationBytes)) != expectedConfigurationHash)
+            throw new InvalidOperationException("原清理计划的配置已变化，请重新预检。");
+        using var configurationText = new StreamReader(new MemoryStream(configurationBytes));
+        var envelope = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(configurationText.ReadToEnd());
+        if (envelope.Pending is not null || expectedDays is not null && envelope.Effective.Retention?.HistoryDays != expectedDays ||
+            envelope.Effective.ApplicationId != flow.Id || envelope.Effective.Retention?.HistoryDays is not (>= 7 and <= 30) || envelope.Confirmation?.Required == true)
             throw new InvalidOperationException("Activate a confirmed 7..30 day retention policy first; no implicit default deletion");
         if (ReadStorageVersion(database, flow.Id) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("Storage format differs; preserve originals and verify permanent numbering with the matching release before preparing a separate current-format directory");
         phase("InitializeRepository");
@@ -216,6 +225,8 @@ public sealed partial class ParcelRepository
                 using var r = select.ExecuteReader(); while (r.Read()) expired.Add((r.GetInt64(0), r.GetString(1)));
             }
             if (expired.Count == 0 || inputs >= maximumInputs) break;
+            var take = (int)Math.Min(expired.Count, maximumInputs - inputs);
+            expired.RemoveRange(take, expired.Count - take);
             using var tx = db.BeginTransaction();
             using var delete = db.CreateCommand(); delete.Transaction = tx;
             delete.CommandText = "INSERT INTO parcel_retired_inputs SELECT id,body_hash,state,$at FROM parcel_ingress WHERE id=$id; DELETE FROM parcel_audit WHERE seq IN (SELECT seq FROM parcel_ingress_audits WHERE input=$id); DELETE FROM parcel_ingress_audits WHERE input=$id; DELETE FROM parcel_ingress WHERE id=$id";

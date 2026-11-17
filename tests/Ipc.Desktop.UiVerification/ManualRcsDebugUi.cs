@@ -54,7 +54,7 @@ static partial class Program
                 var item = shown.RootElement.GetProperty("result")[0];
                 Check(response.Text.Contains("无设备可用") && item.GetProperty("code").GetString() == "SYNTH_REJECT" &&
                     !item.GetProperty("success").GetBoolean() && shown.RootElement.EnumerateObject().Count() == 2 && !response.Text.Contains("BodyBase64") &&
-                    send.Content?.ToString() == "查看发送结果", "debug displays only the RCS reply fields with readable Chinese");
+                    !send.IsEnabled, "debug displays only the RCS reply fields with readable Chinese and disables an already confirmed send");
             }
             var raw = (await h.App.ReadCameraReadRoundAsync(default)).HttpResponse!;
             var expected = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(raw.BodyBase64));
@@ -80,10 +80,9 @@ static partial class Program
                 lines.Add($"CLIPBOARD expectedLength={expected.Length}; actualLength={actual.Length}; expectedSha256={Fingerprint(expected)}; actualSha256={Fingerprint(actual)}; publishedSequence={publishedSequence}; observedSequence={observedSequence}; requests={h.Peer.Requests.Count}");
                 Check(actual == expected && h.Peer.Requests.Count == 1, "copy returns the exact upstream response text and sends nothing");
             }
-            finally { descriptor.RemoveValueChanged(feedback, copied); if (priorClipboard is null) Clipboard.Clear(); else Clipboard.SetDataObject(priorClipboard, true); }
-            send.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            await Until(() => !Field<bool>(control, "busy"));
-            Check(h.Peer.Requests.Count == 1, "native original-result lookup does not send a second HTTP request");
+            finally { descriptor.RemoveValueChanged(feedback, copied); if (publishedSequence != 0 && ManualDebugClipboardSequence() == publishedSequence) { if (priorClipboard is null) Clipboard.Clear(); else Clipboard.SetDataObject(priorClipboard, true); } }
+            await (Task)control.GetType().GetMethod("PollAsync")!.Invoke(control, null)!;
+            Check(!send.IsEnabled && h.Peer.Requests.Count == 1 && response.Text.Contains("无设备可用"), "refresh retains the confirmed original response without sending a second HTTP request");
             CaptureInternal(evidence, "manual-debug-no-camera", center, lines);
             Field<TextBox>(control, "responseBody").BringIntoView(); await Flush();
             CaptureInternal(evidence, "manual-debug-request-response", center, lines);

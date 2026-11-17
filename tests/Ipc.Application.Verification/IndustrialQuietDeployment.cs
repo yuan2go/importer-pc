@@ -9,7 +9,21 @@ static class IndustrialQuietDeployment
         void Reject<T>(Action action, string message) where T : Exception
         { try { action(); } catch (T) { Check(true, message); return; } throw new Exception("Expected " + typeof(T).Name + ": " + message); }
         var id = Wire.Id(); var data = Path.Combine(root, "data"); var log = Path.Combine(root, "command.json");
-        var intent = new QuietDeploymentIntent("sportmaster", id, "Install", data, log, new string('a', 40), new string('b', 64));
+        var mediaRoot = Path.Combine(root, "media");
+        void Media(string directory, string payload)
+        {
+            foreach (var area in new[] { "app", "desktop" })
+            {
+                var folder = Path.Combine(directory, area); Directory.CreateDirectory(Path.Combine(folder, "config"));
+                var executable = area == "app" ? "Ipc.Assembly.exe" : "Ipc.Desktop.exe";
+                File.WriteAllText(Path.Combine(folder, executable), "SYNTHETIC " + payload);
+                File.WriteAllText(Path.Combine(folder, "config/business.json"), "SYNTHETIC frozen configuration");
+                ExtensionStore.AtomicWrite(Path.Combine(folder, "application-release.json"), new ApplicationRelease(2, "sportmaster", new string('a', 40), [], [], [], "1.0.0")
+                { Files = new() { [executable] = Wire.FileHash(Path.Combine(folder, executable)), ["config/business.json"] = Wire.FileHash(Path.Combine(folder, "config/business.json")) } });
+            }
+        }
+        Media(mediaRoot, "original");
+        var intent = new QuietDeploymentIntent("sportmaster", id, "Install", data, log, new string('a', 40), DeploymentMedia.InventoryIdentity(DeploymentMedia.Inspect(mediaRoot, "sportmaster")));
         intent.Validate();
         Check(intent.Identity == Wire.Decode<QuietDeploymentIntent>(Wire.Encode(intent)).Identity, "canonical intent survives actual JSON round trip without recursive identity serialization");
         Check(intent.Identity != (intent with { MediaInventorySha256 = new string('c', 64) }).Identity, "same source with different package inventory is a payload conflict");
@@ -30,6 +44,9 @@ static class IndustrialQuietDeployment
         var originalStatus = "Unknown";
         using (var operation = new QuietDeploymentOperation(initial, false, new ResourceLease(root, ["quiet-operation-test"]), Save, record => WindowsDeploymentSetup.ProjectQuietOutcome(record, originalStatus)))
         {
+            var replacement = Path.Combine(root, "changed-media"); Media(replacement, "changed bytes with valid same-source inventory");
+            Reject<InvalidDataException>(() => operation.FreezeInstallation(request with { MediaRoot = replacement }), "valid same-source replacement media cannot replace the original command inventory");
+            Check(saved.Status == "Reserved" && saved.Installation is null, "media mismatch cannot freeze or execute an installation");
             operation.FreezeInstallation(request);
             Check(saved.Status == "Executing" && Wire.Encode(saved.Installation) == Wire.Encode(request), "frozen exact installation request is durable before execution can begin");
             Reject<InstallationOutcomeUnknownException>(() => operation.FreezeInstallation(request), "same operation instance cannot execute a second time");

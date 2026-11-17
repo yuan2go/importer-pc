@@ -2,7 +2,7 @@
 # environment variables are changed; other projects retain their own configuration.
 $taskDevelopmentCache='D:\DevCache\importer-pc'
 foreach($taskCacheFolder in @('temp','dotnet-home','nuget-http')) {
-    New-Item -ItemType Directory -Path (Join-Path $taskDevelopmentCache $taskCacheFolder) -Force | Out-Null
+    New-Item -ItemType Directory -Path (Join-Path $taskDevelopmentCache $taskCacheFolder) -Force -ErrorAction Stop | Out-Null
 }
 $env:TEMP=Join-Path $taskDevelopmentCache 'temp'
 $env:TMP=$env:TEMP

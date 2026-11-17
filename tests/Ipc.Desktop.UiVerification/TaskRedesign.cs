@@ -1,3 +1,4 @@
+using System.Windows.Threading;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
@@ -16,251 +17,45 @@ static partial class Program
 {
     static async Task VerifyTaskRedesign(string root, string evidence, List<string> lines, bool interactive)
     {
-        void Check(bool value, string reason) { if (!value) throw new InvalidOperationException(reason); lines.Add("PASS UIR " + reason); }
-        var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { TimeoutMs = 30000 };
-        ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
-        var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
-        var factory = new VisualFactory(launch, true);
-        await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
-        var application = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
-        var window = new SupplyStationWindow(application, null, "standard") { ConfirmDiscardDrafts = _ => true };
-        window.Show(); await Task.Delay(300); await window.ViewModel.RefreshAsync();
-        var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
-        await SetClient(window, 1600, 900); Capture("work-waiting-1600", client);
-        Check(vm.Left.RcsServiceStatus == "RCS 服务：模拟", "simulation does not appear as an online real RCS service");
-        foreach (var item in new (bool Ready, string Detail, string Label, bool Expired)[] { (true, "local only", "等待连接确认", false), (true, "RCS heartbeat HTTP 200 at synthetic; application acknowledgement unconfirmed", "在线", false), (false, "RCS heartbeat failed: timeout", "离线", false), (true, "RCS heartbeat HTTP 200 at old", "状态未知", true) })
+        // The current SM navigation lives in its owned management window. Verify
+        // the mounted page, not the retired main-window settings surface.
+        void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS UIR " + reason); }
+        var folder = Path.Combine(evidence, "draft-config"); Directory.CreateDirectory(folder);
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
+        ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
+        var launch = new BusinessLaunch(folder, Path.Combine(evidence, "draft-data"), null, null);
+        await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
+        await runtime.StartAsync(default); await ManagementModeFixture.Authorize(runtime);
+        var window = new SupplyStationWindow(runtime, null, "standard"); await using var owner = new NativeWindowOwner(window); window.Show();
+        var vm = window.ViewModel;
+        async Task Until(Func<bool> ready) { for (var n = 0; n < 200; n++) { await vm.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); if (ready()) return; await Task.Delay(20); } throw new TimeoutException("Current management draft did not converge"); }
+        await Until(() => vm.IsManagementMode);
+        typeof(SupplyStationWindow).GetMethod("Maintenance_Click", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, [window, new RoutedEventArgs()]);
+        await Until(() => vm.HasLoadedConfiguration && window.OwnedWindows.OfType<ManagementCenterWindow>().Any(center => center.IsVisible));
+        var center = window.OwnedWindows.OfType<ManagementCenterWindow>().Single();
+        var host = (ContentControl)center.FindName("ManagementPageHost"); var page = (MaintenancePage)host.Content;
+        var editor = (ParameterSettingsControl)page.FindName("MainParameterEditor"); var draft = editor.Model;
+        Check(editor.NavigateTo("StationCode"), "current station setting is reachable");
+        await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        var station = Descendants(editor).OfType<TextBox>().Single(box => AutomationProperties.GetAutomationId(box) == "StationCode");
+        station.Text = "SYNTHETIC-UNSAVED"; await Dispatcher.Yield(DispatcherPriority.DataBind);
+        var revision = (await runtime.SnapshotAsync()).Configuration.Revision;
+        foreach (var destination in new[] { "logs", "diagnostics" })
         {
-            probe.Project = s => s with
-            {
-                Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Mode = RunMode.Production, Wcs = s.Configuration.Effective.Wcs! with { Contract = "SPORTMASTER-RCS-SORTER-v1" } } },
-                Health = [new(s.Configuration.Effective.Wcs!.InstanceId, item.Ready, DateTimeOffset.UtcNow.AddSeconds(-2), DateTimeOffset.UtcNow.AddSeconds(item.Expired ? -1 : 3), item.Detail)]
-            };
-            for (var n = 0; n < 100 && vm.Left.RcsServiceStatus != "RCS 服务：" + item.Label; n++) { await vm.RefreshAsync(); await Task.Delay(20); }
-            Check(vm.Left.RcsServiceStatus == "RCS 服务：" + item.Label && vm.Right.RcsServiceStatus == vm.Left.RcsServiceStatus, "both positions present factual RCS " + item.Label + " from the shared service snapshot");
+            Descendants(center).OfType<Button>().Single(button => Equals(button.Tag, destination)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => vm.SelectedPage == destination && !ReferenceEquals(host.Content, page));
+            Descendants(center).OfType<Button>().Single(button => Equals(button.Tag, "maintenance")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => vm.SelectedPage == "maintenance" && host.Content is MaintenancePage && !vm.Busy);
+            var current = (MaintenancePage)host.Content; var currentEditor = (ParameterSettingsControl)current.FindName("MainParameterEditor");
+            Check(ReferenceEquals(current, page) && ReferenceEquals(currentEditor, editor) && ReferenceEquals(currentEditor.Model, draft), destination + " round trip retains the mounted page/editor/full draft identities");
+            Check(currentEditor.NavigateTo("StationCode"), "mounted station field remains reachable"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            var currentStation = Descendants(currentEditor).OfType<TextBox>().Single(box => AutomationProperties.GetAutomationId(box) == "StationCode");
+            Check(ReferenceEquals(currentStation, station) && currentStation.Text == "SYNTHETIC-UNSAVED", destination + " round trip retains the visible unsaved field, not a detached old control");
         }
-        vm.MarkReadFailure("synthetic RCS snapshot failure");
-        Check(vm.Left.RcsServiceStatus == "RCS 服务：状态未知", "stale RCS snapshot cannot retain an online indicator");
-        probe.Project = null; await vm.RefreshAsync();
-        await Until(() => vm.CanUseWorkspace && vm.Left.CanAdmit && vm.Right.CanAdmit);
-        await vm.EmitPositionAsync(vm.Left); await vm.EmitPositionAsync(vm.Right);
-        await Until(() => vm.Right.Operation?.State == ParcelState.SlotResolved);
-        Check(vm.Left.Operation?.State == ParcelState.ResolvingWcs && vm.Left.TaskId == "—" && vm.Left.WaveNo == "—" && vm.Left.ResponseQuantity == "—", "left processing suppresses the entire task while right completes");
-        Capture("work-processing-1600", client); factory.ReleaseLeft.TrySetResult();
-        await Until(() => vm.Left.Operation?.State == ParcelState.SlotResolved);
-        ParcelSnapshot WithTasks(ParcelSnapshot s) => s with
-        {
-            Operations = s.Operations.Select(o => o with
-            {
-                Wcs = o.Wcs! with { Replies = o.Wcs!.Replies.Select(r => r with { Destination = new(WcsDestinationOutcome.Assigned, null, null, null, "TASK-" + o.PositionId, "SKU-" + o.PositionId, null, null, null, null, null, "0007-" + o.PositionId, "0002") }).ToArray() }
-            }).ToArray()
-        };
-        probe.Project = WithTasks;
-        // RefreshAsync deliberately coalesces an already-running poll. Wait for
-        // this projection to reach the UI, not merely for a duplicate read call.
-        await Until(() => vm.Left.TaskId == "TASK-left" && vm.Right.TaskId == "TASK-right" && vm.Left.WaveNo == "0007-left" && vm.Right.ResponseQuantity == "0002");
-        Check(vm.Left.TaskId == "TASK-left" && vm.Right.TaskId == "TASK-right" && vm.Left.WaveNo == "0007-left" && vm.Right.ResponseQuantity == "0002", "all task fields correlate to each position's original accepted request");
-        Capture("work-assigned-1600", client);
-        var leftControl = Descendants(window).OfType<SupplyStationPosition>().Single(x => ReferenceEquals(x.DataContext, vm.Left));
-        Check(leftControl.FindName("ReaderIdentity") is null && vm.Left.ReaderIdentity == vm.Left.ReaderId &&
-            ((TextBlock)leftControl.FindName("ScanSummary")).Text.Contains(vm.Left.ScanTime) &&
-            leftControl.FindName("ReconcileOriginal") is null && !((Button)leftControl.FindName("ContinueOriginal")).IsVisible &&
-            ((Button)leftControl.FindName("PositionDiagnostics")).IsVisible,
-            "workstation exposes the effective reader and observation time while ordinary work hides inapplicable recovery actions");
-        var beforeDiagnostics = (vm.Left.Operation!.Id, vm.Right.Operation!.Id, factory.Resolves, factory.Queries);
-        Click(leftControl, "本位诊断"); window.UpdateLayout();
-        var objectContext = Descendants((ContentControl)window.FindName("PageHost")).OfType<Expander>().Single(e => Equals(e.Header, "查看扫描内容"));
-        Check(objectContext.IsVisible && !objectContext.IsExpanded, "position diagnosis keeps the clicked object's full context available on demand");
-        objectContext.IsExpanded = true; window.UpdateLayout();
-        Check(vm.SelectedPage == "diagnostics" && Descendants((ContentControl)window.FindName("PageHost")).OfType<TextBlock>().Any(t => t.Text == vm.Left.Heading),
-            "position diagnosis opens read-only context for the clicked reader");
-        Click(window, "工作台"); window.UpdateLayout();
-        Check(beforeDiagnostics == (vm.Left.Operation!.Id, vm.Right.Operation!.Id, factory.Resolves, factory.Queries) &&
-            ReferenceEquals(leftControl, Descendants(window).OfType<SupplyStationPosition>().Single(x => ReferenceEquals(x.DataContext, vm.Left))),
-            "diagnosis round trip retains both original operations and native controls without sending or querying a business request");
-        var barcode = (TextBox)leftControl.FindName("CurrentBarcode"); window.Activate(); Check(barcode.Focus(), "work barcode accepts native focus"); barcode.Select(1, 3);
-        for (var i = 0; i < 4; i++) await vm.RefreshAsync();
-        Check(barcode.IsKeyboardFocused && barcode.SelectionStart == 1 && barcode.SelectionLength == 3, "polling preserves native selection and focus");
-        probe.Project = s => WithTasks(s) with { Inputs = s.Inputs!.Select(i => i.PositionId == "left" ? i with { Outcome = ParcelInputOutcome.Rejected, Observation = i.Observation with { Id = "new-observation", Codes = ["noise", "unmatched"] }, Reason = "合成：无匹配条码", BarcodeSelection = new("NoMatchingCode", null, 0, null, "本次无匹配条码") } : i).ToArray() };
-        await Until(() => vm.Left.Input?.Observation.Id == "new-observation");
-        Check(vm.Left.TaskId == "—" && vm.Left.SkuId == "—" && vm.Left.WaveNo == "—" && vm.Left.ResponseQuantity == "—" && vm.Left.Slot == "未取得" && vm.Right.TaskId == "TASK-right" && vm.Left.OriginalResponsibility.Length > 0, "rejected observation clears every current task field and retains original responsibility separately");
-        Capture("work-rejected-new-input", client);
-        probe.Project = s => WithTasks(s) with { Operations = WithTasks(s).Operations.Select(o => o.PositionId == "left" ? o with { State = ParcelState.WcsUnknown, Wcs = o.Wcs! with { State = StageState.Unknown }, Slot = null } : o).ToArray() };
-        await Until(() => vm.Left.Operation?.State == ParcelState.WcsUnknown); Check(vm.Left.TaskId == "—" && vm.Right.TaskId == "TASK-right", "unknown stage cannot expose a retained accepted destination");
-        Check(leftControl.FindName("ReconcileOriginal") is null && vm.Left.HasUncertainOriginal &&
-            !((Button)leftControl.FindName("ContinueOriginal")).IsVisible && !vm.Right.HasUncertainOriginal,
-            "unknown original retains responsibility without a permanent query action and leaves the other position independent");
-        Capture("work-unknown", client);
-        vm.MarkReadFailure("合成读取中断");
-        Check(vm.Left.WaveNo == "已失效" && vm.Right.ResponseQuantity == "已失效" && !vm.Right.CurrentTaskAvailable, "stale snapshot invalidates all task fields together"); Capture("work-stale", client);
-        Check(leftControl.FindName("ReconcileOriginal") is null && !vm.Left.CanQueryOriginal &&
-            ((Button)leftControl.FindName("PositionDiagnostics")).IsEnabled,
-            "stale original retains its context with reconciliation disabled and read-only diagnosis available");
-        probe.Project = WithTasks; await vm.RefreshAsync();
-        await VerifyClientGeometry(window, vm, probe, evidence, "supply-station-v2", Check);
-        probe.Project = WithTasks; await vm.RefreshAsync(); await SetClient(window, 1366, 768); Capture("work-assigned-1366", client);
-        Click(window, "作业记录");
-        await Until(() => vm.HistoryLoaded && !vm.HistoryLoading && !vm.Busy);
-        Check(!vm.HistoryLoading && !vm.Busy, "initial current history session drains before selecting an original operation");
-        await vm.OpenHistoryAsync(vm.Left.Operation!.Id);
-        Check(vm.Selected?.Id == vm.Left.Operation.Id && ParcelViewModel.DestinationSummary(WithTasks(vm.Snapshot!).Operations.Single(o => o.Id == vm.Selected.Id)).Contains("0007-left"), "history keeps selected original ownership and exposes added response fields");
-        Capture("history", client);
-        Click(window, "诊断与恢复"); window.UpdateLayout();
-        var diagnostics = (ContentControl)window.FindName("PageHost");
-        var scans = Descendants(diagnostics).OfType<Expander>().Single(e => Equals(e.Header, "查看扫描内容"));
-        Check(scans.IsExpanded && Descendants(diagnostics).OfType<Button>().Any(b => Equals(b.Content, "复制诊断信息")), "opened scan details and technical evidence persist across diagnostic navigation");
-        scans.IsExpanded = false; window.UpdateLayout();
-        Check(Descendants(diagnostics).OfType<TextBox>().Where(t => t.IsVisible).All(t => t.IsReadOnly) &&
-            Descendants(diagnostics).OfType<TextBlock>().Any(t => t.Text.Contains("不会被重发")) && vm.DiagnosticTechnicalSummary.Contains(vm.Left.ReaderId), "diagnostics preserves original-request guidance and full technical identity without exposing it by default");
-        Capture("diagnostics", client);
-        await Until(() => !vm.Busy);
-        var firstLoadRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var priorTask = vm.RunAsync(() => firstLoadRelease.Task, "合成：首开参数前尚有任务");
-        try
-        {
-            Click(window, "参数配置"); await System.Windows.Threading.Dispatcher.Yield();
-            Check(vm.SelectedPage == "maintenance" && !vm.HasLoadedConfiguration, "opening settings during another task retains a pending load instead of clearing or bypassing that task");
-        }
-        finally { firstLoadRelease.TrySetResult(); await priorTask; }
-        await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
-        Check(vm.HasLoadedConfiguration, "first settings load completes after the preceding task without a second navigation click");
-        var maintenance = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
-        var editor = (ParameterSettingsControl)maintenance.FindName("MainParameterEditor");
-        Check(Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "返回作业")) &&
-            !Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "作业")),
-            "focused settings replaces the daily sidebar with a visible return-to-work action");
-        editor.NavigateTo("StationCode"); var station = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "StationCode");
-        station.Text = "SYNTHETIC-UNSAVED"; station.Focus(); station.Select(2, 4);
-        var pending = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var busy = vm.RunAsync(() => pending.Task, "合成慢检查");
-        try
-        {
-            await System.Windows.Threading.Dispatcher.Yield();
-            Check(editor.IsEnabled && station.IsKeyboardFocused && ((Grid)maintenance.FindName("MaintenanceScope")).IsEnabled, "slow operation keeps object viewing, scrolling and current editing available");
-        }
-        finally { pending.TrySetResult(); await busy; }
-        Click(window, "作业"); Click(window, "参数配置"); await Until(() => !vm.Busy);
-        Check(ReferenceEquals(editor, maintenance.FindName("MainParameterEditor")) && station.Text == "SYNTHETIC-UNSAVED", "page navigation retains the same editor and unsaved draft");
-        Capture("parameters-system", client);
-        var search = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "搜索参数");
-        search.Text = "扫码消息"; window.UpdateLayout();
-        Capture("parameters-search", client);
-        var results = Descendants(editor).OfType<ListBox>().Single(x => AutomationProperties.GetName(x) == "参数搜索结果");
-        var searchFocused = search.Focus();
-        Check(results.IsVisible && results.Items.Count > 0 && searchFocused, "parameter search presents matches and accepts native keyboard input: visible=" + results.IsVisible + ", matches=" + results.Items.Count + ", focused=" + searchFocused + ", enabled=" + search.IsEnabled + ", active=" + window.IsActive);
-        search.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(search)!, 0, Key.Enter) { RoutedEvent = Keyboard.KeyDownEvent }); window.UpdateLayout();
-        Check(search.Text.Length == 0 && Descendants(editor).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "QueueCapacity" && x.IsKeyboardFocused),
-            "cross-category search locates and focuses the actual field without recreating editors");
-        editor.NavigateTo("StationCode");
-        var returnedStation = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "StationCode");
-        Check(ReferenceEquals(station, returnedStation) && station.Text == "SYNTHETIC-UNSAVED", $"search and category navigation retain exact unsaved controls and input (same={ReferenceEquals(station, returnedStation)}, before={station.Text}, after={returnedStation.Text})");
-        search.Text = "没有这种字段"; window.UpdateLayout();
-        Check(results.Items.Count == 0 && Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("没有找到")), "empty search explains how to return without changing the draft");
-        search.Clear();
-        window.ShowPositionDiagnostics(vm.Left); window.UpdateLayout(); Capture("work-position-diagnostics", client);
-        Click(window, "返回该设备设置"); await Until(() => vm.SelectedPage == "maintenance" && !vm.Busy); window.UpdateLayout();
-        var directory = Descendants(editor).OfType<ListBox>().Single(x => AutomationProperties.GetName(x) == "设置目录");
-        await Until(() => directory.SelectedItem?.ToString() == "左相机");
-        Check(directory.SelectedItem?.ToString() == "左相机" && ReferenceEquals(editor, maintenance.FindName("MainParameterEditor")) && station.Text == "SYNTHETIC-UNSAVED",
-            "position diagnosis returns to the bound reader settings while retaining the same complete unsaved candidate: selected=" + directory.SelectedItem + "; same=" + ReferenceEquals(editor, maintenance.FindName("MainParameterEditor")) + "; station=" + station.Text);
-        var revisionBeforeReview = (await runtime.SnapshotAsync()).Configuration.Revision;
-        editor.NavigateTo("QueueCapacity"); window.UpdateLayout();
-        var budget = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "QueueCapacity");
-        var originalBudget = budget.Text; budget.Text = "bad";
-        ((Button)maintenance.FindName("SaveChanges")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        await Until(() => !vm.Busy && vm.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity")); window.UpdateLayout();
-        Check(!window.OwnedWindows.OfType<Window>().Any(w => w.Title == "保存更改") && budget.Text == "bad" &&
-            budget.IsKeyboardFocused && station.Text == "SYNTHETIC-UNSAVED",
-            "save automatically finds the invalid field and preserves the draft without opening a review or submitting");
-        Capture("parameters-save-validation", client);
-        budget.Text = originalBudget; editor.NavigateTo("StationCode");
-        // Field edits revalidate on DataBind; UpdateLayout alone does not run
-        // that dispatcher callback. Observe the settled native binding result.
-        await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-        Check(!vm.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity") && station.Text == "SYNTHETIC-UNSAVED" &&
-            (await runtime.SnapshotAsync()).Configuration.Revision == revisionBeforeReview,
-            "correcting and leaving a field refreshes its local error without moving focus, losing another draft or saving");
-        Check(vm.IsManagementMode && ((Button)maintenance.FindName("SaveChanges")).IsEnabled,
-            "save review is accessible under the authenticated software administrator");
-        var reviewSeen = false; double editorHeight = 0;
-        await ObserveSaveReviewAsync(window, maintenance, dialog =>
-        {
-            reviewSeen = !vm.Busy && Descendants(dialog).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "维护变更原因") &&
-                vm.IsManagementMode && !Descendants(dialog).OfType<PasswordBox>().Any(t => t.IsVisible);
-            var changes = Descendants(dialog).OfType<DataGrid>().Single(g => AutomationProperties.GetName(g) == "本次设置更改");
-            Check(vm.ConfigurationReviewIsCurrent && changes.Items.OfType<ConfigurationChangeItem>().Any(c => c.Path == "StationCode" && c.After == "SYNTHETIC-UNSAVED"),
-                "native review displays the current station change from the validated complete candidate");
-            Check(vm.Fresh && vm.Snapshot?.Paused == true && !Descendants(dialog).OfType<Button>().Single(b => b.Name == "ReviewPause").IsVisible,
-                "confirmed pause is shown as a review condition without a redundant pause action");
-            editorHeight = editor.ActualHeight;
-            Capture("parameters-save-review", (FrameworkElement)dialog.Content);
-        });
-        window.UpdateLayout();
-        Check(reviewSeen && editor.ActualHeight == editorHeight && station.Text == "SYNTHETIC-UNSAVED" &&
-            (await runtime.SnapshotAsync()).Configuration.Revision == revisionBeforeReview,
-            "one save review owns authorization and reason without holding Busy, shrinking the editor, or staging on cancel");
-        await vm.RunAsync(vm.SwitchToAdvancedConfigurationAsync, "合成：切换同一候选到高级编辑");
-        await vm.RunAsync(vm.LoadStructuredFromJsonAsync, "合成：采用同一候选到表单");
-        Check(vm.CanEditStructuredConfiguration && vm.GetConfigurationChangeItems().Any(c => c.Path == "StationCode" && c.After == "SYNTHETIC-UNSAVED") &&
-            (await runtime.SnapshotAsync()).Configuration.Revision == revisionBeforeReview,
-            "adopting the unsaved JSON candidate into the form preserves the original review baseline and never persists it");
-        await VerifyRcsEditor(root, runtime, config, window, Capture, Check);
-        window.Content = client; await SetClient(window, 1366, 768); Click(window, "作业");
-        Check(((Border)window.FindName("WorkstationFooter")).IsVisible && !((TextBlock)window.FindName("SettingsRunMode")).IsVisible,
-            "returning to work restores the existing footer without a second settings mode line");
-        if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
-        {
-            var type = System.Reflection.Assembly.LoadFrom(desktopPath).GetType("Ipc.Desktop.StartupRepairWindow", true)!;
-            var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") }; ManagementModeFixture.AuthorizeRoot(offline.DataRoot);
-            var first = (Window)Activator.CreateInstance(type, [offline, null, true])!; first.Show();
-            var busyField = type.BaseType!.GetField("Busy", BindingFlags.NonPublic | BindingFlags.Instance)!;
-            var firstEditor = await FirstConfigurationReady(first, busyField, Check);
-            var firstModel = firstEditor.Model;
-            for (var i = 0; i < 5; i++)
-            {
-                var category = new[] { 1, 0, 2, 3, 4 }[i];
-                firstEditor.SelectCategory(category); first.UpdateLayout();
-                Check(firstEditor.SelectedCategory == category && ReferenceEquals(firstModel, firstEditor.Model) &&
-                    ReferenceEquals(firstEditor, Descendants(first).OfType<ParameterSettingsControl>().Single()),
-                    "startup section " + (i + 1) + " reuses one editor and complete draft");
-                Capture("startup-step-" + (i + 1), (FrameworkElement)first.Content);
-            }
-            CheckFirstConfigurationReview(first, firstEditor, Check);
-            Check(!Directory.Exists(offline.DataRoot) || !Directory.GetFiles(offline.DataRoot, "*.db", SearchOption.AllDirectories).Any(), "opening/navigating startup does not create an Application database or start devices");
-            first.Close();
-        }
-        await VerifyUnsavedChoices(window, Capture, Check);
-        if (interactive)
-        {
-            // The same built controls remain open for actual Windows input. No hardware.
-            Directory.CreateDirectory(Path.Combine(root, ".artifacts/ui-task-redesign"));
-            File.WriteAllText(Path.Combine(root, ".artifacts/ui-task-redesign/INTERACTIVE.txt"), evidence);
-            var closed = new TaskCompletionSource(); window.Closed += (_, _) => closed.TrySetResult(); await closed.Task;
-        }
-        else window.Close();
-        lines.Add("WPF synthetic runtime/ports; native HWND and Dispatcher. Physical target IPC, SDK/RCS and site acceptance NOT_RUN.");
-        async Task Until(Func<bool> done)
-        {
-            for (var i = 0; i < 120; i++) { await vm.RefreshAsync(); if (done()) return; await Task.Delay(25); }
-            throw new InvalidOperationException($"Bounded UI state wait expired. Busy={vm.Busy}, loaded={vm.HasLoadedConfiguration}, page={vm.SelectedPage}; {vm.Message}");
-        }
-        void Capture(string name, FrameworkElement target)
-        {
-            target.UpdateLayout(); var dpi = VisualTreeHelper.GetDpi(target);
-            var bitmap = new RenderTargetBitmap((int)Math.Ceiling(target.ActualWidth * dpi.DpiScaleX), (int)Math.Ceiling(target.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
-            // Capture the target's local visual bounds. Direct Render(target) also
-            // applies its parent offset, clipping margin-bearing dialog roots.
-            var visual = new DrawingVisual();
-            using (var dc = visual.RenderOpen())
-            {
-                var bounds = new Rect(0, 0, target.ActualWidth, target.ActualHeight);
-                dc.DrawRectangle(Window.GetWindow(target)?.Background ?? Brushes.White, null, bounds);
-                dc.DrawRectangle(new VisualBrush(target) { Stretch = Stretch.Fill, ViewboxUnits = BrushMappingMode.Absolute, Viewbox = bounds }, null, bounds);
-            }
-            bitmap.Render(visual);
-            var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap)); using var output = File.Create(Path.Combine(evidence, name + ".png")); png.Save(output);
-            lines.Add($"CAPTURE {name}: {target.ActualWidth}x{target.ActualHeight} DIP; Windows scale {dpi.DpiScaleX}/{dpi.DpiScaleY}");
-        }
+        Check((await runtime.SnapshotAsync()).Configuration.Revision == revision && (await runtime.SnapshotAsync()).Operations.Length == 0, "navigation does not save a revision or issue any parcel request");
+        CaptureInternal(evidence, "current-management-draft", center, lines);
+        // The external-extension editor fixture below remains paused with that
+        // mechanism; SM uses the built-in provider and the current full draft above.
     }
     static async Task VerifyRcsEditor(string root, ParcelRuntime runtime, ParcelConfiguration config, Window window, Action<string, FrameworkElement> capture, Action<bool, string> check)
     {

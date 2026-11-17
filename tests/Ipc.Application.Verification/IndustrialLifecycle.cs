@@ -137,10 +137,11 @@ static class IndustrialLifecycle
         var cleanup = WindowsDeploymentSetup.CleanRemovalInventory(files, ["owned.txt"], _ => false);
         Check(!cleanup.RestartRequired && !File.Exists(Path.Combine(files, "owned.txt")) && File.Exists(Path.Combine(files, "extra.txt")), "unowned files retained, no reboot");
         File.WriteAllText(Path.Combine(files, "locked.txt"), "locked");
-        using (var held = new FileStream(Path.Combine(files, "locked.txt"), FileMode.Open, FileAccess.Read, FileShare.None))
+        if (OperatingSystem.IsWindows())
         {
+            using var held = new FileStream(Path.Combine(files, "locked.txt"), FileMode.Open, FileAccess.Read, FileShare.None);
             var blocked = WindowsDeploymentSetup.CleanRemovalInventory(files, ["locked.txt"], _ => false);
-            Check(!blocked.RestartRequired && blocked.Remaining.Length > 0, "unscheduled lock is leftovers, not false reboot");
+            Check(!blocked.RestartRequired && File.Exists(Path.Combine(files, "locked.txt")) && blocked.Remaining.Contains("locked.txt"), "unscheduled lock retains the exact locked file without declaring a reboot");
         }
         var installed = new DeploymentLocation("sportmaster", new string('a', 40), files, Path.Combine(root, "config"), Path.Combine(root, "data"), "synthetic");
         var originalFiles = new Dictionary<string, string> { ["damaged.exe"] = new string('b', 64) };

@@ -93,7 +93,7 @@ public partial class SupplyStationWindow
     }
     void StationSettings_Click(object sender, RoutedEventArgs e)
     {
-        if (settingsWindow is not null) { settingsWindow.Activate(); return; }
+        if (ActivateSettingsWindow()) return;
         if (openingManagement || managementCenter is not null) { ViewModel.Message = "请先关闭管理中心，再打开设置。"; return; }
         try
         {
@@ -106,9 +106,16 @@ public partial class SupplyStationWindow
     }
     internal void ReturnToWorkstation()
     {
+        settingsWindow?.Hide();
         SetPage("workstation"); Activate();
         // Switching windows clears the lane selection. The operator selects the
         // intended lane again, using its card or F2/F3; never silently route PDA.
+    }
+    bool ActivateSettingsWindow()
+    {
+        if (settingsWindow is not { } settings) return false;
+        if (!settings.IsVisible) settings.Show();
+        settings.Activate(); return true;
     }
     async Task RenewManagementAsync()
     {

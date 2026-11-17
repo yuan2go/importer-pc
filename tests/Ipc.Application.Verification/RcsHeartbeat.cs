@@ -212,9 +212,10 @@ static partial class SportmasterRcs
         station.Peer.ReplyVehicleStates = true; await station.StartAsync(); await station.App.ExitManagementModeAsync();
         await Until(async () => (await station.App.SnapshotAsync()).Positions!.All(p => p.Vehicle is not null));
         var snapshot = await station.App.SnapshotAsync();
-        Check(snapshot.Configuration.Effective.Wcs!.Parameters.Count == 0 && snapshot.Positions!.Single(p => p.Id == "left").Vehicle?.Status == "IDLE" &&
+        Check(snapshot.Configuration.Effective.Wcs!.Parameters.Keys.All(SmParameterOwnership.FieldParameter) &&
+            snapshot.Configuration.Effective.Wcs.Parameters["left-bcr-code"] == station.Config.Wcs!.Parameters["left-bcr-code"] && snapshot.Positions!.Single(p => p.Id == "left").Vehicle?.Status == "IDLE" &&
             snapshot.Positions!.Single(p => p.Id == "right").Vehicle?.Status == "TASKING",
-            "Application projects the correct vehicle per position without exposing editable configuration to operators");
+            "Application projects the correct vehicle and onsite identifiers per position while withholding professional configuration");
         var display = new Ipc.Application.Sportmaster.Desktop.SupplyStationViewModel(station.App);
         await display.AcceptPublishedSnapshotAsync(snapshot with
         {

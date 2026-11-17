@@ -26,7 +26,7 @@ static partial class Program
         async Task Until(Func<bool> ready) { for (var n = 0; n < 200; n++) { await vm.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); if (ready()) return; await Task.Delay(20); } throw new TimeoutException("Management revocation did not converge"); }
         await Until(() => vm.IsManagementMode);
         window.Navigate("maintenance");
-        await Until(() => vm.HasLoadedConfiguration && window.IsVisible);
+        await Until(() => vm.HasLoadedConfiguration && vm.Fresh && window.Parameters.IsEnabled && window.IsVisible);
         var center = window; var host = center.Page;
         var page = (MaintenancePage)host.Content; var protectedBody = page;
         var draft = vm.StructuredPolicy!; draft.ReadTimeoutMs = "1700";

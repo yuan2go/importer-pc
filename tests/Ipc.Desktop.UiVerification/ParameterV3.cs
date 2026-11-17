@@ -107,7 +107,7 @@ static partial class Program
         var choiceBinding = config.Wcs! with { Parameters = new() { ["entity.mode"] = "observe-only" } };
         var choiceDescriptor = new CapabilityDescriptor(choiceBinding.Kind, choiceBinding.Implementation, choiceBinding.Version, choiceBinding.Contract, choiceFields, new());
         var choiceDraft = new CapabilityDraft(choiceBinding.Kind, [choiceDescriptor], choiceBinding, true, "synthetic");
-        var choiceEditor = new ParameterSettingsControl { Model = new ParameterEditorModel(vm.StructuredPolicy!, "sportmaster", [], [choiceDraft], runtime.TestBarcodeFilterAsync) };
+        var choiceEditor = new ParameterSettingsControl { Model = new ParameterEditorModel(vm.StructuredPolicy!, "shared-fixture", [], [choiceDraft], runtime.TestBarcodeFilterAsync) };
         window.Content = choiceEditor; choiceEditor.NavigateTo(choiceBinding.InstanceId + "/entity.mode"); window.UpdateLayout();
         var association = Descendants(choiceEditor).OfType<ComboBox>().Single(x => AutomationProperties.GetAutomationId(x).EndsWith("/entity.mode"));
         Check(Equals(association.SelectedItem, "observe-only") && Descendants(association).OfType<TextBlock>().Any(x => x.Text == "仅观察"),

@@ -125,7 +125,11 @@ static partial class Program
             Check(!vm.Left.SlotAvailable && vm.Right.SlotAvailable && !vm.ShowSetupGuidance, scenario + " hides the current left destination and retains the healthy right result");
             CaptureInternal(evidence, "operator-" + scenario, client, lines);
         }
-        probe.Project = s => Deferred(s); await Until(() => vm.MissingConnections.Length == 1);
+        // Freeze a coherent current unknown responsibility; a completed synthetic
+        // parcel may naturally leave the viewport during native captures.
+        probe.Project = s => Deferred(HierarchyState(s with
+        { Positions = s.Positions!.Select(p => p.Id == "left" ? p with { CurrentOperation = original.Id } : p).ToArray() }, StageState.Unknown));
+        await Until(() => vm.MissingConnections.Length == 1 && vm.Left.HasUncertainOriginal);
         Check(!vm.ShowSetupGuidance, "configuration guide never covers an existing current parcel");
         probe.FailSnapshots = true; vm.MarkReadFailure("Synthetic read failure"); await Flush();
         Check(!vm.ShowSetupGuidance && !vm.CanReconnectConfigured && !vm.Left.SlotAvailable, "stale state revokes guide, reconnect and destination claims");

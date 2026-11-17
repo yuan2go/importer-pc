@@ -72,7 +72,7 @@ internal static partial class Program
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                 Check(Visuals(window).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) == "ReadTimeoutMs" && t.IsVisible), "technical field is actually visible");
                 Check(!editor.NavigateToParameter("StationCode"), "technical editor cannot navigate to the removed field-owned station code");
-                Check(model.Snapshot!.Positions!.All(p => p.Admit), "native login and professional page leave legitimate admission open");
+                Check(!model.Snapshot!.Paused && (loseOwner ? model.Snapshot.Positions!.Single(p => p.Id == "right").Admit : model.Snapshot.Positions!.All(p => p.Admit)), "native login and professional page leave legitimate admission open; existing parcel ownership is retained");
                 tabs.SelectedIndex = 2;
                 await Until(() => Visuals(window).OfType<Button>().Any(b => Equals(b.Content, "进入设备调试（暂停整站供包）") && b.IsEnabled));
                 var confirm = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };

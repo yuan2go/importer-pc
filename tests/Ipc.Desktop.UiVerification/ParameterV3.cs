@@ -122,7 +122,7 @@ static partial class Program
         var binding = config.Wcs! with { Parameters = new() { ["masked"] = "SYNTHETIC-A", ["reference"] = "secret:synthetic-reference" } };
         var descriptor = new CapabilityDescriptor(binding.Kind, binding.Implementation, binding.Version, binding.Contract, fields, new());
         var draft = new CapabilityDraft(binding.Kind, [descriptor], binding, true, "synthetic");
-        var model = new ParameterEditorModel(vm.StructuredPolicy!, "sportmaster", [], [draft], runtime.TestBarcodeFilterAsync);
+        var model = new ParameterEditorModel(vm.StructuredPolicy!, "shared-fixture", [], [draft], runtime.TestBarcodeFilterAsync);
         var secureEditor = new ParameterSettingsControl { Model = model }; window.Content = secureEditor;
         secureEditor.NavigateTo(binding.InstanceId + "/reference"); window.UpdateLayout();
         var secret = Descendants(secureEditor).OfType<PasswordBox>().Single(x => AutomationProperties.GetAutomationId(x).EndsWith("/reference"));
@@ -134,6 +134,7 @@ static partial class Program
         var valueProvider = peer!.GetPattern(System.Windows.Automation.Peers.PatternInterface.Value) as System.Windows.Automation.Provider.IValueProvider;
         Check(peer.IsPassword() && valueProvider is not null && valueProvider.Value.Length == 0, "native password automation returns an empty value, never the reference");
         Capture("v3-sensitive-reference");
+        vm.ParameterAudience = SmParameterAudience.Complete; // Generic secret-reference review, outside the split SM form.
         await vm.SwitchToAdvancedConfigurationAsync();
         var reviewDraft = vm.CapabilityDrafts.Single(d => d.InstanceId == binding.InstanceId);
         foreach (var field in fields) reviewDraft.Parameters.Add(new(field, binding.Parameters[field.Key]));
@@ -141,6 +142,7 @@ static partial class Program
         vm.ConfigurationDraft = Wire.Encode(candidate with { Wcs = candidate.Wcs! with { Parameters = new(candidate.Wcs.Parameters) { ["reference"] = "secret:synthetic-edited" } } });
         var maskedReview = vm.GetConfigurationChangeItems().Single(c => c.TechnicalPath.EndsWith("Wcs.Parameters.reference"));
         Check(!maskedReview.Before.Contains("secret:") && !maskedReview.After.Contains("secret:"), "review masks secret-reference even without the Sensitive flag");
+        vm.ParameterAudience = SmParameterAudience.Field;
         window.Content = client; await vm.LoadCapabilitiesAsync(); editor.ShowPage(2, "左相机");
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {

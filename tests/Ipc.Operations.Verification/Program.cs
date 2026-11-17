@@ -275,6 +275,7 @@ internal static partial class Program
             var workspace = (IManagementWorkspace)remote;
             var debugWindow = Wire.Id();
             var opened = await workspace.SetManagementWorkspaceAsync(debugWindow, true, default);
+            await CameraRoundHarness.Until(async () => (await observer.ReadAsync(default)).Positions.All(p => !p.Admit));
             Check(opened.Status is "Paused" or "PausedWithCameraWarning" && (await observer.ReadAsync(default)).Positions.All(p => !p.Admit),
                 "only explicit debug acquires the original whole-station admission fence");
             var closed = await workspace.SetManagementWorkspaceAsync(debugWindow, false, default);
@@ -282,6 +283,7 @@ internal static partial class Program
             var replacedWindow = Wire.Id();
             await workspace.SetManagementWorkspaceAsync(replacedWindow, true, default);
             var replacement = await authority.EnterManagementSessionAsync(OperationsPassword);
+            await CameraRoundHarness.Until(async () => (await observer.ReadAsync(default)).Positions.All(p => p.Admit));
             Check(replacement?.Authorized == true && await workspace.ReadManagementWorkspaceOwnerAsync(default) is null &&
                 (await observer.ReadAsync(default)).Positions.All(p => p.Admit),
                 "replacing a grant releases the old explicit debug scope rather than adopting it under a new authorization");

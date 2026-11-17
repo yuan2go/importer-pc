@@ -48,7 +48,7 @@ internal static class StationPositionControlChecks
                 "restart closes old confirmed display while retaining automatic suppression independently of disabled state");
             Check(h.Factory.Cameras[h.Config.Topology!.Positions.Single(p => p.Id == "left").ReaderDeviceId].Epoch.Length == 0 &&
                 (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CameraConnectionSuspended, "restart never starts persisted disabled camera");
-            await h.App.SetPositionEnabledAsync(await Command(h.App, "right", true), default);
+            await SmRoundFixture.EnableAsync(h.App, "right");
             Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").SupplyControl?.Mode == StationPositionMode.Enabled && h.Peer.Requests.Count == 1, "enable restores the lane without replaying its original request");
             await h.App.DisposeAsync(); await h.StartAsync(false);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions?.Length == 2);
@@ -83,16 +83,29 @@ internal static class StationPositionControlChecks
             var opens = h.Api(h.Left).Opens; await Task.Delay(1100);
             Check(h.Api(h.Left).Destroys == 1 && h.Api(h.Left).Finalizes == 1 && h.Api(h.Left).Opens == opens && h.Peer.Requests.Count == 1,
                 "disabled position actually releases camera handle and SDK and suppresses automatic reconnect");
-            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
+            // Camera release does not prove that RCS applied the membership withdrawal.
+            // This existing helper waits for the real heartbeat and accepted local
+            // switch receipt; it never retries a destination request or clears a fence.
+            var enableReceipt = await SmRoundFixture.EnableAsync(h.App, "left");
             // Observe the real reconnect first, then explicitly confirm the latest
             // membership. Automatic heartbeat scheduling has its own suite; this
             // fixture must not queue its next frame against the retired SDK epoch.
-            await CameraRoundHarness.Until(async () =>
+            try
             {
-                var connected = await h.App.SnapshotAsync();
-                return !connected.Positions!.Single(p => p.Id == "left").CameraConnectionSuspended &&
-                    connected.Devices!.Single(d => d.DeviceId == h.Left).IsValid(DateTimeOffset.UtcNow);
-            });
+                await CameraRoundHarness.Until(async () =>
+                {
+                    var connected = await h.App.SnapshotAsync();
+                    return !connected.Positions!.Single(p => p.Id == "left").CameraConnectionSuspended &&
+                        connected.Devices!.Single(d => d.DeviceId == h.Left).IsValid(DateTimeOffset.UtcNow);
+                });
+            }
+            catch (TimeoutException error)
+            {
+                var pending = await h.App.SnapshotAsync();
+                throw new TimeoutException("Reenabled camera did not become connected: " + Wire.Encode(new
+                { Position = pending.Positions!.Single(p => p.Id == "left"), pending.Devices, pending.Health, pending.BlockingReasons,
+                    enableReceipt, h.Api(h.Left).Opens, h.Api(h.Left).Destroys, h.Api(h.Left).Finalizes, Runtime = h.App.RuntimeProgress() }), error);
+            }
             await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
             try
             {
@@ -171,7 +184,7 @@ internal static class StationPositionControlChecks
                     "SYNTHETIC peer original target bindings completed before response holds; failed heartbeat handlers ended; withdrawal applied")
                 { ExpectedControlRevision = lane.SupplyControl!.Revision, ExpectedTargetOperation = lane.Arrival.TargetOperation, ExpectedRecoveryToken = lane.Arrival.RecoveryToken }, default)).Status == "Accepted";
             });
-            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
+            await SmRoundFixture.EnableAsync(h.App, "left");
             await SmRoundFixture.NextVehicleAsync(h.App, "left");
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
             await h.TrayAsync(h.Left, TrayPresence.Absent);
@@ -214,7 +227,7 @@ internal static class StationPositionControlChecks
                 Wire.Encode((await h.App.OperationAsync(old.Id))?.Wcs) == Wire.Encode(old.Wcs),
                 "a restart preserves historical custody and the independent remote fence without reviving local parcel ownership");
             await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC original remote execution and binding are settled and disabled membership is confirmed");
-            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
+            await SmRoundFixture.EnableAsync(h.App, "left");
             await h.App.CheckRcsHeartbeatAsync(default);
             var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-MANUAL-RELEASE"), default);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
@@ -329,8 +342,7 @@ internal static class StationPositionControlChecks
         Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival!.TargetOperation == old.Id,
             "retiring incompatible request details does not erase its independent remote binding fence");
         await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC retired original task and binding are settled; no delayed work remains and withdrawal applied");
-        var disabled = await h.App.SnapshotAsync();
-        await h.App.SetPositionEnabledAsync(new(Wire.Id(), disabled.RuntimeId, "left", disabled.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+        await SmRoundFixture.EnableAsync(h.App, "left");
         await h.App.CheckRcsHeartbeatAsync(default);
         await h.NextVehicleAsync();
         var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-UPGRADE"), default);

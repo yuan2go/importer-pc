@@ -1,5 +1,6 @@
 ﻿name: SM offline camera runtime installation
 on:
+  workflow_dispatch:
   pull_request:
     # The native probe exercises Platform repair directly; WPF startup is covered by Industrial core.
     paths:

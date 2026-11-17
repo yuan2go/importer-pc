@@ -1,5 +1,7 @@
 # 参数归属与生效
 
+工作站现场设置负责相机IP/编号、RCS地址、供包台编号、原zone-id仓ID/project-id生产线ID、现场格口选项和个人偏好；运维专业参数负责技术时序、读码、心跳/期限及日志/存储/备份/清理策略。共用原定义和完整候选保存，隐藏字段保留原账值，完整版本CAS不变；并发冲突保留草稿，不借模板或未显示默认覆盖另一端。首次配置仍核对完整候选。具体归属和执行边界见[双程序设计](../design/sm-dual-desktop-operator-operations-proposal.md)。
+
 本文说明当前 SM 首配和日常设置。规则见 [AGENTS.md](../../AGENTS.md)，权限见 [管理模式](management-mode-01.md)，原请求见 [RCS 参数与冻结责任](../design/rcs-parameter-description-compatibility.md)。历史参数迁移表及旧版实施记录留在 archive，不是当前格式转换或功能支持声明。
 
 ## 一份候选与一份配置账

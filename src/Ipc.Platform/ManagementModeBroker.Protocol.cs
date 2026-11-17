@@ -73,7 +73,13 @@ public sealed partial class LocalManagementMode
     }
     T Rpc<T>(ManagementModeRpcRequest request)
     {
-        string token; lock (sync) token = sessionSecret;
+        string token;
+        lock (sync)
+        {
+            if (expectedCommandSession.Value is { } expected && sessionId != expected)
+                throw new UnauthorizedAccessException("原管理会话已更换，拒绝借用其他窗口授权。");
+            token = sessionSecret;
+        }
         return ManagementModeBroker.Call<T>(dataRoot, request with { Token = token });
     }
     readonly object remoteStatusSync = new();

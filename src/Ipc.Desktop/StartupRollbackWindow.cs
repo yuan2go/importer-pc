@@ -25,7 +25,7 @@ sealed class StartupRollbackWindow : StartupWorkflowWindow
     internal Func<string?> LastOperation { get; set; } = () => WindowsDeploymentSetup.RollbackOperationToInspect(ParcelStartupServices.ApplicationId);
     internal Func<string> RegistrationHash { get; set; } = () => Wire.FileHash(WindowsDeploymentSetup.Registration(ParcelStartupServices.ApplicationId));
 
-    public StartupRollbackWindow(IManagementMode authority) : base("上一部署回滚 · 离线维护")
+    public StartupRollbackWindow(IManagementMode authority) : base("上一部署回滚 · 离线维护", applicationId: Ipc.Assembly.ParcelStartupServices.ApplicationId)
     {
         this.authority = authority;
         Width = 780; Height = 590; MinHeight = 420;

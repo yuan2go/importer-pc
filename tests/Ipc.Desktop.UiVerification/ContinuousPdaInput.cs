@@ -121,7 +121,7 @@ static partial class Program
                 var expectedRequests = h.Peer.Requests.Count + 1;
                 var code = reply == "Pending" ? "000123450004" : "000123450005";
                 await Text(code, enter: true);
-                await Until(() => !vm.Busy && entry.IsReadOnly && feedback.Text.Contains("提交结果未确认") && h.Peer.Requests.Count == expectedRequests);
+                await Until(() => !vm.Busy && entry.IsReadOnly && Equals(((Button)position.FindName("SubmitBarcode")).Content, "查看提交结果") && feedback.Text.Contains("提交结果未确认") && h.Peer.Requests.Count == expectedRequests);
                 var command = transport.Commands.Last(); var sends = h.Peer.Requests.Count; var calls = transport.Commands.Count;
                 await Text("999"); await Flush();
                 Check(entry.Text == code && entry.IsReadOnly && transport.Commands.Count == calls && h.Peer.Requests.Count == sends,

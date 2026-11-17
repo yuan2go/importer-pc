@@ -286,6 +286,19 @@
           "Ipc.Platform": "[1.0.0, )"
         }
       },
+      "ipc.application.parcelflow.desktop": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )",
+          "Ipc.Presentation.Wpf": "[1.0.0, )"
+        }
+      },
+      "ipc.application.sportmaster.desktop": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.ParcelFlow.Desktop": "[1.0.0, )"
+        }
+      },
       "ipc.diagnostics": {
         "type": "Project",
         "dependencies": {

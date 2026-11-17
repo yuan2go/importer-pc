@@ -1,4 +1,4 @@
-﻿using Ipc.Application.Contracts;
+using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster;
@@ -366,6 +366,7 @@ static class CommercialProductization
 static class ManagementModeFixture
 {
     static readonly string Password = Environment.GetEnvironmentVariable("IPC_SYNTHETIC_MANAGEMENT_PASSWORD") ?? "Fixture-" + Guid.NewGuid().ToString("N");
+    public static string NativeInputPassword => Password;
     public static void ShareWith(System.Diagnostics.ProcessStartInfo child) => child.Environment["IPC_SYNTHETIC_MANAGEMENT_PASSWORD"] = Password;
     public static void AuthorizeRoot(string root)
     {
@@ -382,7 +383,7 @@ static class ManagementModeFixture
     }
 }
 
-public interface IManagementParcelFixture : IParcelApplication, IWorkstationAdministration, IParcelHistorySessionApplication { }
+public interface IManagementParcelFixture : IParcelApplication, IWorkstationAdministration, IParcelHistorySessionApplication, IManagementWorkspace { }
 public interface IManagementModeFixtureForwarder : IWorkstationAdministration
 {
     IParcelApplication InnerAdministration { get; }

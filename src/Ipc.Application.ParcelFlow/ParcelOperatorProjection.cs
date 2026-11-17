@@ -9,6 +9,22 @@ public sealed partial class ParcelRuntime
     // Stored originals are untouched; authenticated administrators receive those exact originals.
     static CapabilityBinding? OperatorBinding(CapabilityBinding? b) => b is null ? null : b with { Target = "", Parameters = [] };
     static DeviceBinding OperatorReader(DeviceBinding r) => r with { Parameters = null };
+    static ParcelConfiguration WorkstationConfiguration(ParcelConfiguration original)
+    {
+        var masked = OperatorConfiguration(original);
+        if (original.ApplicationId != "sportmaster") return masked;
+        Dictionary<string, string>? Fields(Dictionary<string, string>? parameters) => parameters?
+            .Where(p => SmParameterOwnership.FieldParameter(p.Key)).ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
+        DeviceBinding Reader(DeviceBinding reader) => reader with { Parameters = Fields(reader.Parameters) };
+        var endpoint = original.Wcs is { } binding && Uri.TryCreate(binding.Target, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https"
+            ? new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri.GetLeftPart(UriPartial.Authority) : "";
+        return masked with
+        {
+            Reader = Reader(original.Reader),
+            Topology = original.Topology is { } topology ? topology with { Readers = topology.Readers.Select(Reader).ToArray() } : null,
+            Wcs = masked.Wcs is { } rcs ? rcs with { Target = endpoint, Parameters = Fields(original.Wcs!.Parameters)! } : null
+        };
+    }
     static ParcelConfiguration OperatorConfiguration(ParcelConfiguration c) => c with
     {
         Reader = OperatorReader(c.Reader),
@@ -47,7 +63,10 @@ public sealed partial class ParcelRuntime
         BackupScheduleStatus = null,
         Configuration = s.Configuration with
         {
-            Effective = OperatorConfiguration(s.Configuration.Effective),
+            // SM settings may read its field-owned values without borrowing a
+            // management grant. Originals/history and professional data retain
+            // their existing projection and authorization rules.
+            Effective = WorkstationConfiguration(s.Configuration.Effective),
             Pending = null,
             InitialRepair = null
         },

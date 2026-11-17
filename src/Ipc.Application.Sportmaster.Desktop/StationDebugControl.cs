@@ -131,7 +131,7 @@ internal sealed partial class StationDebugControl : UserControl
         };
         header.Children.Add(Flow(title, left, right)); toolbar.Children.Add(header);
         camera.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); state.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
-        toolbar.Children.Add(camera); toolbar.Children.Add(Text("管理中心内自动供包及读码暂停；点击“触发扫码”读取，点击“发送请求”调用 RCS。")); toolbar.Children.Add(state); toolbar.Children.Add(feedback);
+        toolbar.Children.Add(camera); toolbar.Children.Add(state); toolbar.Children.Add(feedback);
         trigger.ToolTip = "读码不要求 RCS 在线；自动供包暂停，读码不额外发送调试请求。";
         columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
@@ -470,7 +470,7 @@ internal sealed partial class StationDebugControl : UserControl
         { feedback.Text = "请先在本位核对原调试命令结果，再切换相机。"; return; }
         position = value; generation++; authoritative = false; ClearRoundDisplay(); livePreview.SelectDevice(Position.ReaderId); camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus; evidence.SelectPosition(position); Buttons();
     }
-    public void Revoke() { Deactivate(); ClearRoundDisplay(); evidence.Revoke(); }
+    public void Revoke() { Deactivate(); ClearRoundDisplay(); evidence.Revoke(); Buttons(); }
     async Task CloseScanScopeAsync(string session, string? round)
     {
         var closed = await vm.ServiceAsync(() => Inspection.EndCameraInspectionAsync(new(Wire.Id(), session, false, true, "结束单次扫码调试")
@@ -521,6 +521,10 @@ internal sealed partial class StationDebugControl : UserControl
     public void ConfirmWorkspaceClosed(BusinessReceipt receipt)
     {
         if (receipt.Status != "Restored") throw new InvalidOperationException("管理窗口结束结果尚未确认。");
+        ObserveReleasedWorkspace();
+    }
+    public void ObserveReleasedWorkspace()
+    {
         batch?.Wait.Dispose(); batch = null;
         ownedScanSession = ownedScanRound = ownedManualRound = null; ownedManualRuntime = null;
         beginCommand = null; armCommand = null; prepareCommand = null;

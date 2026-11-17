@@ -40,7 +40,7 @@ static partial class Program
             Describe(passive with { Deferred = true }).Contains("待配置"), "reconnect identity and deferred state do not borrow old frame counters");
         Check(Describe(passive with { Connection = passive.Connection! with { ValidUntil = DateTimeOffset.UtcNow.AddSeconds(-1) } }).Contains("仍有新帧"),
             "fresh acquisition is still reported when the separate connection confirmation has expired");
-        var window = new SupplyStationWindow(h.App, null, "standard") { ConfirmDiscardDrafts = _ => true };
+        var window = new OperationsViewFixture(h.App) { ConfirmDiscardDrafts = _ => true };
         window.Show();
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         async Task Until(Func<bool> ready)

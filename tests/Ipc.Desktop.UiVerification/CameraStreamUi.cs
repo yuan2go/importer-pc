@@ -14,7 +14,7 @@ static partial class Program
         T Field<T>(object c, string name) => (T)c.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(c)!;
         await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "stream")); await h.StartAsync();
         await h.App.SetDebugLoggingAsync(true);
-        var window = new SupplyStationWindow(h.App, null, "standard") { Title = "相机实时视频 · 合成图像验证" };
+        var window = new OperationsViewFixture(h.App) { Title = "相机实时视频 · 合成图像验证" };
         window.Show();
         try
         {
@@ -22,7 +22,7 @@ static partial class Program
             await CameraRoundHarness.Until(async () => { await window.ViewModel.RefreshAsync(); return window.ViewModel.Fresh && window.ViewModel.IsManagementMode; });
             window.ShowPositionDebug(window.ViewModel.Left);
             await Dispatcher.Yield(); window.UpdateLayout();
-            Window Surface() => window.OwnedWindows.OfType<ManagementCenterWindow>().SingleOrDefault(center => center.IsVisible) ?? (Window)window;
+            Window Surface() => (Window)window;
             for (var n = 0; n < 200 && !Descendants(Surface()).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"); n++) await Task.Delay(20);
             var control = Descendants(Surface()).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             var live = Field<UserControl>(control, "livePreview"); var image = Field<Image>(live, "image");

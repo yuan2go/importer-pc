@@ -61,7 +61,6 @@ static partial class Program
                 else if (args.Contains("--first-preference-save")) await VerifyFirstPreferenceSave(evidence, lines);
                 else if (args.Contains("--window-preference")) await VerifyWindowPreference(root, evidence, lines);
                 else if (args.Contains("--rcs-no-destination-ui")) await VerifyRcsNoDestinationUi(root, evidence, lines);
-                else if (args.Contains("--management-center")) await VerifyManagementCenter(root, evidence, lines);
                 else if (args.Contains("--management-entry-ordering")) await VerifyManagementEntryOrdering(root, evidence, lines);
                 else if (args.Contains("--restart-barcode-details")) await VerifyRestartBarcodeDetails(root, evidence, lines);
                 else if (args.Contains("--parcel-picture-copy")) await VerifyParcelPictureCopy(root, evidence, lines);
@@ -208,10 +207,10 @@ static partial class Program
             Check(alternate.ViewModel.SelectedHistory?.Operation.Id == alternate.ViewModel.Right.Operation!.Id, "right details replace both selected row and command target");
             Click(alternate, "作业记录");
             Check(((ContentControl)alternate.FindName("PageHost")).Content is HistoryPage, "history navigation uses installed native page");
-            Click(alternate, "设备与维护"); await Task.Delay(200);
-            Check(((ContentControl)alternate.FindName("PageHost")).Content is MaintenancePage, "maintenance navigation uses installed native page");
+            var fieldSettings = await OpenFieldSettingsForVerification(alternate);
+            Check(((ContentControl)fieldSettings.FindName("EditorHost")).Content is MaintenancePage && alternate.ViewModel.SelectedPage == "history", "independent field settings preserve the workstation page");
+            fieldSettings.Close(); await Task.Delay(200);
             await VerifyMaintenanceControls(classic, (ParcelViewModel)classic.DataContext, Check);
-            await VerifyMaintenanceControls(alternate, alternate.ViewModel, Check);
             Click(alternate, "工作台"); Click(alternate, "辅助窗口"); await Task.Delay(700);
             var child = alternate.OwnedWindows.OfType<SupplyStationWindow>().Single();
             Check(ReferenceEquals(child.ViewModel.Application, application) && !ReferenceEquals(child.ViewModel, alternate.ViewModel), "auxiliary window inherits UI and shares Application with independent model");
@@ -265,18 +264,35 @@ static partial class Program
         await VerifyCurrentDraftClose(evidence, config, Check, syntheticIdentity);
         lines.Add("PASS WINDOWS WPF SMOKE; real SDK/WCS/device/field acceptance remains BLOCKED");
     }
+    static async Task<StationSettingsWindow> OpenFieldSettingsForVerification(SupplyStationWindow station)
+    {
+        void Press(Button button) => station.Dispatcher.BeginInvoke(new Action(() => button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent))));
+        async Task Until(Func<bool> ready) => await CameraRoundHarness.Until(async () => { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); return ready(); });
+        Press((Button)station.FindName("StationSettingsEntry"));
+        await Until(() => station.OwnedWindows.OfType<StationSettingsWindow>().Any(w => w.IsVisible));
+        var settings = station.OwnedWindows.OfType<StationSettingsWindow>().Single(w => w.IsVisible);
+        if (((ContentControl)settings.FindName("EditorHost")).IsVisible) return settings;
+        Press((Button)settings.FindName("EditSettings"));
+        await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible));
+        var password = System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Single(w => w.IsVisible);
+        await Until(() => Descendants(password).OfType<PasswordBox>().Any(p => p.Name == "ManagementPassword" && p.IsVisible && p.IsEnabled));
+        Descendants(password).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = ManagementModeFixture.NativeInputPassword;
+        Press(Descendants(password).OfType<Button>().Single(b => b.Name == "EnterManagementMode"));
+        await Until(() => !password.IsVisible && ((ContentControl)settings.FindName("EditorHost")).IsVisible && station.ViewModel.HasLoadedConfiguration && !station.ViewModel.Busy);
+        return settings;
+    }
     static void Click(DependencyObject root, string name)
     {
-        if (root is ManagementCenterWindow center && name is "设备与诊断" or "设置" or "调试" or "日志")
+        if (root is OperationsViewFixture operations)
         {
-            ((WrapPanel)center.FindName("ManagementNavigation")).Children.OfType<Button>().Single(b => Equals(b.Content, name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            operations.Navigate(name switch { "设备与诊断" or "诊断与恢复" or "站位与设备诊断" => "diagnostics", "设置" or "参数设置" or "设备与维护" or "参数配置" => "maintenance", "调试" or "相机调试" => "debug", "日志" => "logs", "返回作业" => "workstation", _ => throw new InvalidOperationException("Unknown operations fixture page: " + name) });
             return;
         }
         if (root is ShellWindow)
             name = name switch { "设备与维护" or "参数配置" => "参数设置", _ => name };
         if (root is SupplyStationWindow station)
         {
-            if (name is "诊断与恢复" or "站位与设备诊断") { station.ShowPositionDiagnostics(station.ViewModel.Left); return; }
+            if (name is "诊断与恢复" or "站位与设备诊断") throw new InvalidOperationException("Diagnostics moved to operations tool");
             name = name switch { "设备与维护" or "参数配置" => "参数设置", "工作台" => "作业", "作业记录" => "记录", "日志查询" => "日志", _ => name };
             if (name == "参数设置" && station.ViewModel.SelectedPage == "maintenance") return;
             // The settings tab row was removed; the left navigation "设置" opens the same page.

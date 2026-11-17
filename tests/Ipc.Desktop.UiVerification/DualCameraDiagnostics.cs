@@ -52,7 +52,7 @@ static partial class Program
                 }))).ToArray()
             };
         };
-        var window = new SupplyStationWindow(application, null, "standard");
+        var window = new OperationsViewFixture(application);
         try
         {
             window.Show(); await SetClient(window, 1092, 614); await window.ViewModel.RefreshDisplayAsync();

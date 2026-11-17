@@ -19,13 +19,13 @@ static partial class Program
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var api = DispatchProxy.Create<IManualDebugUiFixture, ClosingReadBoundary>();
         var probe = (ClosingReadBoundary)(object)api; probe.Inner = h.App;
-        var window = new SupplyStationWindow(api, null, "standard"); window.Show();
+        var window = new OperationsViewFixture(api); window.Show();
         try
         {
             await Until(() => window.ViewModel.Fresh && window.ViewModel.IsManagementMode);
             window.ShowPositionDebug(window.ViewModel.Left);
             await probe.Entered.Task.WaitAsync(TimeSpan.FromSeconds(10));
-            var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single(c => c.IsVisible && ReferenceEquals(c.Owner, window));
+            var center = window;
             center.Close(); await probe.CancellationObserved.Task.WaitAsync(TimeSpan.FromSeconds(10));
             // The cancelled read remains an outstanding owned call until this
             // boundary releases it. Allow the actual close handler to enter drain.
@@ -33,7 +33,7 @@ static partial class Program
             Check(center.IsVisible && !center.IsEnabled, "closing waits for the actual cancelled read to settle");
             probe.Release.TrySetResult();
             await Until(() => !center.IsVisible || center.IsEnabled);
-            Check(!center.IsVisible && window.IsEnabled, "the original close completes after cancellation; " + ((TextBlock)center.FindName("AuthorizationStatus")).ToolTip);
+            Check(!center.IsVisible, "the actual operations close completes after its cancelled read settles");
             Check((await h.App.SnapshotAsync()).Positions!.All(p => p.Admit) && h.Peer.Requests.IsEmpty,
                 "a settled owned read cancellation permits original workspace closure and legal manual admission without HTTP");
             // A real service failure must still be observed by both the caller

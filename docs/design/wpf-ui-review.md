@@ -27,13 +27,13 @@
 ### 已落地的可复用模式
 
 - `Workstation.xaml` 提供 `OperatorActionFooter`（固定底栏）、`OperatorCopyableNotice`（可选中、键盘可达的只读消息）和 `OperatorStatusBadge`（用于**明确的暂停状态**）。只复用已有色彩和字体资源，不建立第二套设计 tokens。
-- 管理中心将“自动供包及读码已暂停”作为单一高辨识度状态提示，真实授权/暂停由 Application 决定；管理反馈保留原文、选择和滚动，未定义反馈时收起。
+- 运维设备调试将“整站自动供包及人工提交已暂停”作为单一高辨识度状态提示，真实授权/暂停由 Application 决定；管理反馈保留原文、选择和滚动，未定义反馈时收起。
 - 退出窗口复用底栏样式但保持原 `580×340` DIP、右侧动作组、默认取消、Esc/×取消及关停守卫；作业区的 RCS 原消息继续可选中、居中显示、长文滚动，不更改任何格口/异常/Unknown 判断。
 - 供包操作页不添加逐帧动画、计时轮播或状态闪烁：新的视觉效果不得占用采集/输入/回包关键线程，也不得延后页面呈现本次状态事实。现有双工位及原请求语义优先于视觉效果。
 
 ### 变更的必要验证
 
-按受影响范围复用现有 `--management-center`、`--station-exit-dialog`、`--home-centered-states` 和 `--chute-readability`，重点核对暂停状态、可复制原文、固定底栏、长中文及低高度布局、键盘焦点、100%/125%/150% DPI。构建/原生 WPF/SDK/客户 RCS/现场验收分别陈述实际结果，不用静态资源或文档审查代替运行证据。未做设备联调时不可宣称达到工业现场验收。
+按受影响范围复用现有 `Ipc.Operations.Verification`、`--station-exit-dialog`、`--home-centered-states` 和 `--chute-readability`，重点核对暂停状态、可复制原文、固定底栏、长中文及低高度布局、键盘焦点、100%/125%/150% DPI。构建/原生 WPF/SDK/客户 RCS/现场验收分别陈述实际结果，不用静态资源或文档审查代替运行证据。未做设备联调时不可宣称达到工业现场验收。
 
 ## 从 Hallmark 保留什么
 
@@ -94,7 +94,7 @@
 |---|---|
 | 退出确认 | `--station-exit-dialog`；涉及关闭生命周期再核对 `--startup-close` 及相关业务回归 |
 | 待机/离线/停用构图 | `--home-centered-states`、`--station-position-control-ui`；涉及暂停遮盖结果时加 `--paused-workstation` |
-| 导航/窗口 | `--operator-workspace`、`--management-center`、`--window-preference` |
+| 导航/窗口 | `--operator-workspace`、`Ipc.Operations.Verification`、`--window-preference` |
 | 输入与焦点 | `--position-input-ui`、`--continuous-pda-input` |
 | 字体/尺寸/共享布局 | `--chute-readability`、`--station-responsive-ui`，并抽查受影响的其他宿主 |
 

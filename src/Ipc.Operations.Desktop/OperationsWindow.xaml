@@ -2,12 +2,12 @@
  Title="供包运维工具" Width="1180" Height="760" MinWidth="880" MinHeight="560" Background="{DynamicResource Background}" WindowStartupLocation="CenterScreen">
  <DockPanel Margin="16">
   <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-   <DockPanel><TextBlock Text="供包运维工具" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"/><TextBlock Text="只读查看" Foreground="{DynamicResource Muted}" HorizontalAlignment="Right"/></DockPanel>
+   <DockPanel><TextBlock Text="供包运维工具" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"/><TextBlock Text="观察不暂停 · 动作按权限执行" Foreground="{DynamicResource Muted}" HorizontalAlignment="Right"/></DockPanel>
    <TextBox x:Name="InstallationText" Style="{DynamicResource ReadonlyValue}" Margin="0,8,0,4"/>
    <TextBlock x:Name="ConnectionText" Text="正在核验本机连接…" AutomationProperties.LiveSetting="Polite"/>
   </StackPanel>
   <TextBlock DockPanel.Dock="Bottom" Text="查看不会暂停供包。软件暂停不是安全急停。" Foreground="{DynamicResource Muted}" Margin="0,10,0,0"/>
-  <TabControl x:Name="Pages">
+  <TabControl x:Name="Pages" SelectionChanged="PageChanged">
    <TabItem Header="运行总览">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
      <StackPanel>
@@ -25,8 +25,9 @@
      </StackPanel>
     </ScrollViewer>
    </TabItem>
-   <TabItem Header="日志只读查询">
-    <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <TabItem Header="日志中心">
+    <DockPanel><Button DockPanel.Dock="Top" Content="切换完整在线日志／离线运行日志" Click="TechnicalLogsClick" HorizontalAlignment="Left"/><ContentControl x:Name="OnlineLogs" Visibility="Collapsed"/>
+    <Grid x:Name="OfflineLogs"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
      <DockPanel><TextBlock Text="日志范围" Margin="0,0,8,0"/><ComboBox x:Name="LogAreas" MinWidth="340" HorizontalAlignment="Left" AutomationProperties.Name="日志范围"/></DockPanel>
      <WrapPanel x:Name="Filters" Grid.Row="1" Margin="0,4,0,4">
       <TextBlock Text="时间"/><ComboBox x:Name="TimeRange" SelectedIndex="0" Width="150" AutomationProperties.Name="日志时间范围"><ComboBoxItem Content="最近1小时"/><ComboBoxItem Content="今天"/><ComboBoxItem Content="最近24小时"/></ComboBox>
@@ -42,8 +43,11 @@
      <TextBox x:Name="LogDetail" Grid.Row="4" Visibility="Collapsed" Height="120" IsReadOnly="True" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AutomationProperties.Name="所选日志原文"/>
      <DockPanel Grid.Row="5"><TextBlock x:Name="PageText"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Right"><Button Content="复制所选原文" Click="CopyClick"/><Button x:Name="PreviousButton" Content="上一页" Click="PreviousClick" IsEnabled="False"/><Button x:Name="NextButton" Content="下一页" Click="NextClick" IsEnabled="False"/></StackPanel></DockPanel>
      <Expander Grid.Row="6" Header="查询范围与完整性说明"><ScrollViewer MaxHeight="140" VerticalScrollBarVisibility="Auto"><TextBox x:Name="LogNotices" Style="{DynamicResource ReadonlyValue}"/></ScrollViewer></Expander>
-    </Grid>
+    </Grid></DockPanel>
    </TabItem>
+   <TabItem Header="设备调试" Tag="debug"><ContentControl x:Name="DeviceDebugPage"/></TabItem>
+   <TabItem Header="专业参数" Tag="parameters"><ContentControl x:Name="ProfessionalPage"/></TabItem>
+   <TabItem Header="维护中心" Tag="maintenance"><ContentControl x:Name="MaintenancePage"/></TabItem>
   </TabControl>
  </DockPanel>
 </Window>

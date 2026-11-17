@@ -197,6 +197,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
 public partial class ParcelViewModel
 {
     ParcelConfiguration? structuredBase;
+    public SmParameterAudience ParameterAudience { get; set; }
     public ParameterEditorModel? ParameterEditor { get; private set; }
     void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples)), structuredBase.StationId, (application as IParcelConfigurationLocationApplication)?.ConfigurationLocations, ConfigurationRoles.Single(r => r.Role == "登录"), ConfigurationRoles.ToArray()) { CameraSerialReader = (ip, engine) => ServiceAsync(() => application.ReadCameraSerialAsync(ip, engine)), DisplayPreferences = structuredBase.ApplicationId == "sportmaster" ? SmPreferences : null }; Changed(nameof(ParameterEditor)); }
     CapabilityCatalog? installedCatalog;
@@ -367,7 +368,7 @@ public partial class ParcelViewModel
         var roleIds = ConfigurationRoles.Select(x => x.Selection.Capability?.InstanceId).OfType<string>().ToHashSet();
         var inventory = bindings.Where(x => originalInventory.Contains(x.InstanceId) || !originalAll.Contains(x.InstanceId) || !roleIds.Contains(x.InstanceId)).ToArray();
         var deferred = StartupConfigurationDraft.DeferredConnectionIds(ReaderDrafts.Select(r => r.Capability), CapabilityDrafts);
-        return policy.ApplyParameters(c) with
+        var edited = policy.ApplyParameters(c) with
         {
             DeferredConnections = deferred ?? (c.DeferredConnections is { Length: 0 } ? c.DeferredConnections : null),
             Reader = readers.Single(x => x.DeviceId == c.Reader.DeviceId),
@@ -382,6 +383,7 @@ public partial class ParcelViewModel
             Images = image,
             Extensions = extensions
         };
+        return SmParameterOwnership.ProjectCandidate(configurationReviewBaseline ?? c, edited, ParameterAudience);
     }
     public Task AddCapabilityInstanceAsync()
     {

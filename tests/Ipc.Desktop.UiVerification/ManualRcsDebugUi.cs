@@ -17,7 +17,8 @@ static partial class Program
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var application = DispatchProxy.Create<IManualDebugUiFixture, ManualDebugReturnProbe>();
         var probe = (ManualDebugReturnProbe)(object)application; probe.Inner = h.App;
-        var window = new SupplyStationWindow(application, null, "standard") { Title = "人工请求调试 · 无相机合成验证" };
+        var window = new OperationsViewFixture(application) { Title = "人工请求调试 · 无相机合成验证" };
+        await using var nativeOwner = new NativeWindowOwner(window);
         window.Show(); var vm = window.ViewModel;
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         async Task Until(Func<bool> done)
@@ -26,10 +27,10 @@ static partial class Program
         {
             await SetClient(window, 1366, 768); await Until(() => vm.Fresh && vm.IsManagementMode);
             window.ShowPositionDebug(vm.Right); await Flush();
-            await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(c => ReferenceEquals(c.Owner, window) && c.IsVisible));
-            var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single(c => ReferenceEquals(c.Owner, window) && c.IsVisible);
+            await Until(() => Descendants(window).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"));
+            var center = window;
             var control = Descendants(center).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
-            Field<DispatcherTimer>(window, "timer").Stop(); Field<DispatcherTimer>(control, "timer").Stop();
+            window.StopPolling(); Field<DispatcherTimer>(control, "timer").Stop();
             Field<DispatcherTimer>(Field<UserControl>(control, "livePreview"), "timer").Stop();
             var entry = Field<TextBox>(control, "requestBarcode"); var prepare = Field<Button>(control, "prepare"); var send = Field<Button>(control, "send");
             var response = Field<TextBox>(control, "responseBody"); var copy = Field<Button>(control, "copyResponse");
@@ -94,8 +95,8 @@ static partial class Program
             await h.NextVehicleAsync("right"); await vm.RefreshAsync(); await (Task)control.GetType().GetMethod("PollAsync")!.Invoke(control, null)!;
             entry.Text = "UNSENT-ON-EXIT"; prepare.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => send.IsEnabled && Field<TextBox>(control, "requestBody").Text.Contains("UNSENT-ON-EXIT"));
-            typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["workstation"]);
-            await Until(() => !vm.IsManagementMode && vm.Right.CanAdmit);
+            await window.EndDebugAsync(); window.Navigate("diagnostics");
+            await Until(() => vm.IsManagementMode && vm.Right.CanAdmit);
             Check((await h.App.SnapshotAsync()).Operations.Single(o => o.ParcelCode == "UNSENT-ON-EXIT").Wcs is { State: Ipc.Application.Contracts.StageState.Cancelled, Attempts: 0 } && h.Peer.Requests.Count == 1,
                 "leaving native debug cancels only its unsent test request and restores ordinary manual supply without an end panel");
             await LateReturn(reload: false, newer: false);
@@ -104,9 +105,9 @@ static partial class Program
 
             async Task LateReturn(bool reload, bool newer)
             {
-                await ManagementModeFixture.Authorize(h.App); await vm.RefreshAsync();
+                await ManagementModeFixture.Authorize(h.App); await window.AdoptFixtureGrantAsync(); await vm.RefreshAsync();
                 window.ShowPositionDebug(vm.Right); await Flush();
-                await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(c => ReferenceEquals(c.Owner, window) && c.IsVisible));
+                await Until(() => Descendants(window).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"));
                 entry.Text = "LATE-" + Wire.Id();
                 await Until(() => !Field<bool>(control, "busy") && Field<Button>(control, "prepare").IsEnabled);
                 probe.Prepared = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -115,7 +116,7 @@ static partial class Program
                 {
                     prepare.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     var late = await probe.Prepared.Task.WaitAsync(TimeSpan.FromSeconds(10));
-                    typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["diagnostics"]);
+                    typeof(OperationsViewFixture).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["diagnostics"]);
                     await Flush();
                     CameraReadRound? replacement = null;
                     if (newer)
@@ -136,9 +137,10 @@ static partial class Program
                         var s = await h.App.SnapshotAsync();
                         await h.App.CloseUnsentDebugRoundAsync(new(Wire.Id(), s.RuntimeId, replacement.Id!), default);
                     }
-                    else Check((await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == false) && h.Peer.Requests.Count == 1,
-                        "late cleanup preserves the open management window admission guard without sending a request");
-                    typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["diagnostics"]);
+                    if (replacement is null) Check((await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == false) && h.Peer.Requests.Count == 1,
+                        "late cleanup preserves the explicit debug scope admission guard without sending a request");
+                    await window.EndDebugAsync();
+                    typeof(OperationsViewFixture).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["diagnostics"]);
                     await Flush();
                 }
                 finally { release.TrySetResult(); probe.Release = null; }

@@ -6,6 +6,21 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public partial class HistoryPage : UserControl
 {
+    bool technicalLogNavigation = true;
+    public bool TechnicalLogNavigation
+    {
+        get => technicalLogNavigation;
+        set { technicalLogNavigation = value; if (!value) TechnicalLogAction.Visibility = Visibility.Collapsed; }
+    }
+    public bool TechnicalMaintenance
+    {
+        set
+        {
+            if (value) return;
+            foreach (var element in new FrameworkElement[] { HistoryActions, HistoryInspection, HistoryTechnicalDetails })
+                element.Visibility = Visibility.Collapsed;
+        }
+    }
     public static readonly DependencyProperty DetailsOpenProperty = DependencyProperty.Register(
         nameof(DetailsOpen), typeof(bool), typeof(HistoryPage), new PropertyMetadata(false));
     public bool DetailsOpen { get => (bool)GetValue(DetailsOpenProperty); private set => SetValue(DetailsOpenProperty, value); }

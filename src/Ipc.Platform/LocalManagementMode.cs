@@ -139,6 +139,12 @@ public sealed partial class LocalManagementMode
     }
     public ManagementModeStatus Status()
     {
+        var status = ReadStatus();
+        return expectedCommandSession.Value is { } expected && status.SessionId != expected
+            ? status with { Active = false, SessionId = null, ExpiresAt = null } : status;
+    }
+    ManagementModeStatus ReadStatus()
+    {
         if (Remote) { lock (sync) { if (remoteStatusKnown && !active) return new(knownConfigured, false, null, knownLegacy, knownAvailable); } return RemoteStatus(); }
         lock (sync)
         {
@@ -163,8 +169,24 @@ public sealed partial class LocalManagementMode
     void Revoke() { active = false; sessionSecret = ""; credentialHash = null; revoked.Cancel(); }
     public CancellationToken Require()
     {
-        if (!Status().Authorized) throw new UnauthorizedAccessException("请先进入管理模式；作业继续，未保存输入保留。");
-        lock (sync) { revoked.Token.ThrowIfCancellationRequested(); return revoked.Token; }
+        var current = Status();
+        if (!current.Authorized) throw new UnauthorizedAccessException("请先进入管理模式；作业继续，未保存输入保留。");
+        lock (sync)
+        {
+            if (expectedCommandSession.Value is { } expected && (current.SessionId != expected || sessionId != expected))
+                throw new UnauthorizedAccessException("原命令所属管理授权已变化，请重新核对；未借用其他窗口授权。");
+            revoked.Token.ThrowIfCancellationRequested(); return revoked.Token;
+        }
+    }
+    static readonly AsyncLocal<string?> expectedCommandSession = new();
+    public static IDisposable BindCommandSession(string session)
+    {
+        var previous = expectedCommandSession.Value; expectedCommandSession.Value = session;
+        return new CommandSessionScope(previous);
+    }
+    sealed class CommandSessionScope(string? previous) : IDisposable
+    {
+        public void Dispose() => expectedCommandSession.Value = previous;
     }
     static Credential Create(string password)
     {
@@ -251,6 +273,8 @@ public sealed partial class LocalManagementMode
         lock (sync)
         {
             using var held = LockStore(); var s = Read();
+            if (expectedCommandSession.Value is { } expected && sessionId != expected)
+                throw new UnauthorizedAccessException("原管理会话已更换，不能续期其他窗口授权。");
             if (!ValidSession(s) || s.SessionId != sessionId || s.SessionExpires <= Now)
                 throw new UnauthorizedAccessException("原管理会话已到期或已撤销，请重新验证管理密码。");
             if (expires - Now > TimeSpan.FromMinutes(2)) throw new InvalidOperationException("管理模式剩余时间超过两分钟，暂不需要续期。");

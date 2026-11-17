@@ -133,7 +133,7 @@ internal sealed partial class StationDebugControl
                 batchSummary.Text = (operation.StopRequested ? "连续试扫已主动结束。" : operation.TimedOut ? "连续试扫已到时并结束。" : operation.Failure is not null ? "连续试扫失败，原会话已结束。" : "连续试扫已完成。") +
                     (operation.Failure is null ? "" : "\n" + operation.Failure) +
                     (frames.Count == 0 ? "\n没有可计算的有效样本。" : $"\n样本 {frames.Count} 帧 · 有码 {frames.Count(f => f.Symbols.Length > 0)} 帧 · 平均解码 {frames.Average(f => f.DecodeMilliseconds):F1} ms。") +
-                    "\n原样本保留；自动供包保持管理暂停，关闭管理中心后按原状态恢复。";
+                    "\n原样本保留；自动供包保持管理暂停，结束本会话调试后按原状态及实际资源核对恢复。";
             }
         }
         catch (Exception error)

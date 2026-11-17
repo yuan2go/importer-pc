@@ -9,6 +9,8 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
     readonly System.Collections.Concurrent.ConcurrentDictionary<IObservationInspectionSource, byte> workspaceSources = new();
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> workspaceInspectionSessions = new(StringComparer.Ordinal);
     bool ManagementWorkspaceOpen => Volatile.Read(ref managementWorkspace) is not null;
+    public Task<string?> ReadManagementWorkspaceOwnerAsync(CancellationToken token) =>
+        OwnedRead(_ => Task.FromResult(Volatile.Read(ref managementWorkspace)), token);
     InspectionRegistration? WorkspaceRegistration(InspectionRegistration? registration)
     {
         var window = Volatile.Read(ref managementWorkspace);
@@ -110,7 +112,7 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
             }
             finally { gate.Release(); }
             return new BusinessReceipt(open ? readPauseConfirmed ? "Paused" : "PausedWithCameraWarning" : "Restored",
-                open ? readPauseConfirmed ? "自动供包及读码已暂停。" : "供包已暂停，部分相机的读码切换尚未确认；请在设备与诊断中查看。" : "已恢复管理前的供包状态。", repository?.Revision ?? 0);
+                open ? readPauseConfirmed ? "自动供包及读码已暂停。" : "供包已暂停，部分相机的读码切换尚未确认；请在运维工具的设备调试中查看。" : "已恢复管理前的供包状态。", repository?.Revision ?? 0);
         }
         catch (Exception error)
         {

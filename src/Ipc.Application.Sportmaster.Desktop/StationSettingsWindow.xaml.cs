@@ -24,7 +24,7 @@ public partial class StationSettingsWindow : Window
         model.PropertyChanged += Changed;
         Loaded += (_, _) => UpdateState();
         Closing += ClosingSettings;
-        Closed += (_, _) => { model.PropertyChanged -= Changed; EditorHost.Content = null; };
+        Closed += (_, _) => { model.PropertyChanged -= Changed; EditorHost.Content = null; if (model.OwnedManagementSession == session) model.OwnedManagementSession = null; };
     }
     void Changed(object? sender, PropertyChangedEventArgs e)
     {
@@ -44,7 +44,9 @@ public partial class StationSettingsWindow : Window
         var c = snapshot.Configuration.Effective;
         var host = c.Wcs is { } rcs && Uri.TryCreate(rcs.Target, UriKind.Absolute, out var uri) ?
             new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri.GetLeftPart(UriPartial.Authority) : "待配置";
-        ReadOnlySettings.Text = "本站：" + c.StationId + "\n供包台编号：" + c.StationCode + "\nRCS 主机：" + host +
+        ReadOnlySettings.Text = "本站：" + c.StationId + "\n供包台编号：" + (c.StationCode ?? c.StationId) + "\nRCS 主机：" + host +
+            "\n仓 ID（已保存值）：" + (c.Wcs?.Parameters.GetValueOrDefault("zone-id") ?? "未单独保存") +
+            "\n生产线 ID（已保存值）：" + (c.Wcs?.Parameters.GetValueOrDefault("project-id") ?? "未单独保存") +
             "\n配置修订：" + snapshot.Configuration.Revision + (snapshot.HasPendingConfiguration == true ? " · 有已保存待生效设置" : " · 无待生效设置") +
             string.Join("", (c.Topology?.Positions ?? []).Select(p =>
             {
@@ -64,7 +66,7 @@ public partial class StationSettingsWindow : Window
             password.ShowDialog();
             // A grant may exist even when its follow-up observation failed and
             // the password window was canceled. Retain its identity for exit.
-            if (password.EnteredSessionId is { Length: > 0 } grantedId) session = grantedId;
+            if (password.EnteredSessionId is { Length: > 0 } grantedId) { session = grantedId; model.OwnedManagementSession = grantedId; }
             if (!password.Entered) return;
             await model.RefreshManagementModeAsync();
             if (!model.IsManagementMode || password.EnteredSessionId is not { Length: > 0 } id || model.ManagementStatus.SessionId != id)

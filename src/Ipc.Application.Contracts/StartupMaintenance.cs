@@ -57,7 +57,7 @@ public interface IStartupRetentionMaintenance
 }
 
 // Independent of IBusinessRuntime: no device/session is required to inspect or repair startup.
-public interface IStartupMaintenance : IAsyncDisposable
+public interface IStartupMaintenance : IAsyncDisposable, ICompleteBackupSetMaintenance
 {
     ValueTask IAsyncDisposable.DisposeAsync() => ValueTask.CompletedTask;
     Task<string> ReadCameraSerialAsync(string ip, string readerEngine) => throw new NotSupportedException("相机身份读取不可用");
@@ -73,15 +73,6 @@ public interface IStartupMaintenance : IAsyncDisposable
     Task<StartupRecoveryPreview> PlanRestoreAsync(string backup, string destination);
     Task<StartupRecoveryPreview[]> ReadRestoreOperationsAsync() => Task.FromResult(Array.Empty<StartupRecoveryPreview>());
     Task RestoreAsync(string backup, string destination, string expectedBackupHash);
-    Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token);
-    Task<StartupBackupItem[]> ListBackupsAsync(string directory, IProgress<MaintenanceProgress>? progress, CancellationToken token)
-        => throw new NotSupportedException("此维护实现不支持真实进度与取消");
-    Task<StartupBackupSetResult> InspectBackupDeliveryAsync(string backup, string identity, string destination)
-        => throw new NotSupportedException("原完整备份交付核对不可用");
-    Task<StartupBackupSetResult> ExportBackupSetAsync(string backup, string identity, string destination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
-        => throw new NotSupportedException("完整备份集交付不可用");
-    Task<StartupBackupSetResult> DeleteBackupSetAsync(string backup, string identity, IProgress<MaintenanceProgress>? progress, CancellationToken token)
-        => throw new NotSupportedException("完整备份集删除不可用");
     Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination);
     Task<StartupChangePreview> PrepareChangeAsync(string expectedPlan, string purpose, string backupDestination);
     Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
@@ -96,4 +87,19 @@ public interface IStartupMaintenance : IAsyncDisposable
     Task RestoreAsync(string backup, string destination, string expectedBackupHash, IProgress<MaintenanceProgress>? progress, CancellationToken token)
         => throw new NotSupportedException("此维护实现不支持真实进度与取消");
     Task AdoptRestoreAsync(string backup, string restoredDataRoot, string expectedBackupHash, string expectedRegistrationHash);
+}
+
+// Existing backup-set operations may run through the production owner without
+// acquiring a second business runtime or forcing an otherwise unnecessary stop.
+public interface ICompleteBackupSetMaintenance
+{
+    Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token);
+    Task<StartupBackupItem[]> ListBackupsAsync(string directory, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => throw new NotSupportedException("此维护实现不支持真实进度与取消");
+    Task<StartupBackupSetResult> InspectBackupDeliveryAsync(string backup, string identity, string destination)
+        => throw new NotSupportedException("原完整备份交付核对不可用");
+    Task<StartupBackupSetResult> ExportBackupSetAsync(string backup, string identity, string destination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => throw new NotSupportedException("完整备份集交付不可用");
+    Task<StartupBackupSetResult> DeleteBackupSetAsync(string backup, string identity, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => throw new NotSupportedException("完整备份集删除不可用");
 }

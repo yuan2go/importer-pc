@@ -88,7 +88,7 @@ public sealed partial class SupplyStationPositionViewModel
         RcsUnavailableForDisplay ? "RCS 连接尚未恢复" :
         PausedReadBlocked ? "条码已读到，尚未请求格口" : "新包裹暂不受理";
     public string PauseInstruction => InterruptedInputBlocksResume
-        ? "请联系维护人员检查运行数据，操作工无需进入管理中心。"
+        ? "请联系维护人员检查运行数据，操作工无需进入运维工具。"
         : owner.CanResumeInViewport ? "确认现场后，点击顶部“恢复供包”。"
         : "请通知维护人员检查设备，恢复后再上件。";
     bool AutoSuppressedWaiting => CurrentRound is null && owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.AutomaticSuppressed == true;
@@ -132,9 +132,9 @@ public sealed partial class SupplyStationPositionViewModel
         ParcelInputBlockReason.PreviousResultUnconfirmed => ("本位有格口结果尚未确认", "请取下包裹，按本位提示处理"),
         ParcelInputBlockReason.PreviousWorkBlocked => ("本位作业尚未结束", "请查看本位详情，处理后再上件"),
         ParcelInputBlockReason.SoftwarePaused => ("供包已暂停", "确认现场后恢复供包，再重新上件"),
-        ParcelInputBlockReason.ManagementOpen => ("管理中心正在使用", "关闭管理中心后再上件"),
+        ParcelInputBlockReason.ManagementOpen => ("设备调试正在进行", "请联系运维人员结束设备调试后再上件"),
         ParcelInputBlockReason.PositionDisabled => ("本位已停用或正在停用", "请启用本投递位后再上件"),
-        ParcelInputBlockReason.OperatorSessionExpired => ("本站配置需要核对", "SM 不使用操作员登录，请进入管理中心核对本站配置"),
+        ParcelInputBlockReason.OperatorSessionExpired => ("本站配置需要核对", "SM 不使用操作员登录，请在工作站设置核对本站配置"),
         ParcelInputBlockReason.PositionMaintenance => ("本位设备正在维护", "请等待设备恢复后再上件"),
         ParcelInputBlockReason.StationMaintenance => ("供包台正在保存设置或备份", "请等待操作结束后再上件"),
         ParcelInputBlockReason.StationStartingOrStopping => ("供包台尚未就绪", "请等待供包台启动完成"),

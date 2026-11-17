@@ -171,7 +171,7 @@ public sealed partial class ParcelRuntime
             InvalidatePresentation();
             var text = faults.Count == 0
                 ? names + "设置已保存并生效，连接状态请查看设备信息；其他设备未中断。"
-                : "设置已保存并生效。" + string.Join("、", faults) + "暂未连接，请在“设备与诊断”查看连接状态和自动恢复情况。";
+                : "设置已保存并生效。" + string.Join("、", faults) + "暂未连接，请在运维工具的“设备调试”查看连接状态和自动恢复情况。";
             return (new("Effective", text, repository.Revision), audit);
         }
         catch (Exception error) when (!adopted)

@@ -24,7 +24,7 @@ static partial class Program
         var probe = (CameraSettingsFeedbackProbe)(object)service;
         probe.Inner = h.App;
         probe.Project = s => s with { Devices = s.Devices!.Select(d => d.DeviceId == h.Left ? d with { Health = DeviceHealth.Disconnected } : d).ToArray() };
-        var window = new SupplyStationWindow(service, null, "standard");
+        var window = new OperationsViewFixture(service);
         window.Show();
         var vm = window.ViewModel;
         async Task Until(Func<bool> ready) => await CameraRoundHarness.Until(async () =>
@@ -39,8 +39,8 @@ static partial class Program
         }
         await vm.RefreshAsync();
         window.ShowPositionDiagnostics(vm.Left);
-        await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
-        var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
+        await Until(() => window.IsVisible);
+        var center = window;
         var storageCard = Descendants(center).OfType<Border>()
             .Single(card => AutomationProperties.GetAutomationId(card) == "DiagnosticCard.storage");
         var storage = (StackPanel)storageCard.Child;
@@ -64,6 +64,10 @@ static partial class Program
         Check(UsesInk("Success") && vm.Snapshot?.Capacity?.FreeStorageBytes == reserve * 8,
             "successful probe restores the healthy status and the confirmed reading");
         var reconnect = Descendants(center).OfType<Button>().Single(b => AutomationProperties.GetName(b) == "左相机：重新连接");
+        Check(!reconnect.IsEnabled, "passive diagnostics cannot mutate a device before explicit debug entry");
+        window.ShowPositionDebug(vm.Left);
+        await Until(() => window.Debug is not null);
+        window.ShowPositionDiagnostics(vm.Left);
         await Until(() => reconnect.IsEnabled);
         reconnect.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         await Until(() => !vm.Busy && vm.Message.Contains("重新连接未完成"));
@@ -71,6 +75,8 @@ static partial class Program
             Descendants(center).OfType<TextBox>().Any(t => t.Text == vm.Message) &&
             !vm.Message.Contains("MaintenanceIncomplete"), "the actual left reconnect button shows a Chinese result for the incomplete receipt");
 
+        await window.EndDebugAsync();
+        window.UseFieldParameters();
         Click(center, "设置");
         await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
         var leftSerial = vm.ReaderDrafts.Single(r => r.Capability.Role == "left").Capability.Parameters.Single(p => p.Field.Key == "device.serial");
@@ -124,7 +130,7 @@ static partial class Program
             !vm.Message.Contains("TaskCanceledException"), "the native save review shows completion beside the buttons and omits technical details");
         CaptureInternal(evidence, "camera-settings-saved", review, lines);
         Click(review, "完成");
-        Click(center, "关闭");
+        center.Close();
         await Until(() => !center.IsVisible);
         window.Close();
         await VerifyStartupIdentityCleanup(root, evidence, lines);
@@ -165,40 +171,55 @@ static partial class Program
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS STATION01 " + text); }
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); }
         async Task Until(Func<bool> ready) { for (var i = 0; i < 200; i++) { await Flush(); if (ready()) return; await Task.Delay(25); } throw new TimeoutException("Station UI did not settle"); }
-        var folder = Path.Combine(evidence, "station-settings"); Directory.CreateDirectory(folder);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
-        ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);
-        var launch = new BusinessLaunch(folder, Path.Combine(folder, "data"), null, null);
-        await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
-        await runtime.StartAsync(default); await ManagementModeFixture.Authorize(runtime);
-        var window = new SupplyStationWindow(runtime, null, null); window.Show();
-        var vm = window.ViewModel; await vm.RefreshAsync(); await SetClient(window, 1366, 768);
-        Check(!Descendants(window).OfType<Button>().Any(b => b.Content?.ToString() is "暂停供包"), "SM header keeps resume under Application guards and does not expose manual pause as a safety stop");
-        window.ShowPositionDiagnostics(vm.Left);
-        await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
-        var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
-        Click(center, "设置");
-        await Until(() => vm.HasLoadedConfiguration && !vm.Busy && Descendants(center).OfType<ParameterSettingsControl>().Any());
-        var editor = Descendants(center).OfType<ParameterSettingsControl>().Single(); editor.ShowPage(0, "显示偏好"); center.UpdateLayout();
-        editor.NavigateTo("StationCode");
-        Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "StationCode").Text = "SYNTH-SAVE-WITHOUT-PAUSE";
-        vm.ConfigurationReason = "Synthetic save without manual pause";
-        Check(await vm.PrepareConfigurationReviewAsync() && vm.Snapshot!.Positions!.All(p => p.BlockingReasons.Any(r => r.Contains("管理中心", StringComparison.Ordinal))), "management settings are reviewed while automatic supply is paused by the management owner");
-        var review = new ConfigurationSaveReviewWindow(center, vm); review.Show(); await Flush();
-        Check(!Descendants(review).OfType<Button>().Any(b => b.Name == "ReviewPause" && b.IsVisible), "SM save review has no manual pause prerequisite");
-        Check(Descendants(review).OfType<Button>().Single(b => b.Name == "ConfirmSaveChanges").IsEnabled, "SM review permits saving without manual pause");
-        CaptureInternal(evidence, "sm-save-without-pause", review, lines); review.Close();
-        await vm.SaveCapabilitiesAsync();
-        await Until(() => vm.Snapshot?.Configuration.Pending?.StationCode == "SYNTH-SAVE-WITHOUT-PAUSE");
-        Check(vm.Snapshot!.Configuration.Pending?.StationCode == "SYNTH-SAVE-WITHOUT-PAUSE" && vm.Snapshot.Positions!.All(p => p.BlockingReasons.Any(r => r.Contains("管理中心", StringComparison.Ordinal))), "native editor saves pending settings while preserving the management pause");
-        Check(vm.ConfigurationReason.Length == 0, "a confirmed save clears the note, so the next change record cannot reuse it");
-        editor.ShowPage(0, "显示偏好"); center.UpdateLayout();
-        Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) is "DisplayNameDraft" or "TargetEfficiencyDraft"), "SM preference page removes the unused name and target inputs");
-        Check(Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t) == "WindowOpeningMode" && t.IsVisible), "window opening mode remains directly editable");
-        CaptureInternal(evidence, "station-display-1366", center, lines);
-        await SetClient(center, 800, 420); CaptureInternal(evidence, "station-display-800", center, lines);
+        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "station-settings"), nativeResults: true, stationCode: "SYNTHETIC-STATION");
+        await h.StartAsync(); var runtime = h.App;
+        var window = new OperationsViewFixture(runtime) { ConfirmDiscardDrafts = _ => true };
+        await using var owner = new NativeWindowOwner(window); window.Show();
+        var vm = window.ViewModel;
+        await Until(() => vm.IsManagementMode && vm.Fresh);
+        window.Navigate("maintenance");
+        await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
+        var editor = Descendants(window).OfType<ParameterSettingsControl>().Single();
+        var baseline = (await runtime.SnapshotAsync()).Configuration;
+        var original = baseline.Pending ?? baseline.Effective;
+        Check(editor.Audience == SmParameterAudience.Technical && editor.NavigateTo("ReadTimeoutMs") && !editor.NavigateTo("StationCode"),
+            "actual professional form exposes automatic read deadline and removes field-owned station identity");
+        var rcs = vm.CapabilityDrafts.Single(ParameterOwnership.IsRcs);
+        Check(editor.NavigateTo(rcs.InstanceId + "/heartbeat-interval-ms") && !editor.NavigateTo(rcs.InstanceId + "/zone-id") &&
+            !editor.NavigateTo(rcs.InstanceId + "/project-id") && !editor.NavigateTo(rcs.InstanceId + "/Target"),
+            "professional heartbeat remains editable while warehouse, production line and server address remain field-owned");
+        var reader = vm.ReaderDrafts.First().Capability;
+        Check(editor.NavigateTo(reader.InstanceId + "/reader.engine") && !editor.NavigateTo(reader.InstanceId + "/device.ip"),
+            "camera engine belongs to professional form while its IP belongs to field settings");
+        vm.StructuredPolicy!.StationCode = "HIDDEN-FIELD-MUST-NOT-SAVE";
+        vm.StructuredPolicy.ReadTimeoutMs = "1700";
+        var technical = vm.BuildStructuredConfiguration();
+        Check(technical.StationCode == original.StationCode && technical.ReadTimeoutMs == 1700 && Wire.Encode(technical.Wcs) == Wire.Encode(original.Wcs),
+            "professional candidate preserves hidden field values even when a template/editor draft carries other values");
+        CaptureInternal(evidence, "station-professional-fields", window, lines);
+        // The same production form/definition is mounted in its field audience;
+        // real workstation authorization/PDA interactions are in independent-settings.
+        window.UseFieldParameters();
+        Check(editor.NavigateTo("StationCode") && editor.NavigateTo(reader.InstanceId + "/device.ip") &&
+            editor.NavigateTo(rcs.InstanceId + "/zone-id") && editor.NavigateTo(rcs.InstanceId + "/project-id") &&
+            !editor.NavigateTo("ReadTimeoutMs") && !editor.NavigateTo(rcs.InstanceId + "/heartbeat-interval-ms"),
+            "field audience uses existing station, IP, warehouse and production-line fields and removes professional controls");
+        var field = vm.BuildStructuredConfiguration();
+        Check(field.StationCode == "HIDDEN-FIELD-MUST-NOT-SAVE" && field.ReadTimeoutMs == original.ReadTimeoutMs &&
+            Wire.Encode(field.BarcodeFilter) == Wire.Encode(original.BarcodeFilter) && field.SchemaVersion == original.SchemaVersion,
+            "field complete candidate preserves hidden professional values and omitted fields without a duplicate configuration model");
+        editor.NavigateTo("WindowOpeningMode"); window.UpdateLayout();
+        Check(Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t) == "WindowOpeningMode" && t.IsVisible),
+            "field personal window preference remains editable");
+        Check((await runtime.SnapshotAsync()).Positions!.All(p => p.Admit) && (await runtime.SnapshotAsync()).Configuration.Revision == baseline.Revision,
+            "browsing, changing audiences and editing views never pause production or save implicitly");
+        vm.StructuredPolicy.StationCode = original.StationCode ?? "";
+        vm.StructuredPolicy.ReadTimeoutMs = original.EffectiveReadTimeoutMs.ToString();
+        CaptureInternal(evidence, "station-field-fields", window, lines);
+        var center = window;
         await runtime.ExitManagementModeAsync(); await vm.RefreshAsync();
-        Check(((Border)center.FindName("AuthorizationGate")).IsVisible, "ended authorization locks the management center");
+        await Until(() => !window.Parameters.IsEnabled);
+        Check(!window.Parameters.IsEnabled, "revocation locks the actual target editor without discarding its complete draft");
         var management = new ManagementModeWindow((IWorkstationAdministration)runtime) { Owner = center }; management.Show();
         await Until(() => Descendants(management).OfType<Button>().Any(b => Equals(b.Content, "忘记管理密码？") && b.IsVisible));
         var recoveryDone = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -224,11 +245,11 @@ static partial class Program
         Click(management, "忘记管理密码？"); await recoveryDone.Task;
         management.Close(); await vm.RefreshAsync(); window.UpdateLayout();
         Check(!vm.ManagementStatus.Authorized, "cancelling password recovery cannot reauthorize the exited management session");
-        await ManagementModeFixture.Authorize(runtime); await vm.RefreshAsync(); window.UpdateLayout();
-        Check(!((Border)center.FindName("AuthorizationGate")).IsVisible && ((Button)center.FindName("RenewAuthorization")).IsEnabled, "reauthorization restores the editor and renewal action");
-        CaptureInternal(evidence, "station-management-authorized", center, lines);
-        center.Close(); await Until(() => !center.IsVisible); window.Close();
-        lines.Add("Windows native HWND/Dispatcher, synthetic records; no live camera trigger, installed replacement or site acceptance.");
+        await h.AuthorizeAsync();
+        await Until(() => vm.IsManagementMode && window.Parameters.IsEnabled);
+        Check(window.Parameters.IsEnabled, "a newly verified fixture session restores the retained editor");
+        window.Close(); await Until(() => !window.IsVisible);
+        lines.Add("Actual shared WPF field/professional forms over controlled camera/RCS ports. Native production authorization/routing is verified separately; real hardware NOT_RUN.");
     }
 }
 

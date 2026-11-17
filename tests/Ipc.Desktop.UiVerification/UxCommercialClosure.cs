@@ -145,7 +145,7 @@ static partial class Program
         catch (ArgumentException) { refusedClassic = true; }
         check(refusedClassic, "removed Sportmaster profile refuses instead of creating another UI path");
         var stops = 0; var decisions = 0; var exitDecisions = 0;
-        var window = (SupplyStationWindow)Presentation.Create(runtime, "sportmaster-maintenance", null,
+        var window = (SupplyStationWindow)Presentation.Create(runtime, null, null,
             stopOwner: async () => { await runtime.StopAsync(CancellationToken.None); stops++; });
         window.ConfirmOwnerExit = _ => { exitDecisions++; return true; };
         void Decision(bool discard) => window.ConfirmDiscardDrafts = _ => { decisions++; return discard; };
@@ -153,30 +153,26 @@ static partial class Program
         try
         {
             var vm = window.ViewModel;
-            for (var i = 0; i < 150 && !vm.IsManagementMode; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
-            check(vm.IsManagementMode, "current draft-close fixture observes its real management grant before navigation");
-            typeof(SupplyStationWindow).GetMethod("Maintenance_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.Invoke(window, [window, new RoutedEventArgs()]);
-            for (var i = 0; i < 150 && (!vm.HasLoadedConfiguration || vm.Busy || !window.OwnedWindows.OfType<ManagementCenterWindow>().Any(center => center.IsVisible)); i++) await Task.Delay(20);
-            var center = window.OwnedWindows.OfType<ManagementCenterWindow>().Single();
-            var page = (MaintenancePage)((ContentControl)center.FindName("ManagementPageHost")).Content;
+            var center = await OpenFieldSettingsForVerification(window);
+            var page = (MaintenancePage)((ContentControl)center.FindName("EditorHost")).Content;
             var settings = Descendants(page).OfType<ParameterSettingsControl>().Single();
-            check(settings.NavigateTo("ReadTimeoutMs"), "current automatic-reading deadline is reachable");
-            window.UpdateLayout(); await Dispatcher.Yield();
-            var editor = Descendants(settings).OfType<TextBox>().Single(x => x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path == "ReadTimeoutMs");
-            var policy = vm.StructuredPolicy!; var before = policy.ReadTimeoutMs;
-            editor.Focus(); editor.Text = "SYNTHETIC invalid integer"; editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
-            check(policy.ReadTimeoutMs == editor.Text && vm.HasUnsavedConfiguration && !vm.ParameterEditor!.ValidateFields() && vm.ParameterEditor.Issues.Any(x => x.Path == "ReadTimeoutMs"),
-                "current validation rejects invalid numeric input while retaining the exact unsaved text");
+            check(settings.NavigateTo("StationCode"), "field-owned station identity is reachable in actual independent settings");
+            center.UpdateLayout(); await Dispatcher.Yield();
+            var editor = Descendants(settings).OfType<TextBox>().Single(x => System.Windows.Automation.AutomationProperties.GetAutomationId(x) == "StationCode");
+            var policy = vm.StructuredPolicy!; var before = policy.StationCode;
+            editor.Focus(); policy.StationCode = "SYNTHETIC\ninvalid station";
+            check(vm.HasUnsavedConfiguration && !vm.ParameterEditor!.ValidateFields() && vm.ParameterEditor.Issues.Any(x => x.Path == "StationCode"),
+                "current validation rejects invalid field input while retaining the exact unsaved draft");
             center.Close();
             for (var i = 0; i < 150 && (center.IsVisible || !window.IsEnabled); i++) await Task.Delay(20);
             check(!center.IsVisible && window.IsEnabled && decisions == 0 && vm.HasUnsavedConfiguration, "closing management retains the full draft without an unrelated discard or workstation exit");
             Decision(false); window.Close();
             for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
-            check(exitDecisions == 1 && decisions == 1 && stops == 0 && window.IsVisible && window.IsEnabled && editor.Text == policy.ReadTimeoutMs && vm.HasUnsavedConfiguration,
+            check(exitDecisions == 1 && decisions == 1 && stops == 0 && window.IsVisible && window.IsEnabled && editor.Text == policy.StationCode && vm.HasUnsavedConfiguration,
                 "canceled close preserves invalid input and the live owner without discarding the draft");
-            editor.Text = (int.Parse(before) + 1).ToString(); editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource(); window.Close();
+            editor.Text = before + "-edited"; editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource(); window.Close();
             for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
-            check(exitDecisions == 2 && decisions == 2 && stops == 0 && window.IsVisible && policy.ReadTimeoutMs == editor.Text && vm.HasUnsavedConfiguration,
+            check(exitDecisions == 2 && decisions == 2 && stops == 0 && window.IsVisible && policy.StationCode == editor.Text && vm.HasUnsavedConfiguration,
                 "another canceled workstation exit preserves the updated complete draft");
             Decision(true); window.Close();
             for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20);

@@ -17,10 +17,11 @@ using Ipc.Operations;
 using Ipc.Operations.Desktop;
 using Ipc.Platform;
 
-internal static class Program
+internal static partial class Program
 {
     static string executable => Environment.ProcessPath!;
     static string workspace = null!, root = null!;
+    const string OperationsPassword = "SYNTH-OPERATIONS-12345";
     static readonly Dictionary<int, Task<string>> childErrors = [];
     static Task<string> ErrorText(Process process) => childErrors[process.Id];
     static void Check(bool condition, string message)
@@ -35,9 +36,11 @@ internal static class Program
             var role = args.ElementAtOrDefault(2);
             if (role == "lease") { using var lease = new OperationsToolLease(Installation()); Console.WriteLine("READY"); Console.ReadLine(); return 0; }
             if (role == "ui-early-close") { EarlyCloseUi(); return 0; }
+            if (role is "ui-control" or "ui-owner-loss") { ControlUi(role == "ui-owner-loss"); return 0; }
             if (role is "ui" or "ui-crash" or "ui-offline" or "ui-cancel") { Ui(role == "ui-crash", role == "ui-offline", role == "ui-cancel"); return 0; }
             if (role is "server" or "server-restart") { Server(role != "server-restart").GetAwaiter().GetResult(); return 0; }
             if (role == "unapproved") { Unapproved().GetAwaiter().GetResult(); return 0; }
+            if (role == "control-crash") { ControlCrash().GetAwaiter().GetResult(); return 0; }
             Run().GetAwaiter().GetResult(); return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }
@@ -121,7 +124,8 @@ internal static class Program
             RootOwnership = () => new ResourceLease(Path.Combine(root, "leases"), ["operations-synthetic-business-owner"])
         };
         await h.StartAsync(ready); var initial = await h.App.SnapshotAsync();
-        var endpoint = new OperationsServer(Installation(), (IParcelPresentationSource)h.App, initial);
+        if (!(await h.App.ManagementModeStatusAsync()).Configured) await h.App.ConfigureManagementPasswordAsync(OperationsPassword);
+        var endpoint = new OperationsServer(Installation(), (IParcelPresentationSource)h.App, initial, h.App, () => new Ipc.Application.ParcelFlow.ParcelStartupMaintenance(h.Launch, new Ipc.Application.Sportmaster.SportmasterFlow(), () => h.Factory));
         try
         {
             await Reject(() => Task.Run(async () =>
@@ -138,7 +142,7 @@ internal static class Program
                     var snapshot = await h.App.SnapshotAsync();
                     endpoint = command == "stale" ? new OperationsServer(Installation(), new SilentPresentation(),
                         snapshot with { PublishedTicks = Stopwatch.GetTimestamp() - Stopwatch.Frequency * 6 }) :
-                        new OperationsServer(Installation(), (IParcelPresentationSource)h.App, snapshot);
+                        new OperationsServer(Installation(), (IParcelPresentationSource)h.App, snapshot, h.App, () => new Ipc.Application.ParcelFlow.ParcelStartupMaintenance(h.Launch, new Ipc.Application.Sportmaster.SportmasterFlow(), () => h.Factory));
                 }
                 if (command == "submit")
                 {
@@ -154,6 +158,13 @@ internal static class Program
                     await Reject(() => Task.Run(() => { using var owner = h.RootOwnership!(); }), "business ownership remains exclusive while observer is connected");
                 }
                 if (command == "status") Console.WriteLine("STATUS " + JsonSerializer.Serialize(new { (await h.App.SnapshotAsync()).Paused, Requests = h.Peer.Requests.Count }));
+                if (command == "field-save")
+                {
+                    var snapshot = await h.App.SnapshotAsync();
+                    var before = snapshot.Configuration.Pending ?? snapshot.Configuration.Effective;
+                    var result = await h.App.StageConfigurationAsync(snapshot.Configuration.Revision, before with { StationCode = "SYNTH-FIELD-CHANGED" }, "现场配置并发验证");
+                    Check(result.Status is "Staged" or "Applied" or "PendingRestart" or "Saved", "the original owner accepts its field configuration candidate: " + result.Status);
+                }
                 Console.WriteLine("DONE");
             }
         }
@@ -166,6 +177,112 @@ internal static class Program
         { await Task.Delay(Timeout.Infinite, token); throw new InvalidOperationException(); }
         public void Dispose() { }
     }
+    static OperationsRemoteApplication Remote(OperationsControlClient client) => new(client,
+        new(Location().ConfigurationDirectory, Location().DataRoot));
+
+    static async Task ControlCrash()
+    {
+        await using var control = new OperationsControlClient(Installation());
+        await control.ConnectAsync(default); var remote = Remote(control);
+        var grant = await ((IWorkstationAdministration)remote).EnterManagementSessionAsync(OperationsPassword);
+        Check(grant?.Authorized == true, "crash scenario owns a real password session");
+        var result = await ((IManagementWorkspace)remote).SetManagementWorkspaceAsync(Wire.Id(), true, default);
+        Check(result.Status is "Paused" or "PausedWithCameraWarning", "explicit debug establishes the original management workspace");
+        Console.WriteLine("READY"); await Task.Delay(Timeout.Infinite);
+    }
+
+    static async Task VerifyControl(Process owner, OperationsClient observer)
+    {
+        await using (var control = new OperationsControlClient(Installation()))
+        {
+            await control.ConnectAsync(default); IParcelApplication remote = Remote(control);
+            var authority = (IWorkstationAdministration)remote;
+            await Reject(() => remote.SnapshotAsync(), "authenticated installation alone cannot read privileged configuration");
+            var grant = await authority.EnterManagementSessionAsync(OperationsPassword);
+            Check(grant?.Authorized == true && (await observer.ReadAsync(default)).Positions.All(p => p.Admit),
+                "login grants a scoped session without acquiring production pause");
+            var snapshot = await remote.SnapshotAsync(); var before = snapshot.Configuration.Pending ?? snapshot.Configuration.Effective;
+            await Reject(() => remote.StageConfigurationAsync(snapshot.Configuration.Revision, before with { StationCode = "ILLEGAL-TECHNICAL-IDENTITY" }),
+                "technical control rejects changes to field-owned station identity before save");
+            var candidate = before with { ReadTimeoutMs = before.EffectiveReadTimeoutMs + 100 };
+            await remote.StageConfigurationAsync(snapshot.Configuration.Revision, candidate, "专业参数跨进程验证");
+            var after = await remote.SnapshotAsync(); var actual = after.Configuration.Pending ?? after.Configuration.Effective;
+            Check(actual.ReadTimeoutMs == candidate.ReadTimeoutMs && actual.StationCode == before.StationCode &&
+                Wire.Encode(actual.Wcs) == Wire.Encode(before.Wcs) && Wire.Encode(actual.Topology) == Wire.Encode(before.Topology),
+                "technical CAS save preserves every hidden RCS and camera field");
+            var stale = after.Configuration.Revision;
+            await Command(owner, "field-save");
+            await Reject(() => remote.StageConfigurationAsync(stale, actual with { ReadTimeoutMs = 1800 }),
+                "a concurrent field save prevents the old technical draft overwriting hidden fields");
+            await Reject(() => ((ICameraReadRounds)remote).PrepareManualRcsRequestAsync(new(Wire.Id(), snapshot.RuntimeId,
+                stale, "left", "SYNTH-NO-IMPLICIT-DEBUG", null), default), "manual RCS debug cannot implicitly enter production pause");
+            var workspace = (IManagementWorkspace)remote;
+            var debugWindow = Wire.Id();
+            var opened = await workspace.SetManagementWorkspaceAsync(debugWindow, true, default);
+            Check(opened.Status is "Paused" or "PausedWithCameraWarning" && (await observer.ReadAsync(default)).Positions.All(p => !p.Admit),
+                "only explicit debug acquires the original whole-station admission fence");
+            var closed = await workspace.SetManagementWorkspaceAsync(debugWindow, false, default);
+            Check(closed.Status == "Restored", "normal debug exit drains the same workspace and restores original state");
+            var replacedWindow = Wire.Id();
+            await workspace.SetManagementWorkspaceAsync(replacedWindow, true, default);
+            var replacement = await authority.EnterManagementSessionAsync(OperationsPassword);
+            Check(replacement?.Authorized == true && await workspace.ReadManagementWorkspaceOwnerAsync(default) is null &&
+                (await observer.ReadAsync(default)).Positions.All(p => p.Admit),
+                "replacing a grant releases the old explicit debug scope rather than adopting it under a new authorization");
+            var currentWindow = Wire.Id();
+            await workspace.SetManagementWorkspaceAsync(currentWindow, true, default);
+            await Reject(() => workspace.SetManagementWorkspaceAsync(replacedWindow, false, default),
+                "a late close from the previous debug scope cannot release the next explicit scope");
+            Check(await workspace.ReadManagementWorkspaceOwnerAsync(default) == currentWindow,
+                "the current debug scope retains its exact owner after a stale close");
+            await workspace.SetManagementWorkspaceAsync(currentWindow, false, default);
+            var logPage = await authority.QueryLogsAsync(new(DateTimeOffset.UtcNow.AddHours(-1), DateTimeOffset.UtcNow.AddSeconds(1)), null, 0, default);
+            Check(logPage.Entries.Length > 0, "full authorized log query reads actual original runtime records across the control pipe");
+            var context = await authority.LogContextAsync(logPage.Selection, logPage.Entries[0].Location, 1, 1, default);
+            var export = Path.Combine(root, "authorized-logs.txt");
+            var exported = await authority.ExportLogsAsync(logPage.Selection, export, false, 0, default);
+            Check(context.Entries.Length > 0 && exported > 0 && File.Exists(export), "original context and authorized export remain reachable with the selected log identity");
+            ((ISoftwareLogSelectionLifetime)remote).ReleaseLogSelection(logPage.Selection);
+            // Real original backup implementation, real pipe and original complete-set identity.
+            var paused = await remote.SnapshotAsync();
+            await remote.CommandAsync(new(Wire.Id(), paused.Revision, "Pause", Value: "Synthetic operations backup integration"));
+            var catalog = Path.Combine(root, "backup-catalog"); Directory.CreateDirectory(catalog);
+            var backup = Path.Combine(catalog, "station.db");
+            var backupReceipt = await remote.BackupAsync(backup);
+            Check(backupReceipt.Status == "BackupCreated", "online backup is created only by the original production owner after explicit pause");
+            var sets = (ICompleteBackupSetMaintenance)remote;
+            var progress = new CollectedProgress();
+            var selected = (await sets.ListBackupsAsync(catalog, progress, default)).Single();
+            Check(selected is { Status: "Verified", Identity: not null } && progress.Count > 0, "backup listing retains the whole-set identity and streams actual progress across processes");
+            var originalHash = Wire.FileHash(backup);
+            var delivered = await sets.ExportBackupSetAsync(backup, selected.Identity!, Path.Combine(root, "backup-delivery"), progress, default);
+            Check(delivered.Status == "Exported" && Wire.FileHash(delivered.Path) == originalHash && Wire.FileHash(backup) == originalHash,
+                "online complete-set delivery preserves original bytes and reports original result");
+            var confirmed = await sets.InspectBackupDeliveryAsync(backup, selected.Identity!, Path.Combine(root, "backup-delivery"));
+            Check(confirmed.Status == "Exported", "delivery reconciliation inspects the original destination without a duplicate copy");
+            var copy = (await sets.ListBackupsAsync(Path.GetDirectoryName(delivered.Path)!, default)).Single();
+            var deleted = await sets.DeleteBackupSetAsync(copy.Path, copy.Identity!, progress, default);
+            Check(deleted.Status == "Deleted" && !File.Exists(copy.Path) && File.Exists(backup), "bounded backup deletion removes only the selected delivered set and preserves its source");
+            var resume = await remote.SnapshotAsync();
+            await remote.CommandAsync(new(Wire.Id(), resume.Revision, "Resume"));
+            var newer = await authority.EnterManagementSessionAsync(OperationsPassword);
+            await Reject(() => authority.ExitManagementModeAsync(grant!.SessionId!), "an old window cannot close a replacement session through control");
+            Check((await authority.ManagementModeStatusAsync()).SessionId == newer!.SessionId, "replacement grant survives old-window close");
+        }
+        await CameraRoundHarness.Until(async () => (await observer.ReadAsync(default)).Positions.All(p => p.Admit));
+        using var crashing = Child("control-crash"); await Ready(crashing);
+        crashing.Kill(); await crashing.WaitForExitAsync();
+        await CameraRoundHarness.Until(async () => (await observer.ReadAsync(default)).Positions.All(p => p.Admit));
+        Check(true, "actual tool process crash releases only its debug workspace and production continues");
+    }
+
+    sealed class CollectedProgress : IProgress<MaintenanceProgress>
+    {
+        int count;
+        public int Count => Volatile.Read(ref count);
+        public void Report(MaintenanceProgress value) => Interlocked.Increment(ref count);
+    }
+
     static async Task Unapproved()
     {
         await Reject(() => Raw(new(1, Installation().Identity, OperationsProtocol.Permission, Guid.NewGuid(), Guid.Empty)),
@@ -210,6 +327,16 @@ internal static class Program
             await Ready(server); var client = new OperationsClient(Installation());
             var value = await client.ReadAsync(default);
             Check(value.RuntimeId != Guid.Empty && value.Positions.Length == 2 && !value.Paused, "real cross-process handshake reads the existing Application runtime");
+            await VerifyControl(server, client);
+            using (var nativeControl = Child("ui-control"))
+            {
+                var outputRead = nativeControl.StandardOutput.ReadToEndAsync();
+                await nativeControl.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(90));
+                var output = await outputRead;
+                var errors = await ErrorText(nativeControl);
+                File.WriteAllText(Path.Combine(root, "stage2-native-ui.log"), output + errors);
+                Check(nativeControl.ExitCode == 0, "five native operations pages and professional field ownership: " + errors + output);
+            }
             var request = new OperationsRequest(1, Installation().Identity, OperationsProtocol.Permission, Guid.NewGuid(), value.RuntimeId);
             foreach (var invalid in new[] { request with { Protocol = 2 }, request with { Installation = "other-installation" },
                 request with { Permission = "Pause" }, request with { RuntimeId = Guid.NewGuid() } })
@@ -266,7 +393,15 @@ internal static class Program
             File.WriteAllText(Path.Combine(root, "registration-changed"), "synthetic replacement");
             await Reject(() => client.ReadAsync(default), "changed installation immediately revokes read authority");
             File.Delete(Path.Combine(root, "registration-changed"));
-            server.Kill(); await server.WaitForExitAsync();
+            using (var ownerLossTool = Child("ui-owner-loss"))
+            {
+                await Ready(ownerLossTool);
+                server.Kill(); await server.WaitForExitAsync();
+                await ownerLossTool.StandardInput.WriteLineAsync("close"); await ownerLossTool.StandardInput.FlushAsync();
+                var output = ownerLossTool.StandardOutput.ReadToEndAsync();
+                await ownerLossTool.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(30));
+                Check(ownerLossTool.ExitCode == 0, "an active debug tool can close after owner loss without fabricating a release receipt: " + await ErrorText(ownerLossTool) + await output);
+            }
             await Reject(() => client.ReadAsync(default), "abnormal owner exit cannot yield a cached live result");
             using (var owner = await ReleasedBusinessLease())
                 Check(true, "OS releases actual process-held business lease after abnormal exit");

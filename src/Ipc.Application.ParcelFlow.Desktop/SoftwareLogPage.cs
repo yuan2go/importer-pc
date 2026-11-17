@@ -227,7 +227,7 @@ public sealed partial class SoftwareLogControl : UserControl
     async Task<T> TrackService<T>(Task<T> operation)
     {
         lock (serviceOperations) serviceOperations.Add(operation);
-        try { return await operation; }
+        try { return await operation.ConfigureAwait(false); }
         finally { lock (serviceOperations) serviceOperations.Remove(operation); }
     }
     public async Task SuspendAndDrainAsync()
@@ -235,7 +235,14 @@ public sealed partial class SoftwareLogControl : UserControl
         suspended = true; Revoke();
         while (true)
         {
-            Task[] pendingOperations; lock (serviceOperations) pendingOperations = serviceOperations.ToArray();
+            Task[] pendingOperations;
+            lock (serviceOperations)
+            {
+                // An already-settled service task must not keep a UI drain
+                // spinning ahead of its queued bookkeeping continuation.
+                serviceOperations.RemoveWhere(task => task.IsCompleted);
+                pendingOperations = serviceOperations.ToArray();
+            }
             if (pendingOperations.Length == 0) return;
             try { await Task.WhenAll(pendingOperations); }
             catch { /* Every operation reports its own outcome; drain still owns all remaining calls. */ }

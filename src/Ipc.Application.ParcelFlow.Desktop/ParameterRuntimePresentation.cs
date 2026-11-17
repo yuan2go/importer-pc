@@ -63,7 +63,7 @@ public partial class ParcelViewModel
                 evidence = "\n设备确认：" + health.ConfirmedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") +
                     "\n连接周期：" + health.Epoch + " · 已处理序号：" + health.Sequence + "\n连接证据：" + health.Source;
             if (!ready) notice += snapshot.ApplicationId == "sportmaster"
-                ? "\n本相机将自动重连；若提示资源未释放或身份冲突，请进入管理中心处理。"
+                ? "\n本相机将自动重连；若提示资源未释放或身份冲突，请联系运维人员在运维工具中处理。"
                 : "\n请检查本相机连接证据和现场实体，暂停并进入管理模式后按当前运行配置受控重连。";
         }
         else

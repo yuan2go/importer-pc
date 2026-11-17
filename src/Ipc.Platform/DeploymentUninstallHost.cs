@@ -10,6 +10,14 @@ public static partial class WindowsDeploymentSetup
     // deletion. Launch outside the release before the old UI host exits.
     [SupportedOSPlatform("windows")]
     public static uint LaunchUninstaller(string application)
+        => LaunchDetachedMaintenance(application, "--product-maintenance");
+
+    [SupportedOSPlatform("windows")]
+    public static uint LaunchOperationsMaintenance(string application)
+        => LaunchDetachedMaintenance(application, "--operations-maintenance");
+
+    [SupportedOSPlatform("windows")]
+    static uint LaunchDetachedMaintenance(string application, string mode)
     {
         var location = Current(application) ?? throw new InvalidDataException("未找到安装信息。");
         var hash = Wire.FileHash(Registration(application));
@@ -22,7 +30,7 @@ public static partial class WindowsDeploymentSetup
             media.Files.Keys.Where(name => name.StartsWith("desktop/", StringComparison.Ordinal)).Select(name => name[8..]).ToArray());
         using var parent = Process.GetCurrentProcess();
         return OrdinaryRuntimeProcess.LaunchForCurrentUser(Path.Combine(cache, "desktop", InstallationIdentity.DesktopExecutable),
-            ["--product-maintenance", "--wait-for-host", parent.Id.ToString(CultureInfo.InvariantCulture),
+            [mode, "--wait-for-host", parent.Id.ToString(CultureInfo.InvariantCulture),
                 parent.StartTime.ToUniversalTime().Ticks.ToString(CultureInfo.InvariantCulture)], cache);
     }
 

@@ -17,7 +17,7 @@ sealed class MaintenanceHistoryWindow : StartupWorkflowWindow
     int offset;
     internal Func<int, Task<DeploymentHistoryPage>> ReadHistory { get; set; } = ParcelStartupServices.ReadMaintenanceHistoryAsync;
     internal Func<string, string, Task<DeploymentHistoryItem>> InspectHistory { get; set; } = ParcelStartupServices.InspectMaintenanceHistoryAsync;
-    public MaintenanceHistoryWindow() : base("历史维护结果 · 离线维护")
+    public MaintenanceHistoryWindow() : base("历史维护结果 · 离线维护", applicationId: Ipc.Assembly.ParcelStartupServices.ApplicationId)
     {
         Width = 860; Height = 700;
         Note("按原操作核对安装、回滚、恢复、卸载和清理；查询不执行续办。原提交、当前部署关系及当前余项分别显示。机器记录读取需要 Windows 管理员授权。");

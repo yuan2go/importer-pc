@@ -7,8 +7,16 @@ public partial class ParcelViewModel
 
     // Some contract implementations perform SQLite/file work before returning a Task.
     // Only that service invocation leaves the UI context. Awaiters still own projection updates.
-    public Task<T> ServiceAsync<T>(Func<Task<T>> call) => Own(Task.Run(call));
-    public Task ServiceAsync(Func<Task> call) => Own(Task.Run(call));
+    public Task<T> ServiceAsync<T>(Func<Task<T>> call)
+    {
+        var session = RequireOwnedManagementSession ? OwnedManagementSession ?? string.Empty : null;
+        return Own(Task.Run(async () => { using var scope = session is null ? null : Ipc.Platform.LocalManagementMode.BindCommandSession(session); return await call().ConfigureAwait(false); }));
+    }
+    public Task ServiceAsync(Func<Task> call)
+    {
+        var session = RequireOwnedManagementSession ? OwnedManagementSession ?? string.Empty : null;
+        return Own(Task.Run(async () => { using var scope = session is null ? null : Ipc.Platform.LocalManagementMode.BindCommandSession(session); await call().ConfigureAwait(false); }));
+    }
     Task<T> Own<T>(Task<T> task) { Track(task); return task; }
     Task Own(Task task) { Track(task); return task; }
     void Track(Task task)

@@ -4,19 +4,19 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.Sportmaster.Desktop;
 
-public partial class SupplyStationWindow
+public sealed partial class OperationsWorkspaceControl
 {
     async Task ConfirmRemotePositionRecovery(string position)
     {
-        await ViewModel.RequireManagementModeAsync();
-        if (ViewModel.Application is not ISmRemoteRecovery service) return;
-        var snapshot = await ViewModel.Application.SnapshotAsync();
+        await model.RequireManagementModeAsync();
+        if (model.Application is not ISmRemoteRecovery service) return;
+        var snapshot = await model.Application.SnapshotAsync();
         var lane = snapshot.Positions?.SingleOrDefault(p => p.Id == position);
         if (lane?.SupplyControl?.Mode != StationPositionMode.Disabled || lane.Arrival is not { } arrival)
             throw new InvalidOperationException("请先停用要核对的投递位，并等待本轮调用、回执和撤车确认。");
         var dialog = new Window
         {
-            Owner = ManagementDialogOwner, Title = position == "left" ? "核对左位未确认责任" : "核对右位未确认责任",
+            Owner = Window.GetWindow(this), Title = position == "left" ? "核对左位未确认责任" : "核对右位未确认责任",
             Width = 620, Height = 420, MinWidth = 520, MinHeight = 360,
             WindowStartupLocation = WindowStartupLocation.CenterOwner, ResizeMode = ResizeMode.CanResize,
             FontFamily = FontFamily, FontSize = FontSize
@@ -27,11 +27,11 @@ public partial class SupplyStationWindow
         var confirm = new Button { Content = "记录核对结果", MinHeight = 44, MinWidth = 128 };
         footer.Children.Add(cancel); footer.Children.Add(confirm); DockPanel.SetDock(footer, Dock.Bottom); layout.Children.Add(footer);
         var body = new StackPanel();
-        body.Children.Add(ProductText("请在客户RCS中核对：原取格口请求已完成绑定或已被明确取消，不会再迟到绑定当前小车；旧心跳成员变更均已结束，当前停用状态已确认。"));
-        body.Children.Add(ProductText("软件超时和新的心跳成功不能证明上述事实。填写客户日志、工单或核对人员及结论；没有外部依据请取消，保留本位待核对。"));
+        body.Children.Add(Text("请在客户RCS中核对：原取格口请求已完成绑定或已被明确取消，不会再迟到绑定当前小车；旧心跳成员变更均已结束，当前停用状态已确认。"));
+        body.Children.Add(Text("软件超时和新的心跳成功不能证明上述事实。填写客户日志、工单或核对人员及结论；没有外部依据请取消，保留本位待核对。"));
         var evidence = new TextBox { AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MinHeight = 96, MaxLength = 2048, Margin = new(0, 12, 0, 0) };
         body.Children.Add(evidence);
-        var feedback = ProductText(""); body.Children.Add(feedback);
+        var feedback = Text(""); body.Children.Add(feedback);
         layout.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         dialog.Content = layout;
         confirm.Click += (_, _) =>
@@ -44,7 +44,7 @@ public partial class SupplyStationWindow
         var receipt = await service.ConfirmRemoteRecoveryAsync(new(Wire.Id(), snapshot.RuntimeId, position, arrival.Generation,
             evidence.Text.Replace("\r", " ").Replace("\n", " ").Trim())
         { ExpectedControlRevision = lane.SupplyControl.Revision, ExpectedTargetOperation = arrival.TargetOperation, ExpectedRecoveryToken = arrival.RecoveryToken }, CancellationToken.None);
-        ViewModel.Message = receipt.Reason;
-        await ViewModel.RefreshAsync();
+        model.Message = receipt.Reason;
+        await model.RefreshAsync();
     }
 }

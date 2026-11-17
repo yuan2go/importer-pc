@@ -1,3 +1,4 @@
+using System.Windows.Threading;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
@@ -94,6 +95,7 @@ static partial class Program
         ManagementModeWindow? loginWindow = null;
         for (var i = 0; i < 100 && loginWindow is null; i++) { await Task.Delay(20); loginWindow = System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().FirstOrDefault(); }
         Check(loginWindow is not null, "fixed first-configuration login action opens the real software account window after revocation");
+        await CameraRoundHarness.Until(async () => { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); return Descendants(loginWindow!).OfType<Button>().Any(b => b.Name == "EnterManagementMode" && b.IsVisible && b.IsEnabled && Equals(b.Content, "进入管理模式")); });
         Descendants(loginWindow!).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = reauthenticationPassword; Click(loginWindow!, "进入管理模式");
         for (var i = 0; i < 100 && !LocalManagementMode.ForRoot(launch.DataRoot).Status().Authorized; i++) await Task.Delay(20);
         await Task.Delay(200); loginWindow!.Close(); await Task.Delay(1250); first.UpdateLayout();

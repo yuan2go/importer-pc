@@ -248,6 +248,12 @@ function Verify-InstalledOperations([string]$mediaRoot, [string]$name) {
 Verify-InstalledOperations -mediaRoot "$verificationRoot/media" -name 'ordinary'
 $formalRegistrationHash = (Get-FileHash -LiteralPath $registration).Hash
 $testArea = 'D:/ProgramData/ImporterPcTest'
+# This fixture creates the default data parent on the disposable image too.
+# Protecting only its child cannot establish a trustworthy ancestor chain.
+if (!(Test-Path -LiteralPath 'D:/ProgramData')) {
+    New-Item -ItemType Directory -Path 'D:/ProgramData' | Out-Null
+    Set-Acl -LiteralPath 'D:/ProgramData' -AclObject $protected
+}
 New-Item -ItemType Directory -Path "$testArea/DeploymentLogs" -Force | Out-Null
 Set-Acl -LiteralPath $testArea -AclObject $protected
 Set-Acl -LiteralPath "$testArea/DeploymentLogs" -AclObject $protected
@@ -257,9 +263,10 @@ python scripts/package-installer.py --media "$verificationRoot/test-media.zip" -
 if ($LASTEXITCODE) { Get-Content "$evidence/build-test-installer.log" -Tail 20; throw 'Test-identity installer build failed' }
 $testInstaller = (Get-ChildItem -LiteralPath "$verificationRoot/test-installer" -File -Filter '*.exe' | Select-Object -First 1).FullName
 $testOperation = [Guid]::NewGuid().ToString('N')
-$testProcess = Start-Process -FilePath $testInstaller -ArgumentList @('/quiet', '/norestart', "/operationid=$testOperation", "/log=$testArea/DeploymentLogs/install.jsonl") -PassThru -Wait -WindowStyle Hidden
+$testProcess = Start-Process -FilePath $testInstaller -ArgumentList @('/quiet', '/norestart', "/operationid=$testOperation", "/log=$testArea/DeploymentLogs/install.jsonl") -PassThru -Wait -WindowStyle Hidden -RedirectStandardError "$evidence/test-install-stderr.log"
 if (Test-Path -LiteralPath "$testArea/DeploymentLogs/install.jsonl") { Copy-Item -LiteralPath "$testArea/DeploymentLogs/install.jsonl" -Destination "$evidence/test-install.jsonl" }
 if ($testProcess.ExitCode) {
+    Get-Content -LiteralPath "$evidence/test-install-stderr.log" -Tail 12
     if (Test-Path -LiteralPath "$evidence/test-install.jsonl") { Get-Content -LiteralPath "$evidence/test-install.jsonl" -Tail 12 }
     throw "Test installation failed: $($testProcess.ExitCode)"
 }

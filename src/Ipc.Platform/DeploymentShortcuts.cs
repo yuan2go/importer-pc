@@ -1,4 +1,5 @@
 using System.Runtime.Versioning;
+using System.Text.Json;
 
 namespace Ipc.Platform;
 
@@ -31,7 +32,24 @@ public static class DeploymentShortcuts
     [SupportedOSPlatform("windows")]
     public static void Create(DeploymentLocation location, string programs, string desktop, DeploymentLocation? previous = null)
     {
+        previous ??= location.PreviousDeployment;
         var plan = Plan(location, programs, desktop);
+        if (location.ApplicationId == "sportmaster" && location.InventoryFile is { } inventory)
+        {
+            // A retained deployment may predate the observer. Project its declared
+            // entries, never borrow an EXE from another build or infer capability
+            // from a missing file in an otherwise incomplete dual-program release.
+            DeploymentPaths.RequireOrdinaryAncestors(inventory);
+            if (new FileInfo(inventory).Length > 4 * 1024 * 1024 ||
+                !string.Equals(Wire.FileHash(inventory), location.InventorySha256, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("安装库存无法核验，原快捷方式保留；请核对原安装记录。");
+            using var declared = JsonDocument.Parse(File.ReadAllText(inventory));
+            if (!declared.RootElement.GetProperty("Files").TryGetProperty("desktop/" + InstallationIdentity.OperationsExecutable, out _))
+            {
+                var tool = Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.OperationsExecutable);
+                plan = plan.Where(entry => !string.Equals(entry.Target, tool, StringComparison.OrdinalIgnoreCase)).ToArray();
+            }
+        }
         foreach (var entry in plan)
         {
             DeploymentPaths.RequireOrdinaryAncestors(entry.Path); Directory.CreateDirectory(System.IO.Path.GetDirectoryName(entry.Path)!);

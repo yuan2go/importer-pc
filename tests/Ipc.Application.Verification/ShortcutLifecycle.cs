@@ -97,6 +97,29 @@ static class ShortcutLifecycle
             Check(DeploymentShortcuts.Plan(next, menu, desktop).All(e => !File.Exists(e.Path)) && Wire.FileHash(changedSetup.Path) == changedHash,
                 "unchecking menu and desktop removes both owned app entries while preserving the user-retargeted legacy link");
         });
+        Scenario("registered-entry-inventory", directory =>
+        {
+            var current = Release(Path.Combine(directory, "双程序")) with { Shortcuts = new(true, true) };
+            var operations = Path.Combine(current.ReleaseRoot, "desktop", InstallationIdentity.OperationsExecutable);
+            File.WriteAllText(operations, "synthetic operations; never executed");
+            var menu = Path.Combine(directory, "菜单"); var desktop = Path.Combine(directory, "桌面");
+            DeploymentShortcuts.Create(current, menu, desktop);
+            var plan = DeploymentShortcuts.Plan(current, menu, desktop);
+            var tool = plan.Single(p => p.Target == operations);
+            var target = Release(Path.Combine(directory, "回滚目标")) with { SourceCommit = new string('b', 40), DataRoot = current.DataRoot, Shortcuts = current.Shortcuts };
+            var inventory = Path.Combine(directory, "目标库存.json");
+            File.WriteAllText(inventory, Wire.Encode(new { Files = new Dictionary<string, string> { ["desktop/" + InstallationIdentity.DesktopExecutable] = Wire.FileHash(Path.Combine(target.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable)) } }));
+            target = target with { InventoryFile = inventory, InventorySha256 = Wire.FileHash(inventory), PreviousDeployment = current };
+            DeploymentShortcuts.Create(target, menu, desktop);
+            Check(ReadTarget(plan[0].Path) == Path.Combine(target.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable) && !File.Exists(tool.Path),
+                "rollback projects only entries declared by the retained inventory and removes the superseded operations link");
+            DeploymentShortcuts.Create(current, menu, desktop, target);
+            Check(ReadTarget(tool.Path) == operations, "returning to the current dual-program deployment restores its operations entry");
+            var before = plan.ToDictionary(p => p.Path, p => Wire.FileHash(p.Path));
+            File.AppendAllText(inventory, " ");
+            Reject(() => DeploymentShortcuts.Create(target, menu, desktop, current), "changed registered inventory rejects projection before touching current entries");
+            Check(before.All(p => Wire.FileHash(p.Key) == p.Value), "inventory failure preserves all current entry bytes");
+        });
         Scenario("historical-and-missing-target", directory =>
         {
             var location = Release(directory) with { Shortcuts = new(true, true) };

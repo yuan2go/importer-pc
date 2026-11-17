@@ -34,6 +34,7 @@ internal static class Program
             workspace = Path.GetFullPath(args[0]); root = Path.GetFullPath(args[1]); Directory.CreateDirectory(root);
             var role = args.ElementAtOrDefault(2);
             if (role == "lease") { using var lease = new OperationsToolLease(Installation()); Console.WriteLine("READY"); Console.ReadLine(); return 0; }
+            if (role == "ui-early-close") { EarlyCloseUi(); return 0; }
             if (role is "ui" or "ui-crash" or "ui-offline" or "ui-cancel") { Ui(role == "ui-crash", role == "ui-offline", role == "ui-cancel"); return 0; }
             if (role is "server" or "server-restart") { Server(role != "server-restart").GetAwaiter().GetResult(); return 0; }
             if (role == "unapproved") { Unapproved().GetAwaiter().GetResult(); return 0; }
@@ -173,6 +174,11 @@ internal static class Program
     }
     static async Task Run()
     {
+        using (var early = Child("ui-early-close"))
+        {
+            await early.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(20));
+            Check(early.ExitCode == 0, "closing the native window immediately after Show drains startup without reentrant Close: " + await ErrorText(early));
+        }
         Check(!Directory.Exists(Location().DataRoot), "isolated verification starts without a business database");
         await Reject(() => Task.Run(() => OperationsInstallation.Load(AppContext.BaseDirectory)), "source/unregistered tool cannot claim installed authority");
         using var leaseChild = Child("lease"); await Ready(leaseChild);
@@ -288,6 +294,15 @@ internal static class Program
             var errors = await ErrorText(server);
             if (!string.IsNullOrWhiteSpace(errors)) File.WriteAllText(Path.Combine(root, "rejected-connections.txt"), errors);
         }
+    }
+    static void EarlyCloseUi()
+    {
+        using var programUse = new OperationsToolLease(Installation());
+        var app = new System.Windows.Application();
+        app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Presentation.Wpf;component/Themes/Workstation.xaml", UriKind.Relative) });
+        var window = new OperationsWindow(Installation());
+        app.Startup += (_, _) => { window.Show(); window.Close(); };
+        app.Run();
     }
     static void Ui(bool waitForCrash, bool expectOffline, bool cancelOnQuery)
     {

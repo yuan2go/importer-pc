@@ -187,14 +187,14 @@ var databases = Directory.GetFiles(location.DataRoot, "*.db", SearchOption.AllDi
 async Task<Process> Open()
 {
     var child = Process.Start(new ProcessStartInfo(Path.Combine(desktop, InstallationIdentity.OperationsExecutable))
-        { UseShellExecute = false, CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden })!;
+        { UseShellExecute = false, CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden, RedirectStandardError = true })!;
     try
     {
         var deadline = Stopwatch.StartNew();
         while (deadline.Elapsed < TimeSpan.FromSeconds(20))
         {
             child.Refresh();
-            if (child.HasExited) throw new Exception("Installed operations exited before its window: " + child.ExitCode);
+            if (child.HasExited) throw new Exception("Installed operations exited before its window: " + child.ExitCode + ": " + await child.StandardError.ReadToEndAsync());
             if (child.MainWindowHandle != IntPtr.Zero && child.MainWindowTitle == InstallationIdentity.OperationsDisplayName) return child;
             await Task.Delay(50);
         }
@@ -222,7 +222,7 @@ using (var child = await Open())
         if (!blocked) throw new Exception("Live installed observer did not protect program files");
         if (!child.CloseMainWindow()) throw new Exception("Could not request normal operations close");
         await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
-        if (child.ExitCode != 0) throw new Exception("Operations did not close normally");
+        if (child.ExitCode != 0) throw new Exception("Operations did not close normally: " + child.ExitCode + ": " + await child.StandardError.ReadToEndAsync());
     }
     finally { if (!child.HasExited) { child.Kill(true); await child.WaitForExitAsync(); } }
 }

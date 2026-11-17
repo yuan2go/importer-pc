@@ -16,7 +16,7 @@ public partial class OperationsWindow : Window
     readonly OperationsClient client;
     readonly CancellationTokenSource lifetime = new();
     readonly DispatcherTimer freshness = new() { Interval = TimeSpan.FromMilliseconds(250) };
-    Task observation = Task.CompletedTask, queryTask = Task.CompletedTask;
+    Task observation = Task.CompletedTask, discovery = Task.CompletedTask, queryTask = Task.CompletedTask;
     CancellationTokenSource? queryStop;
     SoftwareLogReader? logs;
     SoftwareLogQuery? applied;
@@ -37,8 +37,9 @@ public partial class OperationsWindow : Window
         LogAreas.SelectionChanged += FiltersChanged; TimeRange.SelectionChanged += FiltersChanged; Level.SelectionChanged += FiltersChanged;
         SourceFilter.TextChanged += FiltersChanged; Keyword.TextChanged += FiltersChanged;
         KeyEvents.Checked += FiltersChanged; KeyEvents.Unchecked += FiltersChanged;
-        Loaded += async (_, _) =>
+        Loaded += (_, _) =>
         {
+            if (closing) return;
             observation = Observe();
             freshness.Tick += (_, _) =>
             {
@@ -48,22 +49,28 @@ public partial class OperationsWindow : Window
                     Invalidate("工作站数据已过期，正在重新核验连接。");
             };
             freshness.Start();
-            try
-            {
-                var directories = await Task.Run(installation.LogDirectories, lifetime.Token);
-                if (closing) return;
-                LogAreas.ItemsSource = directories.Select(p =>
-                {
-                    var parts = System.IO.Path.GetRelativePath(installation.Location.DataRoot, p).Split(System.IO.Path.DirectorySeparatorChar);
-                    return new Area(p, parts[1] + " · " + (parts[0] == "Production" ? "生产日志" : "模拟日志"));
-                }).ToArray();
-                if (directories.Length > 0) LogAreas.SelectedIndex = 0;
-                else LogStatus.Text = "当前安装尚无保留的运行日志。日志空白不能证明未发生业务。";
-            }
-            catch (OperationCanceledException) when (closing) { }
-            catch (Exception error) { LogStatus.Text = "无法读取日志范围：" + DiagnosticText.Protect(error.Message); }
+            discovery = DiscoverLogs();
         };
         Closing += ClosingWindow;
+        Closed += (_, _) => lifetime.Dispose();
+    }
+
+    async Task DiscoverLogs()
+    {
+        try
+        {
+            var directories = await Task.Run(installation.LogDirectories, lifetime.Token);
+            if (closing) return;
+            LogAreas.ItemsSource = directories.Select(p =>
+            {
+                var parts = System.IO.Path.GetRelativePath(installation.Location.DataRoot, p).Split(System.IO.Path.DirectorySeparatorChar);
+                return new Area(p, parts[1] + " · " + (parts[0] == "Production" ? "生产日志" : "模拟日志"));
+            }).ToArray();
+            if (directories.Length > 0) LogAreas.SelectedIndex = 0;
+            else LogStatus.Text = "当前安装尚无保留的运行日志。日志空白不能证明未发生业务。";
+        }
+        catch (OperationCanceledException) when (closing) { }
+        catch (Exception error) { LogStatus.Text = "无法读取日志范围：" + DiagnosticText.Protect(error.Message); }
     }
 
     async Task Observe()
@@ -192,7 +199,19 @@ public partial class OperationsWindow : Window
         if (canClose) return;
         e.Cancel = true; if (closing) return;
         closing = true; IsEnabled = false; freshness.Stop(); lifetime.Cancel(); queryStop?.Cancel();
-        await Task.WhenAll(observation, queryTask);
-        logs?.Dispose(); lifetime.Dispose(); canClose = true; Close();
+        try
+        {
+            await Task.WhenAll(observation, discovery, queryTask);
+            logs?.Dispose(); canClose = true;
+            // Even an already-completed drain must return from the first Closing
+            // event before WPF accepts another Close (e.g. before Loaded ran).
+            await Dispatcher.InvokeAsync(Close);
+        }
+        catch (Exception error)
+        {
+            canClose = false; closing = false; IsEnabled = true;
+            Invalidate("查看已停止，读取资源尚未确认释放。请再次关闭窗口；生产状态未被修改。");
+            TechnicalText.Text = DiagnosticText.Protect(error.ToString());
+        }
     }
 }

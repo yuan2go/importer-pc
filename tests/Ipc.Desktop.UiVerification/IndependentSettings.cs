@@ -73,16 +73,19 @@ static partial class Program
         Check(ReferenceEquals(editor, ((ContentControl)second.FindName("EditorHost")).Content) && vm.StructuredPolicy.StationCode == "SYNTH-UNSAVED-SETTINGS",
             "reopening reuses original controls and draft after a new password verification");
         var back = (Button)second.FindName("ReturnToWorkstation");
+        var retainedSession = (await h.App.ManagementModeStatusAsync()).SessionId;
         await BarcodeNativeKeyboard.ClickAsync(second, back, new Point(12, 12));
         await Until(() => window.IsActive);
-        Check(window.IsEnabled && second.IsVisible && vm.StructuredPolicy.StationCode == "SYNTH-UNSAVED-SETTINGS",
-            "returning to the enabled workstation keeps the modeless editor and its unsaved draft");
+        Check(window.IsEnabled && !second.IsVisible && vm.StructuredPolicy.StationCode == "SYNTH-UNSAVED-SETTINGS" &&
+            (await h.App.ManagementModeStatusAsync()).SessionId == retainedSession,
+            "returning hides the owned editor so the workstation is unobstructed, retaining its draft and grant");
         var right = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Right));
         var barcode = (TextBox)right.FindName("BarcodeEntry");
         var textEvents = 0; var enterEvents = 0;
         barcode.PreviewTextInput += (_, _) => textEvents++;
         barcode.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler((_, e) => { if (e.Key == Key.Enter) enterEvents++; }), true);
-        barcode.Focus(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        await BarcodeNativeKeyboard.ClickAsync(window, barcode, new Point(12, 12));
+        Check(window.IsActive && barcode.IsKeyboardFocusWithin, "a real mouse click selects the visible workstation PDA field");
         const string pdaCode = "000123456789";
         await BarcodeNativeKeyboard.SendAsync(window, barcode, pdaCode.Select(c => (ushort)c).Append((ushort)0x0d).ToArray());
         await Until(() => vm.Right.SlotAvailable && !vm.Busy);
@@ -93,12 +96,16 @@ static partial class Program
             "native SendInput reaches the workstation HWND, text/Enter handlers and exactly one PDA request while settings stay open");
         var left = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Left));
         var manual = (TextBox)left.FindName("BarcodeEntry");
-        manual.Focus(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        await BarcodeNativeKeyboard.ClickAsync(window, manual, new Point(12, 12));
+        Check(window.IsActive && manual.IsKeyboardFocusWithin, "a real mouse click selects the visible workstation manual field");
         foreach (var digit in "000987") { await BarcodeNativeKeyboard.SendAsync(window, manual, [(ushort)digit]); await Task.Delay(300); }
         await BarcodeNativeKeyboard.SendAsync(window, manual, [0x0d]);
         await Until(() => vm.Left.SlotAvailable && !vm.Busy);
         Check(h.Peer.Requests.Count == 2 && h.Peer.Requests.Any(body => JsonDocument.Parse(body).RootElement.GetProperty("source").GetString() == "MANUAL"),
             "native slow keyboard input uses the original MANUAL route without closing or pausing the settings draft");
+        Check(ReferenceEquals(await Open(), second) && ReferenceEquals(editor, ((ContentControl)second.FindName("EditorHost")).Content) &&
+            vm.StructuredPolicy.StationCode == "SYNTH-UNSAVED-SETTINGS" && (await h.App.ManagementModeStatusAsync()).SessionId == retainedSession,
+            "returning to settings restores the same window, controls, complete draft and unexpired grant");
         await vm.RefreshAsync();
         Check(await vm.PrepareConfigurationReviewAsync(), "the complete existing candidate validates without a prior management pause");
         var review = new ConfigurationSaveReviewWindow(second, vm);
@@ -111,6 +118,8 @@ static partial class Program
         review.Close();
         Check(Wire.Encode((await h.App.OperationAsync(submitted.Id))!.Wcs!.Request) == Wire.Encode(original) && h.Peer.Requests.Count == 2,
             "configuration editing cannot rewrite or resend an original request");
+        await BarcodeNativeKeyboard.ClickAsync(second, back, new Point(12, 12));
+        Check(!second.IsVisible, "returning to work after save keeps the settings window hidden until explicitly restored");
         await vm.RequestActivationAsync!();
         await vm.RequestRetentionAsync!();
         window.Close();

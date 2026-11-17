@@ -34,6 +34,7 @@ internal static class Program
             workspace = Path.GetFullPath(args[0]); root = Path.GetFullPath(args[1]); Directory.CreateDirectory(root);
             var role = args.ElementAtOrDefault(2);
             if (role == "lease") { using var lease = new OperationsToolLease(Installation()); Console.WriteLine("READY"); Console.ReadLine(); return 0; }
+            if (role == "ui-early-close") { EarlyCloseUi(); return 0; }
             if (role is "ui" or "ui-crash" or "ui-offline" or "ui-cancel") { Ui(role == "ui-crash", role == "ui-offline", role == "ui-cancel"); return 0; }
             if (role is "server" or "server-restart") { Server(role != "server-restart").GetAwaiter().GetResult(); return 0; }
             if (role == "unapproved") { Unapproved().GetAwaiter().GetResult(); return 0; }
@@ -99,6 +100,16 @@ internal static class Program
         {
             try { return new ResourceLease(Path.Combine(root, "leases"), ["operations-synthetic-business-owner"]); }
             catch (IOException error) when ((error.HResult & 0xFFFF) is 32 or 33 && Stopwatch.GetElapsedTime(started) < TimeSpan.FromSeconds(5))
+            { await Task.Delay(50); }
+        }
+    }
+    static async Task<DeploymentProgramUse> ReleasedProgramUse()
+    {
+        var started = Stopwatch.GetTimestamp();
+        while (true)
+        {
+            try { return DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [root], false); }
+            catch (IOException error) when ((error.HResult & 0xffff) is 32 or 33 && Stopwatch.GetElapsedTime(started) < TimeSpan.FromSeconds(5))
             { await Task.Delay(50); }
         }
     }
@@ -173,6 +184,11 @@ internal static class Program
     }
     static async Task Run()
     {
+        using (var early = Child("ui-early-close"))
+        {
+            await early.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(20));
+            Check(early.ExitCode == 0, "closing the native window during source initialization drains startup without reentrant Close: " + await ErrorText(early));
+        }
         Check(!Directory.Exists(Location().DataRoot), "isolated verification starts without a business database");
         await Reject(() => Task.Run(() => OperationsInstallation.Load(AppContext.BaseDirectory)), "source/unregistered tool cannot claim installed authority");
         using var leaseChild = Child("lease"); await Ready(leaseChild);
@@ -182,7 +198,7 @@ internal static class Program
         using (var otherRelease = DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [Path.Combine(root, "other-release")], false))
             Check(true, "an observer does not block maintenance of unrelated program roots");
         leaseChild.Kill(); await leaseChild.WaitForExitAsync();
-        using (var maintenance = DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [root], false))
+        using (var maintenance = await ReleasedProgramUse())
         {
             await Reject(() => Task.Run(() => { using var observer = new OperationsToolLease(Installation()); }), "maintenance blocks a new observer until its program-file operation ends");
             Check(true, "abnormal observer exit releases the actual program-file guard");
@@ -288,6 +304,16 @@ internal static class Program
             var errors = await ErrorText(server);
             if (!string.IsNullOrWhiteSpace(errors)) File.WriteAllText(Path.Combine(root, "rejected-connections.txt"), errors);
         }
+    }
+    static void EarlyCloseUi()
+    {
+        using var programUse = new OperationsToolLease(Installation());
+        var app = new System.Windows.Application();
+        app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Presentation.Wpf;component/Themes/Workstation.xaml", UriKind.Relative) });
+        var window = new OperationsWindow(Installation());
+        window.SourceInitialized += (_, _) => window.Close();
+        app.Startup += (_, _) => window.Show();
+        app.Run();
     }
     static void Ui(bool waitForCrash, bool expectOffline, bool cancelOnQuery)
     {

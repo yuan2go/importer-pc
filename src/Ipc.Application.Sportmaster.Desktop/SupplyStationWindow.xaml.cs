@@ -197,11 +197,17 @@ public partial class SupplyStationWindow : Window
         }
         catch (Exception error) { ViewModel.Message = "尚未进入配置生效流程：" + error.Message; }
     }
+    bool ActivateSettingsWindow()
+    {
+        if (settingsWindow is not { } settings) return false;
+        if (!settings.IsVisible) settings.Show();
+        settings.Activate(); return true;
+    }
     async void ClosingWindow(object? sender, CancelEventArgs e)
     {
         if (closeReady || closed) return;
         e.Cancel = true;
-        if (settingsWindow is not null) { settingsWindow.Activate(); ViewModel.Message = "请先关闭设置窗口，再退出供包台。未保存输入保留。"; return; }
+        if (ActivateSettingsWindow()) { ViewModel.Message = "请先关闭设置窗口，再退出供包台。未保存输入保留。"; return; }
         if (closing) return;
         closing = true;
         var generation = ++closeGeneration;

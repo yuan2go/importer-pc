@@ -1,5 +1,8 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Ipc.Diagnostics/Ipc.Diagnostics.csproj" />
+    <Project Path="src/Ipc.Operations/Ipc.Operations.csproj" />
+    <Project Path="src/Ipc.Operations.Desktop/Ipc.Operations.Desktop.csproj" />
     <Project Path="src/Ipc.Installer/Ipc.Installer.csproj" />
     <Project Path="src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj" />
     <Project Path="src/Ipc.Components/Ipc.Components.csproj" />
@@ -27,6 +30,7 @@
     <Project Path="src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Ipc.Operations.Verification/Ipc.Operations.Verification.csproj" />
     <Project Path="tests/Ipc.Installer.Verification/Ipc.Installer.Verification.csproj" />
     <Project Path="tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj" />
     <Project Path="tests/Ipc.Verification/Ipc.Verification.csproj" />

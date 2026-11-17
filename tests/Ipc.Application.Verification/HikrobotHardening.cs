@@ -1,3 +1,4 @@
+using Ipc.Diagnostics;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Assembly;

@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json;
 using Ipc.Application.Contracts;
 
-namespace Ipc.Application.ParcelFlow;
+namespace Ipc.Diagnostics;
 
 public sealed partial class SoftwareLogReader
 {
@@ -54,7 +54,7 @@ public sealed partial class SoftwareLogReader
                 long offset = 0, start = 0, number = 0; using var line = new MemoryStream();
                 while (offset < source.Length)
                 {
-                    token.ThrowIfCancellationRequested(); management.Require();
+                    token.ThrowIfCancellationRequested(); authorize();
                     var count = await ReadBlock(source, offset, buffer, token).ConfigureAwait(false);
                     if (count == 0) throw new IOException("原日志范围已缺失，请重新查询。");
                     for (var i = 0; i < count; i++)
@@ -70,7 +70,7 @@ public sealed partial class SoftwareLogReader
                         {
                             // Cache capacity must never become a new original-record limit.
                             // Retain the previous bounded streaming behavior for very dense files.
-                            token.ThrowIfCancellationRequested(); management.Require();
+                            token.ThrowIfCancellationRequested(); authorize();
                             var streaming = new LogIndex([], [], true); Volatile.Write(ref s.Index, streaming); return streaming;
                         }
                         var bytes = line.ToArray(); line.SetLength(0); var entry = Decode(source, ++number, bytes);
@@ -82,7 +82,7 @@ public sealed partial class SoftwareLogReader
                 }
                 // A concurrently-written incomplete tail is outside this snapshot.
             }
-            token.ThrowIfCancellationRequested(); management.Require();
+            token.ThrowIfCancellationRequested(); authorize();
             var result = new LogIndex(rows.ToArray(), matches.ToArray());
             s.Earliest = first; s.Latest = last; Volatile.Write(ref s.Index, result); return result;
         }
@@ -95,7 +95,7 @@ public sealed partial class SoftwareLogReader
         {
             token.ThrowIfCancellationRequested();
             if (System.Diagnostics.Stopwatch.GetElapsedTime(checkedAt) < TimeSpan.FromMilliseconds(100)) return;
-            management.Require(); checkedAt = System.Diagnostics.Stopwatch.GetTimestamp();
+            authorize(); checkedAt = System.Diagnostics.Stopwatch.GetTimestamp();
         };
     }
     async Task<SoftwareLogEntry> ReadRow(Selection s, Row row, CancellationToken token)

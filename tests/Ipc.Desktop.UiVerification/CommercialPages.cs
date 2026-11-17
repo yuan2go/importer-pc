@@ -135,7 +135,7 @@ static partial class Program
         var fieldSettings = await OpenFieldSettingsForVerification(primary);
         Check(!parameterVm.Busy && parameterVm.HasLoadedConfiguration, "native field loading completes before automatic candidate review: " + parameterVm.Message);
         var maintenance = (MaintenancePage)((ContentControl)fieldSettings.FindName("EditorHost")).Content;
-        Check(!((FrameworkElement)maintenance.FindName("MoreTools")).IsVisible, "field settings expose no retired technical or stashed-draft tools");
+        Check(!((FrameworkElement)maintenance.FindName("AdvancedToggle")).IsVisible, "field settings expose no retired technical or stashed-draft tools");
         Check(maintenance.NavigateToParameter("StationCode"), "primary parameter directory resolves StationCode in the loaded candidate");
         await primary.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         primary.UpdateLayout();

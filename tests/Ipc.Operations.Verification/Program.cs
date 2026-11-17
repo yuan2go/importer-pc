@@ -33,6 +33,10 @@ internal static partial class Program
         try
         {
             workspace = Path.GetFullPath(args[0]); root = Path.GetFullPath(args[1]); Directory.CreateDirectory(root);
+            // Match the existing Application verifier: source fixtures do not
+            // provision or borrow the workstation's protected machine policy.
+            typeof(Ipc.Application.ParcelFlow.ParcelRecovery).GetProperty("BackupSetLeaseRoot", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!
+                .SetValue(null, (Func<string>)(() => Path.Combine(root, "backup-set-leases")));
             var role = args.ElementAtOrDefault(2);
             if (role == "lease") { using var lease = new OperationsToolLease(Installation()); Console.WriteLine("READY"); Console.ReadLine(); return 0; }
             if (role == "ui-early-close") { EarlyCloseUi(); return 0; }

@@ -79,6 +79,12 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           ./scripts/verify-industrial-format.ps1
+      - name: Verify the compiled test installation identity
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet test tests/Ipc.Core.Tests -c Release -p:TestInstallation=true -p:RestoreLockedMode=true --artifacts-path .artifacts/test-instance-build --filter "FullyQualifiedName~InstallationIsolation|FullyQualifiedName~InstallationResourceIsolation" --logger "trx;LogFileName=test-instance.trx" --results-directory .artifacts/test-instance
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Verify actual child-process product coverage
         shell: pwsh
         run: |
@@ -120,6 +126,7 @@ jobs:
           name: core-results-${{ github.sha }}
           path: |
             .artifacts/core/core.trx
+            .artifacts/test-instance/test-instance.trx
             .artifacts/core/product-coverage/product.cobertura.xml
             .artifacts/core/product-coverage/summary.json
             .artifacts/core/product-coverage/summary.md

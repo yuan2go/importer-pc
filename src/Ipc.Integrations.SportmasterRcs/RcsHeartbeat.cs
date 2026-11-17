@@ -142,6 +142,7 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
         var started = System.Diagnostics.Stopwatch.GetTimestamp();
         try
         {
+            await InstallationResourceBoundary.RequireRcsEndpointAsync(options.Endpoint, timeout.Token).ConfigureAwait(false);
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var requestId = NextHeartbeatId(timestamp);
             if (heartbeatOwner is { } owner)

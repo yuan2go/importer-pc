@@ -28,6 +28,7 @@ internal sealed class RcsTaskOptions
             endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)
             throw new InvalidDataException("RCS requires an enabled integration binding and an explicit HTTP(S) /rcs/sorter/api target without credentials/query/fragment");
         Endpoint = endpoint;
+        InstallationResourceBoundary.RequireRcsEndpoint(endpoint);
         if (Binding.Parameters.Keys.Except(RequiredKeys.Concat(RetiredKeys).Concat(["left-bcr-code", "right-bcr-code", "heartbeat-interval-ms", "heartbeat-interval-seconds", "request-timeout-ms", "no-dest-to-exp", RcsRequestPolicy.DestinationMode, RcsRequestPolicy.DestinationChuteCode]), StringComparer.Ordinal).Any())
             throw new InvalidDataException("Unknown RCS parameter");
         Source = "BAR"; Locale = "zh_CN";

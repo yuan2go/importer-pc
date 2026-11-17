@@ -89,7 +89,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
         this.diagnosticVideoSampling = diagnosticVideoSampling;
         if (diagnosticVideoSampling && Recognizes) throw new ArgumentException("Raw throughput diagnostic must not contain a decoder");
         entityMode = context.Parameters.GetValueOrDefault("entity.mode", !Recognizes ? "observe-only" : "read-result");
-        this.acquireLease = acquireLease ?? (actualSerial => new ResourceLease(MachineRuntimePolicy.ResolveLeaseRoot(null), ["device:hikrobot-gige:" + actualSerial]));
+        this.acquireLease = acquireLease ?? PhysicalCameraOwnership.Acquire;
         ip = context.Parameters.GetValueOrDefault("device.ip", ""); serial = context.Parameters.GetValueOrDefault("device.serial", "");
         if (!IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255")
             throw new InvalidDataException("device.ip: explicit canonical IPv4 required");
@@ -137,6 +137,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                 Publish(DeviceHealth.Connecting);
                 await Task.Run(() =>
                 {
+                    InstallationResourceBoundary.RequireCamera(ip, serial);
                     if (decoder is not null) { PhaseTo("initialize-recognition"); decoder.Prepare(); token.ThrowIfCancellationRequested(); }
                     PhaseTo("initialize"); initialized = true; api.Initialize(); token.ThrowIfCancellationRequested();
                     PhaseTo("enumerate");
@@ -149,6 +150,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                 $"ipMatches={devices.Count(d => d.Ip == ip)}, serialMatches={devices.Count(d => serial.Length > 0 && d.Serial == serial)}, pairMatches={matches.Length}"));
                     if (physicalSerial.Length != 0 && physicalSerial != matches[0].Serial)
                         throw new InvalidDataException("Original MVS physical serial changed; revise the approved device binding before replacement");
+                    InstallationResourceBoundary.RequireCamera(ip, matches[0].Serial);
                     PhaseTo("lease"); lease = acquireLease(matches[0].Serial); physicalSerial = matches[0].Serial;
                     PhaseTo("create"); created = true; api.Create(matches[0]); token.ThrowIfCancellationRequested();
                     PhaseTo("open-exclusive");

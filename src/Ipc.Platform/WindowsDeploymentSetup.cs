@@ -30,6 +30,12 @@ public static partial class WindowsDeploymentSetup
         MachineRuntimePolicy.RequireProtectedEvidence(file);
         var current = Wire.Decode<DeploymentLocation>(File.ReadAllText(file));
         if (current.ApplicationId != application) throw new InvalidDataException("Existing deployment identity differs");
+        if (application == "sportmaster")
+        {
+            InstallationIdentity.RequireDataRoot(current.DataRoot);
+            InstallationIdentity.RequireProgramRoot(current.ReleaseRoot);
+            InstallationIdentity.RequireIndependentPath(current.ConfigurationDirectory);
+        }
         return current;
     }
     public static ExtensionTrust ReadTrust(string path, RunMode mode)
@@ -53,6 +59,7 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static void PreviewDataAccess(string dataRoot, string runtimeSid)
     {
+        InstallationIdentity.RequireDataRoot(dataRoot);
         RequireDataStorage(dataRoot);
         var data = Path.GetFullPath(dataRoot);
         if (!Directory.Exists(data)) return; // Creation uses an explicit runtime-Modify ACL.

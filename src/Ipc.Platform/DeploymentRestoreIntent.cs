@@ -106,6 +106,8 @@ public static partial class WindowsDeploymentSetup
         var current = Current(application) ?? throw new InvalidDataException("缺少当前部署登记，不能准备本站恢复。");
         if (current.LifecycleState != "Installed") throw new InvalidOperationException("先完成当前安装，再恢复本站。");
         targetRoot = Path.GetFullPath(targetRoot); targetDirectory = Path.GetFullPath(targetDirectory);
+        InstallationIdentity.RequireExternalFilePath(backup);
+        InstallationIdentity.RequireDataRoot(targetRoot);
         RequireDataStorage(targetRoot);
         var protectedRoots = new[] { current.DataRoot, current.ConfigurationDirectory, MachineRoot, MaintenanceCacheRoot,
             Path.GetDirectoryName(Path.GetDirectoryName(current.ReleaseRoot)!)!, Path.Combine(WindowsStoragePaths.ProtectedAnchor!, "Administrators") }

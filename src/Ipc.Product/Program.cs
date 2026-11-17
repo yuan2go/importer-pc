@@ -7,7 +7,7 @@ SupplyContractRegistration.Register();
 var map = args.Chunk(2).ToDictionary(x => x[0], x => x.Length == 2 ? x[1] : "");
 string Get(string key, string fallback) => map.GetValueOrDefault(key, fallback);
 var root = Get("--config", Path.Combine(AppContext.BaseDirectory, "config"));
-var data = Get("--data-root", Path.Combine(WindowsStoragePaths.UserRoot, "data"));
+var data = Get("--data-root", InstallationIdentity.DefaultLaunchDataRoot);
 var action = Get("--action", "snapshot");
 if (action is not ("snapshot" or "serve" or "export" or "backup" or "preflight" or "restore" or "extension-check" or "extension-install" or "extension-recover" or "extension-uninstall" or "extension-inspect" or "extension-list"))
     throw new ArgumentException("Unknown action; use the current version and a new data directory");

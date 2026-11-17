@@ -49,6 +49,7 @@ public sealed class CoreRegression
     [DataRow("--parameter-refactor")]
     [DataRow("--parameter-guidance-startup")]
     [DataRow("--backup-set-delivery")]
+    [DataRow("--installation-resource-boundary")]
     [DataRow("--backup-consistency")]
     [DataRow("--stability-analysis")]
     [DataRow("--industrial-recovery")]

@@ -61,6 +61,9 @@ public static partial class ParcelConfigurationRules
                 e.Add("WeightRange: 显式配置重量超出本业务允许范围");
         }
         if (c.BackupSchedule is { } backup && (string.IsNullOrWhiteSpace(backup.Directory) || !Path.IsPathFullyQualified(backup.Directory) || backup.IntervalMinutes is < 15 or > 10080 || backup.MaximumSets is < 1 or > 1000)) e.Add("备份计划须指定绝对目录、15～10080分钟周期和1～1000份容量上限；不会自动删除原件");
+        if (c.ApplicationId == "sportmaster" && c.BackupSchedule is { } schedule && !string.IsNullOrWhiteSpace(schedule.Directory) && Path.IsPathFullyQualified(schedule.Directory))
+            try { InstallationIdentity.RequireExternalFilePath(schedule.Directory); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException) { e.Add(error.Message); }
         if (string.IsNullOrWhiteSpace(c.Reader.DeviceId) || c.Reader.Role != "parcel-reader" || string.IsNullOrWhiteSpace(c.Reader.Driver) || string.IsNullOrWhiteSpace(c.Reader.Revision)) e.Add("A stable parcel reader binding is required");
         var w = c.Weight;
         if (!Enum.IsDefined(w.Source) || w.Source != WeightSource.Disabled && (!Enum.IsDefined(w.Unit) || w.Precision is < 0 or > 6 || w.MaximumAgeMs is < 100 or > 60000 || w.WaitTimeoutMs is < 100 or > 300000)) e.Add("Invalid weight policy");

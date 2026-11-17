@@ -46,7 +46,7 @@ public static partial class WindowsDeploymentSetup
             state.Location.ApplicationId == application && state.Location.LifecycleOperation == operation &&
             state.Location.SourceCommit.Length == 40 && state.Location.SourceCommit.All(char.IsAsciiHexDigit);
     }
-    static string SystemKey(string application) => @"Software\Microsoft\Windows\CurrentVersion\Uninstall\ImporterPc." + application;
+    static string SystemKey(string application) => InstallationIdentity.UninstallKeyPrefix + application;
     [SupportedOSPlatform("windows")]
     static void ProjectInstalledApplication(DeploymentLocation location)
     {
@@ -54,9 +54,9 @@ public static partial class WindowsDeploymentSetup
         using var machine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
         if (location.LifecycleState != "Installed") { machine.DeleteSubKeyTree(SystemKey(location.ApplicationId), false); return; }
         using var key = machine.CreateSubKey(SystemKey(location.ApplicationId), true);
-        var executable = Path.Combine(location.MaintenanceRoot ?? location.ReleaseRoot, "desktop", "Ipc.Desktop.exe");
+        var executable = Path.Combine(location.MaintenanceRoot ?? location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable);
         var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(location.ReleaseRoot, "app", "application-release.json")));
-        key.SetValue("DisplayName", location.ApplicationId == "sportmaster" ? "菜鸟供包台" : "菜鸟供包台 · " + location.ApplicationId);
+        key.SetValue("DisplayName", location.ApplicationId == "sportmaster" ? InstallationIdentity.DisplayName : "菜鸟供包台 · " + location.ApplicationId);
         key.SetValue("DisplayVersion", release.BusinessVersion ?? "reference");
         key.SetValue("QuietUninstallString", "\"" + executable + "\" /quiet /uninstall /norestart");
         key.SetValue("EstimatedSize", (int)Math.Min(int.MaxValue, new DirectoryInfo(location.ReleaseRoot).EnumerateFiles("*", SearchOption.AllDirectories).Sum(f => f.Length) / 1024), RegistryValueKind.DWord);
@@ -174,8 +174,11 @@ public static partial class WindowsDeploymentSetup
             if (!TrustedProgramRoots.Contains(Path.Combine(MachineRoot, "deployments"), operation) || new FileInfo(operation).Length > 4 * 1024 * 1024) throw new InvalidDataException("Unsafe removal journal");
             plan = Wire.Decode<RemovalState>(File.ReadAllText(operation));
             ValidateRemovalState(plan, location);
-            originalMediaFiles ??= InstalledInventory(location);
-            if (!plan.Files.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(originalMediaFiles.Append("deployment-location.json").Append("deployment-retired.json").Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase))
+            if (originalMediaFiles is null && location.MaintenanceRoot is not null) originalMediaFiles = InstalledInventory(location);
+            // A cache-less deployment already froze its verified media list in
+            // this protected journal before retirement. Partial deletion cannot
+            // reconstruct media or require a cache that this installation never had.
+            if (originalMediaFiles is not null && !plan.Files.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(originalMediaFiles.Append("deployment-location.json").Append("deployment-retired.json").Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase))
                 throw new InvalidDataException("原卸载清单与同源完整介质不一致，拒绝清理；原件保留");
         }
         try
@@ -208,6 +211,7 @@ public static partial class WindowsDeploymentSetup
         IReadOnlyDictionary<string, string>? reviewedHashes = null)
     {
         root = Path.GetFullPath(root); DeploymentPaths.RequireOrdinaryAncestors(root);
+        InstallationIdentity.RequireIndependentPath(root);
         if (files.Length > fileBudget || files.Any(n => !ExtensionPackages.SafePath(n)) || files.Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length)
             throw new InvalidDataException("Unsafe removal inventory");
         if (!Directory.Exists(root))

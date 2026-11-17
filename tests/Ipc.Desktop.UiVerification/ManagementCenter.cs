@@ -52,7 +52,13 @@ static partial class Program
         var navigation = (Border)window.FindName("DailyNavigation");
         var clock = (TextBlock)window.FindName("StationClock");
         var header = (Border)window.FindName("TimeHeader");
-        Check(Descendants(header).OfType<TextBlock>().Single() == clock && !Descendants(header).OfType<Button>().Any(b => b.IsVisible) && !Descendants(header).OfType<Image>().Any(), "top bar contains only the clock");
+        var testLabel = (TextBlock)window.FindName("TestInstallationLabel");
+        var visibleHeaderText = Descendants(header).OfType<TextBlock>().Where(t => t.IsVisible).ToArray();
+        Check(testLabel.Text == "测试版" && testLabel.IsVisible == InstallationIdentity.IsTest &&
+            visibleHeaderText.Length == (InstallationIdentity.IsTest ? 2 : 1) && visibleHeaderText.Contains(clock) &&
+            (!InstallationIdentity.IsTest || visibleHeaderText.Contains(testLabel)) &&
+            !Descendants(header).OfType<Button>().Any(b => b.IsVisible) && !Descendants(header).OfType<Image>().Any(),
+            "normal top bar contains only the clock; the isolated test installation also displays its test label");
         var clockRight = clock.TranslatePoint(new Point(clock.ActualWidth, 0), client).X;
         Check(clock.HorizontalAlignment == HorizontalAlignment.Right && clockRight > client.ActualWidth * .8 && clockRight <= client.ActualWidth - 8,
             "clock is right aligned in the brand-free header");
@@ -190,14 +196,15 @@ static partial class Program
         var debug = Descendants(center).OfType<FrameworkElement>().Single(e => e.GetType().Name == "StationDebugControl");
         var active = debug.GetType().GetField("active", BindingFlags.Instance | BindingFlags.NonPublic)!;
         await Until(() => debug.IsLoaded && active.GetValue(debug) is true);
-        var requestCount = vm.Snapshot.Operations.Count();
+        var requestIds = (await runtime.SnapshotAsync()).Operations.Select(o => o.Id).Order().ToArray();
         await runtime.ExitManagementModeAsync(); await vm.RefreshManagementModeAsync();
         await Until(() => !debug.IsLoaded && active.GetValue(debug) is false);
         _ = center.Dispatcher.BeginInvoke(new Action(() => Click(center, "验证管理密码"))); login = await LoginDialog();
         Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
         Click(login, "进入管理中心");
         await Until(() => vm.IsManagementMode && !login.IsVisible && debug.IsLoaded && active.GetValue(debug) is true);
-        Check(vm.Snapshot.Operations.Count() == requestCount, "debug reauthentication restarts the same control without creating requests");
+        await vm.DrainAsync().WaitAsync(TimeSpan.FromSeconds(5));
+        Check((await runtime.SnapshotAsync()).Operations.Select(o => o.Id).Order().SequenceEqual(requestIds), "debug reauthentication restarts the same control without creating requests");
         Click(center, "关闭"); await Until(() => !center.IsVisible && window.IsEnabled);
         Check(!vm.IsManagementMode && vm.SelectedPage == "workstation" && vm.HasUnsavedConfiguration && vm.Snapshot.RuntimeId == runtimeId, "closing ends authorization, preserves the draft and returns to the same workstation");
         RequestEntry(); login = await LoginDialog();
@@ -272,7 +279,7 @@ static partial class Program
         var observation = foreground.ContinueWith(_ => appliedBeforeReturn = model.IsManagementMode,
             CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         shared.SetResult(authorized);
-        await Task.WhenAll(foreground, background, observation);
+        await Task.WhenAll(foreground, background, observation).WaitAsync(TimeSpan.FromSeconds(5));
         check(appliedBeforeReturn, "foreground password handoff cannot return before a coalesced authorized status is applied");
         var older = new TaskCompletionSource<ManagementModeStatus>(TaskCreationOptions.RunContinuationsAsynchronously);
         var newer = new TaskCompletionSource<ManagementModeStatus>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -284,7 +291,7 @@ static partial class Program
         await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
         var returnedBeforeLatest = foreground.IsCompleted;
         newer.SetResult(new(true, false, null));
-        await Task.WhenAll(foreground, background);
+        await Task.WhenAll(foreground, background).WaitAsync(TimeSpan.FromSeconds(5));
         check(!returnedBeforeLatest && !model.IsManagementMode, "superseded foreground reads await the newer status and cannot authorize after revocation");
     }
     [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "IsWindowEnabled")]

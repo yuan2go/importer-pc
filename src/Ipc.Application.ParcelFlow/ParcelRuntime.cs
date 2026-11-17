@@ -295,8 +295,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 try { repository.ValidateStationProjection(); repository.OpenStationShift(runtimeId, StationTime, stationOpeningAt, stationOpeningTicks); }
                 finally { gate.Release(); }
             }
-            if (Interlocked.CompareExchange(ref accepting, 1, 2) != 2) throw new IOException("Startup ingress fenced; inspect diagnostic failure before retrying");
-            ingressStartup.TrySetResult(true);
             resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && (Id == "sportmaster" || !launch.RequireRecoveryReview) &&
                 !File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json"));
             foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
@@ -313,6 +311,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             await gate.WaitAsync(token).ConfigureAwait(false);
             try { WriteStationState("StartupCompleted", force: true); }
             finally { gate.Release(); }
+            if (Interlocked.CompareExchange(ref accepting, 1, 2) != 2) throw new IOException("Startup ingress fenced; inspect diagnostic failure before retrying");
+            ingressStartup.TrySetResult(true);
         }
         catch (Exception ex)
         {
@@ -325,7 +325,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             try
             {
                 Boundary?.Invoke("BeforeStartupFailureAudit");
-                if (startupConfiguration is { } failedCandidate) configuration.FailActivation(priorEffective, failedCandidate, ex);
+                if (startupConfiguration is { } failedCandidate) configuration.FailActivation(configuration.Current.Activation!.Id, priorEffective, failedCandidate, ex);
                 else configuration.CompleteEffectiveStartup(ex);
                 startupConfiguration = null;
                 CompleteConfigurationAudit("ActivationFailed");
@@ -410,6 +410,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     if (capacity.IsCompletedSuccessfully) available = capacity.Result;
                     else
                     {
+                        // Startup consumers cannot run until all source Start calls return.
+                        if (Volatile.Read(ref accepting) == 2) return false;
                         var ready = capacity.AsTask();
                         if (Task.WhenAny(ready, ingressFenced.Task).GetAwaiter().GetResult() != ready) return false;
                         available = ready.GetAwaiter().GetResult();
@@ -697,8 +699,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             PositionId: position, ReaderBinding: ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId), BarcodeSelection: selection)
         { OperatorInput = o.OperatorInput };
         admissionPositions.TryAdd(op.AdmissionId, position);
+        var retainedAcquisition = false; var savedOperation = false;
         if (op.FrozenConfiguration.Images is not null && ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)?.Target == o.DeviceId)
-            ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id);
+        { ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id); retainedAcquisition = true; }
         var preceding = DisplayedOperation(position);
         var admissionDetail = preceding is not null && ReleasedForNextAdmission(preceding)
             ? Wire.Encode(new { Policy = "New scan after retained original request; original is not replayed", PriorOperation = preceding.Id })
@@ -716,9 +719,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 };
             }
             Save(op, "ParcelObserved", admissionDetail, input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
+            savedOperation = true;
             if (originalFrame is not null) { ScheduleOriginalFrame(op, originalFrame); originalFrame = null; }
         }
-        finally { originalFrame?.Dispose(); }
+        finally
+        {
+            originalFrame?.Dispose();
+            if (!savedOperation && retainedAcquisition && repository!.ReadOperation(op.Id) is null)
+            { ReleaseOperationAcquisition(op); admissionPositions.TryRemove(op.AdmissionId, out _); }
+        }
         await ProcessObservedParcelAsync(op).ConfigureAwait(false);
         return new(ObservationDisposition.Admitted, "Admitted; external result independent", op.Id, Input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
     }

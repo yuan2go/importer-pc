@@ -102,9 +102,9 @@ static partial class ArchitectureQuality
         }
         throw new TimeoutException("Current maintenance guard did not settle; no successful receipt inferred");
     }
-    static async Task NonCurrentPositionChecks(int schema, bool previouslyRecovered)
+    static async Task NonCurrentPositionChecks(bool previouslyRecovered)
     {
-        var c = Config("sportmaster"); var name = $"unsupported-conflict-{schema}-{previouslyRecovered}";
+        var c = Config("sportmaster"); var name = $"current-unscoped-conflict-{previouslyRecovered}";
         await using (var initial = await Open(c, name)) { }
         using (var repo = new ParcelRepository(DirectoryFor(name, c), c.ApplicationId))
         {
@@ -150,7 +150,7 @@ static partial class ArchitectureQuality
     {
         workspace = source; root = evidence; failures = 0;
         await StoragePreflightChecks();
-        foreach (var schema in new[] { 1, 2 }) foreach (var recovered in new[] { false, true }) await NonCurrentPositionChecks(schema, recovered);
+        foreach (var recovered in new[] { false, true }) await NonCurrentPositionChecks(recovered);
         await TopologyFormatChecks();
         if (failures != 0) throw new Exception("Storage format/conflict guard failures: " + failures);
         Console.WriteLine("PASS STORAGE FORMAT GUARDS COMPLETE");

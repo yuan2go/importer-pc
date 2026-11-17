@@ -44,7 +44,7 @@ public static partial class AtomicStorageWrite
                         try { tx.Commit(); break; }
                         catch (SqliteException error) when (Busy(error) && SQLitePCL.raw.sqlite3_get_autocommit(db.Handle) == 0 &&
                             attempts < 32 && Stopwatch.GetElapsedTime(started) < budget)
-                        { attempts++; Delay(started, budget, attempts); } // Retry the same COMMIT, never the SQL callback.
+                        { Delay(started, budget, attempts); if (Stopwatch.GetElapsedTime(started) >= budget) throw; attempts++; } // Retry the same COMMIT, never the SQL callback.
                     }
                     PhaseForVerification?.Invoke("AfterCommit"); return;
                 }
@@ -68,6 +68,8 @@ public static partial class AtomicStorageWrite
                     if (attempts >= 32 || Stopwatch.GetElapsedTime(started) >= budget)
                         throw new StorageWriteFailure(StorageFailureKind.RetryBudgetExceeded, attempts, Stopwatch.GetElapsedTime(started).TotalMilliseconds, error);
                     Delay(started, budget, attempts);
+                    if (Stopwatch.GetElapsedTime(started) >= budget)
+                        throw new StorageWriteFailure(StorageFailureKind.RetryBudgetExceeded, attempts, Stopwatch.GetElapsedTime(started).TotalMilliseconds, error);
                 }
                 finally { tx?.Dispose(); }
             }

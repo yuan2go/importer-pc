@@ -1,6 +1,7 @@
 param([ValidateSet('Core','Native')][string]$Section='Core',[switch]$WalIntegration)
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'project-environment.ps1')
+. (Join-Path $PSScriptRoot 'verification-evidence.ps1')
 $verificationRoot=Split-Path -Parent $PSScriptRoot
 Set-Location -LiteralPath $verificationRoot
 if ((git status --porcelain)) {throw 'Verification requires a clean committed worktree'}
@@ -33,12 +34,13 @@ if ($Section -eq 'Core') {
  if ($WalIntegration) { $suiteFlags=@('--product-closure-21') }
 }
 foreach ($flag in $suiteFlags) {
+ if($Section -eq 'Native'){Reset-NativeEvidence $verificationRoot}
  $suiteLog=Join-Path $evidenceRoot ($Section.ToLowerInvariant()+'-'+$flag.Substring(2)+'.log')
  & dotnet $testAssembly $verificationRoot $flag *> ($suiteLog+'.console')
  $suiteExit=$LASTEXITCODE
  $nativeDirectory=$null
  if ($Section -eq 'Native') {
-  $nativeDirectory=Get-Content (Join-Path $verificationRoot '.artifacts/WINDOWS-WPF-EVIDENCE.txt')
+  try{$nativeDirectory=Read-NativeEvidence $verificationRoot}catch{$report.suites+=@{flag=$flag;exit_code=$suiteExit;evidence_gap=$_.Exception.Message};Save-Report;throw}
   Copy-Item -LiteralPath (Join-Path $nativeDirectory 'WINDOWS-WPF.log') -Destination $suiteLog
  } else {Copy-Item -LiteralPath ($suiteLog+'.console') -Destination $suiteLog}
  $report.suites+=@{flag=$flag;command='dotnet '+$testAssembly+' '+$verificationRoot+' '+$flag;exit_code=$suiteExit;pass_count=@(Select-String -LiteralPath $suiteLog -Pattern '^PASS ').Count;log=Split-Path -Leaf $suiteLog;native_directory=$nativeDirectory};Save-Report

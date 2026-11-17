@@ -158,6 +158,7 @@ static class BackupSetDeliveryChecks
         var lockedBackup = Path.Combine(catalog, "locked.db"); await service.BackupAsync(lockedBackup); var lockedIdentity = ParcelRecovery.SetIdentity(lockedBackup);
         var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(Path.Combine(lockedBackup + ".recovery", "COMPLETED.json")));
         var held = Path.Combine(lockedBackup + ".recovery", manifest.Files.Keys.First());
+        if (OperatingSystem.IsWindows())
         using (new FileStream(held, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
             var locked = await service.DeleteBackupSetAsync(lockedBackup, lockedIdentity, null, default);

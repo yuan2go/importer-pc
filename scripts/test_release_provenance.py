@@ -54,6 +54,13 @@ class ReleaseProvenanceTests(unittest.TestCase):
     def test_wrong_branch_and_source_refused(self):
         with self.assertRaisesRegex(ValueError, 'same commit'):
             self.record('old-source')
+
+    def test_tag_does_not_impersonate_a_branch_and_same_named_tag_cannot_shadow_it(self):
+        self.git('tag', 'only-a-tag', self.source)
+        with self.assertRaisesRegex(ValueError, 'existing local branch'):
+            self.record('only-a-tag')
+        self.git('tag', 'main', self.first)
+        self.assertTrue(self.record('main')['SourceBranchVerified'])
         with self.assertRaisesRegex(ValueError, 'same commit'):
             capture(self.root, self.first, 'main', 'sportmaster', '1.4.1', 'win-x64')
         for label in ('https://private.invalid/token', 'main\nsecret', '-main'):
@@ -68,6 +75,7 @@ class ReleaseProvenanceTests(unittest.TestCase):
             self.assertIn(self.source, (directory / 'BUILD-INFO.txt').read_text())
 
     def test_english_filename_contains_version_without_commit(self):
+        self.assertEqual(installer_name('sportmaster', '1.0.0', True), 'CainiaoSupplyStation_SM_Test_Setup_v1.0.0_win-x64.exe')
         self.assertEqual(installer_name('sportmaster', '1.4.1'), 'CainiaoSupplyStation_SM_Setup_v1.4.1_win-x64.exe')
         self.assertNotIn(self.source[:8], installer_name('sportmaster', '1.4.1'))
         self.assertEqual(installer_name('direct-plc', '4.8.2'), 'CainiaoSupplyStation_DIRECTPLC_Setup_v4.8.2_win-x64.exe')

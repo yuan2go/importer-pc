@@ -109,11 +109,12 @@ public static partial class WindowsDeploymentSetup
         if (current is null) return null;
         var target = DeploymentNode(current); var first = DeploymentNode(original);
         if (first == target) return 0;
+        var successors = history.Select(e => (Previous: DeploymentNode(e.Previous), Next: DeploymentNode(e.Next)))
+            .ToLookup(e => e.Previous, e => e.Next, StringComparer.Ordinal);
         var seen = new HashSet<string>(StringComparer.Ordinal) { first }; var queue = new Queue<(string Node, int Distance)>(); queue.Enqueue((first, 0));
         while (queue.TryDequeue(out var item))
-            foreach (var edge in history.Where(e => DeploymentNode(e.Previous) == item.Node))
+            foreach (var next in successors[item.Node])
             {
-                var next = DeploymentNode(edge.Next);
                 if (next == target) return item.Distance + 1;
                 if (seen.Add(next)) queue.Enqueue((next, item.Distance + 1));
             }

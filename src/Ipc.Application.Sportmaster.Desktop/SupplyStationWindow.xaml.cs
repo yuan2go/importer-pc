@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
+using Ipc.Platform;
 
 namespace Ipc.Application.Sportmaster.Desktop;
 
@@ -28,6 +29,7 @@ public partial class SupplyStationWindow : Window
     public SupplyStationWindow(IParcelApplication application, string? view, string? layout, Func<Task>? stopOwner = null, SupplyStationWindow? owner = null)
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
+        TestInstallationLabel.Visibility = InstallationIdentity.IsTest ? Visibility.Visible : Visibility.Collapsed;
         ViewModel = new(application); DataContext = ViewModel; InitializePresentationFeedback(); this.stopOwner = stopOwner;
         InitializeAudio();
         ViewModel.RequestActivationAsync = RequestActivation;
@@ -200,10 +202,12 @@ public partial class SupplyStationWindow : Window
         var generation = ++closeGeneration;
         var affected = stopOwner is null ? new[] { this } : windows.ToArray();
         foreach (var window in affected) { if (window != this) window.closeGeneration++; window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
+        var ownerStopped = false;
         try
         {
             // Close cannot re-enter a native WPF Closing event even when every drain task is already complete.
             await System.Windows.Threading.Dispatcher.Yield();
+            await Task.WhenAll(affected.Select(x => (x.logs as SoftwareLogControl)?.SuspendAndDrainAsync() ?? Task.CompletedTask)).WaitAsync(TimeSpan.FromSeconds(5));
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;
@@ -220,7 +224,7 @@ public partial class SupplyStationWindow : Window
                 RestoreAfterClose(); return;
             }
             if (activationRequested || retentionRequested || offlineMaintenanceRequested) await ViewModel.RequireManagementModeAsync();
-            if (stopOwner is not null) await stopOwner();
+            if (stopOwner is not null) { await stopOwner(); ownerStopped = true; }
             if (activationRequested && ReopenOwnerAsync is not null) await ReopenOwnerAsync();
             if (retentionRequested && OpenRetentionOwnerAsync is not null) await OpenRetentionOwnerAsync();
             if (offlineMaintenanceRequested && OpenMaintenanceOwnerAsync is not null) await OpenMaintenanceOwnerAsync();
@@ -230,6 +234,13 @@ public partial class SupplyStationWindow : Window
         }
         catch (Exception ex)
         {
+            if (ownerStopped)
+            {
+                MessageBox.Show(this, "供包台已关闭，后续维护入口未能打开。请重新打开软件核对。", "维护入口未打开");
+                closeReady = true;
+                foreach (var child in affected.Where(x => x != this && !x.closed && windows.Contains(x))) { child.closeReady = true; child.Close(); }
+                Close(); return;
+            }
             ViewModel.Message = "停止未完成，仍持有资源：" + ex.Message;
             // The root owns recovery while it is draining the same child. A child
             // failure must not restart polling underneath an in-progress owner stop.
@@ -243,7 +254,7 @@ public partial class SupplyStationWindow : Window
             offlineMaintenanceRequested = false;
             closing = false;
             foreach (var window in affected.Where(x => !x.closed && windows.Contains(x)))
-            { window.closing = false; window.IsEnabled = true; window.timer.Start(); }
+            { window.closing = false; window.IsEnabled = true; (window.logs as SoftwareLogControl)?.ResumeAfterCancelledClose(); window.timer.Start(); }
         }
     }
 }

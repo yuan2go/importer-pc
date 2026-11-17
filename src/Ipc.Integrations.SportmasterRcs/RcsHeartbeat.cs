@@ -20,6 +20,7 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
     bool heartbeatResponseReceived;
     DateTimeOffset heartbeatReceivedAt, heartbeatValidUntil;
     internal TimeProvider HeartbeatTimeForVerification { get; set; } = TimeProvider.System;
+    internal TimeProvider HeartbeatScheduleForVerification { get; set; } = TimeProvider.System;
     string heartbeatEvidence = "RCS client stopped; upstream acceptance unconfirmed";
     StationVehicleState[] stationVehicles = [];
     static long lastHeartbeatId;
@@ -66,7 +67,7 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
             while (!stop.IsCancellationRequested)
             {
                 using var tick = CancellationTokenSource.CreateLinkedTokenSource(stop);
-                var delay = Task.Delay(options.HeartbeatIntervalMs, tick.Token);
+                var delay = Task.Delay(TimeSpan.FromMilliseconds(options.HeartbeatIntervalMs), HeartbeatScheduleForVerification, tick.Token);
                 var refresh = heartbeatRefresh.WaitAsync(tick.Token);
                 await Task.WhenAny(delay, refresh).ConfigureAwait(false);
                 tick.Cancel();
@@ -75,6 +76,8 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
                 stop.ThrowIfCancellationRequested();
                 if (!heartbeatSerial.Wait(0)) continue;
                 try { await SendHeartbeatCoreAsync(stop).ConfigureAwait(false); }
+                catch (OperationCanceledException) when (stop.IsCancellationRequested) { throw; }
+                catch (Exception error) { HeartbeatOwnerFailed(error); }
                 finally { heartbeatSerial.Release(); }
             }
         }
@@ -100,6 +103,8 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
         }
         catch (OperationCanceledException) when (linked.IsCancellationRequested && !token.IsCancellationRequested)
         { return RcsHeartbeatResult.Unavailable; }
+        catch (Exception error) when (error is not OperationCanceledException)
+        { HeartbeatOwnerFailed(error); return RcsHeartbeatResult.Failed; }
         finally
         {
             linked.Dispose();
@@ -108,6 +113,15 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
                 manualHeartbeatPending = false;
                 if (--active == 0) drained!.TrySetResult();
             }
+        }
+    }
+    void HeartbeatOwnerFailed(Exception error)
+    {
+        lock (lifecycle)
+        {
+            heartbeatResponseReceived = false; heartbeatValidUntil = default; stationVehicles = [];
+            heartbeatFailure = "RCS heartbeat owner failed: " + error;
+            heartbeatEvidence = "Heartbeat completion unconfirmed; no business request was repeated";
         }
     }
 
@@ -125,8 +139,10 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
         timeout.CancelAfter(TimeSpan.FromMilliseconds(3000));
         SmHeartbeatIntent? intent = null;
         var confirmation = new SmHeartbeatConfirmation(false, false, [], default, default);
+        var started = System.Diagnostics.Stopwatch.GetTimestamp();
         try
         {
+            await InstallationResourceBoundary.RequireRcsEndpointAsync(options.Endpoint, timeout.Token).ConfigureAwait(false);
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var requestId = NextHeartbeatId(timestamp);
             if (heartbeatOwner is { } owner)
@@ -155,17 +171,24 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
                 Content = new ByteArrayContent(Encoding.UTF8.GetBytes(body))
             };
             message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            confirmation = confirmation with { AttemptStartedAt = DateTimeOffset.UtcNow, Target = options.Endpoint.ToString(), RequestBody = body };
             using var response = await heartbeatClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
-            confirmation = confirmation with { HttpResponded = true };
-            if (!response.IsSuccessStatusCode) throw new HttpRequestException("HTTP " + (int)response.StatusCode);
+            confirmation = confirmation with { HttpResponded = true, HttpStatus = (int)response.StatusCode };
             var (bytes, complete) = await ReadBoundedAsync(response.Content, timeout.Token).ConfigureAwait(false);
+            confirmation = confirmation with
+            {
+                ResponseBody = Encoding.UTF8.GetString(bytes), ResponseBytes = bytes.Length,
+                ResponseComplete = complete, ReceivedAt = HeartbeatTimeForVerification.GetUtcNow()
+            };
             stop.ThrowIfCancellationRequested();
-            if (!complete) throw new InvalidDataException("Incomplete or oversized heartbeat response");
-            var receivedAt = HeartbeatTimeForVerification.GetUtcNow();
+            if (!complete) throw new InvalidDataException(timeout.IsCancellationRequested ? "Heartbeat response read timed out" :
+                bytes.Length > MaximumResponseBytes ? "Oversized heartbeat response" : "Incomplete heartbeat response");
+            if (!response.IsSuccessStatusCode) throw new HttpRequestException("HTTP " + (int)response.StatusCode);
+            var receivedAt = confirmation.ReceivedAt;
             var lifetime = TimeSpan.FromMilliseconds(Math.Max(3000, options.HeartbeatIntervalMs * 3L) + 3000);
             var vehicles = ReadHeartbeatVehicles(bytes, requestId, mapping, receivedAt, lifetime);
             var acknowledged = ValidHeartbeatConfirmation(bytes, requestId, mapping);
-            confirmation = new(true, acknowledged, vehicles, receivedAt, receivedAt + lifetime);
+            confirmation = confirmation with { ProtocolConfirmed = acknowledged, Vehicles = vehicles, ValidUntil = receivedAt + lifetime };
             if (!acknowledged) throw new InvalidDataException("Heartbeat protocol acknowledgement invalid");
             lock (lifecycle)
             {
@@ -179,6 +202,7 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
         }
         catch (Exception e) when (e is HttpRequestException or IOException or OperationCanceledException or InvalidDataException)
         {
+            confirmation = confirmation with { Failure = e is OperationCanceledException ? stop.IsCancellationRequested ? "Heartbeat stopped or cancelled" : "Heartbeat timed out" : e.Message };
             stop.ThrowIfCancellationRequested();
             lock (lifecycle)
             {
@@ -189,6 +213,7 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
         }
         finally
         {
+            confirmation = confirmation with { ElapsedMs = System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds };
             if (intent is not null && heartbeatOwner is { } owner)
                 await owner.CompleteHeartbeatAsync(intent, confirmation).ConfigureAwait(false);
         }

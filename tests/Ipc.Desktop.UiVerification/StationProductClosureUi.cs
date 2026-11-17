@@ -21,7 +21,7 @@ static partial class Program
         { for (var i = 0; i < 300; i++) { await Flush(); if (ready()) return; await Task.Delay(25); } throw new TimeoutException("PC21 native state"); }
         await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "pc21"), deferred: true);
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
-        var window = new SupplyStationWindow(h.App, null, "standard"); window.Show(); await Until(() => window.ViewModel.Fresh);
+        var window = new SupplyStationWindow(h.App, null, "standard"); await using var windowOwner = new NativeWindowOwner(window); window.Show(); await Until(() => window.ViewModel.Fresh);
         async Task ClickReady(string label)
         {
             // RunAsync retains ownership through its final snapshot refresh. A page can
@@ -88,7 +88,7 @@ static partial class Program
         var model = draft.CreateParameterEditor((p, codes) => Task.FromResult(BarcodeFiltering.Select(p, codes)));
         var editor = new ParameterSettingsControl { FirstConfiguration = true, Model = model };
         var client = new Grid(); client.Children.Add(editor);
-        var first = new Window { Content = client, Width = 1100, Height = 740 }; first.Show(); await Flush();
+        var first = new Window { Content = client, Width = 1100, Height = 740 }; await using var firstOwner = new NativeWindowOwner(first); first.Show(); await Flush();
         try
         {
             var steps = Descendants(first).OfType<Button>().Where(c => AutomationProperties.GetName(c).StartsWith("首次配置第", StringComparison.Ordinal)).ToArray();

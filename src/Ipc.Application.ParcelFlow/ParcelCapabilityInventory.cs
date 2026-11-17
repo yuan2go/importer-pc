@@ -23,8 +23,10 @@ public static partial class ParcelConfigurationRules
         {
             if (inventory.Select(b => b.InstanceId).Distinct(StringComparer.Ordinal).Count() != inventory.Length)
                 errors.Add("Capability inventory identities must be unique before deduplication");
-            var originals = inventory.Select(b => Wire.Encode(b)).ToHashSet(StringComparer.Ordinal);
-            if (roles.Any(role => !originals.Contains(Wire.Encode(role))))
+            static string Canonical(CapabilityBinding binding) => Wire.Encode(binding with
+            { Parameters = binding.Parameters?.OrderBy(p => p.Key, StringComparer.Ordinal).ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal)! });
+            var originals = inventory.Select(Canonical).ToHashSet(StringComparer.Ordinal);
+            if (roles.Any(role => !originals.Contains(Canonical(role))))
                 errors.Add("Capability inventory must contain each complete authoritative role binding");
         }
         var deployment = configuration.Extensions;

@@ -86,11 +86,14 @@ def collect(args):
                     if len(raw) > 16 * 1024 * 1024:
                         raise ValueError('Progress size quota')
                     snapshot = json.loads(raw.decode('utf-8-sig'))
-                    if not isinstance(snapshot.get('Progress'), dict):
+                    if not isinstance(snapshot, dict) or not isinstance(snapshot.get('Progress'), dict):
                         raise ValueError('Invalid progress envelope')
+                    # Reject NaN/Infinity, including exponent overflow, before
+                    # attaching data to the serializable collector-error record.
+                    json.dumps(snapshot, allow_nan=False)
                     entry.update(SnapshotSha256=hashlib.sha256(raw).hexdigest(), Snapshot=snapshot)
                     count += 1
-                except (OSError, ValueError, UnicodeError) as error:
+                except (OSError, ValueError, UnicodeError, RecursionError) as error:
                     entry['ReadError'] = type(error).__name__
                     errors += 1  # Never substitute the previous snapshot as a fresh sample.
                 entry['CollectorReadMs'] = (time.perf_counter() - before) * 1000
@@ -235,11 +238,15 @@ class Analysis:
             old = self.connections.get(key)
             if old is None and any(k[:2] == key[:2] for k in self.connections):
                 self.issues['CAMERA_EPOCH_CHANGED'] += 1
-            baseline = initial and old is None
-            if old is not None or not baseline:
+            baseline = old is None
+            sample_clock = ('runtime', p['RuntimeElapsedMs'] / 1000) if 'RuntimeElapsedMs' in p else ('wall', timestamp(p['At']))
+            connection_duration = None
+            if old and old.get('_Clock', (None,))[0] == sample_clock[0]:
+                connection_duration = sample_clock[1] - old['_Clock'][1]
+            if old is not None:
                 delta = {}
                 for name in COUNTERS:
-                    if name not in a:
+                    if name not in a or name not in old:
                         continue
                     value = a[name] - (old.get(name, 0) if old else 0)
                     if value < 0:
@@ -248,10 +255,11 @@ class Analysis:
                     delta[name] = value
                     self.counters[position][name] += value
                 activity[position] = delta.get('Frames', 0) > 0
-                if duration and old:
-                    self.metric(position, 'CaptureFramesPerSecond', delta.get('Frames', 0) / duration)
-                    self.metric(position, 'DecodeFramesPerSecond', delta.get('DecodeCompleted', 0) / duration)
+                if connection_duration and connection_duration > 0:
+                    self.metric(position, 'CaptureFramesPerSecond', delta.get('Frames', 0) / connection_duration)
+                    self.metric(position, 'DecodeFramesPerSecond', delta.get('DecodeCompleted', 0) / connection_duration)
             self.connections[key] = {name: a[name] for name in COUNTERS if name in a}
+            self.connections[key]['_Clock'] = sample_clock
             self.connections[key]['Performance'] = dict(Acquisition=dict(FrameTraceCount=
                 ((perf.get('Acquisition') or {}).get('FrameTraceCount', 0))))
             if a.get('Failure') or a.get('State') == 'Faulted':
@@ -275,6 +283,7 @@ class Analysis:
                     prior = self.stage_totals.get(stage_key)
                     if prior and (values['Count'] < prior[1]['Count'] or values['TotalMs'] < prior[1]['TotalMs']):
                         self.issues['STAGE_COUNTER_RESET'] += 1
+                        prior = (dict(values), values)
                     first = values if baseline else dict(Count=0, TotalMs=0)
                     self.stage_totals[stage_key] = (prior[0] if prior else first, values)
             if baseline:

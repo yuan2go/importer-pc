@@ -250,12 +250,16 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         var metadata = new CameraFrameMetadata(id, work.Session, f.DeviceId, f.Epoch, f.FrameNumber, f.CapturedAt, f.Width, f.Height,
             f.Symbols, f.DecodeMilliseconds, f.ObservationId, f.SourceEventId, f.IsolatedSessionId, Convert.ToHexString(SHA256.HashData(f.OriginalGray8)), true, "原始Mono8；无损压缩，识别增强不改变此原件",
             VideoFramesSkippedBefore: f.VideoFramesSkippedBefore, PhysicalSerial: f.PhysicalSerial, DeviceAddress: f.DeviceAddress);
+        var published = false; var committed = false; var temporaryOwned = false;
+        try
+        {
         using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None, 65536, FileOptions.WriteThrough))
         {
+            temporaryOwned = true;
             using (var compressor = new BrotliStream(stream, CompressionLevel.Fastest, leaveOpen: true)) compressor.Write(f.OriginalGray8);
             stream.Flush(true);
         }
-        File.Move(temporary, target, overwrite: false); var size = new FileInfo(target).Length;
+        File.Move(temporary, target, overwrite: false); published = true; var size = new FileInfo(target).Length;
         var compressedHash = Wire.FileHash(target); var body = Wire.Encode(metadata);
         using var tx = db.BeginTransaction();
         using (var c = db.CreateCommand())
@@ -266,8 +270,25 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
             c.Parameters.AddWithValue("$image", name); c.Parameters.AddWithValue("$imageHash", compressedHash); c.Parameters.AddWithValue("$size", size); c.ExecuteNonQuery();
         }
         tx.Commit();
+        committed = true;
         imageBytes += size; imageCount++;
         EnforceImageBudget(Math.Min(2L * 1024 * 1024 * 1024, (long)s.Command.Limits.ImageMiB * 1024 * 1024));
+        }
+        catch (Exception error)
+        {
+            try
+            {
+                if (temporaryOwned) File.Delete(temporary);
+                if (published && !committed)
+                {
+                    using var existing = db.CreateCommand(); existing.CommandText = "SELECT count(*) FROM frames WHERE image=$image";
+                    existing.Parameters.AddWithValue("$image", name);
+                    if ((long)existing.ExecuteScalar()! == 0) File.Delete(target);
+                }
+            }
+            catch (Exception cleanup) { throw new AggregateException("诊断原图写入及残件清理未完成，保留原因。", error, cleanup); }
+            throw;
+        }
     }
     void EnforceImageBudget(long budget)
     {

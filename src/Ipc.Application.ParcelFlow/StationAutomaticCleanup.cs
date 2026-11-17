@@ -76,7 +76,7 @@ public sealed partial class ParcelRuntime
                 if (automaticCleanup is null || string.IsNullOrWhiteSpace(automaticCleanup.State) || automaticCleanup.NextCheck == default)
                     throw new InvalidDataException("自动清理状态缺少必要字段，保留原件");
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
+            catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
             {
                 cleanupStateFault = true;
                 automaticCleanup = new("维护状态待核对", null, now.AddMinutes(15), "自动清理已停止，原状态文件保留。" + DiagnosticText.Protect(error.Message));

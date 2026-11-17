@@ -14,6 +14,8 @@ if (-not $testPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Admini
 }
 $SourceApp = (Resolve-Path -LiteralPath $SourceApp).Path
 $Output = [IO.Path]::GetFullPath($Output)
+if ($Output.TrimEnd('\','/') -eq [IO.Path]::GetPathRoot($Output).TrimEnd('\','/')) { throw 'Choose an evidence subdirectory, not a drive root.' }
+$Output=$Output.TrimEnd('\','/')
 if (-not $Output.StartsWith('D:\', [StringComparison]::OrdinalIgnoreCase)) { throw 'Use a new D-drive evidence directory.' }
 if (Test-Path -LiteralPath $Output) { throw 'Output must be a new directory; original evidence is never overwritten.' }
 if ($VerificationExecutable) {

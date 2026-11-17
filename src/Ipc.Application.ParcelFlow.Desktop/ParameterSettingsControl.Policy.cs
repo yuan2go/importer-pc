@@ -288,19 +288,20 @@ public sealed partial class ParameterSettingsControl
         var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent };
         var result = Text("尚未测试"); var test = new Button { Content = "测试规则", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 8, 0, 4) };
         bool tested = false;
-        void Invalidate() { if (tested) result.Text = "输入已改变，原测试结果已过期；请重新测试。"; }
+        void Invalidate() { diagnostic.Clear(); if (tested) result.Text = "输入已改变，原测试结果已过期；请重新测试。"; }
         sample.TextChanged += (_, _) => Invalidate();
         PropertyChangedEventHandler handler = (_, e) => { if (e.PropertyName is "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator") Invalidate(); };
         m.Policy.PropertyChanged += handler; unsubscribe.Add(() => m.Policy.PropertyChanged -= handler);
         test.Click += async (_, _) =>
         {
-            var policy = m.Policy.BuildBarcodePolicy(); var raw = sample.Text; test.IsEnabled = false; result.Text = "正在测试…"; tested = true;
+            var policy = m.Policy.BuildBarcodePolicy(); var raw = sample.Text; test.IsEnabled = false; diagnostic.Clear(); result.Text = "正在测试…"; tested = true;
             try
             {
                 var reply = await Task.Run(() => m.Preview(policy, raw.Replace("\r", "").Split('\n')));
                 result.Text = m.Policy.BuildBarcodePolicy() != policy || sample.Text != raw ? "输入已改变，本次测试结果已过期；请重新测试。" :
                     ChineseInterfaceText.Status(reply.Outcome) + "\n选中码：" + (reply.SelectedCode ?? "无") + " · 有效条码：" + reply.Matches;
-                diagnostic.Text = ChineseInterfaceText.ParameterMessage(reply.Detail) + string.Concat((reply.Candidates ?? []).Select(c => "\n第" + (c.Index + 1) + "项：" + ChineseInterfaceText.ParameterMessage(c.Reason)));
+                if (m.Policy.BuildBarcodePolicy() == policy && sample.Text == raw)
+                    diagnostic.Text = ChineseInterfaceText.ParameterMessage(reply.Detail) + string.Concat((reply.Candidates ?? []).Select(c => "\n第" + (c.Index + 1) + "项：" + ChineseInterfaceText.ParameterMessage(c.Reason)));
             }
             catch (Exception ex) { result.Text = ChineseInterfaceText.ParameterMessage(ex.Message, "测试未完成，输入保留；请检查条码筛选规则后重试。"); }
             finally { test.IsEnabled = true; }

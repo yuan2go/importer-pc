@@ -17,7 +17,7 @@ internal sealed partial class SoftwareDecoder
         var length = Math.Sqrt(dx * dx + dy * dy);
         if (length < 8) return false;
         const int count = 128;
-        SpendPatternSamples(count * 9);
+        SpendPatternSamples(count * 10);
         Span<double> reference = stackalloc double[count];
         var mean = 0d; var variance = 0d;
         for (var i = 0; i < count; i++) { var t = (i + .5) / count; reference[i] = Sample(pixels, width, height, x0 + dx * t, y0 + dy * t); mean += reference[i]; }
@@ -55,7 +55,6 @@ internal sealed partial class SoftwareDecoder
         var baseline = Math.Sqrt(Math.Pow((p[1].X + p[2].X - p[0].X - p[3].X) / 2d, 2) + Math.Pow((p[1].Y + p[2].Y - p[0].Y - p[3].Y) / 2d, 2));
         if (!IsLinear(symbol.Format) || bandHeight < 8) return [symbol];
         if (bandHeight > 4096) throw new MvsFrameRejection("PatternBandLimit", "Printed-band height exceeds bounded verification; complete frame rejected");
-        SpendPatternSamples(((int)Math.Ceiling(bandHeight) + 6) * 128);
         var runs = BandRuns(p, bandHeight, pixels, width, height) ?? throw new MvsFrameRejection("UnprovenLinearBand", "Linear result has no original-pixel pattern evidence; frame rejected");
         if (runs.Count == 0) throw new MvsFrameRejection("UnprovenLinearBand", "No continuous two-line original barcode pattern; frame rejected");
         ImagePoint Along(ImagePoint top, ImagePoint bottom, double t) => new((int)Math.Round(top.X + (bottom.X - top.X) * t), (int)Math.Round(top.Y + (bottom.Y - top.Y) * t));
@@ -73,8 +72,9 @@ internal sealed partial class SoftwareDecoder
     }
     // Continuous runs (fractions across the box, top to bottom) of scanlines that repeat the box's clearest bar
     // pattern; null when no scanline shows a bar pattern at all.
-    static List<(double First, double Last)>? BandRuns(ImagePoint[] p, double bandHeight, byte[] pixels, int width, int height)
+    List<(double First, double Last)>? BandRuns(ImagePoint[] p, double bandHeight, byte[] pixels, int width, int height)
     {
+        SpendPatternSamples(((int)Math.Ceiling(bandHeight) + 6) * 128);
         const int count = 128;
         Span<double> reference = stackalloc double[count]; Span<double> line = stackalloc double[count];
         void Signature(double t, Span<double> values)
@@ -139,7 +139,7 @@ internal sealed partial class SoftwareDecoder
         all.Insert(insertion, representative);
         if (all.Count >= CandidateLimit) throw new MvsFrameRejection("CandidateLimit", "Combined candidate limit reached; complete frame rejected");
     }
-    bool SamePrintedRegion(RecognitionSymbol a, RecognitionSymbol b, byte[] pixels, int width, int height)
+    bool SamePrintedRegion(RecognitionSymbol a, RecognitionSymbol b, byte[] pixels, int width, int height, bool adjacentLines = false)
     {
         static (double X, double Y) Mid(ImagePoint a, ImagePoint b) => ((a.X + b.X) / 2d, (a.Y + b.Y) / 2d);
         var a0 = Mid(a.Corners[0], a.Corners[3]); var a1 = Mid(a.Corners[1], a.Corners[2]);
@@ -234,7 +234,7 @@ internal sealed partial class SoftwareDecoder
                 // Native start/stop endpoints identify the same encoded extent,
                 // even when one pass reports an axis-aligned scan line. Match
                 // corresponding module fractions, then inspect the pixels between.
-                var bt = t / size;
+                var bt = (t - Along(b0)) / (Along(b1) - Along(b0));
                 var ax = a0.X + dx * t; var ay = a0.Y + dy * t;
                 var value = Sample(pixels, width, height, ax * (1 - f) + (b0.X + (b1.X - b0.X) * bt) * f,
                     ay * (1 - f) + (b0.Y + (b1.Y - b0.Y) * bt) * f);
@@ -247,7 +247,7 @@ internal sealed partial class SoftwareDecoder
             // Nested bands can use slightly different native start/stop extents.
             // Adjacent source lines preserve pattern continuity without accumulated
             // phase drift, while still rejecting every quiet gap between labels.
-            if (nested) { nextLine.CopyTo(reference); mean = sum / samples; variance = otherVariance; }
+            if (nested || adjacentLines) { nextLine.CopyTo(reference); mean = sum / samples; variance = otherVariance; }
         }
         return true;
     }

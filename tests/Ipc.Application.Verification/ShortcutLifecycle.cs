@@ -195,23 +195,23 @@ static class ShortcutLifecycle
             var outside = Directory.CreateDirectory(Path.Combine(directory, "outside")).FullName;
             var sentinel = Path.Combine(outside, "keep.txt"); File.WriteAllText(sentinel, "keep"); var hash = Wire.FileHash(sentinel);
             var junction = Path.Combine(directory, "junction");
-            void Junction(string path)
+            string? createdLeaf = null; var createdJunction = false;
+            try
             {
-                var start = new System.Diagnostics.ProcessStartInfo("cmd.exe") { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
-                foreach (var argument in new[] { "/c", "mklink", "/J", path, outside }) start.ArgumentList.Add(argument);
-                using var process = System.Diagnostics.Process.Start(start)!;
-                var output = process.StandardOutput.ReadToEnd(); var error = process.StandardError.ReadToEnd(); process.WaitForExit();
-                if (process.ExitCode != 0) throw new Exception("Junction fixture creation failed: " + output + error);
-            }
-            Junction(junction);
+            JunctionFixture.Create(junction, outside); createdJunction = true;
             Reject(() => DeploymentShortcuts.Create(location, menu, junction), "create refuses a reparse ancestor");
             Reject(() => DeploymentShortcuts.Remove(location, menu, junction), "uninstall refuses a reparse ancestor");
             var desktop = Directory.CreateDirectory(Path.Combine(directory, "桌面")).FullName;
-            var leaf = DeploymentShortcuts.Plan(location, menu, desktop).Single().Path; Junction(leaf);
+            var leaf = DeploymentShortcuts.Plan(location, menu, desktop).Single().Path; JunctionFixture.Create(leaf, outside); createdLeaf = leaf;
             Reject(() => DeploymentShortcuts.Create(location, menu, desktop), "create refuses a reparse leaf");
             Reject(() => DeploymentShortcuts.Remove(location, menu, desktop), "uninstall refuses a reparse leaf");
             Check(Wire.FileHash(sentinel) == hash && Directory.GetFileSystemEntries(outside).Length == 1, "path guards preserve outside inventory");
-            Directory.Delete(leaf); Directory.Delete(junction); // Delete only the two fixture junction objects, never their targets.
+            }
+            finally
+            {
+                try { if (createdLeaf is not null) Directory.Delete(createdLeaf); }
+                finally { if (createdJunction) Directory.Delete(junction); }
+            }
         });
         Scenario("resource-and-apartment", directory =>
         {
@@ -238,7 +238,7 @@ static class ShortcutLifecycle
             }
             Batch();
             using var process = System.Diagnostics.Process.GetCurrentProcess(); var before = process.HandleCount;
-            Batch(); var after = process.HandleCount;
+            Batch(); process.Refresh(); var after = process.HandleCount;
             Check(after <= before + 8, $"100 success/load-failure/save-failure loops release files without forced GC; process handles {before}->{after}");
             Exception? failure = null;
             var thread = new Thread(() => { try { Batch(); } catch (Exception error) { failure = error; } }) { IsBackground = true };

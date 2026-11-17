@@ -53,8 +53,9 @@ public static partial class ParcelRecovery
             if (!ExtensionSchema.IsHash(file.Value) || !File.Exists(RecoveryFiles.Resolve(recovery, file.Key)) || Wire.FileHash(RecoveryFiles.Resolve(recovery, file.Key), token) != file.Value)
                 throw new InvalidDataException("Recovery custody file missing/changed/unsafe: " + file.Key);
         }
-        var actual = RecoveryFiles.Inventory(recovery, token);
-        if (!actual.Keys.Order(StringComparer.Ordinal).SequenceEqual(manifest.Files.Keys.Order(StringComparer.Ordinal))) throw new InvalidDataException("Recovery custody file set changed");
+        var actual = RecoveryFiles.Enumerate(recovery, null, false, token).Where(n => n != "COMPLETED.json").ToArray();
+        RecoveryFiles.ValidateNames(recovery, actual, token);
+        if (!actual.Order(StringComparer.Ordinal).SequenceEqual(manifest.Files.Keys.Order(StringComparer.Ordinal))) throw new InvalidDataException("Recovery custody file set changed");
         using (var rounds = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder
         { DataSource = new Uri(source).AbsoluteUri + "?immutable=1", Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
         {
@@ -75,6 +76,8 @@ public static partial class ParcelRecovery
     {
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Checking);
         var source = Path.GetFullPath(databaseBackup); var target = Path.GetFullPath(newApplicationDirectory);
+        InstallationIdentity.RequireExternalFilePath(source);
+        InstallationIdentity.RequireIndependentPath(target);
         if (File.Exists(target)) throw new IOException("恢复目标被文件占用，原件保留。");
         using var sourceOwner = HoldBackupSet(source);
         var manifest = VerifyBackup(source, authority, token);
@@ -86,6 +89,7 @@ public static partial class ParcelRecovery
             Directory.GetParent(target)?.Parent?.Name != config.Effective.Mode.ToString() ||
             config.Pending is { } pending && (pending.ApplicationId != config.Effective.ApplicationId || pending.StationId != config.Effective.StationId || pending.Mode != config.Effective.Mode))
             throw new InvalidDataException("Original application/mode/directory identity must be preserved");
+        InstallationIdentity.RequireDataRoot(Directory.GetParent(target)!.Parent!.Parent!.FullName);
         RecoveryFiles.RequireOrdinaryAncestors(target);
         var expected = manifest.Files.ToDictionary(f => f.Key, f => f.Value, StringComparer.Ordinal);
         expected.Add(manifest.Application + ".db", manifest.DatabaseHash);

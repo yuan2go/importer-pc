@@ -42,8 +42,8 @@ public sealed class ObservationSession(IControlledObservationSource source)
                     if (registration != Epoch) return;
                     previous = Health;
                     Volatile.Write(ref health, new(h.DeviceId, h.Epoch, sequence, h.Health, h.ConfirmedAt, h.ConfirmedAt, h.ValidUntil, h.Source));
+                    if (previous is null || previous.Health != h.Health || previous.Epoch != h.Epoch) onHealthChanged?.Invoke(h);
                 }
-                if (previous is null || previous.Health != h.Health || previous.Epoch != h.Epoch) onHealthChanged?.Invoke(h);
             }
         }, token);
     }

@@ -61,7 +61,7 @@ def analyze(root: Path, results: Path):
                             number, hits = int(point['Line']), int(point['Hits'])
                             if number < 0 or hits < 0:
                                 raise ValueError('Invalid collector branch record')
-                            key = '|'.join(map(str, [name, identity, normalized, classname, method_name, point['Offset'], point['Path'], point['EndOffset'], point['Ordinal'], number]))
+                            key = '|'.join(map(str, [name, identity, source or normalized, classname, method_name, point['Offset'], point['Path'], point['EndOffset'], point['Ordinal'], number]))
                             points = inventory[source]['branches'] if source else unmapped
                             existing = points.get(key)
                             if source:
@@ -97,7 +97,7 @@ def main():
     if executions_file.exists():
         executions = json.loads(executions_file.read_text(encoding='utf-8-sig'))
         result['executions'] = executions if isinstance(executions, list) else [executions]
-        result['regressionsPassed'] = all(e['exitCode'] == 0 for e in result['executions'])
+        result['regressionsPassed'] = all(e['exitCode'] == 0 and e.get('nativeEvidenceValid', True) for e in result['executions'])
     source_file = args.results / 'source.json'
     if source_file.exists():
         result['sourceState'] = json.loads(source_file.read_text(encoding='utf-8-sig'))

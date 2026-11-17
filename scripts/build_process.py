@@ -3,6 +3,7 @@ import ctypes
 import os
 import signal
 import subprocess
+import sys
 import time
 
 
@@ -99,9 +100,15 @@ def run(command, cwd=None):
             try:
                 job.assign(process)
                 job.resume(process)
-            except BaseException:
+            except BaseException as original:
                 # Assignment failure must not continue with unowned work.
-                subprocess.run(['taskkill', '/PID', str(process.pid), '/T', '/F'], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                # It is still suspended and cannot have spawned descendants. Use
+                # our existing process handle rather than a second program/PID lookup.
+                try:
+                    process.kill()
+                    process.wait(timeout=5)
+                except BaseException as cleanup:
+                    raise BaseExceptionGroup('Compiler ownership failed and direct termination was not confirmed', [original, cleanup])
                 raise
         # A Windows console break sets a Python handler pending; an infinite
         # native wait would defer it until the compiler exits. Bound each wait
@@ -115,17 +122,47 @@ def run(command, cwd=None):
         if code:
             raise subprocess.CalledProcessError(code, command)
     finally:
+        original = sys.exception()
+        failures = []
         # A process may spawn grandchildren. Terminate its entire owned group/job
         # even when the immediate process has already exited unsuccessfully.
         if job:
-            job.close()
+            try: job.close()
+            except BaseException as error: failures.append(error)
         elif process:
-            try: os.killpg(process.pid, signal.SIGTERM)
-            except ProcessLookupError: pass
-            deadline = time.monotonic() + 2
-            while process.poll() is None and time.monotonic() < deadline:
-                time.sleep(.02)
-            try: os.killpg(process.pid, signal.SIGKILL)
-            except ProcessLookupError: pass
+            try:
+                def active_group():
+                    try: os.killpg(process.pid, 0)
+                    except ProcessLookupError: return False
+                    # An adopted zombie has no execution or file ownership to
+                    # drain; Linux PID 1 is outside this tool's reap authority.
+                    if sys.platform.startswith('linux'):
+                        found = False
+                        for name in os.listdir('/proc'):
+                            if not name.isdigit(): continue
+                            try:
+                                with open('/proc/' + name + '/stat') as status:
+                                    fields = status.read().rsplit(')', 1)[1].split()
+                            except (FileNotFoundError, ProcessLookupError): continue
+                            if int(fields[2]) != process.pid: continue
+                            found = True
+                            if fields[0] not in ('Z', 'X'): return True
+                        if found: return False
+                    return True
+                try: os.killpg(process.pid, signal.SIGTERM)
+                except ProcessLookupError: pass
+                deadline = time.monotonic() + 2
+                while active_group() and time.monotonic() < deadline: time.sleep(.02)
+                try: os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError: pass
+                deadline = time.monotonic() + 5
+                while active_group():
+                    if time.monotonic() >= deadline:
+                        raise TimeoutError('Compiler process-group termination is not confirmed')
+                    time.sleep(.02)
+            except BaseException as error: failures.append(error)
         if process:
-            process.wait()
+            try: process.wait(timeout=5)
+            except BaseException as error: failures.append(error)
+        if failures:
+            raise BaseExceptionGroup('Compiler cleanup failed', ([original] if original else []) + failures)

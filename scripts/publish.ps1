@@ -12,6 +12,7 @@ $ErrorActionPreference='Stop'
 Set-Location (Join-Path $PSScriptRoot '..')
 # One packaging authority for dependency closure, exact inventory and provenance.
 if ($Composition -in @('sportmaster-reference','direct-plc-reference','wcs-to-plc-reference')) {
+    if ($NoRestore) { throw '-NoRestore is not supported by Application packaging; no publication started.' }
     if ($Mode -ne 'Simulation') { throw 'Production Application capabilities are not approved' }
     & python3 scripts/package-application.py --application ($Composition -replace '-reference$','') --target win-x64 --output $Output
     if ($LASTEXITCODE -ne 0) { throw "Application publication failed ($LASTEXITCODE)" }

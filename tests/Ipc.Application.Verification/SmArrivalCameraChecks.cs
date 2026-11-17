@@ -36,17 +36,17 @@ internal static class SmArrivalCameraChecks
             source.CalibrateEmptyTray();
             for (var sample = 0; sample < 19; sample++)
             {
-                var before = api.Acquires;
+                var before = h.Handled(h.Left); var targetFrame = frame;
                 if (native) api.EnqueueNative(empty, frame++, []); else api.Enqueue(empty, frame++);
-                await CameraRoundHarness.Until(() => Task.FromResult(api.Acquires > before && api.Releases == api.Acquires));
+                await h.WaitFrameAsync(h.Left, targetFrame, before);
                 await Task.Delay(100);
             }
             Check(source.ReadDiagnostics().TrayPresenceModel?.Calibrated == true, "actual stable frame span teaches a static reference: " + Wire.Encode(source.ReadDiagnostics().TrayPresenceModel));
             var reference = source.ReadDiagnostics().TrayPresenceModel!.ReferenceSha256;
             for (var sample = 0; sample < 3; sample++)
             {
-                var before = api.Acquires; Queue();
-                await CameraRoundHarness.Until(() => Task.FromResult(api.Acquires > before && api.Releases == api.Acquires));
+                var before = h.Handled(h.Left); var targetFrame = frame; Queue();
+                await h.WaitFrameAsync(h.Left, targetFrame, before);
                 await Task.Delay(70);
             }
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1));
@@ -61,10 +61,10 @@ internal static class SmArrivalCameraChecks
             using var acquireEntered = new ManualResetEventSlim(false);
             using var acquireRelease = new ManualResetEventSlim(false);
             api.BeforeAcquireReturn = () => { acquireEntered.Set(); acquireRelease.Wait(); };
-            Queue();
-            Check(acquireEntered.Wait(TimeSpan.FromSeconds(5)), "old SDK frame is borrowed at vehicle change: native=" + native);
             try
             {
+                Queue();
+                Check(acquireEntered.Wait(TimeSpan.FromSeconds(5)), "old SDK frame is borrowed at vehicle change: native=" + native);
                 await Arrive("CAMERA-B");
                 var s = await h.App.SnapshotAsync();
                 Check(s.Rounds.All(r => r.PositionId != "left") && s.Positions!.Single(p => p.Id == "left").Arrival is { CameraBoundaryReady: false },
@@ -107,9 +107,9 @@ internal static class SmArrivalCameraChecks
                 using var decoding = new ManualResetEventSlim(false);
                 using var release = new ManualResetEventSlim(false);
                 h.Factory.Decoders[h.Left].BeforeDecode = () => { decoding.Set(); release.Wait(); };
-                Queue(); Check(decoding.Wait(TimeSpan.FromSeconds(5)), "old software decoder owns an active result");
                 try
                 {
+                    Queue(); Check(decoding.Wait(TimeSpan.FromSeconds(5)), "old software decoder owns an active result");
                     await Arrive("CAMERA-C");
                     Check(!(await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival!.CameraBoundaryReady,
                         "new camera boundary awaits actual old decode completion");
@@ -129,9 +129,9 @@ internal static class SmArrivalCameraChecks
             {
                 for (var i = 0; i < count; i++)
                 {
-                    var before = api.Acquires;
+                    var before = h.Handled(h.Left); var targetFrame = frame;
                     if (native) api.EnqueueNative(pixels, frame++, nativeCodes); else api.Enqueue(pixels, frame++);
-                    await CameraRoundHarness.Until(() => Task.FromResult(api.Acquires > before && api.Releases == api.Acquires));
+                    await h.WaitFrameAsync(h.Left, targetFrame, before);
                     await Task.Delay(100);
                 }
             }
@@ -188,6 +188,21 @@ internal static class SmArrivalCameraChecks
             var output = Path.Combine(root, native ? "continuous-native-performance.json" : "continuous-software-performance.json");
             ExtensionStore.AtomicWrite(output, measurement);
             Console.WriteLine("MEASURE " + output + " " + Wire.Encode(measurement.CaptureToDurableResultMs));
+
+            // A refusal must not close acquisition/decoding for later parcels.
+            // Exercise actual images through each supported acquisition route.
+            await Frames(empty, [], 11); await Ready();
+            h.Peer.Mode = "reject";
+            await Frames(barcode, symbols, 8);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left").RcsOutcome == "Rejected");
+            var refused = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
+            await Frames(empty, [], 11); await Ready();
+            h.Peer.Mode = "assigned";
+            await Frames(barcode, symbols, 8);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left").RcsOutcome == "Accepted");
+            var next = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
+            Check(h.Peer.Requests.Count == 37 && next.Id != refused.Id && next.ArrivalGeneration == refused.ArrivalGeneration,
+                "refusal then real empty tray and replacement restore actual decoding and exactly one next HTTP without toggling or changing car: native=" + native);
         }
     }
 }

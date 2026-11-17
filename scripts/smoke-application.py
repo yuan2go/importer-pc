@@ -90,7 +90,10 @@ def run(evidence):
     management_password = uuid.uuid4().hex
 
     def start():
-        process = subprocess.Popen([a.dotnet, str(root / 'app/Ipc.Assembly.dll'), '--config', str(config), '--data-root', str(data)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        stderr_path = data / ('application-stderr-' + uuid.uuid4().hex + '.log')
+        with stderr_path.open('xb') as stderr_file:
+            process = subprocess.Popen([a.dotnet, str(root / 'app/Ipc.Assembly.dll'), '--config', str(config), '--data-root', str(data)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=stderr_file, text=True)
+        process.ipc_stderr_path = stderr_path
         messages = queue.Queue()
         def read():
             buffer = ''; decoder = json.JSONDecoder()
@@ -107,7 +110,7 @@ def run(evidence):
         except BaseException:
             if process.poll() is None: process.kill()
             process.wait(timeout=10)
-            evidence.event(dict(Status='StartupFailed', ExitCode=process.returncode, Stderr=process.stderr.read()))
+            evidence.event(dict(Status='StartupFailed', ExitCode=process.returncode, Stderr=process.ipc_stderr_path.read_text(encoding='utf-8', errors='replace')))
             raise
         return process, messages
 
@@ -117,7 +120,7 @@ def run(evidence):
             return messages.get(timeout=10)
         except queue.Empty:
             if process.poll() is not None:
-                raise RuntimeError('Application terminated with exit '+str(process.returncode)+': '+process.stderr.read())
+                raise RuntimeError('Application terminated with exit '+str(process.returncode)+': '+process.ipc_stderr_path.read_text(encoding='utf-8', errors='replace'))
             raise TimeoutError('Application did not return a command/snapshot response within 10 seconds')
 
     def authorize(process, messages, configure=False):
@@ -130,7 +133,7 @@ def run(evidence):
 
     def stop(process):
         process.stdin.write('quit\n'); process.stdin.flush(); process.wait(timeout=15)
-        if process.returncode: raise ValueError('Stop failed: ' + process.stderr.read())
+        if process.returncode: raise ValueError('Stop failed: ' + process.ipc_stderr_path.read_text(encoding='utf-8', errors='replace'))
 
     evidence.bind(root, identity, json.loads((config / 'business.json').read_bytes()))
     if peer_evidence: evidence.event(peer_evidence)
@@ -169,7 +172,7 @@ def run(evidence):
                 snapshot = send(process, messages, 'snapshot')
                 if len(snapshot['Operations']) == 2 and all(op['State'] == 'SlotResolved' for op in snapshot['Operations']): break
                 time.sleep(.05)
-            if {op.get('PositionId') for op in snapshot['Operations']} != {'left', 'right'} or any(op['Plc'] for op in snapshot['Operations']): raise ValueError('Packaged dual-position flow incomplete')
+            if len(snapshot['Operations']) != 2 or any(op['State'] != 'SlotResolved' for op in snapshot['Operations']) or {op.get('PositionId') for op in snapshot['Operations']} != {'left', 'right'} or any(op['Plc'] for op in snapshot['Operations']): raise ValueError('Packaged dual-position flow incomplete')
         stop(process)
         process, messages = start()
         authorize(process, messages)

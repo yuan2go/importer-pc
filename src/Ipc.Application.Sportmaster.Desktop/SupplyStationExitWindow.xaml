@@ -50,7 +50,7 @@
      <TextBlock Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}" Margin="0,12,0,0" Text="软件暂停不是安全急停，紧急情况请使用现场急停按钮。"/>
     </StackPanel>
    </ScrollViewer>
-   <Border Grid.Row="2" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="24,11">
+   <Border Grid.Row="2" Style="{StaticResource OperatorActionFooter}" Padding="24,11">
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
      <Button x:Name="CancelExitButton" Content="取消" IsCancel="True" IsDefault="True" Style="{StaticResource ExitDialogButton}" Click="CancelExit"/>
      <Button x:Name="ContinueExitButton" Content="继续退出" Margin="12,0,0,0" Background="{DynamicResource Ink}" BorderBrush="{DynamicResource Ink}" Foreground="{DynamicResource Surface}" Style="{StaticResource ExitDialogButton}" Click="ContinueExit"/>

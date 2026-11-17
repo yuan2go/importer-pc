@@ -28,6 +28,39 @@ static class RetentionQualification
     }
     const string IdentitySql = "SELECT id,admission,observation,position FROM parcel_history_index ORDER BY seq";
     const string ReplySql = "SELECT request,id,hash FROM parcel_reply_identities ORDER BY request,id";
+    static Dictionary<string, string> GuardCustody(SqliteConnection db, int eligible)
+    {
+        var operations = "BETWEEN '" + Id(1, eligible + 1) + "' AND '" + Id(1, eligible + 6) + "'";
+        var inputs = "BETWEEN '" + Id(5, eligible + 1) + "' AND '" + Id(5, eligible + 6) + "'";
+        return new()
+        {
+            ["Bodies"] = Fingerprint(db, "SELECT id,body FROM parcel_operations WHERE id " + operations + " UNION ALL SELECT id,body FROM parcel_archives WHERE id " + operations + " ORDER BY id"),
+            ["Inputs"] = Fingerprint(db, "SELECT id,position,body,body_hash,state FROM parcel_ingress WHERE id " + inputs + " ORDER BY id"),
+            ["Receipts"] = Fingerprint(db, "SELECT id,operation,stage,request,source,state,coalesce(raw_hash,'') FROM parcel_receipts WHERE operation " + operations + " ORDER BY id"),
+            ["Raw"] = Fingerprint(db, "SELECT r.id,hex(r.body),r.raw_hash FROM parcel_archived_receipts r JOIN parcel_receipts p ON p.id=r.id WHERE p.operation " + operations + " ORDER BY r.id"),
+            ["Audits"] = Fingerprint(db, "SELECT cast(seq AS TEXT),at,event,owner,detail FROM parcel_audit WHERE owner " + operations + " ORDER BY seq"),
+            ["Associations"] = Fingerprint(db, "SELECT input,cast(seq AS TEXT) FROM parcel_ingress_audits WHERE input " + inputs + " ORDER BY input,seq")
+        };
+    }
+    static JsonNode RequireFixture(string output, bool original)
+    {
+        var manifest = Path.Combine(output, "FIXTURE.json"); RecoveryFiles.RequireOrdinaryAncestors(manifest);
+        if (new FileInfo(manifest).Length > 1024 * 1024) throw new InvalidDataException("Synthetic fixture manifest exceeds budget");
+        var fixture = JsonNode.Parse(File.ReadAllText(manifest))!;
+        var expected = Path.GetFullPath(Path.Combine(output, "data", "Simulation", "retention-qualification", "sportmaster", "sportmaster.db"));
+        if (!string.Equals(fixture["Database"]!.GetValue<string>(), expected, StringComparison.OrdinalIgnoreCase) ||
+            fixture["Status"]?.GetValue<string>() != "CREATED_FULL_SYNTHETIC_CUSTODY" || fixture["Guards"]?.GetValue<int>() != 6 ||
+            fixture["ProductSha256"]?.GetValue<string>() != Wire.FileHash(typeof(ParcelRepository).Assembly.Location) ||
+            fixture["FixtureSha256"]?.GetValue<string>() != Wire.FileHash(typeof(RetentionQualification).Assembly.Location))
+            throw new InvalidDataException("Fixture path or frozen synthetic provenance differs");
+        RecoveryFiles.RequireOrdinaryAncestors(expected);
+        var configuration = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Path.Combine(Path.GetDirectoryName(expected)!, "configuration.json")));
+        // Saved reference bindings include their normalized peer-root; no port is constructed here.
+        RequireReference(configuration.Effective, frozen: true);
+        if (configuration.Pending is not null || original && Wire.FileHash(expected) != fixture["DatabaseSha256"]!.GetValue<string>())
+            throw new InvalidDataException("Original synthetic fixture was replaced or has pending configuration");
+        return fixture;
+    }
     static void RequireReference(ParcelConfiguration c, bool frozen = false)
     {
         if (c.Mode != RunMode.Simulation || c.ApplicationId != "sportmaster" || c.StationId != "retention-qualification" || c.Extensions is not null || c.Images is not null || c.Scale is not null || c.Plc is not null ||
@@ -58,7 +91,7 @@ static class RetentionQualification
         var config = Path.Combine(output, "config"); Directory.CreateDirectory(config); Save(Path.Combine(config, "business.json"), c);
         var launch = new BusinessLaunch(config, Path.Combine(output, "data"), null, null);
         ParcelOperation operation;
-        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)))
+        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => RequireReference(c) })
         {
             await app.StartAsync(default);
             Check(app.EmitReferenceAt("left", "synthetic-seed-admission", "SYNTHETIC-RETENTION-SEED", "synthetic-seed-event"), "actual reference ingress accepted for seed");
@@ -127,7 +160,7 @@ static class RetentionQualification
                     var reply = seedWcs.Replies.Single() with { Id = Id(3, n), RequestId = request.Id, PayloadHash = request.PayloadHash, At = at.AddMilliseconds(20), Evidence = "Synthetic accepted reference reply; not customer wire. " + new string('R', 1024) };
                     var unknown = guard == 4;
                     var fact = new StageFact(request, unknown ? StageState.Unknown : StageState.Accepted, 1, unknown ? [] : [reply]);
-                    var op = template with { Id = opId, AdmissionId = admission, ObservationId = observation, ParcelCode = payload.ParcelCode, ObservedAt = at, Wcs = fact, State = unknown ? ParcelState.WcsUnknown : ParcelState.SlotResolved, PositionId = position, ReaderBinding = reader, Acquisition = acquisition, BarcodeSelection = null, RecoveryRequired = unknown };
+                    var op = template with { Id = opId, AdmissionId = admission, ObservationId = observation, ParcelCode = payload.ParcelCode, ObservedAt = at, RoundId = null, Wcs = fact, State = unknown ? ParcelState.WcsUnknown : ParcelState.SlotResolved, PositionId = position, ReaderBinding = reader, Acquisition = acquisition, BarcodeSelection = null, RecoveryRequired = unknown };
                     var body = Wire.Encode(op); var bodyHash = Wire.Hash(body); var receiptId = Id(4, n); var inputId = Id(5, n); var replyJson = Wire.Encode(reply); var rawHash = Wire.Hash(replyJson);
                     Exec(history, ("$id", opId), ("$admission", admission), ("$observation", observation), ("$position", position));
                     var isResident = n <= count && n > count - 8;
@@ -172,17 +205,28 @@ static class RetentionQualification
                 Check(validated == count + 6, "every original input parses as the actual runtime envelope with matching admission/observation/device/hash");
             }
             using var integrity = db.CreateCommand(); integrity.CommandText = "PRAGMA integrity_check"; Check(integrity.ExecuteScalar() as string == "ok", "complete synthetic DB integrity");
-            Save(Path.Combine(output, "FIXTURE.json"), new { Status = "CREATED_FULL_SYNTHETIC_CUSTODY", Eligible = count, Guards = 6, Database = database, DatabaseSha256 = Wire.FileHash(database), DatabaseBytes = new FileInfo(database).Length, PrefillSeconds = watch.Elapsed.TotalSeconds, Operations = Scalar(db, "SELECT count(*) FROM parcel_operations"), Archives = Scalar(db, "SELECT count(*) FROM parcel_archives"), RawRows = Scalar(db, "SELECT count(*) FROM parcel_archived_receipts"), Ingress = Scalar(db, "SELECT count(*) FROM parcel_ingress"), Audit = Scalar(db, "SELECT count(*) FROM parcel_audit"), ReplyIdentities = Scalar(db, "SELECT count(*) FROM parcel_reply_identities"), IdentityFingerprint = Fingerprint(db, IdentitySql), ReplyFingerprint = Fingerprint(db, ReplySql), GuardKinds = new[] { "PendingCommand", "UnacknowledgedConflict", "InterruptedInput", "UnknownAwaitingRaw", "RecentAudit", "NotExpired" }, Scope = "Reference-flow synthetic import with complete operation/frozen intent/reply raw/input/audit identities; no real device/RCS traffic, no real-time duration, no images or RCS numeric wire profile", ProductSha256 = Wire.FileHash(typeof(ParcelRepository).Assembly.Location), FixtureSha256 = Wire.FileHash(typeof(RetentionQualification).Assembly.Location) });
+            Save(Path.Combine(output, "FIXTURE.json"), new { Status = "CREATED_FULL_SYNTHETIC_CUSTODY", Eligible = count, Guards = 6, Database = database, DatabaseSha256 = Wire.FileHash(database), DatabaseBytes = new FileInfo(database).Length, PrefillSeconds = watch.Elapsed.TotalSeconds, Operations = Scalar(db, "SELECT count(*) FROM parcel_operations"), Archives = Scalar(db, "SELECT count(*) FROM parcel_archives"), RawRows = Scalar(db, "SELECT count(*) FROM parcel_archived_receipts"), Ingress = Scalar(db, "SELECT count(*) FROM parcel_ingress"), Audit = Scalar(db, "SELECT count(*) FROM parcel_audit"), ReplyIdentities = Scalar(db, "SELECT count(*) FROM parcel_reply_identities"), IdentityFingerprint = Fingerprint(db, IdentitySql), ReplyFingerprint = Fingerprint(db, ReplySql), GuardCustody = GuardCustody(db, count), GuardKinds = new[] { "PendingCommand", "UnacknowledgedConflict", "InterruptedInput", "UnknownAwaitingRaw", "RecentAudit", "NotExpired" }, Scope = "Reference-flow synthetic import with complete operation/frozen intent/reply raw/input/audit identities; no real device/RCS traffic, no real-time duration, no images or RCS numeric wire profile", ProductSha256 = Wire.FileHash(typeof(ParcelRepository).Assembly.Location), FixtureSha256 = Wire.FileHash(typeof(RetentionQualification).Assembly.Location) });
         }
     }
     static void Verify(string output)
     {
-        var fixture = JsonNode.Parse(File.ReadAllText(Path.Combine(output, "FIXTURE.json")))!; var count = fixture["Eligible"]!.GetValue<int>(); var database = fixture["Database"]!.GetValue<string>();
+        var fixture = RequireFixture(output, original: false); var count = fixture["Eligible"]!.GetValue<int>(); var database = fixture["Database"]!.GetValue<string>();
         using var db = Open(database, true);
         Check(Scalar(db, "SELECT count(*) FROM parcel_retired_operations") == count, "exact eligible operation retirement count");
         Check(Scalar(db, "SELECT count(*) FROM parcel_retired_inputs") == count, "exact processed input retirement count");
         Check(Scalar(db, "SELECT count(*) FROM parcel_history_index") == count + 6, "all permanent admission identities retained");
         Check(Scalar(db, "SELECT count(*) FROM parcel_operations") + Scalar(db, "SELECT count(*) FROM parcel_archives") == 6, "all six independent guard cases retained");
+        using (var command = db.CreateCommand())
+        {
+            command.CommandText = "SELECT id FROM parcel_operations UNION ALL SELECT id FROM parcel_archives ORDER BY id";
+            using var reader = command.ExecuteReader(); var ids = new List<string>(); while (reader.Read()) ids.Add(reader.GetString(0));
+            Check(ids.SequenceEqual(Enumerable.Range(count + 1, 6).Select(n => Id(1, n))), "exact six guarded original identities survive");
+        }
+        foreach (var pair in GuardCustody(db, count))
+            Check(fixture["GuardCustody"]![pair.Key]!.GetValue<string>() == pair.Value, "guard custody retained byte-for-byte: " + pair.Key);
+        Check(Scalar(db, "SELECT count(*) FROM parcel_archived_receipts") == 5 &&
+            Scalar(db, "SELECT count(*) FROM parcel_audit WHERE owner BETWEEN '" + Id(1, 1) + "' AND '" + Id(1, count) + "'") == 0,
+            "expired raw replies and their original audits are removed while all guarded custody remains");
         Check(Scalar(db, "SELECT count(*) FROM parcel_reply_identities") == count + 5, "all original reply fingerprints retained");
         Check(Scalar(db, "SELECT count(*) FROM parcel_ingress") == 6, "retained-operation inputs remain");
         Check(Scalar(db, "SELECT count(*) FROM parcel_receipts") == 6, "only retained-operation receipts remain");
@@ -194,11 +238,11 @@ static class RetentionQualification
     }
     static void ExerciseSimulated(string output)
     {
-        var fixture = JsonNode.Parse(File.ReadAllText(Path.Combine(output, "FIXTURE.json")))!; var database = fixture["Database"]!.GetValue<string>();
+        var fixture = RequireFixture(output, original: true); var database = fixture["Database"]!.GetValue<string>();
         var config = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Path.Combine(Path.GetDirectoryName(database)!, "configuration.json")));
         if (config.Effective.Mode != RunMode.Simulation) throw new InvalidOperationException("A simulated authority is forbidden for a Production fixture");
         var backup = Path.Combine(output, "complete-before-expiry.db"); var watch = Stopwatch.StartNew(); long checks = 0;
-        var result = ParcelRepository.ExpireHistoryAuthorized(database, Wire.FileHash(database), backup, new SportmasterFlow(), (_, _) => { }, false, () => checks++);
+        var result = ParcelRepository.ExpireHistoryAuthorized(database, fixture["DatabaseSha256"]!.GetValue<string>(), backup, new SportmasterFlow(), (_, _) => { }, false, () => checks++);
         Verify(output);
         Save(Path.Combine(output, "SIMULATED-AUTHORITY.json"), new { Status = "PASS_TYPED_STRUCTURE_SIMULATED_AUTHORITY_ONLY", ElapsedSeconds = watch.Elapsed.TotalSeconds, ActualProtectedCli = false, ActualElevatedAuthority = false, SimulatedAuthorityChecks = checks, Result = result, Scope = "Explicit Simulation test of full retention/backup logic; cannot close protected CLI, complete-scale RTO or field qualification" });
     }

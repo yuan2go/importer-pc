@@ -53,7 +53,10 @@ public static class InstallationConfiguration
                 if (!ExtensionSchema.IsId(candidate.Station)) throw new InvalidDataException("原供包台目录名称无效，原数据已保留，请核对本站配置。");
                 seed = initial with { Mode = candidate.Mode, StationId = candidate.Station };
                 var ledger = Path.Combine(candidate.Directory, "configuration.json");
-                if (File.Exists(ledger))
+                var exists = true;
+                try { if ((File.GetAttributes(ledger) & FileAttributes.Directory) != 0) throw new InvalidDataException("原配置账位置不是文件，原件保留，请由维护人员核对。"); }
+                catch (Exception error) when (error is FileNotFoundException or DirectoryNotFoundException) { exists = false; }
+                if (exists)
                 {
                     var saved = ReadSaved(ledger);
                     if (saved.SchemaVersion != 3 || saved.ApplicationId != seed.ApplicationId || saved.Mode != seed.Mode || saved.StationId != seed.StationId)

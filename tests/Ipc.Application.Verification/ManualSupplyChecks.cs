@@ -48,6 +48,25 @@ internal static class SmRoundFixture
         if (s.Devices?.Any(d => d.DeviceId == s.Positions!.Single(p => p.Id == position).ReaderDeviceId && d.IsValid(DateTimeOffset.UtcNow)) == true)
             await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.CameraBoundaryReady == true);
     }
+    // A test-only explicit local enable command, after external reconciliation or
+    // configuration. Guard rejections write no state; only the first acceptance
+    // is persisted. Never retries a destination request or clears remote evidence.
+    internal static async Task<BusinessReceipt> EnableAsync(ParcelRuntime app, string position)
+    {
+        BusinessReceipt? result = null;
+        await CameraRoundHarness.Until(async () =>
+        {
+            await app.CheckRcsHeartbeatAsync(default);
+            var snapshot = await app.SnapshotAsync(); var lane = snapshot.Positions!.Single(p => p.Id == position);
+            result = await app.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, position, lane.SupplyControl!.Revision, true), default);
+            if (result.Status == "Accepted") return true;
+            if (result.Status != "Conflict" && (lane.Arrival?.RecoveryReason is not null || lane.Arrival?.TargetOperation is not null ||
+                !result.Reason.Contains("配置或维护正在进行") && !result.Reason.Contains("尚未确认RCS撤车")))
+                throw new InvalidOperationException("Synthetic deliberate enable rejected: " + result.Reason);
+            return false;
+        });
+        return result!;
+    }
     // Deliberate operator removal through the real guarded command; never infer
     // a boundary from a changed test barcode or retry any external request.
     public static async Task ConfirmRemovedAsync(ParcelRuntime app, string position)
@@ -81,6 +100,12 @@ internal static class SmRoundFixture
         var confirmed = await app.ConfirmRemoteRecoveryAsync(new(Wire.Id(), s.RuntimeId, position, arrival.Generation, evidence)
         { ExpectedControlRevision = lane.SupplyControl!.Revision, ExpectedTargetOperation = arrival.TargetOperation, ExpectedRecoveryToken = arrival.RecoveryToken }, default);
         if (confirmed.Status != "Accepted") throw new InvalidOperationException(confirmed.Reason);
+        // Disablement releases the actual camera asynchronously. Its resource guard
+        // remains authoritative after the reconciliation command has returned.
+        var resources = (System.Collections.Concurrent.ConcurrentDictionary<string, byte>)typeof(ParcelRuntime)
+            .GetField("maintainedResources", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(app)!;
+        await CameraRoundHarness.Until(() => Task.FromResult(!resources.ContainsKey(lane.ReaderDeviceId)));
+        await app.CheckRcsHeartbeatAsync(default);
         Console.WriteLine("PASS RECOVERY explicit synthetic external evidence recorded; original request not replayed");
     }
 }
@@ -154,7 +179,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
             s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation)
         { ExpectedRoundId = s.Positions!.Single(p => p.Id == position).CurrentRoundId, ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == position).Arrival?.Generation, ExpectedPlacementBoundary = s.Positions!.Single(p => p.Id == position).Arrival?.PlacementBoundary };
     }
-    public async ValueTask DisposeAsync() { if (App is not null) await App.DisposeAsync(); await Peer.DisposeAsync(); }
+    public async ValueTask DisposeAsync() { try { if (App is not null) await App.DisposeAsync(); } finally { await Peer.DisposeAsync(); } }
 
     public sealed class ManualFactory(BusinessLaunch launch) : IParcelCapabilityFactory
     {
@@ -226,10 +251,12 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         public Observation Capture(string[] codes, TrayPresenceEvidence? presence = null, DateTimeOffset? observedAt = null)
         {
             var id = Wire.Id();
+            var now = DateTimeOffset.UtcNow; var capturedTicks = System.Diagnostics.Stopwatch.GetTimestamp();
+            var at = observedAt ?? now; var age = Math.Max(0, (now - at).TotalSeconds);
             frames[id] = Enumerable.Repeat(unchecked((byte)(sequence + 1)), 256).ToArray();
             return new(id, device, epoch, id, Interlocked.Increment(ref sequence), "round." + id,
-                presence is null ? "Read" : "Presence", codes, null, observedAt ?? DateTimeOffset.UtcNow)
-            { TrayPresence = presence, ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, CaptureTicks = System.Diagnostics.Stopwatch.GetTimestamp() - (long)((DateTimeOffset.UtcNow - (observedAt ?? DateTimeOffset.UtcNow)).TotalSeconds * System.Diagnostics.Stopwatch.Frequency), FrameNumber = sequence };
+                presence is null ? "Read" : "Presence", codes, null, at)
+            { TrayPresence = presence, ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, CaptureTicks = capturedTicks - (long)(age * System.Diagnostics.Stopwatch.Frequency), FrameNumber = sequence };
         }
         public void EnableOriginalFrames() { }
         public Action? BeforeRetainOriginalFrame { get; set; }
@@ -285,6 +312,7 @@ internal static class ManualSupplyChecks
             var offline = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "OFFLINE"), default);
             Check(offline.Status == "Rejected" && offline.Detail.Contains("RCS 服务离线") && !offline.Detail.Contains("相机") && h.Peer.Requests.Count == 2, "RCS offline has a precise rejection and no request");
             h.Factory.RcsOffline = false;
+            await SmRoundFixture.NextVehicleAsync(h.App, "left"); await SmRoundFixture.NextVehicleAsync(h.App, "right");
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Any(p => p.BarcodeInput?.Manual == true));
             await ManagementModeFixture.Authorize(h.App); s = await h.App.SnapshotAsync();
             await h.App.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
@@ -299,6 +327,7 @@ internal static class ManualSupplyChecks
             }
             h.Peer.Mode = "malformed";
             var unknown = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "UNKNOWN-MANUAL"), default);
+            Check(unknown.Status == "Admitted" && unknown.OperationId is not null, "the new physical placement admits the original malformed-response request");
             s = await h.App.SnapshotAsync();
             Check(s.Operations.Single(o => o.Id == unknown.OperationId).Wcs is { State: StageState.Unknown, Attempts: 1 }, "invalid RCS response retains original Unknown after one attempt");
             var denied = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "NO-REPLAY"), default);

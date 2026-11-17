@@ -21,11 +21,11 @@ static partial class Program
         var explicitPause = await h.App.SnapshotAsync();
         if ((await h.App.CommandAsync(new(Wire.Id(), explicitPause.Revision, "Pause"))).Status != "Persisted") throw new InvalidOperationException("Explicit debug POST accounting fixture pause failed");
         var app = DispatchProxy.Create<ICameraRoundUiFixture, CameraRoundUiProbe>(); var probe = (CameraRoundUiProbe)(object)app; probe.Inner = h.App;
-        var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true, Title = "扫码闭环 · 合成端口" };
+        var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true, Title = "扫码闭环 · 合成端口" }; await using var windowOwner = new NativeWindowOwner(window);
         window.Show(); // WPF requires a visible owner before creating its auxiliary window.
         var second = new SupplyStationWindow(h.App, null, "standard", owner: window) { ConfirmDiscardDrafts = _ => true, Title = "第二窗口 · 同一Application" };
         TaskCompletionSource? heldArm = null;
-        TaskCompletionSource? heldImage = null;
+        TaskCompletionSource? heldImage = null; await using var secondOwner = new NativeWindowOwner(second);
         second.Show(); var vm = window.ViewModel;
         Window Surface(SupplyStationWindow owner) => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().SingleOrDefault(c => ReferenceEquals(c.Owner, owner) && c.IsVisible) ?? (Window)owner;
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); second.UpdateLayout(); }
@@ -42,6 +42,12 @@ static partial class Program
                 { lines.Add("READ_BACKPRESSURE bounded fixture retries a read-only round query; no command replay"); await Task.Delay(25); }
             }
         }
+        List<UserControl> activeControls = [];
+        bool SuccessfulResponse(UserControl control)
+        {
+            try { using var response = System.Text.Json.JsonDocument.Parse(Field<TextBox>(control, "responseBody").Text); return response.RootElement.GetProperty("result")[0].GetProperty("success").GetBoolean(); }
+            catch (System.Text.Json.JsonException) { return false; }
+        }
         void ClickField(UserControl c, string name) => Field<Button>(c, name).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         try
         {
@@ -52,6 +58,7 @@ static partial class Program
                 Descendants(Surface(second)).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"));
             var control = Descendants(Surface(window)).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             var other = Descendants(Surface(second)).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
+            activeControls.Add(control); activeControls.Add(other);
             Field<DispatcherTimer>(control, "timer").Stop(); Field<DispatcherTimer>(other, "timer").Stop();
             Field<DispatcherTimer>(Field<UserControl>(control, "livePreview"), "timer").Stop();
             Field<DispatcherTimer>(Field<UserControl>(other, "livePreview"), "timer").Stop();
@@ -158,10 +165,11 @@ static partial class Program
             ClickField(control, "send");
             // The reply can render before the sending window closes its scan scope.
             // Let that command and its final poll finish before the next window arms.
-            await Until(() => Field<TextBox>(control, "responseBody").Text.Contains("\"success\": true") &&
-                !Field<bool>(control, "busy") && !Field<bool>(control, "polling") && Field<Button>(control, "send").IsEnabled &&
-                Equals(Field<Button>(control, "send").Content, "查看发送结果"));
-            ClickField(control, "send"); await Until(() => !Field<bool>(control, "busy") && !Field<bool>(control, "polling"));
+            await Until(() => SuccessfulResponse(control) &&
+                !Field<bool>(control, "busy") && !Field<bool>(control, "polling"));
+            Check(!Field<Button>(control, "send").IsEnabled && Field<object?>(control, "sendCommand") is null && (await ReadRound()).SendAttempts == 1,
+                "a confirmed result clears its command and cannot be sent again");
+            await Poll(control);
             Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == a.RequestBody, "click-send and check-result never create a second HTTP request");
             await SmRoundFixture.NextVehicleAsync(h.App, "left");
             await Poll(other); ClickField(other, "trigger");
@@ -227,7 +235,13 @@ static partial class Program
                 pending.Request.IntegrationRequest!.Body == e.RequestBody && h.Peer.Requests.Count == 2,
                 "native in-flight revoke retains original Unknown/JSON without an extra HTTP request");
         }
-        finally { heldArm?.TrySetResult(); heldImage?.TrySetResult(); window.Close(); second.Close(); }
+        finally
+        {
+            heldArm?.TrySetResult(); heldImage?.TrySetResult(); h.Peer.Hold?.TrySetResult();
+            foreach (var control in activeControls)
+                await ((Task)control.GetType().GetMethod("QuiesceAsync")!.Invoke(control, null)!).WaitAsync(TimeSpan.FromSeconds(5));
+            window.Close(); second.Close();
+        }
     }
 }
 public interface ICameraRoundUiFixture : IHistoryProjectionFixture, ICameraInspection, ICameraReadRounds { }

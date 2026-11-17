@@ -22,10 +22,13 @@ public static partial class WindowsDeploymentSetup
         var roots = DataPurgeRoots(location, machineRoot);
         machineRoot = Path.GetFullPath(machineRoot);
         foreach (var root in roots)
+        {
+            InstallationIdentity.RequireIndependentPath(root);
             if (Path.GetPathRoot(root) == root || TrustedProgramRoots.Contains(root, machineRoot) ||
                 TrustedProgramRoots.Contains(root, Path.Combine(machineRoot, "deployments")) || TrustedProgramRoots.Contains(Path.Combine(machineRoot, "deployments"), root) ||
                 TrustedProgramRoots.Contains(root, location.ReleaseRoot) || TrustedProgramRoots.Contains(location.ReleaseRoot, root))
                 throw new InvalidDataException("数据目录与磁盘根、部署记录或程序目录重叠，拒绝永久删除。");
+        }
         for (var i = 0; i < roots.Length; i++)
             for (var j = i + 1; j < roots.Length; j++)
                 if (TrustedProgramRoots.Contains(roots[i], roots[j]) || TrustedProgramRoots.Contains(roots[j], roots[i]))
@@ -88,6 +91,7 @@ public static partial class WindowsDeploymentSetup
     public static void DeleteReviewedFile(string path, string expectedSha256)
     {
         if (!ExtensionSchema.IsHash(expectedSha256)) throw new InvalidDataException("删除文件缺少实际字节身份。");
+        if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("按核验句柄删除仅支持 Windows；原文件保留。");
         DeleteReviewedPath(path, expectedSha256);
     }
 

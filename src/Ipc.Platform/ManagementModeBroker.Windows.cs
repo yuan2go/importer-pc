@@ -104,6 +104,7 @@ public static partial class ManagementModeBroker
             while (!stopping.IsCancellationRequested)
             {
                 using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping);
+                string? action = null;
                 try
                 {
                     // A broken or abandoned connection belongs to this instance, never the service.
@@ -111,6 +112,7 @@ public static partial class ManagementModeBroker
                     budget.CancelAfter(TimeSpan.FromSeconds(10));
                     var bytes = await ReadFrame(pipe, budget.Token).ConfigureAwait(false);
                     var request = JsonSerializer.Deserialize<ManagementModeRpcRequest>(bytes) ?? throw new InvalidDataException("认证请求无效。");
+                    action = request.Action;
                     bool installer = false; string? windowsSid = null; ManagementRecoveryCaller? recoveryCaller = null;
                     pipe.RunAsClient(() =>
                     {
@@ -133,14 +135,29 @@ public static partial class ManagementModeBroker
                     }
                     object? value; bool expensive = request.Action is "Enter" or "ConfigurePassword" or "ChangePassword" or "CompletePasswordRecovery";
                     if (expensive) await passwordWork.WaitAsync(budget.Token).ConfigureAwait(false);
-                    try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalManagementMode(root, true).HandleBrokerRequest(request, installer, windowsSid, recoveryCaller), budget.Token).ConfigureAwait(false); }
+                    try
+                    {
+                        budget.Token.ThrowIfCancellationRequested();
+                        value = await Task.Run(() => new LocalManagementMode(root, true).HandleBrokerRequest(request, installer, windowsSid, recoveryCaller,
+                            revalidate => pipe.RunAsClient(() =>
+                            {
+                                var export = request.Export ?? throw new InvalidDataException("导出身份缺失。");
+                                if (export.Length < 0 || !ExtensionSchema.IsHash(export.Sha256) ||
+                                    !Path.IsPathFullyQualified(export.Temporary) || !Path.IsPathFullyQualified(export.Destination))
+                                    throw new InvalidDataException("导出身份无效。");
+                                budget.Token.ThrowIfCancellationRequested();
+                                using var publication = new ExportPublication(export.Destination);
+                                publication.Publish(export.Temporary, export.Length, export.Sha256, () => { budget.Token.ThrowIfCancellationRequested(); revalidate(); });
+                            })), budget.Token).ConfigureAwait(false);
+                    }
                     finally { if (expensive) passwordWork.Release(); }
                     await Reply(pipe, new ManagementModeRpcReply(JsonSerializer.SerializeToElement(value)), budget.Token).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException) { }
                 catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or ArgumentException or JsonException or Win32Exception)
                 {
-                    var code = error is ManagementModeBootstrapRequiredException ? "BootstrapRequiresInstaller" : error is UnauthorizedAccessException or Win32Exception ? "Unauthorized" : "Rejected";
+                    var code = error is ManagementModeBootstrapRequiredException ? "BootstrapRequiresInstaller" : error is UnauthorizedAccessException or Win32Exception ? "Unauthorized" :
+                        action == "PublishExport" && error is InvalidDataException ? "ExportInvalidData" : action == "PublishExport" && error is IOException ? "ExportIoFailure" : "Rejected";
                     if (pipe.IsConnected)
                         try { await Reply(pipe, new ManagementModeRpcReply(JsonSerializer.SerializeToElement(false), DiagnosticText.Protect(error.Message), code), budget.Token).ConfigureAwait(false); }
                         catch (Exception send) when (send is IOException or OperationCanceledException or InvalidOperationException) { }
@@ -155,7 +172,7 @@ public static partial class ManagementModeBroker
     static NamedPipeServerStream CreateServer(string root, bool first)
     {
         // Eight workers own the channel; clients additionally pin SCM's PID on every connection.
-        if (!ConvertStringSecurityDescriptorToSecurityDescriptor("D:P(A;;GA;;;SY)(A;;GA;;;BA)(A;;GRGW;;;AU)", 1, out var descriptor, out _)) throw new Win32Exception(Marshal.GetLastWin32Error());
+        if (!ConvertStringSecurityDescriptorToSecurityDescriptor("D:P(A;;GA;;;SY)(A;;GA;;;BA)(A;;0x0012019b;;;AU)", 1, out var descriptor, out _)) throw new Win32Exception(Marshal.GetLastWin32Error());
         try
         {
             var attributes = new SecurityAttributes { Length = Marshal.SizeOf<SecurityAttributes>(), Descriptor = descriptor };

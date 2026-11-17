@@ -37,14 +37,15 @@ internal static partial class StabilityAnalysis
                 SourceCommit = new string('a', 40),
                 NormalStart = started,
                 NormalEnd = ended,
-                ActualNormalSeconds = clock.Elapsed.TotalSeconds,
+                ActualNormalSeconds = (ended - started).TotalSeconds,
+                Samples = 2,
                 Status = "SMOKE_ONLY",
                 FirstNormal = first,
                 LastNormal = last,
                 Failures = new { },
                 Ui = Array.Empty<object>()
             });
-            File.WriteAllText(Path.Combine(collection, "samples.jsonl"), JsonSerializer.Serialize(new { Progress = last }, new JsonSerializerOptions(Wire.Json) { WriteIndented = false }) + "\n");
+            File.WriteAllText(Path.Combine(collection, "samples.jsonl"), string.Join("\n", new[] { JsonSerializer.Serialize(new { Normal = true, Progress = first, CollectedAt = started, ElapsedSeconds = 0d }, new JsonSerializerOptions(Wire.Json) { WriteIndented = false }), JsonSerializer.Serialize(new { Normal = true, Progress = last, CollectedAt = ended, ElapsedSeconds = (ended - started).TotalSeconds }, new JsonSerializerOptions(Wire.Json) { WriteIndented = false }) }) + "\n");
             snapshot = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause"));
             BusinessReceipt? receipt = null;
             for (var i = 0; i < 40; i++)
@@ -143,6 +144,7 @@ internal static partial class StabilityAnalysis
         var start = new ProcessStartInfo(OperatingSystem.IsWindows() ? "python" : "python3") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true, CreateNoWindow = true };
         foreach (var argument in new[] { Path.Combine(workspace, "scripts/stability-qualification.py"), "analyze", "--collection", collection, "--database", backup, "--output", output, "--verifier", typeof(StabilityAnalysis).Assembly.Location }) start.ArgumentList.Add(argument);
         using var process = Process.Start(start)!; var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync();
-        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(40)); return (process.ExitCode, await stdout + await stderr);
+        try { await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(40)); return (process.ExitCode, await stdout + await stderr); }
+        finally { if (!process.HasExited) { process.Kill(entireProcessTree: true); await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5)); } await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(5)); }
     }
 }

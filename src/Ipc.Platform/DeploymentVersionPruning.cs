@@ -25,6 +25,7 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static DeploymentPrunePlan PlanVersionPruning(string application, string operation, bool ordinaryStartupConfirmed)
     {
+        _ = PruneFile(application, operation);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
         return PlanVersionPruningCore(application, operation, ordinaryStartupConfirmed);
     }
@@ -194,6 +195,7 @@ public static partial class WindowsDeploymentSetup
     public static DeploymentPruneReceipt PruneVersions(DeploymentPrunePlan reviewed, MaintenanceExecution? execution = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        _ = PruneFile(reviewed.ApplicationId, reviewed.OperationId);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", reviewed.ApplicationId + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         var path = PruneFile(reviewed.ApplicationId, reviewed.OperationId);
         if (File.Exists(path)) throw new InstallationOutcomeUnknownException("原清理记录已存在，请核对或续办原次，不能换清单重复提交。");
@@ -218,7 +220,7 @@ public static partial class WindowsDeploymentSetup
             throw new InvalidOperationException("此历史构建或缓存仍是当前维护宿主，保留全部原文件。");
         // Installed hosts have fixed executable names. Do not terminate them or
         // remove their not-yet-loaded files while a maintenance process is alive.
-        foreach (var name in new[] { "Ipc.Assembly", "Ipc.Desktop", "Ipc.Installer" })
+        foreach (var name in new[] { "Ipc.Assembly", "Ipc.Desktop", "Ipc.Desktop.Test", "Ipc.Installer" })
         {
             var processes = System.Diagnostics.Process.GetProcessesByName(name);
             try
@@ -263,6 +265,7 @@ public static partial class WindowsDeploymentSetup
     {
         foreach (var area in areas)
         {
+            InstallationIdentity.RequireIndependentPath(area.Root);
             DeploymentPaths.RequireOrdinaryAncestors(area.Root);
             if (Directory.Exists(area.Root)) TrustedProgramRoots.RequireAncestors(area.Root);
             foreach (var name in area.Files.Keys)
@@ -371,6 +374,7 @@ public static partial class WindowsDeploymentSetup
     public static DeploymentPruneReceipt InspectVersionPruning(string application, string operation, bool resume, MaintenanceExecution? execution = null)
     {
         if (resume) MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        _ = PruneFile(application, operation);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         var record = ReadPrune(application, operation); var path = PruneFile(application, operation);
         if (resume && record.Status is "Prepared" or "Partial")
@@ -399,6 +403,7 @@ public static partial class WindowsDeploymentSetup
     public static DeploymentPruneReceipt KeepVersionPruningRemainder(string application, string operation)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        _ = PruneFile(application, operation);
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         var record = ReadPrune(application, operation); var path = PruneFile(application, operation);
         var current = Current(application) ?? throw new InvalidDataException("缺少原部署登记。");
@@ -425,6 +430,7 @@ public static partial class WindowsDeploymentSetup
 
     public static string? LastVersionPruning(string application)
     {
+        if (!ExtensionSchema.IsId(application)) throw new InvalidDataException("应用身份无效。");
         var directory = Path.Combine(MachineRoot, "deployments"); if (!Directory.Exists(directory)) return null;
         var files = Directory.EnumerateFiles(directory, application + ".prune-*.json").Take(129).ToArray();
         if (files.Length > 128) throw new InvalidDataException("版本清理回执超出核对预算。");

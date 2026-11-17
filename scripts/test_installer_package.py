@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 from importlib.util import spec_from_file_location, module_from_spec
 
@@ -13,6 +14,24 @@ spec.loader.exec_module(installer)
 
 
 class InstallerPackageTests(unittest.TestCase):
+    def test_delivery_copy_is_published_only_after_complete_verification(self):
+        source = self.path.parent / 'source.exe'; source.write_bytes(b'SYNTHETIC complete executable')
+        output = self.path.parent / 'delivered.exe'
+        def interrupted(incoming, outgoing):
+            outgoing.write(b'partial')
+            self.assertFalse(output.exists())
+            raise OSError('synthetic destination full')
+        with patch.object(installer.shutil, 'copyfileobj', side_effect=interrupted):
+            with self.assertRaisesRegex(OSError, 'destination full'):
+                installer.publish_installer(source, output)
+        self.assertFalse(output.exists())
+        self.assertEqual(list(self.path.parent.glob('.ipc-installer-*')), [])
+        self.assertEqual(installer.publish_installer(source, output), hashlib.sha256(source.read_bytes()).hexdigest())
+        self.assertEqual(output.read_bytes(), source.read_bytes())
+        with self.assertRaises(FileExistsError):
+            installer.publish_installer(source, output)
+        self.assertEqual(output.read_bytes(), source.read_bytes())
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.path = Path(self.temporary.name) / 'medium.zip'
@@ -54,6 +73,22 @@ class InstallerPackageTests(unittest.TestCase):
         self.write()
         with self.assertRaisesRegex(ValueError, 'same frozen source'):
             installer.inspect_medium(self.path, 'b' * 40)
+
+    def test_test_channel_requires_matching_installer_and_executable(self):
+        self.files['desktop/Ipc.Desktop.Test.exe'] = self.files.pop('desktop/Ipc.Desktop.exe')
+        for name in ('BUILD-INFO.json', 'app/BUILD-INFO.json', 'desktop/BUILD-INFO.json'):
+            record = json.loads(self.files[name])
+            record['InstallationChannel'] = 'Test'
+            self.files[name] = json.dumps(record).encode()
+        self.write()
+        self.assertEqual(installer.inspect_medium(self.path, self.source, True)['ApplicationId'], 'sportmaster')
+        with self.assertRaises(ValueError):
+            installer.inspect_medium(self.path, self.source, False)
+
+    def test_production_channel_cannot_be_wrapped_as_test(self):
+        self.write()
+        with self.assertRaises(ValueError):
+            installer.inspect_medium(self.path, self.source, True)
 
     def test_reused_ui_closure_must_equal_payload_bytes(self):
         self.files['desktop/Ipc.Desktop.dll'] = b'SYNTHETIC selected desktop'

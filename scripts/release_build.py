@@ -40,7 +40,7 @@ def frozen_export(root, source, destination):
     return extraction
 
 
-def build_properties(source, snapshot, artifacts):
+def build_properties(source, snapshot, artifacts, test_instance=False):
     artifacts.mkdir(parents=True, exist_ok=True)
     # Windows TEMP can use RUNNER~1 while MSBuild expands that 8.3 alias.
     # Map the canonical compiler paths, otherwise embedded PDBs retain each
@@ -50,7 +50,7 @@ def build_properties(source, snapshot, artifacts):
     link = artifacts / 'frozen-source-link.json'
     link.write_text(json.dumps({'documents': {'/_/src/*':
         'https://raw.githubusercontent.com/yuan2go/importer-pc/' + source + '/*'}}), encoding='utf-8')
-    return ['-p:PublishReadyToRun=false', '-p:PublishAot=false', '-p:DebugType=embedded',
+    return (['-p:TestInstallation=true'] if test_instance else []) + ['-p:PublishReadyToRun=false', '-p:PublishAot=false', '-p:DebugType=embedded',
             '-p:PathMap=' + str(snapshot) + '=/_/src%2C' + str(artifacts) + '=/_/build',
             '-p:SourceRevisionId=' + source, '-p:EnableSourceControlManagerQueries=false',
             '-p:EnableSourceLink=false', '-p:SourceLink=' + str(link)]

@@ -84,7 +84,10 @@ public static class TrustedProgramRoots
         // A volume may allow creating unrelated folders, but must not allow deleting
         // protected children. Directory ACLs alone cannot protect against DELETE_CHILD.
         var volume = new DirectoryInfo(Path.GetPathRoot(path)!);
-        foreach (FileSystemAccessRule rule in volume.GetAccessControl().GetAccessRules(true, true, typeof(SecurityIdentifier)))
+        var volumeAcl = volume.GetAccessControl(AccessControlSections.Access | AccessControlSections.Owner);
+        if (((SecurityIdentifier)volumeAcl.GetOwner(typeof(SecurityIdentifier))!).Value is not ("S-1-5-18" or "S-1-5-32-544"))
+            throw new UnauthorizedAccessException("卷根须由维护主体持有，防止受保护目录被替换。");
+        foreach (FileSystemAccessRule rule in volumeAcl.GetAccessRules(true, true, typeof(SecurityIdentifier)))
             if (rule.AccessControlType == AccessControlType.Allow && (rule.FileSystemRights & (FileSystemRights.DeleteSubdirectoriesAndFiles | FileSystemRights.ChangePermissions | FileSystemRights.TakeOwnership)) != 0 &&
                 ((SecurityIdentifier)rule.IdentityReference).Value is not ("S-1-5-18" or "S-1-5-32-544" or "S-1-3-0")) throw new UnauthorizedAccessException("卷根允许非维护主体替换受保护目录");
     }

@@ -57,14 +57,15 @@ static class AdministratorBoundary
             Check(Enumerable.Range(0, 64).All(_ => client.InspectStatus().Authorized), "reused pipe instances retain each complete acknowledged reply across 64 round trips");
             for (var attempt = 0; attempt < 64; attempt++)
             {
-                using (var abandoned = new NamedPipeClientStream(".", ManagementModeBroker.PipeName(root), PipeDirection.InOut, PipeOptions.Asynchronous))
+                using (var abandoned = new NamedPipeClientStream(".", ManagementModeBroker.PipeName(root), PipeAccessRights.ReadWrite | PipeAccessRights.Synchronize, PipeOptions.Asynchronous, TokenImpersonationLevel.Impersonation, HandleInheritability.None))
                 {
-                    abandoned.Connect(5000);
+                    using var budget = new CancellationTokenSource(TimeSpan.FromSeconds(6));
+                    abandoned.ConnectAsync(5000, budget.Token).GetAwaiter().GetResult();
                     if (attempt % 4 == 1) abandoned.Write(new byte[] { 1, 0 });
                     if (attempt % 4 >= 2)
                     {
-                        ManagementModeBroker.WriteFrame(abandoned, JsonSerializer.SerializeToUtf8Bytes(new ManagementModeRpcRequest("Status")), default).GetAwaiter().GetResult();
-                        if (attempt % 4 == 3) _ = ManagementModeBroker.ReadFrame(abandoned, default).GetAwaiter().GetResult();
+                        ManagementModeBroker.WriteFrame(abandoned, JsonSerializer.SerializeToUtf8Bytes(new ManagementModeRpcRequest("Status")), budget.Token).GetAwaiter().GetResult();
+                        if (attempt % 4 == 3) _ = ManagementModeBroker.ReadFrame(abandoned, budget.Token).GetAwaiter().GetResult();
                     }
                 }
                 Check(ManagementModeBroker.Call<ManagementModeStatus>(root, new("Status"), starting: true).Configured,
@@ -85,7 +86,9 @@ static class AdministratorBoundary
             Check(!client.InspectStatus().Authorized, "another process/session login revokes the original protected session");
             Check(client.Enter(password), "management mode can be entered again after session revocation");
             var delegation = client.Delegate(new string('A', 64));
-            var helper = new LocalManagementMode(root); helper.ValidateDelegation(delegation, new string('A', 64), true);
+            var helper = new LocalManagementMode(root);
+            Deny(() => helper.ValidateDelegation(delegation with { RequestHash = new string('B', 64) }, new string('B', 64), true), "unused protected helper ticket cannot change its request");
+            helper.ValidateDelegation(delegation, new string('A', 64), true);
             Deny(() => helper.ValidateDelegation(delegation, new string('A', 64), true), "protected helper authorization cannot be replayed");
             Deny(() => helper.ValidateDelegation(delegation with { RequestHash = new string('B', 64) }, new string('B', 64), true), "protected helper ticket cannot change its request");
             client.Exit(); Deny(() => helper.ValidateDelegation(delegation, new string('A', 64), false), "logout revokes an already-consumed helper authorization");

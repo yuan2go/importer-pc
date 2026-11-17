@@ -64,13 +64,13 @@ static partial class Program
             Check((int)cues.GetValue(left)! == 1, "repeated snapshots of one original result do not repeat its success cue");
             var manualAvailable = vm.Right.CanSubmitBarcode;
             await Vehicles();
-            Check(vm.Left.VehicleStatusText.StartsWith("小车 SYNTH-50020") && vm.Left.VehicleStatusText.Contains("本车已处理") && vm.Left.VehicleStatusForeground == OperatorTokens.Muted &&
+            Check(vm.Left.VehicleStatusText.StartsWith("小车 SYNTH-50020") && vm.Left.VehicleStatusText.Contains("空闲，等待就绪") && vm.Left.VehicleStatusForeground == OperatorTokens.Muted &&
                 vm.Right.VehicleStatusText.StartsWith("小车 SYNTH-50023") && vm.Right.VehicleStatusText.Contains("不可以投包") && vm.Right.CanSubmitBarcode == manualAvailable,
                 "submitted vehicle suppresses idle readiness while independent tasking vehicle retains its own state");
             await Vehicles(expired: true);
             Check(!vm.Left.VehicleStatusText.Contains("可投包") && vm.Left.VehicleStatusForeground == OperatorTokens.Muted, "expired idle telemetry cannot remain green");
             await ManagementModeFixture.Authorize(h.App); await vm.RefreshManagementModeAsync(); await vm.RefreshAsync();
-            var frozen = Wire.Encode(vm.Left.Operation!.Wcs!.Request);
+            var originalOperation = vm.Left.Operation!.Id; var frozen = Wire.Encode(vm.Left.Operation.Wcs!.Request);
             foreach (var (width, height, fullScreenChrome) in new[] { (1366d, 768d, false), (800d, 420d, false), (800d, 420d, true) })
             {
                 // Keep the native test window at the requested size while exercising the full-screen header's larger buttons.
@@ -95,7 +95,7 @@ static partial class Program
                 if (vm.IsTight)
                 {
                     Check(leftVehicle.ActualHeight <= 44 && rightVehicle.ActualHeight <= 44 &&
-                        Descendants(leftVehicle).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "已处理 勿投包" && Inside(t, client)) &&
+                        Descendants(leftVehicle).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "空闲 待就绪" && Inside(t, client)) &&
                         Descendants(rightVehicle).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "工作中 勿投包" && Inside(t, client)),
                         "compact vehicle headers keep both status instructions visible within the switch row");
                 }
@@ -106,6 +106,11 @@ static partial class Program
                     "frequent vehicle status leads the card while steady camera status stays in the device footer at " + viewport);
                 var panel = (Border)left.FindName("ResultPanel");
                 Check(Math.Abs(panel.ActualHeight - ((Border)right.FindName("ResultPanel")).ActualHeight) < 1, "chute regions stay aligned at " + viewport);
+                await Until(() =>
+                {
+                    window.UpdateLayout(); var bounds = slot.TransformToAncestor(panel).TransformBounds(new Rect(slot.RenderSize));
+                    return bounds.Top >= 0 && bounds.Bottom <= panel.ActualHeight + 1 && slot.Text == "L-07";
+                });
                 var actual = slot.TransformToAncestor(panel).TransformBounds(new Rect(slot.RenderSize));
                 Check(actual.Top >= 0 && actual.Bottom <= panel.ActualHeight + 1 && slot.Text == "L-07", "full current destination stays inside fixed result panel at " + viewport);
                 var transform = slot.TransformToAncestor(panel);
@@ -128,13 +133,17 @@ static partial class Program
             var calls = h.Peer.Requests.Count; Check(!submit.IsEnabled, "paused position disables new submit");
             entry.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window)!, 0, Key.Enter) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
             await Flush(); Check(h.Peer.Requests.Count == calls, "Enter shares the availability guard and cannot bypass disabled submit");
-            Check(Wire.Encode(vm.Left.Operation!.Wcs!.Request) == frozen, "pause and draft handling preserve the frozen original request");
+            Check(Wire.Encode((await h.App.OperationAsync(originalOperation))!.Wcs!.Request) == frozen, "pause and draft handling preserve the frozen original request");
             var pausedPanel = (Border)left.FindName("ResultPanel"); var instruction = (TextBlock)left.FindName("CenteredInstruction");
             Check(instruction.IsVisible && instruction.Text.Contains("恢复供包") &&
                 instruction.TransformToAncestor(pausedPanel).TransformBounds(new Rect(instruction.RenderSize)).Bottom <= pausedPanel.ActualHeight + 1,
-                "pause recovery instruction is fully visible inside the compact result panel");
+                "pause recovery instruction is fully visible inside the compact result panel: " + Wire.Encode(new { instruction.IsVisible, instruction.Text, Bounds = instruction.TransformToAncestor(pausedPanel).TransformBounds(new Rect(instruction.RenderSize)), Panel = pausedPanel.ActualHeight }));
             CaptureInternal(evidence, "operator18-paused-800", (Grid)window.FindName("ClientArea"), lines);
-            vm.DismissGlobalOperationFeedback(); await vm.CommandAsync("Resume"); await h.NextVehicleAsync("left"); await vm.RefreshAsync(); await Until(() => !vm.Snapshot!.Paused && vm.Left.CanSubmitBarcode);
+            vm.DismissGlobalOperationFeedback();
+            // Settle the physical boundary before taking the resume revision;
+            // the independent success-display expiry may otherwise advance it.
+            await h.NextVehicleAsync("left"); await vm.RefreshAsync(); await vm.CommandAsync("Resume");
+            await Until(() => !vm.Snapshot!.Paused && vm.Left.CanSubmitBarcode);
             h.Peer.Mode = "no-device";
             entry.Clear(); entry.Text = "000UX180003"; submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.Operation?.State == ParcelState.WcsRejected && !vm.Busy);

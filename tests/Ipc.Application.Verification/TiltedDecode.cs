@@ -50,6 +50,18 @@ internal static class TiltedDecode
             var endToEnd = Decode(EndToEnd(30), out _, out _);
             Check(endToEnd.Select(s => s.Text).Order().SequenceEqual(new[] { "SYNTH-TILT-01", "SYNTH-TILT-03" }),
                 "two codes printed end to end at 30 degrees are both found");
+            foreach (var angle in new[] { 0, 15, 30 })
+            {
+                var rows = new[] { "SYNTH-TILT-01", "SYNTH-TILT-02" }.Select(Bars).ToArray();
+                var frame = Compose(angle, rows, rows.Max(r => r.Length), 20, 0, 0);
+                if (angle == 0)
+                {
+                    var thin = Decode(frame, out _, out _);
+                    Check(thin.Select(s => s.Text).Order().SequenceEqual(new[] { "SYNTH-TILT-01", "SYNTH-TILT-02" }),
+                        "the actual engine retains both horizontal 20-pixel barcode bands across an eight-pixel quiet gap");
+                }
+                ThinBandKeepsSearch(decoder, frame, angle, rows);
+            }
             foreach (var angle in new[] { 0, 30, 45, 60 })
             {
                 // One search can report a box spanning both rows; it is split into its printed bands, and a box that is
@@ -60,6 +72,35 @@ internal static class TiltedDecode
             }
         }
         finally { decoder.Release(); }
+    }
+    static void ThinBandKeepsSearch(SoftwareDecoder decoder, byte[] frame, int angle, byte[][] rows)
+    {
+        // Control the already-recognized first band, independently of ZXing's
+        // ability to read a heavily blurred 20-pixel oblique fixture. Exercise
+        // the real early-stop decision for a region containing both original bands.
+        var width = rows.Max(r => r.Length) + 2 * Margin; const int rowHeight = 28;
+        var height = rows.Length * rowHeight + 2 * Margin;
+        var radians = angle * Math.PI / 180; var cos = Math.Cos(radians); var sin = Math.Sin(radians);
+        ImagePoint Point(double u, double v) => new((int)Math.Round(Width / 2d + (u - width / 2d) * cos - (v - height / 2d) * sin),
+            (int)Math.Round(Height / 2d + (u - width / 2d) * sin + (v - height / 2d) * cos));
+        var first = Margin + Array.FindIndex(rows[0], p => p < 128); var last = Margin + Array.FindLastIndex(rows[0], p => p < 128);
+        var known = new RecognitionSymbol("SYNTH-TILT-01", "Code128", [Point(first, Margin), Point(last, Margin), Point(last, Margin + 19), Point(first, Margin + 19)], angle);
+        const System.Reflection.BindingFlags hidden = System.Reflection.BindingFlags.NonPublic;
+        var singleBand = typeof(SoftwareDecoder).GetMethod("SingleBand", hidden | System.Reflection.BindingFlags.Instance)!;
+        Check((bool)singleBand.Invoke(decoder, [known, frame, Width, Height])!, $"the controlled first 20-pixel barcode has real continuous-band evidence at {angle} degrees");
+        var explained = typeof(SoftwareDecoder).GetMethod("Explained", hidden | System.Reflection.BindingFlags.Instance)!;
+        var centers = Enumerable.Range(0, 5).Select(i => Point(first + (last - first) * (i + .5) / 5, Margin + rowHeight + 10))
+            .Select(p => ((double)p.X, (double)p.Y)).ToArray();
+        var regionType = typeof(SoftwareDecoder).GetNestedType("SearchRegion", hidden)!;
+        var constructor = regionType.GetConstructors().Single();
+        var fields = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["X"] = 0, ["Y"] = 0, ["Width"] = Width, ["Height"] = Height, ["Angle"] = radians,
+            ["AlternateAngle"] = radians, ["Tiles"] = centers.Length, ["Centers"] = centers, ["BarAngle"] = radians
+        };
+        var region = constructor.Invoke(constructor.GetParameters().Select(p => fields[p.Name!]).ToArray());
+        Check(!(bool)explained.Invoke(decoder, [region, new List<RecognitionSymbol> { known }, frame, Width, Height])!,
+            $"a region containing a second 20-pixel barcode band keeps the real rotation search open at {angle} degrees");
     }
 
     static byte[] EndToEnd(double degrees)
@@ -88,18 +129,18 @@ internal static class TiltedDecode
         return row.Select(v => v < 128 ? (byte)35 : (byte)230).ToArray();
     }
 
-    static byte[] Compose(double degrees, byte[][] rows, int barsWidth)
+    static byte[] Compose(double degrees, byte[][] rows, int barsWidth, int barHeight = BarHeight, int textHeight = TextHeight, int rowGap = RowGap)
     {
         // White label paper holding every row: bars, then a line of glyph-like marks, then the gap to the next row.
-        int lw = barsWidth + 2 * Margin, rowHeight = BarHeight + 8 + TextHeight + RowGap, lh = rows.Length * rowHeight + 2 * Margin - RowGap;
+        int lw = barsWidth + 2 * Margin, rowHeight = barHeight + 8 + textHeight + rowGap, lh = rows.Length * rowHeight + 2 * Margin - rowGap;
         var label = new byte[lw * lh]; Array.Fill(label, (byte)230);
         var glyphs = new Random(7);
         for (var r = 0; r < rows.Length; r++)
         {
             var top = Margin + r * rowHeight;
-            for (var y = 0; y < BarHeight; y++) rows[r].CopyTo(label, (top + y) * lw + Margin);
+            for (var y = 0; y < barHeight; y++) rows[r].CopyTo(label, (top + y) * lw + Margin);
             for (var x = Margin + barsWidth / 4; x < Margin + barsWidth * 3 / 4; x += 16)
-                for (var y = top + BarHeight + 8; y < top + BarHeight + 8 + TextHeight; y++)
+                for (var y = top + barHeight + 8; y < top + barHeight + 8 + textHeight; y++)
                     for (var dx = 0; dx < 10; dx++) if (glyphs.Next(3) > 0) label[y * lw + x + dx] = 50;
         }
         var random = new Random(29);

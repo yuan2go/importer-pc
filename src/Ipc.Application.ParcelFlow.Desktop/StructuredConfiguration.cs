@@ -135,7 +135,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         MaximumAgeMs = c.Weight.MaximumAgeMs.ToString(CultureInfo.InvariantCulture),
         WaitTimeoutMs = c.Weight.WaitTimeoutMs.ToString(CultureInfo.InvariantCulture),
         BackupEnabled = c.BackupSchedule is not null,
-        BackupDirectory = c.BackupSchedule?.Directory ?? (c.ApplicationId == "sportmaster" && WindowsStoragePaths.ProtectedAnchor is null ? Path.Combine(@"D:\ProgramData\ImporterPc", "backups", c.ApplicationId) : Path.Combine(WindowsStoragePaths.UserRoot, "backups", c.ApplicationId)),
+        BackupDirectory = c.BackupSchedule?.Directory ?? (InstallationIdentity.IsTest ? Path.Combine(InstallationIdentity.TestDataArea, "backups", c.ApplicationId) : c.ApplicationId == "sportmaster" && WindowsStoragePaths.ProtectedAnchor is null ? Path.Combine(@"D:\ProgramData\ImporterPc", "backups", c.ApplicationId) : Path.Combine(WindowsStoragePaths.UserRoot, "backups", c.ApplicationId)),
         BackupIntervalMinutes = c.BackupSchedule?.IntervalMinutes.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.BackupIntervalMinutes.ToString(CultureInfo.InvariantCulture),
         BackupMaximumSets = c.BackupSchedule?.MaximumSets.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.MaximumBackupSets.ToString(CultureInfo.InvariantCulture),
         UploadStrategy = c.Images?.Strategy ?? UploadStrategy.BeforeMain,
@@ -430,8 +430,13 @@ public partial class ParcelViewModel
         if (ParameterEditor is { } identityEditor && !await identityEditor.PrepareCameraIdentitiesAsync()) return;
         if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         var expected = RequireDraftRevision(); var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature();
+        var authority = configurationAuthority; var document = ConfigurationDraft;
         var result = await SubmitConfigurationAsync(expected, candidate);
-        if (result.Status is "PendingRestart" or "Effective") { savedEditorSignature = signature; savedCandidate = Wire.Encode(candidate); ConfigurationDraft = savedCandidate; }
+        if (result.Status is "PendingRestart" or "Effective")
+        {
+            savedEditorSignature = signature; savedCandidate = Wire.Encode(candidate);
+            if (configurationAuthority == authority && ConfigurationDraft == document && ConfigurationEditSignature() == signature) ConfigurationDraft = savedCandidate;
+        }
     }
     public async Task LoadStructuredFromJsonAsync()
     {

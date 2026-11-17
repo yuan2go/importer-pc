@@ -34,7 +34,7 @@ public sealed record InstallerCommandLine(string Action, string? DataRoot, strin
             operation = parsed.ToString("N");
         }
         foreach (var path in new[] { data, log }.OfType<string>())
-            if (!Path.IsPathFullyQualified(path) || path.StartsWith(@"\\", StringComparison.Ordinal)) throw new ArgumentException("安装路径须为本机绝对路径。");
+            if (!Path.IsPathFullyQualified(path) || path.StartsWith(@"\\", StringComparison.Ordinal) || path.StartsWith("//", StringComparison.Ordinal)) throw new ArgumentException("安装路径须为本机绝对路径。");
         return new(action, data, log, operation ?? Guid.NewGuid().ToString("N"));
     }
     static string Value(string[] pair) => pair.Length == 2 && !string.IsNullOrWhiteSpace(pair[1]) ? pair[1] : throw new ArgumentException("参数缺少值。");

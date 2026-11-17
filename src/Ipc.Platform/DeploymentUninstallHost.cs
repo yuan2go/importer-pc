@@ -21,7 +21,7 @@ public static partial class WindowsDeploymentSetup
         RequireProtectedMaintenanceHelper(application, Path.Combine(cache, "desktop"),
             media.Files.Keys.Where(name => name.StartsWith("desktop/", StringComparison.Ordinal)).Select(name => name[8..]).ToArray());
         using var parent = Process.GetCurrentProcess();
-        return OrdinaryRuntimeProcess.LaunchForCurrentUser(Path.Combine(cache, "desktop", "Ipc.Desktop.exe"),
+        return OrdinaryRuntimeProcess.LaunchForCurrentUser(Path.Combine(cache, "desktop", InstallationIdentity.DesktopExecutable),
             ["--product-maintenance", "--wait-for-host", parent.Id.ToString(CultureInfo.InvariantCulture),
                 parent.StartTime.ToUniversalTime().Ticks.ToString(CultureInfo.InvariantCulture)], cache);
     }
@@ -43,7 +43,9 @@ public static partial class WindowsDeploymentSetup
         catch (ArgumentException) { return; } // The exact original host already exited.
         using (parent)
         {
-            if (parent.HasExited || parent.StartTime.ToUniversalTime().Ticks != started) return;
+            try { _ = parent.SafeHandle; if (parent.HasExited || parent.StartTime.ToUniversalTime().Ticks != started) return; }
+            catch (InvalidOperationException) when (parent.HasExited) { return; }
+            catch (System.ComponentModel.Win32Exception error) when (error.NativeErrorCode is 87 or 1168) { return; }
             using var deadline = new CancellationTokenSource(timeout);
             try { await parent.WaitForExitAsync(deadline.Token); }
             catch (OperationCanceledException error) when (deadline.IsCancellationRequested)

@@ -64,11 +64,12 @@ public sealed partial class ParcelRuntime : IStationSessionStatistics
                 if (File.Exists(destination) || File.Exists(destination + ".result.json")) throw new IOException("请选择新的导出文件，不覆盖原记录");
                 using var budget = CancellationTokenSource.CreateLinkedTokenSource(owned); budget.CancelAfter(TimeSpan.FromMinutes(2));
                 var initial = new { Status = "Prepared", report.SelectionId, report.Range, Shift = report.Shift?.Id, report.From, report.ToExclusive, report.ReadAt, report.DetailsFrom, report.TimeZoneId };
-                using (var reserved = new FileStream(destination + ".result.json", FileMode.CreateNew, FileAccess.Write, FileShare.None))
-                { var bytes = Encoding.UTF8.GetBytes(Wire.Encode(initial)); reserved.Write(bytes); reserved.Flush(true); }
                 var temporary = destination + ".partial-" + Wire.Id(); var status = "Failed";
+                var ownsReceipt = false;
                 try
                 {
+                    using (var reserved = new FileStream(destination + ".result.json", FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                    { ownsReceipt = true; var bytes = Encoding.UTF8.GetBytes(Wire.Encode(initial)); reserved.Write(bytes); reserved.Flush(true); }
                     using (var file = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None, 65536, true))
                     {
                         using var writer = new StreamWriter(file, new UTF8Encoding(true), 65536, leaveOpen: true);
@@ -90,7 +91,7 @@ public sealed partial class ParcelRuntime : IStationSessionStatistics
                 finally
                 {
                     if (File.Exists(temporary)) File.Delete(temporary);
-                    if (status != "Completed") ExtensionStore.AtomicWrite(destination + ".result.json", new { Status = status, Initial = initial });
+                    if (ownsReceipt && status != "Completed") ExtensionStore.AtomicWrite(destination + ".result.json", new { Status = status, Initial = initial });
                 }
             }, token).ConfigureAwait(false);
         }

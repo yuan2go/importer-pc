@@ -45,6 +45,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
         RequireExtensionInstallerAuthority();
         var machine = WindowsStoragePaths.MachineRoot;
         var file = Path.Combine(machine, "runtime-policy.json");
+        TrustedProgramRoots.RequireAncestors(machine);
         RejectLinks(machine); RejectLinks(file); RequireProtectedAcl(new DirectoryInfo(machine), null); RequireProtectedAcl(new FileInfo(file), null);
         var policy = Wire.Decode<MachineRuntimePolicy>(File.ReadAllText(file));
         var leases = Path.Combine(machine, "leases");
@@ -97,6 +98,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
         var policyFile = Path.Combine(machine, "runtime-policy.json");
         if (!Directory.Exists(machine) || !File.Exists(policyFile))
             throw new InvalidDataException("Windows deployment requires a maintainer-installed machine runtime policy and designated runtime account");
+        TrustedProgramRoots.RequireAncestors(machine);
         RejectLinks(machine); RejectLinks(policyFile);
         RequireProtectedAcl(new DirectoryInfo(machine), null);
         RequireProtectedAcl(new FileInfo(policyFile), null);
@@ -114,10 +116,12 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
         return fixedRoot;
     }
     public static void RequireProtectedEvidence(string path)
+        => RequireProtectedEvidenceAt(path, WindowsStoragePaths.ProtectedAnchor);
+    internal static void RequireProtectedEvidenceAt(string path, string? anchor)
     {
         if (!OperatingSystem.IsWindows()) return;
         RejectLinks(path); RequireProtectedAcl(new FileInfo(path), null);
-        var roots = new[] { Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) }.Concat(WindowsStoragePaths.ProtectedAnchor is { } anchor ? [anchor] : Array.Empty<string>()).ToArray();
+        var roots = new[] { Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) }.Concat(anchor is not null ? [anchor] : Array.Empty<string>()).ToArray();
         var boundary = roots.FirstOrDefault(root => Path.GetFullPath(path).StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
         boundary ??= TrustedProgramRoots.RequireBoundary(new FileInfo(path).DirectoryName!);
         for (var current = new FileInfo(path).Directory; current is not null && !string.Equals(current.FullName, boundary, StringComparison.OrdinalIgnoreCase); current = current.Parent)

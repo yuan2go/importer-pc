@@ -129,8 +129,14 @@ def main():
         report["Failure"] = repr(error)
         raise
     finally:
-        report["WorkerExitCodes"] = {name: worker.close() for name, worker in workers.items()}
-        report["Complete"] = success and all(code == 0 for code in report["WorkerExitCodes"].values())
+        report["WorkerExitCodes"] = {}
+        report["CleanupFailures"] = {}
+        for name, worker in workers.items():
+            try:
+                report["WorkerExitCodes"][name] = worker.close()
+            except (OSError, subprocess.SubprocessError) as error:
+                report["CleanupFailures"][name] = repr(error)
+        report["Complete"] = success and not report["CleanupFailures"] and all(code == 0 for code in report["WorkerExitCodes"].values())
         output.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     if not report["Complete"]:
         raise RuntimeError("Benchmark child failed; inspect preserved evidence")

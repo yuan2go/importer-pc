@@ -6,7 +6,8 @@
   "license": "MIT",
   "local_adaptations": [
     "SKILL.md: use python3 and skill-relative script paths instead of Claude plugin variables",
-    "SKILL.md: add importer-pc WPF, UI baseline, and acceptance boundaries"
+    "SKILL.md: add importer-pc WPF, UI baseline, and acceptance boundaries",
+    "2026-11-17: explicit local CR patches listed in local_cr_patches; original upstream hashes identify the imported source, not patched installed bytes"
   ],
   "files": [
     {
@@ -314,15 +315,17 @@
       "path": "scripts/core.py",
       "source_path": ".claude/skills/ui-ux-pro-max/scripts/core.py",
       "upstream_git_blob_sha1": "670fe33070cfe706401da4ff276831257dbf1e25",
-      "installed_sha256": "c3be4b23e7150e6b45095213158cfa3c8ad96502f01dde3f6ffff9de64a4f481",
-      "adapted": false
+      "installed_sha256": "4366b01ef2a5f2fe9d0b03f460f5072287c0bbf57d947c5160c61efe7a6a73b7",
+      "adapted": true,
+      "pre_cr_installed_sha256": "c3be4b23e7150e6b45095213158cfa3c8ad96502f01dde3f6ffff9de64a4f481"
     },
     {
       "path": "scripts/design_system.py",
       "source_path": ".claude/skills/ui-ux-pro-max/scripts/design_system.py",
       "upstream_git_blob_sha1": "d5fe1575f00d839f919603bd09b44fe7e9def4fb",
-      "installed_sha256": "e7d1c94c4b2eada17c5551157668362659ccf9626d34dbd58e68142410f90103",
-      "adapted": false
+      "installed_sha256": "b9177f0ba4a11ddd2ce5094a3982ee59b47fe158136c9e59abea4f6d7b321d08",
+      "adapted": true,
+      "pre_cr_installed_sha256": "e7d1c94c4b2eada17c5551157668362659ccf9626d34dbd58e68142410f90103"
     },
     {
       "path": "scripts/reasoning_contract.py",
@@ -447,8 +450,9 @@
       "path": "scripts/tests/test_core.py",
       "source_path": ".claude/skills/ui-ux-pro-max/scripts/tests/test_core.py",
       "upstream_git_blob_sha1": "b30c0ae54c25f38ec91b37a56cda04426b2510a9",
-      "installed_sha256": "3527fe2f4b852f69f07c17ddc0d615d9a6e025c924e45a33985579a94a8d2118",
-      "adapted": false
+      "installed_sha256": "eb3781f136b07a3997863dc6bb961c9fd5b03b9c54fa44ea567aa1e7a2b542a3",
+      "adapted": true,
+      "pre_cr_installed_sha256": "3527fe2f4b852f69f07c17ddc0d615d9a6e025c924e45a33985579a94a8d2118"
     },
     {
       "path": "scripts/tests/test_core_data_quality.py",
@@ -468,8 +472,9 @@
       "path": "scripts/tests/test_design_system_mode.py",
       "source_path": ".claude/skills/ui-ux-pro-max/scripts/tests/test_design_system_mode.py",
       "upstream_git_blob_sha1": "44c80c1caa159058a7a5858284ea269bcb561449",
-      "installed_sha256": "95ad2c154349f7021f55a558f8dcdd71df1a24fcf531a4364a8e49526a0865ef",
-      "adapted": false
+      "installed_sha256": "2c07d24d6283c447a50259cea8742e8ea07506d9a2caf6c61d7eb0253ca7792e",
+      "adapted": true,
+      "pre_cr_installed_sha256": "95ad2c154349f7021f55a558f8dcdd71df1a24fcf531a4364a8e49526a0865ef"
     },
     {
       "path": "scripts/tests/test_design_system_stack.py",
@@ -524,8 +529,41 @@
       "path": "scripts/validate_data.py",
       "source_path": ".claude/skills/ui-ux-pro-max/scripts/validate_data.py",
       "upstream_git_blob_sha1": "8b6c7941f6ad3e51cb9d412b11185133e7763001",
-      "installed_sha256": "a599aa256049cf30954d1f164721b99e453eb7e4cb8241bcab2d5573e6cf58b8",
-      "adapted": false
+      "installed_sha256": "a725f2d098e3c68b8a7bcc4a84ff7e6524d24086a54319b2bb2d26be5dccefea",
+      "adapted": true,
+      "pre_cr_installed_sha256": "a599aa256049cf30954d1f164721b99e453eb7e4cb8241bcab2d5573e6cf58b8"
+    }
+  ],
+  "local_cr_patches": [
+    {
+      "path": "scripts/core.py",
+      "installed_sha256": "4366b01ef2a5f2fe9d0b03f460f5072287c0bbf57d947c5160c61efe7a6a73b7",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    },
+    {
+      "path": "scripts/design_system.py",
+      "installed_sha256": "b9177f0ba4a11ddd2ce5094a3982ee59b47fe158136c9e59abea4f6d7b321d08",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    },
+    {
+      "path": "scripts/tests/test_core.py",
+      "installed_sha256": "eb3781f136b07a3997863dc6bb961c9fd5b03b9c54fa44ea567aa1e7a2b542a3",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    },
+    {
+      "path": "scripts/tests/test_cr_regressions.py",
+      "installed_sha256": "5ca791234a02a099354dbe96dd3a42a2cae4ed9acae59c2687285caaee5ade7f",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    },
+    {
+      "path": "scripts/tests/test_design_system_mode.py",
+      "installed_sha256": "2c07d24d6283c447a50259cea8742e8ea07506d9a2caf6c61d7eb0253ca7792e",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
+    },
+    {
+      "path": "scripts/validate_data.py",
+      "installed_sha256": "a725f2d098e3c68b8a7bcc4a84ff7e6524d24086a54319b2bb2d26be5dccefea",
+      "reason": "Local CR correction and regression coverage; upstream identity retained separately"
     }
   ]
 }

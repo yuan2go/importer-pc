@@ -103,7 +103,7 @@ static partial class SportmasterRcs
                 var reply = await service.RequestDestinationAsync(frozen, CancellationToken.None);
                 if (mode == "assigned") await service.SendHeartbeatAsync(default);
                 var actual = NonHeartbeatRequests(peer).Skip(postCount).Single();
-                Check(actual.Body == frozen.IntegrationRequest.Body && Wire.Hash(actual.Body) == frozen.IntegrationRequest.BodyHash && actual.Method == "POST" && actual.ContentType.StartsWith("application/json", StringComparison.Ordinal), mode + " sends exact pre-frozen JSON bytes once");
+                Check(actual.Bytes.SequenceEqual(Encoding.UTF8.GetBytes(frozen.IntegrationRequest.Body)) && Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(actual.Bytes)) == frozen.IntegrationRequest.BodyHash && actual.Body == frozen.IntegrationRequest.Body && actual.Method == "POST" && actual.ContentType.StartsWith("application/json", StringComparison.Ordinal), mode + " sends exact pre-frozen JSON bytes once");
                 using var body = JsonDocument.Parse(actual.Body); var envelope = body.RootElement; var item = envelope.GetProperty("data").EnumerateArray().Single(); var p = item.GetProperty("params");
                 Check(envelope.GetProperty("source").GetString() == "BAR" && envelope.GetProperty("version").GetInt32() == 1 && envelope.GetProperty("locale").GetString() == "zh_CN" &&
                     envelope.GetProperty("requestId").GetInt64() == 7 && item.GetProperty("index").GetInt32() == 1 && item.GetProperty("command").GetString() == "sorter.task.dest_request" &&
@@ -505,11 +505,24 @@ static partial class SportmasterRcs
         public CapabilityRequirements Requirements(CapabilityBinding b) => new(BusinessAcceptance: true, Query: false);
         public ParcelPorts Create(ParcelConfiguration c)
         {
-            var p = inner.Create(inner.Normalize(Reference(c))); var service = new SportmasterRcsTaskService(c.Wcs!);
+            var p = inner.Create(inner.Normalize(Reference(c))); SportmasterRcsTaskService? service = null;
+            try
+            {
+            service = new SportmasterRcsTaskService(c.Wcs!);
             service.ConfigureRuntime(c);
             var hashes = new Dictionary<string, string>(p.ImplementationHashes) { [c.Wcs!.InstanceId] = Wire.FileHash(typeof(SportmasterRcsTaskService).Assembly.Location) };
             // The unused reference integration never starts; dispose its owned resources.
             p.Wcs!.DisposeAsync().AsTask().GetAwaiter().GetResult(); return p with { Wcs = service, ImplementationHashes = hashes };
+            }
+            catch (Exception failure)
+            {
+                List<Exception> failures = [failure];
+                var owned = new IAsyncDisposable?[] { service, p.Reader, p.Wcs, p.Plc, p.Weight, p.Login, p.Camera, p.Uploader }
+                    .Concat(p.Readers?.Values.Cast<IAsyncDisposable>() ?? []).Concat(p.Devices?.Values.Cast<IAsyncDisposable>() ?? []).OfType<IAsyncDisposable>().Distinct();
+                foreach (var port in owned) try { port.DisposeAsync().AsTask().GetAwaiter().GetResult(); } catch (Exception cleanup) { failures.Add(cleanup); }
+                if (failures.Count > 1) throw new AggregateException("Fixture construction and cleanup failed", failures);
+                throw;
+            }
         }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
@@ -518,13 +531,26 @@ static partial class SportmasterRcs
         readonly SportmasterRcsTaskService service = new(binding);
         public void Dispose() => service.DisposeAsync().AsTask().GetAwaiter().GetResult();
     }
-    sealed record Exchange(string Method, string ContentType, string Body, int StatusCode, string Response);
+    sealed record Exchange(string Method, string ContentType, string Body, int StatusCode, string Response)
+    { public byte[] Bytes { get; init; } = []; }
     sealed class Peer : IAsyncDisposable
     {
         public readonly ConcurrentDictionary<string, string> Vehicles = new();
         readonly HttpListener listener = new(); readonly CancellationTokenSource stop = new(); readonly Task loop;
         readonly ConcurrentBag<Task> pending = [];
         public ConcurrentQueue<Exchange> Requests { get; } = new();
+        readonly ConcurrentDictionary<long, string> cancelledRequests = new();
+        public string CancelOriginal(long requestId)
+        {
+            var original = Requests.Single(exchange =>
+            {
+                using var body = JsonDocument.Parse(exchange.Body);
+                return body.RootElement.GetProperty("requestId").GetInt64() == requestId &&
+                    body.RootElement.GetProperty("data").EnumerateArray().Any(item => item.GetProperty("command").GetString() == RcsDestinationProtocol.Command);
+            });
+            var identity = Wire.Hash(original.Body); cancelledRequests.TryAdd(requestId, identity);
+            return "SYNTHETIC customer peer cancelled exact original " + requestId + " body " + cancelledRequests[requestId];
+        }
         public string Mode = "assigned";
         public Func<string, string>? ResponseTransform;
         public TaskCompletionSource? ResponseHold;
@@ -548,7 +574,8 @@ static partial class SportmasterRcs
         }
         async Task HandleCore(HttpListenerContext context)
         {
-            using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8); var body = await reader.ReadToEndAsync(); var mode = Mode;
+            using var input = new MemoryStream(); await context.Request.InputStream.CopyToAsync(input, stop.Token);
+            var bodyBytes = input.ToArray(); var body = new UTF8Encoding(false, true).GetString(bodyBytes); var mode = Mode;
             if (mode is "by-position" or "timeout-left")
             {
                 using var json = JsonDocument.Parse(body); var data = json.RootElement.GetProperty("data");
@@ -558,7 +585,7 @@ static partial class SportmasterRcs
             }
             var response = Response(body, mode, Vehicles); response = ResponseTransform?.Invoke(response) ?? response;
             var status = mode == "http-error" ? 503 : mode == "redirect" ? 302 : 200;
-            Requests.Enqueue(new(context.Request.HttpMethod, context.Request.ContentType ?? "", body, status, response));
+            Requests.Enqueue(new(context.Request.HttpMethod, context.Request.ContentType ?? "", body, status, response) { Bytes = bodyBytes });
             var bodyCompleted = false;
             try
             {

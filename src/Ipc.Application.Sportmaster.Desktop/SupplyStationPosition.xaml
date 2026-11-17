@@ -192,7 +192,10 @@
                  TextAlignment="Center" FontWeight="{x:Static type:UiTypography.Emphasis}" IsTabStop="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                  AutomationProperties.Name="RCS 返回消息，可选择复制" AutomationProperties.LiveSetting="Polite">
          <TextBox.Style>
-          <Style TargetType="TextBox" BasedOn="{StaticResource ReadonlyValue}">
+          <Style TargetType="TextBox" BasedOn="{StaticResource OperatorCopyableNotice}">
+           <!-- Keep the RCS original selectable without changing its centered result appearance. -->
+           <Setter Property="Background" Value="Transparent"/>
+           <Setter Property="Padding" Value="0"/>
            <Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/>
            <Setter Property="Visibility" Value="Collapsed"/>
            <Style.Triggers>

@@ -87,7 +87,7 @@ public sealed partial class ParcelRuntime
     {
         if (read.OperatorInput || !pendingCameraCodes.TryGetValue(position, out var frame) ||
             read.DeviceId != frame.DeviceId || read.Epoch != frame.Epoch || read.DetectedTicks != frame.CompletedTicks ||
-            read.CandidateCount != frame.CandidateCount) return;
+            read.CandidateCount != (frame.Codes?.Length ?? frame.CandidateCount)) return;
         cameraReadFeedback[position] = new(position, frame);
         pendingCameraCodes.Remove(position);
     }

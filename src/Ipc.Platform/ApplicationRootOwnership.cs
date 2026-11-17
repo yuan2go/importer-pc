@@ -9,6 +9,8 @@ public static class ApplicationRootOwnership
     [SupportedOSPlatform("windows")]
     public static void RequireWindowsStorage(string dataRoot, string? programRoot = null)
     {
+        InstallationIdentity.RequireDataRoot(dataRoot);
+        if (programRoot is not null) InstallationIdentity.RequireProgramRoot(programRoot);
         RequireDPaths([dataRoot, WindowsStoragePaths.MachineRoot, WindowsStoragePaths.AdministratorRoot,
             programRoot ?? WindowsStoragePaths.ProgramRoot("ImporterPc")]);
     }
@@ -26,6 +28,7 @@ public static class ApplicationRootOwnership
 
     public static string Resource(string application, string dataRoot)
     {
+        InstallationIdentity.RequireDataRoot(dataRoot);
         if (!ExtensionSchema.IsId(application) || !Path.IsPathFullyQualified(dataRoot) || dataRoot.StartsWith(@"\\", StringComparison.Ordinal) ||
             Path.GetFullPath(dataRoot).TrimEnd(Path.DirectorySeparatorChar) == Path.GetPathRoot(dataRoot)?.TrimEnd(Path.DirectorySeparatorChar) ||
             OperatingSystem.IsWindows() && !Path.GetPathRoot(dataRoot)!.Equals(@"D:\", StringComparison.OrdinalIgnoreCase))

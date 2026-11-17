@@ -27,14 +27,18 @@ public partial class App : System.Windows.Application
             }
             catch (ArgumentException) { result = 87; }
             catch { result = 1603; }
-            finally { if (result != 1627) silentPreparation?.Cleanup(); }
+            finally
+            {
+                try { if (result != 1627) silentPreparation?.Cleanup(); }
+                catch (Exception error) { System.Diagnostics.Trace.TraceError("Quiet installation preparation cleanup failed: {0}", error); result = 1603; }
+            }
             Shutdown(result); return;
         }
         base.OnStartup(e);
         try
         {
             var preparation = new InstallerPreparation();
-            var launch = new BusinessLaunch("", Path.Combine(WindowsStoragePaths.UserRoot, "data"), null, null);
+            var launch = new BusinessLaunch("", InstallationIdentity.DefaultLaunchDataRoot, null, null);
             var window = new StartupSetupWindow(launch, preparation.PrepareAsync, preparation.BusinessVersion);
             window.Closed += (_, _) =>
             {

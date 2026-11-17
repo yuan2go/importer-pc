@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
+using Ipc.Platform;
 namespace Ipc.Application.Sportmaster.Desktop;
 
 public partial class SupplyStationWindow
@@ -60,9 +61,15 @@ public partial class SupplyStationWindow
                 var receipt = await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, true, CancellationToken.None));
                 if (receipt.Status == "PausedWithCameraWarning") ViewModel.Message = receipt.Reason;
             }
-            catch
+            catch (Exception opening)
             {
-                var receipt = await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, false, CancellationToken.None));
+                BusinessReceipt receipt;
+                try { receipt = await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, false, CancellationToken.None)); }
+                catch (Exception cleanup)
+                {
+                    if (managementCenter is null && !closing && !closed) ShowManagementPage("diagnostics");
+                    throw new AggregateException("管理窗口暂停与恢复均未确认，保留原窗口供核对。", opening, cleanup);
+                }
                 if (receipt.Status != "Restored") throw new InvalidOperationException("管理窗口的原资源结束尚未确认。");
                 workspaceOpened = false;
                 debug?.ConfirmWorkspaceClosed(receipt);
@@ -148,12 +155,14 @@ public partial class SupplyStationWindow
         {
             await Dispatcher.Yield();
             if (debug is not null) await debug.QuiesceAsync();
+            if (logs is not null) await logs.SuspendAndDrainAsync().WaitAsync(TimeSpan.FromSeconds(5));
             await ViewModel.DrainAsync().WaitAsync(TimeSpan.FromSeconds(5));
             if (workspaceOpened && ViewModel.Application is IManagementWorkspace workspace)
             {
                 var receipt = await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, false, CancellationToken.None));
                 if (receipt.Status != "Restored") throw new InvalidOperationException("管理窗口的原资源结束尚未确认。");
                 workspaceOpened = false;
+                center.LockAfterWorkspaceRelease();
                 debug?.ConfirmWorkspaceClosed(receipt);
             }
             else if (debug is not null) await debug.CloseAsync();
@@ -162,7 +171,7 @@ public partial class SupplyStationWindow
             centerCloseReady = true; center.Close();
         }
         catch (Exception error) { center.ShowCloseFailure(ChineseInterfaceText.ParameterMessage(error.Message, "资源释放或结果核对未完成。"), Ipc.Platform.DiagnosticText.Protect(error.ToString())); }
-        finally { centerClosing = false; center.SetClosing(false); }
+        finally { centerClosing = false; center.SetClosing(false); if (workspaceOpened) logs?.ResumeAfterCancelledClose(); }
     }
     async void Logs_Click(object sender, RoutedEventArgs e)
     {

@@ -45,9 +45,10 @@ static partial class StabilityRemediation
         var c = Config(workspace); var launch = Launch(path, c); var factory = new DelayedFactory(new(launch));
         var app = new ParcelRuntime(launch, new SportmasterFlow(), factory)
         { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); }, Boundary = point => { if (point == "AfterRawDurable") throw new IOException("Synthetic T3 interruption"); } };
-        await app.StartAsync(default); var database = Path.Combine(DirectoryFor(launch, c), "sportmaster.db");
+        var database = Path.Combine(DirectoryFor(launch, c), "sportmaster.db");
         try
         {
+            await app.StartAsync(default);
             Check(app.EmitReferenceAt("left", "first", "001", "first-event"), "first delivery accepted durably");
             await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             await SmRoundFixture.NextVehicleAsync(app, "left");
@@ -181,6 +182,11 @@ static partial class StabilityRemediation
         await begun.Task; await Task.Delay(50); activeCancel.Cancel();
         try { await longQuery.WaitAsync(TimeSpan.FromSeconds(3)); throw new Exception("Long SQL ignored cancellation"); }
         catch (SqliteException ex) { Check(ex.SqliteErrorCode == 9, "active SQLite engine work interrupted by the owned reader progress handler, not just cancelled wait"); }
+        finally
+        {
+            if (!longQuery.IsCompleted) SQLitePCL.raw.sqlite3_interrupt(sqlite.Handle);
+            try { await longQuery.WaitAsync(TimeSpan.FromSeconds(5)); } catch (SqliteException ex) when (ex.SqliteErrorCode == 9) { }
+        }
     }
     internal static async Task OwnedManagementStatus(string workspace, string path)
     {
@@ -226,7 +232,7 @@ static partial class StabilityRemediation
         public Task<CapabilityHealth> HealthAsync(CancellationToken t) => inner.HealthAsync(t);
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
         public async Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken token)
-        { if (Wire.Decode<ParcelPayload>(r.Payload).PositionId == "left") { entered.TrySetResult(); await release.Task.WaitAsync(TimeSpan.FromSeconds(10)); } return await inner.ResolveSlotAsync(r, token); }
+        { if (Wire.Decode<ParcelPayload>(r.Payload).PositionId == "left") { entered.TrySetResult(); await release.Task.WaitAsync(TimeSpan.FromSeconds(10), token); } return await inner.ResolveSlotAsync(r, token); }
         public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();

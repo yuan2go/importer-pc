@@ -89,6 +89,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                     throw new CameraReadRoundConflictException("轮次已变化或正在处理，本次触发未接纳；请刷新并明确重新触发。");
                 if (!readers.TryGetValue(command.DeviceId, out var reader) || reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
                     throw new InvalidOperationException("所选相机没有有效连接确认，不能触发扫码。");
+                sources = [reader.Source as IObservationInspectionSource ?? throw new InvalidOperationException("当前相机不支持原帧关联。")];
                 authority.ThrowIfCancellationRequested(); Management.Require();
                 var scope = collectingInspection!;
                 if (scope.Authority.IsCancellationRequested || scope.Expires <= DateTimeOffset.UtcNow || System.Diagnostics.Stopwatch.GetElapsedTime(scope.StartedTicks) >= scope.Lifetime)
@@ -99,7 +100,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                     Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), authority);
                 repository.Commit(null, "CameraReadRoundPreparing", Wire.Encode(new { Command = command, Actor = ManagementEvidence }), command: receiptCommand,
                     commandResult: new("Pending", "已登记轮次，SDK边界尚待确认；不自动重开。", repository.Revision + 1));
-                Volatile.Write(ref readRound, round); retired?.Cancel.Dispose(); sources = [reader.Source as IObservationInspectionSource ?? throw new InvalidOperationException("当前相机不支持原帧关联。")];
+                Volatile.Write(ref readRound, round); retired?.Cancel.Dispose();
             }
             finally { gate.Release(); }
             try
@@ -176,7 +177,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             {
                 if (readRound == round)
                 {
-                    round.State = error is OperationCanceledException ? "Stopped" : "Faulted";
+                    lock (round.Sync) round.State = error is OperationCanceledException ? "Stopped" : "Faulted";
                     round.Detail = error is OperationCanceledException
                         ? "本轮读取已结束，未发送请求。请放好包裹后点击“再次扫码”。"
                         : "本轮扫码未完成，未发送请求。请点击“再次扫码”；仍失败时可停止试扫并导出日志。";
@@ -197,7 +198,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             finally { gate.Release(); }
             return false;
         }
-        finally { round.Capture = null; }
+        finally { lock (round.Sync) round.Capture = null; }
     }
     bool CanCloseUnsentDebugIntent(ParcelOperation op) => IsDebugRequest(op) && !MainTerminated(op) &&
         new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.All(s => s is null or { State: StageState.Prepared, Attempts: 0 }) &&
@@ -249,7 +250,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             ManualRequest = round.Manual,
             ConsecutiveNoCodeFrames = Volatile.Read(ref round.ConsecutiveNoCodeFrames),
             SendAttempts = op?.Wcs?.Attempts ?? 0,
-            SendBlockedReason = op?.Wcs is { State: StageState.Prepared, Attempts: 0 } && !DebugRequestReady(op) ? DebugRequestBlockingReason(op) : null
+            SendBlockedReason = op is { Wcs: null } ? op.Reason : op?.Wcs is { State: StageState.Prepared, Attempts: 0 } && !DebugRequestReady(op) ? DebugRequestBlockingReason(op) : null
         };
         return Wire.Decode<CameraReadRound>(Wire.Encode(value));
     }

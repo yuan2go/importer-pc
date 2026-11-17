@@ -27,7 +27,7 @@ static partial class Program
             await vm.RefreshManagementModeAsync(); await Flush();
             var nav = (Border)window.FindName("DailyNavigation");
             var labels = Descendants(nav).OfType<Button>().Select(b => b.Content?.ToString()).ToArray();
-            Check(!labels.Contains("维护中心") && Array.IndexOf(labels, "设备与诊断") < Array.IndexOf(labels, "设置") && Array.IndexOf(labels, "设置") < Array.IndexOf(labels, "调试") && Array.IndexOf(labels, "调试") < Array.IndexOf(labels, "日志"), "daily navigation has devices/settings/debug/logs in order without a maintenance center");
+            Check(new[] { "设备与诊断", "设置", "调试", "日志" }.All(labels.Contains) && !labels.Contains("维护中心") && Array.IndexOf(labels, "设备与诊断") < Array.IndexOf(labels, "设置") && Array.IndexOf(labels, "设置") < Array.IndexOf(labels, "调试") && Array.IndexOf(labels, "调试") < Array.IndexOf(labels, "日志"), "daily navigation has devices/settings/debug/logs in order without a maintenance center");
             var clock = (TextBlock)window.FindName("StationClock"); var before = clock.Text; await Task.Delay(1100); await Flush();
             Check(clock.IsVisible && clock.Text != before && clock.Text.Contains(DateTime.Now.ToString("yyyy-MM-dd")), "header clock shows the real local date and advances without a business request");
             var opens = h.Api(h.Right).Opens; var epoch = h.Factory.Sources[h.Right].Epoch;

@@ -138,7 +138,7 @@ static partial class Program
             vm.Left.NewParcel(); vm.Right.NewParcel(); await vm.EmitPositionAsync(vm.Left); await vm.EmitPositionAsync(vm.Right);
             for (var i = 0; i < 100; i++) { await vm.RefreshAsync(); if (vm.Left.Operation?.State == ParcelState.WcsUnknown && vm.Right.Operation?.State == ParcelState.SlotResolved) break; await Task.Delay(20); }
             var originalRequest = vm.Left.Operation?.Wcs?.Request.Id; var rightOwner = vm.Right.Operation?.Id;
-            Check(originalRequest is not null && vm.Left.Slot == "未取得" && vm.Right.Operation?.State == ParcelState.SlotResolved, "real lost left reply preserves Unknown while right continues independently");
+            Check(originalRequest is not null && vm.Left.Operation is { State: ParcelState.WcsUnknown, Wcs.State: StageState.Unknown } && vm.Left.Slot == "未取得" && vm.Right.Operation?.State == ParcelState.SlotResolved, "real lost left reply preserves Unknown while right continues independently");
             await vm.ReconcilePositionAsync(vm.Left); await vm.RefreshAsync();
             Check(vm.Left.Operation?.Wcs?.Request.Id == originalRequest && vm.Left.Operation?.State == ParcelState.SlotResolved && vm.Right.Operation?.Id == rightOwner && factory.Resolves == 4 && factory.Queries == 1, "query reconciles the exact original request once without another send or replacing the right owner");
             var positions = Descendants(window).OfType<SupplyStationPosition>().ToArray();

@@ -60,8 +60,6 @@ public sealed record SmPositionCycle(string PositionId, bool AutoSuppressed, Tra
     public SmRemoteRecoveryCause RecoveryCause { get; init; }
     [System.Text.Json.Serialization.JsonIgnore]
     public string? RecoveryReason => RecoveryCause.HasFlag(SmRemoteRecoveryCause.MembershipMayApply)
-        ? "旧心跳成员仍可能迟到生效；请停用相关位，维护核对客户RCS调度状态后恢复。"
-        : RecoveryCause.HasFlag(SmRemoteRecoveryCause.RequestMayBind)
-            ? "原取格口请求仍可能迟到绑定目标；请停用相关位，维护核对客户RCS原请求后恢复。" : null;
+        ? "旧心跳成员仍可能迟到生效；请停用相关位，维护核对客户RCS调度状态后恢复。" : null;
 }
 public sealed record SmRoundHistoryPage(SmParcelRound[] Items);

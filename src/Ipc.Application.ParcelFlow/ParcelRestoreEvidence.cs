@@ -65,7 +65,7 @@ internal static class ParcelRestoreEvidence
         if (new FileInfo(manifestFile).Length > RecoveryFiles.MaximumManifestBytes || Wire.FileHash(manifestFile) != proof.TargetManifestHash)
             throw new InvalidDataException("原恢复完成标记缺失或变化，保持隔离。");
         var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(manifestFile));
-        if (!manifest.Files.TryGetValue(ParcelMachineOrigin.FileName, out var originHash) || !manifest.Files.TryGetValue("configuration.json", out var configHash) ||
+        if (manifest.Files is null || !ExtensionSchema.IsHash(manifest.DatabaseHash) || !manifest.Files.TryGetValue(ParcelMachineOrigin.FileName, out var originHash) || !manifest.Files.TryGetValue("configuration.json", out var configHash) ||
             configHash != proof.SourceConfigurationHash || Wire.FileHash(Path.Combine(directory, ParcelMachineOrigin.FileName)) != originHash ||
             Wire.Hash(manifest.DatabaseHash + proof.TargetManifestHash) != proof.BackupIdentity)
             throw new InvalidDataException("恢复集的原机器、配置或备份身份不一致，保持隔离。");

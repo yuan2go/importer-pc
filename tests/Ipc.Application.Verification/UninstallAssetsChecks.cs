@@ -12,9 +12,8 @@ static class UninstallAssetsChecks
         UninstallAssetsRecord Plan(Fixture f, DeploymentLocation[]? others = null) => WindowsDeploymentSetup.PlanUninstallAssets(f.Current, Wire.Id(), f.Machine, f.CacheParent,
             f.Inputs, others ?? [], (hash, json) => File.WriteAllText(Path.Combine(f.Machine, hash + ".inventory.json"), json));
         UninstallAssetsReceipt Apply(Fixture f, UninstallAssetsRecord record, Action<UninstallAssetsRecord> save,
-            Func<string, bool>? executing = null, Action<string>? queue = null, MaintenanceExecution? execution = null)
-            => WindowsDeploymentSetup.ApplyUninstallAssets(record, "synthetic-receipt", f.Current, save, executing ?? (_ => false),
-                queue ?? (_ => throw new Exception("unexpected reboot scheduling")), execution);
+            Func<string, bool>? executing = null, MaintenanceExecution? execution = null)
+            => WindowsDeploymentSetup.ApplyUninstallAssets(record, "synthetic-receipt", f.Current, save, executing ?? (_ => false), execution);
 
         var complete = Make("all"); var originalData = Wire.FileHash(complete.DataFile); var plan = Plan(complete);
         Check(plan.Plan.Delete.Length == 3 && plan.Plan.Caches.Length == 2, "current/orphan caches and a historical release are selected from actual inventories after a previous purge");
@@ -84,21 +83,21 @@ static class UninstallAssetsChecks
         }
         Check(Apply(cancelled, cancelSaved, _ => { }).Status == "Completed", "a later explicit action can complete the cancelled original plan");
 
-        var live = Make("live-cache"); var livePlan = Plan(live); var queued = new List<string>(); UninstallAssetsRecord liveSaved = livePlan;
-        var pending = Apply(live, livePlan, s => liveSaved = s, p => p == live.CurrentCache, queued.Add);
-        Check(pending.Status == "RestartRequired" && Directory.Exists(live.CurrentCache) && !Directory.Exists(live.OldProgram), "executing cache stays intact while unrelated historical assets are immediately cleaned");
-        Check(queued.Count > 0 && queued.All(p => TrustedProgramRoots.Contains(live.CurrentCache, p)) && File.Exists(live.DataFile), "only frozen self-cache paths enter the controlled OS boundary");
-        var queuedCount = queued.Count;
-        Check(Apply(live, liveSaved, _ => { }, p => p == live.CurrentCache, queued.Add).Status == "RestartRequired" && queued.Count == queuedCount,
-            "repeated invocation does not duplicate a confirmed restart queue");
-        Check(Apply(live, liveSaved, _ => { }).Status == "Completed", "an independent media host can finish the same pending cache without reboot or expanded scope");
+        var live = Make("live-cache"); var livePlan = Plan(live); UninstallAssetsRecord liveSaved = livePlan;
+        var pending = Apply(live, livePlan, state => liveSaved = state, path => path == live.CurrentCache);
+        Check(pending.Status == "Partial" && Directory.Exists(live.CurrentCache) && !Directory.Exists(live.OldProgram), "executing cache stays intact while unrelated historical assets are immediately cleaned");
+        Check(liveSaved.QueuedCaches.Length == 0 && File.Exists(live.DataFile), "executing cache creates no unverified reboot deletion intent");
+        Check(Apply(live, liveSaved, _ => { }, path => path == live.CurrentCache).Status == "Partial", "repeated invocation retains the original executing cache and fixed plan");
+        var cacheFile = Path.Combine(live.CurrentCache, livePlan.Plan.Delete.Single(area => area.Root == live.CurrentCache).Files.Keys.First());
+        var cacheBytes = File.ReadAllBytes(cacheFile); File.WriteAllBytes(cacheFile, [9, 8, 7]);
+        Reject<InvalidDataException>(() => Apply(live, liveSaved, _ => { }), "changed cache bytes are rejected on explicit continuation rather than deleted by a deferred path operation");
+        Check(File.ReadAllBytes(cacheFile).SequenceEqual(new byte[] { 9, 8, 7 }), "failed continuation preserves the replacement bytes and original evidence");
+        File.WriteAllBytes(cacheFile, cacheBytes);
+        Check(Apply(live, liveSaved, _ => { }).Status == "Completed", "an independent host can verify and finish the same original cache plan without expanded scope");
         var mixed = Make("mixed-pending"); File.WriteAllText(Path.Combine(mixed.OldProgram, "unowned.txt"), "unowned");
-        var mixedPlan = Plan(mixed); UninstallAssetsRecord mixedSaved = mixedPlan; var mixedQueue = new List<string>();
-        Check(Apply(mixed, mixedPlan, s => mixedSaved = s, p => p == mixed.CurrentCache, mixedQueue.Add).Status == "Partial",
-            "unknown files remain partial even when a separate self-cache was successfully queued");
-        var oldCount = mixedQueue.Count;
-        _ = Apply(mixed, mixedSaved, _ => { }, p => p == mixed.CurrentCache, mixedQueue.Add);
-        Check(mixedQueue.Count == oldCount, "retrying other leftovers does not duplicate a separately recorded cache queue");
+        var mixedPlan = Plan(mixed); UninstallAssetsRecord mixedSaved = mixedPlan;
+        Check(Apply(mixed, mixedPlan, state => mixedSaved = state, path => path == mixed.CurrentCache).Status == "Partial" && mixedSaved.QueuedCaches.Length == 0,
+            "unknown files and executing caches are retained without a reboot deletion queue");
         Console.WriteLine("UNINSTALL-ASSETS checks=" + count + "; real files/locks and production planner/deleter; OS reboot queue/registry/UAC NOT_RUN");
         return Task.CompletedTask;
     }

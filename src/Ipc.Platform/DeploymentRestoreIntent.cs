@@ -84,7 +84,14 @@ public static partial class WindowsDeploymentSetup
             var intent = PrepareRestoreIntentCore(application, backup, backupIdentity, targetRoot, targetDirectory);
             return new(intent, lease, stopped);
         }
-        catch { lease?.Dispose(); stopped.Dispose(); throw; }
+        catch (Exception original)
+        {
+            try { stopped.Dispose(); }
+            catch (Exception cleanup) { throw new AggregateException("Restore preparation and stopped-owner release failed; registration ownership retained", original, cleanup); }
+            try { lease?.Dispose(); }
+            catch (Exception cleanup) { throw new AggregateException("Restore preparation and registration release failed", original, cleanup); }
+            throw;
+        }
     }
 
     public static IDisposable HoldRestoreInspection(string application)
@@ -99,6 +106,8 @@ public static partial class WindowsDeploymentSetup
         var current = Current(application) ?? throw new InvalidDataException("缺少当前部署登记，不能准备本站恢复。");
         if (current.LifecycleState != "Installed") throw new InvalidOperationException("先完成当前安装，再恢复本站。");
         targetRoot = Path.GetFullPath(targetRoot); targetDirectory = Path.GetFullPath(targetDirectory);
+        InstallationIdentity.RequireExternalFilePath(backup);
+        InstallationIdentity.RequireDataRoot(targetRoot);
         RequireDataStorage(targetRoot);
         var protectedRoots = new[] { current.DataRoot, current.ConfigurationDirectory, MachineRoot, MaintenanceCacheRoot,
             Path.GetDirectoryName(Path.GetDirectoryName(current.ReleaseRoot)!)!, Path.Combine(WindowsStoragePaths.ProtectedAnchor!, "Administrators") }

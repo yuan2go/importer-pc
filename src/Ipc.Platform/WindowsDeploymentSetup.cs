@@ -30,6 +30,12 @@ public static partial class WindowsDeploymentSetup
         MachineRuntimePolicy.RequireProtectedEvidence(file);
         var current = Wire.Decode<DeploymentLocation>(File.ReadAllText(file));
         if (current.ApplicationId != application) throw new InvalidDataException("Existing deployment identity differs");
+        if (application == "sportmaster")
+        {
+            InstallationIdentity.RequireDataRoot(current.DataRoot);
+            InstallationIdentity.RequireProgramRoot(current.ReleaseRoot);
+            InstallationIdentity.RequireIndependentPath(current.ConfigurationDirectory);
+        }
         return current;
     }
     public static ExtensionTrust ReadTrust(string path, RunMode mode)
@@ -53,6 +59,7 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static void PreviewDataAccess(string dataRoot, string runtimeSid)
     {
+        InstallationIdentity.RequireDataRoot(dataRoot);
         RequireDataStorage(dataRoot);
         var data = Path.GetFullPath(dataRoot);
         if (!Directory.Exists(data)) return; // Creation uses an explicit runtime-Modify ACL.
@@ -113,6 +120,7 @@ public static partial class WindowsDeploymentSetup
         request.Recovery?.Validate();
         var media = DeploymentMedia.Inspect(request.MediaRoot, request.ApplicationId, execution?.Token ?? CancellationToken.None);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");
+        RequireQuietInstallationMedia(request, media);
         RecoverySecurityPolicy.RequireRelease(Path.Combine(media.Root, "app"));
         validateConfiguration(request);
         var sourceFiles = ConfigurationFiles(request.ConfigurationSource);
@@ -176,7 +184,7 @@ public static partial class WindowsDeploymentSetup
             {
                 // Publish a complete seed directory once; upgrades retain it byte for byte.
                 var temporary = config + "." + Wire.Id() + ".new"; ProtectedDirectory(temporary, sid);
-                foreach (var source in ConfigurationFiles(request.ConfigurationSource))
+                foreach (var source in sourceFiles)
                 {
                     var target = Path.Combine(temporary, Path.GetFileName(source)); File.Copy(source, target, false);
                     new FileInfo(target).SetAccessControl(MachineRuntimeSetup.FileAcl(sid));
@@ -194,6 +202,7 @@ public static partial class WindowsDeploymentSetup
                     }
                     Directory.Delete(temporary);
                 }
+                validateConfiguration(request with { ConfigurationSource = config });
             }
             else { MachineRuntimePolicy.RequireProtectedEvidence(Path.Combine(config, "business.json")); validateConfiguration(request with { ConfigurationSource = config }); }
 
@@ -203,7 +212,7 @@ public static partial class WindowsDeploymentSetup
             installPackages(request);
             var location = new DeploymentLocation(request.ApplicationId, media.SourceCommit, releaseRoot, config, data, request.RuntimeAccountSid,
                 RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts)
-            { Recovery = request.Recovery ?? (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc" ? new() : null) };
+            { Recovery = request.Recovery ?? before?.Recovery ?? (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc" ? new() : null) };
             if (before is null && request.ExpectedRegistrationHash is null && location.Recovery is not null)
                 DesktopRecoverySupervisor.InitializeNewDeployment(location);
             location = location with
@@ -234,7 +243,9 @@ public static partial class WindowsDeploymentSetup
         }
         catch (Exception error)
         {
-            var committed = Current(request.ApplicationId)?.ReleaseRoot == releaseRoot;
+            bool committed;
+            try { committed = Current(request.ApplicationId)?.ReleaseRoot == releaseRoot; }
+            catch (Exception inspection) { throw new InstallationOutcomeUnknownException("安装结果与登记均无法核对；保留原操作，不重新提交。", new AggregateException(error, inspection)); }
             try
             {
                 WriteProtected(operation, new

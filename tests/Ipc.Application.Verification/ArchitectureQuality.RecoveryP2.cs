@@ -12,11 +12,13 @@ static partial class ArchitectureQuality
         workspace = source; root = evidence; failures = 0;
         var fixture = Path.Combine(root, "p2-original");
         var psi = new ProcessStartInfo(Environment.ProcessPath!) { RedirectStandardOutput = true, RedirectStandardError = true };
-        foreach (var arg in new[] { typeof(ArchitectureQuality).Assembly.Location, workspace, "--raw-custody-child", fixture }) psi.ArgumentList.Add(arg);
+        if (Path.GetFileNameWithoutExtension(Environment.ProcessPath!).Equals("dotnet", StringComparison.OrdinalIgnoreCase)) psi.ArgumentList.Add(typeof(ArchitectureQuality).Assembly.Location);
+        foreach (var arg in new[] { workspace, "--raw-custody-child", fixture }) psi.ArgumentList.Add(arg);
         using (var child = Process.Start(psi)!)
         {
             var output = child.StandardOutput.ReadToEndAsync(); var error = child.StandardError.ReadToEndAsync();
-            await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15)); Console.Write(await output); Console.Write(await error);
+            try { await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15)); Console.Write(await output); Console.Write(await error); }
+            finally { if (!child.HasExited) { child.Kill(entireProcessTree: true); await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5)); } await Task.WhenAll(output, error).WaitAsync(TimeSpan.FromSeconds(5)); }
             Check(child.ExitCode == 75, "P2 input: real child terminated after original upload file flush, before T3");
         }
         var c = InterruptedConfig(); var sourceDirectory = DirectoryFor("p2-original", c);

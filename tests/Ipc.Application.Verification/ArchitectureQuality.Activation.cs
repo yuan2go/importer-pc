@@ -20,11 +20,18 @@ static partial class ArchitectureQuality
             }
             var path = Path.Combine(root, name);
             var psi = new ProcessStartInfo(Environment.ProcessPath!) { RedirectStandardOutput = true, RedirectStandardError = true };
-            psi.ArgumentList.Add(typeof(ArchitectureQuality).Assembly.Location); psi.ArgumentList.Add(workspace);
+            if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath), "dotnet", StringComparison.OrdinalIgnoreCase)) psi.ArgumentList.Add(typeof(ArchitectureQuality).Assembly.Location);
+            psi.ArgumentList.Add(workspace);
             psi.ArgumentList.Add("--configuration-crash-child"); psi.ArgumentList.Add(path); psi.ArgumentList.Add(point);
             using var child = Process.Start(psi)!;
             var stdout = child.StandardOutput.ReadToEndAsync(); var stderr = child.StandardError.ReadToEndAsync();
-            await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15)); _ = await stdout; _ = await stderr;
+            try { await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15)); }
+            finally
+            {
+                if (!child.HasExited) child.Kill(entireProcessTree: true);
+                await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+                _ = await stdout; _ = await stderr;
+            }
             var file = Path.Combine(DirectoryFor(name, c), "configuration.json"); var interrupted = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(file));
             Check(child.ExitCode == 73 && interrupted.Effective.TimeoutMs == c.TimeoutMs && interrupted.Pending?.TimeoutMs == c.TimeoutMs + 17 && interrupted.Status == "ActivationInProgress" && interrupted.Activation is { FinishedAt: null }, "process exit before resource confirmation retains prior Effective and original Pending " + point);
             await using var reopened = await Open(c, name); var recovered = (await reopened.SnapshotAsync()).Configuration;

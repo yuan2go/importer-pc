@@ -55,7 +55,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         var originalSerial = serial.Value; var provider = reader.Provider;
         var read = CameraSerialReader ?? throw new InvalidOperationException("当前窗口不能读取相机身份，请重新打开设置。");
         var value = await read(ip, engine);
-        if (reader.Provider != provider || reader.Parameters.Single(p => p.Field.Key == "device.ip").Value != ip ||
+        if (!reader.Parameters.Contains(serial) || reader.Provider != provider || reader.Parameters.Single(p => p.Field.Key == "device.ip").Value != ip ||
             reader.Parameters.Single(p => p.Field.Key == "reader.engine").Value != engine || serial.Value != originalSerial)
             throw new InvalidOperationException("读取期间相机设置已改变，本次结果未采用；请重新保存。");
         serial.Value = value;

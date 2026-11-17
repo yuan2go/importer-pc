@@ -15,23 +15,27 @@ internal static class SmDispatchResources
         ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config with
         { Wcs = h.Config.Wcs! with { Parameters = new(h.Config.Wcs.Parameters) { ["request-timeout-ms"] = "30000", ["heartbeat-interval-ms"] = "100" } } });
         await h.StartAsync();
+        await ManagementModeFixture.Authorize(h.App);
+        var seed = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-RESOURCE-SEED"), default);
+        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(seed.OperationId!))?.Wcs?.State == StageState.Accepted);
+        var resourceRequest = (await h.App.OperationAsync(seed.OperationId!))!.Wcs!.Request;
+        await SmRoundFixture.NextVehicleAsync(h.App, "left");
+        List<IWcsDispatchPermit> reservations = [];
         var holds = new ConcurrentDictionary<string, TaskCompletionSource>();
         h.Peer.ResponseGate = body => holds.FirstOrDefault(p => body.Contains("\"" + p.Key + "\"", StringComparison.Ordinal)).Value?.Task ?? Task.CompletedTask;
         async Task<ParcelBarcodeReceipt> Submit(string side, string code) => await h.App.SubmitParcelBarcodeAsync(await h.Command(side, code), default);
         TaskCompletionSource Hold(string code) => holds.GetOrAdd(code, _ => new(TaskCreationOptions.RunContinuationsAsynchronously));
-        async Task Fill(string prefix, int before)
+        async Task Fill()
         {
+            // The application now permits only one unconfirmed remote binding
+            // per lane. Saturate the real transport pool with unsent permits;
+            // do not bypass that fence by inventing replacement vehicles.
             for (var i = 0; i < SportmasterRcsTaskService.MaximumDestinationSends; i++)
-            {
-                var code = prefix + i; _ = Hold(code);
-                await Submit("left", code);
-                await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == before + i + 1));
-                await SmRoundFixture.NextVehicleAsync(h.App, "left");
-            }
+                reservations.Add(await h.Factory.Rcs.ReserveDispatchAsync(resourceRequest, default));
         }
         try
         {
-            await Fill("SYNTH-HELD-", 0);
+            await Fill();
             var ceiling = h.Peer.Requests.Count;
             var queued = await Submit("right", "SYNTH-END-WHILE-QUEUED");
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Rcs.DispatchProgress.RightWaiting == 1));
@@ -39,8 +43,8 @@ internal static class SmDispatchResources
                 "real HTTP congestion waits before T2; a local permit is not a remote request");
             var heartbeat = h.Peer.HeartbeatRequests.Count;
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.HeartbeatRequests.Count > heartbeat));
-            Check(h.Factory.Rcs.DispatchProgress is { Capacity: 7, Occupied: 7, ActiveSends: 7 } && h.Peer.Requests.Count == ceiling,
-                "heartbeat remains usable while the bounded destination pool is full; total connection ceiling is unchanged");
+            Check(h.Factory.Rcs.DispatchProgress is { Capacity: 7, Occupied: 7, ActiveSends: 0 } && h.Peer.Requests.Count == ceiling,
+                "heartbeat remains usable while the real bounded send pool is fully reserved; no reservation is claimed as HTTP");
             await SmRoundFixture.NextVehicleAsync(h.App, "right");
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Rcs.DispatchProgress.RightWaiting == 0));
             Check((await h.App.OperationAsync(queued.OperationId!))?.Wcs is { Attempts: 0, State: StageState.Cancelled },
@@ -50,7 +54,7 @@ internal static class SmDispatchResources
             var rightGate = Hold("SYNTH-FAIR-RIGHT");
             var right = await Submit("right", "SYNTH-FAIR-RIGHT");
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Rcs.DispatchProgress is { LeftWaiting: 1, RightWaiting: 1 }));
-            holds["SYNTH-HELD-0"].TrySetResult();
+            reservations[0].Dispose();
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == ceiling + 1));
             Check(h.Peer.Requests.Last().Contains("SYNTH-FAIR-RIGHT", StringComparison.Ordinal) &&
                 (await h.App.OperationAsync(left.OperationId!))?.Wcs?.Attempts == 0 && (await h.App.OperationAsync(right.OperationId!))?.Wcs?.Attempts == 1,
@@ -58,6 +62,7 @@ internal static class SmDispatchResources
             rightGate.TrySetResult();
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == ceiling + 2));
             foreach (var hold in holds.Values) hold.TrySetResult();
+            foreach (var permit in reservations) permit.Dispose(); reservations.Clear();
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity?.ManagedExecutions == 0);
             Check(h.Peer.Requests.Count == ceiling + 2 && !h.Peer.Requests.Any(b => b.Contains("SYNTH-END-WHILE-QUEUED", StringComparison.Ordinal)) &&
                 h.Factory.Rcs.DispatchProgress is { Occupied: 0, ActiveSends: 0, LeftWaiting: 0, RightWaiting: 0 },
@@ -89,21 +94,23 @@ internal static class SmDispatchResources
                 Rounds = 100, ElapsedMs = loadClock.Elapsed.TotalMilliseconds, Samples = loadSamples
             });
 
-            // Exercise actual Stop with both network calls and a queued unsent round.
+            // Stop must drain both permitted in-flight lane requests. Queued
+            // zero-attempt cancellation was exercised above with real permits.
             var beforeStop = h.Peer.Requests.Count;
-            await Fill("SYNTH-STOP-", beforeStop);
-            var pending = await Submit("right", "SYNTH-STOP-UNSENT");
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Rcs.DispatchProgress.RightWaiting == 1));
+            _ = Hold("SYNTH-STOP-LEFT"); _ = Hold("SYNTH-STOP-RIGHT");
+            var stopLeft = await Submit("left", "SYNTH-STOP-LEFT");
+            var stopRight = await Submit("right", "SYNTH-STOP-RIGHT");
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == beforeStop + 2));
             await h.App.StopAsync(default).WaitAsync(TimeSpan.FromSeconds(10));
             var directory = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, h.Config.ApplicationId);
             using var repository = new ParcelRepository(directory, h.Config.ApplicationId);
-            Check(repository.ReadOperation(pending.OperationId!)?.Wcs?.Attempts == 0 &&
+            Check(repository.ReadOperation(stopLeft.OperationId!)?.Wcs?.Attempts == 1 && repository.ReadOperation(stopRight.OperationId!)?.Wcs?.Attempts == 1 &&
                 h.Factory.Rcs.DispatchProgress is { Occupied: 0, ActiveSends: 0, LeftWaiting: 0, RightWaiting: 0 },
-                "Stop drains real calls and queued reservations without inventing an attempt for the unsent round");
-            Check(h.Peer.Requests.Count == beforeStop + SportmasterRcsTaskService.MaximumDestinationSends && !h.App.FatalFailure.IsCompleted,
+                "Stop drains actual calls on both lanes and retains each original single attempt");
+            Check(h.Peer.Requests.Count == beforeStop + 2 && !h.App.FatalFailure.IsCompleted,
                 "congestion, removal and stop create no extra POST, retry or false fatal storage failure");
         }
-        finally { foreach (var hold in holds.Values) hold.TrySetResult(); h.Peer.ResponseGate = null; }
+        finally { foreach (var permit in reservations) permit.Dispose(); foreach (var hold in holds.Values) hold.TrySetResult(); h.Peer.ResponseGate = null; }
     }
     static async Task DefaultDeadlineQueuedRemoval(string workspace, string root)
     {

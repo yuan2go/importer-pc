@@ -18,10 +18,13 @@ set -eu
 # then skips its own probes and refuses to download, so probing stays cheap
 # and can never loop.
 probe_ok() {
-  case "$(IMPECCABLE_LAUNCHER_PROBE=1 "$1" engine-probe 2>/dev/null || true)" in
-    impeccable-engine*) return 0 ;;
-  esac
-  return 1
+  # An untrusted PATH/home executable must never hold a hook indefinitely.
+  # Without a bounded process runner, skip this optional candidate.
+  command -v timeout >/dev/null 2>&1 || return 1
+  reply=$(timeout -k 1s 2s env IMPECCABLE_LAUNCHER_PROBE=1 "$1" engine-probe 2>/dev/null) || return 1
+  case "$reply" in *"
+"*) return 1 ;; esac
+  printf '%s\n' "$reply" | LC_ALL=C grep -Eq '^impeccable-engine [0-9]+\.[0-9]+\.[0-9]+([+-][0-9A-Za-z.-]+)?$'
 }
 probing=${IMPECCABLE_LAUNCHER_PROBE:-}
 
@@ -39,6 +42,11 @@ dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 export IMPECCABLE_SKILL_DIR IMPECCABLE_SELF
 
 if [ -n "${IMPECCABLE_BIN:-}" ] && [ -x "${IMPECCABLE_BIN}" ]; then
+  if [ "${IMPECCABLE_OVERRIDE_EXECUTED:-}" = 1 ]; then
+    echo 'impeccable: IMPECCABLE_BIN recursively selects the launcher; select an engine binary' >&2
+    exit 126
+  fi
+  export IMPECCABLE_OVERRIDE_EXECUTED=1
   exec "${IMPECCABLE_BIN}" "$@"
 fi
 

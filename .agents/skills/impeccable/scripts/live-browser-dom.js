@@ -21,7 +21,10 @@
     const tagsToSkip = skipTags || new Set();
 
     function own(el) {
-      return el && (el.id?.startsWith(prefix) || el.closest?.('[id^="' + prefix + '"]'));
+      for (let current = el; current; current = current.parentElement) {
+        if (typeof current.id === 'string' && current.id.startsWith(prefix)) return current;
+      }
+      return false;
     }
 
     function pickable(el) {
@@ -100,7 +103,7 @@
 
     function cssId(id) {
       if (css?.escape) return css.escape(id);
-      return String(id).replace(/([ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1');
+      return Array.from(String(id), c => '\\' + c.codePointAt(0).toString(16) + ' ').join('');
     }
 
     function liveUiRoot() {
@@ -238,7 +241,10 @@
       const uiRoot = liveUiRoot();
       if (uiRoot === doc.body) return uiAppendToPage(el);
       // An adapter shadow root: its host is the node that sits on the page.
-      if (uiRoot.host) pageRoots.add(uiRoot.host);
+      if (uiRoot.host) {
+        pageRoots.add(uiRoot.host);
+        if (topLayerHost.parentNode && uiRoot.host.parentNode !== topLayerHost) topLayerHost.appendChild(uiRoot.host);
+      }
       uiRoot.appendChild(el);
       return el;
     }

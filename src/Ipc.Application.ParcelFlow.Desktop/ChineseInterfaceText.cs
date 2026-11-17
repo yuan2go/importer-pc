@@ -165,7 +165,7 @@ public static class ChineseInterfaceText
         if (value.StartsWith("Authentication unavailable:", StringComparison.Ordinal)) return "操作员认证服务暂不可用，请稍后重试或查看诊断。";
         // Translate known application explanations without changing source facts
         // or replacing identifiers supplied by an adapter or remote service.
-        foreach (var (source, text) in Notices) value = value.Replace(source, text, StringComparison.Ordinal);
+        foreach (var (source, text) in Notices) if (value == source) return text;
         return value;
     }
     static readonly (string Source, string Text)[] Notices =
@@ -190,7 +190,7 @@ public static class ChineseInterfaceText
         ("Original stage outcome or receipt responsibility is unresolved", "上一件格口未确认，请通知维护人员处理"),
         ("Current entity main result is incomplete", "当前包裹仍在获取格口"),
         ("Position dependency/health or original responsibility blocked", "本位设备未就绪或上一件待处理"),
-        ("Transport/protocol facts do not establish business acceptance", "RCS 未明确返回结果，格口未确认。"),
+        ("Transport/protocol facts do not establish business acceptance", "通信结果尚不能确认业务是否已接收，请核对原请求。"),
         ("Contradictory or invalid original-stage receipt", "RCS 返回的结果互相矛盾，格口未确认。"),
         ("Application command committed", "操作已记录"),
         ("Unsupported command or an application guard is closed", "命令不受支持或当前执行条件未满足"),

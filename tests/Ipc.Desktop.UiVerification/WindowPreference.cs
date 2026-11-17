@@ -111,9 +111,10 @@ static partial class Program
                 var committedRevision = vm.Snapshot!.Configuration.Revision;
                 File.WriteAllBytes(preference, original);
                 Check(await vm.PrepareConfigurationReviewAsync() && vm.ReviewedConfigurationChanges.Single().Path == "WindowOpeningMode", "partial retry reviews only the remaining local preference");
+                until = DateTime.UtcNow.AddSeconds(15);
                 confirm.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 do { await Task.Delay(20); await Flush(); } while (vm.Busy && DateTime.UtcNow < until);
-                Check(!vm.HasUnsavedDisplayPreferences && vm.Snapshot!.Configuration.Revision == committedRevision &&
+                Check(!vm.Busy && !vm.HasUnsavedDisplayPreferences && vm.Snapshot!.Configuration.Revision == committedRevision &&
                     PresentationPreferences.ReadWindowMode("sportmaster") == PresentationPreferences.WindowOpeningMode.FullScreen && window.WindowStyle == WindowStyle.None,
                     "retry applies the remaining local file immediately without submitting the successful business configuration again");
             }

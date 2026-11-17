@@ -20,6 +20,7 @@ static partial class Program
         await h.StartAsync();
         h.Peer.Mode = "reject";
         await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-RIGHT"), default);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.PositionId == "right" && o.Wcs?.State == StageState.Rejected));
         h.Peer.Mode = "accept";
         var application = DispatchProxy.Create<IManualSupplyUiFixture, ProjectionProbe>();
         var probe = (ProjectionProbe)(object)application; probe.Inner = h.App;
@@ -60,6 +61,7 @@ static partial class Program
             var slot = (TextBox)left.FindName("CurrentSlot");
             foreach (var chute in new[] { "L-0123", "A" + new string('1', 15), "A" + new string('2', 16), "C" + new string('3', 31), "C" + new string('4', 32), "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二" })
             {
+                await h.NextVehicleAsync("left");
                 h.Peer.ReplySlot = chute;
                 await h.App.SubmitParcelBarcodeAsync(await h.Command("left", barcode), default);
                 await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Slot == chute);
@@ -87,7 +89,7 @@ static partial class Program
                 var reasonValue = (TextBox)right.FindName("CenteredRcsMessage");
                 var firstReason = reasonValue.GetRectFromCharacterIndex(0);
                 Check(reasonValue.IsVisible && reasonValue.Text == reason && firstReason.Height > 0 && firstReason.Bottom <= reasonValue.ActualHeight + .5,
-                    "full long rejection reason is retained with at least one complete readable line");
+                    "full long rejection reason is retained with at least one complete readable line: visible=" + reasonValue.IsVisible + "; length=" + reasonValue.Text.Length + "; expected=" + reason.Length + "; height=" + reasonValue.ActualHeight + "; first=" + firstReason);
                 reasonValue.ScrollToEnd(); await Flush();
                 var lastReason = reasonValue.GetRectFromCharacterIndex(reasonValue.Text.Length - 1);
                 Check(!lastReason.IsEmpty && lastReason.Top >= -1 && lastReason.Bottom <= reasonValue.ActualHeight + 1, "last reason character is reachable in its own scroll area");

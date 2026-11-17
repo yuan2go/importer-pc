@@ -98,8 +98,10 @@ internal static class MvsStopReconnect
 
         // 5. A real release failure still keeps the owner and is not reported as released.
         api.FailDestroy = true;
-        try { await session.ReconnectAsync(_ => true, default); throw new Exception("failed DestroyHandle reported as released"); }
-        catch (Exception error) when (error is not ObservationConnectionException) { }
+        var releaseFailed = false;
+        try { await session.ReconnectAsync(_ => true, default); }
+        catch (Exception error) when (error is not ObservationConnectionException) { releaseFailed = true; }
+        Check(releaseFailed, "failed DestroyHandle is reported as a release failure");
         Check(lease.Releases == 3 && api.Calls.Count(c => c == "open") == 4,
             "a failed DestroyHandle keeps the device lease and does not reopen; this is the only case that blocks automatic reconnect");
         api.FailDestroy = false;

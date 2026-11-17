@@ -18,15 +18,16 @@ public partial class ParcelViewModel
     {
         if (application is not IParcelConfigurationDraftApplication access || editorConfigurationHash is null || structuredBase is null || StructuredPolicy is null)
             throw new InvalidOperationException("先读取当前完整拓扑，再保存独立的未完成设置");
-        Dictionary<string, string> values = new() { ["editor"] = "live-v2", ["base"] = Wire.Encode(structuredBase), ["authority"] = configurationAuthority, ["json"] = ConfigurationDraft, ["reason"] = ConfigurationReason };
+        Dictionary<string, string> values = new() { ["editor"] = "live-v3", ["base"] = Wire.Encode(structuredBase), ["authority"] = configurationAuthority, ["json"] = ConfigurationDraft, ["reason"] = ConfigurationReason };
         // Every current draft includes display identity and values; saving never applies a preference.
         values["display.identity"] = displayIdentity ?? "";
         values["display.name"] = DisplayNameDraft; values["display.target"] = TargetEfficiencyDraft;
         values["capabilities"] = Wire.Encode(CapabilityDrafts.Select(d => d.CaptureRaw()).ToArray());
         values["readers"] = Wire.Encode(ReaderDrafts.Select(d => d.Capability.CaptureRaw()).ToArray());
         foreach (var p in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite)) values["policy." + p.Name] = p.GetValue(StructuredPolicy)?.ToString() ?? "";
-        foreach (var role in ConfigurationRoles) values["role." + role.Role] = role.Selection.Capability?.InstanceId ?? "";
-        foreach (var position in PositionDrafts) { values["position." + position.Id + ".scale"] = position.Scale.Capability?.InstanceId ?? ""; values["position." + position.Id + ".camera"] = position.Camera.Capability?.InstanceId ?? ""; }
+        string Reference(CapabilityDraft? capability) => capability is null ? "none" : CapabilityDrafts.IndexOf(capability).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        foreach (var role in ConfigurationRoles) values["role." + role.Role] = Reference(role.Selection.Capability);
+        foreach (var position in PositionDrafts) { values["position." + position.Id + ".scale"] = Reference(position.Scale.Capability); values["position." + position.Id + ".camera"] = Reference(position.Camera.Capability); }
         if (structuredBase.ApplicationId == "sportmaster") SmPreferences.Capture(values);
         availableEditorDraft = await ServiceAsync(() => access.SaveEditorDraftAsync(editorConfigurationHash, savedEditorHash, new(values)));
         savedEditorHash = availableEditorDraft.DraftHash;
@@ -39,7 +40,7 @@ public partial class ParcelViewModel
         savedEditorHash = saved.DraftHash;
         if (saved.BaseChanged || saved.BaseConfigurationHash != editorConfigurationHash) throw new InvalidOperationException("草稿原基线/来源已变化；保留当前输入和加密草稿，先核对原版本，不覆盖新账");
         var v = saved.Editor.Values;
-        if (v.GetValueOrDefault("editor") != "live-v2") throw new InvalidOperationException("不是当前设置草稿；首配草稿从启动修复入口继续，非当前格式请使用全新数据目录，原文件和输入保留");
+        if (v.GetValueOrDefault("editor") != "live-v3") throw new InvalidOperationException("不是当前设置草稿；首配草稿从启动修复入口继续，非当前格式请使用全新数据目录，原文件和输入保留");
         var required = new[] { "base", "authority", "json", "reason", "capabilities", "readers", "display.identity", "display.name", "display.target" }
             .Concat(typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite).Select(p => "policy." + p.Name))
             .Concat(ConfigurationRoles.Select(r => "role." + r.Role))
@@ -59,10 +60,17 @@ public partial class ParcelViewModel
         foreach (var p in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite))
         { var value = v["policy." + p.Name]; p.SetValue(temporary.StructuredPolicy, p.PropertyType.IsEnum ? Enum.Parse(p.PropertyType, value) : p.PropertyType == typeof(bool) ? bool.Parse(value) : value); }
         CapabilityChoice[] Choices(string kind) => [new("不绑定/沿用默认", null), .. temporary.CapabilityDrafts.Where(c => c.Kind == kind).Select(c => new CapabilityChoice(c.InstanceId, c))];
+        CapabilityChoice Resolve(CapabilityChoice[] choices, string reference)
+        {
+            if (reference == "none") return choices.Single(c => c.Capability is null);
+            if (!int.TryParse(reference, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var index) || index < 0 || index >= temporary.CapabilityDrafts.Count)
+                throw new InvalidDataException("未完成草稿的能力引用无效，原稿保留。");
+            return choices.Single(c => ReferenceEquals(c.Capability, temporary.CapabilityDrafts[index]));
+        }
         var roles = temporary.ConfigurationRoles.ToArray(); temporary.ConfigurationRoles.Clear();
-        foreach (var role in roles) { var choices = Choices(role.Kind); temporary.ConfigurationRoles.Add(new(role.Role, role.Kind, choices, choices.Single(c => (c.Capability?.InstanceId ?? "") == v["role." + role.Role]), role.Visibility == System.Windows.Visibility.Visible)); }
+        foreach (var role in roles) { var choices = Choices(role.Kind); temporary.ConfigurationRoles.Add(new(role.Role, role.Kind, choices, Resolve(choices, v["role." + role.Role]), role.Visibility == System.Windows.Visibility.Visible)); }
         var positions = temporary.PositionDrafts.ToArray(); temporary.PositionDrafts.Clear();
-        foreach (var p in positions) { var restored = new PositionConfigurationDraft(p.Original, Choices("weight"), Choices("camera")); restored.Scale = restored.Scales.Single(c => (c.Capability?.InstanceId ?? "") == v["position." + p.Id + ".scale"]); restored.Camera = restored.Cameras.Single(c => (c.Capability?.InstanceId ?? "") == v["position." + p.Id + ".camera"]); temporary.PositionDrafts.Add(restored); }
+        foreach (var p in positions) { var restored = new PositionConfigurationDraft(p.Original, Choices("weight"), Choices("camera")); restored.Scale = Resolve(restored.Scales, v["position." + p.Id + ".scale"]); restored.Camera = Resolve(restored.Cameras, v["position." + p.Id + ".camera"]); temporary.PositionDrafts.Add(restored); }
         if (temporary.structuredBase!.ApplicationId == "sportmaster")
         {
             // Validate in isolation before replacing either business or local drafts.

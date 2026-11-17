@@ -21,6 +21,12 @@ CASES = {
     'installer-bytes': ('production', '最终已签名单EXE与冻结介质的载荷/SourceCommit绑定及实际下载SHA256；签名验证不能替代载荷来源核对'),
 }
 STATES = {'PASS', 'FAIL', 'NOT_RUN', 'BLOCKED'}
+ENGINEERING_SCOPES = {
+    'core': 'SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS',
+    'wpf': 'Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning',
+    'media': 'Actual unified release verification: both ZIPs, inventories, source, composition and shared DLLs',
+    'removal': 'Internal inventory kernel only; real Windows sharing violation with synthetic restart queue',
+}
 
 
 def digest(path):
@@ -67,6 +73,8 @@ def evaluate(root, report, source, inventory, level):
             # Human production attestations still need independent authorized review.
             if CASES[case][0] == 'engineering':
                 receipt = json.loads(artifact(root, row['Evidence'][0]['Path']).read_bytes())
+                if receipt.get('Scope') != ENGINEERING_SCOPES[case]:
+                    raise ValueError('Execution receipt belongs to another verification case: ' + case)
                 if receipt.get('Status') != 'PASS' or receipt.get('SourceCommit') != source or receipt.get('MediumInventorySha256') != inventory:
                     raise ValueError('Frozen execution receipt differs: ' + case)
                 if case != 'media' and receipt.get('ExitCode') != 0:

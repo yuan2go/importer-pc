@@ -214,7 +214,14 @@ public partial class SupplyStationPosition : UserControl
         terminalTextRetained = false; RebaseInput.Visibility = Visibility.Collapsed;
         editing = BarcodeEntry.Text.Length > 0;
         showingDraftNotice = editing; InputFeedback.Text = editing ? DraftNotice : "输入已清空，相机读码将自动更新。";
-        if (!editing) { inputBasis = null; overflow = false; }
+        if (!editing)
+        {
+            inputBasis = null; overflow = false;
+            // Same-placement camera observations deliberately create no new input.
+            // Resume the existing camera projection after TextChanged finishes.
+            if (DataContext is SupplyStationPositionViewModel { Input.Observation.OperatorInput: null })
+                Dispatcher.BeginInvoke(new Action(RefreshBarcodeDisplay));
+        }
         else if (inputBasis is null) CaptureInputBasis();
         RefreshSubmitAvailability();
     }
@@ -239,7 +246,7 @@ public partial class SupplyStationPosition : UserControl
         if (e.Key is Key.Back or Key.Delete or Key.Left or Key.Right or Key.Up or Key.Down or Key.Home or Key.End)
             ResetPdaDetection();
         if (e.Key != Key.Enter || Keyboard.Modifiers != ModifierKeys.None) return;
-        e.Handled = true; if (!e.IsRepeat) { completedInputBurst = true; await SubmitBarcodeAsync(Host?.TakeBarcodeEnterTimestamp() ?? e.Timestamp); }
+        e.Handled = true; if (!e.IsRepeat) await SubmitBarcodeAsync(Host?.TakeBarcodeEnterTimestamp() ?? e.Timestamp);
     }
     void Entry_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
@@ -328,6 +335,7 @@ public partial class SupplyStationPosition : UserControl
                 vm.ReportBarcodeFeedback(receipt, InputFeedback.Text);
                 if (receipt.Status is "Admitted" or "Rejected" or "Blocked" or "Conflict" or "Duplicate")
                 {
+                    completedInputBurst = true;
                     submitted = null;
                     editing = false; inputBasis = null;
                     terminalTextRetained = true;
@@ -344,10 +352,14 @@ public partial class SupplyStationPosition : UserControl
                 InputFeedback.Text = SubmissionUnconfirmed;
                 vm.Message = InputFeedback.Text;
             }
-        await vm.RefreshAsync();
+        try { await vm.RefreshAsync(); }
+        catch (Exception error) { vm.MarkReadFailure("提交后的状态读取失败：" + error.Message); }
+        finally
+        {
         submitting = false; BarcodeEntry.IsReadOnly = submitted is not null;
         SubmitBarcode.Content = submitted is null ? "提交" : "查看提交结果";
         RefreshSubmitAvailability(); RebaseInput.IsEnabled = submitted is null; RefreshBarcodeDisplay(); PrepareResultReplacement();
+        }
     }
     const string SubmissionUnconfirmed = "提交结果未确认，请保留包裹；点“查看提交结果”，勿重复提交。";
     void Picture_Click(object sender, RoutedEventArgs e)

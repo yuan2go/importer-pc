@@ -56,11 +56,11 @@ static partial class Program
             Check(!Directory.GetFiles(offlineLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.GetFiles(offlineLaunch.DataRoot, "configuration.json", SearchOption.AllDirectories).Any(),
                 "first-configuration native read creates neither database nor authoritative configuration");
             await SelectSection(1);
-            Check(parameterEditor.NavigateTo("TimeoutMs"), "startup policy field resolves through the same parameter editor");
+            Check(parameterEditor.NavigateTo("ReadTimeoutMs"), "startup policy field resolves through the same parameter editor");
             first.UpdateLayout();
-            Check(Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("草稿不可用")) && Descendants(first).OfType<TextBox>().Any(t => t.Text == config.TimeoutMs.ToString()) && Wire.FileHash(draftFile) == draftHash,
+            Check(Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("草稿不可用")) && Descendants(first).OfType<TextBox>().Any(t => t.Text == (config.ReadTimeoutMs ?? 1000).ToString()) && Wire.FileHash(draftFile) == draftHash,
                 "actual Windows DPAPI refusal leaves the original ciphertext unchanged while the published offline editor loads configuration fields and an explicit unavailable-draft diagnosis");
-            var timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "TimeoutMs");
+            var timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "ReadTimeoutMs");
             Check(timeout.IsEnabled && timeout.Focus(), "native policy editor is enabled and accepts keyboard focus before editing");
             var originalTimeout = timeout.Text; timeout.Text = "4321";
             var discardPrompts = 0;
@@ -95,8 +95,8 @@ static partial class Program
             for (var i = 0; i < 100 && (checkedField.GetValue(first) is null || (bool)busyField.GetValue(first)!); i++) await Task.Delay(20);
             Check(checkedField.GetValue(first) is string && !(bool)busyField.GetValue(first)!, "actual candidate check completes and records the exact current editor input");
             await SelectTask(1);
-            parameterEditor = Descendants(first).OfType<ParameterSettingsControl>().Single(); parameterEditor.NavigateTo("TimeoutMs"); first.UpdateLayout();
-            timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "TimeoutMs"); timeout.Text = "4322";
+            parameterEditor = Descendants(first).OfType<ParameterSettingsControl>().Single(); parameterEditor.NavigateTo("ReadTimeoutMs"); first.UpdateLayout();
+            timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "ReadTimeoutMs"); timeout.Text = "4322";
             Check(checkedField.GetValue(first) is null, "editing policy invalidates a completed candidate check");
             timeout.Text = originalTimeout; await SelectTask(1);
             await first.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
@@ -112,13 +112,13 @@ static partial class Program
         var page = (ContentControl)primary.FindName("PageHost");
         // Current compact history collapses the whole filter group; the nested
         // HistoryFilters now controls only time. Open the actual barcode group.
-        var filters = (Expander)((HistoryPage)page.Content).FindName("AllHistoryFilters"); filters.IsExpanded = true; primary.UpdateLayout();
+        var filters = (Expander)Descendants(page).OfType<HistoryPage>().Single().FindName("AllHistoryFilters"); filters.IsExpanded = true; primary.UpdateLayout();
         var barcode = Descendants(page).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "历史完整条码");
         Check(barcode.Focus() && barcode.IsKeyboardFocused, "native history exact-barcode filter takes keyboard focus and has an automation name");
         barcode.Text = "000000000000000000001"; barcode.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
         Check(((ParcelViewModel)primary.DataContext).HistoryBarcode == barcode.Text, "native history input preserves long leading-zero text in the view model");
         filters.IsExpanded = false; primary.UpdateLayout();
-        Check(((HistoryPage)page.Content).ActualHeight > 200, "compact history collapses filters while keeping the fixed-query/export actions and detail area available");
+        Check(Descendants(page).OfType<HistoryPage>().Single().ActualHeight > 200, "compact history collapses filters while keeping the fixed-query/export actions and detail area available");
         Check(Descendants(page).OfType<Button>().Any(b => (b.Content as string)?.Contains("导出") == true), "native history exposes bounded CSV export with cancel entry");
         Screenshot(primary, Path.Combine(evidence, "commercial-history-1100x600.png"));
         var parameterVm = (ParcelViewModel)primary.DataContext;

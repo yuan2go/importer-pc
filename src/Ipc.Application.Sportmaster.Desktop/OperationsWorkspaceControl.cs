@@ -74,7 +74,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             if (dialog.EnteredSessionId is { } entered) { grant = entered; model.OwnedManagementSession = entered; }
             await model.RefreshManagementModeAsync();
         }));
-        authorizationPanel.Header = status; authorizationPanel.Content = authorization;
+        authorizationPanel.SetBinding(HeaderedContentControl.HeaderProperty, new Binding(nameof(TextBlock.Text)) { Source = status });
+        authorizationPanel.Content = authorization;
         top.Children.Add(authorizationPanel); top.Children.Add(message);
         System.Windows.Automation.AutomationProperties.SetAutomationId(technicalFailure, "Operations.Failure");
         actions.Children.Add(technicalFailure);
@@ -139,6 +140,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         await model.RefreshDisplayAsync();
         await model.EnsureMaintenanceLoadedAsync();
         await Refresh();
+        authorizationPanel.IsExpanded = false; model.Message = "";
         ShowPage(selected);
     }
     async Task Refresh()
@@ -344,7 +346,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     }
     SoftwareLogControl CreateLogs()
     {
-        var control = new SoftwareLogControl(authority);
+        var control = new SoftwareLogControl(authority); control.UseParentHeading();
         control.OperationRequested += async (_, id) => await Run(() => ShowOperation(id));
         return control;
     }

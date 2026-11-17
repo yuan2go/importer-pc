@@ -66,6 +66,8 @@ internal static partial class Program
                 }
                 Check(!model.HasUnsavedConfiguration && !model.HasUnsavedDisplayPreferences,
                     "opening professional parameters creates no phantom dirty draft; business=" + model.HasUnsavedConfiguration + "; preferences=" + model.HasUnsavedDisplayPreferences);
+                var authorizationPanel = (Expander)typeof(OperationsWorkspaceControl).GetField("authorizationPanel", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(workspace)!;
+                Check(!authorizationPanel.IsExpanded && authorizationPanel.Header is string heading && heading.StartsWith("已授权", StringComparison.Ordinal), "authorized native header shows actual status and folds account actions");
                 var editor = Visuals(window).OfType<MaintenancePage>().Single();
                 Check(editor.Audience == Ipc.Application.Contracts.SmParameterAudience.Technical, "operations reuses the existing complete editor in technical scope");
                 Check(editor.NavigateToParameter("ReadTimeoutMs"), "technical read deadline is reachable in the real operations editor");
@@ -106,7 +108,10 @@ internal static partial class Program
                 var fullLogs = Visuals(window).OfType<SoftwareLogControl>().Single();
                 await Until(() => !(bool)typeof(SoftwareLogControl).GetField("busy", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(fullLogs)! &&
                     Visuals(fullLogs).OfType<DataGrid>().Any(g => g.Items.Count > 0));
-                Check(true, "original full log UI completes an actual query and displays original runtime records");
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+                var resultHeight = Visuals(fullLogs).OfType<DataGrid>().Single().ActualHeight;
+                Check(resultHeight >= 140,
+                    "original full log UI completes an actual query with a usable native results viewport; height=" + resultHeight);
                 var dpi = VisualTreeHelper.GetDpi(window);
                 var picture = new RenderTargetBitmap((int)(window.ActualWidth * dpi.DpiScaleX), (int)(window.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
                 picture.Render(window); var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(picture));

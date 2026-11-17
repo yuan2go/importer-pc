@@ -381,6 +381,7 @@ internal static partial class Program
         }
         using (var recovered = new OperationsToolLease(Installation())) Check(true, "Windows releases singleton after abnormal tool exit");
         using var server = Child("server");
+        var completed = false;
         try
         {
             await Ready(server); var client = new OperationsClient(Installation());
@@ -491,12 +492,17 @@ internal static partial class Program
                 using var owner = await ReleasedBusinessLease();
                 Check(true, "business lease is available after successful normal stop");
             }
+            completed = true;
         }
         finally
         {
             if (!server.HasExited) { server.Kill(); await server.WaitForExitAsync(); }
             var errors = await ErrorText(server);
-            if (!string.IsNullOrWhiteSpace(errors)) File.WriteAllText(Path.Combine(root, "rejected-connections.txt"), errors);
+            if (!string.IsNullOrWhiteSpace(errors))
+            {
+                File.WriteAllText(Path.Combine(root, "rejected-connections.txt"), errors);
+                if (!completed) Console.Error.WriteLine("Original owner diagnostics:\n" + errors);
+            }
         }
     }
     static void EarlyCloseUi()

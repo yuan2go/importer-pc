@@ -881,5 +881,36 @@
       "Path": "tests/Ipc.Core.Tests/bin/Debug/net10.0-windows/Ipc.Platform.dll",
       "SHA256": "5ABCED870AA9FFE27668288A170992DD7ECD1C0A80AD3AAC8DE8B8686D6B30CF"
     }
-  ]
+  ],
+  "premerge_follow_up": {
+    "base_commit": "cf81761ca8c5841011d74f01fb4272743a4691ee",
+    "scope": "Post-push CI fixture corrections; production guards unchanged. Local evidence below is cumulative and precedes the follow-up commit. CI completion is reported by PR checks.",
+    "native": {
+      "camera-barcode-current": {
+        "outcome": "Passed",
+        "log_sha256": "a827d26e25494418cd7bfe6ccaa8691db7171c750e65ac6faf8cd14a3b1a9a6d"
+      },
+      "manual-rcs-debug-ui": {
+        "outcome": "Passed",
+        "log_sha256": "d4ee6c364350077dfaa23e6fad6090d28cae8b3937cf1c61e3dbcbe0cff7652e"
+      },
+      "startup-experience": {
+        "outcome": "Passed",
+        "log_sha256": "773c18d9349085f8967499d9e0dd5f841da17ee9890549b656933895c9d4b6df"
+      }
+    },
+    "powershell": "Volume fixture syntax passed; actual local invocation was refused before volume access. Real volume/installation verification is CI-only.",
+    "core": {
+      "outcome": "Passed",
+      "passed": 3,
+      "failed": 0,
+      "coverage_collection": true,
+      "trx_sha256": "5dbc785679cb2a52de6ba1830d46e5f273c7cb61706a20ba00594aad2230b8dc",
+      "cases": [
+        "ExistingBehaviorSuite (\"--station-position-control\")",
+        "ExistingBehaviorSuite (\"--cr-report-boundaries\")",
+        "ExistingBehaviorSuite (\"--cr-report-cameras\")"
+      ]
+    }
+  }
 }

@@ -9,6 +9,8 @@ try {
     }
 } finally { $identity.Dispose() }
 
+& "$PSScriptRoot/initialize-disposable-windows-volume.ps1"
+
 $verificationRoot = 'D:/sm-vc-acceptance'
 $evidence = Join-Path $verificationRoot 'evidence'
 $inputRoot = Join-Path $verificationRoot 'redist'

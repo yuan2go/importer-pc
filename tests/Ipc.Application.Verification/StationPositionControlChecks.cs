@@ -84,10 +84,27 @@ internal static class StationPositionControlChecks
             Check(h.Api(h.Left).Destroys == 1 && h.Api(h.Left).Finalizes == 1 && h.Api(h.Left).Opens == opens && h.Peer.Requests.Count == 1,
                 "disabled position actually releases camera handle and SDK and suppresses automatic reconnect");
             await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
-            // Heartbeat confirmation precedes the asynchronous SDK cache cutover.
-            // A frame queued before that boundary is intentionally discarded.
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
-                { CameraConnectionSuspended: false, Arrival: { Confirmed: true, CameraBoundaryReady: true } });
+            // Observe the real reconnect first, then explicitly confirm the latest
+            // membership. Automatic heartbeat scheduling has its own suite; this
+            // fixture must not queue its next frame against the retired SDK epoch.
+            await CameraRoundHarness.Until(async () =>
+            {
+                var connected = await h.App.SnapshotAsync();
+                return !connected.Positions!.Single(p => p.Id == "left").CameraConnectionSuspended &&
+                    connected.Devices!.Single(d => d.DeviceId == h.Left).IsValid(DateTimeOffset.UtcNow);
+            });
+            await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
+            try
+            {
+                await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
+                    { CameraConnectionSuspended: false, Arrival: { Confirmed: true, CameraBoundaryReady: true } });
+            }
+            catch (TimeoutException error)
+            {
+                var pending = await h.App.SnapshotAsync();
+                throw new TimeoutException("Reenabled camera did not confirm its boundary: " + Wire.Encode(new
+                { Position = pending.Positions!.Single(p => p.Id == "left"), pending.Devices, pending.Health, h.Api(h.Left).Opens, h.Api(h.Left).Clears }), error);
+            }
             Check(h.Api(h.Left).Opens == opens + 1 && (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Epoch == rightEpoch,
                 "enabling reconnects only the selected camera with a new session");
             await Deliver(CameraRoundHarness.Barcode("SYNTH-DRAIN"));

@@ -7,11 +7,36 @@ using Ipc.Integrations.SportmasterRcs;
 
 internal static class CrReportCameraChecks
 {
+    static async Task ArrivalConfirmationLoss(string workspace, string root)
+    {
+        await using var h = new CameraRoundHarness(workspace, root);
+        await h.StartAsync(); await h.App.ExitManagementModeAsync();
+        var before = h.Api(h.Left).Clears;
+        h.Api(h.Left).ClearGate.Reset();
+        try
+        {
+            h.Peer.Vehicles[h.Config.Wcs!.Parameters["left-bcr-code"]] = "SYNTHETIC-NEW-ARRIVAL";
+            await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Clears > before));
+            h.Peer.HeartbeatUnavailable = true;
+            await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.Confirmed == false);
+            h.Api(h.Left).ClearGate.Set();
+            var workers = (HashSet<string>)typeof(Ipc.Application.ParcelFlow.ParcelRuntime).GetField("arrivalBoundaryWorkers", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(h.App)!;
+            await CameraRoundHarness.Until(() => Task.FromResult(!workers.Contains(h.Left)));
+            h.Peer.HeartbeatUnavailable = false;
+            await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
+            Check(h.Peer.Requests.IsEmpty, "lost heartbeat confirmation during cache cutover recovers the same arrival after a real response without a destination request");
+        }
+        finally { h.Api(h.Left).ClearGate.Set(); h.Peer.HeartbeatUnavailable = false; }
+    }
     sealed class Lease : IDisposable { public void Dispose() { } }
     static void Check(bool value, string message)
     { if (!value) throw new InvalidOperationException(message); Console.WriteLine("PASS CR-CAMERA " + message); }
     public static async Task Run(string workspace, string root)
     {
+        await ArrivalConfirmationLoss(workspace, Path.Combine(root, "arrival-confirmation-loss"));
         VerifyCopiedLoan();
         await SyntheticLifecycle();
         await using var h = new CameraRoundHarness(workspace, root);

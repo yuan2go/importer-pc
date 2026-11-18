@@ -11,16 +11,16 @@ namespace Ipc.Application.Sportmaster.Desktop;
 internal sealed class OperationsDeviceDiagnostics : UserControl
 {
     readonly SupplyStationViewModel ViewModel;
-    readonly Func<string?, string?, Task> settings;
-    readonly Action<string> showDebug, navigateParameter;
+    readonly Func<string?, string, Task> settings;
+    readonly Action<string> showDebug;
     readonly Dictionary<string, FrameworkElement> diagnosticObjects = [];
     StackPanel? diagnosticLogDetails;
     bool debugActive;
     Action? refreshActions;
     public bool DebugActive { get => debugActive; set { debugActive = value; refreshActions?.Invoke(); } }
-    public OperationsDeviceDiagnostics(SupplyStationViewModel model, Func<string?, string?, Task> settings, Action<string> debug, Action<string> parameter)
+    public OperationsDeviceDiagnostics(SupplyStationViewModel model, Func<string?, string, Task> settings, Action<string> debug)
     {
-        ViewModel = model; this.settings = settings; showDebug = debug; navigateParameter = parameter;
+        ViewModel = model; this.settings = settings; showDebug = debug;
         var body = new StackPanel { Margin = new(16) }; body.Children.Add(CreateDiagnosticRows());
         if (diagnosticLogDetails is not null) body.Children.Add(new Expander { Header = "技术详情", Content = diagnosticLogDetails });
         Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
@@ -64,11 +64,7 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
             row.Children.Add(Bound(diagnosis, ViewModel));
             var buttons = new WrapPanel(); var primary = new Button { MinHeight = 44, MinWidth = 112, Margin = new(0, 6, 12, 6) }; buttons.Children.Add(primary);
             bool deferred = true, ready = false;
-            async Task Configure()
-            {
-                await settings(position?.ReaderId, position is null ? ViewModel.Snapshot?.Configuration.Effective.Wcs?.InstanceId : null);
-                ViewModel.Message = "已打开专业参数。相机 IP、相机编号和 RCS 地址请在供包工作站的“设置”修改。";
-            }
+            Task Configure() => settings(position?.ReaderId, position is null ? "heartbeat-interval-ms" : "reader.engine");
             primary.Click += async (_, _) =>
             {
                 if (deferred || ready) { await Configure(); return; }
@@ -132,7 +128,7 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
         var storage = Card("存储", "storage", storageBadge); var storageText = ProductText(""); storage.Children.Add(storageText);
         var storageSettings = new Button { Content = "数据与记录设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         storageSettings.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
-        storageSettings.Click += async (_, _) => { await settings(null, null); navigateParameter("HistoryDays"); }; storage.Children.Add(storageSettings);
+        storageSettings.Click += async (_, _) => await settings(null, "HistoryDays"); storage.Children.Add(storageSettings);
         var storageDetails = new StackPanel(); storageDetails.Children.Add(Bound(nameof(ViewModel.BackupStatusText), ViewModel));
         storage.Children.Add(new Expander { Header = "详情", Content = storageDetails });
         actions.Add(() =>

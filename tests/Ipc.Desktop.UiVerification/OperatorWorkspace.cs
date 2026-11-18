@@ -79,9 +79,9 @@ static partial class Program
         Check(Descendants(diagnosticWindow).OfType<TextBox>().Any(t => t.IsVisible && t.IsReadOnly && t.Text.Contains("合成重连失败")), "diagnostics exposes scoped action failures when its redundant global status banner is hidden");
         diagnosticModel.Message = ""; await DiagnosticFlush();
         CaptureInternal(evidence, "operator-diagnostics-unconfigured", (Grid)diagnosticWindow.FindName("ClientArea"), lines);
-        Descendants(diagnosticWindow).OfType<Button>().Single(b => System.Windows.Automation.AutomationProperties.GetName(b) == "右相机：专业参数").RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await DiagnosticUntil(() => diagnosticModel.HasLoadedConfiguration && !diagnosticModel.Busy && diagnosticModel.SelectedPage == "maintenance"); await DiagnosticFlush();
-        var editor = Descendants(diagnosticWindow).OfType<ParameterSettingsControl>().Single();
-        Check(editor.Audience == SmParameterAudience.Technical && diagnosticModel.Message.Contains("工作站"), "diagnostics opens the professional form and directs field address edits to workstation settings");
+        Descendants(diagnosticWindow).OfType<Button>().Single(b => System.Windows.Automation.AutomationProperties.GetName(b) == "右相机：专业参数").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        await DiagnosticUntil(() => diagnosticModel.Message.Contains("没有对应的专业参数"));
+        Check(diagnosticModel.SelectedPage == "diagnostics", "a synthetic manual reader without a camera engine field retains diagnostics and explains the unavailable setting");
         diagnosticWindow.Close(); await DiagnosticUntil(() => !diagnosticWindow.IsVisible);
         probe.Project = null; await Until(() => !vm.ShowSetupGuidance && vm.Left.CanAdmit);
         runtime.EmitReferenceAt("left", "operator-left", "000123456", "operator-event-left");

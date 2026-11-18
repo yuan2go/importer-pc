@@ -15,6 +15,7 @@ public sealed class OperationsControlClient(OperationsInstallation installation)
     NamedPipeClientStream? lease;
     Task heartbeat = Task.CompletedTask;
     Guid runtime, session;
+    volatile string? authenticatedGrant;
     int process;
     long started;
     readonly object cleanupGate = new();
@@ -48,7 +49,7 @@ public sealed class OperationsControlClient(OperationsInstallation installation)
             if (Connected) return;
             // Reconnection establishes a new, unprivileged session. The caller
             // must discard old authority; no old command is replayed here.
-            lease?.Dispose(); lease = null; session = Guid.Empty;
+            lease?.Dispose(); lease = null; session = Guid.Empty; authenticatedGrant = null;
             var overview = await new OperationsClient(installation).ReadAsync(token).ConfigureAwait(false);
             runtime = overview.RuntimeId;
             var pipe = await Pipe(token).ConfigureAwait(false);
@@ -126,6 +127,9 @@ public sealed class OperationsControlClient(OperationsInstallation installation)
 
     async Task<T> CallCore<T>(string operation, object?[] arguments, CancellationToken token, IProgress<Ipc.Platform.MaintenanceProgress>? progress, Action? sending)
     {
+        var expectedGrant = Ipc.Platform.LocalManagementMode.ExpectedCommandSession ?? authenticatedGrant;
+        var originalRuntime = runtime;
+        var originalSession = session;
         if (!Connected) throw new IOException("运维控制连接已失效；原命令结果未确认，请重新连接并核对原结果。");
         using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, lifetime.Token);
         budget.CancelAfter(sending is not null ? TimeSpan.FromHours(2) : TimeSpan.FromMinutes(10));
@@ -133,8 +137,8 @@ public sealed class OperationsControlClient(OperationsInstallation installation)
         using var peer = OperationsPipe.Peer(pipe, true);
         var id = Guid.NewGuid();
         sending?.Invoke();
-        await OperationsPipe.Write(pipe, new ControlRequest(OperationsControlProtocol.Version, installation.Identity, runtime, session,
-            id, operation, arguments.Select(a => JsonSerializer.SerializeToElement(a, a?.GetType() ?? typeof(object))).ToArray()),
+        await OperationsPipe.Write(pipe, new ControlRequest(OperationsControlProtocol.Version, installation.Identity, originalRuntime, originalSession,
+            id, operation, arguments.Select(a => JsonSerializer.SerializeToElement(a, a?.GetType() ?? typeof(object))).ToArray(), expectedGrant),
             budget.Token, OperationsControlProtocol.RequestBudget).ConfigureAwait(false);
         ControlReply reply;
         while (true)
@@ -147,6 +151,8 @@ public sealed class OperationsControlClient(OperationsInstallation installation)
         await pipe.WriteAsync(new byte[] { 1 }, budget.Token).ConfigureAwait(false);
         Validate(reply, id, peer);
         var result = reply.Result.Deserialize<T>();
+        if (operation == "IWorkstationAdministration.EnterManagementSessionAsync/1" && result is Ipc.Platform.ManagementModeStatus { Authorized: true } authorized)
+            authenticatedGrant = authorized.SessionId;
         if (result is ParcelSnapshot snapshot)
         {
             var age = DateTimeOffset.UtcNow - reply.ProducedAt;

@@ -310,6 +310,13 @@ internal static partial class Program
             Check(replacement?.Authorized == true && await workspace.ReadManagementWorkspaceOwnerAsync(default) is null &&
                 (await observer.ReadAsync(default)).Positions.All(p => p.Admit),
                 "replacing a grant releases the old explicit debug scope rather than adopting it under a new authorization");
+            var current = await remote.SnapshotAsync();
+            var queuedCandidate = (current.Configuration.Pending ?? current.Configuration.Effective) with { ReadTimeoutMs = 1900 };
+            using (LocalManagementMode.BindCommandSession(grant!.SessionId!))
+                await Reject(() => remote.StageConfigurationAsync(current.Configuration.Revision, queuedCandidate),
+                    "a queued save with the original grant cannot borrow the replacement grant across IPC");
+            Check((await remote.SnapshotAsync()).Configuration.Revision == current.Configuration.Revision,
+                "the refused old-grant save leaves the configuration revision intact");
             var currentWindow = Wire.Id();
             await workspace.SetManagementWorkspaceAsync(currentWindow, true, default);
             await Reject(() => workspace.SetManagementWorkspaceAsync(replacedWindow, false, default),

@@ -74,14 +74,18 @@ public sealed class OperationsControlServer : IAsyncDisposable
                 using var peer = OperationsPipe.Peer(pipe, false); installation.RequirePeer(peer, false);
                 if (OperationsPipe.UserSid(peer) != sid) throw new UnauthorizedAccessException("运行账户不匹配。");
                 if (request.Protocol != OperationsControlProtocol.Version || request.Installation != installation.Identity ||
-                    request.Runtime != runtime || request.Request == Guid.Empty || request.Arguments is null)
+                    request.Runtime != runtime || request.Request == Guid.Empty || string.IsNullOrEmpty(request.Operation) || request.Arguments is null)
                     throw new UnauthorizedAccessException("控制协议、安装或运行实例不匹配。");
                 if (request.Operation == OperationsControlProtocol.Open)
                 {
-                    if (request.Session != Guid.Empty || request.Arguments.Length != 0 || sessions.Count >= 2)
+                    if (request.Session != Guid.Empty || request.Arguments.Length != 0)
                         throw new UnauthorizedAccessException("运维连接范围无效或已有会话尚未释放。");
                     var session = new Session(peer.Id, peer.StartTime.ToUniversalTime().Ticks);
-                    if (!sessions.TryAdd(session.Id, session)) throw new InvalidOperationException("无法登记运维连接。");
+                    lock (sessions)
+                    {
+                        if (sessions.Count >= 2 || !sessions.TryAdd(session.Id, session))
+                            throw new InvalidOperationException("已有运维会话尚未释放。");
+                    }
                     try
                     {
                         await Reply(pipe, request, session.Id, null, null, headerBudget.Token).ConfigureAwait(false);
@@ -194,6 +198,8 @@ public sealed class OperationsControlServer : IAsyncDisposable
             }
             return grant;
         }
+        if (request.ExpectedGrant != session.Grant)
+            throw new UnauthorizedAccessException("发起此操作的管理授权已变化，请重新核对。");
         if (name is "IWorkstationAdministration.ExitManagementModeAsync/0" or "IWorkstationAdministration.ExitManagementModeAsync/1")
         {
             if (session.Grant is { } grant)
@@ -220,7 +226,7 @@ public sealed class OperationsControlServer : IAsyncDisposable
                 if (session.UiWindow == window) throw new InvalidOperationException("原调试范围已结束，请明确进入新一轮调试。");
                 session.UiWindow = window; session.Workspace = Wire.Id();
             }
-            using var authorization = open ? LocalManagementMode.BindCommandSession(session.Grant!) : null;
+            using var authorization = open ? LocalManagementMode.BindCommandSession(request.ExpectedGrant!) : null;
             if (!open && !session.WorkspaceOwned) return new BusinessReceipt("Restored", "本连接没有活动调试。", 0);
             // Retain ownership on an uncertain enter so disconnect cleanup can
             // reconcile exactly this workspace, without touching another one.
@@ -230,7 +236,7 @@ public sealed class OperationsControlServer : IAsyncDisposable
             return result;
         }
         await RequireGrant(session).ConfigureAwait(false);
-        using var commandAuthorization = LocalManagementMode.BindCommandSession(session.Grant!);
+        using var commandAuthorization = LocalManagementMode.BindCommandSession(request.ExpectedGrant!);
         if (name == "IManagementWorkspace.ReadManagementWorkspaceOwnerAsync/0")
         {
             var owner = await ((IManagementWorkspace)application).ReadManagementWorkspaceOwnerAsync(token).ConfigureAwait(false);

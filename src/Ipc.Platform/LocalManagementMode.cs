@@ -179,6 +179,7 @@ public sealed partial class LocalManagementMode
         }
     }
     static readonly AsyncLocal<string?> expectedCommandSession = new();
+    public static string? ExpectedCommandSession => expectedCommandSession.Value;
     public static IDisposable BindCommandSession(string session)
     {
         var previous = expectedCommandSession.Value; expectedCommandSession.Value = session;

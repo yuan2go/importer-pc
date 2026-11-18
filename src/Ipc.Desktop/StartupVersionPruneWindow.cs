@@ -27,7 +27,7 @@ sealed class StartupVersionPruneWindow : StartupWorkflowWindow
     internal Func<string?> LastOperation { get; set; } = () => WindowsDeploymentSetup.LastVersionPruning(ParcelStartupServices.ApplicationId);
     internal Func<string> RegistrationHash { get; set; } = () => Wire.FileHash(WindowsDeploymentSetup.Registration(ParcelStartupServices.ApplicationId));
 
-    public StartupVersionPruneWindow(IManagementMode authority) : base("旧版本清理 · 离线维护")
+    public StartupVersionPruneWindow(IManagementMode authority) : base("旧版本清理 · 离线维护", applicationId: Ipc.Assembly.ParcelStartupServices.ApplicationId)
     {
         this.authority = authority; Width = 840; Height = 680;
         Note("按真实部署关系检查旧构建；保留当前部署、合法回滚候选、业务数据和原操作证据。相同 1.0.0 版本的不同构建也可检查。请先完全关闭供包台。");

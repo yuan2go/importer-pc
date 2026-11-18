@@ -8,9 +8,9 @@ using Microsoft.Win32;
 
 namespace Ipc.Desktop;
 
-sealed class BackupSetsWindow : StartupWorkflowWindow
+public sealed class BackupSetsWindow : StartupWorkflowWindow
 {
-    readonly IStartupMaintenance maintenance;
+    readonly ICompleteBackupSetMaintenance maintenance;
     readonly TextBox directory, deliveryDestination;
     readonly DataGrid sets = new() { AutoGenerateColumns = false, IsReadOnly = true, CanUserAddRows = false, MinHeight = 120, MaxHeight = 300, RowHeight = 44 };
     readonly TextBox detail = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 70, MaxHeight = 160 };
@@ -19,7 +19,7 @@ sealed class BackupSetsWindow : StartupWorkflowWindow
     (string Backup, string Identity, string Target)? pendingExport;
     internal Func<StartupBackupItem, bool> ConfirmDeletion { get; set; }
     public string? SelectedBackup { get; private set; }
-    public BackupSetsWindow(IStartupMaintenance maintenance, string initialDirectory, bool selectForRestore = false) : base("完整备份 · 核验与保管")
+    public BackupSetsWindow(ICompleteBackupSetMaintenance maintenance, string initialDirectory, bool selectForRestore = false, string applicationId = "sportmaster") : base("完整备份 · 核验与保管", applicationId: applicationId)
     {
         this.maintenance = maintenance; Width = 880; Height = 690;
         ConfirmDeletion = item => MessageBox.Show(this, "仅删除这份备份的数据库和原配套清单，不可撤销；活动恢复引用、未知内容和占用余项保留。\n" + item.Path,

@@ -27,7 +27,7 @@ static partial class Program
         await ManagementModeFixture.Authorize(runtime);
         Check((await runtime.ReadCameraPreviewAsync(config.Reader.DeviceId, default)).Frame is null, "manual source reports preview unavailable without fabricated camera success");
         var app = DispatchProxy.Create<ICameraDebugFixture, CameraDebugProbe>(); var probe = (CameraDebugProbe)(object)app; probe.Inner = runtime;
-        var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true, Title = "调试页 · 合成图像验证" }; await using var windowOwner = new NativeWindowOwner(window);
+        var window = new OperationsViewFixture(app) { ConfirmDiscardDrafts = _ => true, Title = "调试页 · 合成图像验证" }; await using var windowOwner = new NativeWindowOwner(window);
         window.Show(); var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         async Task Until(Func<bool> ready) { for (int i = 0; i < 100; i++) { await vm.RefreshAsync(); await Flush(); if (ready()) return; await Task.Delay(40); } throw new TimeoutException("Debug UI did not converge"); }
@@ -35,7 +35,7 @@ static partial class Program
         runtime.EmitReferenceAt("left", "debug-left", "000123456", "debug-event-left");
         await Until(() => vm.Left.SlotAvailable);
         var original = Wire.Encode(vm.Left.Operation!.Wcs!.Request); var sends = factory.Sends;
-        Window Surface() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().SingleOrDefault(center => ReferenceEquals(center.Owner, window) && center.IsVisible) ?? (Window)window;
+        Window Surface() => (Window)window;
         window.ShowPositionDebug(vm.Left); await Until(() => Descendants(Surface()).OfType<UserControl>().Any(control => control.GetType().Name == "StationDebugControl"));
         var control = Descendants(Surface()).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
         var flags = BindingFlags.Instance | BindingFlags.NonPublic;
@@ -77,7 +77,7 @@ static partial class Program
             await runtime.ExitManagementModeAsync(); await vm.RefreshManagementModeAsync(); await Flush();
             probe.Held.TrySetResult(); await pending.WaitAsync(TimeSpan.FromSeconds(5)); await Flush();
             Check(!vm.IsManagementMode && image.Source is null && photo.Source is null && !timer.IsEnabled, "revocation clears both live and locked images and a late preview cannot restore them");
-            window.ShowPositionDebug(vm.Left); Check(vm.SelectedPage == "workstation", "operator cannot reopen protected debug page");
+            window.ShowPositionDebug(vm.Left); Check(!vm.IsManagementMode && !((Button)control.GetType().GetField("trigger", flags)!.GetValue(control)!).IsEnabled, "revoked operator cannot reenable protected debug commands");
         }
         finally
         {

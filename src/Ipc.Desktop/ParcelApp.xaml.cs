@@ -75,7 +75,21 @@ public partial class App : System.Windows.Application
         startup = new ParcelStartupWindow(); MainWindow = startup;
         try
         {
-            var mode = arguments.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" or "--after-install" ? arguments[0] : null;
+            var mode = arguments.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" or "--operations-maintenance" or "--after-install" ? arguments[0] : null;
+            if (mode == "--operations-maintenance")
+            {
+                await WindowsDeploymentSetup.WaitForUninstallHostAsync(arguments);
+                selected = DesktopLaunchOptions.Parse([], ApplicationId, recoveryChild);
+                using (ApplicationRootOwnership.AcquireMaintenance(ApplicationId, selected.Business.DataRoot)) { }
+                var center = new MaintenanceCenterWindow(selected.Business); center.ShowDialog();
+                if (center.RetryRequested)
+                {
+                    var current = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("当前安装登记不存在，请使用完整安装包修复。");
+                    WindowsDeploymentSetup.RequireInstalledReady(current);
+                    OrdinaryRuntimeProcess.LaunchForCurrentUser(Path.Combine(current.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable), [], current.ReleaseRoot);
+                }
+                startup.AllowClose = true; Shutdown(); return;
+            }
             if (mode == "--product-maintenance")
             {
                 await OpenUninstaller(arguments); return;
@@ -191,7 +205,8 @@ public partial class App : System.Windows.Application
                 if (DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId, requireReady: false) is { } currentInstallation &&
                     Path.GetFullPath(launch.DataRoot).Equals(Path.GetFullPath(currentInstallation.DataRoot), StringComparison.OrdinalIgnoreCase) &&
                     Path.GetFullPath(launch.ConfigurationDirectory).Equals(Path.GetFullPath(currentInstallation.ConfigurationDirectory), StringComparison.OrdinalIgnoreCase))
-                    operations = new(Ipc.Operations.OperationsInstallation.Load(AppContext.BaseDirectory), (IParcelPresentationSource)application, initial);
+                    operations = new(Ipc.Operations.OperationsInstallation.Load(AppContext.BaseDirectory), (IParcelPresentationSource)application, initial, application,
+                        () => ParcelStartupServices.Maintenance(launch));
             }
             catch (Exception error) { crashDiagnostics.Report("Operations.ReadOnlyEndpointUnavailable", error); }
 #endif
@@ -210,7 +225,7 @@ public partial class App : System.Windows.Application
 #endif
             if (window is Ipc.Application.ParcelFlow.Desktop.ShellWindow shell) { shell.ReopenOwnerAsync = ReopenStopped; shell.OpenRetentionOwnerAsync = OpenRetentionStopped; }
 #if SPORTMASTER
-            if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station) { station.ReopenOwnerAsync = ReopenStopped; station.OpenRetentionOwnerAsync = OpenRetentionStopped; station.OpenMaintenanceOwnerAsync = OpenMaintenanceStopped; station.OpenBackupSetsAsync = path => { new BackupSetsWindow(ParcelStartupServices.Maintenance(launch), path ?? @"D:\") { Owner = station }.ShowDialog(); return Task.CompletedTask; }; }
+            if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station) station.ReopenOwnerAsync = ReopenStopped;
 #endif
             if (InstallationIdentity.IsTest) window.Title = InstallationIdentity.DisplayName;
             MainWindow = window; window.Show(); startup.AllowClose = true; startup.Close(); ShutdownMode = ShutdownMode.OnMainWindowClose;
@@ -267,25 +282,6 @@ public partial class App : System.Windows.Application
         if (runtime is not null) throw new InvalidOperationException("原实例尚未释放，不能重开");
         ShutdownMode = ShutdownMode.OnExplicitShutdown; startup = new ParcelStartupWindow(); MainWindow = startup;
         Dispatcher.BeginInvoke(new Action(async () => await StartSelected()));
-        return Task.CompletedTask;
-    }
-    Task OpenMaintenanceStopped()
-    {
-        if (runtime is not null) throw new InvalidOperationException("原实例尚未释放，不能进入离线维护");
-        ShutdownMode = ShutdownMode.OnExplicitShutdown; startup = new ParcelStartupWindow(); MainWindow = startup;
-        Dispatcher.BeginInvoke(new Action(async () =>
-        {
-            try
-            {
-            var center = new MaintenanceCenterWindow(selected!.Business); MainWindow = center; center.ShowDialog();
-            selected = selected with { Business = center.SelectedLaunch };
-            MainWindow = startup;
-            if (center.UninstallLaunched) { startup.AllowClose = true; Shutdown(); }
-            else if (center.RetryRequested) await StartSelected();
-            else { startup.AfterMaintenance(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected()); startup.Show(); }
-            }
-            catch (Exception error) { ShowStoppedFailure(error); }
-        }));
         return Task.CompletedTask;
     }
     Task OpenRetentionStopped()

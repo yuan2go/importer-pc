@@ -11,7 +11,7 @@
 - [运行入门](runtime/getting-started.md)、[D 盘环境](runtime/d-drive-storage-20261021.md)
 - [当前代码与验证边界](runtime/current-contract-cleanup-01.md)、[当前格式与版本](runtime/version-compatibility-01.md)
 - [SM参数、默认与保存](runtime/parameter-inheritance-02.md)、[首次配置与日常设置](runtime/parameter-guidance-startup-01.md)
-- [管理模式](runtime/management-mode-01.md)、[独立只读运维工具、IPC 与工作站设置](design/sm-readonly-operations.md)
+- [管理模式](runtime/management-mode-01.md)、[运行观察、受控IPC与离线维护边界](design/sm-readonly-operations.md)
 - [SM 正式与测试安装实例隔离](design/sm-test-instance-isolation.md)
 - [安装、卸载与生命周期](runtime/lifecycle-ux-current-guidance-01.md)
 - [MVS 软件识别](runtime/mvs-software-reader-01.md)
@@ -23,7 +23,7 @@
 
 ## 设计
 
-- [SM 双程序第一阶段边界与第二阶段剩余迁移](design/sm-dual-desktop-operator-operations-proposal.md)
+- [SM 双程序功能归属与第二阶段实施](design/sm-dual-desktop-operator-operations-proposal.md)、[现场设置与调试工作区](design/management-workspace.md)
 - [SM 连续供包、双证据分轮与异常取件恢复](design/sm-continuous-induction-closure-01.md)
 
 - [SM 包裹轮次与原请求生命周期](design/sm-parcel-rounds.md)

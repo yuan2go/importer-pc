@@ -26,17 +26,17 @@ static partial class Program
             try { while (true) { h.Api(h.Left).Enqueue(left, ++number); h.Api(h.Right).Enqueue(right, number); await Task.Delay(80, feed.Token); } }
             catch (OperationCanceledException) when (feed.IsCancellationRequested) { }
         });
-        SupplyStationWindow? window = null;
+        OperationsViewFixture? window = null;
         try
         {
-            window = new SupplyStationWindow(h.App, null, "standard");
+            window = new OperationsViewFixture(h.App);
             await using var windowOwner = new NativeWindowOwner(window);
             window.Show();
             await SetClient(window, 1366, 768);
             await Until(() => window.ViewModel.Fresh && window.ViewModel.IsManagementMode, "initial runtime projection");
             window.ShowPositionDebug(window.ViewModel.Left);
             await Dispatcher.Yield(); window.UpdateLayout();
-            Window Surface() => window.OwnedWindows.OfType<ManagementCenterWindow>().SingleOrDefault(center => center.IsVisible) ?? (Window)window;
+            Window Surface() => (Window)window;
             for (var n = 0; n < 200 && !Descendants(Surface()).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"); n++) await Task.Delay(20);
             var control = Descendants(Surface()).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             var live = Field<UserControl>(control, "livePreview"); var image = Field<Image>(live, "image");
@@ -51,9 +51,9 @@ static partial class Program
             tabs.SelectedIndex = 0;
             await Until(() => image.Source is not null, "return from history never resumed video");
             Check(true, "history tab unload and reload restore live video");
-            typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["workstation"]);
+            typeof(OperationsViewFixture).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["workstation"]);
             await Until(() => !live.IsLoaded && image.Source is null, "leaving debug did not stop preview");
-            await Until(() => !window.OwnedWindows.OfType<ManagementCenterWindow>().Any(center => center.IsVisible), "previous management owner did not close");
+            await Until(() => !live.IsLoaded, "previous debug surface did not unload");
             await h.AuthorizeAsync();
             await Until(() => window.ViewModel.IsManagementMode, "new management grant did not reach the window");
             window.ShowPositionDebug(window.ViewModel.Left);

@@ -52,6 +52,10 @@ static partial class Program
         CaptureInternal(evidence, "settings-independent-readonly", first, lines);
         Check(((ScrollViewer)first.FindName("ReadOnlyBody")).IsVisible && !((ContentControl)first.FindName("EditorHost")).IsVisible,
             "a foreign existing grant cannot turn the new settings window into an editor");
+        var fieldSummary = ((TextBox)first.FindName("ReadOnlySettings")).Text;
+        Check(fieldSummary.Contains(h.Config.Wcs!.Parameters["left-bcr-code"]) && fieldSummary.Contains(h.Config.Wcs.Parameters["right-bcr-code"]) &&
+            fieldSummary.Contains(new Uri(h.Config.Wcs.Target).GetLeftPart(UriPartial.Authority)) && !fieldSummary.Contains("本位停用"),
+            "ordinary field summary shows actual configured RCS host and camera codes rather than misreading a redacted configuration as missing");
         Check(!(await h.App.SnapshotAsync()).Paused && (await h.App.ManagementModeStatusAsync()).SessionId == priorSession,
             "read-only viewing neither pauses production nor revokes the existing grant");
         var cancel = await BeginEdit(first); cancel.Close();
@@ -62,7 +66,7 @@ static partial class Program
         first.Width = 760; first.Height = 480;
         first.UpdateLayout(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
         CaptureInternal(evidence, "settings-independent-editor-minimum", first, lines);
-        Check(!(await h.App.SnapshotAsync()).Paused && !System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(),
+        Check(!(await h.App.SnapshotAsync()).Paused && !System.Windows.Application.Current.Windows.OfType<OperationsViewFixture>().Any(),
             "fresh settings authorization and complete draft loading do not acquire the management production fence");
         var editor = ((ContentControl)first.FindName("EditorHost")).Content;
         vm.StructuredPolicy!.StationCode = "SYNTH-UNSAVED-SETTINGS";
@@ -121,10 +125,9 @@ static partial class Program
         await BarcodeNativeKeyboard.ClickAsync(second, back, new Point(12, 12));
         Check(!second.IsVisible, "returning to work after save keeps the settings window hidden until explicitly restored");
         await vm.RequestActivationAsync!();
-        await vm.RequestRetentionAsync!();
         window.Close();
         Check(window.IsVisible && second.IsVisible && !(await h.App.SnapshotAsync()).Paused,
-            "reopen, retention and owner exit cannot silently pause or discard the active settings window");
+            "reopen and owner exit cannot silently pause or discard the active settings window");
         vm.StructuredPolicy.StationCode = "SYNTH-RETAIN-ON-REVOCATION";
         var old = (await h.App.ManagementModeStatusAsync()).SessionId;
         await h.App.EnterManagementModeAsync(password); var replacement = (await h.App.ManagementModeStatusAsync()).SessionId;

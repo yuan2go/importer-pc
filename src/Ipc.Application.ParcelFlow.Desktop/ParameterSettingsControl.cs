@@ -6,12 +6,15 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Documents;
+using Ipc.Application.Contracts;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
 // One directory over one complete draft, shared by startup and daily settings.
 // Snapshot refreshes change bindings only; page switches retain every editor.
 public sealed partial class ParameterSettingsControl : UserControl
 {
+    SmParameterAudience audience;
+    public SmParameterAudience Audience { get => audience; set { if (audience == value) return; audience = value; Render(); } }
     public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(nameof(Model), typeof(ParameterEditorModel), typeof(ParameterSettingsControl), new PropertyMetadata(null, ModelChanged));
     public ParameterEditorModel? Model { get => (ParameterEditorModel?)GetValue(ModelProperty); set => SetValue(ModelProperty, value); }
     public bool FirstConfiguration { get; set; }
@@ -354,6 +357,18 @@ public sealed partial class ParameterSettingsControl : UserControl
         remainingSteps.Visibility = FirstConfiguration ? Visibility.Visible : Visibility.Collapsed;
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);
         if (m.ApplicationId == "sportmaster") ArrangeSportmasterPages();
+        if (!FirstConfiguration && m.ApplicationId == "sportmaster" && Audience != SmParameterAudience.Complete)
+        {
+            foreach (var pair in locations.ToArray())
+                if (!SmParameterOwnership.Show(Audience, pair.Key))
+                {
+                    if (pair.Value.Row is { Parent: Panel parent } row) parent.Children.Remove(row);
+                    locations[pair.Key] = pair.Value with { Applicable = () => false };
+                }
+            foreach (var page in pages)
+                if (!locations.Any(p => ReferenceEquals(p.Value.Page, page) && SmParameterOwnership.Show(Audience, p.Key)))
+                    page.Applicable = () => false;
+        }
         foreach (var page in pages)
         {
             if (offsets.TryGetValue((page.Category, page.Title), out var offset)) page.Scroll.ScrollToVerticalOffset(offset);

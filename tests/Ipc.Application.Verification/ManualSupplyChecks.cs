@@ -110,7 +110,7 @@ internal static class SmRoundFixture
     }
 }
 
-internal sealed class ManualSupplyHarness : IAsyncDisposable
+internal sealed partial class ManualSupplyHarness : IAsyncDisposable
 {
     public readonly CameraRoundHarness.RoundPeer Peer = new();
     public readonly BusinessLaunch Launch;

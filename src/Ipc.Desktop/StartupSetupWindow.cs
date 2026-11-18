@@ -58,7 +58,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     readonly Button next, back, records, cancel, inspect, resumeRemoval, repairCommitted, concludeUncommitted, reviewAgain;
     bool reopenedInstallation;
     InstallationInspection? originalInspection;
-    public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · " + InstallationIdentity.DisplayName, installation: true)
+    public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · " + InstallationIdentity.DisplayName, installation: true, applicationId: Ipc.Assembly.ParcelStartupServices.ApplicationId)
     {
         this.prepareMedia = prepareMedia;
         ConcludeInstallation = (request, progress, token) => ParcelStartupServices.ContinueInstallationAsync(media ?? throw new InvalidOperationException("请先核验完整介质。"), request, false, progress, token);

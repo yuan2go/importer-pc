@@ -99,7 +99,7 @@ public sealed partial class ParcelRuntime
         if (current is not null && !MainTerminated(current) && !ReleasedForNextAdmission(current)) reasons.Add("Current entity main result is incomplete");
         if (!CapacityAvailable) reasons.Add(CapacityBlock.ToString());
         if (repository!.Paused) reasons.Add("Global software pause");
-        if (ManagementWorkspaceOpen) reasons.Add("管理中心已打开，自动供包及读码暂停；关闭管理中心后恢复。");
+        if (ManagementWorkspaceOpen) reasons.Add("运维设备调试已进入，自动供包及读码暂停；结束本会话调试后核对恢复。");
         if (!PositionSupplyEnabled(p.Id)) reasons.Add("本位已请求停用，不再接收新条码。");
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, camera || manualReady, current?.Id, reasons.Distinct().ToArray(), current is null || MainTerminated(current),
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))

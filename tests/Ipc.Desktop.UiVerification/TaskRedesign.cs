@@ -26,31 +26,31 @@ static partial class Program
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "draft-data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize(runtime);
-        var window = new SupplyStationWindow(runtime, null, "standard"); await using var owner = new NativeWindowOwner(window); window.Show();
+        var window = new OperationsViewFixture(runtime); await using var owner = new NativeWindowOwner(window); window.Show();
         var vm = window.ViewModel;
         async Task Until(Func<bool> ready) { for (var n = 0; n < 200; n++) { await vm.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); if (ready()) return; await Task.Delay(20); } throw new TimeoutException("Current management draft did not converge"); }
         await Until(() => vm.IsManagementMode);
-        typeof(SupplyStationWindow).GetMethod("Maintenance_Click", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, [window, new RoutedEventArgs()]);
-        await Until(() => vm.HasLoadedConfiguration && window.OwnedWindows.OfType<ManagementCenterWindow>().Any(center => center.IsVisible));
-        var center = window.OwnedWindows.OfType<ManagementCenterWindow>().Single();
-        var host = (ContentControl)center.FindName("ManagementPageHost"); var page = (MaintenancePage)host.Content;
+        window.Navigate("maintenance");
+        await Until(() => vm.HasLoadedConfiguration && window.IsVisible);
+        var center = window;
+        var host = center.Page; var page = (MaintenancePage)host.Content;
         var editor = (ParameterSettingsControl)page.FindName("MainParameterEditor"); var draft = editor.Model;
-        Check(editor.NavigateTo("StationCode"), "current station setting is reachable");
+        Check(editor.NavigateTo("ReadTimeoutMs"), "current station setting is reachable");
         await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-        var station = Descendants(editor).OfType<TextBox>().Single(box => AutomationProperties.GetAutomationId(box) == "StationCode");
-        station.Text = "SYNTHETIC-UNSAVED"; await Dispatcher.Yield(DispatcherPriority.DataBind);
+        var station = Descendants(editor).OfType<TextBox>().Single(box => AutomationProperties.GetAutomationId(box) == "ReadTimeoutMs");
+        station.Text = "1700"; await Dispatcher.Yield(DispatcherPriority.DataBind);
         var revision = (await runtime.SnapshotAsync()).Configuration.Revision;
         foreach (var destination in new[] { "logs", "diagnostics" })
         {
-            Descendants(center).OfType<Button>().Single(button => Equals(button.Tag, destination)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            window.Navigate(destination);
             await Until(() => vm.SelectedPage == destination && !ReferenceEquals(host.Content, page));
-            Descendants(center).OfType<Button>().Single(button => Equals(button.Tag, "maintenance")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            window.Navigate("maintenance");
             await Until(() => vm.SelectedPage == "maintenance" && host.Content is MaintenancePage && !vm.Busy);
             var current = (MaintenancePage)host.Content; var currentEditor = (ParameterSettingsControl)current.FindName("MainParameterEditor");
             Check(ReferenceEquals(current, page) && ReferenceEquals(currentEditor, editor) && ReferenceEquals(currentEditor.Model, draft), destination + " round trip retains the mounted page/editor/full draft identities");
-            Check(currentEditor.NavigateTo("StationCode"), "mounted station field remains reachable"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-            var currentStation = Descendants(currentEditor).OfType<TextBox>().Single(box => AutomationProperties.GetAutomationId(box) == "StationCode");
-            Check(ReferenceEquals(currentStation, station) && currentStation.Text == "SYNTHETIC-UNSAVED", destination + " round trip retains the visible unsaved field, not a detached old control");
+            Check(currentEditor.NavigateTo("ReadTimeoutMs"), "mounted station field remains reachable"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            var currentStation = Descendants(currentEditor).OfType<TextBox>().Single(box => AutomationProperties.GetAutomationId(box) == "ReadTimeoutMs");
+            Check(ReferenceEquals(currentStation, station) && currentStation.Text == "1700", destination + " round trip retains the visible unsaved field, not a detached old control");
         }
         Check((await runtime.SnapshotAsync()).Configuration.Revision == revision && (await runtime.SnapshotAsync()).Operations.Length == 0, "navigation does not save a revision or issue any parcel request");
         CaptureInternal(evidence, "current-management-draft", center, lines);

@@ -21,13 +21,13 @@ static partial class Program
         var explicitPause = await h.App.SnapshotAsync();
         if ((await h.App.CommandAsync(new(Wire.Id(), explicitPause.Revision, "Pause"))).Status != "Persisted") throw new InvalidOperationException("Explicit debug POST accounting fixture pause failed");
         var app = DispatchProxy.Create<ICameraRoundUiFixture, CameraRoundUiProbe>(); var probe = (CameraRoundUiProbe)(object)app; probe.Inner = h.App;
-        var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true, Title = "扫码闭环 · 合成端口" }; await using var windowOwner = new NativeWindowOwner(window);
+        var window = new OperationsViewFixture(app) { ConfirmDiscardDrafts = _ => true, Title = "扫码闭环 · 合成端口" }; await using var windowOwner = new NativeWindowOwner(window);
         window.Show(); // WPF requires a visible owner before creating its auxiliary window.
-        var second = new SupplyStationWindow(h.App, null, "standard", owner: window) { ConfirmDiscardDrafts = _ => true, Title = "第二窗口 · 同一Application" };
+        var second = new OperationsViewFixture(h.App, owner: window) { ConfirmDiscardDrafts = _ => true, Title = "第二窗口 · 同一Application" };
         TaskCompletionSource? heldArm = null;
         TaskCompletionSource? heldImage = null; await using var secondOwner = new NativeWindowOwner(second);
         second.Show(); var vm = window.ViewModel;
-        Window Surface(SupplyStationWindow owner) => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().SingleOrDefault(c => ReferenceEquals(c.Owner, owner) && c.IsVisible) ?? (Window)owner;
+        Window Surface(OperationsViewFixture owner) => (Window)owner;
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); second.UpdateLayout(); }
         async Task Until(Func<bool> done)
         { for (var i = 0; i < 150; i++) { await vm.RefreshAsync(); await second.ViewModel.RefreshAsync(); await Flush(); if (done()) return; await Task.Delay(35); } throw new TimeoutException("Round native UI did not converge"); }
@@ -64,8 +64,8 @@ static partial class Program
             Field<DispatcherTimer>(Field<UserControl>(other, "livePreview"), "timer").Stop();
             // Drive deterministic native snapshots explicitly; an extra harness
             // reader must not contend with two independent 500ms host timers.
-            ((DispatcherTimer)typeof(SupplyStationWindow).GetField("timer", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(window)!).Stop();
-            ((DispatcherTimer)typeof(SupplyStationWindow).GetField("timer", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(second)!).Stop();
+            window.StopPolling();
+            second.StopPolling();
             await vm.RefreshAsync(); await second.ViewModel.RefreshAsync(); await Task.Delay(60);
             Check(!Descendants(control).OfType<TextBlock>().Any(t => t.Text.Contains("调试说明") || t.Text.Contains("请先确认停止真实投放")) &&
                 !Descendants(control).OfType<Expander>().Any(e => Equals(e.Header, "隔离确认与结束调试")) &&
@@ -204,10 +204,10 @@ static partial class Program
             Check(Math.Abs(Field<double>(control, "zoom") - 1 / VisualTreeHelper.GetDpi(control).DpiScaleX) < .0001,
                 "native 1:1 maps image pixels to device pixels at the actual monitor DPI");
             await SetClient(Surface(window), 1024, 768); await Flush(); CaptureInternal(evidence, "round-1024-native", Surface(window), lines);
-            await SetClient(Surface(window), 800, 420); await Flush();
+            await SetClient(Surface(window), 880, 560); await Flush();
             Field<Button>(control, "send").BringIntoView(); await Flush();
-            Check(Inside(Field<Button>(control, "send"), (Grid)Surface(window).Content), "800x420 scroll route brings the real send action into the usable client viewport");
-            CaptureInternal(evidence, "round-800-native", Surface(window), lines);
+            Check(Inside(Field<Button>(control, "send"), (Grid)Surface(window).Content), "880x560 supported operations minimum scroll route brings the real send action into the usable client viewport");
+            CaptureInternal(evidence, "round-880-native", Surface(window), lines);
             var opens = h.Factory.Apis.Values.Sum(x => x.Opens); second.Close();
             Check(h.Factory.Apis.Values.Sum(x => x.Opens) == opens && h.Factory.Apis.Values.All(x => x.Starts == 1 && x.Stops == 0), "window close does not stop or recreate the shared acquisition owner");
             await vm.RefreshAsync(); await Poll(control);
@@ -230,7 +230,7 @@ static partial class Program
             Check(Field<Image>(control, "photo").Source is null && Field<TextBox>(control, "barcode").Text.Length == 0 &&
                 (await h.App.SnapshotAsync()).Paused, "management revoke clears local evidence and preserves the caller explicit pause");
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity?.HistoricalUnknown == 1);
-            h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; await h.AuthorizeAsync();
+            h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; await h.AuthorizeAsync(); await window.AdoptFixtureGrantAsync();
             Check((await h.App.OperationAsync(e.OperationId!))?.Wcs is { State: StageState.Unknown, Attempts: 1 } pending &&
                 pending.Request.IntegrationRequest!.Body == e.RequestBody && h.Peer.Requests.Count == 2,
                 "native in-flight revoke retains original Unknown/JSON without an extra HTTP request");

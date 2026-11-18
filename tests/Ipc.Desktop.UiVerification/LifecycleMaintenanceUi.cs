@@ -50,8 +50,8 @@ static partial class Program
         Check(reviews == 1, "expired management authority is rechecked at execution, not inferred from enabled native button"); prune.Close();
 
         var api = DispatchProxy.Create<IStartupMaintenance, BackupSetUiProbe>(); var probe = (BackupSetUiProbe)(object)api;
-        var backupType = assembly.GetType("Ipc.Desktop.BackupSetsWindow", true)!;
-        var manager = (Window)Activator.CreateInstance(backupType, [api, "D:/synthetic/catalog", false])!;
+        var backupType = typeof(Ipc.Desktop.BackupSetsWindow);
+        var manager = (Window)Activator.CreateInstance(backupType, [api, "D:/synthetic/catalog", false, "sportmaster"])!;
         manager.Show(); await Idle(manager); Click(manager, "BackupSet.Read"); await Idle(manager);
         var grid = Descendants(manager).OfType<DataGrid>().Single(); grid.SelectedIndex = 0;
         Check(grid.SelectedItem is StartupBackupItem { Status: "Verified", Identity: not null }, "native async listing returns selectable verified backup evidence without cross-thread control access");
@@ -64,7 +64,7 @@ static partial class Program
         async Task<(Window Window, BackupDeletionUiProbe Probe, DataGrid Grid)> DeletionWindow()
         {
             var api = DispatchProxy.Create<IStartupMaintenance, BackupDeletionUiProbe>(); var probe = (BackupDeletionUiProbe)(object)api;
-            var window = (Window)Activator.CreateInstance(backupType, [api, "D:/synthetic/deletion-catalog", true])!;
+            var window = (Window)Activator.CreateInstance(backupType, [api, "D:/synthetic/deletion-catalog", true, "sportmaster"])!;
             backupType.GetProperty("ConfirmDeletion", flags)!.SetValue(window, (Func<StartupBackupItem, bool>)(_ => true));
             window.Show(); await Idle(window); Click(window, "BackupSet.Read"); await Idle(window);
             var grid = Descendants(window).OfType<DataGrid>().Single(); grid.SelectedIndex = 0;

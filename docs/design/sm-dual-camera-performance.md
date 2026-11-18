@@ -49,7 +49,7 @@ python $tool analyze --capture D:\IPC-Perf\dual-01 --output D:\IPC-Perf\dual-01-
 
 ## 从现有日志分析扫码等待
 
-管理中心的日志页选择“导出该时段全部日志…”，保存 JSONL。也可使用已复制到独立目录的 `diagnostics/runtime.jsonl` 和轮转文件 `runtime.jsonl.1` 至 `.3`。详细诊断 ZIP 的 `event-index.json` 只保留白名单索引，缺少原文及阶段耗时。原始日志可能含条码和业务报文，输入和输出都在 D 盘私下保管。
+运维工具的日志中心选择“导出该时段全部日志…”，保存 JSONL。也可使用已复制到独立目录的 `diagnostics/runtime.jsonl` 和轮转文件 `runtime.jsonl.1` 至 `.3`。详细诊断 ZIP 的 `event-index.json` 只保留白名单索引，缺少原文及阶段耗时。原始日志可能含条码和业务报文，输入和输出都在 D 盘私下保管。
 
 ```powershell
 python $tool analyze-logs --logs D:\IPC-Perf\software-logs.jsonl --output D:\IPC-Perf\scan-log-analysis

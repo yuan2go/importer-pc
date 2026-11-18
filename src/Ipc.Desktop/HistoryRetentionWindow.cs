@@ -11,7 +11,7 @@ sealed class HistoryRetentionWindow : StartupWorkflowWindow
     StartupRetentionPlan? plan;
     readonly System.Windows.Controls.TextBox destination;
     CancellationTokenSource? planning;
-    public HistoryRetentionWindow(IStartupRetentionMaintenance service, IManagementMode management) : base("清理过期记录")
+    public HistoryRetentionWindow(IStartupRetentionMaintenance service, IManagementMode management) : base("清理过期记录", applicationId: Ipc.Assembly.ParcelStartupServices.ApplicationId)
     {
         this.service = service;
         Note("设置保留天数后，先预检再清理。清理前请暂停供包并完全退出作业窗口，进入管理模式；系统会先完整备份，再删除超过保留天数且已完成的记录。未处理完的作业不会删除。预检时可按 Esc 取消。");

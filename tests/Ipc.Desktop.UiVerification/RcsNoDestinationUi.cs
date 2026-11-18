@@ -23,13 +23,11 @@ static partial class Program
         {
             ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config with { StationCode = "MANUAL-STATION" });
             await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
-            var window = new SupplyStationWindow(h.App, null, "standard") { ConfirmDiscardDrafts = _ => true };
+            var window = new OperationsViewFixture(h.App) { ConfirmDiscardDrafts = _ => true };
             window.Show(); await window.ViewModel.RefreshAsync(); await SetClient(window, 1366, 768);
             var vm = window.ViewModel;
-            window.ShowPositionDiagnostics(vm.Left);
-            await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
-            var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
-            Click(center, "设置"); await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
+            window.UseFieldParameters(); var center = window;
+            window.Navigate("maintenance"); await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
             var editor = Descendants(center).OfType<ParameterSettingsControl>().Single();
             var rcs = editor.Model!.Components.Single(ParameterOwnership.IsRcs);
             var path = rcs.InstanceId + "/no-dest-to-exp";
@@ -53,7 +51,7 @@ static partial class Program
             await Until(() => (vm.Snapshot!.Configuration.Pending ?? vm.Snapshot.Configuration.Effective).Wcs!.Parameters.GetValueOrDefault("no-dest-to-exp") == "false");
             Check((vm.Snapshot!.Configuration.Pending ?? vm.Snapshot.Configuration.Effective).Wcs!.Parameters.GetValueOrDefault("no-dest-to-exp") == "false", "CAS save retains false in the configuration book: " + vm.Message);
             await SetClient(center, 800, 420); editor.NavigateTo(path); center.UpdateLayout();
-            Check(choice.IsVisible && choice.ActualWidth > 100, "small management window retains the editable selector");
+            Check(choice.IsVisible && choice.ActualWidth > 100, "small field-settings window retains the editable selector");
             CaptureInternal(evidence, "no-destination-settings-800", (Grid)center.FindName("ClientArea"), lines);
             center.Close(); await Until(() => !center.IsVisible); window.Close(); await Until(() => !window.IsVisible);
         }

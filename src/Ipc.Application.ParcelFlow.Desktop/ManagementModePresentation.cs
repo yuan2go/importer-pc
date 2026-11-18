@@ -7,7 +7,15 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class ParcelViewModel
 {
     ManagementModeStatus managementMode = new(false, false, null);
-    public bool IsManagementMode => managementMode.Authorized;
+    public bool RequireOwnedManagementSession { get; set; }
+    string? ownedManagementSession;
+    public string? OwnedManagementSession
+    {
+        get => ownedManagementSession;
+        set { ownedManagementSession = value; Changed(nameof(IsManagementMode)); Changed(nameof(ManagementModeVisibility)); Changed(nameof(CanEditFormConfiguration)); }
+    }
+    public bool IsManagementMode => managementMode.Authorized && (!RequireOwnedManagementSession ||
+        OwnedManagementSession is not null && OwnedManagementSession == managementMode.SessionId);
     public ManagementModeStatus ManagementStatus => managementMode;
     public string ManagementNotice { get; private set; } = "";
     public bool HasManagementNotice => ManagementNotice.Length != 0;

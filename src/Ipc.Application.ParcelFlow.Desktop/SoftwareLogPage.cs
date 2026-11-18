@@ -10,6 +10,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed partial class SoftwareLogControl : UserControl
 {
     readonly IWorkstationAdministration service;
+    readonly TextBlock title;
     readonly TextBox from = Input(DateTimeInput.SecondNow().AddHours(-1).ToString("O")), to = Input(DateTimeInput.SecondNow().AddMinutes(1).ToString("O")), keyword = Input(""), source = Input(""), context = Input("10");
     readonly CheckBox regex = new() { Content = "按正则表达式匹配", MinHeight = 44 };
     readonly ComboBox level = new() { ItemsSource = new[] { "全部", "信息", "调试", "警告", "错误", "无法解析" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 100 };
@@ -54,7 +55,7 @@ public sealed partial class SoftwareLogControl : UserControl
         var root = new DockPanel { Margin = new(20, 16, 20, 12) }; Content = root;
         var header = new DockPanel(); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         var heading = new StackPanel(); DockPanel.SetDock(heading, Dock.Top); header.Children.Add(heading);
-        var title = new TextBlock { Text = "日志查询", Style = (Style)FindResource("QueryHeading") }; heading.Children.Add(title);
+        title = new TextBlock { Text = "日志查询", Style = (Style)FindResource("QueryHeading") }; heading.Children.Add(title);
         title.ToolTip = "默认最近1小时，每页200条。选择一条可查看原文，按 Ctrl 或 Shift 可多选并复制原文。";
         var actions = new WrapPanel { Margin = new(0, 6, 0, 4) }; DockPanel.SetDock(actions, Dock.Bottom); header.Children.Add(actions);
         Button Action(string label, Func<Task> action)
@@ -227,7 +228,7 @@ public sealed partial class SoftwareLogControl : UserControl
     async Task<T> TrackService<T>(Task<T> operation)
     {
         lock (serviceOperations) serviceOperations.Add(operation);
-        try { return await operation; }
+        try { return await operation.ConfigureAwait(false); }
         finally { lock (serviceOperations) serviceOperations.Remove(operation); }
     }
     public async Task SuspendAndDrainAsync()
@@ -235,7 +236,14 @@ public sealed partial class SoftwareLogControl : UserControl
         suspended = true; Revoke();
         while (true)
         {
-            Task[] pendingOperations; lock (serviceOperations) pendingOperations = serviceOperations.ToArray();
+            Task[] pendingOperations;
+            lock (serviceOperations)
+            {
+                // An already-settled service task must not keep a UI drain
+                // spinning ahead of its queued bookkeeping continuation.
+                serviceOperations.RemoveWhere(task => task.IsCompleted);
+                pendingOperations = serviceOperations.ToArray();
+            }
             if (pendingOperations.Length == 0) return;
             try { await Task.WhenAll(pendingOperations); }
             catch { /* Every operation reports its own outcome; drain still owns all remaining calls. */ }
@@ -259,6 +267,13 @@ public sealed partial class SoftwareLogControl : UserControl
         query = candidate; selection = null; more = false; offset = 0;
         results.ItemsSource = null; historyTerminalText = ""; terminal.Clear(); ClearDetail(); UpdateActions();
         await Load(0);
+    }
+    // The operations tab supplies the page heading. Retain the same query
+    // control and resource styles without spending the results area twice.
+    public void UseParentHeading()
+    {
+        title.Visibility = Visibility.Collapsed;
+        ((DockPanel)Content).Margin = new(12, 8, 12, 8);
     }
     SoftwareLogQuery ReadQuery()
     {

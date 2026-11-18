@@ -45,10 +45,10 @@ public sealed partial class ParameterSettingsControl
             }
             else data.Body.Children.Add(Text("当前未启动；这里修改的是待保存的计划，不表示已执行自动清理。"));
         }
-        if (RuntimeContext is { } retentionContext)
+        if (Audience == SmParameterAudience.Complete && RuntimeContext is { } retentionContext)
         {
             var maintain = new Button { Content = "停止软件并清理到期记录…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-            maintain.Click += async (_, _) => { if (retentionContext.RequestRetentionAsync is { } request) await request(); else retentionContext.Message = "请先暂停并退出软件，再从开始菜单的“配置工具”清理到期记录。"; };
+            maintain.Click += async (_, _) => { if (retentionContext.RequestRetentionAsync is { } request) await request(); else retentionContext.Message = "请先退出工作站，再从运维工具的维护中心清理到期记录。"; };
             data.Body.Children.Add(maintain);
         }
         data.Body.Children.Add(Text("存储位置", true));
@@ -69,7 +69,7 @@ public sealed partial class ParameterSettingsControl
         form = Form(backup); form.SetBinding(IsEnabledProperty, new Binding("BackupEnabled") { Source = m.Policy });
         Input(form, "备份间隔", m.Policy, "BackupIntervalMinutes", "BackupIntervalMinutes", backup, "15～10080");
         Input(form, "计划备份份数上限", m.Policy, "BackupMaximumSets", "BackupMaximumSets", backup, "默认10份，1～1000份。达到上限停止新增并报告原因，不滚动删除旧备份。");
-        if (BackupRequested is not null)
+        if (Audience == SmParameterAudience.Complete && BackupRequested is not null)
         {
             backup.Body.Children.Add(Text("手动备份", true));
             backup.Body.Children.Add(Text("立即创建一份完整备份，保存到你选择的位置。"));
@@ -78,7 +78,7 @@ public sealed partial class ParameterSettingsControl
             AutomationProperties.SetAutomationId(open, "CompleteBackup.Settings");
             open.Click += (_, _) => BackupRequested?.Invoke(this, EventArgs.Empty); backup.Body.Children.Add(open);
         }
-        if (m.ApplicationId == "sportmaster" && BackupSetsRequested is not null)
+        if (Audience == SmParameterAudience.Complete && m.ApplicationId == "sportmaster" && BackupSetsRequested is not null)
         {
             var manage = new Button { Content = "完整备份核验、交付与保管…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
             AutomationProperties.SetAutomationId(manage, "BackupSet.Settings");

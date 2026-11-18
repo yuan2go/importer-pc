@@ -7,6 +7,7 @@ using Ipc.Application.Contracts;
 using Ipc.Diagnostics;
 using Ipc.Platform;
 using Ipc.Presentation.Wpf;
+using Ipc.Application.Sportmaster.Desktop;
 
 namespace Ipc.Operations.Desktop;
 
@@ -14,6 +15,9 @@ public partial class OperationsWindow : Window
 {
     readonly OperationsInstallation installation;
     readonly OperationsClient client;
+    readonly OperationsControlClient control;
+    readonly OperationsWorkspaceControl workspace;
+    ContentControl? workspaceHost;
     readonly CancellationTokenSource lifetime = new();
     readonly DispatcherTimer freshness = new() { Interval = TimeSpan.FromMilliseconds(250) };
     Task observation = Task.CompletedTask, discovery = Task.CompletedTask, queryTask = Task.CompletedTask;
@@ -32,6 +36,14 @@ public partial class OperationsWindow : Window
     {
         InitializeComponent(); UiTypography.Apply(this);
         this.installation = installation; client = new(installation);
+        control = new(installation);
+        workspace = new(new OperationsRemoteApplication(control, new(installation.Location.ConfigurationDirectory, installation.Location.DataRoot)),
+            () => control.ConnectAsync(lifetime.Token), () => control.Connected, OfflineMaintenance);
+        workspace.NavigationRequested += (_, target) =>
+        {
+            Pages.SelectedIndex = target switch { "debug" => 2, "parameters" => 3, "maintenance" => 4, _ => 1 };
+            if (target == "logs") ShowOnlineLogs();
+        };
         InstallationText.Text = "本站数据：" + installation.Location.DataRoot + "\n业务版本 1.0.0 · 来源 " + installation.Location.SourceCommit;
         LogAreas.DisplayMemberPath = nameof(Area.Label);
         LogAreas.SelectionChanged += FiltersChanged; TimeRange.SelectionChanged += FiltersChanged; Level.SelectionChanged += FiltersChanged;
@@ -53,6 +65,40 @@ public partial class OperationsWindow : Window
         };
         Closing += ClosingWindow;
         Closed += (_, _) => lifetime.Dispose();
+    }
+
+    void AttachWorkspace(ContentControl host, string page)
+    {
+        if (workspaceHost is not null && workspaceHost != host) workspaceHost.Content = null;
+        workspaceHost = host; host.Content = workspace; workspace.ShowPage(page);
+    }
+    void PageChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!ReferenceEquals(e.Source, Pages) || workspace is null) return;
+        if (Pages.SelectedIndex == 1 && OnlineLogs.Visibility == Visibility.Visible) { ShowOnlineLogs(); return; }
+        if (Pages.SelectedItem is not TabItem { Tag: string page }) return;
+        AttachWorkspace(page switch { "debug" => DeviceDebugPage, "parameters" => ProfessionalPage, _ => MaintenancePage }, page);
+    }
+    void TechnicalLogsClick(object sender, RoutedEventArgs e)
+    {
+        var online = OnlineLogs.Visibility != Visibility.Visible;
+        OnlineLogs.Visibility = online ? Visibility.Visible : Visibility.Collapsed;
+        OfflineLogs.Visibility = online ? Visibility.Collapsed : Visibility.Visible;
+        if (online) ShowOnlineLogs();
+    }
+    void ShowOnlineLogs()
+    {
+        OnlineLogs.Visibility = Visibility.Visible; OfflineLogs.Visibility = Visibility.Collapsed;
+        AttachWorkspace(OnlineLogs, "logs");
+    }
+    async Task OfflineMaintenance()
+    {
+        if (MessageBox.Show(this, "将从同版受保护维护缓存打开维护中心，并关闭本工具释放程序文件。维护程序仍核验工作站已真正关闭；不会替您停止生产。", "打开离线维护",
+            MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
+        await workspace.CloseAsync(activeHandoff: true);
+        try { await Task.Run(() => WindowsDeploymentSetup.LaunchOperationsMaintenance("sportmaster")); }
+        catch { workspace.ResumeAfterFailedHandoff(); throw; }
+        _ = Dispatcher.BeginInvoke(new Action(Close));
     }
 
     async Task DiscoverLogs()
@@ -198,10 +244,13 @@ public partial class OperationsWindow : Window
     {
         if (canClose) return;
         e.Cancel = true; if (closing) return;
-        closing = true; IsEnabled = false; freshness.Stop(); lifetime.Cancel(); queryStop?.Cancel();
+        closing = true; IsEnabled = false;
         try
         {
+            await workspace.CloseAsync();
+            freshness.Stop(); lifetime.Cancel(); queryStop?.Cancel();
             await Task.WhenAll(observation, discovery, queryTask);
+            await control.DisposeAsync();
             logs?.Dispose(); canClose = true;
             // Even an already-completed drain must return from the first Closing
             // event before WPF accepts another Close (e.g. before Loaded ran).

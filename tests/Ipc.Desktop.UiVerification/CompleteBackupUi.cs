@@ -25,24 +25,16 @@ static partial class Program
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var api = DispatchProxy.Create<IManualDebugUiFixture, BackupCancelBoundary>();
         var probe = (BackupCancelBoundary)(object)api; probe.Inner = h.App;
-        var window = new SupplyStationWindow(api, null, "standard") { ConfirmDiscardDrafts = _ => true }; window.Show();
+        var window = new OperationsViewFixture(api) { ConfirmDiscardDrafts = _ => true }; window.Show();
         try
         {
             await Until(() => window.ViewModel.Fresh && window.ViewModel.IsManagementMode);
-            window.ShowPositionDiagnostics(window.ViewModel.Left);
-            await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(c => c.IsVisible && ReferenceEquals(c.Owner, window)));
-            var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single(c => c.IsVisible && ReferenceEquals(c.Owner, window));
+            window.Workspace.ShowPage("maintenance");
+            await Until(() => window.IsVisible);
+            var center = window;
             var original = await h.App.SnapshotAsync();
-            foreach (var id in new[] { "CompleteBackup.Diagnostic", "CompleteBackup.Settings" })
+            foreach (var id in new[] { "CompleteBackup.Operations" })
             {
-                if (id.EndsWith("Settings", StringComparison.Ordinal))
-                {
-                    Descendants(center).OfType<Button>().Single(b => Equals(b.Tag, "maintenance")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                    await Until(() => window.ViewModel.HasLoadedConfiguration && !window.ViewModel.Busy && Descendants(center).OfType<ParameterSettingsControl>().Any(e => e.Model is not null));
-                    await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-                    Check(Descendants(center).OfType<ParameterSettingsControl>().Single().NavigateTo("BackupEnabled"), "manual backup settings resolve through the current parameter directory");
-                }
-                else Descendants(center).OfType<Expander>().Single(e => e.Content is FrameworkElement content && Descendants(content).OfType<Button>().Any(b => AutomationProperties.GetAutomationId(b) == id)).IsExpanded = true;
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); center.UpdateLayout();
                 var action = Descendants(center).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == id);
                 action.BringIntoView(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
@@ -67,7 +59,7 @@ static partial class Program
                 try
                 {
                     action.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                    await Until(() => cancelled && !window.ViewModel.Busy);
+                    await Until(() => cancelled && action.IsEnabled);
                 }
                 finally { timer.Stop(); }
                 Check(duplicateDisabled, id + " disables repeated input while the native picker owns the operation");
@@ -76,7 +68,7 @@ static partial class Program
                     id + " opens the owned native picker; cancellation preserves production state and creates no backup");
             }
             center.Close(); await Until(() => !center.IsVisible);
-            Check((await h.App.SnapshotAsync()).Positions!.All(p => p.Admit), "both cancelled entry flows leave ordinary manual supply recoverable");
+            Check((await h.App.SnapshotAsync()).Positions!.All(p => p.Admit), "the cancelled target entry leave ordinary manual supply recoverable");
         }
         finally { window.Close(); }
     }

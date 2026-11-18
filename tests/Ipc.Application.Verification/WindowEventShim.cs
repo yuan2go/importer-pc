@@ -106,10 +106,11 @@ namespace Ipc.Application.ParcelFlow.Desktop
         public static Task<bool> ReviewUnsavedAsync(System.Windows.Window window, int count, Func<Task>? save, string action) => Task.FromResult(false);
     }
     public class SoftwareLogControl(Ipc.Application.Contracts.IWorkstationAdministration service) : System.Windows.FrameworkElement { public Ipc.Application.Contracts.IWorkstationAdministration Service { get; } = service; public event EventHandler<string>? OperationRequested { add { } remove { } } public Task ShowOperationAsync(string id) => Task.CompletedTask; public Task SuspendAndDrainAsync() => Task.CompletedTask; public void ResumeAfterCancelledClose() { } }
-    public class HistoryPage { public object? DataContext { get; set; } public event EventHandler<string>? LogsRequested { add { } remove { } } public void ShowTaskDetails() { } }
+    public class HistoryPage { public bool TechnicalLogNavigation { get; set; } public bool TechnicalMaintenance { get; set; } public object? DataContext { get; set; } public event EventHandler<string>? LogsRequested { add { } remove { } } public void ShowTaskDetails() { } }
     public static class ProductBrand { public static void Apply(System.Windows.Window window) { } }
     public class MaintenancePage
     {
+        public Ipc.Application.Contracts.SmParameterAudience Audience { get; set; }
         public Func<string, System.Windows.FrameworkElement>? CameraPreviewFactory { get; set; }
         public bool IsEnabled { get; set; }
         public object? DataContext { get; set; }
@@ -132,47 +133,26 @@ namespace Ipc.Application.Sportmaster.Desktop
     // Event-owner harness placeholder only. Product operations are exercised by
     // the native --product-closure-21 suite, not by this cross-platform shim.
     internal sealed class StationStatisticsControl(SupplyStationViewModel vm) : System.Windows.FrameworkElement { public SupplyStationViewModel ViewModel { get; } = vm; public bool HasUnsavedChanges => false; }
+    public sealed class StationSettingsWindow : System.Windows.Window
+    {
+        public Task CloseForOwnerStopAsync() { Close(); return Task.CompletedTask; }
+    }
     public partial class SupplyStationWindow
     {
         object PositionHistory() => history;
-        StationStatisticsControl? statistics;
-        System.Windows.FrameworkElement? exceptions;
         readonly System.Windows.Controls.TextBlock StationClock = new();
         readonly System.Windows.Controls.TextBlock TestInstallationLabel = new();
-        bool offlineMaintenanceRequested;
-        public Func<Task>? OpenMaintenanceOwnerAsync { get; set; }
-        System.Windows.FrameworkElement CreateExceptions() => new();
-        Task OpenOperatorSettingsAsync(string? deviceId = null, string? instanceId = null) => Task.CompletedTask;
         readonly System.Windows.Controls.Grid workContent = new();
         void BuildOperatorWorkspace() { workContent.Children.Add(work); }
-        void RestoreBarcodeFocus() { } // Native focus is exercised only by the real WPF suite.
-        void InitializeAudio() { } // Media playback is not provided by this event-owner shim.
+        void RestoreBarcodeFocus() { }
+        void InitializeAudio() { }
         readonly System.Windows.Controls.Grid ClientArea = new();
         readonly System.Windows.Controls.ContentControl PageHost = new();
-        readonly System.Windows.Controls.PasswordBox LoginProof = new();
         void InitializeComponent() { }
-        Ipc.Application.ParcelFlow.Desktop.SoftwareLogControl? logs;
-        string dailyPage = "workstation";
-        System.Windows.Window? managementCenter;
-        System.Windows.Window? settingsWindow = null;
-        System.Windows.Window ManagementDialogOwner => managementCenter is { IsVisible: true } center ? center : this;
-        bool ConfirmStationExit() => true; // The real modal and cancellation are exercised by --station-exit-dialog on Windows.
-        void ApplyNavigation() { } // Geometry and input are verified by --management-center on Windows.
-        void ShowManagementPage(string page)
-        {
-            ViewModel.SelectedPage = page;
-            managementCenter ??= new System.Windows.Window();
-            PageHost.Content = page switch
-            {
-                "maintenance" => maintenance,
-                "diagnostics" => diagnostics ??= CreateDiagnostics(),
-                "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync),
-                "logs" => logs ??= CreateOperationLogs(),
-                _ => throw new ArgumentException("未安装的管理页面")
-            };
-        }
+        StationSettingsWindow? settingsWindow = null;
+        System.Windows.Window ManagementDialogOwner => settingsWindow is { IsVisible: true } settings ? settings : this;
+        bool ConfirmStationExit() => true;
+        void ApplyNavigation() { }
         void EnforceManagementModeView() { }
-        System.Windows.FrameworkElement CreateDiagnostics() => new();
-        void ShowObjectDiagnostics(Ipc.Application.ParcelFlow.Desktop.ParameterDiagnosticTarget target) { }
     }
 }

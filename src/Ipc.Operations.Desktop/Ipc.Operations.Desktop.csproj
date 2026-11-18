@@ -4,5 +4,5 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting><ApplicationManifest>../Ipc.Desktop/app.manifest</ApplicationManifest>
     <ApplicationIcon>../Ipc.Desktop/Assets/importer-pc.ico</ApplicationIcon><Product>菜鸟供包台</Product><Title>供包运维工具</Title>
   </PropertyGroup>
-  <ItemGroup><ProjectReference Include="../Ipc.Operations/Ipc.Operations.csproj"/><ProjectReference Include="../Ipc.Presentation.Wpf/Ipc.Presentation.Wpf.csproj"/></ItemGroup>
+  <ItemGroup><ProjectReference Include="../Ipc.Operations/Ipc.Operations.csproj"/><ProjectReference Include="../Ipc.Presentation.Wpf/Ipc.Presentation.Wpf.csproj"/><ProjectReference Include="../Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj"/></ItemGroup>
 </Project>

@@ -27,13 +27,13 @@
 ### 已落地的可复用模式
 
 - `Workstation.xaml` 提供 `OperatorActionFooter`（固定底栏）、`OperatorCopyableNotice`（可选中、键盘可达的只读消息）和 `OperatorStatusBadge`（用于**明确的暂停状态**）。只复用已有色彩和字体资源，不建立第二套设计 tokens。
-- 管理中心将“自动供包及读码已暂停”作为单一高辨识度状态提示，真实授权/暂停由 Application 决定；管理反馈保留原文、选择和滚动，未定义反馈时收起。
+- 运维设备调试将“整站自动供包及人工提交已暂停”作为单一高辨识度状态提示，真实授权/暂停由 Application 决定；管理反馈保留原文、选择和滚动，未定义反馈时收起。
 - 退出窗口复用底栏样式但保持原 `580×340` DIP、右侧动作组、默认取消、Esc/×取消及关停守卫；作业区的 RCS 原消息继续可选中、居中显示、长文滚动，不更改任何格口/异常/Unknown 判断。
 - 供包操作页不添加逐帧动画、计时轮播或状态闪烁：新的视觉效果不得占用采集/输入/回包关键线程，也不得延后页面呈现本次状态事实。现有双工位及原请求语义优先于视觉效果。
 
 ### 变更的必要验证
 
-按受影响范围复用现有 `--management-center`、`--station-exit-dialog`、`--home-centered-states` 和 `--chute-readability`，重点核对暂停状态、可复制原文、固定底栏、长中文及低高度布局、键盘焦点、100%/125%/150% DPI。构建/原生 WPF/SDK/客户 RCS/现场验收分别陈述实际结果，不用静态资源或文档审查代替运行证据。未做设备联调时不可宣称达到工业现场验收。
+按受影响范围复用现有 `Ipc.Operations.Verification`、`--station-exit-dialog`、`--home-centered-states` 和 `--chute-readability`，重点核对暂停状态、可复制原文、固定底栏、长中文及低高度布局、键盘焦点、100%/125%/150% DPI。构建/原生 WPF/SDK/客户 RCS/现场验收分别陈述实际结果，不用静态资源或文档审查代替运行证据。未做设备联调时不可宣称达到工业现场验收。
 
 ## 从 Hallmark 保留什么
 
@@ -94,7 +94,7 @@
 |---|---|
 | 退出确认 | `--station-exit-dialog`；涉及关闭生命周期再核对 `--startup-close` 及相关业务回归 |
 | 待机/离线/停用构图 | `--home-centered-states`、`--station-position-control-ui`；涉及暂停遮盖结果时加 `--paused-workstation` |
-| 导航/窗口 | `--operator-workspace`、`--management-center`、`--window-preference` |
+| 导航/窗口 | `--operator-workspace`、`Ipc.Operations.Verification`、`--window-preference` |
 | 输入与焦点 | `--position-input-ui`、`--continuous-pda-input` |
 | 字体/尺寸/共享布局 | `--chute-readability`、`--station-responsive-ui`，并抽查受影响的其他宿主 |
 
@@ -138,4 +138,4 @@ PR #277 的三个样式沿现有主题使用：动作底栏、暂停状态和可
 
 旧 `camera-barcode-current` 失败时使用的基线允许未确认远端绑定换车后继续发送；main 的 `fa79d0ae` 已按当前独立发送围栏修正，整合后原生专项通过，没有恢复旧放行行为。可读性夹具须等合成拒绝回包真正确认后才切换响应，并为每次新包裹建立可信换车边界；不能直接连发同轮来展示不同格口。
 
-本机 Windows 11、125%实际系统DPI，自审：管理中心、退出确认、居中状态、当前条码和长格口/中文拒绝可读性专项通过，原生截图保留于本次验证目录。大尺寸后台画布仅核对字号上限，不作为物理显示或操作距离证据。100%/150%目标设备、真实SDK、客户RCS及现场验收仍分别待验。
+第一阶段当时的本机 Windows 11、125%实际系统DPI自审覆盖旧管理中心、退出确认、居中状态、当前条码和长格口/中文拒绝；原生截图仅证明当时提交，不能代替第二阶段运维页面验证。大尺寸后台画布仅核对字号上限，不作为物理显示或操作距离证据。第二阶段证据随[功能归属迁移PR](sm-dual-desktop-operator-operations-proposal.md)记录；100%/150%目标设备、真实SDK、客户RCS及现场验收仍分别待验。

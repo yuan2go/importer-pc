@@ -11,6 +11,11 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public enum MaintenanceTool { Bindings, Candidate, Running, Modules, Inventory, RestoreHandoff, Installation, Recovery, Backup, Display }
 public partial class MaintenancePage : UserControl
 {
+    public SmParameterAudience Audience
+    {
+        get => MainParameterEditor.Audience;
+        set { MainParameterEditor.Audience = value; AdvancedToggle.Visibility = value == SmParameterAudience.Field ? Visibility.Collapsed : Visibility.Visible; }
+    }
     async void ManagementMode_Click(object sender, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm || vm.Application is not IWorkstationAdministration mode) return;
@@ -53,6 +58,7 @@ public partial class MaintenancePage : UserControl
     void AdvancedToggle_SubmenuOpened(object sender, RoutedEventArgs e)
     {
         var sm = DataContext is ParcelViewModel { Snapshot.ApplicationId: "sportmaster" };
+        TechnicalToolsMenu.Visibility = sm && Audience != SmParameterAudience.Complete ? Visibility.Collapsed : Visibility.Visible;
         foreach (var item in new FrameworkElement[] { ManagementPasswordTool, CompareTool, ModulesTool, InventoryTool, InstallationTool, BindingsTool, JsonTool, AdvancedSeparator, ConditionsTool, StashDraftTool, ResumeDraftTool })
             item.Visibility = sm ? Visibility.Collapsed : Visibility.Visible;
     }
@@ -119,7 +125,7 @@ public partial class MaintenancePage : UserControl
     void BackToSettings_Click(object sender, RoutedEventArgs e) => ShowParameterEditor();
     void ShowParameterEditor()
     {
-        if (DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false }) { ShowTechnicalTool(1); return; }
+        if (Audience != SmParameterAudience.Field && DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false }) { ShowTechnicalTool(1); return; }
         TechnicalTabs.Visibility = Visibility.Collapsed; MainParameterEditor.Visibility = Visibility.Visible;
         BackToSettings.Visibility = Visibility.Collapsed; ToolTitle.Text = "未保存的修改会保留";
     }
@@ -127,6 +133,7 @@ public partial class MaintenancePage : UserControl
     public void ShowTechnicalTool(MaintenanceTool tool) => ShowTechnicalTool((int)tool);
     public void ShowTechnicalTool(int index)
     {
+        if (Audience == SmParameterAudience.Field) throw new InvalidOperationException("专业维护请在供包运维工具中办理。");
         if (index < 0 || index >= TechnicalTabs.Items.Count) throw new ArgumentOutOfRangeException(nameof(index));
         TechnicalTabs.SelectedIndex = index; TechnicalTabs.Visibility = Visibility.Visible; MainParameterEditor.Visibility = Visibility.Collapsed;
         BackToSettings.Visibility = index == 1 && DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false } ? Visibility.Collapsed : Visibility.Visible;

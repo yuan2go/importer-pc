@@ -6,8 +6,8 @@ using Ipc.Application.Contracts;
 
 namespace Ipc.Operations;
 
-// Owns only a presentation subscription and two bounded read-only pipe workers.
-// No business commands, DB, SDK, management mode or RCS port enter this class.
+// The passive channel owns only a latest-state subscription and read workers.
+// Explicit controls are delegated to a separate, session-owned adapter.
 public sealed class OperationsServer : IAsyncDisposable
 {
     readonly OperationsInstallation installation;
@@ -25,8 +25,9 @@ public sealed class OperationsServer : IAsyncDisposable
     string? failure;
     readonly object disposalGate = new();
     Task? disposal;
+    readonly OperationsControlServer? control;
 
-    public OperationsServer(OperationsInstallation installation, IParcelPresentationSource source, ParcelSnapshot initial)
+    public OperationsServer(OperationsInstallation installation, IParcelPresentationSource source, ParcelSnapshot initial, IParcelApplication? application = null, Func<IStartupMaintenance>? backupFactory = null)
     {
         this.installation = installation; installation.RequireRead(); runtime = initial.RuntimeId;
         if (initial.ApplicationId != "sportmaster" || runtime == Guid.Empty) throw new InvalidDataException("运维快照不属于本站业务。");
@@ -41,6 +42,7 @@ public sealed class OperationsServer : IAsyncDisposable
             subscription = selected; pipes = created.ToArray();
             // Initial is already the detached snapshot obtained by the host.
             latest = Capture(initial);
+            if (application is not null) control = new(installation, application, runtime, backupFactory);
             publisher = Task.Run(Publish);
             workers = pipes.Select(p => Task.Run(() => Serve(p))).ToArray();
         }
@@ -130,11 +132,12 @@ public sealed class OperationsServer : IAsyncDisposable
     {
         // Host close and retry paths can overlap. They must drain the same read
         // workers rather than cancel an already-disposed token source.
-        lock (disposalGate) return new(disposal ??= Stop());
+        lock (disposalGate) return new(disposal is null || disposal.IsFaulted || disposal.IsCanceled ? disposal = Stop() : disposal);
     }
 
     async Task Stop()
     {
+        if (control is not null) await control.DisposeAsync().ConfigureAwait(false);
         stopping.Cancel();
         subscription.Dispose();
         await Task.WhenAll(workers.Append(publisher)).ConfigureAwait(false);

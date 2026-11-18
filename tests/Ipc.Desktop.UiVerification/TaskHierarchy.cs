@@ -22,18 +22,18 @@ static partial class Program
         var launch = new BusinessLaunch(folder, Path.Combine(evidence, "authorization-data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize(runtime);
-        var window = new SupplyStationWindow(runtime, null, "standard"); await using var owner = new NativeWindowOwner(window); window.Show(); var vm = window.ViewModel;
+        var window = new OperationsViewFixture(runtime); await using var owner = new NativeWindowOwner(window); window.Show(); var vm = window.ViewModel;
         async Task Until(Func<bool> ready) { for (var n = 0; n < 200; n++) { await vm.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); if (ready()) return; await Task.Delay(20); } throw new TimeoutException("Management revocation did not converge"); }
         await Until(() => vm.IsManagementMode);
-        typeof(SupplyStationWindow).GetMethod("Maintenance_Click", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, [window, new RoutedEventArgs()]);
-        await Until(() => vm.HasLoadedConfiguration && window.OwnedWindows.OfType<ManagementCenterWindow>().Any(center => center.IsVisible));
-        var center = window.OwnedWindows.OfType<ManagementCenterWindow>().Single(); var host = (ContentControl)center.FindName("ManagementPageHost");
-        var protectedBody = (FrameworkElement)center.FindName("AuthorizedBody"); var page = (MaintenancePage)host.Content;
+        window.Navigate("maintenance");
+        await Until(() => vm.HasLoadedConfiguration && vm.Fresh && window.Parameters.IsEnabled && window.IsVisible);
+        var center = window; var host = center.Page;
+        var page = (MaintenancePage)host.Content; var protectedBody = page;
         var draft = vm.StructuredPolicy!; draft.ReadTimeoutMs = "1700";
-        Check(vm.IsManagementMode && protectedBody.IsVisible && host.Content is MaintenancePage && vm.SelectedPage == "maintenance", "the actual protected settings page is open and authorized immediately before revocation");
+        Check(vm.IsManagementMode && protectedBody.IsEnabled && host.Content is MaintenancePage, "the actual protected settings page is open and authorized immediately before revocation");
         await runtime.ExitManagementModeAsync(); await vm.RefreshManagementModeAsync();
-        await Until(() => !vm.IsManagementMode && !protectedBody.IsVisible && ((FrameworkElement)center.FindName("AuthorizationGate")).IsVisible);
-        Check(center.IsVisible && host.Content is null && ReferenceEquals(draft, vm.StructuredPolicy) && draft.ReadTimeoutMs == "1700", "revocation detaches the previously mounted protected content while retaining the same unsaved draft and closable owner");
+        await Until(() => !vm.IsManagementMode && !protectedBody.IsEnabled);
+        Check(center.IsVisible && ReferenceEquals(host.Content, page) && ReferenceEquals(draft, vm.StructuredPolicy) && draft.ReadTimeoutMs == "1700", "revocation disables the previously mounted protected content while retaining the same unsaved draft and closable owner");
         var before = (await runtime.SnapshotAsync()).Configuration.Revision; var denied = false;
         try { await vm.SaveStructuredConfigurationAsync(); } catch (UnauthorizedAccessException) { denied = true; }
         Check(denied && (await runtime.SnapshotAsync()).Configuration.Revision == before, "direct save after revocation is denied before any configuration revision is written");

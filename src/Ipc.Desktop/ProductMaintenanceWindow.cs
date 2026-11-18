@@ -27,7 +27,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
     // Installer cleanup uses the protected installation inventory, not new media.
     internal ProductMaintenanceWindow(DeploymentMedia media) : this()
         => ExecuteUninstall = (hash, delete, progress, token) => ParcelStartupServices.UninstallAsync(hash, delete, progress, token, media);
-    public ProductMaintenanceWindow() : base("菜鸟供包台 · 卸载")
+    public ProductMaintenanceWindow() : base("菜鸟供包台 · 卸载", applicationId: Ipc.Assembly.ParcelStartupServices.ApplicationId)
     {
         Width = 680; Height = 420; MinHeight = 380;
         RenderOptions();

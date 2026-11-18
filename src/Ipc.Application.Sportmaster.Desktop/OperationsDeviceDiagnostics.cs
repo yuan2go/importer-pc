@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -8,8 +8,30 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.Sportmaster.Desktop;
 
-public partial class SupplyStationWindow
+internal sealed class OperationsDeviceDiagnostics : UserControl
 {
+    readonly SupplyStationViewModel ViewModel;
+    readonly Func<string?, string?, Task> settings;
+    readonly Action<string> showDebug, navigateParameter;
+    readonly Dictionary<string, FrameworkElement> diagnosticObjects = [];
+    StackPanel? diagnosticLogDetails;
+    bool debugActive;
+    Action? refreshActions;
+    public bool DebugActive { get => debugActive; set { debugActive = value; refreshActions?.Invoke(); } }
+    public OperationsDeviceDiagnostics(SupplyStationViewModel model, Func<string?, string?, Task> settings, Action<string> debug, Action<string> parameter)
+    {
+        ViewModel = model; this.settings = settings; showDebug = debug; navigateParameter = parameter;
+        var body = new StackPanel { Margin = new(16) }; body.Children.Add(CreateDiagnosticRows());
+        if (diagnosticLogDetails is not null) body.Children.Add(new Expander { Header = "技术详情", Content = diagnosticLogDetails });
+        Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+    }
+    static TextBlock ProductText(string text, bool heading = false) => new() { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0,4,0,4), FontSize = heading ? UiTypography.Group : UiTypography.Body };
+    Button ProductButton(string label, Func<Task> action)
+    {
+        var button = new Button { Content = label, MinHeight = 44, Margin = new(0,6,12,6) };
+        button.Click += async (_, _) => { try { await action(); } catch (Exception error) { ViewModel.Message = error.Message; } };
+        return button;
+    }
     FrameworkElement CreateDiagnosticRows()
     {
         var panel = new StackPanel(); var cards = new Grid();
@@ -42,7 +64,11 @@ public partial class SupplyStationWindow
             row.Children.Add(Bound(diagnosis, ViewModel));
             var buttons = new WrapPanel(); var primary = new Button { MinHeight = 44, MinWidth = 112, Margin = new(0, 6, 12, 6) }; buttons.Children.Add(primary);
             bool deferred = true, ready = false;
-            async Task Configure() => await OpenOperatorSettingsAsync(position?.ReaderId, position is null ? ViewModel.Snapshot?.Configuration.Effective.Wcs?.InstanceId : null);
+            async Task Configure()
+            {
+                await settings(position?.ReaderId, position is null ? ViewModel.Snapshot?.Configuration.Effective.Wcs?.InstanceId : null);
+                ViewModel.Message = "已打开专业参数。相机 IP、相机编号和 RCS 地址请在供包工作站的“设置”修改。";
+            }
             primary.Click += async (_, _) =>
             {
                 if (deferred || ready) { await Configure(); return; }
@@ -64,10 +90,10 @@ public partial class SupplyStationWindow
                     };
                 }, "处理" + name + "连接");
             };
-            buttons.Children.Add(ProductButton("调试", () => { if (position is null) SetPage("debug"); else ShowPositionDebug(position); return Task.CompletedTask; })); row.Children.Add(buttons);
+            buttons.Children.Add(ProductButton("调试", () => { if (position is null) showDebug("left"); else showDebug(position.PositionId); return Task.CompletedTask; })); row.Children.Add(buttons);
             var facts = new StackPanel(); facts.Children.Add(Bound(time, ViewModel));
             var technical = ProductText("等待读取设备详情"); technical.FontSize = UiTypography.Label; facts.Children.Add(technical); details[id] = technical;
-            var edit = new Button { Content = "修改连接设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            var edit = new Button { Content = "专业参数", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
             edit.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
             edit.Click += async (_, _) => await Configure(); facts.Children.Add(edit);
             if (position is not null)
@@ -82,7 +108,7 @@ public partial class SupplyStationWindow
                     var result = await ViewModel.Application.CommandAsync(new(Wire.Id(), snapshot.Revision, "CalibrateEmptyTray", position.ReaderId));
                     ViewModel.Message = result.Status == "Persisted" ? "空托盘校准已开始，请保持画面稳定并查看设备详情。" : "校准未开始。请确认本位没有当前包裹、相机已连接，并刷新后重试。";
                 }, "校准空托盘");
-                actions.Add(() => teach.IsEnabled = ViewModel.IsManagementMode && ViewModel.Fresh && !ViewModel.Busy);
+                actions.Add(() => teach.IsEnabled = DebugActive && ViewModel.IsManagementMode && ViewModel.Fresh && !ViewModel.Busy);
                 facts.Children.Add(teach);
             }
             row.Children.Add(new Expander { Header = "详情", Content = facts, Margin = new(0, 8, 0, 0) });
@@ -94,8 +120,8 @@ public partial class SupplyStationWindow
                 var health = snapshot?.Health.SingleOrDefault(h => h.InstanceId == config?.Wcs?.InstanceId);
                 ready = ViewModel.Fresh && (position is null ? health is { Ready: true, RemoteConfirmation: RemoteConnectionConfirmation.ResponseReceived } && health.ConfirmedAt <= DateTimeOffset.UtcNow && health.ValidUntil > DateTimeOffset.UtcNow : device?.IsValid(DateTimeOffset.UtcNow) == true);
                 var connecting = !deferred && position is not null && device?.Health is DeviceHealth.Connecting or DeviceHealth.Reconnecting or DeviceHealth.Stopping;
-                primary.Content = deferred ? "去设置" : ready ? "设置" : connecting ? "正在连接…" : "重新连接";
-                primary.IsEnabled = ViewModel.IsManagementMode && ViewModel.Fresh && !ViewModel.Busy && !connecting;
+                primary.Content = deferred || ready ? "专业参数" : connecting ? "正在连接…" : "重新连接";
+                primary.IsEnabled = (deferred || ready || DebugActive) && ViewModel.IsManagementMode && ViewModel.Fresh && !ViewModel.Busy && !connecting;
                 AutomationProperties.SetName(primary, name + "：" + primary.Content);
             });
         }
@@ -106,7 +132,7 @@ public partial class SupplyStationWindow
         var storage = Card("存储", "storage", storageBadge); var storageText = ProductText(""); storage.Children.Add(storageText);
         var storageSettings = new Button { Content = "数据与记录设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         storageSettings.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
-        storageSettings.Click += async (_, _) => { await OpenOperatorSettingsAsync(); if (ViewModel.IsManagementMode && ViewModel.HasLoadedConfiguration) maintenance.NavigateToParameter("HistoryDays"); }; storage.Children.Add(storageSettings);
+        storageSettings.Click += async (_, _) => { await settings(null, null); navigateParameter("HistoryDays"); }; storage.Children.Add(storageSettings);
         var storageDetails = new StackPanel(); storageDetails.Children.Add(Bound(nameof(ViewModel.BackupStatusText), ViewModel));
         storage.Children.Add(new Expander { Header = "详情", Content = storageDetails });
         actions.Add(() =>
@@ -129,6 +155,7 @@ public partial class SupplyStationWindow
         CancellationTokenSource? lifetime = null; long generation = 0; bool reading = false, setting = false;
         RuntimeDiagnosticSettings? current = null;
         void UpdateActions() { foreach (var action in actions) action(); }
+        refreshActions = UpdateActions;
         PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName is nameof(ViewModel.Snapshot) or nameof(ViewModel.Fresh) or nameof(ViewModel.Busy) or nameof(ViewModel.IsManagementMode)) UpdateActions(); };
         async Task Read()
         {

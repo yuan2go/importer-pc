@@ -11,43 +11,38 @@ namespace Ipc.Application.Sportmaster.Desktop;
 public partial class SupplyStationWindow : Window
 {
     partial void InitializePresentationFeedback();
-    partial void InitializeMaintenanceActions();
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     readonly Grid work = new();
     readonly HistoryPage history = new();
     readonly MaintenancePage maintenance = new();
-    FrameworkElement? diagnostics;
-    StationDebugControl? debug;
     readonly Func<Task>? stopOwner;
     readonly SupplyStationWindow root;
     readonly HashSet<SupplyStationWindow> windows;
     Task pendingRefresh = Task.CompletedTask;
-    bool compact, closing, closeReady, closed, pendingMaintenanceLoad;
+    bool compact, closing, closeReady, closed;
     long closeGeneration;
     public SupplyStationViewModel ViewModel { get; }
 
     public SupplyStationWindow(IParcelApplication application, string? view, string? layout, Func<Task>? stopOwner = null, SupplyStationWindow? owner = null)
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
+        maintenance.Audience = SmParameterAudience.Field;
         TestInstallationLabel.Visibility = InstallationIdentity.IsTest ? Visibility.Visible : Visibility.Collapsed;
         ViewModel = new(application); DataContext = ViewModel; InitializePresentationFeedback(); this.stopOwner = stopOwner;
+        ViewModel.ParameterAudience = SmParameterAudience.Field;
+        ViewModel.RequireOwnedManagementSession = true;
         InitializeAudio();
         ViewModel.RequestActivationAsync = RequestActivation;
-        ViewModel.RequestRetentionAsync = RequestRetention;
         WindowOpeningPreference.Attach(this, "sportmaster", message => ViewModel.Message = message);
         // Cached pages retain their binding source while detached from PageHost.
         // Inherited DataContext would transiently clear/rebuild the draft controls.
         maintenance.CameraPreviewFactory = instance => { var preview = new StationCameraPreviewControl(ViewModel, 110, false); preview.SelectDevice(ViewModel.ReaderDrafts.FirstOrDefault(r => r.Capability.InstanceId == instance)?.Original.DeviceId ?? instance); return preview; };
         maintenance.DataContext = ViewModel; history.DataContext = ViewModel;
-        InitializeMaintenanceActions();
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
-        maintenance.DiagnosticsRequested += (_, target) => ShowObjectDiagnostics(target);
-        history.LogsRequested += async (_, id) => { SetPage("logs"); if (ViewModel.SelectedPage == "logs") await ViewModel.RunAsync(() => logs!.ShowOperationAsync(id), "读取所选作业日志"); };
+        history.TechnicalLogNavigation = false; history.TechnicalMaintenance = false;
         ViewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(ViewModel.IsManagementMode)) EnforceManagementModeView();
-            if (e.PropertyName == nameof(ViewModel.Busy) && !ViewModel.Busy && pendingMaintenanceLoad)
-                Dispatcher.BeginInvoke(new Action(async () => await LoadRequestedMaintenanceAsync()));
         };
         ClientArea.SizeChanged += ViewportChanged;
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
@@ -61,8 +56,7 @@ public partial class SupplyStationWindow : Window
         try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read("sportmaster", "supply-station") ?? false : layout == "compact"; }
         catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "展示偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"; }
         ApplyLayout();
-        var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "workstation";
-        if (initialPage == "maintenance" && !ViewModel.IsManagementMode) initialPage = "workstation";
+        var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : "workstation";
         SetPage(initialPage);
         timer.Tick += (_, _) =>
         {
@@ -80,7 +74,6 @@ public partial class SupplyStationWindow : Window
             UpdateViewport();
             RestoreBarcodeFocus();
             timer.Start();
-            if (initialPage == "maintenance") { pendingMaintenanceLoad = true; await LoadRequestedMaintenanceAsync(); }
             if (initialPage == "history") await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "读取作业记录");
         };
         Closing += ClosingWindow;
@@ -94,37 +87,15 @@ public partial class SupplyStationWindow : Window
     }
     void SetPage(string page)
     {
-        if (settingsWindow is not null && page is "maintenance" or "diagnostics" or "logs" or "debug")
-        { ViewModel.Message = "请先关闭设置，再打开管理页面。未保存输入保留。"; return; }
-        if (page is "maintenance" or "diagnostics" or "logs" or "debug" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
-        if (page != "maintenance") pendingMaintenanceLoad = false;
-        if (page is "maintenance" or "diagnostics" or "logs" or "debug")
-        {
-            ShowManagementPage(page);
-            return;
-        }
-        dailyPage = page;
-        if (managementCenter is { IsVisible: true }) managementCenter.Close();
+        if (page is not ("workstation" or "history")) throw new ArgumentException("工作站仅提供作业与记录；现场设置使用独立非模态窗口。");
         ViewModel.SelectedPage = page; ApplyLayout();
-        PageHost.Content = page switch { "statistics" => statistics ??= new StationStatisticsControl(ViewModel), "exceptions" => exceptions ??= CreateExceptions(), "history" => PositionHistory(), _ => workContent };
+        PageHost.Content = page == "history" ? PositionHistory() : workContent;
     }
     void UpdateStationClock()
     {
         var now = DateTimeOffset.Now;
         StationClock.Text = now.ToString("yyyy-MM-dd HH:mm:ss");
         StationClock.ToolTip = now.ToString("yyyy-MM-dd HH:mm:ss zzz");
-    }
-    SoftwareLogControl CreateOperationLogs()
-    {
-        var control = new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application);
-        control.OperationRequested += async (_, id) => await ShowDetailsAsync(id);
-        return control;
-    }
-    void Debug_Click(object sender, RoutedEventArgs e) => SetPage("debug");
-    public void ShowPositionDebug(SupplyStationPositionViewModel position)
-    {
-        SetPage("debug");
-        if (ViewModel.SelectedPage == "debug") debug!.SelectPosition(position == ViewModel.Left ? "left" : "right");
     }
     void DismissGlobalFeedback_Click(object sender, RoutedEventArgs e) => ViewModel.DismissGlobalOperationFeedback();
     async void ResumeSupply_Click(object sender, RoutedEventArgs e)
@@ -134,19 +105,6 @@ public partial class SupplyStationWindow : Window
     async void RcsConnection_Click(object sender, RoutedEventArgs e) => await ViewModel.CheckRcsAsync();
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
-    async void Maintenance_Click(object sender, RoutedEventArgs e)
-    {
-        if (!ViewModel.IsManagementMode) { await OpenOperatorSettingsAsync(); return; }
-        SetPage("maintenance"); pendingMaintenanceLoad = !ViewModel.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync();
-    }
-    async Task LoadRequestedMaintenanceAsync()
-    {
-        if (!pendingMaintenanceLoad) return;
-        if (closing || closed || ViewModel.SelectedPage != "maintenance") { pendingMaintenanceLoad = false; return; }
-        if (ViewModel.Busy) return;
-        pendingMaintenanceLoad = false; // A failure stays visible; never start an automatic retry loop.
-        await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "读取参数配置");
-    }
     void Layout_Click(object sender, RoutedEventArgs e)
     {
         compact = !compact; ApplyLayout();
@@ -178,18 +136,9 @@ public partial class SupplyStationWindow : Window
     public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
     public Func<string, bool>? ConfirmOwnerExit { get; set; }
     public Func<Task>? ReopenOwnerAsync { get; set; }
-    public Func<Task>? OpenRetentionOwnerAsync { get; set; }
-    bool retentionRequested;
-    async Task RequestRetention()
-    {
-        if (root.settingsWindow is not null) { ViewModel.Message = "请先关闭设置，再进入到期维护。未保存输入保留。"; return; }
-        try { await ViewModel.RequireManagementModeAsync(); await ViewModel.PauseAsync("进入历史清理前暂停"); await ViewModel.RefreshAsync(); if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停尚未确认"); if (root.OpenRetentionOwnerAsync is null) throw new InvalidOperationException("当前宿主没有独立维护入口"); root.retentionRequested = true; root.Close(); }
-        catch (Exception error) { ViewModel.Message = "尚未进入到期维护：" + error.Message; }
-    }
     bool activationRequested;
     async Task RequestActivation()
     {
-        if (root.settingsWindow is not null) { ViewModel.Message = "请先关闭设置，再重新打开供包台。未保存输入保留。"; return; }
         try
         {
             if (root.ReopenOwnerAsync is null) throw new InvalidOperationException("无法从这里重新打开，请稍后从桌面图标重新打开软件。");
@@ -207,25 +156,21 @@ public partial class SupplyStationWindow : Window
     {
         if (closeReady || closed) return;
         e.Cancel = true;
-        if (ActivateSettingsWindow()) { ViewModel.Message = "请先关闭设置窗口，再退出供包台。未保存输入保留。"; return; }
+        if (!activationRequested && ActivateSettingsWindow()) { ViewModel.Message = "请先关闭设置窗口，再退出供包台。未保存输入保留。"; return; }
         if (closing) return;
         closing = true;
         var generation = ++closeGeneration;
         var affected = stopOwner is null ? new[] { this } : windows.ToArray();
-        foreach (var window in affected) { if (window != this) window.closeGeneration++; window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
+        foreach (var window in affected) { if (window != this) window.closeGeneration++; window.closing = true; window.timer.Stop(); window.IsEnabled = false; if (window.settingsWindow is { } settings) settings.IsEnabled = false; }
         var ownerStopped = false;
         try
         {
             // Close cannot re-enter a native WPF Closing event even when every drain task is already complete.
             await System.Windows.Threading.Dispatcher.Yield();
-            await Task.WhenAll(affected.Select(x => (x.logs as SoftwareLogControl)?.SuspendAndDrainAsync() ?? Task.CompletedTask)).WaitAsync(TimeSpan.FromSeconds(5));
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;
             if (stopOwner is not null && !(ConfirmOwnerExit?.Invoke(ViewModel.ExitImpact(activationRequested)) ?? ConfirmStationExit())) { RestoreAfterClose(); return; }
-            if (affected.Any(x => x.statistics?.HasUnsavedChanges == true) && !(ConfirmDiscardDrafts?.Invoke(1) ??
-                ConfigurationCloseGuard.ConfirmExit(ManagementDialogOwner, "时区、自动维护设置或本机目标尚未保存。继续关闭将放弃这些修改。")))
-            { RestoreAfterClose(); return; }
             var dirtyWindows = affected.Where(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.ViewModel, x.maintenance)).ToArray();
             var dirty = dirtyWindows.Length;
             if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(ManagementDialogOwner, dirty,
@@ -234,11 +179,14 @@ public partial class SupplyStationWindow : Window
                 ViewModel.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
                 RestoreAfterClose(); return;
             }
-            if (activationRequested || retentionRequested || offlineMaintenanceRequested) await ViewModel.RequireManagementModeAsync();
+            if (activationRequested)
+            {
+                await ViewModel.RequireManagementModeAsync();
+                foreach (var window in affected)
+                    if (window.settingsWindow is { } settings) await settings.CloseForOwnerStopAsync();
+            }
             if (stopOwner is not null) { await stopOwner(); ownerStopped = true; }
             if (activationRequested && ReopenOwnerAsync is not null) await ReopenOwnerAsync();
-            if (retentionRequested && OpenRetentionOwnerAsync is not null) await OpenRetentionOwnerAsync();
-            if (offlineMaintenanceRequested && OpenMaintenanceOwnerAsync is not null) await OpenMaintenanceOwnerAsync();
             closeReady = true;
             foreach (var child in affected.Where(x => x != this && !x.closed && windows.Contains(x))) { child.closeReady = true; child.Close(); }
             Close();
@@ -261,11 +209,9 @@ public partial class SupplyStationWindow : Window
         void RestoreAfterClose()
         {
             activationRequested = false;
-            retentionRequested = false;
-            offlineMaintenanceRequested = false;
             closing = false;
             foreach (var window in affected.Where(x => !x.closed && windows.Contains(x)))
-            { window.closing = false; window.IsEnabled = true; (window.logs as SoftwareLogControl)?.ResumeAfterCancelledClose(); window.timer.Start(); }
+            { window.closing = false; window.IsEnabled = true; if (window.settingsWindow is { } settings) settings.IsEnabled = true; window.timer.Start(); }
         }
     }
 }

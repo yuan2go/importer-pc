@@ -89,7 +89,7 @@ static partial class Program
             Click(window, "收起菜单"); await Flush();
             var navigation = (Border)window.FindName("DailyNavigation"); var toggle = (Button)window.FindName("NavigationToggle");
             var handle = (Border)toggle.Template.FindName("NavigationHandle", toggle);
-            var management = (Button)window.FindName("ManagementCenterEntry");
+            var management = (Button)window.FindName("StationSettingsEntry");
             lines.Add($"GEOMETRY rail={navigation.ActualWidth}; entry={management.ActualWidth}x{management.ActualHeight}; icon={Descendants(management).OfType<System.Windows.Shapes.Path>().Single().ActualWidth}; collapsed={window.IsNavigationCollapsed}");
             CaptureInternal(evidence, "home-centered-waiting", client, lines);
             Check(navigation.ActualWidth == 52 && management.ActualWidth == 44 && management.ActualHeight >= 44 &&

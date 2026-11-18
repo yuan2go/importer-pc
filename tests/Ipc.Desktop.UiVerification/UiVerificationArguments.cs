@@ -36,7 +36,6 @@ internal static class UiVerificationArguments
         "--lifecycle-maintenance-ui",
         "--lifecycle-ux",
         "--maintenance-progress-ui",
-        "--management-center",
         "--management-close-read-race",
         "--management-entry-ordering",
         "--management-mode",

@@ -24,17 +24,18 @@ static partial class Program
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
         var application = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
-        var window = new SupplyStationWindow(application, null, "standard") { ConfirmDiscardDrafts = _ => true };
-        window.Show(); await Task.Delay(250); await window.ViewModel.RefreshAsync();
+        var window = new OperationsViewFixture(application) { ConfirmDiscardDrafts = _ => true };
+        await using var owner = new NativeWindowOwner(window);
+        window.UseFieldParameters(); window.Show(); await Task.Delay(250); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
         await vm.PauseAsync();
         for (var i = 0; i < 150 && vm.Snapshot?.Paused != true; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
         Check(vm.EnvironmentStatus.StartsWith("模拟模式") && vm.BlockingReasons.Contains("软件已暂停接收新包裹") &&
             vm.Snapshot!.BlockingReasons.Contains("Software admission paused; this is not an emergency stop"),
             "Chinese pause/mode presentation preserves original application facts");
-        await SetClient(window, 1366, 768); Click(window, "参数配置");
+        await SetClient(window, 1366, 768); window.Navigate("maintenance");
         for (var i = 0; i < 150 && (vm.Busy || !vm.HasLoadedConfiguration); i++) await Task.Delay(20);
-        var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
+        var page = window.Parameters;
         var editor = (ParameterSettingsControl)page.FindName("MainParameterEditor");
         Check(!vm.HasUnsavedConfiguration && !((Button)page.FindName("SaveChanges")).IsEnabled, "unchanged native form disables save without requiring authentication");
         var revision = (await runtime.SnapshotAsync()).Configuration.Revision;
@@ -52,18 +53,9 @@ static partial class Program
         Capture("v3-left-running");
         Check(!Descendants(editor).OfType<Button>().Any(b => Equals(b.Content, "连接诊断")),
             "current camera settings omit the removed configuration-status and connection-diagnostics block");
-        Click(window, "返回作业"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-        var leftPosition = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Left));
-        Check(leftPosition.FindName("PositionDiagnostics") is null && vm.IsManagementMode, "daily card reserves touch space for submit and details; diagnosis remains management navigation");
-        window.ShowPositionDiagnostics(vm.Left); window.UpdateLayout();
-        Check(vm.SelectedPage == "diagnostics" && Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "左相机"), "selected camera opens its native diagnostics with visible object context");
-        Check(Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "设置左相机")), "camera diagnostics provides a direct action for the matching connection");
-        Capture("v3-object-diagnostics");
-        Click(window, "返回该设备设置");
-        for (var wait = 0; wait < 100 && (vm.SelectedPage != "maintenance" || vm.Busy); wait++) await Task.Delay(20);
-        Check(vm.SelectedPage == "maintenance" && !vm.Busy, "object settings return completes its authority and load checks");
-        window.UpdateLayout(); editor.NavigateTo("StationCode");
-        Check(ReferenceEquals(station, Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "StationCode")) && station.Text == "SYNTHETIC-EDIT", "object diagnostics returns to the cached form and preserves draft identity");
+        window.Hide(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        window.Show(); await Until(() => vm.IsManagementMode && vm.Fresh); window.UpdateLayout(); editor.NavigateTo("StationCode");
+        Check(ReferenceEquals(station, Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "StationCode")) && station.Text == "SYNTHETIC-EDIT", "hiding and restoring the field form preserves native control identity and its unsaved input");
         vm.MarkReadFailure("SYNTHETIC stale probe");
         Check(vm.ParameterRuntimeSummary(target).Contains("运行状态未知") && !vm.ParameterRuntimeSummary(target).Contains("运行连接：已确认"), "stale snapshot cannot continue presenting a healthy connection");
         var staleReview = new ConfigurationSaveReviewWindow(window, vm); staleReview.Show(); staleReview.UpdateLayout();
@@ -115,7 +107,7 @@ static partial class Program
         var choiceBinding = config.Wcs! with { Parameters = new() { ["entity.mode"] = "observe-only" } };
         var choiceDescriptor = new CapabilityDescriptor(choiceBinding.Kind, choiceBinding.Implementation, choiceBinding.Version, choiceBinding.Contract, choiceFields, new());
         var choiceDraft = new CapabilityDraft(choiceBinding.Kind, [choiceDescriptor], choiceBinding, true, "synthetic");
-        var choiceEditor = new ParameterSettingsControl { Model = new ParameterEditorModel(vm.StructuredPolicy!, "sportmaster", [], [choiceDraft], runtime.TestBarcodeFilterAsync) };
+        var choiceEditor = new ParameterSettingsControl { Model = new ParameterEditorModel(vm.StructuredPolicy!, "shared-fixture", [], [choiceDraft], runtime.TestBarcodeFilterAsync) };
         window.Content = choiceEditor; choiceEditor.NavigateTo(choiceBinding.InstanceId + "/entity.mode"); window.UpdateLayout();
         var association = Descendants(choiceEditor).OfType<ComboBox>().Single(x => AutomationProperties.GetAutomationId(x).EndsWith("/entity.mode"));
         Check(Equals(association.SelectedItem, "observe-only") && Descendants(association).OfType<TextBlock>().Any(x => x.Text == "仅观察"),
@@ -130,7 +122,7 @@ static partial class Program
         var binding = config.Wcs! with { Parameters = new() { ["masked"] = "SYNTHETIC-A", ["reference"] = "secret:synthetic-reference" } };
         var descriptor = new CapabilityDescriptor(binding.Kind, binding.Implementation, binding.Version, binding.Contract, fields, new());
         var draft = new CapabilityDraft(binding.Kind, [descriptor], binding, true, "synthetic");
-        var model = new ParameterEditorModel(vm.StructuredPolicy!, "sportmaster", [], [draft], runtime.TestBarcodeFilterAsync);
+        var model = new ParameterEditorModel(vm.StructuredPolicy!, "shared-fixture", [], [draft], runtime.TestBarcodeFilterAsync);
         var secureEditor = new ParameterSettingsControl { Model = model }; window.Content = secureEditor;
         secureEditor.NavigateTo(binding.InstanceId + "/reference"); window.UpdateLayout();
         var secret = Descendants(secureEditor).OfType<PasswordBox>().Single(x => AutomationProperties.GetAutomationId(x).EndsWith("/reference"));
@@ -142,13 +134,17 @@ static partial class Program
         var valueProvider = peer!.GetPattern(System.Windows.Automation.Peers.PatternInterface.Value) as System.Windows.Automation.Provider.IValueProvider;
         Check(peer.IsPassword() && valueProvider is not null && valueProvider.Value.Length == 0, "native password automation returns an empty value, never the reference");
         Capture("v3-sensitive-reference");
+        vm.ParameterAudience = SmParameterAudience.Complete; // Generic secret-reference review, outside the split SM form.
         await vm.SwitchToAdvancedConfigurationAsync();
         var reviewDraft = vm.CapabilityDrafts.Single(d => d.InstanceId == binding.InstanceId);
         foreach (var field in fields) reviewDraft.Parameters.Add(new(field, binding.Parameters[field.Key]));
+        var originalGenericDraft = vm.ConfigurationDraft;
         var candidate = Wire.Decode<ParcelConfiguration>(vm.ConfigurationDraft);
         vm.ConfigurationDraft = Wire.Encode(candidate with { Wcs = candidate.Wcs! with { Parameters = new(candidate.Wcs.Parameters) { ["reference"] = "secret:synthetic-edited" } } });
         var maskedReview = vm.GetConfigurationChangeItems().Single(c => c.TechnicalPath.EndsWith("Wcs.Parameters.reference"));
         Check(!maskedReview.Before.Contains("secret:") && !maskedReview.After.Contains("secret:"), "review masks secret-reference even without the Sensitive flag");
+        vm.ConfigurationDraft = originalGenericDraft; await vm.LoadStructuredFromJsonAsync();
+        vm.ParameterAudience = SmParameterAudience.Field;
         window.Content = client; await vm.LoadCapabilitiesAsync(); editor.ShowPage(2, "左相机");
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {

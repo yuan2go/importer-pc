@@ -11,26 +11,26 @@ namespace Ipc.Operations;
 
 internal static class OperationsPipe
 {
-    internal static async Task Write<T>(Stream pipe, T value, CancellationToken token)
+    internal static async Task Write<T>(Stream pipe, T value, CancellationToken token, int maximum = OperationsProtocol.MaximumFrame)
     {
         var bytes = JsonSerializer.SerializeToUtf8Bytes(value);
-        if (bytes.Length > OperationsProtocol.MaximumFrame) throw new InvalidDataException("运维消息超过读取预算。");
+        if (bytes.Length > maximum) throw new InvalidDataException("运维消息超过读取预算。");
         var header = new byte[4]; BinaryPrimitives.WriteInt32LittleEndian(header, bytes.Length);
         await pipe.WriteAsync(header, token).ConfigureAwait(false);
         await pipe.WriteAsync(bytes, token).ConfigureAwait(false);
         await pipe.FlushAsync(token).ConfigureAwait(false);
     }
-    internal static async Task<T> Read<T>(Stream pipe, CancellationToken token)
+    internal static async Task<T> Read<T>(Stream pipe, CancellationToken token, int maximum = OperationsProtocol.MaximumFrame)
     {
         var header = new byte[4]; await pipe.ReadExactlyAsync(header, token).ConfigureAwait(false);
         var size = BinaryPrimitives.ReadInt32LittleEndian(header);
-        if (size is <= 0 or > OperationsProtocol.MaximumFrame) throw new InvalidDataException("运维消息长度无效。");
+        if (size <= 0 || size > maximum) throw new InvalidDataException("运维消息长度无效。");
         var bytes = new byte[size]; await pipe.ReadExactlyAsync(bytes, token).ConfigureAwait(false);
         return JsonSerializer.Deserialize<T>(bytes, new JsonSerializerOptions { UnmappedMemberHandling = System.Text.Json.Serialization.JsonUnmappedMemberHandling.Disallow, MaxDepth = 32 })
             ?? throw new InvalidDataException("运维消息缺失。");
     }
 
-    internal static NamedPipeServerStream Create(string name, string sid, bool first)
+    internal static NamedPipeServerStream Create(string name, string sid, bool first, uint instances = 2)
     {
         // Local only, explicit SID ACL, overlapped I/O, no inherited handle.
         if (!ConvertStringSecurityDescriptorToSecurityDescriptor("D:P(A;;GA;;;SY)(A;;GA;;;" + sid + ")", 1, out var descriptor, out _))
@@ -39,7 +39,7 @@ internal static class OperationsPipe
         {
             var security = new SecurityAttributes { Length = Marshal.SizeOf<SecurityAttributes>(), Descriptor = descriptor };
             var handle = CreateNamedPipe(@"\\.\pipe\" + name, 3u | 0x40000000u | (first ? 0x00080000u : 0),
-                8, 2, 4096, 4096, 0, ref security);
+                8, instances, 4096, 4096, 0, ref security);
             if (handle.IsInvalid) { handle.Dispose(); throw new Win32Exception(Marshal.GetLastWin32Error()); }
             return new(PipeDirection.InOut, true, false, handle);
         }

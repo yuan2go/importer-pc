@@ -72,9 +72,7 @@ internal static class SmRoundLifecycle
             {
                 await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity!.ManagedExecutions == 0);
                 await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC original remote execution and binding are settled; no delayed work remains and withdrawal applied");
-                var disabled = await h.App.SnapshotAsync();
-                await h.App.SetPositionEnabledAsync(new(Wire.Id(), disabled.RuntimeId, "left", disabled.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
-                await h.App.CheckRcsHeartbeatAsync(default);
+                await SmRoundFixture.EnableAsync(h.App, "left");
             }
             Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival!.TargetOperation is null,
                 "removal releases only the ended parcel's lane claim");

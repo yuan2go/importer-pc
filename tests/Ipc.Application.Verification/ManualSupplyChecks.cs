@@ -43,7 +43,18 @@ internal static class SmRoundFixture
         }
         else if (VehiclePeers.TryGetValue(binding.Target, out var setVehicle)) setVehicle(code, vehicle);
         else throw new InvalidOperationException("Fixture must explicitly advance its own RCS vehicle boundary");
-        await ((IStationRcsHeartbeat)app).CheckRcsHeartbeatAsync(default);
+        // A busy manual check did not confirm the new synthetic vehicle.
+        // The one-hour automatic interval cannot supply the missing observation.
+        await CameraRoundHarness.Until(async () =>
+        {
+            var result = await app.CheckRcsHeartbeatAsync(default);
+            return result switch
+            {
+                RcsHeartbeatResult.Received => true,
+                RcsHeartbeatResult.Busy => false,
+                _ => throw new InvalidOperationException($"Synthetic vehicle change on {position} received heartbeat result {result}")
+            };
+        });
         await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.VehicleNo == vehicle);
         if (s.Devices?.Any(d => d.DeviceId == s.Positions!.Single(p => p.Id == position).ReaderDeviceId && d.IsValid(DateTimeOffset.UtcNow)) == true)
             await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.CameraBoundaryReady == true);

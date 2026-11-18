@@ -106,7 +106,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         actionButtons.Add(button);
         button.Click += async (_, _) => await Run(action); return button;
     }
-    async Task Run(Func<Task> action)
+    async Task Run(Func<Task> action, Func<Exception, string>? failureMessage = null)
     {
         if (acting || closing) { model.Message = "原操作尚未收口，请等待原结果。"; return; }
         acting = true;
@@ -117,7 +117,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         {
             technicalFailure.Text = DiagnosticText.Protect(error.ToString());
             System.Diagnostics.Trace.TraceError("Operations UI action: {0}", technicalFailure.Text);
-            model.Message = ChineseInterfaceText.ParameterMessage(error.Message, "操作未完成，请核对原结果；输入和原责任保留。");
+            model.Message = failureMessage?.Invoke(error) ?? ChineseInterfaceText.ParameterMessage(error.Message, "操作未完成，请核对原结果；输入和原责任保留。");
         }
         finally
         {
@@ -194,15 +194,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             _ => throw new ArgumentOutOfRangeException(nameof(target))
         };
         if (target == "debug" && diagnostic.Content is null)
-            diagnostic.Content = new OperationsDeviceDiagnostics(model, async (reader, instance) =>
-            {
-                Navigate("parameters"); await model.EnsureMaintenanceLoadedAsync();
-                var target = reader is null ? instance ?? model.CapabilityDrafts.FirstOrDefault(ParameterOwnership.IsRcs)?.InstanceId :
-                    model.ReaderDrafts.SingleOrDefault(r => r.Original.DeviceId == reader)?.Capability.InstanceId;
-                if (target is not null) parameters.NavigateToParameter(target + (reader is null ? "/heartbeat-interval-ms" : "/reader.engine"));
-            },
-                position => { if (workspace) { debug?.SelectPosition(position); ShowDebugView(); } else model.Message = "请先明确进入设备调试。"; },
-                path => parameters.NavigateToParameter(path));
+            diagnostic.Content = new OperationsDeviceDiagnostics(model, OpenDiagnosticSettings,
+                position => { if (workspace) { debug?.SelectPosition(position); ShowDebugView(); } else model.Message = "请先明确进入设备调试。"; });
         parameters.IsEnabled = model.IsManagementMode && model.Fresh;
         diagnostic.IsEnabled = model.IsManagementMode && model.Fresh;
         if (diagnostic.Content is OperationsDeviceDiagnostics devices) devices.DebugActive = workspace;
@@ -210,6 +203,53 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         enterDebug.IsEnabled = !acting && model.IsManagementMode && model.Fresh && !workspace;
         leaveDebug.IsEnabled = !acting && workspace;
     }
+    Task OpenDiagnosticSettings(string? reader, string field) => Run(async () =>
+    {
+        var originalGrant = grant;
+        await model.EnsureMaintenanceLoadedAsync();
+        if (closing || !diagnostic.IsVisible) return;
+        if (!connected() || !model.Fresh) throw new IOException("工作站连接或状态读取已中断，请检查连接后重试。");
+        if (!model.IsManagementMode || model.ManagementStatus.SessionId != originalGrant)
+            throw new UnauthorizedAccessException("本窗管理授权已变化。");
+
+        var path = field;
+        if (field != "HistoryDays")
+        {
+            var instance = reader is null
+                ? model.Snapshot?.Configuration.Effective.Wcs?.InstanceId ?? model.CapabilityDrafts.FirstOrDefault(ParameterOwnership.IsRcs)?.InstanceId
+                : model.ReaderDrafts.SingleOrDefault(r => r.Original.DeviceId == reader)?.Capability.InstanceId;
+            path = instance + "/" + field;
+        }
+        try
+        {
+            Navigate("parameters");
+            parameters.UpdateLayout();
+            if (!parameters.NavigateToParameter(path))
+                throw new InvalidOperationException("当前配置没有对应的专业参数，请核对设备配置。");
+        }
+        catch
+        {
+            Navigate("debug");
+            throw;
+        }
+        model.Message = field == "HistoryDays" ? "已打开数据与记录设置。" :
+            "已打开专业参数。相机 IP、相机编号和 RCS 地址请在供包工作站的“设置”修改。";
+    }, error =>
+    {
+        if (!connected() || !model.ManagementStatus.Available)
+        {
+            authorizationPanel.IsExpanded = true;
+            return "专业参数读取中断。请检查工作站连接，恢复后验证管理密码并重试；已填写的内容保留。";
+        }
+        if (error is UnauthorizedAccessException)
+        {
+            authorizationPanel.IsExpanded = true;
+            return "本窗管理授权已失效。请重新验证管理密码后打开专业参数；已填写的内容保留。";
+        }
+        var reason = ChineseInterfaceText.ParameterMessage(error.Message, "请查看授权与诊断详情。");
+        return "专业参数未打开。" + reason + " 核对后可重试，已填写的内容保留。";
+    });
+
     async Task BeginDebug()
     {
         await model.RequireManagementModeAsync();

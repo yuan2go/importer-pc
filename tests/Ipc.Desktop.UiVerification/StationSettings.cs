@@ -15,7 +15,8 @@ static partial class Program
     static async Task VerifyCameraSettingsFeedback(string root, string evidence, List<string> lines)
     {
         await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "camera-settings-feedback"), nativeResults: true, stationCode: "SYNTHETIC-STATION");
-        await h.StartAsync();
+        await h.StartAsync(authorizeManagement: false);
+        await ManagementModeFixture.Authorize(h.App);
         var reserve = (h.Config.Retention ?? new ParcelRetentionPolicy()).MinimumFreeBytes;
         long probeBytes = reserve * 8;
         h.App.StorageAvailableBytesForVerification = () => Volatile.Read(ref probeBytes) is >= 0 and var bytes
@@ -38,6 +39,7 @@ static partial class Program
             lines.Add("PASS CAMERA-SETTINGS " + text);
         }
         await vm.RefreshAsync();
+        await Until(() => vm.IsManagementMode && vm.Fresh && vm.Left.ReaderId == h.Left);
         window.ShowPositionDiagnostics(vm.Left);
         await Until(() => window.IsVisible);
         var center = window;
@@ -63,6 +65,7 @@ static partial class Program
         await Until(() => badge.Text == "正常");
         Check(UsesInk("Success") && vm.Snapshot?.Capacity?.FreeStorageBytes == reserve * 8,
             "successful probe restores the healthy status and the confirmed reading");
+        await VerifyDiagnosticNavigation(window, h, probe, Until, Check);
         var reconnect = Descendants(center).OfType<Button>().Single(b => AutomationProperties.GetName(b) == "左相机：重新连接");
         Check(!reconnect.IsEnabled, "passive diagnostics cannot mutate a device before explicit debug entry");
         window.ShowPositionDebug(vm.Left);
@@ -253,12 +256,14 @@ static partial class Program
     }
 }
 
-public class CameraSettingsFeedbackProbe : ProjectionProbe
+public class CameraSettingsFeedbackProbe : ManagementStatusUiProbe
 {
     public int SaveCalls;
     public string? ReconnectedDevice;
+    public System.Collections.Concurrent.ConcurrentQueue<string>? NavigationCalls;
     protected override object? Invoke(MethodInfo? method, object?[]? arguments)
     {
+        NavigationCalls?.Enqueue(method!.Name);
         if (method!.Name == nameof(IParcelApplication.StageConfigurationAsync))
             return LoseSaveResponse((Task<BusinessReceipt>)base.Invoke(method, arguments)!);
         if (method.Name == nameof(IParcelApplication.ReconnectDeviceAsync))

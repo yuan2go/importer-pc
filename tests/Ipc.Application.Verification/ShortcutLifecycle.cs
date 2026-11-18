@@ -78,8 +78,8 @@ static class ShortcutLifecycle
             var old = Release(directory) with { Shortcuts = new(true, true) };
             var menu = Path.Combine(directory, "菜单"); var desktop = Path.Combine(directory, "桌面");
             var plan = DeploymentShortcuts.Plan(old, menu, desktop);
-            Check(plan.Length == 3 && plan.All(e => e.Arguments == "") && plan.Count(e => Path.GetFileName(e.Path) == "菜鸟供包台.lnk") == 2 &&
-                plan.Single(e => Path.GetFileName(e.Path) == "供包运维工具.lnk").Target == Path.Combine(old.ReleaseRoot, "desktop", "Ipc.Operations.Desktop.exe") &&
+            Check(plan.Length == 3 && plan.Count(e => e.Arguments == "") == 2 && plan.Count(e => Path.GetFileName(e.Path) == "菜鸟供包台.lnk") == 2 &&
+                plan.Single(e => Path.GetFileName(e.Path) == "供包运维工具.lnk").Arguments == InstallationIdentity.OperationsArgument && plan.All(e => e.Target == plan[0].Target) &&
                 plan.All(e => !e.Path.Contains("sportmaster") && !e.Path.Contains(old.SourceCommit[..8])), "start menu and desktop use the plain product name without internal identities");
             var legacy = Path.Combine(menu, "菜鸟供包台", "菜鸟供包台 · SM供包业务 · sportmaster · " + old.SourceCommit[..8] + " · " + Path.GetFileName(old.ReleaseRoot)[^8..] + " · 运行.lnk");
             Directory.CreateDirectory(Path.GetDirectoryName(legacy)!); Write(plan[0] with { Path = legacy });
@@ -100,12 +100,24 @@ static class ShortcutLifecycle
         Scenario("registered-entry-inventory", directory =>
         {
             var current = Release(Path.Combine(directory, "双程序")) with { Shortcuts = new(true, true) };
-            var operations = Path.Combine(current.ReleaseRoot, "desktop", InstallationIdentity.OperationsExecutable);
+            var operations = Path.Combine(current.ReleaseRoot, "desktop", InstallationIdentity.LegacyOperationsExecutable);
             File.WriteAllText(operations, "synthetic operations; never executed");
             var menu = Path.Combine(directory, "菜单"); var desktop = Path.Combine(directory, "桌面");
-            DeploymentShortcuts.Create(current, menu, desktop);
+            var legacyInventory = Path.Combine(directory, "legacy-inventory.json");
+            File.WriteAllText(legacyInventory, Wire.Encode(new { Files = new Dictionary<string, string> { ["desktop/" + InstallationIdentity.LegacyOperationsExecutable] = Wire.FileHash(operations) } }));
+            var legacy = current with { InventoryFile = legacyInventory, InventorySha256 = Wire.FileHash(legacyInventory) };
+            DeploymentShortcuts.Create(legacy, menu, desktop);
             var plan = DeploymentShortcuts.Plan(current, menu, desktop);
-            var tool = plan.Single(p => p.Target == operations);
+            var tool = plan.Single(p => p.Arguments == InstallationIdentity.OperationsArgument);
+            Check(ReadTarget(tool.Path) == operations, "retained dual-executable inventory uses its own tool");
+            var upgraded = Release(Path.Combine(directory, "同版覆盖")) with { Shortcuts = current.Shortcuts, DataRoot = current.DataRoot, PreviousDeployment = legacy };
+            DeploymentShortcuts.Create(upgraded, menu, desktop);
+            using (var link = new ShellLinkFile(tool.Path))
+                Check(link.TargetPath == Path.Combine(upgraded.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable) &&
+                    link.Arguments == InstallationIdentity.OperationsArgument, "same-version upgrade replaces the owned legacy link target and arguments");
+            current = upgraded;
+            plan = DeploymentShortcuts.Plan(current, menu, desktop);
+            tool = plan.Single(p => p.Arguments == InstallationIdentity.OperationsArgument);
             var target = Release(Path.Combine(directory, "回滚目标")) with { SourceCommit = new string('b', 40), DataRoot = current.DataRoot, Shortcuts = current.Shortcuts };
             var inventory = Path.Combine(directory, "目标库存.json");
             File.WriteAllText(inventory, Wire.Encode(new { Files = new Dictionary<string, string> { ["desktop/" + InstallationIdentity.DesktopExecutable] = Wire.FileHash(Path.Combine(target.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable)) } }));
@@ -114,7 +126,7 @@ static class ShortcutLifecycle
             Check(ReadTarget(plan[0].Path) == Path.Combine(target.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable) && !File.Exists(tool.Path),
                 "rollback projects only entries declared by the retained inventory and removes the superseded operations link");
             DeploymentShortcuts.Create(current, menu, desktop, target);
-            Check(ReadTarget(tool.Path) == operations, "returning to the current dual-program deployment restores its operations entry");
+            Check(ReadTarget(tool.Path) == tool.Target, "returning to the current dual-program deployment restores its operations entry");
             var before = plan.ToDictionary(p => p.Path, p => Wire.FileHash(p.Path));
             File.AppendAllText(inventory, " ");
             Reject(() => DeploymentShortcuts.Create(target, menu, desktop, current), "changed registered inventory rejects projection before touching current entries");

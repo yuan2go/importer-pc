@@ -97,7 +97,7 @@ class InstallerPackageTests(unittest.TestCase):
         self.files['desktop/Ipc.Presentation.Wpf.dll'] = b'SYNTHETIC shared native theme'
         self.write()
         binaries = self.path.parent / 'binaries'; binaries.mkdir()
-        for name in ('Ipc.Desktop.dll', 'Ipc.Assembly.dll', 'Ipc.Presentation.Wpf.dll'):
+        for name in ('Ipc.Desktop.dll', 'Ipc.Assembly.dll', 'Ipc.Presentation.Wpf.dll', 'Ipc.Operations.Desktop.dll'):
             (binaries / name).write_bytes(self.files['desktop/' + name])
         installer.verify_shared_binaries(self.path, binaries)
         (binaries / 'Ipc.Presentation.Wpf.dll').write_bytes(b'OTHER THEME')

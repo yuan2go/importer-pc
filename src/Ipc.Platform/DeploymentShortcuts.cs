@@ -19,7 +19,7 @@ public static class DeploymentShortcuts
         {
             result.Add(new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, InstallationIdentity.DisplayName + ".lnk"), target, "", location.ReleaseRoot));
             result.Add(new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, InstallationIdentity.OperationsDisplayName + ".lnk"),
-                System.IO.Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.OperationsExecutable), "", location.ReleaseRoot));
+                target, InstallationIdentity.OperationsArgument, location.ReleaseRoot));
         }
         else if (options.StartMenu)
             foreach (var entry in new[] { (Name: "运行", Args: ""), (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
@@ -44,11 +44,11 @@ public static class DeploymentShortcuts
                 !string.Equals(Wire.FileHash(inventory), location.InventorySha256, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidDataException("安装库存无法核验，原快捷方式保留；请核对原安装记录。");
             using var declared = JsonDocument.Parse(File.ReadAllText(inventory));
-            if (!declared.RootElement.GetProperty("Files").TryGetProperty("desktop/" + InstallationIdentity.OperationsExecutable, out _))
-            {
-                var tool = Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.OperationsExecutable);
-                plan = plan.Where(entry => !string.Equals(entry.Target, tool, StringComparison.OrdinalIgnoreCase)).ToArray();
-            }
+            var files = declared.RootElement.GetProperty("Files");
+            if (files.TryGetProperty("desktop/" + InstallationIdentity.LegacyOperationsExecutable, out _))
+                plan = plan.Select(entry => entry.Arguments == InstallationIdentity.OperationsArgument ? LegacyTool(entry, location) : entry).ToArray();
+            else if (!files.TryGetProperty("desktop/Ipc.Operations.Desktop.dll", out _))
+                plan = plan.Where(entry => entry.Arguments != InstallationIdentity.OperationsArgument).ToArray();
         }
         foreach (var entry in plan)
         {
@@ -56,8 +56,8 @@ public static class DeploymentShortcuts
             var exists = ExistingShortcutFile(entry.Path);
             using var link = new ShellLinkFile(exists ? entry.Path : null);
             if (exists && (!string.Equals(link.TargetPath, entry.Target, StringComparison.OrdinalIgnoreCase) || link.Arguments != entry.Arguments) &&
-                !((location.ApplicationId == "sportmaster" || entry.Arguments == "" && System.IO.Path.GetFileName(entry.Path) == InstallationIdentity.DisplayName + ".lnk") && link.Arguments == entry.Arguments &&
-                  PreviousOwnsTarget(location, previous, link.TargetPath)))
+                !((location.ApplicationId == "sportmaster" || entry.Arguments == "" && System.IO.Path.GetFileName(entry.Path) == InstallationIdentity.DisplayName + ".lnk") &&
+                  PreviousOwnsTarget(location, previous, entry, link.TargetPath, link.Arguments)))
                 throw new IOException("保留目标不同的既有快捷方式：" + entry.Path);
             link.TargetPath = entry.Target; link.Arguments = entry.Arguments; link.WorkingDirectory = entry.WorkingDirectory;
             link.Description = location.ApplicationId == "sportmaster" ? InstallationIdentity.DisplayName : InstallationIdentity.DisplayName + " · " + location.ApplicationId; link.SetIcon(entry.Target, 0); link.Save(entry.Path);
@@ -69,7 +69,7 @@ public static class DeploymentShortcuts
     }
 
     [SupportedOSPlatform("windows")]
-    static bool PreviousOwnsTarget(DeploymentLocation current, DeploymentLocation? previous, string target)
+    static bool PreviousOwnsTarget(DeploymentLocation current, DeploymentLocation? previous, DeploymentShortcut entry, string target, string arguments)
     {
         if (previous is null)
         {
@@ -86,8 +86,10 @@ public static class DeploymentShortcuts
         }
         return previous.ApplicationId == current.ApplicationId && previous.RuntimeAccountSid == current.RuntimeAccountSid &&
             string.Equals(System.IO.Path.GetFullPath(previous.DataRoot), System.IO.Path.GetFullPath(current.DataRoot), StringComparison.OrdinalIgnoreCase) &&
-            new[] { InstallationIdentity.DesktopExecutable, InstallationIdentity.OperationsExecutable }.Any(name =>
-                string.Equals(target, System.IO.Path.Combine(previous.ReleaseRoot, "desktop", name), StringComparison.OrdinalIgnoreCase));
+            (string.Equals(target, Path.Combine(previous.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable), StringComparison.OrdinalIgnoreCase) &&
+                arguments == (Path.GetFileName(entry.Path) == InstallationIdentity.OperationsDisplayName + ".lnk" ? InstallationIdentity.OperationsArgument : entry.Arguments) ||
+             Path.GetFileName(entry.Path) == InstallationIdentity.OperationsDisplayName + ".lnk" &&
+                arguments == "" && string.Equals(target, Path.Combine(previous.ReleaseRoot, "desktop", InstallationIdentity.LegacyOperationsExecutable), StringComparison.OrdinalIgnoreCase));
     }
 
     [SupportedOSPlatform("windows")]
@@ -96,9 +98,16 @@ public static class DeploymentShortcuts
         RemoveOwned(OwnedCandidates(location, programs, desktop));
     }
 
+    static DeploymentShortcut LegacyTool(DeploymentShortcut entry, DeploymentLocation location) =>
+        entry with { Target = Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.LegacyOperationsExecutable), Arguments = "" };
+
     static IEnumerable<DeploymentShortcut> OwnedCandidates(DeploymentLocation location, string programs, string desktop)
     {
-        foreach (var entry in Plan(location with { Shortcuts = new(true, true) }, programs, desktop).Concat(LegacySmMenu(location, programs))) yield return entry;
+        foreach (var entry in Plan(location with { Shortcuts = new(true, true) }, programs, desktop).Concat(LegacySmMenu(location, programs)))
+        {
+            yield return entry;
+            if (entry.Arguments == InstallationIdentity.OperationsArgument) yield return LegacyTool(entry, location);
+        }
         if (location.ApplicationId == "sportmaster")
             foreach (var entry in new[] { (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
                 yield return new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, InstallationIdentity.DisplayName + " · " + entry.Name + ".lnk"),

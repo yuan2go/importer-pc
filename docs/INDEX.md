@@ -23,7 +23,7 @@
 
 ## 设计
 
-- [SM 双程序功能归属与第二阶段实施](design/sm-dual-desktop-operator-operations-proposal.md)、[现场设置与调试工作区](design/management-workspace.md)
+- [SM 单应用 EXE 的工作站与运维入口](design/sm-dual-desktop-operator-operations-proposal.md)、[现场设置与调试工作区](design/management-workspace.md)
 - [SM 连续供包、双证据分轮与异常取件恢复](design/sm-continuous-induction-closure-01.md)
 
 - [SM 包裹轮次与原请求生命周期](design/sm-parcel-rounds.md)

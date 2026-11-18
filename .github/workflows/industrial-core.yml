@@ -222,8 +222,6 @@ jobs:
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
-          python -m unittest discover -s scripts -p test_operations_bundle.py -v
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet build tests/Ipc.Operations.Verification -c Release -p:RestoreLockedMode=true -m:1 -nr:false
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           $opsEvidence = Join-Path $env:TEMP ('ipc-operations-' + [guid]::NewGuid().ToString('N'))

@@ -20,7 +20,6 @@ from application_bundles import read_packages, publish_packages
 from release_documents import SOURCE_PATHS, publish as publish_guides
 from release_dependencies import publish as publish_dependencies
 from release_provenance import capture as capture_provenance, publish as publish_provenance
-from operations_bundle import merge_operations
 
 APPLICATIONS = {'sportmaster': 'Sportmaster', 'direct-plc': 'DirectPlc', 'wcs-to-plc': 'WcsToPlc'}
 p = argparse.ArgumentParser()
@@ -56,7 +55,6 @@ source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=Tr
 provenance = capture_provenance(root, source, a.source_branch, a.application, '', a.target)
 if a.test_instance:
     provenance['InstallationChannel'] = 'Test'
-operations_executable = 'Ipc.Operations.Desktop.Test.exe' if a.test_instance else 'Ipc.Operations.Desktop.exe'
 desktop_executable = 'Ipc.Desktop.Test.exe' if a.test_instance else 'Ipc.Desktop.exe'
 module = APPLICATIONS[a.application]
 lock = 'packages.' + a.application + ('.win-x64' if a.target == 'win-x64' else '') + '.lock.json'
@@ -96,17 +94,6 @@ if a.target == 'portable':
     compiled = json.loads(subprocess.check_output([a.dotnet, str(output / 'app/Ipc.Assembly.dll'), '--action', 'business-identity'], text=True))
     if compiled['ApplicationId'] != a.application or any(compiled[key] != value for key, value in business.items()):
         raise ValueError('Compiled business version/declaration differs from publication inputs')
-if a.application == 'sportmaster' and a.target == 'win-x64':
-    # Both apphosts live in the same immutable desktop deployment/inventory. The
-    # observer has no runtime/driver/storage implementation references of its own.
-    observer = workspace / 'operations'
-    subprocess.run([a.dotnet, 'publish', 'src/Ipc.Operations.Desktop/Ipc.Operations.Desktop.csproj',
-                    '-c', 'Release', '-m:1', '-nr:false', '-p:RestoreLockedMode=true',
-                    *frozen_properties, *properties, '--artifacts-path', str(artifacts),
-                    '--self-contained', 'true', '-r', 'win-x64', '-o', str(observer)], cwd=build_source, check=True)
-    if a.test_instance:
-        (observer / 'Ipc.Operations.Desktop.exe').rename(observer / operations_executable)
-    merge_operations(observer, output / 'desktop', operations_executable)
 # Portable uses the framework-dependent DLL entry; a Windows build may also emit an apphost.
 # The self-contained Windows candidate always contains
 # the actual selected Application-owned WPF page and shared window/navigation/maintenance.
@@ -146,7 +133,8 @@ for directory in [output / 'app', output / 'desktop']:
     (directory / 'application-release.json').write_text(json.dumps(release, indent=2) + '\n')
 selection.update(ApplicationId=a.application, SourceCommit=source, Target=a.target, ApplicationContractVersion=next(c['version'] for c in selection['components'] if c['id'] == 'application-contracts'), DatabaseFormat=database_format, EntryPoint='app/Ipc.Assembly.dll',
                  DesktopEntryPoint='desktop/' + desktop_executable if a.target == 'win-x64' else None,
-                 OperationsEntryPoint='desktop/' + operations_executable if a.application == 'sportmaster' and a.target == 'win-x64' else None,
+                 OperationsArguments=['--operations'] if a.application == 'sportmaster' and a.target == 'win-x64' else None,
+                 OperationsEntryPoint='desktop/' + desktop_executable if a.application == 'sportmaster' and a.target == 'win-x64' else None,
                  Windows='NOT_RUN', PhysicalIntegration='BLOCKED',
                  Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest()
                            for directory in [output / 'app', output / 'desktop'] if directory.exists()

@@ -32,23 +32,37 @@ internal static partial class Program
         Console.OutputEncoding = new UTF8Encoding(false);
         try
         {
-            workspace = Path.GetFullPath(args[0]); root = Path.GetFullPath(args[1]); Directory.CreateDirectory(root);
+            if (args.Length == 2)
+            {
+                workspace = Path.GetFullPath(args[0]); root = Path.GetFullPath(args[1]);
+                using var coordinator = Child("coordinator");
+                Console.Write(ReadCoordinatorOutput(coordinator));
+                return coordinator.ExitCode;
+            }
+            workspace = Environment.GetEnvironmentVariable("IPC_FIXTURE_WORKSPACE")!;
+            root = Environment.GetEnvironmentVariable("IPC_FIXTURE_ROOT")!;
+            Directory.CreateDirectory(root);
             // Match the existing Application verifier: source fixtures do not
             // provision or borrow the workstation's protected machine policy.
             typeof(Ipc.Application.ParcelFlow.ParcelRecovery).GetProperty("BackupSetLeaseRoot", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!
                 .SetValue(null, (Func<string>)(() => Path.Combine(root, "backup-set-leases")));
-            var role = args.ElementAtOrDefault(2);
+            var role = Environment.GetEnvironmentVariable("IPC_FIXTURE_ROLE");
             if (role == "lease") { using var lease = new OperationsToolLease(Installation()); Console.WriteLine("READY"); Console.ReadLine(); return 0; }
             if (role == "ui-early-close") { EarlyCloseUi(); return 0; }
             if (role is "ui-control" or "ui-owner-loss") { ControlUi(role == "ui-owner-loss"); return 0; }
             if (role is "ui" or "ui-crash" or "ui-offline" or "ui-cancel") { Ui(role == "ui-crash", role == "ui-offline", role == "ui-cancel"); return 0; }
             if (role is "server" or "server-restart") { Server(role != "server-restart").GetAwaiter().GetResult(); return 0; }
-            if (role == "unapproved") { Unapproved().GetAwaiter().GetResult(); return 0; }
+            if (role is "unapproved" or "wrong-role") { Unapproved().GetAwaiter().GetResult(); return 0; }
             if (role == "control-crash") { ControlCrash().GetAwaiter().GetResult(); return 0; }
             if (role == "control-inflight") { ControlInflight().GetAwaiter().GetResult(); return 0; }
             Run().GetAwaiter().GetResult(); return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }
+    }
+    static string ReadCoordinatorOutput(Process process)
+    {
+        var output = process.StandardOutput.ReadToEnd(); process.WaitForExit();
+        Console.Error.Write(ErrorText(process).GetAwaiter().GetResult()); return output;
     }
     static DeploymentLocation Location() => new("sportmaster", new string('A', 40), root, Path.Combine(root, "station", "config"),
         Path.Combine(root, "station", "data"), WindowsIdentity.GetCurrent().User!.Value) { InventorySha256 = new string('B', 64) };
@@ -57,7 +71,7 @@ internal static partial class Program
         var location = Location();
         // Only this friend test assembly can substitute registration. No CLI or
         // production API accepts these paths or bypasses protected installation proof.
-        return new(location, peer ?? executable, peer ?? executable, () =>
+        return new(location, peer ?? executable, () =>
         {
             if (File.Exists(Path.Combine(root, "registration-changed"))) throw new UnauthorizedAccessException("Synthetic replacement registration");
         }, () => DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [root], true));
@@ -71,7 +85,10 @@ internal static partial class Program
             File.Copy(executable, path, true);
         }
         var start = new ProcessStartInfo(path) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
-        start.ArgumentList.Add(workspace); start.ArgumentList.Add(root); start.ArgumentList.Add(role);
+        start.Environment["IPC_FIXTURE_WORKSPACE"] = workspace;
+        start.Environment["IPC_FIXTURE_ROOT"] = root;
+        start.Environment["IPC_FIXTURE_ROLE"] = role;
+        if (role is not ("server" or "server-restart" or "wrong-role")) start.ArgumentList.Add(InstallationIdentity.OperationsArgument);
         var child = Process.Start(start)!; childErrors.Add(child.Id, child.StandardError.ReadToEndAsync()); return child;
     }
     static async Task Ready(Process process)
@@ -440,12 +457,17 @@ internal static partial class Program
             }
             await Reject(() => new OperationsClient(Installation(Path.Combine(root, "wrong.exe"))).ReadAsync(default), "client rejects unregistered server apphost");
             await Reject(() => Raw(request, TokenImpersonationLevel.Anonymous), "actual anonymous client identity cannot obtain runtime state");
-            var denied = new OperationsInstallation(Location() with { RuntimeAccountSid = "S-1-5-21-1-2-3-99999" }, executable, executable, () => { }, () => DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [root], true));
+            var denied = new OperationsInstallation(Location() with { RuntimeAccountSid = "S-1-5-21-1-2-3-99999" }, executable, () => { }, () => DeploymentProgramUse.AcquireAt(Path.Combine(root, "program-leases"), [root], true));
             await Reject(() => Task.Run(() => denied.RequireRead()), "unassigned Windows account has no online or offline read authority");
             using (var unapproved = Child("unapproved", otherExecutable: true))
             {
                 await unapproved.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
                 Check(unapproved.ExitCode == 0, "actual unapproved executable rejected: " + await ErrorText(unapproved));
+            }
+            using (var wrongRole = Child("wrong-role"))
+            {
+                await wrongRole.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+                Check(wrongRole.ExitCode == 0, "same registered apphost without the operations role is refused as client");
             }
             await Command(server, "stale");
             await Reject(() => client.ReadAsync(default), "draining or requesting an old Application snapshot cannot renew its freshness");

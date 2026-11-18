@@ -11,14 +11,13 @@ public sealed class OperationsInstallation
     public DeploymentLocation Location { get; }
     public string Identity { get; }
     public string PipeName => "ImporterPc.Operations.v1." + Identity[..32];
-    internal string WorkstationExecutable { get; }
-    internal string ToolExecutable { get; }
+    readonly string executable;
     readonly Action verifyCurrent;
     internal Func<IDisposable> AcquireProgramUse { get; }
 
-    internal OperationsInstallation(DeploymentLocation location, string workstation, string tool, Action verifyCurrent, Func<IDisposable> acquireProgramUse)
+    internal OperationsInstallation(DeploymentLocation location, string executable, Action verifyCurrent, Func<IDisposable> acquireProgramUse)
     {
-        Location = location; WorkstationExecutable = Path.GetFullPath(workstation); ToolExecutable = Path.GetFullPath(tool);
+        Location = location; this.executable = Path.GetFullPath(executable);
         Identity = Wire.Hash(Wire.Encode(location)); this.verifyCurrent = verifyCurrent; AcquireProgramUse = acquireProgramUse;
     }
 
@@ -30,7 +29,7 @@ public sealed class OperationsInstallation
         if (!Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar).Equals(desktop, StringComparison.OrdinalIgnoreCase))
             throw new UnauthorizedAccessException("运维入口不属于当前安装。");
         var installation = new OperationsInstallation(current, Path.Combine(desktop, InstallationIdentity.DesktopExecutable),
-            Path.Combine(desktop, InstallationIdentity.OperationsExecutable), () =>
+            () =>
             {
                 var registered = WindowsDeploymentSetup.Current("sportmaster");
                 if (registered is null || registered.LifecycleState != "Installed" || Wire.Encode(registered) != Wire.Encode(current))
@@ -49,7 +48,7 @@ public sealed class OperationsInstallation
             document.RootElement.GetProperty("ReleaseRoot").GetString() != current.ReleaseRoot)
             throw new InvalidDataException("安装库存归属不符。");
         var files = document.RootElement.GetProperty("Files");
-        foreach (var name in new[] { InstallationIdentity.DesktopExecutable, InstallationIdentity.OperationsExecutable, "application-release.json" }
+        foreach (var name in new[] { InstallationIdentity.DesktopExecutable, "Ipc.Operations.Desktop.dll", "application-release.json" }
             .Concat(Directory.EnumerateFiles(desktop, "*.dll").Select(Path.GetFileName)!)
             .Concat(Directory.EnumerateFiles(desktop, "*.json").Select(Path.GetFileName)!))
         {
@@ -74,7 +73,8 @@ public sealed class OperationsInstallation
         RequireRead();
         var path = process.MainModule?.FileName;
         if (process.HasExited || process.SessionId != Process.GetCurrentProcess().SessionId ||
-            !string.Equals(path, server ? WorkstationExecutable : ToolExecutable, StringComparison.OrdinalIgnoreCase))
+            !string.Equals(path, executable, StringComparison.OrdinalIgnoreCase) ||
+            !OperationsProcessRole.Matches(process, server))
             throw new UnauthorizedAccessException("连接进程不属于当前安装或当前 Windows 会话。");
     }
 

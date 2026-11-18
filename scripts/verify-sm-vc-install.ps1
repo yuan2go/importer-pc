@@ -177,16 +177,22 @@ if ($expectedVc90 -eq 'AlreadyAvailable') {
 $operationsProbeSource = @'
 using System.Diagnostics;
 using Ipc.Platform;
+if (args is [var linkPath])
+{
+    using var link = new ShellLinkFile(linkPath);
+    Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { Target = link.TargetPath, link.Arguments }));
+    return;
+}
 var location = WindowsDeploymentSetup.Current("sportmaster")!;
 var desktop = Path.Combine(location.ReleaseRoot, "desktop");
-foreach (var name in new[] { InstallationIdentity.DesktopExecutable, InstallationIdentity.OperationsExecutable })
-    if (!File.Exists(Path.Combine(desktop, name))) throw new Exception("Missing installed entry: " + name);
+if (!File.Exists(Path.Combine(desktop, InstallationIdentity.DesktopExecutable)) ||
+    Directory.GetFiles(desktop, "Ipc.Operations.Desktop*.exe").Length != 0) throw new Exception("Invalid installed SM entry set");
 var registration = WindowsDeploymentSetup.Registration("sportmaster");
 var before = Wire.FileHash(registration);
 var databases = Directory.GetFiles(location.DataRoot, "*.db", SearchOption.AllDirectories);
 async Task<Process> Open()
 {
-    var child = Process.Start(new ProcessStartInfo(Path.Combine(desktop, InstallationIdentity.OperationsExecutable))
+    var child = Process.Start(new ProcessStartInfo(Path.Combine(desktop, InstallationIdentity.DesktopExecutable), InstallationIdentity.OperationsArgument)
         { UseShellExecute = false, CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden, RedirectStandardError = true })!;
     try
     {
@@ -231,12 +237,13 @@ using (var child = await Open()) { child.Kill(true); await child.WaitForExitAsyn
 await Released();
 if (before != Wire.FileHash(registration) || !databases.SequenceEqual(Directory.GetFiles(location.DataRoot, "*.db", SearchOption.AllDirectories)))
     throw new Exception("Operations changed registration or created a business database");
-Console.WriteLine("PASS INSTALLED-OPERATIONS " + InstallationIdentity.DisplayName + ": both EXEs installed; native offline tool; normal/crash file-use release; business owner remains free; no database startup");
+Console.WriteLine("PASS INSTALLED-OPERATIONS " + InstallationIdentity.DisplayName + ": single application executable with operations argument; native offline tool; normal/crash file-use release; business owner remains free; no database startup");
 '@
 function Verify-InstalledOperations([string]$mediaRoot, [string]$name) {
     $probe = Join-Path $evidence "installed-operations-$name"
     New-Item -ItemType Directory -Path $probe | Out-Null
     $platform = Join-Path $mediaRoot 'app/Ipc.Platform.dll'
+    Copy-Item -LiteralPath "$PSScriptRoot/../src/Ipc.Platform/ShellLinkFile.cs" -Destination $probe
     "<Project Sdk=`"Microsoft.NET.Sdk`"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><ImplicitUsings>enable</ImplicitUsings></PropertyGroup><ItemGroup><Reference Include=`"Ipc.Platform`"><HintPath>$platform</HintPath></Reference></ItemGroup></Project>" | Set-Content -LiteralPath "$probe/Probe.csproj"
     $operationsProbeSource | Set-Content -LiteralPath "$probe/Program.cs"
     dotnet build "$probe/Probe.csproj" -c Release -v quiet > "$probe/build.log" 2>&1
@@ -257,8 +264,35 @@ if (!(Test-Path -LiteralPath 'D:/ProgramData')) {
 New-Item -ItemType Directory -Path "$testArea/DeploymentLogs" -Force | Out-Null
 Set-Acl -LiteralPath $testArea -AclObject $protected
 Set-Acl -LiteralPath "$testArea/DeploymentLogs" -AclObject $protected
+# Exercise the original installed two-apphost format through a real same-version
+# quiet upgrade, including its protected inventory and actual common-menu link.
+$legacySha = 'c9fe4167547dfa83ca25eb21173745bfb361e22d'
+$legacySource = Join-Path $verificationRoot 'previous-source'
+git fetch --no-tags origin $legacySha
+if ($LASTEXITCODE) { throw 'Cannot fetch the pinned dual-apphost baseline' }
+git -c core.longpaths=true -c core.protectNTFS=false worktree add -b ci/legacy-operations $legacySource $legacySha
+if ($LASTEXITCODE) { throw 'Cannot check out the pinned dual-apphost baseline' }
+Push-Location $legacySource
+try {
+    python scripts/package-application.py --application sportmaster --target win-x64 --output "$verificationRoot/previous-media" --source-branch ci/legacy-operations --test-instance --verification-without-vendor-runtime --vc-redist $inputRoot > "$evidence/build-previous-media.log" 2>&1
+    if ($LASTEXITCODE) { Get-Content "$evidence/build-previous-media.log" -Tail 20; throw 'Previous medium build failed' }
+    python scripts/package-installer.py --media "$verificationRoot/previous-media.zip" --output "$verificationRoot/previous-installer" --test-instance > "$evidence/build-previous-installer.log" 2>&1
+    if ($LASTEXITCODE) { Get-Content "$evidence/build-previous-installer.log" -Tail 20; throw 'Previous installer build failed' }
+} finally { Pop-Location }
+$previousInstaller = (Get-ChildItem -LiteralPath "$verificationRoot/previous-installer" -File -Filter '*.exe' | Select-Object -First 1).FullName
+$previousProcess = Start-Process -FilePath $previousInstaller -ArgumentList @('/quiet','/norestart',"/operationid=$([Guid]::NewGuid().ToString('N'))","/log=$testArea/DeploymentLogs/previous-install.jsonl") -PassThru -Wait -WindowStyle Hidden
+if ($previousProcess.ExitCode) { throw "Previous test installation failed: $($previousProcess.ExitCode)" }
+$menuLink = Join-Path ([Environment]::GetFolderPath('CommonPrograms')) '菜鸟供包台（测试）/供包运维工具（测试）.lnk'
+function Read-OperationsLink {
+    if (!(Test-Path -LiteralPath $menuLink)) { throw 'Installed operations menu link missing' }
+    $result = dotnet "$evidence/installed-operations-ordinary/bin/Release/net10.0-windows/Probe.dll" $menuLink
+    if ($LASTEXITCODE) { throw "Cannot read the installed Unicode shell link: $menuLink" }
+    return ($result | ConvertFrom-Json)
+}
+$beforeLink = Read-OperationsLink
+if ((Split-Path $beforeLink.Target -Leaf) -ne 'Ipc.Operations.Desktop.Test.exe' -or $beforeLink.Arguments -or !(Test-Path -LiteralPath $beforeLink.Target)) { throw 'Previous deployment has no usable legacy operations link' }
 python scripts/package-application.py --application sportmaster --target win-x64 --output "$verificationRoot/test-media" --source-branch ci/runtime-install --test-instance --verification-without-vendor-runtime --vc-redist $inputRoot > "$evidence/build-test-media.log" 2>&1
-if ($LASTEXITCODE) { Get-Content "$evidence/build-test-media.log" -Tail 20; throw 'Test-identity two-program medium build failed' }
+if ($LASTEXITCODE) { Get-Content "$evidence/build-test-media.log" -Tail 20; throw 'Test-identity medium build failed' }
 python scripts/package-installer.py --media "$verificationRoot/test-media.zip" --output "$verificationRoot/test-installer" --test-instance > "$evidence/build-test-installer.log" 2>&1
 if ($LASTEXITCODE) { Get-Content "$evidence/build-test-installer.log" -Tail 20; throw 'Test-identity installer build failed' }
 $testInstaller = (Get-ChildItem -LiteralPath "$verificationRoot/test-installer" -File -Filter '*.exe' | Select-Object -First 1).FullName
@@ -270,6 +304,9 @@ if ($testProcess.ExitCode) {
     if (Test-Path -LiteralPath "$evidence/test-install.jsonl") { Get-Content -LiteralPath "$evidence/test-install.jsonl" -Tail 12 }
     throw "Test installation failed: $($testProcess.ExitCode)"
 }
+$updatedLink = Read-OperationsLink
+if ((Split-Path $updatedLink.Target -Leaf) -ne 'Ipc.Desktop.Test.exe' -or $updatedLink.Arguments -ne '--operations' -or !(Test-Path -LiteralPath $updatedLink.Target)) { throw 'Upgrade did not replace the legacy menu link' }
+Write-Output 'PASS same-version dual-apphost to single-apphost overlay and native shortcut replacement'
 Verify-InstalledOperations -mediaRoot "$verificationRoot/test-media" -name 'test'
 if ((Get-FileHash -LiteralPath $registration).Hash -ne $formalRegistrationHash) { throw 'Test installation changed the ordinary deployment registration' }
 $testProcess = Start-Process -FilePath $testInstaller -ArgumentList @('/quiet', '/uninstall', '/norestart', "/operationid=$([Guid]::NewGuid().ToString('N'))", "/log=$testArea/DeploymentLogs/uninstall.jsonl") -PassThru -Wait -WindowStyle Hidden
@@ -278,7 +315,7 @@ if ($testProcess.ExitCode) {
     if (Test-Path -LiteralPath "$evidence/test-uninstall.jsonl") { Get-Content -LiteralPath "$evidence/test-uninstall.jsonl" -Tail 12 }
     throw "Independent test uninstall failed: $($testProcess.ExitCode)"
 }
-if ((Get-FileHash -LiteralPath $registration).Hash -ne $formalRegistrationHash -or !(Test-Path -LiteralPath (Join-Path $deployment.ReleaseRoot 'desktop/Ipc.Operations.Desktop.exe'))) {
+if ((Get-FileHash -LiteralPath $registration).Hash -ne $formalRegistrationHash -or !(Test-Path -LiteralPath (Join-Path $deployment.ReleaseRoot 'desktop/Ipc.Desktop.exe'))) {
     throw 'Independent test uninstall changed the ordinary installation'
 }
-Write-Output 'PASS TWO-INSTALLATIONS ordinary/test two-EXE identities coexist; each tool uses its own protected registration; test uninstall preserves ordinary deployment.'
+Write-Output 'PASS TWO-INSTALLATIONS ordinary/test identities coexist; both entry points use their own installation; test uninstall preserves ordinary deployment.'

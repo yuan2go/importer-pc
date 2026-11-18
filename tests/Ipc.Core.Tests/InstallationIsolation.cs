@@ -50,9 +50,9 @@ public sealed class InstallationIsolation
         var links = DeploymentShortcuts.Plan(location, @"D:\TestMenu", @"D:\TestDesktop");
         Assert.AreEqual(3, links.Length);
         Assert.AreEqual(InstallationIdentity.IsTest ? "菜鸟供包台（测试）.lnk" : "菜鸟供包台.lnk", Path.GetFileName(links.Last().Path));
-        Assert.AreEqual(2, links.Count(link => Path.GetFileName(link.Target) == InstallationIdentity.DesktopExecutable));
-        Assert.AreEqual(1, links.Count(link => Path.GetFileName(link.Target) == InstallationIdentity.OperationsExecutable));
-        Assert.IsTrue(links.All(link => link.Arguments == ""));
+        Assert.AreEqual(3, links.Count(link => Path.GetFileName(link.Target) == InstallationIdentity.DesktopExecutable));
+        Assert.AreEqual(1, links.Count(link => link.Arguments == InstallationIdentity.OperationsArgument));
+        Assert.AreEqual(2, links.Count(link => link.Arguments == ""));
         Assert.AreEqual(2, DeploymentShortcuts.Plan(location with { Shortcuts = new(true, false) }, @"D:\TestMenu", @"D:\TestDesktop").Length);
         Assert.AreEqual(0, DeploymentShortcuts.Plan(location with { Shortcuts = new(false, false) }, @"D:\TestMenu", @"D:\TestDesktop").Length);
         var recovery = DesktopRecoveryInstallation.Plan(location);

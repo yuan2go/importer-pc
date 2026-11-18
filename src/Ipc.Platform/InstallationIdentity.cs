@@ -14,7 +14,8 @@ public static class InstallationIdentity
     public static string ProductName => IsTest ? "ImporterPc.Test" : "ImporterPc";
     public static string DisplayName => IsTest ? "菜鸟供包台（测试）" : "菜鸟供包台";
     public static string DesktopExecutable => IsTest ? "Ipc.Desktop.Test.exe" : "Ipc.Desktop.exe";
-    public static string OperationsExecutable => IsTest ? "Ipc.Operations.Desktop.Test.exe" : "Ipc.Operations.Desktop.exe";
+    public const string OperationsArgument = "--operations";
+    public static string LegacyOperationsExecutable => IsTest ? "Ipc.Operations.Desktop.Test.exe" : "Ipc.Operations.Desktop.exe";
     public static string OperationsDisplayName => IsTest ? "供包运维工具（测试）" : "供包运维工具";
     public static string ProtectedAnchor => IsTest ? TestProtectedAnchor : @"D:\ImporterPc";
     public static string StorageRegistryKey => @"SOFTWARE\" + ProductName + @"\Storage";

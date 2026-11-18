@@ -28,6 +28,29 @@ public partial class App : System.Windows.Application
 #endif
     protected override async void OnStartup(StartupEventArgs e)
     {
+#if SPORTMASTER
+        if (e.Args.Contains(InstallationIdentity.OperationsArgument, StringComparer.Ordinal))
+        {
+            base.OnStartup(e);
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            try
+            {
+                if (e.Args.Length != 1) throw new ArgumentException("运维入口不接受其他启动参数。");
+                var deployment = await Task.Run(() => Ipc.Operations.OperationsInstallation.Load(AppContext.BaseDirectory));
+                var lease = new Ipc.Operations.OperationsToolLease(deployment);
+                Exit += (_, _) => lease.Dispose();
+                MainWindow = new Ipc.Operations.Desktop.OperationsWindow(deployment) { Title = InstallationIdentity.OperationsDisplayName };
+                ShutdownMode = ShutdownMode.OnMainWindowClose;
+                MainWindow.Show();
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(DiagnosticText.Protect(error.Message), "无法打开供包运维工具", MessageBoxButton.OK, MessageBoxImage.Information);
+                Shutdown(2);
+            }
+            return;
+        }
+#endif
         if (InstallerCommandLine.IsQuiet(e.Args))
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown;

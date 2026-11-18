@@ -392,7 +392,7 @@
         "dependencies": {
           "Ipc.Application.Sportmaster.Desktop": "[1.0.0, )",
           "Ipc.Assembly": "[1.0.0, )",
-          "Ipc.Operations": "[1.0.0, )",
+          "Ipc.Operations.Desktop": "[1.0.0, )",
           "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },
@@ -426,6 +426,14 @@
         "type": "Project",
         "dependencies": {
           "Ipc.Diagnostics": "[1.0.0, )"
+        }
+      },
+      "ipc.operations.desktop": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Sportmaster.Desktop": "[1.0.0, )",
+          "Ipc.Operations": "[1.0.0, )",
+          "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },
       "ipc.platform": {

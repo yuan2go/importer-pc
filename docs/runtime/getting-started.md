@@ -28,4 +28,4 @@ Unknown保留原请求、原报文、目标及独立接收责任，不自动重�
 
 Windows、真实SDK/RCS、目标工控机和现场资格分别记录；合成测试不授予Production。历史PASS仅属于其原SourceCommit，当前工具不重验历史介质。
 
-已安装的 `desktop/Ipc.Operations.Desktop.exe` 可独立只读查看运行总览及日志，不暂停生产；主程序未运行时仍可按本站安装和Windows账户权限查看落盘运行日志。未连接不等于已停机，完整边界见[运维设计](../design/sm-readonly-operations.md)。
+从开始菜单选择运维工具（已安装的 `desktop/Ipc.Desktop.exe --operations`） 可独立只读查看运行总览及日志，不暂停生产；主程序未运行时仍可按本站安装和Windows账户权限查看落盘运行日志。未连接不等于已停机，完整边界见[运维设计](../design/sm-readonly-operations.md)。

@@ -259,7 +259,7 @@ Set-Acl -LiteralPath $testArea -AclObject $protected
 Set-Acl -LiteralPath "$testArea/DeploymentLogs" -AclObject $protected
 # Exercise the original installed two-apphost format through a real same-version
 # quiet upgrade, including its protected inventory and actual common-menu link.
-$legacySha = 'ce10a16b216bbc936156ef05d7e9074f5a231e9e'
+$legacySha = 'c9fe4167547dfa83ca25eb21173745bfb361e22d'
 $legacySource = Join-Path $verificationRoot 'previous-source'
 git fetch --no-tags origin $legacySha
 if ($LASTEXITCODE) { throw 'Cannot fetch the pinned dual-apphost baseline' }

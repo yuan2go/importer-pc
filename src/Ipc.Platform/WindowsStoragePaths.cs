@@ -80,7 +80,12 @@ public static class WindowsStoragePaths
         if (ProtectedAnchor is not { } root) return;
         PrepareProtectedDirectory(root, new SecurityIdentifier(runtimeSid));
         PrepareProtectedDirectory(Path.Combine(root, "Programs"), new SecurityIdentifier(runtimeSid));
-        ProvisionUserRoot(runtimeSid);
+        // Shared installation policy has no personal SID. Each user's directory
+        // is provisioned separately when the ordinary user is known.
+        if (runtimeSid == MachineRuntimePolicy.SharedUsersSid)
+            PrepareUserDataDirectory(Path.Combine(root, "UserData"));
+        else
+            ProvisionUserRoot(runtimeSid);
     }
     [SupportedOSPlatform("windows")]
     internal static void PrepareUserDataDirectory(string path)

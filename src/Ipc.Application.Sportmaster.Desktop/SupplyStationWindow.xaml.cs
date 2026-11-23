@@ -27,7 +27,6 @@ public partial class SupplyStationWindow : Window
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
         maintenance.Audience = SmParameterAudience.Field;
-        maintenance.SetStationSettingsLayout(true);
         TestInstallationLabel.Visibility = InstallationIdentity.IsTest ? Visibility.Visible : Visibility.Collapsed;
         ViewModel = new(application); DataContext = ViewModel; InitializePresentationFeedback(); this.stopOwner = stopOwner;
         ViewModel.ParameterAudience = SmParameterAudience.Field;

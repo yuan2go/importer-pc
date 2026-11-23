@@ -19,6 +19,7 @@ public partial class StationSettingsWindow : Window
     public StationSettingsWindow(SupplyStationViewModel model, MaintenancePage editor)
     {
         InitializeComponent(); UiTypography.Apply(this);
+        editor.SetStationSettingsLayout(true);
         this.model = model; this.editor = editor; authority = (IWorkstationAdministration)model.Application;
         DataContext = model;
         Width = Math.Min(Width, SystemParameters.WorkArea.Width); Height = Math.Min(Height, SystemParameters.WorkArea.Height);

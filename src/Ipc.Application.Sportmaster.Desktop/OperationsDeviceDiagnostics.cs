@@ -13,7 +13,6 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
     readonly SupplyStationViewModel ViewModel;
     readonly Func<string?, string, Task> settings;
     readonly Action<string> showDebug;
-    readonly Dictionary<string, FrameworkElement> diagnosticObjects = [];
     StackPanel? diagnosticLogDetails;
     bool debugActive;
     Action? refreshActions;
@@ -21,7 +20,8 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
     public OperationsDeviceDiagnostics(SupplyStationViewModel model, Func<string?, string, Task> settings, Action<string> debug)
     {
         ViewModel = model; this.settings = settings; showDebug = debug;
-        var body = new StackPanel { Margin = new(16) }; body.Children.Add(CreateDiagnosticRows());
+        var body = new StackPanel { Margin = new(14, 10, 14, 12) };
+        body.Children.Add(CreateDiagnosticRows());
         if (diagnosticLogDetails is not null) body.Children.Add(new Expander { Header = "技术详情", Content = diagnosticLogDetails });
         Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     }
@@ -45,15 +45,31 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
         StackPanel Card(string title, string key, FrameworkElement status)
         {
             var content = new StackPanel();
-            var heading = new DockPanel(); DockPanel.SetDock(status, Dock.Right); heading.Children.Add(status); heading.Children.Add(ProductText(title, true)); content.Children.Add(heading);
-            var card = new Border { Child = content, BorderThickness = new(1), CornerRadius = new(8), Padding = new(16), Margin = new(0, 0, 12, 12) };
-            card.SetResourceReference(Border.BackgroundProperty, "Surface"); card.SetResourceReference(Border.BorderBrushProperty, "Line");
+            var heading = new DockPanel { Margin = new(0, 0, 0, 4) };
+            var name = ProductText(title, true);
+            name.FontWeight = UiTypography.Emphasis;
+            name.VerticalAlignment = VerticalAlignment.Center;
+            DockPanel.SetDock(status, Dock.Right);
+            heading.Children.Add(status);
+            heading.Children.Add(name);
+            content.Children.Add(heading);
+
+            var column = cards.Children.Count % 2;
+            var card = new Border { Child = content, BorderThickness = new(1), Padding = new(14),
+                Margin = column == 0 ? new(0, 0, 4, 8) : new(4, 0, 0, 8) };
+            card.SetResourceReference(Border.CornerRadiusProperty, "RadiusCard");
+            card.SetResourceReference(Border.BackgroundProperty, "Surface");
+            card.SetResourceReference(Border.BorderBrushProperty, "Line");
             AutomationProperties.SetAutomationId(card, "DiagnosticCard." + key);
-            Grid.SetRow(card, cards.Children.Count / 2); Grid.SetColumn(card, cards.Children.Count % 2); cards.Children.Add(card); diagnosticObjects[key] = card; return content;
+            Grid.SetRow(card, cards.Children.Count / 2);
+            Grid.SetColumn(card, column);
+            cards.Children.Add(card);
+            return content;
         }
         TextBlock Badge(object source, string prefix)
         {
-            var badge = new TextBlock { Padding = new(8, 4, 8, 4), Margin = new(8, 6, 0, 0), VerticalAlignment = VerticalAlignment.Top, FontSize = UiTypography.Label };
+            var badge = new TextBlock { Padding = new(8, 4, 8, 4), Margin = new(8, 0, 0, 0),
+                VerticalAlignment = VerticalAlignment.Center, FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap };
             foreach (var (property, suffix) in new[] { (TextBlock.TextProperty, "Text"), (TextBlock.ForegroundProperty, "Foreground"), (TextBlock.BackgroundProperty, "Background") })
                 badge.SetBinding(property, new Binding(prefix + "." + suffix) { Source = source });
             return badge;
@@ -124,7 +140,10 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
         Connection("左相机", ViewModel.Left.ReaderId, nameof(ViewModel.LeftConnectionDiagnosis), nameof(ViewModel.LeftConnectionTime), ViewModel.Left);
         Connection("右相机", ViewModel.Right.ReaderId, nameof(ViewModel.RightConnectionDiagnosis), nameof(ViewModel.RightConnectionTime), ViewModel.Right);
         Connection("RCS", "shared", nameof(ViewModel.RcsConnectionDiagnosis), nameof(ViewModel.RcsConnectionTime), null);
-        var storageBadge = ProductText("等待读取"); storageBadge.FontSize = UiTypography.Label;
+        var storageBadge = ProductText("等待读取");
+        storageBadge.FontSize = UiTypography.Label;
+        storageBadge.Padding = new(8, 4, 8, 4);
+        storageBadge.VerticalAlignment = VerticalAlignment.Center;
         var storage = Card("存储", "storage", storageBadge); var storageText = ProductText(""); storage.Children.Add(storageText);
         var storageSettings = new Button { Content = "数据与记录设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         storageSettings.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
@@ -140,6 +159,7 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
                 free is null ? ("状态未确认", "Muted") : ("正常", "Success");
             storageBadge.Text = label;
             storageBadge.SetResourceReference(TextBlock.ForegroundProperty, ink);
+            storageBadge.SetResourceReference(TextBlock.BackgroundProperty, ink == "Muted" ? "Soft" : ink + "Background");
             storageText.Text = capacity is null ? "等待存储状态更新。" : free is { } bytes
                 ? $"剩余 {bytes / 1048576:N0} MiB。低于 {capacity.MinimumFreeBytes / 1048576:N0} MiB 时停止新供包。"
                 : "剩余空间未确认。请检查 D 盘并等待状态更新。";

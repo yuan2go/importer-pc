@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Windows.Automation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,6 +9,9 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class HistoryPage : UserControl
 {
     bool technicalLogNavigation = true;
+    ParcelViewModel? presetSource;
+    Button? timePreset;
+    string? presetStart, presetEnd;
     public bool TechnicalLogNavigation
     {
         get => technicalLogNavigation;
@@ -50,7 +55,7 @@ public partial class HistoryPage : UserControl
         InitializeComponent();
         Loaded += (_, _) =>
         {
-            ArrangeTaskFilters(); UpdateDetailsVisibility();
+            ArrangeTaskFilters(); FitQueryViewport(); UpdateDetailsVisibility(); ObserveTimePreset(DataContext as ParcelViewModel);
             inputOwner = Window.GetWindow(this);
             if (inputOwner is not null) { inputOwner.PreviewMouseDown += OwnerMouseDown; inputOwner.PreviewKeyDown += OwnerKeyDown; }
         };
@@ -58,14 +63,16 @@ public partial class HistoryPage : UserControl
         {
             if (inputOwner is not null) { inputOwner.PreviewMouseDown -= OwnerMouseDown; inputOwner.PreviewKeyDown -= OwnerKeyDown; inputOwner = null; }
             DetailsOpen = false;
+            ObserveTimePreset(null);
             if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(false, false);
         };
-        DataContextChanged += (_, e) => { DetailsOpen = false; if (e.OldValue is ParcelViewModel old) old.SetDetailsVisibility(false, false); UpdateDetailsVisibility(); };
+        DataContextChanged += (_, e) => { DetailsOpen = false; if (IsLoaded) ObserveTimePreset(e.NewValue as ParcelViewModel); if (e.OldValue is ParcelViewModel old) old.SetDetailsVisibility(false, false); UpdateDetailsVisibility(); };
         StructuredDetailsPanel.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
         RawDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
         SizeChanged += (_, _) => FitQueryViewport();
         AllHistoryFilters.SizeChanged += (_, _) => FitQueryViewport();
         HistoryQueryActions.SizeChanged += (_, _) => FitQueryViewport();
+        HistoryPresetHost.SizeChanged += (_, _) => FitQueryViewport();
         HistoryStatusLine.SizeChanged += (_, _) => FitQueryViewport();
         ((FrameworkElement)HistoryStatusLine.Parent).SizeChanged += (_, _) => FitQueryViewport();
         HistoryDetailPanel.SizeChanged += (_, _) => FitQueryViewport();
@@ -81,13 +88,17 @@ public partial class HistoryPage : UserControl
     void FitQueryViewport()
     {
         var shortPage = ActualHeight < 500;
-        HistoryLayout.Margin = shortPage ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
+        HistoryLayout.Margin = shortPage ? new(12, 2, 12, 2) : new(20, 16, 20, 12);
+        HistoryQueryActions.Margin = shortPage ? new(0, 2, 0, 0) : new(0, 6, 0, 0);
         HistoryHeading.FontSize = UiTypography.Body;
         HistoryHeading.Visibility = shortPage ? Visibility.Collapsed : Visibility.Visible;
+        PlaceHistoryTimePresets(shortPage);
         var header = double.IsFinite(HistoryRows.ColumnHeaderHeight) ? HistoryRows.ColumnHeaderHeight : 36;
-        var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 40;
+        var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 44;
+        var filterHeader = AllHistoryFilters.IsVisible &&
+            AllHistoryFilters.Template?.FindName("HeaderSite", AllHistoryFilters) is FrameworkElement headerSite ? headerSite.ActualHeight : 0;
         var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom + (HistoryHeading.IsVisible ? HistoryHeading.ActualHeight + HistoryHeading.Margin.Bottom : 0) +
-            HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom + (AllHistoryFilters.IsVisible ? 32 : 0) +
+            HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom + HistoryPresetHost.ActualHeight + filterHeader +
             ((FrameworkElement)HistoryStatusLine.Parent).ActualHeight;
         // Global receipts and custody reasons change the page's available height.
         // Keep the real header and one full result row; filters retain their own scroll.
@@ -111,15 +122,38 @@ public partial class HistoryPage : UserControl
     {
         if (DataContext is not ParcelViewModel vm) return;
         vm.ClearHistoryFilters();
+        SetTimePreset(null, vm);
     }
     void PositionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (DataContext is ParcelViewModel vm && e.AddedItems.OfType<ParcelViewModel.HistoryPositionChoice>().FirstOrDefault() is { } choice) vm.HistoryPosition = choice.Id;
     }
-    void Today_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var day = new DateTimeOffset(DateTime.Today); vm.HistoryFrom = day.ToString("O"); vm.HistoryToExclusive = new DateTimeOffset(DateTime.Today.AddDays(1)).ToString("O"); } }
-    void LastDay_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeInput.SecondNow(); vm.HistoryFrom = now.AddDays(-1).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); } }
-    void LastWeek_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeInput.SecondNow(); vm.HistoryFrom = now.AddDays(-7).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); } }
-    void AnyTime_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.HistoryFrom = vm.HistoryToExclusive = ""; }
+    void Today_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var day = new DateTimeOffset(DateTime.Today); vm.HistoryFrom = day.ToString("O"); vm.HistoryToExclusive = new DateTimeOffset(DateTime.Today.AddDays(1)).ToString("O"); SetTimePreset(s as Button, vm); } }
+    void LastDay_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeInput.SecondNow(); vm.HistoryFrom = now.AddDays(-1).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); SetTimePreset(s as Button, vm); } }
+    void LastWeek_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeInput.SecondNow(); vm.HistoryFrom = now.AddDays(-7).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); SetTimePreset(s as Button, vm); } }
+    void AnyTime_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { vm.HistoryFrom = vm.HistoryToExclusive = ""; SetTimePreset(s as Button, vm); } }
+    void ObserveTimePreset(ParcelViewModel? model)
+    {
+        if (presetSource is not null) presetSource.PropertyChanged -= TimeRangeChanged;
+        presetSource = model;
+        if (model is null) return;
+        model.PropertyChanged += TimeRangeChanged;
+        TimeRangeChanged(model, new PropertyChangedEventArgs(nameof(ParcelViewModel.HistoryFrom)));
+    }
+    void TimeRangeChanged(object? sender, PropertyChangedEventArgs change)
+    {
+        if (change.PropertyName is nameof(ParcelViewModel.HistoryFrom) or nameof(ParcelViewModel.HistoryToExclusive) &&
+            sender is ParcelViewModel vm && (vm.HistoryFrom != presetStart || vm.HistoryToExclusive != presetEnd))
+            SetTimePreset(null, vm);
+    }
+    void SetTimePreset(Button? selected, ParcelViewModel vm)
+    {
+        if (timePreset is not null) AutomationProperties.SetItemStatus(timePreset, "");
+        timePreset = selected;
+        presetStart = vm.HistoryFrom;
+        presetEnd = vm.HistoryToExclusive;
+        if (selected is not null) AutomationProperties.SetItemStatus(selected, "已选");
+    }
     async void Copy_Click(object s, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm) return;

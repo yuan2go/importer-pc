@@ -152,6 +152,7 @@ namespace Ipc.Application.Sportmaster.Desktop
         StationSettingsWindow? settingsWindow = null;
         System.Windows.Window ManagementDialogOwner => settingsWindow is { IsVisible: true } settings ? settings : this;
         bool ConfirmStationExit() => true;
+        void ShowPresentationPreferenceFailure(string detail) => ViewModel.Message = detail;
         void ApplyNavigation() { }
         void EnforceManagementModeView() { }
     }

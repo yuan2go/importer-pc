@@ -15,7 +15,9 @@ static partial class Program
     static async Task VerifyOperatorUx18(string root, string evidence, List<string> lines)
     {
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS OPERATOR18 " + text); }
-        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "operator18"), deferred: true);
+        // Keep the same confirmed round while the real window is resized and captured at each DPI.
+        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "operator18"), deferred: true)
+            { StationClock = new PdaRoundClock() };
         await h.StartAsync(); h.Peer.ReplySlot = "L-07"; h.Peer.ReplyWaveNo = "WAVE-01"; h.Peer.ReplyQuantity = "00012";
         var window = new SupplyStationWindow(h.App, null, "standard"); window.Show(); var vm = window.ViewModel;
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
@@ -159,7 +161,8 @@ static partial class Program
             await SetClient(window, 800, 420); Click(window, "记录"); await Until(() => vm.SelectedPage == "history" && !vm.HistoryLoading);
             await Flush(); var history = Descendants(window).OfType<HistoryPage>().Single();
             var filters = (Expander)history.FindName("AllHistoryFilters"); var rows = (DataGrid)history.FindName("HistoryRows");
-            Check(!filters.IsExpanded && rows.ActualHeight >= rows.ColumnHeaderHeight + 3 * rows.RowHeight, "default compact history keeps filters collapsed and room for at least three rows");
+            Check(!filters.IsExpanded && rows.ActualHeight >= rows.ColumnHeaderHeight + 3 * rows.RowHeight,
+                $"default compact history keeps filters collapsed and room for at least three rows (expanded={filters.IsExpanded}, grid={rows.ActualHeight}, header={rows.ColumnHeaderHeight}, row={rows.RowHeight})");
             var chute = rows.Columns.OfType<DataGridTextColumn>().Single(c => Equals(c.Header, "格口"));
             Check(chute.Width.IsSizeToCells && chute.MinWidth >= 100, "history chute column sizes to complete values rather than fixed 80-DIP ellipsis");
             CaptureInternal(evidence, "operator18-history-800", (Grid)window.FindName("ClientArea"), lines);

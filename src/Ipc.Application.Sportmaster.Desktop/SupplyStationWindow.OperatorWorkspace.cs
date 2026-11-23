@@ -114,6 +114,12 @@ public partial class SupplyStationWindow
         }
         ViewModel.SetInputTarget("");
     }
+    void ShowPresentationPreferenceFailure(string detail)
+    {
+        var diagnostic = Ipc.Platform.DiagnosticText.Protect(detail);
+        PresentationPreferenceDetails.AppendText(PresentationPreferenceDetails.Text.Length == 0 ? diagnostic : Environment.NewLine + diagnostic);
+        PresentationPreferenceNotice.Visibility = Visibility.Visible;
+    }
     void InitializePace()
     {
         try { ViewModel.SetPaceVisibility(Ipc.Platform.PresentationPreferences.Read("sportmaster", "pace") ?? true); }

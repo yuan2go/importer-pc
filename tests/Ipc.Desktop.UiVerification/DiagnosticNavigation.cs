@@ -13,6 +13,7 @@ static partial class Program
     {
         var vm = window.ViewModel;
         window.StopPolling();
+        await window.Field<Task>("refresh");
         await vm.EnsureMaintenanceLoadedAsync();
         window.Navigate("maintenance");
         var editor = (ParameterSettingsControl)window.Parameters.FindName("MainParameterEditor");
@@ -76,6 +77,8 @@ static partial class Program
             Descendants(login).OfType<Button>().Single(b => b.Name == "EnterManagementMode").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await until(() => !login.IsVisible && vm.IsManagementMode && !window.Field<bool>("acting"));
             window.StopPolling();
+            // Authentication restarts polling. Drain an already dispatched refresh before tracing the click again.
+            await window.Field<Task>("refresh");
             probe.NavigationCalls = calls;
             check(button.IsEnabled, "the same window can retry after reauthorization");
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

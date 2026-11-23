@@ -1,3 +1,4 @@
+using System.Windows.Automation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -52,9 +53,11 @@ static partial class Program
         CaptureInternal(evidence, "settings-independent-readonly", first, lines);
         Check(((ScrollViewer)first.FindName("ReadOnlyBody")).IsVisible && !((ContentControl)first.FindName("EditorHost")).IsVisible,
             "a foreign existing grant cannot turn the new settings window into an editor");
-        var fieldSummary = ((TextBox)first.FindName("ReadOnlySettings")).Text;
-        Check(fieldSummary.Contains(h.Config.Wcs!.Parameters["left-bcr-code"]) && fieldSummary.Contains(h.Config.Wcs.Parameters["right-bcr-code"]) &&
-            fieldSummary.Contains(new Uri(h.Config.Wcs.Target).GetLeftPart(UriPartial.Authority)) && !fieldSummary.Contains("本位停用"),
+        TextBox Field(string id) => Descendants(first).OfType<TextBox>().Single(field =>
+            AutomationProperties.GetAutomationId(field) == "StationSettings." + id && field.IsVisible && field.IsReadOnly);
+        Check(Field("Camera.left.Code").Text == h.Config.Wcs!.Parameters["left-bcr-code"] &&
+            Field("Camera.right.Code").Text == h.Config.Wcs.Parameters["right-bcr-code"] &&
+            Field("RcsHost").Text == new Uri(h.Config.Wcs.Target).GetLeftPart(UriPartial.Authority),
             "ordinary field summary shows actual configured RCS host and camera codes rather than misreading a redacted configuration as missing");
         Check(!(await h.App.SnapshotAsync()).Paused && (await h.App.ManagementModeStatusAsync()).SessionId == priorSession,
             "read-only viewing neither pauses production nor revokes the existing grant");

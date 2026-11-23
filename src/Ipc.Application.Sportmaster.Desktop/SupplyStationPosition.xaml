@@ -6,7 +6,7 @@
    </ResourceDictionary.MergedDictionaries>
   </ResourceDictionary>
  </UserControl.Resources>
- <Border x:Name="InputTargetOutline" BorderBrush="{Binding InputTargetBrush}" BorderThickness="3" Margin="2" CornerRadius="4">
+ <Border x:Name="InputTargetOutline" BorderBrush="{Binding InputTargetBrush}" BorderThickness="3" Margin="2" CornerRadius="{DynamicResource RadiusCard}">
   <Border x:Name="PositionOutline" Style="{StaticResource StationPositionCard}">
    <Grid>
     <Grid.RowDefinitions>
@@ -20,7 +20,7 @@
      <Grid>
       <Grid.Resources>
        <Style x:Key="SupplySwitch" TargetType="Button" BasedOn="{StaticResource StationButton}">
-        <Setter Property="MinWidth" Value="64"/>
+        <Setter Property="MinWidth" Value="58"/><Setter Property="Padding" Value="6,4"/><Setter Property="Margin" Value="0"/>
         <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MinWidth" Value="52"/></DataTrigger></Style.Triggers>
        </Style>
       </Grid.Resources>
@@ -28,8 +28,12 @@
       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
       <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
        <TextBlock Text="{Binding Heading}" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
-       <Button x:Name="EnableSupply" Content="启用" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="10,0,0,0" Background="{Binding EnableBackground}" Foreground="{Binding EnableForeground}" AutomationProperties.Name="启用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
+       <Border Margin="8,0,0,0" Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}" BorderThickness="1" CornerRadius="{DynamicResource RadiusControl}">
+        <StackPanel Orientation="Horizontal">
+       <Button x:Name="EnableSupply" Content="启用" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" Background="{Binding EnableBackground}" Foreground="{Binding EnableForeground}" AutomationProperties.Name="启用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
        <Button x:Name="DisableSupply" Content="{Binding DisableLabel}" Click="DisableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Background="{Binding DisableBackground}" Foreground="{Binding DisableForeground}" AutomationProperties.Name="停用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
+        </StackPanel>
+       </Border>
       </StackPanel>
       <Grid x:Name="VehicleState" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center" ToolTip="{Binding VehicleStatusText}">
        <Grid.Resources>
@@ -81,7 +85,16 @@
        </Style>
       </TextBlock.Style>
      </TextBlock>
-     <Button x:Name="CurrentBarcode" Grid.Column="1" Content="图片" Click="Picture_Click" IsEnabled="{Binding CanViewCurrentPicture}" Style="{StaticResource StationButton}" MinWidth="64" Margin="8,0,0,0" AutomationProperties.Name="查看当前包裹图片"/>
+     <Button x:Name="CurrentBarcode" Grid.Column="1" Content="图片" Click="Picture_Click" IsEnabled="{Binding CanViewCurrentPicture}" Style="{StaticResource StationButton}" MinWidth="64" Margin="8,0,0,0" AutomationProperties.Name="查看当前包裹图片">
+      <Button.ContentTemplate>
+       <DataTemplate>
+        <StackPanel Orientation="Horizontal">
+         <Path Data="M 1,2 L 15,2 15,14 1,14 Z M 1,12 L 5,8 8,11 11,7 15,11" Stroke="{Binding Foreground,RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.3" Width="16" Height="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
+         <TextBlock Text="{Binding}"/>
+        </StackPanel>
+       </DataTemplate>
+      </Button.ContentTemplate>
+     </Button>
     </Grid>
     <!-- The result owns the remaining height. Auxiliary metadata never scrolls it away. -->
     <Grid Grid.Row="2">
@@ -117,7 +130,7 @@
        <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
        <TextBox x:Name="CurrentSlot" Text="{Binding DisplaySlot,Mode=OneWay}" FontSize="{Binding DisplaySlotFontSize}" MaxWidth="{Binding ActualWidth,ElementName=SlotViewport}" TextWrapping="Wrap" TextAlignment="Center" Foreground="{Binding ResultForeground}" Background="Transparent" BorderThickness="0" Padding="0" IsReadOnly="True" FontFamily="{x:Static type:UiTypography.Interface}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="{Binding DisplaySlotLabel}">
         <TextBox.Style>
-         <Style TargetType="TextBox">
+         <Style TargetType="TextBox" BasedOn="{StaticResource WorkstationTextBox}"><Setter Property="Margin" Value="0"/><Setter Property="MinHeight" Value="0"/>
           <Style.Triggers>
            <DataTrigger Binding="{Binding DisplaySlotVisible}" Value="False">
             <Setter Property="Visibility" Value="Collapsed"/>
@@ -163,7 +176,7 @@
                FontSize="{x:Static type:UiTypography.Body}"
                TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Center"
                AutomationProperties.Name="上一件条码，仅供查看">
-       <TextBox.Style><Style TargetType="TextBox"><Setter Property="Visibility" Value="Collapsed"/>
+       <TextBox.Style><Style TargetType="TextBox"><Setter Property="FocusVisualStyle" Value="{DynamicResource FocusRing}"/><Setter Property="Visibility" Value="Collapsed"/>
         <Style.Triggers><DataTrigger Binding="{Binding ShowRecentChute}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
        </Style></TextBox.Style>
       </TextBox>
@@ -265,7 +278,7 @@
          They belong to the same confirmed identity, so they follow ShowConfirmedTask and never outlive the slot.
          Shared rows align the two cards; hidden retains measured space during processing.
          Two rows keep labels and values readable; values are selectable and wrap without ellipsis. -->
-    <Grid Grid.Row="3" x:Name="TaskFields">
+    <Grid Grid.Row="3" x:Name="TaskFields" Background="{DynamicResource Soft}">
      <Grid.Style>
       <Style TargetType="Grid">
        <Setter Property="Visibility" Value="Collapsed"/>
@@ -287,7 +300,7 @@
      </Grid.Style>
      <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="*"/></Grid.RowDefinitions>
      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-     <DockPanel Grid.Row="0" Grid.Column="0" Margin="0,0,12,4">
+     <DockPanel Grid.Row="0" Grid.Column="0" Margin="6,0,12,4">
       <TextBlock Text="波次号" Style="{StaticResource StationTaskLabel}"/>
       <TextBox x:Name="WaveValue" Text="{Binding WaveNo,Mode=OneWay}" ToolTip="{Binding WaveNo}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务波次号"/>
      </DockPanel>
@@ -295,7 +308,7 @@
       <TextBlock Text="任务号" Style="{StaticResource StationTaskLabel}"/>
       <TextBox x:Name="TaskValue" Text="{Binding TaskId,Mode=OneWay}" ToolTip="{Binding TaskId}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次调度任务号"/>
      </DockPanel>
-     <DockPanel Grid.Row="1" Grid.Column="0" Margin="0,0,12,0">
+     <DockPanel Grid.Row="1" Grid.Column="0" Margin="6,0,12,0">
       <TextBlock Text="商品编码" Style="{StaticResource StationTaskLabel}"/>
       <TextBox x:Name="SkuValue" Text="{Binding SkuId,Mode=OneWay}" ToolTip="{Binding SkuId}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务商品编码"/>
      </DockPanel>

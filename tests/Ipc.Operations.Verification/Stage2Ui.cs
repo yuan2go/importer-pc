@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -43,14 +44,34 @@ internal static partial class Program
         }
         Button FindButton(string text) => Visuals(window).OfType<Button>().Single(b => Equals(b.Content, text));
         void Press(Button button) => window.Dispatcher.BeginInvoke(new Action(() => button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent))));
+        void Capture(string name)
+        {
+            var dpi = VisualTreeHelper.GetDpi(window);
+            var picture = new RenderTargetBitmap((int)(window.ActualWidth * dpi.DpiScaleX), (int)(window.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
+            picture.Render(window);
+            var png = new PngBitmapEncoder();
+            png.Frames.Add(BitmapFrame.Create(picture));
+            using var output = File.Create(Path.Combine(root, name + ".png"));
+            png.Save(output);
+        }
         app.Startup += async (_, _) =>
         {
             try
             {
                 window.Show(); var tabs = (TabControl)window.FindName("Pages");
                 Check(tabs.Items.Cast<TabItem>().Select(t => t.Header?.ToString()).SequenceEqual(new[] { "运行总览", "日志中心", "设备调试", "专业参数", "维护中心" }), "five actual operations navigation targets are present");
+                var authorize = FindButton("连接并验证管理密码…");
+                var environment = (ToggleButton)window.FindName("EnvironmentToggle");
+                var installation = (TextBox)window.FindName("InstallationText");
+                Check(authorize.IsVisible && !installation.IsVisible, "global authorization is available from overview and environment details start folded");
+                environment.IsChecked = true;
+                await Until(() => installation.IsVisible);
+                Check(installation.IsReadOnly && installation.Text.Contains(Location().SourceCommit, StringComparison.Ordinal) &&
+                    installation.Text.Contains(Location().DataRoot, StringComparison.Ordinal),
+                    "the environment disclosure shows the full source commit and local data path as copyable text");
+                environment.IsChecked = false;
                 tabs.SelectedIndex = 3; await Until(() => Visuals(window).OfType<OperationsWorkspaceControl>().Any());
-                Press(FindButton("连接并验证管理密码…"));
+                Press(authorize);
                 await Until(() => app.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible));
                 var login = app.Windows.OfType<ManagementModeWindow>().Single(w => w.IsVisible);
                 await Until(() => Visuals(login).OfType<PasswordBox>().Any(p => p.Name == "ManagementPassword" && p.IsVisible && p.IsEnabled));
@@ -62,15 +83,15 @@ internal static partial class Program
                 try { await Until(() => !login.IsVisible && model.HasLoadedConfiguration && model.Fresh && model.IsManagementMode); }
                 catch (Exception error)
                 {
-                    var diagnostic = Visuals(window).OfType<Expander>().First(e => Equals(e.Header, "授权与诊断"));
-                    diagnostic.IsExpanded = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                    environment.IsChecked = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                     throw new InvalidOperationException($"Native login/load state: login={login.IsVisible}; loaded={model.HasLoadedConfiguration}; fresh={model.Fresh}; grant={model.IsManagementMode}; message={model.Message}; diagnostic={Visuals(window).OfType<TextBox>().FirstOrDefault(b => AutomationProperties.GetAutomationId(b) == "Operations.Failure")?.Text}", error);
                 }
                 Check(!model.HasUnsavedConfiguration && !model.HasUnsavedDisplayPreferences,
                     "opening professional parameters creates no phantom dirty draft; business=" + model.HasUnsavedConfiguration + "; preferences=" + model.HasUnsavedDisplayPreferences);
-                var authorizationPanel = (Expander)typeof(OperationsWorkspaceControl).GetField("authorizationPanel", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(workspace)!;
-                await Until(() => !authorizationPanel.IsExpanded && authorizationPanel.Header is string value && value.StartsWith("已授权", StringComparison.Ordinal));
-                Check(!authorizationPanel.IsExpanded && authorizationPanel.Header is string heading && heading.StartsWith("已授权", StringComparison.Ordinal), "authorized native header shows actual status and folds account actions");
+                var authorizationStatus = Visuals((ContentControl)window.FindName("AuthorizationStatusHost")).OfType<TextBlock>().Single();
+                await Until(() => authorizationStatus.Text.StartsWith("已授权", StringComparison.Ordinal));
+                Check(authorizationStatus.IsVisible && !installation.IsVisible && ReferenceEquals(authorize, FindButton("连接并验证管理密码…")),
+                    "authorized native header shows actual status while account actions remain folded");
                 var editor = Visuals(window).OfType<MaintenancePage>().Single();
                 Check(editor.Audience == Ipc.Application.Contracts.SmParameterAudience.Technical, "operations reuses the existing complete editor in technical scope");
                 Check(editor.NavigateToParameter("ReadTimeoutMs"), "technical read deadline is reachable in the real operations editor");
@@ -104,10 +125,32 @@ internal static partial class Program
                 await Until(() => model.Snapshot!.Positions!.All(p => p.Admit) && FindButton("进入设备调试（暂停整站供包）").IsEnabled);
                 tabs.SelectedIndex = 4;
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-                Check(FindButton("创建完整备份…").IsVisible && FindButton("完整备份保管、离线配置、恢复、回滚、清理与卸载…").IsVisible,
-                    "online backup and detached offline maintenance are both reachable");
-                tabs.SelectedIndex = 1; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); Press(FindButton("切换完整在线日志／离线运行日志"));
-                await Until(() => Visuals(window).OfType<SoftwareLogControl>().Any());
+                var groups = new[] { "Operations.Maintenance.Daily", "Operations.Maintenance.Responsibilities", "DangerZoneCard" }
+                    .Select(id => Visuals(window).OfType<Border>().Single(b => AutomationProperties.GetAutomationId(b) == id)).ToArray();
+                var danger = groups[2];
+                var groupOrigins = groups.Select(b => b.TranslatePoint(new(), tabs)).ToArray();
+                Check(groupOrigins[0].X == groupOrigins[1].X && groupOrigins[1].X == groupOrigins[2].X &&
+                    groupOrigins[0].Y < groupOrigins[1].Y && groupOrigins[1].Y < groupOrigins[2].Y,
+                    "maintenance presents daily actions, responsibility checks and offline maintenance in three vertical sections");
+                Check(FindButton("创建完整备份…").IsVisible &&
+                    Visuals(danger).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Operations.Maintenance.Offline").IsVisible,
+                    "online backup and detached offline maintenance are both reachable with offline maintenance isolated in its own card");
+                Capture("operations-maintenance-native");
+                tabs.SelectedIndex = 1;
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                var offlineLogMode = (RadioButton)window.FindName("OfflineLogMode");
+                var onlineLogMode = (RadioButton)window.FindName("OnlineLogMode");
+                Check(offlineLogMode.IsChecked == true && onlineLogMode.IsChecked == false && ((FrameworkElement)window.FindName("OfflineLogs")).IsVisible,
+                    "log center starts with the offline segment selected and its filters visible");
+                var filters = (FrameworkElement)window.FindName("Filters");
+                var inputs = new[] { "LogAreas", "TimeRange", "Level", "SourceFilter", "Keyword" }
+                    .Select(name => (FrameworkElement)window.FindName(name)).ToArray();
+                Check(inputs.All(input => input.ActualHeight >= 44 && input.ActualHeight == inputs[0].ActualHeight &&
+                    input.TranslatePoint(new(), filters).Y == inputs[0].TranslatePoint(new(), filters).Y),
+                    "offline filter inputs align at the same height and baseline");
+                onlineLogMode.IsChecked = true;
+                await Until(() => onlineLogMode.IsChecked == true && offlineLogMode.IsChecked == false &&
+                    !((FrameworkElement)window.FindName("OfflineLogs")).IsVisible && Visuals(window).OfType<SoftwareLogControl>().Any());
                 var fullLogs = Visuals(window).OfType<SoftwareLogControl>().Single();
                 await Until(() => !(bool)typeof(SoftwareLogControl).GetField("busy", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(fullLogs)! &&
                     Visuals(fullLogs).OfType<DataGrid>().Any(g => g.Items.Count > 0));
@@ -115,11 +158,31 @@ internal static partial class Program
                 var resultHeight = Visuals(fullLogs).OfType<DataGrid>().Single().ActualHeight;
                 Check(resultHeight >= 140,
                     "original full log UI completes an actual query with a usable native results viewport; height=" + resultHeight);
-                var dpi = VisualTreeHelper.GetDpi(window);
-                var picture = new RenderTargetBitmap((int)(window.ActualWidth * dpi.DpiScaleX), (int)(window.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
-                picture.Render(window); var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(picture));
-                using (var output = File.Create(Path.Combine(root, "operations-stage2-native.png"))) png.Save(output);
-                tabs.SelectedIndex = 0; await Until(() => !model.Busy);
+                Capture("operations-stage2-native");
+                offlineLogMode.IsChecked = true;
+                await Until(() => offlineLogMode.IsChecked == true && onlineLogMode.IsChecked == false &&
+                    ((FrameworkElement)window.FindName("OfflineLogs")).IsVisible && !((FrameworkElement)window.FindName("OnlineLogs")).IsVisible);
+                Check(true, "the offline segment restores its own filters without leaving the log center");
+                tabs.SelectedIndex = 0;
+                var positions = (ItemsControl)window.FindName("PositionCards");
+                var devices = (ItemsControl)window.FindName("DeviceRows");
+                await Until(() => !model.Busy && positions.ItemContainerGenerator.ContainerFromIndex(1) is FrameworkElement);
+                window.UpdateLayout();
+                var metrics = (UniformGrid)window.FindName("OverviewMetrics");
+                var metricOrigins = metrics.Children.OfType<FrameworkElement>().Select(card => card.TranslatePoint(new(), metrics)).ToArray();
+                Check(metricOrigins.Length == 4 && metricOrigins.All(origin => origin.Y == metricOrigins[0].Y) &&
+                    metricOrigins[0].X < metricOrigins[1].X && metricOrigins[1].X < metricOrigins[2].X && metricOrigins[2].X < metricOrigins[3].X &&
+                    ((TextBlock)window.FindName("VisibleOperationsText")).Text.EndsWith(" 件", StringComparison.Ordinal),
+                    "verified overview shows four live summary cards in one row");
+                Point Origin(ItemsControl control, int index) =>
+                    ((FrameworkElement)control.ItemContainerGenerator.ContainerFromIndex(index)).TranslatePoint(new(), control);
+                Check(positions.Items.Count == 2 && Origin(positions, 0).Y == Origin(positions, 1).Y && Origin(positions, 0).X < Origin(positions, 1).X,
+                    "left and right position cards are in the same row in physical order");
+                var healthOrigins = Enumerable.Range(0, devices.Items.Count).Select(index => Origin(devices, index)).ToArray();
+                Check(healthOrigins.Length == 4 && healthOrigins.All(origin => origin.Y == healthOrigins[0].Y) &&
+                    healthOrigins[0].X < healthOrigins[1].X && healthOrigins[1].X < healthOrigins[2].X && healthOrigins[2].X < healthOrigins[3].X,
+                    "three device confirmations and storage occupy four aligned columns");
+                Capture("operations-overview-native");
                 Check(!model.HasUnsavedConfiguration && !model.HasUnsavedDisplayPreferences, "ordinary page navigation does not modify the retained parameter draft");
                 window.Close();
             }

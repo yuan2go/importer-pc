@@ -9,7 +9,7 @@
     <Product>菜鸟供包台安装程序</Product>
     <AssemblyTitle>菜鸟供包台安装程序</AssemblyTitle>
     <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>true</SelfContained>
+    <PublishSelfContained>true</PublishSelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>

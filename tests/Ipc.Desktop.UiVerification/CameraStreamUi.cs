@@ -15,6 +15,7 @@ static partial class Program
         await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "stream")); await h.StartAsync();
         await h.App.SetDebugLoggingAsync(true);
         var window = new OperationsViewFixture(h.App) { Title = "相机实时视频 · 合成图像验证" };
+        var owner = new NativeWindowOwner(window);
         window.Show();
         try
         {
@@ -30,7 +31,7 @@ static partial class Program
             async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
             async Task ShowLive()
             { await Flush(); Field<DispatcherTimer>(live, "timer").Stop(); await Poll(live); }
-            Field<DispatcherTimer>(window, "timer").Stop(); Field<DispatcherTimer>(control, "timer").Stop();
+            window.StopPolling(); Field<DispatcherTimer>(control, "timer").Stop();
             await ShowLive();
             var blank = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)180, 640 * 480).ToArray(), 640, 480);
             h.Api(h.Left).Enqueue(blank, 1);
@@ -60,11 +61,12 @@ static partial class Program
             image.BringIntoView(); await Flush();
             var liveCard = Field<Border>(control, "liveCard"); var resultCard = Field<Border>(control, "resultCard");
             var livePoint = liveCard.TranslatePoint(new Point(), control); var photoPoint = resultCard.TranslatePoint(new Point(), control);
-            Check(livePoint.X < photoPoint.X && Math.Abs(livePoint.Y - photoPoint.Y) < 2 && Field<TextBox>(control, "requestBody").TranslatePoint(new Point(), control).Y > livePoint.Y + liveCard.ActualHeight,
-                "design layout places live video left and locked result right, with request and response underneath");
-            var navigation = (Border)window.FindName("DailyNavigation");
-            Check(!Descendants(navigation).OfType<Button>().Any(b => b.IsVisible && b.Content is string text && text is "异常处理" or "统计与班次"),
-                "the current daily navigation omits the hidden exception and statistics destinations");
+            var request = Field<TextBox>(control, "requestBody");
+            var response = Field<TextBox>(control, "responseBody");
+            var requestPoint = request.TranslatePoint(new Point(), control);
+            Check(livePoint.X < photoPoint.X && Math.Abs(livePoint.Y - photoPoint.Y) < 2 &&
+                requestPoint.X >= photoPoint.X + resultCard.ActualWidth && response.TranslatePoint(new Point(), control).Y > requestPoint.Y,
+                "wide diagnostics keep live and locked video together with a separate request and response column");
             CaptureInternal(evidence, "camera-video-1366", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 1600, 1000); await Flush();
             CaptureInternal(evidence, "camera-design-1600", (Grid)window.FindName("ClientArea"), lines);
@@ -75,6 +77,9 @@ static partial class Program
             await CameraRoundHarness.Until(async () => { await Poll(live); return image.Source is not null; });
             Check(h.Factory.Decoders[h.Right].Count == 0 && h.Factory.Sources[h.Right].ReadDiagnostics().Frames == 1, "right video uses its own stream while its unarmed decoder remains paused");
             await SetClient(window, 1024, 768); await Flush(); image.BringIntoView(); await Flush();
+            Check(resultCard.TranslatePoint(new Point(), control).Y > liveCard.TranslatePoint(new Point(), control).Y &&
+                request.TranslatePoint(new Point(), control).Y > resultCard.TranslatePoint(new Point(), control).Y,
+                "a narrow diagnostics view stacks video, result and request in reading order");
             CaptureInternal(evidence, "camera-video-1024", (Grid)window.FindName("ClientArea"), lines);
             await Task.Delay(3100); await Poll(live);
             Check(image.Source is null && Field<TextBlock>(live, "status").Text.Contains("过期") && h.Factory.Sources[h.Right].ReadDiagnostics().State == "FrameStale",
@@ -97,6 +102,6 @@ static partial class Program
             try { await h.App.ReadCameraPreviewAsync(h.Left, default); throw new InvalidOperationException("Preview survived authority revoke"); }
             catch (UnauthorizedAccessException) { Check(true, "Application rejects preview reads without management authority"); }
         }
-        finally { window.Close(); }
+        finally { await owner.DisposeAsync(); }
     }
 }

@@ -8,11 +8,11 @@ namespace Ipc.Application.Sportmaster.Desktop;
 
 public partial class SupplyStationWindow
 {
-    DockPanel? positionHistory;
+    TabControl? positionHistory;
     FrameworkElement PositionHistory()
     {
         if (positionHistory is not null) return positionHistory;
-        positionHistory = new DockPanel { DataContext = ViewModel };
+        positionHistory = new TabControl { DataContext = ViewModel, Padding = new Thickness(4, 0, 4, 0) };
         var panel = new DockPanel();
         var actions = new StackPanel { Orientation = Orientation.Horizontal };
         var refresh = new Button { Content = "最近记录", MinHeight = 44, Margin = new Thickness(0, 0, 8, 4) };
@@ -20,14 +20,22 @@ public partial class SupplyStationWindow
         refresh.Click += async (_, _) => await ViewModel.RunAsync(() => ViewModel.LoadSupplyHistoryAsync(), "读取启停记录");
         earlier.Click += async (_, _) => await ViewModel.RunAsync(() => ViewModel.LoadSupplyHistoryAsync(true), "读取更早启停记录");
         actions.Children.Add(refresh); actions.Children.Add(earlier); DockPanel.SetDock(actions, Dock.Top); panel.Children.Add(actions);
-        var table = new DataGrid { IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, Height = 180 };
+        var table = new DataGrid { IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, RowHeight = 44 };
         foreach (var (label, path) in new[] { ("时间", "Time"), ("投递位", "Position"), ("操作", "Action"), ("操作人", "Actor"), ("当时任务号", "Task") })
             table.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
         table.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(ViewModel.SupplyHistory))); panel.Children.Add(table);
-        var expander = new Expander { Header = "投递位启停记录", Content = panel, Margin = new Thickness(0, 0, 0, 8) };
-        expander.Expanded += async (_, _) => await ViewModel.RunAsync(() => ViewModel.LoadSupplyHistoryAsync(), "读取启停记录");
-        DockPanel.SetDock(expander, Dock.Top); positionHistory.Children.Add(expander);
-        var rounds = RoundHistory(); DockPanel.SetDock(rounds, Dock.Top); positionHistory.Children.Add(rounds); positionHistory.Children.Add(history);
+        var supply = new TabItem { Header = "投递位启停记录", Content = panel };
+        positionHistory.Items.Add(new TabItem { Header = "作业记录", Content = history });
+        var rounds = new TabItem { Header = "包裹轮次", Content = RoundHistory(), ToolTip = "含无码与未提交" };
+        System.Windows.Automation.AutomationProperties.SetAutomationId(rounds, "PositionHistory.ParcelRounds");
+        positionHistory.Items.Add(rounds);
+        positionHistory.Items.Add(supply);
+        positionHistory.SelectionChanged += async (sender, args) =>
+        {
+            if (ReferenceEquals(args.Source, sender) && ReferenceEquals(positionHistory.SelectedItem, supply))
+                await ViewModel.RunAsync(() => ViewModel.LoadSupplyHistoryAsync(), "读取启停记录");
+        };
+        positionHistory.SelectedIndex = 0;
         return positionHistory;
     }
     sealed record RoundRow(SmParcelRound Round)
@@ -97,7 +105,7 @@ public partial class SupplyStationWindow
         var load = new Button { Content = "查询轮次", MinHeight = 44 }; var picture = new Button { Content = "查看本轮原图", MinHeight = 44, IsEnabled = false };
         foreach (var control in new FrameworkElement[] { side, from, to, search, reason, load, picture }) { control.Margin = new Thickness(0, 0, 8, 8); controls.Children.Add(control); }
         DockPanel.SetDock(controls, Dock.Top); panel.Children.Add(controls);
-        var table = new DataGrid { IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, Height = 220 };
+        var table = new DataGrid { IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, RowHeight = 44 };
         foreach (var (label, path) in new[] { ("开始时间", "Time"), ("投递位", "Position"), ("正式条码", "Barcode"), ("识读情况", "Read"), ("结果", "Result"), ("结束原因", "End"), ("轮次", "Identity"), ("请求号", "Request") })
             table.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
         table.SelectionChanged += (_, _) => picture.IsEnabled = table.SelectedItem is RoundRow { Round.OriginalFrame.State: "Saved" };
@@ -121,6 +129,6 @@ public partial class SupplyStationWindow
             catch (Exception) { ViewModel.Message = "轮次记录未能读取，请保留原数据，稍后重试。"; }
             finally { load.IsEnabled = true; }
         };
-        return new Expander { Header = "包裹轮次（含无码与未提交）", Content = panel, Margin = new Thickness(0, 0, 0, 8) };
+        return panel;
     }
 }

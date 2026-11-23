@@ -16,26 +16,32 @@ static partial class Program
         const string barcode = "00001234567890123456789012345678901234567890123456789012345678901234567890";
         const string task = "SYNTH-TASK-20261105-000000000000000000000000000000000000000000000001";
         var reason = string.Concat(Enumerable.Repeat("当前包裹未取得可用格口，请保留包裹和本条记录，联系维护人员核对原结果。", 5));
-        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "chute-readability"), deferred: true);
+        // The viewport sweep measures the same receipt; each next vehicle starts the next sample.
+        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "chute-readability"), deferred: true)
+            { StationClock = new PdaRoundClock() };
         await h.StartAsync();
         h.Peer.Mode = "reject";
-        await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-RIGHT"), default);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.PositionId == "right" && o.Wcs?.State == StageState.Rejected));
+        h.Peer.RejectionMessage = reason;
+        var rightReceipt = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-RIGHT"), default);
+        if (rightReceipt.OperationId is not { } rightOperationId)
+            throw new InvalidOperationException("Synthetic right input was not admitted: " + rightReceipt.Detail);
+        await CameraRoundHarness.Until(async () =>
+            (await h.App.OperationAsync(rightOperationId)) is { State: ParcelState.WcsRejected, Wcs: { State: StageState.Rejected } stage } &&
+            stage.Replies.LastOrDefault() is { TransportSucceeded: true, ProtocolAcknowledged: true, BusinessAccepted: false,
+                Destination: { Outcome: WcsDestinationOutcome.Rejected, Message: var message } } && message == reason);
         h.Peer.Mode = "accept";
         var application = DispatchProxy.Create<IManualSupplyUiFixture, ProjectionProbe>();
         var probe = (ProjectionProbe)(object)application; probe.Inner = h.App;
         probe.Project = s => s with
         {
-            Operations = s.Operations.Select(op => op.Wcs is not { } stage ? op : op with
+            Operations = s.Operations.Select(op => op.PositionId != "left" || op.Wcs is not { } stage ? op : op with
             {
-                Reason = op.PositionId == "right" ? reason : op.Reason,
                 Wcs = stage with
                 {
-                    Failure = op.PositionId == "right" ? reason : stage.Failure,
                     Replies = stage.Replies.Select(reply => reply with
                     {
                         Destination = reply.Destination is not { } destination ? null : destination with
-                        { TaskId = task, SkuId = "SYNTH-SKU-000000000000000000000000000000001", Message = op.PositionId == "right" ? reason : destination.Message }
+                        { TaskId = task, SkuId = "SYNTH-SKU-000000000000000000000000000000001" }
                     }).ToArray()
                 }
             }).ToArray()
@@ -62,9 +68,12 @@ static partial class Program
             foreach (var chute in new[] { "L-0123", "A" + new string('1', 15), "A" + new string('2', 16), "C" + new string('3', 31), "C" + new string('4', 32), "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二" })
             {
                 await h.NextVehicleAsync("left");
+                await Until(() => vm.Fresh && vm.Left.CanSubmitBarcode);
                 h.Peer.ReplySlot = chute;
-                await h.App.SubmitParcelBarcodeAsync(await h.Command("left", barcode), default);
-                await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Slot == chute);
+                var leftReceipt = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", barcode), default);
+                if (leftReceipt.OperationId is not { } leftOperationId)
+                    throw new InvalidOperationException("Synthetic left input was not admitted: " + leftReceipt.Detail);
+                await Until(() => vm.Left.Operation?.Id == leftOperationId && vm.Left.ShowConfirmedTask && vm.Left.Slot == chute);
                 await SetClient(window, work.Width, work.Height); await Flush();
                 Check(slot.Text == chute && Rendered(slot) >= (chute.Length <= 6 ? 56 : chute.Length <= 16 ? 32 : 24),
                     $"complete {chute.Length}-character chute retains readable rendered size: {Rendered(slot):F1} DIP, {Rendered(slot) * dpi.DpiScaleX:F1} device pixels");
@@ -112,7 +121,7 @@ static partial class Program
                 Check(larger > smaller + 1, $"chute grows with window space: {smaller:F1} -> {larger:F1} DIP");
                 await SetClient(window, 3072, 1728); await Flush();
                 var cap = chute.Length <= 6 ? 112 : chute.Length <= 16 ? 72 : 48;
-                Check(Math.Abs(Rendered(slot) - cap) < 1, $"large synthetic backing surface stops at the {cap}-DIP maximum");
+                Check(Math.Abs(Rendered(slot) - cap) < 1, $"large synthetic backing surface stops at the {cap}-DIP maximum (actual {Rendered(slot):F2} DIP, desired {slot.FontSize:F2}; client {((FrameworkElement)window.FindName("ClientArea")).RenderSize})");
             }
             lines.Add("BOUNDARY native HWND and actual monitor DPI; oversized backing surfaces test caps, not a physical display. Target workstation, physical standing-distance acceptance, SDK/customer RCS NOT_RUN.");
         }

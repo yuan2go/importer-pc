@@ -33,7 +33,7 @@ public partial class SupplyStationWindow : Window
         ViewModel.RequireOwnedManagementSession = true;
         InitializeAudio();
         ViewModel.RequestActivationAsync = RequestActivation;
-        WindowOpeningPreference.Attach(this, "sportmaster", message => ViewModel.Message = message);
+        WindowOpeningPreference.Attach(this, "sportmaster", ShowPresentationPreferenceFailure);
         // Cached pages retain their binding source while detached from PageHost.
         // Inherited DataContext would transiently clear/rebuild the draft controls.
         maintenance.CameraPreviewFactory = instance => { var preview = new StationCameraPreviewControl(ViewModel, 110, false); preview.SelectDevice(ViewModel.ReaderDrafts.FirstOrDefault(r => r.Capability.InstanceId == instance)?.Original.DeviceId ?? instance); return preview; };
@@ -54,7 +54,7 @@ public partial class SupplyStationWindow : Window
         Grid.SetColumn(right, 1); work.Children.Add(left); work.Children.Add(right);
         BuildOperatorWorkspace();
         try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read("sportmaster", "supply-station") ?? false : layout == "compact"; }
-        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "展示偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"; }
+        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ShowPresentationPreferenceFailure("布局偏好未能读取：" + error.Message); }
         ApplyLayout();
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : "workstation";
         SetPage(initialPage);

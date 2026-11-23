@@ -1,1 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType></PropertyGroup><ItemGroup><Compile Include="../../src/Ipc.Installer/InstallerPayload.cs" Link="InstallerPayload.cs"/></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Ipc.Installer/InstallerPayload.cs" Link="InstallerPayload.cs"/>
+    <ProjectReference Include="../../src/Ipc.Platform/Ipc.Platform.csproj"/>
+  </ItemGroup>
+</Project>

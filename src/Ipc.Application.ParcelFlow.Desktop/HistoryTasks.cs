@@ -27,8 +27,6 @@ public partial class HistoryPage
             }
             group.Margin = new(0, 0, 8, 4); HistoryQueryActions.Children.Insert(0, group);
         }
-        foreach (var button in HistoryTimePresets.Children.OfType<Button>().Where(b => !Equals(b.Content, "不限时间")).ToArray())
-        { HistoryTimePresets.Children.Remove(button); button.MinHeight = 44; HistoryQueryActions.Children.Add(button); }
         AllHistoryFilters.Header = "更多筛选与精确时间";
         var toggleFilters = new Button { Content = "更多筛选", MinHeight = 44, Margin = new(0, 0, 8, 4) };
         var compact = new Style(typeof(Button), (Style)FindResource("ParameterAction")); compact.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));
@@ -40,5 +38,23 @@ public partial class HistoryPage
         unknown.SetBinding(IsEnabledProperty, "CanStartOperation");
         unknown.Click += async (_, _) => { if (DataContext is ParcelViewModel vm && vm.CanStartOperation) { vm.HistoryState = nameof(ParcelState.WcsUnknown); await vm.RunAsync(() => vm.LoadHistoryAsync(), "按原状态查询格口未确认作业"); } };
         if (AllHistoryFilters.Content is ScrollViewer { Content: Panel more }) more.Children.Add(unknown);
+    }
+
+    void PlaceHistoryTimePresets(bool shortPage)
+    {
+        if (!taskFiltersArranged || HistoryFilters.Content is not Panel timeFilters) return;
+        if (shortPage && ReferenceEquals(HistoryPresetHost.Content, HistoryTimePresets))
+        {
+            // A separate toolbar row can hide a result row at the minimum client height.
+            HistoryPresetHost.Content = null;
+            HistoryTimePresets.Margin = new(0, 0, 0, 8);
+            timeFilters.Children.Insert(0, HistoryTimePresets);
+        }
+        else if (!shortPage && ReferenceEquals(HistoryTimePresets.Parent, timeFilters))
+        {
+            timeFilters.Children.Remove(HistoryTimePresets);
+            HistoryTimePresets.Margin = new(0, 4, 0, 0);
+            HistoryPresetHost.Content = HistoryTimePresets;
+        }
     }
 }

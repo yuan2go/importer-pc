@@ -49,6 +49,8 @@ static partial class Program
             var file=Path.Combine(root,"presentation","sportmaster.pace.json"); Directory.CreateDirectory(Path.GetDirectoryName(file)!); File.WriteAllText(file,"{broken");
             editor.ShowReview(); await Flush(); first.UpdateLayout();
             Button Save() => Descendants(first).OfType<Button>().Single(b=>b.IsVisible && AutomationProperties.GetAutomationId(b)=="Startup.SaveAndStart");
+            Check(Save().IsEnabled && Equals(Save().Content, "保存配置"),
+                "first setup offers the enabled save action with valid station identifiers and deferred equipment");
             Save().RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(()=>!(bool)busy.GetValue(first)! && probe.Saves>0);
             Check(probe.RecoveredReads > 0 && first.IsVisible && (bool)type.GetField("lastSaveConfirmed",flags)!.GetValue(first)! && !(bool)type.GetField("startupSaveUncertain",flags)!.GetValue(first)! && probe.Saves==1,

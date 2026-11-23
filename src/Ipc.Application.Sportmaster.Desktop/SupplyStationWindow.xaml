@@ -48,13 +48,24 @@
     </Style>
    </Border.Style>
    <Grid>
-    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <TextBlock x:Name="TestInstallationLabel" Text="测试版" Margin="0,0,8,0" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Warning}" VerticalAlignment="Center" Visibility="Collapsed"/>
     <TextBlock x:Name="StationClock" Grid.Column="1" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Ink}" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.Name="本机时间"/>
-    <Button x:Name="MinimizeFullScreen" Grid.Column="2" Click="MinimizeFullScreen_Click" HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="最小化到任务栏" AutomationProperties.Name="最小化到任务栏">
+    <Grid Grid.Column="2" Margin="8,0,0,0">
+     <Grid.Style><Style TargetType="Grid"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasPreferenceNotices}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Grid.Style>
+     <ToggleButton x:Name="PreferenceNoticeButton" Width="44" Height="44" ToolTip="本机设置通知" AutomationProperties.Name="本机设置通知">
+      <Path Data="M 3,14 L 5,11 V 7 A 4,4 0 0 1 13,7 V 11 L 15,14 Z M 7,16 A 2,2 0 0 0 11,16" Stroke="{DynamicResource Ink}" StrokeThickness="1.5" StrokeLineJoin="Round" Width="18" Height="18"/>
+     </ToggleButton>
+     <Popup IsOpen="{Binding IsChecked,ElementName=PreferenceNoticeButton,Mode=TwoWay}" PlacementTarget="{Binding ElementName=PreferenceNoticeButton}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+      <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="1" Padding="12" Width="320">
+       <TextBox Text="{Binding PreferenceNoticeText,Mode=OneWay}" Style="{DynamicResource ReadonlyValue}" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="180" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="本机设置读取通知"/>
+      </Border>
+     </Popup>
+    </Grid>
+    <Button x:Name="MinimizeFullScreen" Grid.Column="3" Click="MinimizeFullScreen_Click" HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="最小化到任务栏" AutomationProperties.Name="最小化到任务栏">
      <Path Data="M 3,10 L 17,10" Stroke="{DynamicResource Ink}" StrokeThickness="1.7" Width="20" Height="20"/>
     </Button>
-    <Button x:Name="ExitFullScreen" Grid.Column="3" Click="ExitFullScreen_Click" Margin="4,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="退出供包台" AutomationProperties.Name="退出供包台">
+    <Button x:Name="ExitFullScreen" Grid.Column="4" Click="ExitFullScreen_Click" Margin="4,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="退出供包台" AutomationProperties.Name="退出供包台">
      <Path Data="M 4,4 L 16,16 M 16,4 L 4,16" Stroke="{DynamicResource Ink}" StrokeThickness="1.7" Width="20" Height="20"/>
     </Button>
    </Grid>
@@ -171,11 +182,7 @@
     <RowDefinition Height="Auto"/>
    </Grid.RowDefinitions>
    <StackPanel>
-    <Expander x:Name="PresentationPreferenceNotice" Header="部分本机显示偏好无法读取，原文件保留" Visibility="Collapsed" Margin="8,2" AutomationProperties.LiveSetting="Polite">
-     <TextBox x:Name="PresentationPreferenceDetails" Style="{DynamicResource ReadonlyValue}" IsTabStop="True" Padding="8,4"
-              VerticalScrollBarVisibility="Auto" MaxHeight="96" AutomationProperties.Name="显示偏好诊断，可复制"/>
-    </Expander>
-    <Border x:Name="PendingConfigurationBanner" Padding="16,6" Background="{StaticResource AccentBackground}">
+      <Border x:Name="PendingConfigurationBanner" Padding="16,6" Background="{StaticResource AccentBackground}">
      <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasConfigurationActivationNotice}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsCompact}" Value="True"/><Condition Binding="{Binding SelectedPage}" Value="workstation"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></Border.Style>
      <DockPanel><Button x:Name="ActivationOutcomeAction" Content="{Binding ConfigurationActivationActionText}" Click="ProductRestart_Click" IsEnabled="{Binding CanOpenConfigurationActivation}" DockPanel.Dock="Right" MinHeight="44"/><TextBlock Text="{Binding ConfigurationActivationBannerText}" ToolTip="{Binding ConfigurationActivationOutcome}" TextWrapping="Wrap" VerticalAlignment="Center"/></DockPanel>
     </Border>

@@ -24,6 +24,22 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
     public string Station => Snapshot?.Configuration.Effective.StationId ?? "等待供包台配置";
+    readonly Dictionary<string, string> preferenceNotices = [];
+    public string PreferenceNoticeText => string.Join("\n\n", preferenceNotices.Values);
+    public bool HasPreferenceNotices => preferenceNotices.Count != 0;
+    internal void SetPreferenceNotice(string key, string? message)
+    {
+        if (string.IsNullOrEmpty(message))
+        {
+            if (!preferenceNotices.Remove(key)) return;
+        }
+        else
+        {
+            if (preferenceNotices.GetValueOrDefault(key) == message) return;
+            preferenceNotices[key] = message;
+        }
+        Changed(nameof(PreferenceNoticeText)); Changed(nameof(HasPreferenceNotices));
+    }
     public enum RcsConnectionState { Unknown, Deferred, Simulation, Offline, AwaitingConfirmation, Online }
     public RcsConnectionState RcsState
     {

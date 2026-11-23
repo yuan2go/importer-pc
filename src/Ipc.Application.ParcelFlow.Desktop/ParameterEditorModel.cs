@@ -13,6 +13,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public ConfigurationPolicyDraft Policy { get; } = policy;
     public string ApplicationId { get; } = applicationId;
     public string StationId { get; } = stationId;
+    public bool HasValidStationCode => Policy.StationCode.Length <= 256 && !Policy.StationCode.Any(char.IsControl) && !string.IsNullOrWhiteSpace(Policy.StationCode);
     public ParcelConfigurationLocations? Locations { get; } = locations;
     public SmDisplayPreferenceDraft? DisplayPreferences { get; set; }
     public CapabilityDraft[] Readers { get; } = readers.Select(r => { if (applicationId == "sportmaster") r.UseSimpleCameraConfiguration(); return r; }).ToArray();
@@ -128,7 +129,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             try { _ = Policy.BuildWeightRange(); } catch (InvalidOperationException ex) { Issue("业务模块", WeightRangeField(ex.Message), ex.Message); }
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB（二进制兆字节）");
-        if (Policy.StationCode.Length > 256 || Policy.StationCode.Any(char.IsControl) || string.IsNullOrWhiteSpace(Policy.StationCode))
+        if (!HasValidStationCode)
             Issue("系统", nameof(Policy.StationCode), "供包台编号须为1～256个非控制字符");
         if (Policy.BackupEnabled)
         {

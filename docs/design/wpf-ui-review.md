@@ -6,9 +6,9 @@
 
 [AGENTS.md](../../AGENTS.md) 是当前产品规则；相关说明从 [INDEX](../INDEX.md) 读取，重点是 [字体](typography-01.md)、[作业卡](work-card-states.md)、[导航](operator-navigation-20261103.md) 和 [生命周期](../runtime/lifecycle-ux-current-guidance-01.md)。发生冲突时列出双方位置，以现行规则和真实调用核对；不直接把较旧文档的状态表写回代码。用户提出新规则时先说明与现行规则的差异，再在同一改动中同步规则与实现。
 
-先看原始材料：当前提交的 XAML/C#、实际装配的资源、绑定与命令、运行截图、输入过程、状态快照和相关测试。历史效果图只是设计参考；没有提交号的截图不能用来证明最新 main 的缺陷或修复。
+沿真实调用链核对当前 XAML/C#、实际装配的资源、绑定与命令、运行截图、输入过程、状态快照和相关测试。截图须有可追溯的提交号，才能作为该版本的缺陷或修复证据。
 
-当前资源入口为 `src/Ipc.Desktop/Themes/Workstation.xaml` 和 `src/Ipc.Presentation.Wpf/UiTypography.cs`、`TypographyScale.cs`。沿宿主实际加载路径确认使用者。颜色复用主题语义键，字体沿用已交付的 Noto Sans CJK SC Regular/Medium，不另建调色盘、字号表或字体平台。
+当 `docs/ui-v4/` 已提供现行交互原型 `importer_pc_ui_v5.html` 和设计令牌 `ThemeTokens.xaml` 时，以它们为唯一视觉与控件模板基准，并服从 AGENTS.md 与 TYPOGRAPHY-01。WPF 通过 `src/Ipc.Presentation.Wpf/Themes/Workstation.xaml` 和既有语义资源键统一装配。沿宿主实际加载路径核对 `src/Ipc.Desktop/Themes/Workstation.xaml` 的合并入口及资源使用者，保留 42 项既有 Resource Key 的兼容性。字体由 `UiTypography` 与 `TypographyScale` 按 TYPOGRAPHY-01 提供，使用随软件交付的 Noto Sans CJK SC Regular/Medium。
 
 ## 外部 UI 组件参考与 WPF 落地
 

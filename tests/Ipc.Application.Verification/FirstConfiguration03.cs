@@ -15,9 +15,9 @@ internal static class FirstConfiguration03
         var blank = new[] { Left(), Right() };
         Check(FirstConfigurationReadiness.Lines(blank, "").Where(l => l.Source.EndsWith("相机")).All(l => !l.NeedsAttention && l.State.Contains("不使用")), "empty camera fields are unused without a separate source-plan setting");
         var lines = FirstConfigurationReadiness.Lines([Left("10.0.0.5", "SN1"), Right()], "");
-        Check(!lines[0].NeedsAttention && lines[1].State.Contains("不使用") && lines.Single(l => l.Source == "RCS").NeedsAttention, "actual camera fields determine readiness and missing RCS remains visible");
+        Check(!lines[0].NeedsAttention && lines[1].State.Contains("不使用") && !lines.Single(l => l.Source == "RCS").NeedsAttention, "actual camera fields determine readiness and missing RCS remains visible");
         var summary = FirstConfigurationReadiness.Summary(lines);
-        Check(summary.Contains("左相机已填写") && summary.Contains("请先处理RCS") && !summary.Contains("可以开始"), "summary names actual missing connections without claiming production readiness");
+        Check(summary.Contains("左相机已填写") && summary.Contains("RCS可稍后配置") && !summary.Contains("可以开始"), "summary names actual missing connections without claiming production readiness");
         Check(FirstConfigurationReadiness.Lines([Left("10.0.0.5", "SN1"), Right("10.0.0.6", "SN2")], "http://rcs.example").All(l => !l.NeedsAttention), "filled cameras and RCS require no separate plan confirmation");
         Check(FirstConfigurationReadiness.Lines([Left("10.0.0.5"), Right()], "")[0] is { NeedsAttention: false } identity && identity.State.Contains("自动读取序列号"), "IP-only draft explains automatic identity lookup at save without claiming a live connection");
         Check(FirstConfigurationReadiness.Lines(blank, "http://rcs.example").Single(l => l.Source == "人工输入") is { NeedsAttention: false }, "manual input works with RCS and no configured cameras");

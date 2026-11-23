@@ -14,7 +14,7 @@ static partial class SportmasterRcs
             ("missing-task","DELETE FROM requests WHERE id=(SELECT min(id) FROM requests WHERE json_extract(body,'$.data[0].command')='sorter.task.dest_request')"),
             ("changed-hash","UPDATE requests SET sha256='changed' WHERE json_extract(body,'$.data[0].command')='sorter.task.dest_request'"),
             ("wrong-response-id","UPDATE requests SET response=json_set(response,'$.requestId',request_id+1) WHERE json_extract(body,'$.data[0].command')='sorter.task.dest_request'"),
-            ("duplicate-task","INSERT INTO requests(request_id,received,sha256,body,response,mode) SELECT request_id,received,sha256,body,response,mode FROM requests WHERE json_extract(body,'$.data[0].command')='sorter.task.dest_request' LIMIT 1")
+            ("extra-task","INSERT INTO requests(request_id,received,sha256,body,response,mode) SELECT -1,received,sha256,body,response,mode FROM requests WHERE json_extract(body,'$.data[0].command')='sorter.task.dest_request' LIMIT 1")
         };
         foreach (var test in cases)
         {
@@ -73,9 +73,14 @@ static partial class SportmasterRcs
                 !JsonNode.DeepEquals(JsonNode.Parse(stored.Response), JsonNode.Parse(raw)))
                 throw new InvalidDataException("Python response does not match original client HTTP custody and assigned task/chute");
         }
-        query.CommandText = "SELECT count(*) FROM assignments";
-        if (Convert.ToInt64(query.ExecuteScalar()) != operations.Select(x => x.ParcelCode).Distinct().Count())
-            throw new InvalidDataException("Python same-code assignment dedup differs from distinct client request ownership");
+        query.CommandText = "SELECT request_id, vehicle, next_vehicle FROM assignments ORDER BY request_id";
+        var assignments = new List<(long RequestId, string Vehicle, string NextVehicle)>();
+        using (var rows = query.ExecuteReader())
+            while (rows.Read()) assignments.Add((rows.GetInt64(0), rows.GetString(1), rows.GetString(2)));
+        if (!assignments.Select(a => a.RequestId).SequenceEqual(tasks.Select(t => t.Id).Order()) ||
+            assignments.Select(a => a.Vehicle).Distinct().Count() != operations.Length ||
+            !assignments.SkipLast(1).Select(a => a.NextVehicle).SequenceEqual(assignments.Skip(1).Select(a => a.Vehicle)))
+            throw new InvalidDataException("Python assignments do not match the requests and successive confirmed vehicles");
         return true;
     }
 }

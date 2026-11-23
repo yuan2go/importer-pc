@@ -29,6 +29,7 @@ public partial class MaintenancePage : UserControl
     public event EventHandler? DisplayPreferencesRequested;
     public event EventHandler<ParameterDiagnosticTarget>? DiagnosticsRequested;
     public Func<string, FrameworkElement>? CameraPreviewFactory { get => MainParameterEditor.CameraPreviewFactory; set => MainParameterEditor.CameraPreviewFactory = value; }
+    public void SetStationSettingsLayout(bool value) => MainParameterEditor.SetStationSettingsLayout(value);
     public MaintenancePage()
     {
         InitializeComponent();

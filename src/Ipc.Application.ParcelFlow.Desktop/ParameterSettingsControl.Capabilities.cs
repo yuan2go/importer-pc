@@ -172,7 +172,7 @@ public sealed partial class ParameterSettingsControl
         }
         if (draft.Kind == "observation")
         {
-            CameraCode(page, draft);
+            CameraCode(page, draft, form);
         }
         if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, isRcs ? "请求编号区间" : draft.Provider.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "采集缓冲" : draft.Kind == "observation" ? "高级设置" : "模拟调试选项"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
 
@@ -183,12 +183,21 @@ public sealed partial class ParameterSettingsControl
         }
         // Type/version/instance/contract are support metadata, not connection inputs.
     }
-    void CameraCode(ObjectPage page, CapabilityDraft draft)
+    void CameraCode(ObjectPage page, CapabilityDraft draft, Panel? fields = null)
     {
         var mappings = Model!.Components.Where(ParameterOwnership.IsRcs).SelectMany(c => c.Parameters.Where(p => p.Field.Key == draft.Role + "-bcr-code").Select(p => (Component: c, Parameter: p))).ToArray();
         if (mappings.Length == 0) return;
-        var form = Form(page, "相机编码");
-        foreach (var mapping in mappings) Parameter(form, page, mapping.Component, mapping.Parameter);
+        var form = fields ?? Form(page);
+        foreach (var mapping in mappings)
+        {
+            Parameter(form, page, mapping.Component, mapping.Parameter);
+            if (locations.TryGetValue(draft.InstanceId + "/device.serial", out var serial) && serial.Row is { } serialRow &&
+                locations[mapping.Component.InstanceId + "/" + mapping.Parameter.Field.Key].Row is { } codeRow)
+            {
+                var serialIndex = form.Children.IndexOf(serialRow);
+                if (serialIndex >= 0) { form.Children.Remove(codeRow); form.Children.Insert(serialIndex + 1, codeRow); }
+            }
+        }
     }
     static string ParameterLabel(CapabilityParameter p) => p.Field.Key switch
     {
@@ -241,7 +250,7 @@ public sealed partial class ParameterSettingsControl
         var chuteMode = ParameterOwnership.IsRcs(draft) && p.Field.Key == RcsRequestPolicy.DestinationChuteCode
             ? draft.Parameters.Single(x => x.Field.Key == RcsRequestPolicy.DestinationMode) : null;
         var required = p.Field.Required || chuteMode is not null;
-        var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key is "heartbeat-interval-ms" or "request-timeout-ms" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
+        var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (SectionLayout || string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key is "heartbeat-interval-ms" or "request-timeout-ms" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
         var help = draft.Provider?.Implementation is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
             ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : draft.Provider?.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? p.EditorHelp : ParameterHint(p);
         if (draft.IsSimpleCamera && p.Field.Key == "device.serial")
@@ -287,7 +296,7 @@ public sealed partial class ParameterSettingsControl
         else if (p.Field.Type == "choice") Choice(form, label, p, "Value", p.Field.Choices!, path, page, help);
         else
         {
-            var box = Input(form, label, p, "Value", path, page, help, p.IsList); box.MaxLength = p.EditorMaximumLength; box.IsReadOnly = p.Field.ReadOnly; if (p.Field.Type == "integer") box.MaxWidth = 240;
+            var box = Input(form, label, p, "Value", path, page, help, p.IsList); box.MaxLength = p.EditorMaximumLength; box.IsReadOnly = p.Field.ReadOnly; if (p.Field.Type == "integer" && !SectionLayout) box.MaxWidth = 240;
         }
         var requirements = ChineseInterfaceText.ParameterMessage(p.EditorHelp, help ?? "请按字段说明填写。");
         locations[path] = locations[path] with { Help = requirements + " " + help };

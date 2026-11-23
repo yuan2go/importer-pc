@@ -263,10 +263,15 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 if (kind is not (RepairAction.Previous or RepairAction.Next or RepairAction.SaveAndStart or RepairAction.Reload or RepairAction.Import or RepairAction.SaveDraft or RepairAction.Exit or RepairAction.OpenRestore)) Actions.Children.Remove(button);
             var saveDraft = actionButtons[RepairAction.SaveDraft]; saveDraft.Content = "保存草稿并退出";
             DockPanel.SetDock(saveState, Dock.Left); FooterHost.Children.Insert(0, saveState);
+            FooterHost.MinHeight = 64;
+            Actions.VerticalAlignment = VerticalAlignment.Center;
             Actions.HorizontalAlignment = HorizontalAlignment.Right;
             Actions.Children.Remove(headerImport); headerImport.Content = "导入配置"; headerImport.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, headerImport);
             var restoreEntry = actionButtons[RepairAction.OpenRestore];
             Actions.Children.Remove(restoreEntry); restoreEntry.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, restoreEntry);
+            restoreEntry.Padding = new(16, 0, 16, 0);
+            var saveConfig = actionButtons[RepairAction.SaveAndStart];
+            Actions.Children.Remove(saveConfig); Actions.Children.Add(saveConfig);
         }
         var editEvents = initialConfiguration ? (UIElement)WorkflowBody : Body;
         editEvents.AddHandler(System.Windows.Controls.Primitives.TextBoxBase.TextChangedEvent, new TextChangedEventHandler((_, e) => { if (e.OriginalSource is TextBox { IsReadOnly: false }) Changed(); }));
@@ -516,6 +521,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             RepairAction.Read or RepairAction.Reload or RepairAction.Install or RepairAction.Tools or RepairAction.Exit => true,
             RepairAction.Start => draft is not null && !startupSaveUncertain && savedInput == Input() && draft.DisplayPreferences?.HasChanges != true,
             RepairAction.Save or RepairAction.Repair => draft is not null && checkedInput == Input() && !startupSaveUncertain,
+            RepairAction.SaveAndStart when initialConfiguration => parameterControl?.IsReviewPage == true &&
+                parameterEditor?.HasValidStationCode == true && !startupSaveUncertain,
             RepairAction.Previous or RepairAction.Next => draft is not null,
             RepairAction.PlanRestore => maintenance is not null && !string.IsNullOrWhiteSpace(backup) && !string.IsNullOrWhiteSpace(restoreRoot),
             RepairAction.ReadRestore or RepairAction.OpenRestore => maintenance is not null,
@@ -877,7 +884,6 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (kind == RepairAction.Next) button.Content = initialConfiguration
                 ? parameterControl?.NextPageIsReview == true ? "检查配置" : "继续：" + parameterControl?.NextPageTitle
                 : selectedTask == RepairTask.Directory ? "继续填写参数" : "检查配置";
-            if (kind == RepairAction.SaveAndStart && initialConfiguration) button.Content = SaveIsComplete ? "完成并启动" : "保存配置";
             if (kind == RepairAction.AdoptRestore) button.Content = restoredPreview?.State == "ProjectionPending" ? "修复原恢复入口…" : "核对并接管原恢复…";
             button.IsCancel = kind == RepairAction.Exit;
         }

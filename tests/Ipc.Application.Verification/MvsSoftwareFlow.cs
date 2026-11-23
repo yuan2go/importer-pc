@@ -57,6 +57,7 @@ static partial class SportmasterRcs
         }
         var rcs = Binding(endpoint) with { Implementation = "sportmaster-rcs" };
         if (live) rcs.Parameters!["heartbeat-interval-ms"] = "3000";
+        else if (pythonLedger is not null) rcs.Parameters!["heartbeat-interval-ms"] = "1000";
         var c = HeartbeatConfiguration(workspace, rcs);
         var reader = c.Reader with
         {
@@ -91,6 +92,7 @@ static partial class SportmasterRcs
         // Isolated Simulation fixture seam only. No production identity guard changes.
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
         if (!bundled || args.Contains("--isolated-simulation-preflight")) app.RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); };
+        SmRoundFixture.Register(app, launch, c);
         await app.StartAsync(default);
         // Full frozen HTTP custody is management-only, including in this isolated fixture.
         if (pythonLedger is not null) await ManagementModeFixture.Authorize(app);
@@ -123,10 +125,23 @@ static partial class SportmasterRcs
             // Three decoded results must remain independent. The newest-video policy may
             // intentionally supersede *undecoded* frames, so await each recognition boundary.
             // Pipeline custody only (placement judgement off; covered by --same-placement-29).
+            var count = 0;
+            string? generation = null;
             foreach (var number in new uint[] { 1, 2, 5 })
             {
-                fake!.Enqueue(pixels, number);
-                await Wait(app, state => state.Operations.Length == (number == 1 ? 1 : number == 2 ? 2 : 3) && state.Operations.All(o => o.State == ParcelState.SlotResolved));
+                if (count > 0 && peer is not null) await SmRoundFixture.NextVehicleAsync(app, "left");
+                // The Python peer schedules a new vehicle after each binding. Wait for
+                // the real heartbeat to confirm it before delivering the next frame.
+                var ready = await Wait(app, state =>
+                {
+                    var lane = state.Positions!.Single(p => p.Id == "left");
+                    return lane.Admit && lane.Arrival is { Confirmed: true } arrival && arrival.Generation != generation;
+                });
+                generation = ready.Positions!.Single(p => p.Id == "left").Arrival!.Generation;
+                await app.ReadCameraPreviewAsync(reader.DeviceId, default); // Refresh preview demand after waiting for arrival.
+                fake.Enqueue(pixels, number);
+                count++;
+                await Wait(app, state => state.Operations.Length == count && state.Operations.All(o => o.State == ParcelState.SlotResolved));
             }
             Check(fake.Calls.Contains("set:TriggerMode=0") && fake.Calls.Contains("set:AcquisitionMode=2") && fake.Calls.IndexOf("set:AcquisitionMode=2") < fake.Calls.IndexOf("start"), "software reader configures and verifies continuous acquisition before starting, without a customer trigger setting");
             var s = await Wait(app, state => state.Operations.Length == 3 && state.Operations.All(o => o.State == ParcelState.SlotResolved));

@@ -19,6 +19,7 @@ public partial class StationSettingsWindow : Window
     public StationSettingsWindow(SupplyStationViewModel model, MaintenancePage editor)
     {
         InitializeComponent(); UiTypography.Apply(this);
+        editor.SetStationSettingsLayout(true);
         this.model = model; this.editor = editor; authority = (IWorkstationAdministration)model.Application;
         DataContext = model;
         Width = Math.Min(Width, SystemParameters.WorkArea.Width); Height = Math.Min(Height, SystemParameters.WorkArea.Height);
@@ -34,7 +35,7 @@ public partial class StationSettingsWindow : Window
     }
     void UpdateState()
     {
-        var granted = session is not null && model.IsManagementMode && model.ManagementStatus.SessionId == session;
+        var granted = ReferenceEquals(EditorHost.Content, editor) && session is not null && model.IsManagementMode && model.ManagementStatus.SessionId == session;
         EditorHost.IsEnabled = granted && model.Fresh;
         EditorHost.Visibility = granted ? Visibility.Visible : Visibility.Collapsed;
         ReadOnlyBody.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;

@@ -205,8 +205,14 @@ static partial class Program
                 "native 1:1 maps image pixels to device pixels at the actual monitor DPI");
             await SetClient(Surface(window), 1024, 768); await Flush(); CaptureInternal(evidence, "round-1024-native", Surface(window), lines);
             await SetClient(Surface(window), 880, 560); await Flush();
-            Field<Button>(control, "send").BringIntoView(); await Flush();
-            Check(Inside(Field<Button>(control, "send"), (Grid)Surface(window).Content), "880x560 supported operations minimum scroll route brings the real send action into the usable client viewport");
+            var sendAction = Field<Button>(control, "send");
+            sendAction.BringIntoView(); await Flush();
+            var client = (Grid)Surface(window).Content;
+            var sendBounds = sendAction.TransformToAncestor(client).TransformBounds(new Rect(sendAction.RenderSize));
+            // Native transforms can put a boundary a fraction of a pixel beyond the same DIP coordinate.
+            var clientBounds = Rect.Inflate(new Rect(client.RenderSize), .001, .001);
+            Check(sendAction.IsVisible && sendBounds.Width > 0 && sendBounds.Height > 0 && clientBounds.Contains(sendBounds),
+                $"880x560 supported operations minimum scroll route brings the real send action into the usable client viewport (action={sendBounds}, client={client.RenderSize})");
             CaptureInternal(evidence, "round-880-native", Surface(window), lines);
             var opens = h.Factory.Apis.Values.Sum(x => x.Opens); second.Close();
             Check(h.Factory.Apis.Values.Sum(x => x.Opens) == opens && h.Factory.Apis.Values.All(x => x.Starts == 1 && x.Stops == 0), "window close does not stop or recreate the shared acquisition owner");

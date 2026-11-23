@@ -55,7 +55,7 @@ public partial class HistoryPage : UserControl
         InitializeComponent();
         Loaded += (_, _) =>
         {
-            ArrangeTaskFilters(); UpdateDetailsVisibility(); ObserveTimePreset(DataContext as ParcelViewModel);
+            ArrangeTaskFilters(); FitQueryViewport(); UpdateDetailsVisibility(); ObserveTimePreset(DataContext as ParcelViewModel);
             inputOwner = Window.GetWindow(this);
             if (inputOwner is not null) { inputOwner.PreviewMouseDown += OwnerMouseDown; inputOwner.PreviewKeyDown += OwnerKeyDown; }
         };
@@ -88,9 +88,11 @@ public partial class HistoryPage : UserControl
     void FitQueryViewport()
     {
         var shortPage = ActualHeight < 500;
-        HistoryLayout.Margin = shortPage ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
+        HistoryLayout.Margin = shortPage ? new(12, 2, 12, 2) : new(20, 16, 20, 12);
+        HistoryQueryActions.Margin = shortPage ? new(0, 2, 0, 0) : new(0, 6, 0, 0);
         HistoryHeading.FontSize = UiTypography.Body;
         HistoryHeading.Visibility = shortPage ? Visibility.Collapsed : Visibility.Visible;
+        PlaceHistoryTimePresets(shortPage);
         var header = double.IsFinite(HistoryRows.ColumnHeaderHeight) ? HistoryRows.ColumnHeaderHeight : 36;
         var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 44;
         var filterHeader = AllHistoryFilters.IsVisible &&

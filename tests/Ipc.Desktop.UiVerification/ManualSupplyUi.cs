@@ -163,10 +163,11 @@ static partial class Program
             await SetClient(window, 1366, 768);
             typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["history"]);
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-            var expander = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "包裹轮次（含无码与未提交）"));
-            expander.IsExpanded = true;
+            var rounds = Descendants(window).OfType<TabItem>().Single(tab =>
+                System.Windows.Automation.AutomationProperties.GetAutomationId(tab) == "PositionHistory.ParcelRounds");
+            rounds.IsSelected = true;
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-            var panel = (DockPanel)expander.Content;
+            var panel = (DockPanel)rounds.Content;
             var table = Descendants(panel).OfType<DataGrid>().Single();
             var reason = Descendants(panel).OfType<ComboBox>().Single(c => System.Windows.Automation.AutomationProperties.GetName(c) == "轮次结果、结束原因或识读情况");
             var load = Descendants(panel).OfType<Button>().Single(b => Equals(b.Content, "查询轮次"));
@@ -227,6 +228,7 @@ static partial class Program
             Check(entry.IsReadOnly && feedback.Text.Contains("保留包裹") && feedback.Text.Contains("未确认") &&
                 !feedback.Text.Contains("SDK") && !feedback.Text.Contains(probe.Commands[0].CommandId) &&
                 !vm.WorkFeedback.Contains("SDK"), "lost return is actionable Chinese in both position and shared feedback; argument=" + argumentError);
+            await Until(() => vm.Left.SlotAvailable && h.Peer.Requests.Count > 0);
             Check(h.Peer.Requests.Count == 1, "failure after admission retains the original external effect");
             CaptureInternal(evidence, "manual-failure-" + argumentError, (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 600); feedback.BringIntoView();

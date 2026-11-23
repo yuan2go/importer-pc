@@ -12,7 +12,7 @@ public partial class SupplyStationWindow
     FrameworkElement PositionHistory()
     {
         if (positionHistory is not null) return positionHistory;
-        positionHistory = new TabControl { DataContext = ViewModel, Padding = new Thickness(4) };
+        positionHistory = new TabControl { DataContext = ViewModel, Padding = new Thickness(4, 0, 4, 0) };
         var panel = new DockPanel();
         var actions = new StackPanel { Orientation = Orientation.Horizontal };
         var refresh = new Button { Content = "最近记录", MinHeight = 44, Margin = new Thickness(0, 0, 8, 4) };
@@ -26,7 +26,9 @@ public partial class SupplyStationWindow
         table.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(ViewModel.SupplyHistory))); panel.Children.Add(table);
         var supply = new TabItem { Header = "投递位启停记录", Content = panel };
         positionHistory.Items.Add(new TabItem { Header = "作业记录", Content = history });
-        positionHistory.Items.Add(new TabItem { Header = "包裹轮次", Content = RoundHistory(), ToolTip = "含无码与未提交" });
+        var rounds = new TabItem { Header = "包裹轮次", Content = RoundHistory(), ToolTip = "含无码与未提交" };
+        System.Windows.Automation.AutomationProperties.SetAutomationId(rounds, "PositionHistory.ParcelRounds");
+        positionHistory.Items.Add(rounds);
         positionHistory.Items.Add(supply);
         positionHistory.SelectionChanged += async (sender, args) =>
         {

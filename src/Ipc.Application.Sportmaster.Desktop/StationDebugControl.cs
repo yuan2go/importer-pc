@@ -24,8 +24,9 @@ internal sealed partial class StationDebugControl : UserControl
     readonly ICameraReadRounds? rounds;
     readonly StationDebugEvidenceControl evidence;
     readonly StationCameraPreviewControl livePreview;
-    readonly Grid jsonColumns = new();
-    readonly Border liveCard, resultCard;
+    readonly Grid inspectionPanels = new(), jsonColumns = new();
+    readonly Border liveCard, resultCard, requestCard;
+    readonly StackPanel responseJson = new();
     readonly TextBlock readStatus = Text("尚未开始扫码"), photoState = Text("等待扫码"), fillStatus = Text("");
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     readonly Button left = Action("左相机"), right = Action("右相机"), trigger = Action("触发扫码"), prepare = Action("准备请求"), send = Action("发送请求");
@@ -136,7 +137,13 @@ internal sealed partial class StationDebugControl : UserControl
         columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         liveCard = Panel(reading); resultCard = Panel(visual); resultCard.Margin = new(14, 0, 0, 0);
-        columns.Children.Add(liveCard); columns.Children.Add(resultCard); Grid.SetColumn(resultCard, 1); body.Children.Add(columns);
+        columns.Children.Add(liveCard); columns.Children.Add(resultCard); Grid.SetColumn(resultCard, 1);
+        inspectionPanels.ColumnDefinitions.Add(new() { Width = new(5, GridUnitType.Star) });
+        inspectionPanels.ColumnDefinitions.Add(new() { Width = new(4, GridUnitType.Star) });
+        inspectionPanels.RowDefinitions.Add(new() { Height = GridLength.Auto });
+        inspectionPanels.RowDefinitions.Add(new() { Height = GridLength.Auto });
+        inspectionPanels.Children.Add(columns);
+        body.Children.Add(inspectionPanels);
         reading.Children.Add(Heading("实时画面")); reading.Children.Add(livePreview);
         var resultHeading = new DockPanel(); DockPanel.SetDock(photoState, Dock.Right); resultHeading.Children.Add(photoState); resultHeading.Children.Add(Heading("本次读码")); visual.Children.Add(resultHeading);
         barcode.FontFamily = UiTypography.Code; barcode.FontSize = UiTypography.Barcode; barcode.MinHeight = 48; barcode.MaxHeight = 96;
@@ -146,18 +153,21 @@ internal sealed partial class StationDebugControl : UserControl
         var photoArea = new Grid(); photoArea.Children.Add(viewport); photoArea.Children.Add(imageHint); visual.Children.Add(photoArea); visual.Children.Add(photoCaption);
         var adapt = Action("适应窗口"); var actual = Action("1:1"); var more = Action("放大"); var less = Action("缩小");
         visual.Children.Add(new Expander { Header = "照片缩放与条码标注", Content = Flow(adapt, actual, more, less, overlay), Margin = new(0, 4, 0, 0) });
-        var requestPanel = new StackPanel(); var requestCard = Panel(requestPanel); requestCard.Margin = new(0, 14, 0, 0); body.Children.Add(requestCard);
-        var requestHeader = new DockPanel();
+        var requestPanel = new StackPanel();
+        requestCard = Panel(requestPanel);
+        requestCard.VerticalAlignment = VerticalAlignment.Top;
+        inspectionPanels.Children.Add(requestCard);
         requestBarcode.FontFamily = UiTypography.Code; requestBarcode.Width = 220; requestBarcode.MaxHeight = 64; requestBarcode.Margin = new(8, 0, 10, 6);
         requestBarcode.IsReadOnly = false; requestBarcode.MaxLength = 4096;
         requestBarcode.ToolTip = "可手工输入完整条码；准备请求不要求配置或连接相机。";
         send.SetResourceReference(ForegroundProperty, "Accent"); send.SetResourceReference(BorderBrushProperty, "Line");
-        var entry = Flow(Text("请求条码"), requestBarcode, prepare, send); DockPanel.SetDock(entry, Dock.Right); requestHeader.Children.Add(entry); requestHeader.Children.Add(Heading("请求调试")); requestPanel.Children.Add(requestHeader);
+        requestPanel.Children.Add(Heading("RCS 请求调试"));
+        requestPanel.Children.Add(Flow(Text("请求条码"), requestBarcode, prepare, send));
         fillStatus.SetResourceReference(TextBlock.ForegroundProperty, "Success"); requestPanel.Children.Add(fillStatus);
         requestPanel.Children.Add(Text("扫码后自动填入条码，也可以手工输入；先“准备请求”查看报文，再“发送请求”。实际发送将接管所选小车本次到位，本车不可重复取格口。"));
         jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto }); jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        var requestJson = new StackPanel(); var responseJson = new StackPanel { Margin = new(14, 0, 0, 0) };
+        var requestJson = new StackPanel();
         requestJson.Children.Add(Text("请求 · 实际发送的报文")); requestBody.FontFamily = UiTypography.Code; requestBody.MinHeight = 72; requestBody.MaxHeight = 220; requestBody.SetResourceReference(BackgroundProperty, "Soft"); requestJson.Children.Add(requestBody);
         var responseHeader = new DockPanel(); DockPanel.SetDock(copyResponse, Dock.Right);
         copyResponse.IsEnabled = false; responseHeader.Children.Add(copyResponse); responseHeader.Children.Add(Text("RCS 原始回包"));
@@ -429,13 +439,24 @@ internal sealed partial class StationDebugControl : UserControl
     }
     void LayoutColumns()
     {
-        var narrow = ActualWidth < 720;
-        columns.ColumnDefinitions[1].Width = narrow ? new(0) : new(1, GridUnitType.Star);
-        Grid.SetColumn(resultCard, narrow ? 0 : 1); Grid.SetRow(resultCard, narrow ? 1 : 0); resultCard.Margin = narrow ? new(0, 14, 0, 0) : new(14, 0, 0, 0);
-        jsonColumns.ColumnDefinitions[1].Width = narrow ? new(0) : new(1, GridUnitType.Star);
-        var response = (FrameworkElement)jsonColumns.Children[1]; Grid.SetColumn(response, narrow ? 0 : 1); Grid.SetRow(response, narrow ? 1 : 0);
-        response.Margin = narrow ? new(0, 10, 0, 0) : new(14, 0, 0, 0);
-        viewport.Height = narrow ? 240 : 206;
+        var split = ActualWidth >= 1140;
+        inspectionPanels.ColumnDefinitions[1].Width = split ? new(4, GridUnitType.Star) : new(0);
+        Grid.SetColumn(requestCard, split ? 1 : 0);
+        Grid.SetRow(requestCard, split ? 0 : 1);
+        requestCard.Margin = split ? new(14, 0, 0, 0) : new(0, 14, 0, 0);
+
+        var stackPhotos = ActualWidth < 1050 || split && ActualWidth < 1270;
+        columns.ColumnDefinitions[1].Width = stackPhotos ? new(0) : new(1, GridUnitType.Star);
+        Grid.SetColumn(resultCard, stackPhotos ? 0 : 1);
+        Grid.SetRow(resultCard, stackPhotos ? 1 : 0);
+        resultCard.Margin = stackPhotos ? new(0, 14, 0, 0) : new(14, 0, 0, 0);
+
+        var stackMessages = split || ActualWidth < 880;
+        jsonColumns.ColumnDefinitions[1].Width = stackMessages ? new(0) : new(1, GridUnitType.Star);
+        Grid.SetColumn(responseJson, stackMessages ? 0 : 1);
+        Grid.SetRow(responseJson, stackMessages ? 1 : 0);
+        responseJson.Margin = stackMessages ? new(0, 10, 0, 0) : new(14, 0, 0, 0);
+        viewport.Height = stackPhotos ? 240 : 206;
     }
     void Scale(double factor) { fit = false; zoom = Math.Clamp(zoom * factor, .02, 16); ApplyZoom(); }
     void ApplyZoom()

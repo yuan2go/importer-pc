@@ -51,7 +51,12 @@ static partial class Program
         }
         Button Button(SupplyStationExitWindow dialog, string name) => (Button)dialog.FindName(name);
         void ClickButton(SupplyStationExitWindow dialog, string name) => Button(dialog, name).RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
-        string Text(SupplyStationExitWindow dialog) => string.Join("\n", Descendants(dialog).OfType<TextBlock>().Select(t => t.Text));
+        string Text(SupplyStationExitWindow dialog) => string.Join("\n", Descendants(dialog).Select(element => element switch
+        {
+            TextBlock heading => heading.Text,
+            TextBox { IsReadOnly: true } value => value.Text,
+            _ => ""
+        }).Where(value => value.Length > 0));
         try
         {
             await SetClient(window, 1366, 768); await window.ViewModel.RefreshAsync();

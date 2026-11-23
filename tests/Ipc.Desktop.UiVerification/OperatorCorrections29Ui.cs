@@ -17,7 +17,7 @@ static partial class Program
         T Field<T>(object c, string name) => (T)c.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(c)!;
         using var reserve = new TcpListener(IPAddress.Loopback, 0); reserve.Start(); var port = ((IPEndPoint)reserve.LocalEndpoint).Port; reserve.Stop();
         await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "offline-debug29"), rcsEndpoint: $"http://127.0.0.1:{port}/rcs/sorter/api", heartbeatSeconds: 1);
-        await h.StartAsync();
+        await h.StartAsync(waitForRcs: false);
         var blank = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)220, 640 * 240).ToArray(), 640, 240);
         h.Api(h.Left).Enqueue(blank, 1);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Releases >= 1));
@@ -41,6 +41,7 @@ static partial class Program
         Check(Describe(passive with { Connection = passive.Connection! with { ValidUntil = DateTimeOffset.UtcNow.AddSeconds(-1) } }).Contains("仍有新帧"),
             "fresh acquisition is still reported when the separate connection confirmation has expired");
         var window = new OperationsViewFixture(h.App) { ConfirmDiscardDrafts = _ => true };
+        var owner = new NativeWindowOwner(window);
         window.Show();
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         async Task Until(Func<bool> ready)
@@ -51,7 +52,7 @@ static partial class Program
             await Until(() => window.ViewModel.Fresh && window.ViewModel.IsManagementMode);
             await Until(() => window.ViewModel.Snapshot!.Health.Single(s => s.InstanceId == h.Config.Wcs!.InstanceId).Ready == false);
             Check(window.ViewModel.Snapshot!.Health.Single(s => s.InstanceId == h.Config.Wcs!.InstanceId).Ready == false, "fixture uses a genuinely unavailable loopback RCS with both camera acquisitions online");
-            window.ShowPositionDebug(window.ViewModel.Left); await Flush();
+            window.ShowPositionDebug(window.ViewModel.Left); await Until(() => window.Debug is { IsVisible: true });
             var debug = Descendants(window).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             var trigger = Field<Button>(debug, "trigger"); var columns = Field<Grid>(debug, "columns");
             foreach (var size in new[] { (1366, 768), (1092, 614), (800, 420) })
@@ -79,7 +80,7 @@ static partial class Program
                 "unsupported query receipt does not leak its code-layer status into the operator message");
             CaptureInternal(evidence, "op29-debug-offline-locked", (Grid)window.FindName("ClientArea"), lines);
         }
-        finally { window.Close(); await Flush(); }
+        finally { await owner.DisposeAsync(); }
     }
     static DependencyObject? VisualTreeHelperParent(DependencyObject child, Type target)
     {

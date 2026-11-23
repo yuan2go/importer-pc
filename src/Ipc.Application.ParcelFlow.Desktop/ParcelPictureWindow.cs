@@ -46,8 +46,9 @@ public sealed class ParcelPictureWindow : Window
         Title = "包裹图片"; Width = Math.Min(1100, SystemParameters.WorkArea.Width); Height = Math.Min(760, SystemParameters.WorkArea.Height);
         MinWidth = 640; MinHeight = 420; WindowStartupLocation = WindowStartupLocation.CenterOwner;
         UiTypography.Apply(this); FontSize = UiTypography.Body; Background = Brushes.White;
-        var body = new DockPanel { Margin = new(16) };
-        var top = new StackPanel(); DockPanel.SetDock(top, Dock.Top); body.Children.Add(top);
+        var body = new DockPanel();
+        var top = new StackPanel { Margin = new(20, 12, 20, 8) };
+        DockPanel.SetDock(top, Dock.Top); body.Children.Add(top);
         top.Children.Add(new TextBox
         {
             Text = barcode,
@@ -66,12 +67,18 @@ public sealed class ParcelPictureWindow : Window
         actions.Children.Add(annotations); annotations.Checked += (_, _) => DrawAnnotations(); annotations.Unchecked += (_, _) => DrawAnnotations();
         var reload = new Button { Content = "刷新原图", MinHeight = 44, Padding = new(12, 6, 12, 6) };
         reload.Click += async (_, _) => await LoadOriginalAsync(); actions.Children.Add(reload);
+        copyImage.SetResourceReference(FrameworkElement.StyleProperty, "Primary");
         copyImage.Click += (_, _) => CopyImage(); actions.Children.Add(copyImage);
         top.Children.Add(status);
-        var bottom = new DockPanel { Margin = new(0, 8, 0, 0) }; DockPanel.SetDock(bottom, Dock.Bottom); body.Children.Add(bottom);
+        var bottom = new Border();
+        bottom.SetResourceReference(FrameworkElement.StyleProperty, "OperatorActionFooter");
+        DockPanel.SetDock(bottom, Dock.Bottom); body.Children.Add(bottom);
         var close = new Button { Content = "关闭", IsCancel = true, MinHeight = 44, MinWidth = 88, Padding = new(12, 6, 12, 6) };
-        close.Click += (_, _) => Close(); DockPanel.SetDock(close, Dock.Right); bottom.Children.Add(close);
-        var detail = new Expander { Header = "图片来源与完整性", Content = provenance }; bottom.Children.Add(detail);
+        close.Click += (_, _) => Close();
+        close.HorizontalAlignment = HorizontalAlignment.Right;
+        bottom.Child = close;
+        top.Children.Add(new Expander { Header = "图片来源与完整性", Content = provenance });
+        viewport.Margin = new(20, 0, 20, 12);
         viewport.Content = scene; scene.Children.Add(image); body.Children.Add(viewport); Content = body;
         System.Windows.Automation.AutomationProperties.SetName(viewport, "包裹原图：Ctrl + 滚轮缩放，按住左键拖动");
         viewport.SizeChanged += (_, _) => { if (fit) Fit(); };

@@ -23,14 +23,20 @@ static partial class Program
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize(runtime);
         var app = DispatchProxy.Create<IHistoryProjectionFixture, ProjectionProbe>(); ((ProjectionProbe)(object)app).Inner = runtime;
-        var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true }; window.Show();
+        var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true };
+        await using var stationOwner = new NativeWindowOwner(window);
+        window.Show();
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         async Task Until(Func<bool> ready) { for (var i = 0; i < 200; i++) { await vm.RefreshAsync(); await Flush(); if (ready()) return; await Task.Delay(25); } throw new TimeoutException("Query UI did not converge"); }
-        await SetClient(window, 1366, 768); await Until(() => vm.Fresh && vm.IsManagementMode);
+        await SetClient(window, 1366, 768); await Until(() => vm.Fresh);
+        Check((await runtime.ManagementModeStatusAsync()).Authorized && !vm.IsManagementMode, "record filters operate in the ordinary workstation despite an independent operations grant");
         runtime.EmitReferenceAt("left", "query-left", "000123456", "query-event"); await Until(() => vm.Left.SlotAvailable);
         Click(window, "作业记录"); await Until(() => vm.HistoryLoaded && !vm.HistoryLoading && !vm.Busy);
-        var history = (HistoryPage)((ContentControl)window.FindName("PageHost")).Content;
+        var pages = (TabControl)((ContentControl)window.FindName("PageHost")).Content;
+        Check(pages.Items.OfType<TabItem>().Select(page => page.Header).SequenceEqual(new[] { "作业记录", "包裹轮次", "投递位启停记录" }),
+            "station records expose three distinct sections in the visual order");
+        var history = Descendants(pages).OfType<HistoryPage>().Single(page => page.IsVisible);
         Check(vm.HistoryItems.Length == 1 && vm.CanExportHistory, "history still reads its real fixed selection and export boundary");
         ((Expander)history.FindName("AllHistoryFilters")).IsExpanded = true; ((Expander)history.FindName("HistoryFilters")).IsExpanded = true; await Flush();
         var inputs = Descendants(history).OfType<DateTimeInput>().ToArray(); Check(inputs.Length == 2, "history has exactly two shared time controls");
@@ -56,7 +62,10 @@ static partial class Program
         var eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
         Check(!DateTimeInput.TryLocalTime(new(2026, 3, 8, 2, 30, 0), eastern, out _) && !DateTimeInput.TryLocalTime(new(2026, 11, 1, 1, 30, 0), eastern, out _), "DST nonexistent and ambiguous wall times require explicit precision input");
         Check(DateTimeInput.TryLocalTime(new(2026, 7, 1, 12, 0, 0), eastern, out var summer) && summer.Offset == TimeSpan.FromHours(-4), "local edit resolves the offset for the selected date");
-        Click(history, "今天"); Click(history, "查询"); await Until(() => !vm.HistoryLoading && !vm.Busy && vm.CanExportHistory); await Flush();
+        Click(history, "今天");
+        var today = Descendants(history).OfType<Button>().Single(button => Equals(button.Content, "今天"));
+        Check(AutomationProperties.GetItemStatus(today) == "已选", "quick date selection is exposed to keyboard and automation users");
+        Click(history, "查询"); await Until(() => !vm.HistoryLoading && !vm.Busy && vm.CanExportHistory); await Flush();
         Check(vm.HistoryRangeSummary.Contains("本机时间") && !vm.HistoryRangeSummary.Contains("固定序号") && !vm.HistoryRangeSummary.Contains("+08:00"), "default applied history summary hides engineering boundaries while retaining the technical selection");
         Check(vm.HistoryItems.Length == 1, "today query includes the synthetic observation");
         foreach (var size in new[] { (1366d, 768d), (800d, 420d) })
@@ -66,8 +75,18 @@ static partial class Program
             Check(Inside(actions, client) && Descendants(actions).OfType<Button>().Where(b => b.IsVisible).All(b => b.ActualHeight >= 44), "history query actions remain visible at " + size.Item1);
             CaptureInternal(evidence, "query-history-" + (int)size.Item1, client, lines);
         }
-        await SetClient(window, 1366, 768); Click(window, "日志查询"); await Until(() => vm.SelectedPage == "logs");
-        var logs = (SoftwareLogControl)((ContentControl)window.FindName("PageHost")).Content;
+        clock.Text = "08:09:10";
+        Check(AutomationProperties.GetItemStatus(today).Length == 0, "a manual range change clears the quick date selection");
+        var operations = new OperationsViewFixture(app);
+        await using var operationsOwner = new NativeWindowOwner(operations);
+        operations.Show();
+        await operations.AdoptFixtureGrantAsync();
+        await operations.ViewModel.RefreshAsync();
+        await SetClient(operations, 1366, 768);
+        operations.Navigate("logs");
+        operations.UpdateLayout();
+        var logs = Descendants(operations).OfType<SoftwareLogControl>().Single(page => page.IsVisible);
+        var logClient = (Grid)operations.FindName("ClientArea");
         var advanced = Descendants(logs).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选"));
         Check(!advanced.IsExpanded, "log precise filters begin collapsed behind their explicit action");
         advanced.IsExpanded = true; await Flush();
@@ -86,15 +105,14 @@ static partial class Program
         Check(applied.Text.Contains("查询范围"), "successful log query replaces pending wording");
         foreach (var size in new[] { (1366d, 768d), (800d, 420d) })
         {
-            await SetClient(window, size.Item1, size.Item2); await Flush();
-            Check(Inside(queryButton, client), "log query action remains reachable at " + size.Item1);
+            await SetClient(operations, size.Item1, size.Item2); await Flush();
+            Check(Inside(queryButton, logClient), "log query action remains reachable at " + size.Item1);
             Check(!Descendants(logs).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("UTC偏移")), "default query controls do not expose offset jargon");
-            CaptureInternal(evidence, "query-logs-" + (int)size.Item1, client, lines);
+            CaptureInternal(evidence, "query-logs-" + (int)size.Item1, logClient, lines);
         }
         ranges[0].Timestamp = "invalid-time"; await Flush();
         Check(applied.Text.Contains("时间无效") && applied.Text.Contains("待查询"), "invalid log endpoint is explained without restoring an earlier instant");
         Check(!((Button)typeof(SoftwareLogControl).GetField("exportButton", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(logs)!).IsEnabled, "editing log time revokes the old fixed export selection");
-        window.Close(); await Task.Delay(100);
         lines.Add("Windows native WPF, synthetic records and current local timezone; no system timezone changed. Real field users, touch and site validation NOT_RUN.");
     }
 }

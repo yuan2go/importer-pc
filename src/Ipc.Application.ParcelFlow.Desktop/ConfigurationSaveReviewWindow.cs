@@ -39,7 +39,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         Width = Math.Min(880, Math.Max(540, (owner?.ActualWidth ?? 944) - 64)); Height = Math.Min(740, Math.Max(340, (owner?.ActualHeight ?? 804) - 64));
         MaxWidth = Math.Max(540, SystemParameters.WorkArea.Width - 24); MaxHeight = Math.Max(340, SystemParameters.WorkArea.Height - 24); MinWidth = 520; MinHeight = 320;
         var root = new DockPanel { LastChildFill = true };
-        var footer = new DockPanel { Margin = new(24, 12, 24, 12), LastChildFill = false };
+        var footer = new DockPanel { Margin = new(0, 8, 0, 0), LastChildFill = false };
         back.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartOperation))); back.Click += (_, _) => Close();
         save.Style = (Style)Resources["ParameterPrimaryAction"]; inspect.Style = (Style)Resources["ParameterPrimaryAction"];
         save.Click += SaveAsync; inspect.Click += async (_, _) => await vm.RunAsync(vm.InspectLastSaveAsync, "查看上次保存结果");
@@ -48,9 +48,10 @@ public sealed class ConfigurationSaveReviewWindow : Window
         activate.Click += async (_, _) => { if (vm.RequestActivationAsync is { } request) { Close(); await request(); } };
         back.IsCancel = true;
         var footerContent = new StackPanel();
-        outcome.Margin = new(24, 12, 24, 0);
+        outcome.Margin = new(0);
         footerContent.Children.Add(outcome); footerContent.Children.Add(footer);
-        var footerChrome = new Border { BorderThickness = new(0, 1, 0, 0), Child = footerContent }.Themed(Border.BorderBrushProperty, "Line");
+        var footerChrome = new Border { Child = footerContent, Padding = new(24, 8, 24, 8) };
+        footerChrome.SetResourceReference(FrameworkElement.StyleProperty, "OperatorActionFooter");
         DockPanel.SetDock(footerChrome, Dock.Bottom); root.Children.Add(footerChrome);
         var body = new StackPanel { Margin = new(28, 20, 28, 20) };
         body.Children.Add(Heading(Title, UiTypography.PageTitle, 0));

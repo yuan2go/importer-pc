@@ -27,8 +27,12 @@ public partial class HistoryPage
             }
             group.Margin = new(0, 0, 8, 4); HistoryQueryActions.Children.Insert(0, group);
         }
-        foreach (var button in HistoryTimePresets.Children.OfType<Button>().Where(b => !Equals(b.Content, "不限时间")).ToArray())
-        { HistoryTimePresets.Children.Remove(button); button.MinHeight = 44; HistoryQueryActions.Children.Add(button); }
+        if (HistoryTimePresets.Parent is Panel timeFilters)
+        {
+            timeFilters.Children.Remove(HistoryTimePresets);
+            HistoryTimePresets.Margin = new(0, 4, 0, 0);
+            HistoryPresetHost.Content = HistoryTimePresets;
+        }
         AllHistoryFilters.Header = "更多筛选与精确时间";
         var toggleFilters = new Button { Content = "更多筛选", MinHeight = 44, Margin = new(0, 0, 8, 4) };
         var compact = new Style(typeof(Button), (Style)FindResource("ParameterAction")); compact.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));

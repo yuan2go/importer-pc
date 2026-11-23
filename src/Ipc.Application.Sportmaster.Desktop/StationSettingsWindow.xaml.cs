@@ -13,6 +13,7 @@ public partial class StationSettingsWindow : Window
     readonly SupplyStationViewModel model;
     readonly MaintenancePage editor;
     readonly IWorkstationAdministration authority;
+    sealed record DisplayField(string Label, string Value, string AutomationId);
     string? session;
     bool authenticating, closing, closeReady;
     public StationSettingsWindow(SupplyStationViewModel model, MaintenancePage editor)
@@ -23,6 +24,7 @@ public partial class StationSettingsWindow : Window
         Width = Math.Min(Width, SystemParameters.WorkArea.Width); Height = Math.Min(Height, SystemParameters.WorkArea.Height);
         model.PropertyChanged += Changed;
         Loaded += (_, _) => UpdateState();
+        IsVisibleChanged += (_, _) => { if (IsVisible) RefreshSavedPreferences(); };
         Closing += ClosingSettings;
         Closed += (_, _) => { model.PropertyChanged -= Changed; EditorHost.Content = null; if (model.OwnedManagementSession == session) model.OwnedManagementSession = null; };
     }
@@ -39,22 +41,65 @@ public partial class StationSettingsWindow : Window
         EditSettings.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;
         AuthorizationText.Text = granted ? $"编辑授权至 {model.ManagementStatus.ExpiresAt?.ToLocalTime():HH:mm} · 保存时执行原配置守卫" :
             session is null ? "只读查看，不暂停供包；关闭后未保存输入仍保留在当前供包台窗口。" : "编辑授权未确认或已结束，输入保留。重新验证后继续；供包状态保持原状。";
+        EffectiveSettingsCards.Visibility = model.Fresh && model.Snapshot is not null ? Visibility.Visible : Visibility.Collapsed;
         if (!model.Fresh || model.Snapshot is not { } snapshot)
-        { ReadOnlySettings.Text = "尚未取得有效设置，请等待工作站状态读取。"; return; }
-        var c = snapshot.Configuration.Effective;
-        var host = c.Wcs is { } rcs && Uri.TryCreate(rcs.Target, UriKind.Absolute, out var uri) ?
-            new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri.GetLeftPart(UriPartial.Authority) : "待配置";
-        ReadOnlySettings.Text = "本站：" + c.StationId + "\n供包台编号：" + (string.IsNullOrWhiteSpace(c.StationCode) ? "待配置" : c.StationCode) + "\nRCS 主机：" + host +
-            "\n仓 ID（已保存值）：" + (c.Wcs?.Parameters.GetValueOrDefault("zone-id") ?? "未单独保存") +
-            "\n生产线 ID（已保存值）：" + (c.Wcs?.Parameters.GetValueOrDefault("project-id") ?? "未单独保存") +
-            "\n配置修订：" + snapshot.Configuration.Revision + (snapshot.HasPendingConfiguration == true ? " · 有已保存待生效设置" : " · 无待生效设置") +
-            string.Join("", (c.Topology?.Positions ?? []).Select(p =>
-            {
-                var reader = c.Topology!.Readers.Single(r => r.DeviceId == p.ReaderDeviceId);
-                return "\n\n" + (p.Id == "left" ? "左相机" : "右相机") + "\nIP：" + (reader.Parameters?.GetValueOrDefault("device.ip") is { Length: > 0 } ip ? ip : "未配置") +
-                    "\n物理序列号：" + (reader.Parameters?.GetValueOrDefault("device.serial") is { Length: > 0 } serial ? serial : "未配置") +
-                    "\nRCS 相机编码：" + (c.Wcs?.Parameters.GetValueOrDefault(p.Id + "-bcr-code") is { Length: > 0 } code ? code : "本位停用");
-            }));
+        {
+            ReadOnlySettings.Text = "尚未取得有效设置，请等待工作站状态读取。";
+            return;
+        }
+
+        var configuration = snapshot.Configuration.Effective;
+        var rcs = configuration.Wcs;
+        var host = rcs is not null && Uri.TryCreate(rcs.Target, UriKind.Absolute, out var uri)
+            ? new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri.GetLeftPart(UriPartial.Authority) : "待配置";
+        var revision = snapshot.Configuration.Revision.ToString();
+        var pending = snapshot.HasPendingConfiguration == true ? "有已保存待生效设置" : "无待生效设置";
+        ReadOnlySettings.Text = $"配置修订 {revision} · {pending}";
+        UpdateFields(StationFields,
+        [
+            new("本站", configuration.StationId, "StationSettings.StationId"),
+            new("供包台编号", string.IsNullOrWhiteSpace(configuration.StationCode) ? "待配置" : configuration.StationCode, "StationSettings.StationCode"),
+            new("RCS 主机", host, "StationSettings.RcsHost"),
+            new("仓 ID（已保存值）", rcs?.Parameters.GetValueOrDefault("zone-id") ?? "未单独保存", "StationSettings.Zone"),
+            new("生产线 ID（已保存值）", rcs?.Parameters.GetValueOrDefault("project-id") ?? "未单独保存", "StationSettings.Project")
+        ]);
+        UpdateFields(LeftCameraFields, CameraFields("left"));
+        UpdateFields(RightCameraFields, CameraFields("right"));
+
+        DisplayField[] CameraFields(string position)
+        {
+            var topology = configuration.Topology;
+            var lane = topology?.Positions.SingleOrDefault(p => p.Id == position);
+            var reader = lane is null ? null : topology!.Readers.Single(r => r.DeviceId == lane.ReaderDeviceId);
+            var prefix = "StationSettings.Camera." + position;
+            return
+            [
+                new("IP", reader?.Parameters?.GetValueOrDefault("device.ip") is { Length: > 0 } ip ? ip : "未配置", prefix + ".Ip"),
+                new("物理序列号", reader?.Parameters?.GetValueOrDefault("device.serial") is { Length: > 0 } serial ? serial : "未配置", prefix + ".Serial"),
+                new("RCS 相机编码", rcs?.Parameters.GetValueOrDefault(position + "-bcr-code") is { Length: > 0 } code ? code : "本位停用", prefix + ".Code")
+            ];
+        }
+    }
+    static void UpdateFields(System.Windows.Controls.ItemsControl target, DisplayField[] fields)
+    {
+        if (target.ItemsSource is not DisplayField[] current || !current.SequenceEqual(fields))
+            target.ItemsSource = fields;
+    }
+    void RefreshSavedPreferences()
+    {
+        // Read the saved per-user files independently of the edit session and its draft.
+        var saved = new SmDisplayPreferenceDraft();
+        PreferenceFields.ItemsSource = new DisplayField[]
+        {
+            new("默认打开方式", Value("WindowOpeningMode", saved.OpeningMode == PresentationPreferences.WindowOpeningMode.FullScreen ? "最大化（全屏）" : "窗口"), "StationSettings.WindowMode"),
+            new("效率显示", Value("ShowPace", saved.ShowPace ? "显示" : "隐藏"), "StationSettings.Pace"),
+            new("提示音音量", Value("CueVolume", saved.CueVolume == 0 ? "静音" : $"{saved.CueVolume}%"), "StationSettings.CueVolume")
+        };
+        PreferenceReadFailure.Text = string.Join(Environment.NewLine, new[] { "WindowOpeningMode", "ShowPace", "CueVolume" }
+            .Select(saved.ReadFailure).Where(failure => failure.Length > 0));
+        PreferenceReadDetails.Visibility = PreferenceReadFailure.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+
+        string Value(string path, string value) => saved.CanEdit(path) ? value : "未能读取";
     }
     async void Edit_Click(object sender, RoutedEventArgs e)
     {

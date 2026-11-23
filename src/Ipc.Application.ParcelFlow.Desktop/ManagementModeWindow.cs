@@ -50,7 +50,11 @@ public sealed class ManagementModeWindow : Window
         var emptyFeedback = new Trigger { Property = TextBlock.TextProperty, Value = "" };
         emptyFeedback.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));
         feedbackStyle.Triggers.Add(emptyFeedback); feedback.Style = feedbackStyle;
-        var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right }; Grid.SetRow(actions, 2); layout.Children.Add(actions);
+        var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right };
+        var footer = new Border { Child = actions, Margin = new(0, 8, 0, 0), Padding = new(0, 8, 0, 0) };
+        footer.SetResourceReference(FrameworkElement.StyleProperty, "OperatorActionFooter");
+        Grid.SetRow(footer, 2);
+        layout.Children.Add(footer);
         var enterButton = new Button { Name = "EnterManagementMode", Content = "进入管理模式", MinHeight = 44, MinWidth = 140, IsDefault = true }; actions.Children.Add(enterButton);
         StartupAppearance.Primary(enterButton); StartupAppearance.Primary(save); feedback.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
         var leave = new Button { Name = "ExitManagementMode", Content = "退出管理模式", MinHeight = 44, Margin = new(0, 0, 12, 0) }; actions.Children.Add(leave);

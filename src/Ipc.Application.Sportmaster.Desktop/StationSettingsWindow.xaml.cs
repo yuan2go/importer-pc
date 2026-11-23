@@ -35,7 +35,7 @@ public partial class StationSettingsWindow : Window
     }
     void UpdateState()
     {
-        var granted = session is not null && model.IsManagementMode && model.ManagementStatus.SessionId == session;
+        var granted = ReferenceEquals(EditorHost.Content, editor) && session is not null && model.IsManagementMode && model.ManagementStatus.SessionId == session;
         EditorHost.IsEnabled = granted && model.Fresh;
         EditorHost.Visibility = granted ? Visibility.Visible : Visibility.Collapsed;
         ReadOnlyBody.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;

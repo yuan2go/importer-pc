@@ -138,6 +138,7 @@ static partial class SportmasterRcs
                     return lane.Admit && lane.Arrival is { Confirmed: true } arrival && arrival.Generation != generation;
                 });
                 generation = ready.Positions!.Single(p => p.Id == "left").Arrival!.Generation;
+                await app.ReadCameraPreviewAsync(reader.DeviceId, default); // Refresh preview demand after waiting for arrival.
                 fake.Enqueue(pixels, number);
                 count++;
                 await Wait(app, state => state.Operations.Length == count && state.Operations.All(o => o.State == ParcelState.SlotResolved));

@@ -40,7 +40,11 @@ public static class WindowOpeningPreference
         };
         void PreferenceChanged(string id, PresentationPreferences.WindowOpeningMode mode)
         {
-            if (id == application) window.Dispatcher.Invoke(() => SetFullScreen(mode == PresentationPreferences.WindowOpeningMode.FullScreen));
+            if (id == application) window.Dispatcher.Invoke(() =>
+            {
+                SetFullScreen(mode == PresentationPreferences.WindowOpeningMode.FullScreen);
+                if (application == "sportmaster") report("");
+            });
         }
         PresentationPreferences.WindowModeChanged += PreferenceChanged;
         window.Closed += (_, _) => PresentationPreferences.WindowModeChanged -= PreferenceChanged;

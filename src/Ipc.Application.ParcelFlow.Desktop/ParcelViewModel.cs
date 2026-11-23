@@ -15,14 +15,20 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public event PropertyChangedEventHandler? PropertyChanged;
     public IParcelApplication Application => application;
     public string Title => title;
-    public Visibility SimulationVisibility => Snapshot?.Configuration.Effective.Mode == RunMode.Simulation ? Visibility.Visible : Visibility.Collapsed;
-    public string EnvironmentStatus => Snapshot?.Configuration.Effective.Mode == RunMode.Production ? "生产模式 · 软件暂停不是安全急停，紧急情况请按现场急停按钮" : "模拟模式 · 软件暂停不是安全急停 · 不操作真实设备";
+    public bool IsSimulationMode => Snapshot?.Configuration.Effective.Mode == RunMode.Simulation;
+    public Visibility SimulationVisibility => IsSimulationMode ? Visibility.Visible : Visibility.Collapsed;
+    public string EnvironmentStatus => Snapshot?.Configuration.Effective.Mode switch
+    {
+        RunMode.Simulation => "模拟模式 · 软件暂停不是安全急停 · 不操作真实设备",
+        RunMode.Production => "生产模式 · 软件暂停不是安全急停，紧急情况请按现场急停按钮",
+        _ => "软件暂停不是安全急停，紧急情况请按现场急停按钮"
+    };
     public string Flow => flow;
     public string PresentationId => presentationId;
     ParcelSnapshot? snapshot;
     ParcelOperation? selected;
-    string message = "等待相机读码；模拟工程不操作真实设备。";
-    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(nameof(BackupStatusText)); Changed(nameof(AutomaticCleanupStatusText)); Changed(nameof(CanRequestActivation)); Changed(nameof(HistoryPositionChoices)); Changed(nameof(AccountDisplay)); Changed(nameof(PauseVisibility)); Changed(nameof(ResumeVisibility)); LoadStationDisplay(); Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(SimulationVisibility)); Changed(nameof(EnvironmentStatus)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); Changed(nameof(UploadState)); Changed(nameof(CaptureState)); Changed(nameof(CanAdmit)); Changed(nameof(CanResume)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); Changed(nameof(CanConfigure)); NotifyConfigurationEditorState(); } }
+    string? message;
+    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(nameof(BackupStatusText)); Changed(nameof(AutomaticCleanupStatusText)); Changed(nameof(CanRequestActivation)); Changed(nameof(HistoryPositionChoices)); Changed(nameof(AccountDisplay)); Changed(nameof(PauseVisibility)); Changed(nameof(ResumeVisibility)); LoadStationDisplay(); Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(IsSimulationMode)); Changed(nameof(SimulationVisibility)); Changed(nameof(EnvironmentStatus)); if (message is null) { Changed(nameof(Message)); Changed(nameof(Feedback)); } Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); Changed(nameof(UploadState)); Changed(nameof(CaptureState)); Changed(nameof(CanAdmit)); Changed(nameof(CanResume)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); Changed(nameof(CanConfigure)); NotifyConfigurationEditorState(); } }
     public ParcelOperation[] Operations => Snapshot?.Operations ?? [];
     public ParcelOperation? Current => CurrentAt(SelectedPositionId);
     public ParcelOperation? CurrentAt(string position) => Snapshot?.Positions?.SingleOrDefault(p => p.Id == position)?.CurrentOperation is { } id
@@ -115,7 +121,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     protected PresentationFeedbackKind MessageKind { get; private set; } = PresentationFeedbackKind.Idle;
     protected void SetPresentationMessage(string value, PresentationFeedbackKind kind)
     { Message = value; MessageKind = kind; Changed(nameof(Feedback)); }
-    public string Message { get => message; set { MessageKind = PresentationFeedbackKind.General; message = value; messageScope = runningFeedbackScope ?? feedbackScope; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
+    public string Message { get => message ?? (IsSimulationMode ? "等待相机读码；模拟工程不操作真实设备。" : ""); set { MessageKind = PresentationFeedbackKind.General; message = value; messageScope = runningFeedbackScope ?? feedbackScope; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
     public string Feedback => Busy ? OperationStatus : ChineseInterfaceText.Message(Message);
     public string OperatorFeedback => (Busy ? OperationStatus : Message).Split(" · ", 2)[0] switch
     {

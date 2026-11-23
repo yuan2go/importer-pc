@@ -79,11 +79,11 @@ def main():
                 if any(x["command"] == "sorter.task.dest_request" for x in json.loads(body)["data"]):
                     tasks.append(request_id)
             assignments = db.execute("SELECT count(*) FROM assignments").fetchone()[0]
-        if len(tasks) != 3 or len(set(tasks)) != 3 or assignments != 1:
+        if len(tasks) != 3 or len(set(tasks)) != 3 or assignments != 3:
             raise ValueError("Server originals/assignment count differs from the three-frame contract")
         if "Python ledger has no blank-frame request" not in text or "live Python ledger still matches every original" not in text:
             raise ValueError("Client did not complete independent original/corruption checks")
-        result.update(Status="PASS", PythonTaskRequests=3, DistinctRequestIds=3, PythonAssignments=1,
+        result.update(Status="PASS", PythonTaskRequests=3, DistinctRequestIds=3, PythonAssignments=3,
                       OriginalCustodyAndNegativeChecks=True)
     except Exception as error:
         result["Error"] = repr(error)

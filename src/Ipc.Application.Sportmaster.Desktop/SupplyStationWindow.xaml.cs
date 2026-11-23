@@ -27,6 +27,7 @@ public partial class SupplyStationWindow : Window
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
         maintenance.Audience = SmParameterAudience.Field;
+        maintenance.SetStationSettingsLayout(true);
         TestInstallationLabel.Visibility = InstallationIdentity.IsTest ? Visibility.Visible : Visibility.Collapsed;
         ViewModel = new(application); DataContext = ViewModel; InitializePresentationFeedback(); this.stopOwner = stopOwner;
         ViewModel.ParameterAudience = SmParameterAudience.Field;
@@ -54,7 +55,7 @@ public partial class SupplyStationWindow : Window
         Grid.SetColumn(right, 1); work.Children.Add(left); work.Children.Add(right);
         BuildOperatorWorkspace();
         try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read("sportmaster", "supply-station") ?? false : layout == "compact"; }
-        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ShowPresentationPreferenceFailure("布局偏好未能读取：" + error.Message); }
+        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.SetPreferenceNotice("layout", "布局偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
         ApplyLayout();
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : "workstation";
         SetPage(initialPage);

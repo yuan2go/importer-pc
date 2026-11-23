@@ -12,12 +12,11 @@ public sealed partial class ParameterSettingsControl
     {
         var station = pages.First(p => p.Title == "供包台标识");
         {
-            station.Title = FirstConfiguration ? "本站与 RCS" : "站点编号与 RCS";
-            // One page in reading order: who this station is, how RCS tells the two cameras apart,
-            // where RCS is; protocol details stay folded.
+            station.Title = "本站与 RCS";
+            // Station identity and RCS endpoint share a page; each camera owns its code.
             if (station.Body.Children.OfType<ParameterFormPanel>().FirstOrDefault() is { } identity)
             { var heading = Text("本站身份", true); heading.Margin = new(0, 16, 0, 8); station.Body.Children.Insert(station.Body.Children.IndexOf(identity), heading); }
-            var cameras = Section(station, "相机编码"); var service = Section(station, "RCS 服务");
+            var service = Section(station, "RCS 服务");
             var protocol = AdvancedForm(station, "协议与心跳");
             foreach (var component in Model!.Components.Where(ParameterOwnership.IsRcs))
             {
@@ -28,16 +27,17 @@ public sealed partial class ParameterSettingsControl
                     var location = pair.Value;
                     if (ReferenceEquals(location.Page, station) || location.Row is null) continue;
                     var key = pair.Key[(component.InstanceId.Length + 1)..];
-                    var target = key.EndsWith("-bcr-code", StringComparison.Ordinal) ? cameras.Form : key is "Provider" or "Target" or RcsRequestPolicy.DestinationMode or RcsRequestPolicy.DestinationChuteCode or "no-dest-to-exp" ? service.Form : protocol;
+                    if (key.EndsWith("-bcr-code", StringComparison.Ordinal)) continue;
+                    var target = key is "Provider" or "Target" or RcsRequestPolicy.DestinationMode or RcsRequestPolicy.DestinationChuteCode or "no-dest-to-exp" ? service.Form : protocol;
                     if (location.Row.Parent is Panel parent) parent.Children.Remove(location.Row);
                     target.Children.Add(location.Row);
                     locations[pair.Key] = location with { Page = station };
                 }
                 foreach (var running in rcs.Body.Children.OfType<Border>().ToArray())
-                { rcs.Body.Children.Remove(running); service.Form.Children.Insert(0, running); }
+                { rcs.Body.Children.Remove(running); station.Body.Children.Insert(station.Body.Children.IndexOf(service.Heading), running); }
                 rcs.Applicable = () => false;
             }
-            foreach (var section in new[] { cameras, service }.Where(x => x.Form.Children.Count == 0))
+            foreach (var section in new[] { service }.Where(x => x.Form.Children.Count == 0))
             { station.Body.Children.Remove(section.Heading); station.Body.Children.Remove(section.Form); }
             if (protocol.Children.Count == 0 && protocol.Parent is Expander folded) station.Body.Children.Remove(folded);
         }
@@ -63,26 +63,17 @@ public sealed partial class ParameterSettingsControl
                 page.Body.ClearValue(WidthProperty);
                 if (!FirstConfiguration && CameraPreviewFactory is { } preview)
                 {
-                    var reader = Model!.Readers.First(r => (r.Role == "left" ? "左相机" : "右相机") == page.Title);
-                    page.Body.Children.Insert(Math.Min(2, page.Body.Children.Count), preview(reader.InstanceId));
+                    page.Body.Children.Add(new Expander { Header = "实时预览", Content = preview(cameraDraft.InstanceId), Margin = new(0, 8, 0, 0) });
                 }
-                if (!FirstConfiguration)
-                {
-                    var reference = Model!.Components.Where(ParameterOwnership.IsRcs).SelectMany(c => c.Parameters.Where(p => p.Field.Key == cameraDraft.Role + "-bcr-code").Select(p => (Component: c, Parameter: p))).FirstOrDefault();
-                    if (reference.Parameter is not null)
-                    {
-                        var code = new TextBlock { FontSize = UiTypography.Label, Margin = new(0, 4, 0, 4), TextWrapping = TextWrapping.Wrap };
-                        code.SetBinding(TextBlock.TextProperty, new Binding("Value") { Source = reference.Parameter, Mode = BindingMode.OneWay, StringFormat = "相机编码：{0}（在“站点编号与 RCS”中修改）" });
-                        page.Body.Children.Insert(Math.Min(2, page.Body.Children.Count), code);
-                    }
-                }
-                columns.Children.Add(page.Body); Grid.SetColumn(page.Body, index); page.Applicable = () => false;
+                var card = Card(page.Body); card.Margin = index == 0 ? new(0, 0, 8, 8) : new(8, 0, 0, 8);
+                page.Body.Margin = new(0);
+                columns.Children.Add(card); Grid.SetColumn(card, index); page.Applicable = () => false;
                 foreach (var pair in locations.Where(x => ReferenceEquals(x.Value.Page, page)).ToArray()) locations[pair.Key] = pair.Value with { Page = combined };
             }
             columns.SizeChanged += (_, _) =>
             {
-                var narrow = columns.ActualWidth < 780; columns.ColumnDefinitions[1].Width = narrow ? new(0) : new(1, GridUnitType.Star);
-                for (var i = 0; i < cameraPages.Length; i++) { Grid.SetColumn(cameraPages[i].Body, narrow ? 0 : i); Grid.SetRow(cameraPages[i].Body, narrow ? i : 0); cameraPages[i].Body.Width = double.NaN; }
+                var narrow = columns.ActualWidth < 580; columns.ColumnDefinitions[1].Width = narrow ? new(0) : new(1, GridUnitType.Star);
+                for (var i = 0; i < cameraPages.Length; i++) { Grid.SetColumn(columns.Children[i], narrow ? 0 : i); Grid.SetRow(columns.Children[i], narrow ? i : 0); }
             };
         }
         if (FirstConfiguration)
@@ -98,8 +89,18 @@ public sealed partial class ParameterSettingsControl
             }
             reviewPage!.Body.Children.Insert(2, new Expander { Header = "维护与显示（使用默认值，按需展开）", Content = optional, Margin = new(0, 16, 0, 8) });
         }
+        if (StationSettingsOnly)
+        {
+            var display = pages.Single(p => p.Title == "显示偏好");
+            display.Title = "显示与提示音";
+            station.NavigationTitle = "1. 本站与 RCS";
+            var cameras = pages.FirstOrDefault(p => p.Title == "左右相机");
+            if (cameras is not null) cameras.NavigationTitle = "2. 左右相机";
+            display.NavigationTitle = "3. 显示与提示音";
+            foreach (var page in pages.Where(p => p.NavigationTitle is null)) page.Applicable = () => false;
+        }
         foreach (var page in pages)
             page.TaskGroup = FirstConfiguration ? page.Category switch { 0 => "本站与 RCS", 1 => "识读规则", 2 => "左右相机", 3 => "本站与 RCS", _ => "检查与完成" } :
-                ReferenceEquals(page, station) ? "本站接入" : page.Category == 2 ? "相机" : page.Title == "条码筛选" ? "分拣规则" : page.Title is "数据与记录" or "自动备份" or "显示偏好" ? "系统维护" : "高级";
+                ReferenceEquals(page, station) ? "本站接入" : page.Category == 2 ? "相机" : page.Title == "条码筛选" ? "分拣规则" : page.Title is "数据与记录" or "自动备份" or "显示偏好" or "显示与提示音" ? "系统维护" : "高级";
     }
 }

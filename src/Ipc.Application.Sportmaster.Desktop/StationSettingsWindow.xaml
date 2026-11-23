@@ -21,13 +21,13 @@
              AutomationProperties.AutomationId="{Binding AutomationId}" AutomationProperties.LabeledBy="{Binding ElementName=Label}"/>
    </StackPanel>
   </DataTemplate>
-  <ItemsPanelTemplate x:Key="SettingsThreeColumns"><UniformGrid Columns="3"/></ItemsPanelTemplate>
+  <ItemsPanelTemplate x:Key="SettingsTwoColumns"><UniformGrid Columns="2"/></ItemsPanelTemplate>
  </Window.Resources>
  <Grid>
   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
   <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,0,1" Padding="20,12">
    <DockPanel>
-    <Button x:Name="EditSettings" DockPanel.Dock="Right" Content="验证密码并编辑" Click="Edit_Click" Style="{DynamicResource Primary}" VerticalAlignment="Center" Margin="12,0,0,0"/>
+    <Button x:Name="EditSettings" DockPanel.Dock="Right" Content="授权编辑" Click="Edit_Click" Style="{DynamicResource Primary}" VerticalAlignment="Center" Margin="12,0,0,0"/>
     <StackPanel>
      <TextBlock Text="供包台设置" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"/>
      <Border Style="{DynamicResource OperatorStatusBadge}" Background="{DynamicResource AccentBackground}" BorderBrush="{DynamicResource Line}" HorizontalAlignment="Left" Margin="0,6,0,0">
@@ -53,12 +53,14 @@
        <Border Style="{StaticResource SettingsCard}">
         <StackPanel>
          <TextBlock Text="左相机" Style="{StaticResource SettingsCardHeading}"/>
+         <TextBlock Text="{Binding Left.DevicePresentation.Text}" Foreground="{Binding Left.DevicePresentation.Foreground}" TextWrapping="Wrap" Margin="0,0,0,6"/>
          <ItemsControl x:Name="LeftCameraFields" ItemTemplate="{StaticResource ReadOnlySettingsField}"/>
         </StackPanel>
        </Border>
        <Border Grid.Column="2" Style="{StaticResource SettingsCard}">
         <StackPanel>
          <TextBlock Text="右相机" Style="{StaticResource SettingsCardHeading}"/>
+         <TextBlock Text="{Binding Right.DevicePresentation.Text}" Foreground="{Binding Right.DevicePresentation.Foreground}" TextWrapping="Wrap" Margin="0,0,0,6"/>
          <ItemsControl x:Name="RightCameraFields" ItemTemplate="{StaticResource ReadOnlySettingsField}"/>
         </StackPanel>
        </Border>
@@ -66,7 +68,7 @@
      </StackPanel>
      <Border Style="{StaticResource SettingsCard}">
       <StackPanel>
-       <TextBlock Text="本机偏好" Style="{StaticResource SettingsCardHeading}"/>
+       <TextBlock Text="显示与提示音" Style="{StaticResource SettingsCardHeading}"/>
        <ItemsControl x:Name="PreferenceFields" ItemsPanel="{StaticResource SettingsThreeColumns}" ItemTemplate="{StaticResource ReadOnlySettingsField}"/>
        <Expander x:Name="PreferenceReadDetails" Header="部分本机偏好无法读取，原文件保留" Visibility="Collapsed">
         <TextBox x:Name="PreferenceReadFailure" Style="{DynamicResource ReadonlyValue}" IsTabStop="True" Padding="8" VerticalScrollBarVisibility="Auto" MaxHeight="160" AutomationProperties.Name="本机偏好读取诊断，可复制"/>

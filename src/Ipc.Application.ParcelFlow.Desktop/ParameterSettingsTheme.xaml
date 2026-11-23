@@ -60,7 +60,6 @@
    <ControlTemplate.Triggers>
     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Soft}"/></Trigger>
     <Trigger Property="IsSelected" Value="True"><Setter Property="FontWeight" Value="{x:Static type:UiTypography.Emphasis}"/><Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentBackground}"/><Setter Property="Foreground" Value="{DynamicResource Accent}"/><Setter TargetName="Marker" Property="Visibility" Value="Visible"/></Trigger>
-    <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Accent}"/></Trigger>
     <Trigger Property="IsEnabled" Value="False"><Setter Property="Foreground" Value="{DynamicResource Muted}"/></Trigger>
    </ControlTemplate.Triggers>
   </ControlTemplate></Setter.Value></Setter>

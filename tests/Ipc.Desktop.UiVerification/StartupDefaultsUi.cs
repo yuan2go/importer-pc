@@ -59,7 +59,7 @@ static partial class Program
                 Check(editor.NavigateTo("ReadTimeoutMs"), "automatic read deadline is reachable in first and daily settings");
                 await Flush();
                 var readLimit = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "ReadTimeoutMs");
-                Check(readLimit.MaxWidth == 240 && AutomationProperties.GetHelpText(readLimit).Contains("1000"), "read deadline uses a numeric-width editor and default/range/units help");
+                Check(readLimit.ActualHeight == 44 && readLimit.HorizontalAlignment == HorizontalAlignment.Stretch && AutomationProperties.GetHelpText(readLimit).Contains("1000"), "read deadline fills its form column and preserves default/range/units help");
                 readLimit.Text = "99"; await Flush();
                 Check(model.Issues.Any(i => i.Path == "ReadTimeoutMs") && editor.FocusFirstIssue(), "invalid read deadline is immediately diagnosed and focusable without first attempting save");
                 readLimit.Text = "1000"; await Flush();
@@ -70,7 +70,7 @@ static partial class Program
                     "maintenance validation never points to an inaccessible folded field");
                 CaptureInternal(evidence, firstRun ? "parameters-first-maintenance" : "parameters-daily-maintenance", client, lines);
                 Check(!editor.ShowPage(1, "格口请求"), "fixed-chute page is absent in " + (firstRun ? "first configuration" : "daily settings"));
-                Check(editor.ShowPage(0, firstRun ? "本站与 RCS" : "站点编号与 RCS"), "camera identity page is available");
+                Check(editor.ShowPage(2, "左右相机"), "camera identity page is available");
                 await Flush();
                 foreach (var side in new[] { "left", "right" })
                 {
@@ -80,7 +80,7 @@ static partial class Program
                         "visible and accessible label identifies " + side + " camera in " + (firstRun ? "first configuration" : "daily settings"));
                 }
                 CaptureInternal(evidence, firstRun ? "defaults-first-cameras" : "defaults-daily-cameras", client, lines);
-                if (firstRun) Check(editor.ShowPage(0, "本站与 RCS"), "first-run station and RCS share one page");
+                Check(editor.ShowPage(0, "本站与 RCS"), "station and RCS share one page");
                 await Flush();
                 Check(!Descendants(editor).Any(t => removed.Any(key => AutomationProperties.GetAutomationId(t).EndsWith("/" + key, StringComparison.Ordinal))),
                     "retired controls are absent in first configuration and daily settings");

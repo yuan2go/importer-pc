@@ -45,7 +45,7 @@
       <Border Style="{StaticResource SettingsCard}">
        <StackPanel>
         <TextBlock Text="本站与 RCS" Style="{StaticResource SettingsCardHeading}"/>
-        <ItemsControl x:Name="StationFields" ItemsPanel="{StaticResource SettingsThreeColumns}" ItemTemplate="{StaticResource ReadOnlySettingsField}"/>
+        <ItemsControl x:Name="StationFields" ItemsPanel="{StaticResource SettingsTwoColumns}" ItemTemplate="{StaticResource ReadOnlySettingsField}"/>
        </StackPanel>
       </Border>
       <Grid>
@@ -69,7 +69,7 @@
      <Border Style="{StaticResource SettingsCard}">
       <StackPanel>
        <TextBlock Text="显示与提示音" Style="{StaticResource SettingsCardHeading}"/>
-       <ItemsControl x:Name="PreferenceFields" ItemsPanel="{StaticResource SettingsThreeColumns}" ItemTemplate="{StaticResource ReadOnlySettingsField}"/>
+       <ItemsControl x:Name="PreferenceFields" ItemsPanel="{StaticResource SettingsTwoColumns}" ItemTemplate="{StaticResource ReadOnlySettingsField}"/>
        <Expander x:Name="PreferenceReadDetails" Header="部分本机偏好无法读取，原文件保留" Visibility="Collapsed">
         <TextBox x:Name="PreferenceReadFailure" Style="{DynamicResource ReadonlyValue}" IsTabStop="True" Padding="8" VerticalScrollBarVisibility="Auto" MaxHeight="160" AutomationProperties.Name="本机偏好读取诊断，可复制"/>
        </Expander>

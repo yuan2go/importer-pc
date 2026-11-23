@@ -57,6 +57,7 @@ static partial class SportmasterRcs
         }
         var rcs = Binding(endpoint) with { Implementation = "sportmaster-rcs" };
         if (live) rcs.Parameters!["heartbeat-interval-ms"] = "3000";
+        else if (pythonLedger is not null) rcs.Parameters!["heartbeat-interval-ms"] = "1000";
         var c = HeartbeatConfiguration(workspace, rcs);
         var reader = c.Reader with
         {

@@ -125,30 +125,44 @@ static partial class Program
         var runtimeId = vm.Snapshot!.RuntimeId;
         var page = ((ContentControl)window.FindName("PageHost")).Content;
         // Start each native password dialog via a dispatcher action, leaving this verification free to drive its modal loop.
-        void RequestEntry() => window.Dispatcher.BeginInvoke(new Action(() => entry.RaiseEvent(new RoutedEventArgs(Button.ClickEvent))));
+        async Task<ManagementCenterWindow> RequestEntry(SupplyStationWindow owner)
+        {
+            var launchButton = (Button)owner.FindName("ManagementCenterEntry");
+            _ = owner.Dispatcher.BeginInvoke(new Action(() => launchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent))));
+            await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
+            return System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single(w => w.IsVisible);
+        }
+        void VerifyPassword(ManagementCenterWindow tool) =>
+            _ = tool.Dispatcher.BeginInvoke(new Action(() => ((Button)tool.FindName("ConnectAuthorization")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent))));
         async Task<ManagementModeWindow> LoginDialog()
         {
             await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible && Descendants(w).OfType<Button>().Any(b => Equals(b.Content, "进入管理中心") && b.IsEnabled)));
             return System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Single(w => w.IsVisible);
         }
         await runtime.EnterManagementModeAsync(password); await vm.RefreshManagementModeAsync();
-        RequestEntry(); var login = await LoginDialog();
-        Check(!vm.IsManagementMode && !System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(), "opening requires password verification even with an existing authorization");
+        var preview = await RequestEntry(window);
+        Click(preview, "设备调试"); Click(preview, "专业参数");
+        Check(!vm.IsManagementMode && ((Border)preview.FindName("AuthorizationGate")).IsVisible &&
+            ((ContentControl)preview.FindName("ManagementPageHost")).Content is null &&
+            ((TextBlock)preview.FindName("AuthorizationTitle")).Text == "需要验证管理密码建立控制通道",
+            "protected tabs show authorization guidance and hold no live control before validation");
+        VerifyPassword(preview); var login = await LoginDialog();
         CaptureInternal(evidence, "management-password", login, lines);
         ((PasswordBox)Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword")).Password = "wrong-password";
         Click(login, "进入管理中心");
         await Until(() => Descendants(login).OfType<TextBlock>().Any(t => t.Text.Contains("管理密码不正确")));
-        Check(!vm.IsManagementMode && !login.Entered && !System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(), "incorrect password cannot open protected pages");
+        Check(!vm.IsManagementMode && !login.Entered && ((ContentControl)preview.FindName("ManagementPageHost")).Content is null, "incorrect password cannot open protected pages");
         Click(login, "取消"); await Until(() => !login.IsVisible && entry.IsEnabled);
-        RequestEntry(); login = await LoginDialog();
+        Check(!vm.IsManagementMode && (await runtime.SnapshotAsync()).Positions!.All(p => p.Admit), "cancelling password keeps the tool locked with production available");
+        Click(preview, "运行总览"); VerifyPassword(preview); login = await LoginDialog();
         Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
         Click(login, "进入管理中心");
-        await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
-        var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
+        await Until(() => !login.IsVisible && vm.IsManagementMode && ((ContentControl)preview.FindName("ManagementPageHost")).Content is not null);
+        var center = preview;
         Check(login.Entered && center.Owner == window && !ManagementOwnerEnabled(new System.Windows.Interop.WindowInteropHelper(window).Handle) && vm.SelectedPage == "diagnostics", "management opens as an owned modal window with diagnostics selected");
         Check(ReferenceEquals(center.DataContext, vm) && ReferenceEquals(((ContentControl)window.FindName("PageHost")).Content, page) && vm.Snapshot.RuntimeId == runtimeId, "management shares the business instance and leaves the workstation content in place");
         var cards = Descendants(center).OfType<Border>().Where(b => AutomationProperties.GetAutomationId(b).StartsWith("DiagnosticCard.", StringComparison.Ordinal)).ToArray();
-        Check(cards.Length == 4 && cards.All(c => c.Parent is Grid) && cards.Select(Grid.GetRow).SequenceEqual(new[] { 0, 0, 1, 1 }) && cards.Select(Grid.GetColumn).SequenceEqual(new[] { 0, 1, 0, 1 }), "diagnostic cards use two fixed columns and two rows");
+        Check(cards.Length == 4 && cards.All(c => c.IsVisible), "diagnostic cards show all four device and service states");
         var grantId = vm.ManagementStatus.SessionId;
         var fenced = await runtime.SnapshotAsync();
         Check(fenced.Positions!.All(p => !p.Admit), "opening the native management window fences production admission");
@@ -201,16 +215,18 @@ static partial class Program
         Check((await runtime.SnapshotAsync()).Operations.Select(o => o.Id).Order().SequenceEqual(requestIds), "debug reauthentication restarts the same control without creating requests");
         Click(center, "关闭"); await Until(() => !center.IsVisible && window.IsEnabled);
         Check(!vm.IsManagementMode && vm.SelectedPage == "workstation" && vm.HasUnsavedConfiguration && vm.Snapshot.RuntimeId == runtimeId, "closing ends authorization, preserves the draft and returns to the same workstation");
-        RequestEntry(); login = await LoginDialog();
+        var reopened = await RequestEntry(window);
+        VerifyPassword(reopened); login = await LoginDialog();
         Check(!vm.IsManagementMode, "reopening requests the password again");
-        Click(login, "取消"); await Until(() => !login.IsVisible && entry.IsEnabled);
+        Click(login, "取消"); await Until(() => !login.IsVisible);
+        Click(reopened, "关闭"); await Until(() => !reopened.IsVisible);
         for (var visit = 0; visit < 3; visit++)
         {
-            RequestEntry(); login = await LoginDialog();
+            var currentCenter = await RequestEntry(window);
+            VerifyPassword(currentCenter); login = await LoginDialog();
             Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
             Click(login, "进入管理中心");
-            await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
-            var currentCenter = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
+            await Until(() => !login.IsVisible && vm.IsManagementMode && ((ContentControl)currentCenter.FindName("ManagementPageHost")).Content is not null);
             Check(vm.IsManagementMode && !System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible), "visit " + visit + " opens protected pages after exactly one successful password entry");
             Click(currentCenter, "关闭"); await Until(() => !currentCenter.IsVisible && entry.IsEnabled);
         }
@@ -225,12 +241,11 @@ static partial class Program
             await runtime.ExitManagementModeAsync();
             await guardedWindow.Dispatcher.InvokeAsync(guardedWindow.ViewModel.RefreshManagementModeAsync).Task.Unwrap();
         };
-        _ = guardedWindow.Dispatcher.BeginInvoke(new Action(() => ((Button)guardedWindow.FindName("ManagementCenterEntry")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent))));
-        login = await LoginDialog();
+        var guardedCenter = await RequestEntry(guardedWindow);
+        VerifyPassword(guardedCenter); login = await LoginDialog();
         Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
         Click(login, "进入管理中心");
-        await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
-        var guardedCenter = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
+        await Until(() => !login.IsVisible && ((TextBlock)guardedCenter.FindName("WorkspaceState")).IsVisible);
         Check(!guardedWindow.ViewModel.IsManagementMode && ((Border)guardedCenter.FindName("AuthorizationGate")).IsVisible &&
             (await runtime.SnapshotAsync()).Positions!.All(p => !p.Admit),
             "authorization lost during entry still opens the owned locked window instead of silently stranding paused production");

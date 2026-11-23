@@ -50,7 +50,7 @@ public abstract partial class StartupWorkflowWindow : Window
     protected bool Busy;
     protected bool UnknownOutcome;
     protected bool CloseAfterCancellation;
-    protected StartupWorkflowWindow(string title, bool installation = false)
+    protected StartupWorkflowWindow(string title, bool installation = false, bool firstConfiguration = false)
     {
         Form = Body;
         ProductBrand.Apply(this); UiTypography.Apply(this);
@@ -91,7 +91,25 @@ public abstract partial class StartupWorkflowWindow : Window
         var grid = new Grid { Margin = new(20, 12, 20, 16) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var heading = new StackPanel(); WorkflowHeading.Text = title.Split(" · ")[0]; heading.Children.Add(WorkflowHeading);
-        heading.Children.Add(WorkflowBusinessName); heading.Children.Add(buildIdentity);
+        heading.Children.Add(WorkflowBusinessName);
+        if (firstConfiguration)
+        {
+            buildIdentity.Content = null;
+            var identity = new Button { Content = "构建身份…", MinHeight = 44, Padding = new(16, 0, 16, 0) };
+            identity.Click += (_, _) =>
+            {
+                var details = new TextBox { Text = BuildIdentityDetails.Text, IsReadOnly = true, TextWrapping = TextWrapping.Wrap,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new(16) };
+                System.Windows.Automation.AutomationProperties.SetAutomationId(details, "Maintenance.BuildIdentity");
+                var dialog = new Window { Owner = this, Title = "构建身份", Width = 620, Height = 300, ShowInTaskbar = false,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner };
+                var layout = new DockPanel(); var close = new Button { Content = "关闭", IsCancel = true, MinHeight = 44, Margin = new(16, 0, 16, 16), HorizontalAlignment = HorizontalAlignment.Right };
+                close.Click += (_, _) => dialog.Close(); DockPanel.SetDock(close, Dock.Bottom);
+                layout.Children.Add(close); layout.Children.Add(details); dialog.Content = layout; dialog.ShowDialog();
+            };
+            SessionActions.Children.Add(identity);
+        }
+        else heading.Children.Add(buildIdentity);
         heading.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 64, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 200, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         diagnostic.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding(nameof(TextBlock.Text)) { Source = Status });
@@ -101,8 +119,17 @@ public abstract partial class StartupWorkflowWindow : Window
         WorkflowBody.Content = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         var bodyHost = new Grid(); bodyHost.Children.Add(WorkflowBody); bodyHost.Children.Add(AuthorizationGate); Grid.SetRow(bodyHost, 1);
         FooterHost.Children.Add(Actions); Grid.SetRow(FooterHost, 2);
-        var sessionHeader = new DockPanel(); DockPanel.SetDock(SessionActions, Dock.Right); sessionHeader.Children.Add(SessionActions); sessionHeader.Children.Add(heading);
-        grid.Children.Add(sessionHeader); grid.Children.Add(bodyHost); grid.Children.Add(FooterHost); Content = grid;
+        var sessionHeader = new DockPanel(); DockPanel.SetDock(SessionActions, Dock.Right); sessionHeader.Children.Add(SessionActions);
+        if (firstConfiguration)
+        {
+            heading.Children.Remove(WorkflowHeading);
+            WorkflowHeading.VerticalAlignment = VerticalAlignment.Center;
+            sessionHeader.Children.Add(WorkflowHeading);
+            var header = new StackPanel(); header.Children.Add(sessionHeader); header.Children.Add(heading);
+            grid.Children.Add(header);
+        }
+        else { sessionHeader.Children.Add(heading); grid.Children.Add(sessionHeader); }
+        grid.Children.Add(bodyHost); grid.Children.Add(FooterHost); Content = grid;
         Closing += (_, e) => { if (Busy) e.Cancel = true; };
     }
     protected Button Action(string label, Func<Task> action, bool readOnly = false)
@@ -204,7 +231,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
     public bool ConfigurationSaved { get; private set; }
-    public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次配置 · 菜鸟供包台" : "启动修复 · 离线维护")
+    public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次配置 · 菜鸟供包台" : "启动修复 · 离线维护", firstConfiguration: initialConfiguration)
     {
         SelectedLaunch = launch;
         this.initialConfiguration = initialConfiguration;
@@ -409,10 +436,15 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 if (kind is not (RepairAction.Previous or RepairAction.Next or RepairAction.SaveAndStart or RepairAction.Reload or RepairAction.Import or RepairAction.SaveDraft or RepairAction.Exit or RepairAction.OpenRestore)) Actions.Children.Remove(button);
             var saveDraft = actionButtons[RepairAction.SaveDraft]; saveDraft.Content = "保存草稿并退出";
             DockPanel.SetDock(saveState, Dock.Left); FooterHost.Children.Insert(0, saveState);
+            FooterHost.MinHeight = 64;
+            Actions.VerticalAlignment = VerticalAlignment.Center;
             Actions.HorizontalAlignment = HorizontalAlignment.Right;
             Actions.Children.Remove(headerImport); headerImport.Content = "导入配置"; headerImport.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, headerImport);
             var restoreEntry = actionButtons[RepairAction.OpenRestore];
             Actions.Children.Remove(restoreEntry); restoreEntry.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, restoreEntry);
+            restoreEntry.Padding = new(16, 0, 16, 0);
+            var saveConfig = actionButtons[RepairAction.SaveAndStart];
+            Actions.Children.Remove(saveConfig); Actions.Children.Add(saveConfig);
         }
         var editEvents = initialConfiguration ? (UIElement)WorkflowBody : Body;
         editEvents.AddHandler(System.Windows.Controls.Primitives.TextBoxBase.TextChangedEvent, new TextChangedEventHandler((_, e) => { if (e.OriginalSource is TextBox { IsReadOnly: false }) Changed(); }));
@@ -662,6 +694,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             RepairAction.Read or RepairAction.Reload or RepairAction.Install or RepairAction.Tools or RepairAction.Exit => true,
             RepairAction.Start => draft is not null && !startupSaveUncertain && savedInput == Input() && draft.DisplayPreferences?.HasChanges != true,
             RepairAction.Save or RepairAction.Repair => draft is not null && checkedInput == Input() && !startupSaveUncertain,
+            RepairAction.SaveAndStart when initialConfiguration => parameterControl?.IsReviewPage == true &&
+                parameterEditor?.HasValidStationCode == true && !startupSaveUncertain,
             RepairAction.Previous or RepairAction.Next => draft is not null,
             RepairAction.PlanRestore => maintenance is not null && !string.IsNullOrWhiteSpace(backup) && !string.IsNullOrWhiteSpace(restoreRoot),
             RepairAction.ReadRestore or RepairAction.OpenRestore => maintenance is not null,
@@ -1023,7 +1057,6 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (kind == RepairAction.Next) button.Content = initialConfiguration
                 ? parameterControl?.NextPageIsReview == true ? "检查配置" : "继续：" + parameterControl?.NextPageTitle
                 : selectedTask == RepairTask.Directory ? "继续填写参数" : "检查配置";
-            if (kind == RepairAction.SaveAndStart && initialConfiguration) button.Content = SaveIsComplete ? "完成并启动" : "保存配置";
             if (kind == RepairAction.AdoptRestore) button.Content = restoredPreview?.State == "ProjectionPending" ? "修复原恢复入口…" : "核对并接管原恢复…";
             button.IsCancel = kind == RepairAction.Exit;
         }

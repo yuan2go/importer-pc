@@ -117,8 +117,9 @@ public partial class SupplyStationWindow
     void InitializePace()
     {
         try { ViewModel.SetPaceVisibility(Ipc.Platform.PresentationPreferences.Read("sportmaster", "pace") ?? true); }
-        catch (Exception error) { ViewModel.Message = ChineseInterfaceText.ParameterMessage(error.Message, "效率显示偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
-        void Preference(string app, string surface, bool visible) { if (app == "sportmaster" && surface == "pace") Dispatcher.InvokeAsync(() => ViewModel.SetPaceVisibility(visible)); }
+        catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
+        { ViewModel.SetPreferenceNotice("pace", "效率显示偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
+        void Preference(string app, string surface, bool visible) { if (app == "sportmaster" && surface == "pace") Dispatcher.InvokeAsync(() => { ViewModel.SetPreferenceNotice("pace", null); ViewModel.SetPaceVisibility(visible); }); }
         Ipc.Platform.PresentationPreferences.DisplayChanged += Preference;
         Closed += (_, _) => Ipc.Platform.PresentationPreferences.DisplayChanged -= Preference;
         var paceTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };

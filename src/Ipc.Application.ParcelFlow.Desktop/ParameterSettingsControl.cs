@@ -15,7 +15,15 @@ public sealed partial class ParameterSettingsControl : UserControl
     public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(nameof(Model), typeof(ParameterEditorModel), typeof(ParameterSettingsControl), new PropertyMetadata(null, ModelChanged));
     public ParameterEditorModel? Model { get => (ParameterEditorModel?)GetValue(ModelProperty); set => SetValue(ModelProperty, value); }
     public bool FirstConfiguration { get; set; }
-    readonly WrapPanel firstStepBar = new() { Margin = new(12, 8, 12, 8), Visibility = Visibility.Collapsed };
+    bool StationSettingsOnly { get; set; }
+    bool SectionLayout => Model?.ApplicationId == "sportmaster";
+    public void SetStationSettingsLayout(bool value)
+    {
+        if (StationSettingsOnly == value) return;
+        StationSettingsOnly = value;
+        if (Model is not null) Render();
+    }
+    readonly Grid firstStepBar = new() { Margin = new(12, 8, 12, 8), Visibility = Visibility.Collapsed };
     readonly TextBlock remainingSteps = new() { TextWrapping = TextWrapping.Wrap, Margin = new(4, 12, 4, 8), FontSize = UiTypography.Label };
     readonly ListBox directory = new() { Name = "ParameterDirectory", BorderThickness = new(0), Background = Brushes.Transparent, HorizontalContentAlignment = HorizontalAlignment.Stretch };
     readonly ContentControl pageHost = new() { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
@@ -48,7 +56,8 @@ public sealed partial class ParameterSettingsControl : UserControl
         public int Order => TaskGroup switch { "本站与 RCS" => 0, "左右相机" => 1, "识读规则" => 2, "检查与完成" => 4, _ => Category };
         public int TaskOrder => TaskGroup switch { "本站接入" => 0, "相机" => 1, "分拣规则" => 2, "系统维护" => 3, _ => 4 };
         int issueCount;
-        public string DisplayTitle => Title + (issueCount == 0 ? "" : "（" + issueCount + "）");
+        public string? NavigationTitle { get; set; }
+        public string DisplayTitle => (NavigationTitle ?? Title) + (issueCount == 0 ? "" : "（" + issueCount + "）");
         public void SetIssueCount(int count) { if (issueCount == count) return; issueCount = count; PropertyChanged?.Invoke(this, new(nameof(DisplayTitle))); }
         public override string ToString() => Title;
     }
@@ -58,9 +67,11 @@ public sealed partial class ParameterSettingsControl : UserControl
     public event EventHandler? BackupRequested;
     public event EventHandler? BackupSetsRequested;
     public event EventHandler? DisplayPreferencesRequested;
+    readonly FrameworkElement searchBar;
     public ParameterSettingsControl()
     {
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
+        FocusVisualStyle = null;
         FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; SetResourceReference(ForegroundProperty, "Ink");
         // Settings content sits on the theme's page background; each setting is a white card on it.
         var root = Themed(new Grid(), Panel.BackgroundProperty, "Background");
@@ -74,13 +85,20 @@ public sealed partial class ParameterSettingsControl : UserControl
         for (var step = 0; step < names.Length; step++)
         {
             var index = step;
-            var button = new Button { Content = (step + 1) + " " + names[step], Tag = names[step], MinHeight = 44, Margin = new(0, 0, 8, 4) };
+            if (step > 0)
+            {
+                firstStepBar.ColumnDefinitions.Add(new() { Width = new(16) });
+                var connector = Themed(new Border { Height = 2, VerticalAlignment = VerticalAlignment.Center, IsHitTestVisible = false }, Border.BackgroundProperty, "Line");
+                Grid.SetColumn(connector, step * 2 - 1); firstStepBar.Children.Add(connector);
+            }
+            firstStepBar.ColumnDefinitions.Add(new());
+            var button = new Button { Content = (step + 1) + " " + names[step], Tag = names[step], MinHeight = 44, Padding = new(6, 0, 6, 0) };
             AutomationProperties.SetName(button, "首次配置第" + (step + 1) + "步：" + names[step]);
             button.Click += async (_, _) => { var target = OrderedPages().FirstOrDefault(p => p.Category == FirstCategories[index]); if (target is not null) await RequestPageAsync(target); };
-            firstStepBar.Children.Add(button);
+            Grid.SetColumn(button, step * 2); firstStepBar.Children.Add(button);
         }
         DockPanel.SetDock(remainingSteps, Dock.Bottom); rail.Children.Add(remainingSteps);
-        var searchBar = BuildSearch(); DockPanel.SetDock(searchBar, Dock.Top); rail.Children.Add(searchBar);
+        searchBar = BuildSearch(); DockPanel.SetDock(searchBar, Dock.Top); rail.Children.Add(searchBar);
         var lists = new Grid(); lists.Children.Add(directory); lists.Children.Add(searchResults); rail.Children.Add(lists);
         var railBorder = new Border { BorderThickness = new(0, 0, 1, 0), Child = rail }; Grid.SetRow(railBorder, 1); root.Children.Add(railBorder);
         directoryRail = railBorder;
@@ -97,7 +115,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         Content = root;
         PreviewKeyDown += (_, e) =>
         {
-            if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control && directoryRail?.Visibility == Visibility.Visible) { search.Focus(); search.SelectAll(); e.Handled = true; }
+            if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control && searchBar.IsVisible) { search.Focus(); search.SelectAll(); e.Handled = true; }
             else if (e.Key == Key.Escape && search.Text.Length > 0) { search.Clear(); search.Focus(); e.Handled = true; }
         };
     }
@@ -160,7 +178,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     {
         var page = pages.FirstOrDefault(p => p.Available && p.Category == category && p.Title == title);
         if (page is null && Model?.ApplicationId == "sportmaster")
-            page = pages.FirstOrDefault(p => p.Available && (title is "左相机" or "右相机" && p.Title == "左右相机" || title is "供包台标识" or "RCS 服务" && p.Title == "站点编号与 RCS"));
+            page = pages.FirstOrDefault(p => p.Available && (title is "左相机" or "右相机" && p.Title == "左右相机" || title is "供包台标识" or "RCS 服务" && p.Title == "本站与 RCS"));
         if (page is null) return false;
         search.Clear();
         if (categoryScope is not null && categoryScope != page.Category) ShowCategory(page.Category);
@@ -201,7 +219,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     { element.SetResourceReference(property, key); return element; }
     static Border Card(UIElement? child = null)
     {
-        var card = new Border { BorderThickness = new(1), CornerRadius = new(4), Padding = new(16, 12, 16, 12), Margin = new(0, 0, 0, 4), SnapsToDevicePixels = true, Child = child };
+        var card = new Border { BorderThickness = new(1), CornerRadius = new(12), Padding = new(16, 12, 16, 12), Margin = new(0, 0, 0, 4), SnapsToDevicePixels = true, Child = child };
         card.SetResourceReference(Border.BackgroundProperty, "Surface"); card.SetResourceReference(Border.BorderBrushProperty, "Line");
         return card;
     }
@@ -223,16 +241,16 @@ public sealed partial class ParameterSettingsControl : UserControl
     ParameterFormPanel Form(ObjectPage page, string? title = null)
     {
         if (title is not null) { var heading = Text(title, true); if (page.Body.Children.Count <= 3) heading.Margin = new(0, 16, 0, 8); page.Body.Children.Add(heading); }
-        var form = new ParameterFormPanel(); page.Body.Children.Add(form); return form;
+        var form = new ParameterFormPanel { TwoColumns = SectionLayout && page.Category != 2 }; page.Body.Children.Add(form); return form;
     }
     (TextBlock Heading, ParameterFormPanel Form) Section(ObjectPage page, string title)
     {
         var heading = Text(title, true); page.Body.Children.Add(heading);
-        var form = new ParameterFormPanel(); page.Body.Children.Add(form); return (heading, form);
+        var form = new ParameterFormPanel { TwoColumns = SectionLayout && page.Category != 2 }; page.Body.Children.Add(form); return (heading, form);
     }
     ParameterFormPanel AdvancedForm(ObjectPage page, string title = "高级设置")
     {
-        var form = new ParameterFormPanel();
+        var form = new ParameterFormPanel { TwoColumns = SectionLayout && page.Category != 2 };
         page.Body.Children.Add(new Expander { Header = title, Content = form, Margin = new(0, 24, 0, 4), Padding = new(0, 4, 0, 0) }); return form;
     }
     // One card per setting: its name and explanation on the left, the control on the right.
@@ -240,15 +258,29 @@ public sealed partial class ParameterSettingsControl : UserControl
     void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
     {
         var field = new Grid();
-        var card = Card(field);
+        FrameworkElement card = SectionLayout ? field : Card(field);
+        if (SectionLayout) field.Margin = new(0, 0, 14, 12);
         field.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); field.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
         for (var row = 0; row < 3; row++) field.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        var caption = Themed(new TextBlock { Text = label, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Body }, TextBlock.ForegroundProperty, "Ink");
+        var caption = Themed(new TextBlock { Text = label, TextWrapping = TextWrapping.Wrap, FontSize = SectionLayout ? UiTypography.Label : UiTypography.Body, FontWeight = SectionLayout ? UiTypography.Emphasis : UiTypography.Regular }, TextBlock.ForegroundProperty, "Ink");
         var describe = new StackPanel { VerticalAlignment = VerticalAlignment.Center }; describe.Children.Add(caption); field.Children.Add(describe);
+        var fieldKey = path.Split('/').Last();
+        var draft = Model?.Readers.Concat(Model.Components).FirstOrDefault(d => path.StartsWith(d.InstanceId + "/", StringComparison.Ordinal));
         var line = new DockPanel { LastChildFill = true, VerticalAlignment = VerticalAlignment.Center };
-        var unit = path.Split('/').Last() switch { "ReadTimeoutMs" or "TimeoutMs" or "SessionLifetimeMs" or "request-timeout-ms" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" or "CleanupMaximumBackupSets" => "份", "CleanupHour" => "时", "heartbeat-interval-ms" => "毫秒", _ => "" };
+        var unit = fieldKey switch { "ReadTimeoutMs" or "TimeoutMs" or "SessionLifetimeMs" or "request-timeout-ms" or "heartbeat-interval-ms" or "motion.still-ms" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" or "CleanupMaximumBackupSets" => "份", "CleanupHour" => "时", _ => SectionLayout ? draft?.Parameters.FirstOrDefault(p => p.Field.Key == fieldKey)?.Field.Unit ?? "" : "" };
         if (unit.Length > 0) { var suffix = Text(unit); suffix.Margin = new(8, 0, 0, 0); suffix.VerticalAlignment = VerticalAlignment.Center; DockPanel.SetDock(suffix, Dock.Right); line.Children.Add(suffix); }
-        line.Children.Add(control); field.Children.Add(line);
+        line.Children.Add(control);
+        FrameworkElement entry = line;
+        if (SectionLayout && unit.Length > 0 && control is TextBox number)
+        {
+            var suffix = (TextBlock)line.Children[0]; line.Children.Remove(suffix);
+            suffix.Text = unit == "毫秒" ? "ms" : unit;
+            suffix.Margin = new(0, 0, 12, 0); suffix.HorizontalAlignment = HorizontalAlignment.Right;
+            suffix.IsHitTestVisible = false;
+            number.Padding = new(10, 0, 58, 0);
+            var withSuffix = new Grid(); withSuffix.Children.Add(line); withSuffix.Children.Add(suffix); entry = withSuffix;
+        }
+        field.Children.Add(entry);
         // Preserve stable automation paths used by support and native verification.
         AutomationProperties.SetName(control, label.TrimEnd(' ', '*')); AutomationProperties.SetAutomationId(control, path);
         AutomationProperties.SetLabeledBy(control, caption); AutomationProperties.SetHelpText(control, help ?? label);
@@ -259,16 +291,45 @@ public sealed partial class ParameterSettingsControl : UserControl
         else if (!string.IsNullOrEmpty(help))
         {
             var hint = Text(help); hint.Margin = new(0, 2, 0, 0);
-            describe.Children.Add(hint);
+            if (SectionLayout)
+            {
+                hint.Text = help.ReplaceLineEndings(" ");
+                hint.FontSize = UiTypography.Diagnostic; hint.TextWrapping = TextWrapping.NoWrap; hint.TextTrimming = TextTrimming.CharacterEllipsis;
+                hint.ToolTip = help; Grid.SetRow(hint, 2); Grid.SetColumnSpan(hint, 2); field.Children.Add(hint);
+            }
+            else describe.Children.Add(hint);
         }
         var error = Text(""); error.SetResourceReference(TextBlock.ForegroundProperty, "Danger"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
         form.Children.Add(card); locations[path] = new(page, control, error, label, help ?? "", Row: card);
-        var draft = Model?.Readers.Concat(Model.Components).FirstOrDefault(d => path.StartsWith(d.InstanceId + "/", StringComparison.Ordinal));
         if (draft is not null && path != draft.InstanceId + "/ConfigureLater")
         {
             void RefreshRequirement() => caption.Text = draft.ConfigureLater ? label.TrimEnd(' ', '*') : label;
             PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName is nameof(CapabilityDraft.ConfigureLater) or nameof(CapabilityDraft.Bound)) RefreshRequirement(); };
             draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed); RefreshRequirement();
+        }
+        if (SectionLayout)
+        {
+            if (control is TextBox or PasswordBox or ComboBox)
+            {
+                control.MinHeight = 44;
+                control.MaxWidth = double.PositiveInfinity;
+                if (control is not TextBox { AcceptsReturn: true }) control.Height = 44;
+            }
+            if (control is not TextBox { IsReadOnly: true })
+            {
+                var activation = fieldKey is "WindowOpeningMode" or "ShowPace" or "CueVolume" or "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator"
+                    ? "热生效" : draft?.Kind == "observation" || draft is not null && ParameterOwnership.IsRcs(draft) || fieldKey == "StationCode" ? "重连生效" : "需重启";
+                var badge = Themed(new Border { Child = new TextBlock { Text = activation, FontSize = UiTypography.Diagnostic },
+                    Padding = new(6, 2, 6, 2), CornerRadius = new(8), Margin = new(6, 0, 0, 4), VerticalAlignment = VerticalAlignment.Top },
+                    Border.BackgroundProperty, activation == "需重启" ? "Soft" : "AccentBackground");
+                Grid.SetColumn(badge, 1); field.Children.Add(badge);
+            }
+            describe.Margin = new(0, 0, 0, 4);
+            Grid.SetRow(entry, 1); Grid.SetColumnSpan(entry, 2);
+            field.RowDefinitions.Add(new() { Height = GridLength.Auto });
+            Grid.SetRow(error, 3); Grid.SetColumnSpan(error, 2);
+            TrackEdits(control);
+            return;
         }
         // The control's cap sizes the field (its creator may still lower it, so it is read on every layout):
         // short numbers 200, ordinary values 320, wide values the full card width.
@@ -348,12 +409,33 @@ public sealed partial class ParameterSettingsControl : UserControl
         runtimeUpdates.Clear();
         directory.ItemsSource = null; pageHost.Content = null; locations.Clear(); errors.Children.Clear(); pages.Clear();
         reviewPage = null;
+        checkedPages.Clear();
         if (reviewContent?.Parent is Panel reviewParent) reviewParent.Children.Remove(reviewContent);
         if (Model is not { } m) { pageHost.Content = Text("正在读取设置…"); return; }
         firstStepBar.Visibility = FirstConfiguration ? Visibility.Visible : Visibility.Collapsed;
+        for (var column = 0; column < firstStepBar.ColumnDefinitions.Count; column++)
+            firstStepBar.ColumnDefinitions[column].Width = column >= FirstCategories.Length * 2 - 1 ? new(0) : column % 2 == 0 ? new(1, GridUnitType.Star) : new(16);
         remainingSteps.Visibility = FirstConfiguration ? Visibility.Visible : Visibility.Collapsed;
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);
-        if (m.ApplicationId == "sportmaster") ArrangeSportmasterPages();
+        if (SectionLayout)
+        {
+            ArrangeSportmasterPages();
+            foreach (var page in pages)
+            {
+                foreach (var form in page.Body.Children.OfType<ParameterFormPanel>().ToArray())
+                {
+                    var index = page.Body.Children.IndexOf(form);
+                    page.Body.Children.RemoveAt(index);
+                    if (form.Children.Count > 0) page.Body.Children.Insert(index, page.Category == 2 ? form : Card(form));
+                }
+                foreach (var advanced in page.Body.Children.OfType<Expander>())
+                {
+                    if (advanced.Content is not ParameterFormPanel fields) continue;
+                    advanced.Content = null;
+                    advanced.Content = Card(fields);
+                }
+            }
+        }
         foreach (var page in pages)
         {
             if (offsets.TryGetValue((page.Category, page.Title), out var offset)) page.Scroll.ScrollToVerticalOffset(offset);
@@ -367,8 +449,10 @@ public sealed partial class ParameterSettingsControl : UserControl
         directoryView = new ListCollectionView(pages);
         if (FirstConfiguration) directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.Order), ListSortDirection.Ascending));
         else if (m.ApplicationId == "sportmaster") directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.TaskOrder), ListSortDirection.Ascending));
-        directoryView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ObjectPage.GroupTitle)));
-        directoryView.Filter = value => value is ObjectPage p && p.Available && (categoryScope is null || p.Category == categoryScope);
+        searchBar.Visibility = StationSettingsOnly ? Visibility.Collapsed : Visibility.Visible;
+        if (StationSettingsOnly) search.Clear();
+        else directoryView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ObjectPage.GroupTitle)));
+        directoryView.Filter = value => value is ObjectPage p && p.Available && (!StationSettingsOnly || p.NavigationTitle is not null) && (categoryScope is null || p.Category == categoryScope);
         var priorSelecting = selectingPage; selectingPage = true;
         try
         {
@@ -438,29 +522,32 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
 }
 
-// One aligned field per row at every width; narrow fields stack label and input.
+// Rows share the tallest visible field, including its validation feedback.
 public sealed class ParameterFormPanel : Panel
 {
-    static int Columns(double width) => 1;
+    public bool TwoColumns { get; init; }
+    int Columns => TwoColumns ? 2 : 1;
     protected override Size MeasureOverride(Size available)
     {
-        var columns = InternalChildren.Count <= 1 ? 1 : Columns(available.Width); var width = double.IsFinite(available.Width) ? available.Width : 640; double height = 0;
-        for (var i = 0; i < InternalChildren.Count; i += columns)
+        var children = InternalChildren.Cast<UIElement>().Where(child => child.Visibility != Visibility.Collapsed).ToArray();
+        var columns = Columns; var width = double.IsFinite(available.Width) ? available.Width : 640; double height = 0;
+        for (var i = 0; i < children.Length; i += columns)
         {
             double row = 0;
-            for (var j = i; j < Math.Min(i + columns, InternalChildren.Count); j++) { InternalChildren[j].Measure(new(width / columns, double.PositiveInfinity)); row = Math.Max(row, InternalChildren[j].DesiredSize.Height); }
+            for (var j = i; j < Math.Min(i + columns, children.Length); j++) { children[j].Measure(new(width / columns, double.PositiveInfinity)); row = Math.Max(row, children[j].DesiredSize.Height); }
             height += row;
         }
         return new(width, height);
     }
     protected override Size ArrangeOverride(Size final)
     {
-        var columns = InternalChildren.Count <= 1 ? 1 : Columns(final.Width); double y = 0;
-        for (var i = 0; i < InternalChildren.Count; i += columns)
+        var children = InternalChildren.Cast<UIElement>().Where(child => child.Visibility != Visibility.Collapsed).ToArray();
+        var columns = Columns; double y = 0;
+        for (var i = 0; i < children.Length; i += columns)
         {
-            var count = Math.Min(columns, InternalChildren.Count - i); double height = 0;
-            for (var j = 0; j < count; j++) height = Math.Max(height, InternalChildren[i + j].DesiredSize.Height);
-            for (var j = 0; j < count; j++) InternalChildren[i + j].Arrange(new Rect(j * final.Width / columns, y, final.Width / columns, height));
+            var count = Math.Min(columns, children.Length - i); double height = 0;
+            for (var j = 0; j < count; j++) height = Math.Max(height, children[i + j].DesiredSize.Height);
+            for (var j = 0; j < count; j++) children[i + j].Arrange(new Rect(j * final.Width / columns, y, final.Width / columns, height));
             y += height;
         }
         return final;

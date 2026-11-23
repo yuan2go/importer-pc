@@ -53,7 +53,7 @@ static partial class Program
             await Until(() => window.ViewModel.SelectedPage == "maintenance" && window.ViewModel.HasLoadedConfiguration && window.ViewModel.CanStartOperation);
             var editor = Descendants(window).OfType<ParameterSettingsControl>().Single();
             var model = editor.Model!; var component = model.Components.Single(ParameterOwnership.IsRcs);
-            Check(editor.NavigateTo(component.InstanceId + "/Target") && editor.CurrentPageTitle == "站点编号与 RCS", "RCS target shares the station task page without another candidate");
+            Check(editor.NavigateTo(component.InstanceId + "/Target") && editor.CurrentPageTitle == "本站与 RCS", "RCS target shares the station task page without another candidate");
             // The harness intentionally carries old separate request/heartbeat station values.
             // Resolve them explicitly in the real common editor; never weaken its guard.
             Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "StationCode").Text = h.Config.StationCode;

@@ -8,7 +8,7 @@
   </DockPanel>
   <local:ParameterSettingsControl x:Name="MainParameterEditor" RuntimeContext="{Binding}" Grid.Row="1" Model="{Binding ParameterEditor}" IsEnabled="{Binding CanEditFormConfiguration}"/>
   <!-- Save bar: draft status on the left; tools, review and the one save action on the right. -->
-  <Border Grid.Row="2" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="24,10">
+  <Border x:Name="ParameterFooter" Grid.Row="2" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="24,10">
    <DockPanel LastChildFill="True">
     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
      <Menu Background="Transparent" Margin="0,0,8,0" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Body}" FontWeight="Normal">

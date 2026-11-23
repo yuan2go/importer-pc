@@ -7,6 +7,16 @@ description: "Review, simplify, or refine importer-pc native WPF UI using a Hall
 
 这是项目本地的设计审查方法适配，不是上游 Hallmark 的完整安装，也不是新组件库。先读根目录 [AGENTS.md](../../../AGENTS.md)、[当前文档索引](../../../docs/INDEX.md) 和 [WPF 审查方法](../../../docs/design/wpf-ui-review.md)。现行产品规则由 AGENTS.md 定义；本 skill 不另立业务或视觉标准。
 
+## 视觉真值与优先级裁决
+
+1. [AGENTS.md](../../../AGENTS.md) 与 [TYPOGRAPHY-01](../../../docs/design/typography-01.md) 优先，约束业务、交互与字体。
+2. `docs/ui-v4/` 中现行原型 `importer_pc_ui_v5.html` 与令牌 `ThemeTokens.xaml` 是配色、控件模板、表单栅格与页面信息架构的唯一视觉基准。材料缺失时说明缺口，审查结论限于可核实的现行契约和源码。
+3. 现有代码提供实现与运行基线，供核对绑定、命令、主题资源与实际行为。视觉结构有冲突时，以现行 UI-v4 定稿为准。
+
+`refine` 模式下，在用户授权范围内落实 UI-v4 已定稿的目标结构，例如将单列巨卡改为两列对齐表单、消除双底栏、统一运维顶栏与首配步进条。现有布局仅作对照。整改继续遵守业务契约、Noto Sans CJK SC 400/500 字重、无障碍定位（含 AutomationId 与键盘焦点）及原生 WPF 验收要求。
+
+UI 任务禁止读取或引用 `docs/archive/**`、已归档的 `impeccable` 与 `ui-ux-pro-max`、旧版 `PARAM-UX-02` 与 `parameter-settings-v3`，以及 `docs/ui/tokens/tokens.json` 中已过时的 `colorsAndFonts` 字段。
+
 ## 选择模式
 
 - `audit <范围>`：默认模式。只审查，不改项目文件；给出证据、影响、最轻的有效整改及验证方法。用户另有保存报告要求时只写指定报告。
@@ -31,6 +41,6 @@ description: "Review, simplify, or refine importer-pc native WPF UI using a Hall
 - RCS 离线不能解释成条码错误；相机离线不能禁止合法人工输入；小车提示不能被 UI 新增为准入守卫。已确认结果、业务拒绝、处理中、Unknown 与停用中按现行应用状态投影，不被通用空态覆盖。
 - 导航和窗口按现行规则：窄图标栏保留说明、键盘焦点和可点击区域；退出默认取消，Esc/× 是取消确认，不是执行退出；继续退出仍走草稿保护及正常停止。不要把这些规则错误套用到全屏主窗口的 Esc。
 - 只做已授权的隔离/合成验证，不控制现场设备、不向真实 RCS 发试验请求。用户截图、生产日志、条码和配置不因审查而自动上传或进入公开仓库。
-- 本 skill 不自动调用其他设计 skill、下载 engine 或安装 Node/浏览器依赖。需要查 WPF/UX 资料时再按需使用已有 UI UX Pro Max 或 Impeccable；它们的建议不能覆盖现行规则。遇到旧路径/旧规则冲突先标明，不借此恢复废弃设计。
+- 本 skill 不调用其他设计 skill、下载 engine 或安装 Node/浏览器依赖。
 
 来源、固定版本、保留与排除项见 [UPSTREAM.json](UPSTREAM.json)；上游许可见 [LICENSE](LICENSE)。升级必须显式审阅差异，不能自动跟随上游 main。

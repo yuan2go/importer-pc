@@ -24,6 +24,13 @@ public partial class MaintenancePage : UserControl
     public event EventHandler? DisplayPreferencesRequested;
     public event EventHandler<ParameterDiagnosticTarget>? DiagnosticsRequested;
     public Func<string, FrameworkElement>? CameraPreviewFactory { get => MainParameterEditor.CameraPreviewFactory; set => MainParameterEditor.CameraPreviewFactory = value; }
+    public FrameworkElement TakeFooter()
+    {
+        var footer = (FrameworkElement)ParameterFooter.Child;
+        ParameterFooter.Child = null; ParameterFooter.Visibility = Visibility.Collapsed;
+        return footer;
+    }
+    public void SetStationSettingsLayout(bool value) => MainParameterEditor.SetStationSettingsLayout(value);
     public MaintenancePage()
     {
         InitializeComponent();
@@ -63,7 +70,8 @@ public partial class MaintenancePage : UserControl
         lastCanEditForm = vm.CanEditFormConfiguration;
         if (sourceChanged || MainParameterEditor.Visibility == Visibility.Visible) ShowParameterEditor();
     }
-    async void SaveChanges_Click(object sender, RoutedEventArgs e)
+    async void SaveChanges_Click(object sender, RoutedEventArgs e) => await SaveChangesAsync();
+    public async Task SaveChangesAsync()
     {
         if (DataContext is not ParcelViewModel vm || vm.Busy || !vm.IsManagementMode) return;
         if (!vm.HasUnconfirmedConfigurationSubmission && !vm.HasUnsavedConfiguration && vm.HasUnsavedDisplayPreferences)
@@ -133,7 +141,8 @@ public partial class MaintenancePage : UserControl
         ToolTitle.Text = new[] { "实例与角色绑定", "高级 JSON 编辑", "已保存与运行中的配置", "已安装模块描述", "已安装组件", "换机恢复核对", "安装与卸载组件", "异常作业处理", "创建完整备份", "设置模板" }[index];
     }
     public bool NavigateToParameter(string path) { ShowParameterEditor(); return MainParameterEditor.NavigateTo(path); }
-    void ReviewChanges_Click(object sender, RoutedEventArgs e)
+    void ReviewChanges_Click(object sender, RoutedEventArgs e) => ReviewChanges();
+    public void ReviewChanges()
     {
         if (DataContext is not ParcelViewModel vm || vm.Busy || !vm.IsManagementMode) return;
         try { ConfigurationSaveReviewWindow.ShowChanges(Window.GetWindow(this), vm.GetConfigurationChangeItems(), vm.DraftRevisionState); }

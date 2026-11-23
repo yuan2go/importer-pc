@@ -12,6 +12,23 @@ public partial class SupplyStationWindow
     readonly Dictionary<string, FrameworkElement> diagnosticObjects = [];
     TextBlock? selectedDiagnostic;
     ParameterDiagnosticTarget? diagnosticTarget;
+    Expander? diagnosticTools;
+    FrameworkElement? maintenanceTools;
+    ScrollViewer? maintenanceToolsPage;
+    FrameworkElement ShowDiagnosticOverview()
+    {
+        diagnostics ??= CreateDiagnostics();
+        if (maintenanceToolsPage is not null) maintenanceToolsPage.Content = null;
+        diagnosticTools!.Content = maintenanceTools ??= CreateMaintenanceTools();
+        return diagnostics;
+    }
+    FrameworkElement ShowMaintenanceTools()
+    {
+        if (diagnosticTools is not null) diagnosticTools.Content = null;
+        maintenanceToolsPage ??= new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Padding = new(20, 12, 20, 12) };
+        maintenanceToolsPage.Content = maintenanceTools ??= CreateMaintenanceTools();
+        return maintenanceToolsPage;
+    }
     public void ShowPositionDiagnostics(SupplyStationPositionViewModel position)
     {
         var reader = ViewModel.Snapshot is { } snapshot ? Ipc.Application.Contracts.ParcelBindings.Readers(snapshot.Configuration.Effective)
@@ -22,7 +39,9 @@ public partial class SupplyStationWindow
     void ShowObjectDiagnostics(ParameterDiagnosticTarget target)
     {
         if (!ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; return; }
-        diagnosticTarget = target; SetPage("diagnostics");
+        diagnosticTarget = target;
+        diagnostics ??= CreateDiagnostics();
+        SetPage("diagnostics");
         selectedDiagnostic!.Text = target.Label;
         selectedDiagnostic.Visibility = Visibility.Visible;
         UpdateLayout();
@@ -33,7 +52,6 @@ public partial class SupplyStationWindow
     FrameworkElement CreateDiagnostics()
     {
         var body = new StackPanel { Margin = new(24, 16, 24, 24) };
-        body.Children.Add(ProductText("设备与诊断", true));
         body.Children.Add(ProductText("状态自动更新。相机断线后自动重连；在线状态不代表本件已取得格口。"));
         selectedDiagnostic = ProductText(""); selectedDiagnostic.Visibility = diagnosticTarget is null ? Visibility.Collapsed : Visibility.Visible; body.Children.Add(selectedDiagnostic);
         var currentBlockers = ProductText("");
@@ -62,7 +80,8 @@ public partial class SupplyStationWindow
             value.SetBinding(TextBox.TextProperty, new Binding(property) { Mode = BindingMode.OneWay }); evidence.Children.Add(value);
         }
         body.Children.Add(new Expander { Header = "技术详情", Content = evidence, Margin = new(0, 12, 0, 12) });
-        body.Children.Add(new Expander { Header = "维护工具", Content = CreateMaintenanceTools(), Margin = new(0, 12, 0, 0) });
+        diagnosticTools = new Expander { Header = "维护工具", Margin = new(0, 12, 0, 0) };
+        body.Children.Add(diagnosticTools);
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         return scroll;
     }

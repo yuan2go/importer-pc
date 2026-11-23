@@ -8,27 +8,39 @@ namespace Ipc.Application.Sportmaster.Desktop;
 
 public partial class SupplyStationWindow
 {
-    DockPanel? positionHistory;
-    FrameworkElement PositionHistory()
+    FrameworkElement? roundHistory, supplyHistory;
+    partial void SelectTaskHistoryTab() => RecordTabs.SelectedIndex = 0;
+    FrameworkElement PositionHistory() => RecordTabs.SelectedIndex switch
     {
-        if (positionHistory is not null) return positionHistory;
-        positionHistory = new DockPanel { DataContext = ViewModel };
-        var panel = new DockPanel();
+        1 => roundHistory ??= RoundHistory(),
+        2 => supplyHistory ??= SupplyHistory(),
+        _ => history
+    };
+
+    async void RecordTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!ReferenceEquals(e.OriginalSource, RecordTabs) || ViewModel?.SelectedPage != "history") return;
+        PageHost.Content = PositionHistory();
+        if (RecordTabs.SelectedIndex == 2 && ViewModel.SupplyHistory.Length == 0)
+            await ViewModel.RunAsync(() => ViewModel.LoadSupplyHistoryAsync(), "读取启停记录");
+        else if (RecordTabs.SelectedIndex == 0 && !ViewModel.HistoryLoaded)
+            await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "读取作业记录");
+    }
+
+    FrameworkElement SupplyHistory()
+    {
+        var panel = new DockPanel { Margin = new(12) };
         var actions = new StackPanel { Orientation = Orientation.Horizontal };
-        var refresh = new Button { Content = "最近记录", MinHeight = 44, Margin = new Thickness(0, 0, 8, 4) };
-        var earlier = new Button { Content = "更早记录", MinHeight = 44, Margin = new Thickness(0, 0, 0, 4) };
+        var refresh = new Button { Content = "最近记录", MinHeight = 44, Margin = new Thickness(0, 0, 8, 8) };
+        var earlier = new Button { Content = "更早记录", MinHeight = 44, Margin = new Thickness(0, 0, 0, 8) };
         refresh.Click += async (_, _) => await ViewModel.RunAsync(() => ViewModel.LoadSupplyHistoryAsync(), "读取启停记录");
         earlier.Click += async (_, _) => await ViewModel.RunAsync(() => ViewModel.LoadSupplyHistoryAsync(true), "读取更早启停记录");
         actions.Children.Add(refresh); actions.Children.Add(earlier); DockPanel.SetDock(actions, Dock.Top); panel.Children.Add(actions);
-        var table = new DataGrid { IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, Height = 180 };
+        var table = new DataGrid { IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false };
         foreach (var (label, path) in new[] { ("时间", "Time"), ("投递位", "Position"), ("操作", "Action"), ("操作人", "Actor"), ("当时任务号", "Task") })
             table.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
         table.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(ViewModel.SupplyHistory))); panel.Children.Add(table);
-        var expander = new Expander { Header = "投递位启停记录", Content = panel, Margin = new Thickness(0, 0, 0, 8) };
-        expander.Expanded += async (_, _) => await ViewModel.RunAsync(() => ViewModel.LoadSupplyHistoryAsync(), "读取启停记录");
-        DockPanel.SetDock(expander, Dock.Top); positionHistory.Children.Add(expander);
-        var rounds = RoundHistory(); DockPanel.SetDock(rounds, Dock.Top); positionHistory.Children.Add(rounds); positionHistory.Children.Add(history);
-        return positionHistory;
+        return panel;
     }
     sealed record RoundRow(SmParcelRound Round)
     {
@@ -56,12 +68,19 @@ public partial class SupplyStationWindow
     }
     FrameworkElement RoundHistory()
     {
-        var panel = new DockPanel(); var controls = new WrapPanel();
+        var panel = new DockPanel { Margin = new(12) }; var controls = new WrapPanel();
+        panel.Resources.MergedDictionaries.Add(new ResourceDictionary
+        { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/QueryWorkspaceTheme.xaml", UriKind.Relative) });
+        var dateStyle = (Style)panel.Resources["QueryDatePicker"];
         var side = new ComboBox { ItemsSource = new[] { "全部投递位", "左投递位", "右投递位" }, SelectedIndex = 0, MinWidth = 140, MinHeight = 44 };
-        var from = new DatePicker { SelectedDate = DateTime.Today, MinHeight = 44, MinWidth = 140 };
-        var to = new DatePicker { SelectedDate = DateTime.Today, MinHeight = 44, MinWidth = 140 };
+        var from = new DatePicker { SelectedDate = DateTime.Today, MinWidth = 144, Style = dateStyle };
+        var to = new DatePicker { SelectedDate = DateTime.Today, MinWidth = 144, Style = dateStyle };
         var search = new TextBox { MinWidth = 240, MinHeight = 44, ToolTip = "精确查询条码、轮次或请求号；结果、结束原因和识读情况可从右侧选择" };
         System.Windows.Automation.AutomationProperties.SetName(search, "轮次查询条码或编号");
+        var placeholder = new TextBlock { Text = "输入条码、轮次或请求号…", IsHitTestVisible = false, Margin = new(11, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center };
+        placeholder.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
+        search.TextChanged += (_, _) => placeholder.Visibility = search.Text.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
+        var searchField = new Grid(); searchField.Children.Add(search); searchField.Children.Add(placeholder);
         var reason = new ComboBox
         {
             MinWidth = 170,
@@ -95,17 +114,24 @@ public partial class SupplyStationWindow
         reason.SelectionChanged += (_, _) => search.IsEnabled = reason.SelectedValue is not string selected || selected.Length == 0;
         System.Windows.Automation.AutomationProperties.SetName(from, "轮次开始日期"); System.Windows.Automation.AutomationProperties.SetName(to, "轮次结束日期");
         var load = new Button { Content = "查询轮次", MinHeight = 44 }; var picture = new Button { Content = "查看本轮原图", MinHeight = 44, IsEnabled = false };
-        foreach (var control in new FrameworkElement[] { side, from, to, search, reason, load, picture }) { control.Margin = new Thickness(0, 0, 8, 8); controls.Children.Add(control); }
+        foreach (var control in new FrameworkElement[] { side, from, to, searchField, reason, load, picture }) { control.Margin = new Thickness(0, 0, 8, 8); controls.Children.Add(control); }
         DockPanel.SetDock(controls, Dock.Top); panel.Children.Add(controls);
-        var table = new DataGrid { IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, Height = 220 };
+        var table = new DataGrid { IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false };
         foreach (var (label, path) in new[] { ("开始时间", "Time"), ("投递位", "Position"), ("正式条码", "Barcode"), ("识读情况", "Read"), ("结果", "Result"), ("结束原因", "End"), ("轮次", "Identity"), ("请求号", "Request") })
             table.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
         table.SelectionChanged += (_, _) => picture.IsEnabled = table.SelectedItem is RoundRow { Round.OriginalFrame.State: "Saved" };
         picture.Click += (_, _) => { if (table.SelectedItem is RoundRow selected) ParcelPictureWindow.Open(this, ViewModel, new(RoundId: selected.Round.Id), selected.Barcode); };
-        panel.Children.Add(table);
+        var status = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8), Visibility = Visibility.Collapsed };
+        System.Windows.Automation.AutomationProperties.SetLiveSetting(status, System.Windows.Automation.AutomationLiveSetting.Polite);
+        DockPanel.SetDock(status, Dock.Top); panel.Children.Add(status); panel.Children.Add(table);
+        search.KeyDown += (_, e) =>
+        {
+            if (e.Key != System.Windows.Input.Key.Enter || !load.IsEnabled) return;
+            e.Handled = true; load.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        };
         load.Click += async (_, _) =>
         {
-            load.IsEnabled = false;
+            load.IsEnabled = false; status.Visibility = Visibility.Collapsed;
             try
             {
                 var term = reason.SelectedValue is string { Length: > 0 } selected ? selected : search.Text.Trim() switch
@@ -118,9 +144,9 @@ public partial class SupplyStationWindow
                 var result = await ViewModel.ServiceAsync(() => ViewModel.Application.RoundHistoryAsync(position, 100, term, startedFrom, startedTo));
                 table.ItemsSource = result.Items.Select(r => new RoundRow(r)).ToArray();
             }
-            catch (Exception) { ViewModel.Message = "轮次记录未能读取，请保留原数据，稍后重试。"; }
+            catch (Exception) { status.Text = "轮次记录未能读取，请稍后重试。"; status.Visibility = Visibility.Visible; }
             finally { load.IsEnabled = true; }
         };
-        return new Expander { Header = "包裹轮次（含无码与未提交）", Content = panel, Margin = new Thickness(0, 0, 0, 8) };
+        return panel;
     }
 }

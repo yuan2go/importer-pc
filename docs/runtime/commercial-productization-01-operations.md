@@ -6,7 +6,7 @@
 
 > 当前管理能力为[管理模式](management-mode-01.md)，不是软件管理员账号。四类参数、原请求及历史账号证据各守原身份；本轮稳定性和到期维护见[长稳指南](win11-24x7-stability-remediation-01.md)。
 
-> Sportmaster本轮缺省界面为supply-station，保留显式 `--ui classic`；展示设置提供布局/辅助窗/来源诊断，其他Application缺省不变。当前运行与本轮Windows合成验证见[视觉产品化](sportmaster-visual-productization-01.md)，原发行证据保持其SourceCommit。
+> Sportmaster本轮缺省界面为supply-station，保留显式 `--ui classic`；展示设置提供布局/辅助窗/来源诊断，其他Application缺省不变。当时的运行与 Windows 合成验证见[视觉产品化（历史背景）](../archive/runtime/sportmaster-visual-productization-01.md)，原发行证据保持其SourceCommit。
 
 # Importer PC 商业交付操作指南
 

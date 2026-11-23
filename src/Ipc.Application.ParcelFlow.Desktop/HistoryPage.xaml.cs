@@ -1,5 +1,7 @@
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 namespace Ipc.Application.ParcelFlow.Desktop;
@@ -68,7 +70,7 @@ public partial class HistoryPage : UserControl
         var shortPage = ActualHeight < 500;
         HistoryLayout.Margin = shortPage ? new(12, 8, 12, 8) : new(20, 16, 20, 12);
         HistoryHeading.FontSize = UiTypography.Body;
-        HistoryHeading.Visibility = shortPage ? Visibility.Collapsed : Visibility.Visible;
+        HistoryHeading.Visibility = shortPage || DataContext is ParcelViewModel { Snapshot.ApplicationId: "sportmaster" } ? Visibility.Collapsed : Visibility.Visible;
         var header = double.IsFinite(HistoryRows.ColumnHeaderHeight) ? HistoryRows.ColumnHeaderHeight : 36;
         var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 40;
         var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom + (HistoryHeading.IsVisible ? HistoryHeading.ActualHeight + HistoryHeading.Margin.Bottom : 0) +
@@ -125,4 +127,31 @@ public partial class HistoryPage : UserControl
     void CancelQuery_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.CancelHistoryRead(); }
     async void Query_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.QuerySelectedAsync, "查询所选作业的结果"); }
     async void Continue_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ContinueSelectedAsync, "继续处理所选作业"); }
+}
+
+public sealed class HistoryTimePresetConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values is not [string from, string through, string preset]) return false;
+        if (preset == "any") return from.Length == 0 && through.Length == 0;
+        if (!DateTimeOffset.TryParseExact(from, "O", CultureInfo.InvariantCulture, DateTimeStyles.None, out var start) ||
+            !DateTimeOffset.TryParseExact(through, "O", CultureInfo.InvariantCulture, DateTimeStyles.None, out var end)) return false;
+
+        if (preset == "today")
+            return start == new DateTimeOffset(DateTime.Today) && end == new DateTimeOffset(DateTime.Today.AddDays(1));
+
+        // A manual historical range of the same duration is not a rolling preset.
+        var age = DateTimeInput.SecondNow() - end;
+        if (age < TimeSpan.Zero || age > TimeSpan.FromSeconds(2)) return false;
+        return preset switch
+        {
+            "day" => start == end.AddDays(-1),
+            "week" => start == end.AddDays(-7),
+            _ => false
+        };
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
+        throw new NotSupportedException();
 }

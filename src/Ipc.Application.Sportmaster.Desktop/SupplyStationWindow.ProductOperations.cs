@@ -47,7 +47,7 @@ public partial class SupplyStationWindow
     FrameworkElement CreateMaintenanceTools()
     {
         var body = new StackPanel();
-        body.Children.Add(ProductText("备份和诊断导出在软件运行中完成；恢复备份、换机、修复及卸载需先完全停止软件。"));
+        body.Children.Add(ProductText("日常保障与诊断", true));
         var actions = new WrapPanel();
         var backupAction = ProductButton("创建完整备份…", CreateProductBackup);
         System.Windows.Automation.AutomationProperties.SetAutomationId(backupAction, "CompleteBackup.Diagnostic"); actions.Children.Add(backupAction);
@@ -55,13 +55,21 @@ public partial class SupplyStationWindow
         actions.Children.Add(ProductButton("导出诊断包…", ExportProductDiagnostics));
         cancelProductDiagnostic = new Button { Content = "取消导出", MinHeight = 44, Visibility = Visibility.Collapsed, Margin = new(0, 6, 12, 6) };
         cancelProductDiagnostic.Click += (_, _) => productDiagnosticCancellation?.Cancel(); actions.Children.Add(cancelProductDiagnostic);
-        actions.Children.Add(ProductButton("离线维护…", RequestOfflineMaintenance)); body.Children.Add(actions);
+        body.Children.Add(actions);
+        body.Children.Add(ProductText("异常与责任核对", true));
         body.Children.Add(ProductText("原请求的远端绑定或旧心跳成员变更未确认时，先停用本位，核对客户RCS后记录依据。已确认结果的普通包裹取下后即结束，无需在此核对。"));
         var remote = new WrapPanel();
         remote.Children.Add(ProductButton("核对左位未确认责任…", () => ConfirmRemotePositionRecovery("left")));
         remote.Children.Add(ProductButton("核对右位未确认责任…", () => ConfirmRemotePositionRecovery("right")));
+        remote.Children.Add(ProductButton("恢复本站核对…", () => OpenProductTool(MaintenanceTool.RestoreHandoff)));
         body.Children.Add(remote);
-        actions.Children.Add(ProductButton("恢复本站核对…", () => OpenProductTool(MaintenanceTool.RestoreHandoff)));
+        var offline = new StackPanel();
+        offline.Children.Add(ProductText("高危离线维护", true));
+        offline.Children.Add(ProductText("恢复备份、回滚程序、清理旧构建和卸载需先完全停止软件。"));
+        offline.Children.Add(ProductButton("离线维护…", RequestOfflineMaintenance));
+        var danger = new Border { Child = offline };
+        danger.SetResourceReference(StyleProperty, "DangerZoneCard");
+        body.Children.Add(danger);
         return body;
     }
     async Task CreateProductBackup()

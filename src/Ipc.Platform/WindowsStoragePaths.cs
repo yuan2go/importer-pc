@@ -75,7 +75,7 @@ public static class WindowsStoragePaths
         if (ProtectedAnchor is not { } root) return;
         PrepareProtectedDirectory(root, new SecurityIdentifier(runtimeSid));
         PrepareProtectedDirectory(Path.Combine(root, "Programs"), new SecurityIdentifier(runtimeSid));
-        PrepareUserDataDirectory(Path.Combine(root, "UserData"));
+        ProvisionUserRoot(runtimeSid);
     }
     [SupportedOSPlatform("windows")]
     internal static void PrepareUserDataDirectory(string path)
@@ -130,6 +130,25 @@ public static class WindowsStoragePaths
         var directory = new DirectoryInfo(path);
         if (!directory.Exists) directory.Create(MachineRuntimeSetup.DirectoryAcl(account, FileSystemRights.FullControl));
         RequireUserDirectory(path, account.Value);
+        var presentation = new DirectoryInfo(Path.Combine(path, "presentation"));
+        DeploymentPaths.RequireOrdinaryAncestors(presentation.FullName);
+        if (!presentation.Exists)
+            presentation.Create(MachineRuntimeSetup.DirectoryAcl(account, FileSystemRights.Modify));
+        else
+        {
+            RequireUserDirectory(presentation.FullName, account.Value);
+            var acl = presentation.GetAccessControl(AccessControlSections.Access);
+            const InheritanceFlags inheritance = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+            var accountCanModify = acl.GetAccessRules(true, true, typeof(SecurityIdentifier)).OfType<FileSystemAccessRule>().Any(rule =>
+                rule.IdentityReference.Equals(account) && rule.AccessControlType == AccessControlType.Allow &&
+                (rule.FileSystemRights & FileSystemRights.Modify) == FileSystemRights.Modify &&
+                (rule.InheritanceFlags & inheritance) == inheritance && rule.PropagationFlags == PropagationFlags.None);
+            if (!accountCanModify)
+            {
+                acl.AddAccessRule(new(account, FileSystemRights.Modify, inheritance, PropagationFlags.None, AccessControlType.Allow));
+                presentation.SetAccessControl(acl);
+            }
+        }
         return path;
     }
     [SupportedOSPlatform("windows")]
@@ -198,7 +217,9 @@ public static class WindowsStoragePaths
                 {
                     if (new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator)) return ProvisionUserRoot(sid);
                     var deployment = WindowsDeploymentSetup.Current("sportmaster") ?? throw new UnauthorizedAccessException("个人目录尚未准备，请先完成供包台安装。");
-                    _ = ManagementModeBroker.Call<string>(deployment.DataRoot, new("ProvisionUserRoot"));
+                    try { _ = ManagementModeBroker.Call<string>(deployment.DataRoot, new("ProvisionUserRoot")); }
+                    catch (Exception error) when (error is InvalidOperationException or OperationCanceledException)
+                    { throw new IOException("个人偏好目录准备未完成，请检查安装和管理授权服务。", error); }
                 }
                 MachineRuntimePolicy.RequireProtectedAcl(new DirectoryInfo(Path.Combine(root, "UserData")), null);
                 RequireUserDirectory(path, sid);

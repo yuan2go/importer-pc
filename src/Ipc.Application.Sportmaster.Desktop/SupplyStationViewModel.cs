@@ -24,6 +24,22 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
     public string Station => Snapshot?.Configuration.Effective.StationId ?? "等待供包台配置";
+    readonly Dictionary<string, string> preferenceNotices = [];
+    public string PreferenceNoticeText => string.Join("\n\n", preferenceNotices.Values);
+    public bool HasPreferenceNotices => preferenceNotices.Count != 0;
+    internal void SetPreferenceNotice(string key, string? message)
+    {
+        if (string.IsNullOrEmpty(message))
+        {
+            if (!preferenceNotices.Remove(key)) return;
+        }
+        else
+        {
+            if (preferenceNotices.GetValueOrDefault(key) == message) return;
+            preferenceNotices[key] = message;
+        }
+        Changed(nameof(PreferenceNoticeText)); Changed(nameof(HasPreferenceNotices));
+    }
     public enum RcsConnectionState { Unknown, Deferred, Simulation, Offline, AwaitingConfirmation, Online }
     public RcsConnectionState RcsState
     {
@@ -97,7 +113,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string SelectedPage
     {
         get => selectedPage;
-        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug" or "statistics" or "exceptions")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
+        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug" or "statistics" or "exceptions" or "maintenance-center")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
     }
     public string PageTitle => SelectedPage switch { "statistics" => "统计与班次", "exceptions" => "异常处理", "history" => "记录", "maintenance" => "设置", "diagnostics" => "设备与诊断", "debug" => "调试", "logs" => "日志", _ => "作业" };
     public SupplyStationViewModel(IParcelApplication application) : base(application, "供包工作台", "扫码 → 上游格口")

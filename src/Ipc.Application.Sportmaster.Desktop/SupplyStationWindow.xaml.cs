@@ -11,6 +11,7 @@ public partial class SupplyStationWindow : Window
 {
     partial void InitializePresentationFeedback();
     partial void InitializeMaintenanceActions();
+    partial void SelectTaskHistoryTab();
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     readonly Grid work = new();
     readonly HistoryPage history = new();
@@ -32,7 +33,7 @@ public partial class SupplyStationWindow : Window
         InitializeAudio();
         ViewModel.RequestActivationAsync = RequestActivation;
         ViewModel.RequestRetentionAsync = RequestRetention;
-        WindowOpeningPreference.Attach(this, "sportmaster", message => ViewModel.Message = message);
+        WindowOpeningPreference.Attach(this, "sportmaster", message => ViewModel.SetPreferenceNotice("window", message));
         // Cached pages retain their binding source while detached from PageHost.
         // Inherited DataContext would transiently clear/rebuild the draft controls.
         maintenance.CameraPreviewFactory = instance => { var preview = new StationCameraPreviewControl(ViewModel, 110, false); preview.SelectDevice(ViewModel.ReaderDrafts.FirstOrDefault(r => r.Capability.InstanceId == instance)?.Original.DeviceId ?? instance); return preview; };
@@ -57,7 +58,8 @@ public partial class SupplyStationWindow : Window
         Grid.SetColumn(right, 1); work.Children.Add(left); work.Children.Add(right);
         BuildOperatorWorkspace();
         try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read("sportmaster", "supply-station") ?? false : layout == "compact"; }
-        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "展示偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"; }
+        catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or System.Text.Json.JsonException or UnauthorizedAccessException)
+        { ViewModel.SetPreferenceNotice("layout", "布局偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
         ApplyLayout();
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "workstation";
         if (initialPage == "maintenance" && !ViewModel.IsManagementMode) initialPage = "workstation";
@@ -92,9 +94,9 @@ public partial class SupplyStationWindow : Window
     }
     void SetPage(string page)
     {
-        if (page is "maintenance" or "diagnostics" or "logs" or "debug" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
+        if (page is "maintenance" or "diagnostics" or "logs" or "debug" or "maintenance-center" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
-        if (page is "maintenance" or "diagnostics" or "logs" or "debug")
+        if (page is "maintenance" or "diagnostics" or "logs" or "debug" or "maintenance-center")
         {
             ShowManagementPage(page);
             return;
@@ -146,8 +148,9 @@ public partial class SupplyStationWindow : Window
     void Layout_Click(object sender, RoutedEventArgs e)
     {
         compact = !compact; ApplyLayout();
-        try { Ipc.Platform.PresentationPreferences.Save("sportmaster", "supply-station", compact); }
-        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "本窗口布局已切换；展示偏好未保存，请检查本机设置文件与访问权限。"; }
+        try { Ipc.Platform.PresentationPreferences.Save("sportmaster", "supply-station", compact); ViewModel.SetPreferenceNotice("layout", null); }
+        catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or System.Text.Json.JsonException or UnauthorizedAccessException)
+        { ViewModel.SetPreferenceNotice("layout", "本窗口布局已切换，布局偏好未保存。请检查本机设置文件与访问权限。"); }
     }
     void ApplyLayout()
     {
@@ -170,7 +173,7 @@ public partial class SupplyStationWindow : Window
     void ExitFullScreen_Click(object sender, RoutedEventArgs e) => Close();
     void Maximize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Maximized;
     public Task ShowDetailsAsync(ParcelOperation operation) => ShowDetailsAsync(operation.Id);
-    public async Task ShowDetailsAsync(string operationId) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operationId), "读取作业详情"); history.ShowTaskDetails(); }
+    public async Task ShowDetailsAsync(string operationId) { SelectTaskHistoryTab(); SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operationId), "读取作业详情"); history.ShowTaskDetails(); }
     public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
     public Func<string, bool>? ConfirmOwnerExit { get; set; }
     public Func<Task>? ReopenOwnerAsync { get; set; }

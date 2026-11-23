@@ -31,15 +31,15 @@ public static class FirstConfigurationReadiness
                         : new(Side(camera.Role), "缺少 IP，请填写相机地址", true));
         }
         var rcs = rcsTarget.Trim().Length > 0;
-        lines.Add(rcs ? new("RCS", "已填写地址，保存后启动时连接；心跳确认后才算连通", false) : new("RCS", "尚未配置——没有 RCS 时不能取格口", true));
-        lines.Add(rcs ? new("人工输入", "键盘/PDA 补录可用，不依赖相机", false) : new("人工输入", "需先配置 RCS", true));
+        lines.Add(rcs ? new("RCS", "已填写地址，保存后启动时连接；心跳确认后才算连通", false) : new("RCS", "可稍后配置；配置之前无法取格口", false));
+        lines.Add(rcs ? new("人工输入", "键盘/PDA 补录可用，不依赖相机", false) : new("人工输入", "配置 RCS 后可使用键盘/PDA 补录", false));
         return [.. lines];
     }
 
     // One sentence for the top of the completion step; it names the next action, never readiness to work.
     public static string Summary(IReadOnlyCollection<ReadinessLine> lines)
     {
-        var parts = lines.Where(l => l.Source != "人工输入").Select(l => l.Source + (l.State.StartsWith("已填写", StringComparison.Ordinal) ? "已填写" : l.State.StartsWith("未配置", StringComparison.Ordinal) ? "不使用" : "待处理"));
+        var parts = lines.Where(l => l.Source != "人工输入").Select(l => l.Source + (l.NeedsAttention ? "待处理" : l.State.StartsWith("已填写", StringComparison.Ordinal) ? "已填写" : l.Source == "RCS" ? "可稍后配置" : "不使用"));
         var next = lines.FirstOrDefault(l => l.NeedsAttention && l.Source != "人工输入");
         return string.Join("；", parts) + (next is null ? "。保存后启动时检查实际连接。" : "——请先处理" + next.Source + "。");
     }

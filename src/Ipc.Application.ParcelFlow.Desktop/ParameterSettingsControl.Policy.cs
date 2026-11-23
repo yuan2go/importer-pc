@@ -86,13 +86,14 @@ public sealed partial class ParameterSettingsControl
         }
         backup.Body.Children.Add(Text("完整备份包括数据库文件和同名恢复文件夹，恢复时两者都需要；关闭自动备份不会删除已有备份。"));
         var display = Page(0, "显示偏好", m.ApplicationId == "sportmaster" ? "设置本机窗口的打开方式和布局。" : "仅影响本机显示。");
+        var appearance = Form(display);
         if (m.ApplicationId == "sportmaster")
         {
             var preferences = m.DisplayPreferences ??= RuntimeContext?.SmPreferences ?? new();
             var pace = new CheckBox { Content = "显示本班取得格口次数与近十分钟速度", MinHeight = 44, IsEnabled = preferences.CanEdit("ShowPace") };
             pace.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(preferences.ShowPace)) { Source = preferences, Mode = BindingMode.TwoWay });
-            Field(Form(display), "效率显示", pace, "仅影响当前Windows用户；使用底部“保存设置”，与窗口方式和提示音一同保存。", "ShowPace", display);
-            if (preferences.ReadFailure("ShowPace").Length > 0) display.Body.Children.Add(Text(preferences.ReadFailure("ShowPace")));
+            Field(appearance, "效率显示", pace, "仅影响当前Windows用户；使用底部“保存设置”，与窗口方式和提示音一同保存。", "ShowPace", display);
+            if (FirstConfiguration && preferences.ReadFailure("ShowPace").Length > 0) display.Body.Children.Add(Text(preferences.ReadFailure("ShowPace")));
         }
         if (m.ApplicationId != "sportmaster" && RuntimeContext is { } runtime)
         {
@@ -106,7 +107,7 @@ public sealed partial class ParameterSettingsControl
             AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Polite); display.Body.Children.Add(feedback);
         }
         if (m.ApplicationId != "sportmaster") display.Body.Children.Add(Text("简体中文 · 浅色"));
-        display.Body.Children.Add(Text("窗口布局", true));
+        if (m.ApplicationId != "sportmaster") display.Body.Children.Add(Text("窗口布局", true));
         var opening = new ComboBox { ItemsSource = new[] { new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.Window, "窗口"), new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.FullScreen, "最大化（全屏）") }, DisplayMemberPath = "Label", SelectedValuePath = "Mode", MinHeight = 40 };
         var modeStatus = Text("");
         AutomationProperties.SetLiveSetting(modeStatus, AutomationLiveSetting.Polite);
@@ -137,7 +138,7 @@ public sealed partial class ParameterSettingsControl
         { modeReadable = false; modeStatus.Text = ChineseInterfaceText.ParameterMessage(error.Message, "窗口设置未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
         if (m.ApplicationId == "sportmaster" && m.DisplayPreferences is { } local) modeReadable = local.CanEdit("WindowOpeningMode");
         opening.IsEnabled = modeReadable;
-        Field(Form(display), "默认打开方式", opening, m.ApplicationId == "sportmaster" ? "保存后立即生效，并记住下次打开方式。最大化（全屏）时隐藏标题栏并铺满屏幕；可最小化到任务栏，恢复后仍保持全屏；Esc 和 F11 不退出全屏。" : "保存后立即生效，并记住下次打开方式。按 F11 临时切换，按 Esc 返回窗口。", "WindowOpeningMode", display);
+        Field(m.ApplicationId == "sportmaster" ? appearance : Form(display), "默认打开方式", opening, m.ApplicationId == "sportmaster" ? "保存后立即生效，并记住下次打开方式。最大化（全屏）时隐藏标题栏并铺满屏幕；可最小化到任务栏，恢复后仍保持全屏；Esc 和 F11 不退出全屏。" : "保存后立即生效，并记住下次打开方式。按 F11 临时切换，按 Esc 返回窗口。", "WindowOpeningMode", display);
         var saveMode = new Button { Content = "保存打开方式", HorizontalAlignment = HorizontalAlignment.Left, MinHeight = 44, IsEnabled = modeReadable };
         saveMode.Click += (_, _) =>
         {
@@ -150,8 +151,8 @@ public sealed partial class ParameterSettingsControl
             { modeStatus.Text = ChineseInterfaceText.ParameterMessage(error.Message, "打开方式未保存；请检查本机设置文件与访问权限后重试。"); }
         };
         if (RuntimeContext is null && m.ApplicationId != "sportmaster") display.Body.Children.Add(saveMode);
-        display.Body.Children.Add(modeStatus);
-        if (m.ApplicationId == "sportmaster") AudioPreferences(display, m.DisplayPreferences!);
+        if (FirstConfiguration || m.ApplicationId != "sportmaster") display.Body.Children.Add(modeStatus);
+        if (m.ApplicationId == "sportmaster") AudioPreferences(display, appearance, m.DisplayPreferences!);
         var layoutStatus = Text("小窗口会自动使用紧凑布局。");
         if (RuntimeContext is { } layoutContext) layoutStatus.SetBinding(TextBlock.TextProperty, new Binding(nameof(ParcelViewModel.LayoutDescription)) { Source = layoutContext });
         display.Body.Children.Add(layoutStatus);

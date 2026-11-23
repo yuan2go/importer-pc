@@ -266,8 +266,9 @@ static partial class Program
     }
     static void Click(DependencyObject root, string name)
     {
-        if (root is ManagementCenterWindow center && name is "设备与诊断" or "设置" or "调试" or "日志")
+        if (root is ManagementCenterWindow center && name is "设备与诊断" or "设置" or "调试" or "日志" or "运行总览" or "日志中心" or "设备调试" or "专业参数" or "维护中心")
         {
+            name = name switch { "设备与诊断" => "运行总览", "设置" => "专业参数", "调试" => "设备调试", "日志" => "日志中心", _ => name };
             ((WrapPanel)center.FindName("ManagementNavigation")).Children.OfType<Button>().Single(b => Equals(b.Content, name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             return;
         }

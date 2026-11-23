@@ -16,7 +16,9 @@ static partial class Program
         const string barcode = "00001234567890123456789012345678901234567890123456789012345678901234567890";
         const string task = "SYNTH-TASK-20261105-000000000000000000000000000000000000000000000001";
         var reason = string.Concat(Enumerable.Repeat("当前包裹未取得可用格口，请保留包裹和本条记录，联系维护人员核对原结果。", 5));
-        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "chute-readability"), deferred: true);
+        // The viewport sweep measures the same receipt; each next vehicle starts the next sample.
+        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "chute-readability"), deferred: true)
+            { StationClock = new PdaRoundClock() };
         await h.StartAsync();
         h.Peer.Mode = "reject";
         h.Peer.RejectionMessage = reason;

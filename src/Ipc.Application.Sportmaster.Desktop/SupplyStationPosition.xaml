@@ -394,7 +394,7 @@
         <Style TargetType="Button" BasedOn="{StaticResource StationTouch}">
          <Setter Property="Background" Value="{DynamicResource WarningBackground}"/>
          <Setter Property="Foreground" Value="{DynamicResource Warning}"/>
-         <Setter Property="BorderBrush" Value="{DynamicResource WarningBorder}"/>
+         <Setter Property="BorderBrush" Value="{DynamicResource Warning}"/>
          <Setter Property="Margin" Value="0,0,8,0"/>
          <Setter Property="Visibility" Value="Collapsed"/>
          <Style.Triggers>
@@ -403,7 +403,7 @@
         </Style>
        </Button.Style>
       </Button>
-      <Button x:Name="WorkDetails" Grid.Column="3" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanViewWorkDetails}" Style="{StaticResource StationTouch}" Background="{DynamicResource AccentBackground}" BorderBrush="{DynamicResource AccentBorder}"/>
+      <Button x:Name="WorkDetails" Grid.Column="3" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanViewWorkDetails}" Style="{StaticResource StationTouch}" Background="{DynamicResource AccentBackground}" BorderBrush="{DynamicResource Accent}"/>
      </Grid>
      <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Line}" Margin="0,3,0,0" IsHitTestVisible="False">
       <Border.Style><Style TargetType="Border"><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Border.Style>

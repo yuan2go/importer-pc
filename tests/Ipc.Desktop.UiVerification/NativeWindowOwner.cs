@@ -26,16 +26,3 @@ internal sealed class NativeWindowOwner : IAsyncDisposable
         await closed.Task.WaitAsync(TimeSpan.FromSeconds(1));
     }
 }
-
-internal sealed class NativeWindowOwners : IAsyncDisposable
-{
-    readonly List<NativeWindowOwner> owners = [];
-    internal T Track<T>(T window) where T : Window { owners.Add(new(window)); return window; }
-    public async ValueTask DisposeAsync()
-    {
-        List<Exception> failures = [];
-        foreach (var owner in owners.AsEnumerable().Reverse())
-            try { await owner.DisposeAsync(); } catch (Exception error) { failures.Add(error); }
-        if (failures.Count != 0) throw new AggregateException("Native fixture window cleanup failed", failures);
-    }
-}

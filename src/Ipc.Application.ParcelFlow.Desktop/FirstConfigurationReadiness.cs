@@ -25,13 +25,13 @@ public static class FirstConfigurationReadiness
             lines.Add(camera.Filled
                 ? new(Side(camera.Role), "已填写，保存后启动时连接并采图", false)
                 : camera.Empty
-                    ? new(Side(camera.Role), "未配置，不使用这台相机", false)
+                    ? new(Side(camera.Role), "未配置（暂不启用）", false)
                     : camera.Ip.Trim().Length > 0
                         ? new(Side(camera.Role), "已填写 IP，保存时自动读取序列号；请保持相机联网", false)
                         : new(Side(camera.Role), "缺少 IP，请填写相机地址", true));
         }
         var rcs = rcsTarget.Trim().Length > 0;
-        lines.Add(rcs ? new("RCS", "已填写地址，保存后启动时连接；心跳确认后才算连通", false) : new("RCS", "可稍后配置；配置之前无法取格口", false));
+        lines.Add(rcs ? new("RCS", "已填写地址，启动后连接", false) : new("RCS", "未配置（暂不启用）", false));
         lines.Add(rcs ? new("人工输入", "键盘/PDA 补录可用，不依赖相机", false) : new("人工输入", "配置 RCS 后可使用键盘/PDA 补录", false));
         return [.. lines];
     }

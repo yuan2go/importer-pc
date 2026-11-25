@@ -16,7 +16,7 @@ public sealed partial class OperationsWorkspaceControl
             throw new InvalidOperationException("请先停用要核对的投递位，并等待本轮调用、回执和撤车确认。");
         var dialog = new Window
         {
-            Owner = Window.GetWindow(this), Title = position == "left" ? "核对左位未确认责任" : "核对右位未确认责任",
+            Owner = Window.GetWindow(this), Title = position == "left" ? "核对左位未决请求" : "核对右位未决请求",
             Width = 620, Height = 420, MinWidth = 520, MinHeight = 360,
             WindowStartupLocation = WindowStartupLocation.CenterOwner, ResizeMode = ResizeMode.CanResize,
             FontFamily = FontFamily, FontSize = FontSize

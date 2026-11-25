@@ -1,380 +1,87 @@
-using System.IO;
-using System.Reflection;
-using System.Windows.Threading;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using Ipc.Application.Contracts;
-using Ipc.Application.ParcelFlow.Desktop;
-using Ipc.Application.Sportmaster;
-using Ipc.Application.Sportmaster.Desktop;
-using Ipc.Assembly;
+using System.Windows.Threading;
 using Ipc.Platform;
 
-// Run on Windows: exercises actual WPF resource loading, navigation and window ownership.
 static partial class Program
 {
-    // Exercise the shared current Shell used by DirectPlc/WcsToPlc directly.
-    // This fixture is not a Sportmaster launch profile or a production fallback.
-    static ShellWindow CreateSharedShellForVerification(IParcelApplication application, string? view = null) =>
-        new(new ParcelViewModel(application, "共享窗口验证", "合成业务", "sportmaster"),
-            () => new ParcelViewModel(application, "共享窗口验证", "合成业务", "sportmaster"), () => new System.Windows.Controls.UserControl(), view, "standard");
     [STAThread]
-    public static int Main(string[] args)
+    static int Main(string[] args)
     {
-        if (args.Contains("--operator-administration") || args.Contains("--login-session")) { Console.Error.WriteLine("Unsupported verification argument; use --management-mode for management authorization"); return 2; }
-#if P0_CRASH_HOOKS
-        if (args.FirstOrDefault() == "--p0-dispatcher-child") return args.Length == 2 ? P0Dispatcher.Child(args[1]) : 2;
-#endif
-        try { args = UiVerificationArguments.Normalize(args); }
-        catch (ArgumentException error) { Console.Error.WriteLine(error.Message); return 2; }
-        #if P0_CRASH_HOOKS
-        if (args.Contains("--p0-crash-hooks")) return P0Dispatcher.Parent();
-#endif
-        var root = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-        var evidence = (args.Contains("--unsaved-window-actions") || args.Contains("--management-mode"))
-            ? Path.Combine(root, ".artifacts", "wpf-v2-" + Wire.Id())
-            : Path.Combine(Path.GetTempPath(), "ipc-sportmaster-wpf-" + Wire.Id());
-        Directory.CreateDirectory(evidence);
-        // UI persistence is verified in this run's isolated user directory.
-        // The installed machine's protected ACL is covered by its own fixture.
-        var preferenceRoot = typeof(PresentationPreferences).GetField("UserRootForVerification", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!;
-        var previousPreferenceRoot = preferenceRoot.GetValue(null);
-        preferenceRoot.SetValue(null, (Func<string>)(() => Path.Combine(evidence, "user-preferences")));
-        var previousUserRoot = WindowsStoragePaths.UserRootForVerification;
-        WindowsStoragePaths.UserRootForVerification = () => Path.Combine(evidence, "isolated-user-root");
-        var lines = new List<string>();
-        using var verificationWatchdog = new Timer(_ => Environment.FailFast("Native verification exceeded its modal/cleanup deadline: " + string.Join(" ", args)), null, TimeSpan.FromMinutes(3), Timeout.InfiniteTimeSpan);
-        var desktop = new System.Windows.Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-        desktop.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Desktop.UiVerification;component/Themes/Workstation.xaml", UriKind.Relative) });
-        desktop.Startup += async (_, _) =>
+        if (args is not ["--typography" or "--smoke-screenshots"])
         {
-            try
-            {
-#if LATENCY_MEASUREMENT
-                if (args.Contains("--latency-capacity")) { await VerifyLatencyCapacity(root, lines, args); desktop.Shutdown(0); return; }
-#endif
-                if (args.Contains("--stability-seed-upgrade"))
-                    VerifyPreservedSeedUpgrade(Path.GetDirectoryName(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set same-build desktop assembly"))!, evidence,
-                        (ok, text) => { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS SEED-GUARDS " + text); });
-                else if (args.Contains("--first-preference-save")) await VerifyFirstPreferenceSave(evidence, lines);
-                else if (args.Contains("--window-preference")) await VerifyWindowPreference(root, evidence, lines);
-                else if (args.Contains("--rcs-no-destination-ui")) await VerifyRcsNoDestinationUi(root, evidence, lines);
-                else if (args.Contains("--management-entry-ordering")) await VerifyManagementEntryOrdering(root, evidence, lines);
-                else if (args.Contains("--restart-barcode-details")) await VerifyRestartBarcodeDetails(root, evidence, lines);
-                else if (args.Contains("--parcel-picture-copy")) await VerifyParcelPictureCopy(root, evidence, lines);
-                else if (args.Contains("--paused-workstation")) await VerifyPausedWorkstation(root, evidence, lines);
-                else if (args.Contains("--debug-no-isolation-31-ui")) await VerifyDebugNoIsolation31(root, evidence, lines);
-                else if (args.Contains("--audit-fixes-26")) await VerifyAuditFixes26(root, evidence, lines);
-                else if (args.Contains("--independent-settings")) await VerifyIndependentSettings(root, evidence, lines);
-                else if (args.Contains("--station-settings")) await VerifyStationSettings(root, evidence, lines);
-                else if (args.Contains("--camera-settings-feedback")) await VerifyCameraSettingsFeedback(root, evidence, lines);
-                else if (args.Contains("--startup-defaults-ui")) await VerifyStartupDefaultsUi(root, evidence, lines);
-                else if (args.Contains("--chute-readability")) await VerifyChuteReadability(root, evidence, lines);
-                else if (args.Contains("--station-theme-resources")) await VerifyStationThemeResources(root, evidence, lines);
-                else if (args.Contains("--site-ui-refinement")) { await VerifyStartupDefaultsUi(root, evidence, lines); await VerifyFieldReadability(root, evidence, lines); }
-                else if (args.Contains("--position-input-ui")) await VerifyPositionInputUi(root, evidence, lines);
-                else if (args.Contains("--operator-review-ui")) await VerifyOperatorReviewUi(root, evidence, lines);
-                else if (args.Contains("--installer-review-ui")) await VerifyInstallerReviewUi(evidence, lines);
-                else if (args.Contains("--query-filters")) await VerifyQueryFilters(root, evidence, lines);
-                else if (args.Contains("--session-shift-25")) await VerifySessionShift25(root, evidence, lines);
-                else if (args.Contains("--product-closure-21")) await VerifyStationProductClosure(root, evidence, lines);
-                else if (args.Contains("--startup-close")) await VerifyStartupClose(evidence, lines);
-                else if (args.Contains("--operator-ux-18")) await VerifyOperatorUx18(root, evidence, lines);
-                else if (args.Contains("--operator-workspace")) await VerifyOperatorWorkspace(root, evidence, lines);
-                else if (args.Contains("--station-exit-dialog")) await VerifyStationExitDialog(root, evidence, lines);
-                else if (args.Contains("--home-centered-states")) await VerifyHomeCenteredStates(root, evidence, lines);
-                else if (args.Contains("--station-position-control-ui")) await VerifyStationPositionControlUi(root, evidence, lines);
-                else if (args.Contains("--manual-supply-ui")) await VerifyManualSupplyUi(root, evidence, lines);
-                else if (args.Contains("--continuous-pda-input")) await VerifyContinuousPdaInput(root, evidence, lines);
-                else if (args.Contains("--camera-chain-reliability-ui")) await VerifyCameraChainReliabilityUi(root, evidence, lines);
-                else if (args.Contains("--reader-feedback-22-ui")) await VerifyReaderFeedback22Ui(root, evidence, lines);
-                else if (args.Contains("--unread-package-27-ui")) await VerifyUnreadPackage27Ui(root, evidence, lines);
-                else if (args.Contains("--reader-robustness-28-ui")) await VerifyReaderRobustness28Ui(root, evidence, lines);
-                else if (args.Contains("--operator-corrections-29-ui")) await VerifyOperatorCorrections29(root, evidence, lines);
-                else if (args.Contains("--manual-rcs-debug-ui")) await VerifyManualRcsDebugUi(root, evidence, lines);
-                else if (args.Contains("--camera-round-ui")) await VerifyCameraRoundUi(root, evidence, lines);
-                else if (args.Contains("--camera-stream-ui")) await VerifyCameraStreamUi(root, evidence, lines);
-                else if (args.Contains("--presentation-ordering-ui")) await VerifyPresentationOrderingUi(root, evidence, lines);
-                else if (args.Contains("--camera-barcode-current")) await VerifyCameraBarcodeCurrent(root, evidence, lines);
-                else if (args.Contains("--station-responsive-ui")) await VerifyStationResponsiveUi(root, evidence, lines);
-                else if (args.Contains("--station-latency-ui")) await VerifyStationLatencyUi(root, evidence, lines);
-                else if (args.Contains("--camera-preview-lifecycle")) await VerifyCameraPreviewLifecycle(root, evidence, lines);
-                else if (args.Contains("--workstation-barcode-ready")) await VerifyWorkstationBarcodeReady(root, evidence, lines);
-                else if (args.Contains("--camera-filter-preview")) await VerifyCameraFilterPreview(root, evidence, lines);
-                else if (args.Contains("--camera-debug")) await VerifyCameraDebug(root, evidence, lines);
-                else if (args.Contains("--ui-spec-24")) await VerifyUiSpec24(root, evidence, lines);
-                else if (args.Contains("--debug-log-live")) await VerifyDebugLogLive(root, evidence, lines);
-                else if (args.Contains("--workstation-status-logs")) await VerifyWorkstationStatusLogs(root, evidence, lines);
-                else if (args.Contains("--management-password-layout")) await VerifyManagementPasswordLayout(evidence, lines);
-                else if (args.Contains("--uninstall-result-actions")) await VerifyUninstallResultActions(evidence, lines);
-                else if (args.Contains("--lifecycle-ux")) await VerifyLifecycleNative(root, evidence, lines);
-                else if (args.Contains("--parameter-guidance-startup")) await VerifyParameterGuidanceStartup(root, evidence, lines);
-                else if (args.Contains("--reliability-logs")) await VerifyReliabilityLogs(root, evidence, lines);
-                else if (args.Contains("--win11-stability")) await VerifyStabilityNative(root, evidence, lines);
-                else if (args.Contains("--typography-comparison")) await VerifyTypographyComparison(root, evidence, lines, args);
-                else if (args.Contains("--typography")) await VerifyTypography(evidence, lines);
-                else if (args.Contains("--task-hierarchy-chain")) await VerifyHierarchyChain(root, evidence, lines, args.Contains("--interactive"));
-                else if (args.Contains("--task-hierarchy-parameters")) await VerifyHierarchyParameters(root, evidence, lines, args.Contains("--baseline"), args.Contains("--interactive"));
-                else if (args.Contains("--task-hierarchy"))
-                {
-                    if (!args.Contains("--baseline")) await VerifyTypography(evidence, lines);
-                    await VerifyTaskHierarchy(root, evidence, lines, args.Contains("--baseline"));
-                }
-                else if (args.Contains("--dual-camera-diagnostics")) await VerifyDualCameraDiagnostics(root, evidence, lines);
-                else if (args.Contains("--internal-pages")) await VerifyInternalPages(root, evidence, lines);
-                else if (args.Contains("--lifecycle-maintenance-ui")) await VerifyLifecycleMaintenanceUi(evidence, lines);
-                else if (args.Contains("--installer-lifecycle")) await VerifyInstallerLifecycle(evidence, lines);
-                else if (args.Contains("--maintenance-progress-ui")) await VerifyMaintenanceProgressNative(evidence, lines);
-                else if (args.Contains("--industrial-maintenance-ui")) await VerifyIndustrialMaintenanceUi(evidence, lines, args.Contains("--baseline"));
-                else if (args.Contains("--installer-first-run-ui")) { await VerifyInstallerFirstRunUi(root, evidence, lines); await VerifyMaintenanceProgressNative(evidence, lines); }
-                else if (args.Contains("--clean-install-bootstrap")) await VerifyCleanInstallBootstrap(evidence, lines);
-                else if (args.Contains("--management-mode")) await VerifyOperatorAdministration(root, evidence, lines);
-                else if (args.Contains("--complete-backup-ui")) await VerifyCompleteBackupUi(root, evidence, lines);
-                else if (args.Contains("--management-close-read-race")) await VerifyManagementCloseReadRace(root, evidence, lines);
-                else if (args.Contains("--debug-batch-actions")) await VerifyDebugBatchActions(root, evidence, lines);
-                else if (args.Contains("--startup-read-failure")) await VerifyStartupReadFailure(evidence, lines);
-                else if (args.Contains("--startup-experience")) await VerifyStartupExperience(root, evidence, lines);
-                else if (args.Contains("--parameter-shell-polish")) await VerifyParameterShellPolish(root, evidence, lines, args.Contains("--baseline"));
-                else if (args.Contains("--parameter-experience")) await VerifyParameterExperience(root, evidence, lines, args.Contains("--interactive"), args.Contains("--baseline"));
-                else if (args.Contains("--hikrobot-sdk-editing")) await VerifyHikrobotSdkEditing(root, evidence, lines);
-                else if (args.Contains("--parameter-v3-only")) await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive"));
-                else if (args.Contains("--parameter-v3")) { await VerifyTaskRedesign(root, evidence, lines, false); await VerifyParameterExperience(root, evidence, lines, false, false); await VerifyParameterRefactor(root, evidence, lines, false); await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive")); }
-                else if (args.Contains("--unsaved-window-actions")) await VerifyUnsavedWindowActions(evidence, lines);
-                else if (args.Contains("--task-redesign")) await VerifyTaskRedesign(root, evidence, lines, args.Contains("--interactive"));
-                else if (args.Contains("--parameter-refactor")) await VerifyParameterRefactor(root, evidence, lines, args.Contains("--interactive"));
-                else if (args.Contains("--audit-performance")) await VerifyAuditPerformance(root, evidence, lines);
-                else if (args.Contains("--visual-productization")) await VerifyVisualProductization(root, evidence, lines, args.Contains("--baseline"), args.Contains("--interactive"));
-                else if (args.Contains("--industrial-help")) await VerifyIndustrialHelp(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90));
-                else if (args.Contains("--comm-native-pages")) await VerifyCommercialPages(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90));
-                else await Verify(root, evidence, lines, args.Contains("--commercial-productization-native")).WaitAsync(TimeSpan.FromSeconds(90));
-                desktop.Shutdown(0);
-            }
-            catch (Exception ex) { lines.Add("FAIL " + ex); desktop.Shutdown(1); }
-            finally { File.WriteAllLines(Path.Combine(evidence, "WINDOWS-WPF.log"), lines); Directory.CreateDirectory(Path.Combine(root, ".artifacts")); File.WriteAllText(Path.Combine(root, ".artifacts/WINDOWS-WPF-EVIDENCE.txt"), evidence); }
-        };
-        try { return desktop.Run(); }
-        finally { WindowsStoragePaths.UserRootForVerification = previousUserRoot; preferenceRoot.SetValue(null, previousPreferenceRoot); }
-    }
-    static async Task Verify(string root, string evidence, List<string> lines, bool syntheticIdentity = false)
-    {
-        void Check(bool yes, string reason) { if (!yes) throw new InvalidOperationException(reason); lines.Add("PASS " + reason); }
-        var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
-        config = config with
-        {
-            Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with
-            { InstanceId = "native.operator", Target = "reference://native-operator", Parameters = new() { ["subjects"] = "alice" } }
-        };
-        ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
-        var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
-        IBusinessRuntime runtime;
-        if (syntheticIdentity)
-        {
-            lines.Add("SYNTHETIC identity/ports injection: native WPF resources and interactions only; real UAC/policy/SDK/installation NOT_RUN");
-            runtime = new Ipc.Application.ParcelFlow.ParcelRuntime(launch, new Ipc.Application.Sportmaster.SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
+            Console.Error.WriteLine("Usage: Ipc.Desktop.UiVerification --typography | --smoke-screenshots");
+            return 2;
         }
-        else runtime = SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
-        await using (runtime)
-        {
-            await runtime.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize((IParcelApplication)runtime.Application);
-            var application = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>();
-            var probe = (ProjectionProbe)(object)application; probe.Inner = (IParcelApplication)runtime.Application;
-            var stops = 0; var stopCalls = 0; var failNextStop = false;
-            var classic = CreateSharedShellForVerification(application);
-            var alternate = (SupplyStationWindow)Presentation.Create(application, null, "standard", "supply-station", async () => { stopCalls++; if (failNextStop) { failNextStop = false; throw new IOException("SYNTHETIC owner stop failed"); } await runtime.StopAsync(CancellationToken.None); stops++; });
-            await using var windowOwners = new NativeWindowOwners(); windowOwners.Track(classic); windowOwners.Track(alternate);
-            classic.Show(); alternate.Show(); await Task.Delay(1200);
-            Check(classic is ShellWindow && alternate.ViewModel.Fresh, "shared Shell and current Sportmaster window load actual resources and snapshots");
-            Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "two current windows share the same actual Application");
-            Check(Descendants(alternate).OfType<SupplyStationPosition>().Count() == 2, "both native position controls load their own theme dictionaries");
-            ((ParcelViewModel)classic.DataContext).OperatorSubject = "alice";
-            await ((ParcelViewModel)classic.DataContext).RunAsync(() => ((ParcelViewModel)classic.DataContext).LoginAsync("SIMULATION_ONLY"), "原生参考登录");
-            Check(((ParcelViewModel)classic.DataContext).Snapshot!.CurrentOperator?.Subject == "alice", "native fixture enables actual optional operator authentication");
-            await alternate.ViewModel.RefreshAsync();
-            await alternate.ViewModel.EmitPositionAsync(alternate.ViewModel.Left);
-            await alternate.ViewModel.EmitPositionAsync(alternate.ViewModel.Right);
-            for (var i = 0; i < 100; i++)
-            {
-                await alternate.ViewModel.RefreshDisplayAsync();
-                if (alternate.ViewModel.Snapshot!.Operations.Length == 2 && alternate.ViewModel.Snapshot.Operations.All(x => x.State == ParcelState.SlotResolved)) break;
-                await Task.Delay(50);
-            }
-            Check(alternate.ViewModel.Snapshot!.Operations.Length == 2 && alternate.ViewModel.Snapshot.Operations.All(x => x.State == ParcelState.SlotResolved), "native window reads actual two-position operations");
-            await alternate.ShowDetailsAsync(alternate.ViewModel.Left.Operation!);
-            Check(alternate.ViewModel.SelectedHistory?.Operation.Id == alternate.ViewModel.Left.Operation!.Id, "left details and selected history identity agree");
-            await alternate.ShowDetailsAsync(alternate.ViewModel.Right.Operation!);
-            Check(alternate.ViewModel.SelectedHistory?.Operation.Id == alternate.ViewModel.Right.Operation!.Id, "right details replace both selected row and command target");
-            Click(alternate, "作业记录");
-            Check(((ContentControl)alternate.FindName("PageHost")).Content is HistoryPage, "history navigation uses installed native page");
-            var fieldSettings = await OpenFieldSettingsForVerification(alternate);
-            Check(((ContentControl)fieldSettings.FindName("EditorHost")).Content is MaintenancePage && alternate.ViewModel.SelectedPage == "history", "independent field settings preserve the workstation page");
-            fieldSettings.Close(); await Task.Delay(200);
-            await VerifyMaintenanceControls(classic, (ParcelViewModel)classic.DataContext, Check);
-            Click(alternate, "工作台"); Click(alternate, "辅助窗口"); await Task.Delay(700);
-            var child = alternate.OwnedWindows.OfType<SupplyStationWindow>().Single();
-            Check(ReferenceEquals(child.ViewModel.Application, application) && !ReferenceEquals(child.ViewModel, alternate.ViewModel), "auxiliary window inherits UI and shares Application with independent model");
-            child.Close();
-            for (var i = 0; i < 100 && child.IsVisible; i++) await Task.Delay(50);
-            Check(stops == 0 && !child.IsVisible, "closing auxiliary window keeps business owner alive; " + child.ViewModel.Message);
-            probe.Project = snapshot => snapshot with
-            {
-                AuxiliaryReasons = Enumerable.Range(0, 50).Select(i => $"SYNTHETIC retained receipt {i}: original custody and upload failure detail").ToArray(),
-                BlockingReasons = Enumerable.Range(0, 50).Select(i => $"SYNTHETIC long blocking reason {i}").ToArray()
-            };
-            alternate.ViewModel.Message = string.Join("\n", Enumerable.Repeat("SYNTHETIC long diagnostic", 50));
-            await alternate.ViewModel.RefreshDisplayAsync(); alternate.UpdateLayout();
-            var header = (ScrollViewer)alternate.FindName("HeaderDiagnostics");
-            var diagnostics = (ScrollViewer)alternate.FindName("StatusDiagnostics");
-            var page = (ContentControl)alternate.FindName("PageHost");
-            Check(header.ActualHeight <= 132 && diagnostics.ActualHeight <= 96 && page.ActualHeight > 240,
-                "50 receipt reasons and long messages scroll locally without consuming work area");
-            Check(alternate.ViewModel.AuxiliaryState.Contains("receipt 49"), "bounded diagnostic display retains all original entries");
-            var client = (Grid)alternate.FindName("ClientArea");
-            foreach (var position in Descendants(alternate).OfType<SupplyStationPosition>())
-            {
-                var actions = (Border)position.FindName("FixedActions");
-                var bounds = actions.TransformToAncestor(client).TransformBounds(new Rect(actions.RenderSize));
-                Check(actions.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= client.ActualHeight,
-                    "position recovery actions stay within the effective client area under diagnostic backlog");
-            }
-            await VerifyClientGeometry(classic, (ParcelViewModel)classic.DataContext, probe, evidence, "shared-shell", Check);
-            await VerifyClientGeometry(alternate, alternate.ViewModel, probe, evidence, "supply-station", Check);
-            probe.Project = null; await alternate.ViewModel.RefreshDisplayAsync();
-            Click(alternate, "辅助窗口"); await Task.Delay(200);
-            var remaining = alternate.OwnedWindows.OfType<SupplyStationWindow>().Single();
-            var fields = BindingFlags.Instance | BindingFlags.NonPublic;
-            var pendingChildRead = new TaskCompletionSource();
-            typeof(SupplyStationWindow).GetField("pendingRefresh", fields)!.SetValue(remaining, pendingChildRead.Task);
-            var childTimer = (DispatcherTimer)typeof(SupplyStationWindow).GetField("timer", fields)!.GetValue(remaining)!;
-            failNextStop = true; remaining.Close(); alternate.Close();
-            Check(stopCalls == 0, "overlapping child and owner close drain the original pending read first");
-            pendingChildRead.SetResult();
-            for (var i = 0; i < 100 && !alternate.IsEnabled; i++) await Task.Delay(20);
-            Check(alternate.IsVisible && alternate.IsEnabled && remaining.IsVisible && childTimer.IsEnabled && stops == 0,
-                "owner stop failure retains both overlapping windows and resumes their native timers");
-            remaining.Close(); for (var i = 0; i < 100 && remaining.IsVisible; i++) await Task.Delay(50);
-            Check(!remaining.IsVisible && !childTimer.IsEnabled, "independent native auxiliary close after root failure is terminal");
-            alternate.Close();
-            for (var i = 0; i < 100 && alternate.IsVisible; i++) await Task.Delay(50);
-            Check(stops == 1 && stopCalls == 2 && !alternate.IsVisible && !remaining.IsVisible && !childTimer.IsEnabled,
-                "owner retry stops business once and leaves closed auxiliary timer stopped");
-            classic.Close();
-        }
-        await VerifyCurrentDraftClose(evidence, config, Check, syntheticIdentity);
-        lines.Add("PASS WINDOWS WPF SMOKE; real SDK/WCS/device/field acceptance remains BLOCKED");
-    }
-    static async Task<StationSettingsWindow> OpenFieldSettingsForVerification(SupplyStationWindow station)
-    {
-        void Press(Button button) => station.Dispatcher.BeginInvoke(new Action(() => button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent))));
-        async Task Until(Func<bool> ready) => await CameraRoundHarness.Until(async () => { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); return ready(); });
-        Press((Button)station.FindName("StationSettingsEntry"));
-        await Until(() => station.OwnedWindows.OfType<StationSettingsWindow>().Any(w => w.IsVisible));
-        var settings = station.OwnedWindows.OfType<StationSettingsWindow>().Single(w => w.IsVisible);
-        if (((ContentControl)settings.FindName("EditorHost")).IsVisible) return settings;
-        Press((Button)settings.FindName("EditSettings"));
-        await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible));
-        var password = System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Single(w => w.IsVisible);
-        await Until(() => Descendants(password).OfType<PasswordBox>().Any(p => p.Name == "ManagementPassword" && p.IsVisible && p.IsEnabled));
-        Descendants(password).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = ManagementModeFixture.NativeInputPassword;
-        Press(Descendants(password).OfType<Button>().Single(b => b.Name == "EnterManagementMode"));
-        await Until(() => !password.IsVisible && ((ContentControl)settings.FindName("EditorHost")).IsVisible && station.ViewModel.HasLoadedConfiguration && !station.ViewModel.Busy);
-        return settings;
-    }
-    static void Click(DependencyObject root, string name)
-    {
-        if (root is OperationsViewFixture operations)
-        {
-            operations.Navigate(name switch { "设备与诊断" or "诊断与恢复" or "站位与设备诊断" => "diagnostics", "设置" or "参数设置" or "设备与维护" or "参数配置" => "maintenance", "调试" or "相机调试" => "debug", "日志" => "logs", "返回作业" => "workstation", _ => throw new InvalidOperationException("Unknown operations fixture page: " + name) });
-            return;
-        }
-        if (root is ShellWindow)
-            name = name switch { "设备与维护" or "参数配置" => "参数设置", _ => name };
-        if (root is SupplyStationWindow station)
-        {
-            if (name is "诊断与恢复" or "站位与设备诊断") throw new InvalidOperationException("Diagnostics moved to operations tool");
-            name = name switch { "设备与维护" or "参数配置" => "参数设置", "工作台" => "作业", "作业记录" => "记录", "日志查询" => "日志", _ => name };
-            if (name == "参数设置" && station.ViewModel.SelectedPage == "maintenance") return;
-            // The settings tab row was removed; the left navigation "设置" opens the same page.
-            if (name == "参数设置") name = "设置";
-            if (name == "相机调试") name = "调试";
-            if (name == "返回作业") name = "作业";
-        }
-        var button = Descendants(root).OfType<Button>().SingleOrDefault(x => Equals(x.Content, name));
-        if (button is not null) button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        else Descendants(root).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>().SelectMany(MenuItems)).Single(x => Equals(x.Header, name)).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-        static IEnumerable<MenuItem> MenuItems(MenuItem item)
-        {
-            yield return item;
-            foreach (var child in item.Items.OfType<MenuItem>()) foreach (var nested in MenuItems(child)) yield return nested;
-        }
-    }
-    static async Task ObserveSaveReviewAsync(Window owner, MaintenancePage page, Action<Window> inspect)
-    {
-        var opened = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(80) };
-        timer.Tick += (_, _) =>
-        {
-            var dialog = owner.OwnedWindows.OfType<Window>().SingleOrDefault(w => w.Title == "保存更改");
-            if (dialog is null) return;
-            timer.Stop();
-            Exception? failure = null;
-            try
-            {
-                var authorization = Descendants(dialog).OfType<Expander>().Single(e => Equals(e.Header, "管理模式"));
-                if (authorization.IsVisible) authorization.IsExpanded = true;
-                dialog.UpdateLayout();
-                inspect(dialog);
-            }
-            catch (Exception ex) { failure = ex; }
-            try
-            {
-                var back = Descendants(dialog).OfType<Button>().Single(b => Equals(b.Content, "返回设置"));
-                if (!back.IsVisible || !back.IsEnabled) throw new InvalidOperationException("Save review cannot return to the current settings.");
-                back.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                if (dialog.IsVisible) throw new InvalidOperationException("Save review did not return after its read-only inspection.");
-            }
-            catch (Exception ex)
-            {
-                failure = failure is null ? ex : new AggregateException(failure, ex);
-                if (dialog.IsVisible) dialog.Close();
-            }
-            if (failure is null) opened.TrySetResult(); else opened.TrySetException(failure);
-        };
-        timer.Start();
-        try
-        {
-            var save = (Button)page.FindName("SaveChanges");
-            if (!save.IsVisible || !save.IsEnabled) throw new InvalidOperationException("The native save-review entry is not available.");
-            save.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            // Opening now awaits complete-candidate validation. Keep the native
-            // observer alive after the async click returns, until the review closes.
-            await opened.Task.WaitAsync(TimeSpan.FromSeconds(10));
-        }
-        finally { timer.Stop(); }
-    }
-    static IEnumerable<DependencyObject> Descendants(DependencyObject root)
-    {
-        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
-        { var child = VisualTreeHelper.GetChild(root, i); yield return child; foreach (var nested in Descendants(child)) yield return nested; }
-    }
-}
 
-// Synthetic layout projection only; every command still reaches the same real Application.
-public class ProjectionProbe : DispatchProxy
-{
-    public IParcelApplication Inner = null!;
-    public Func<ParcelSnapshot, ParcelSnapshot>? Project;
-    public CapabilityCatalog? Catalog;
-    protected override object? Invoke(MethodInfo? method, object?[]? arguments)
-    {
-        if (method!.Name == nameof(IParcelApplication.SnapshotAsync)) return Snapshot();
-        if (method.Name == nameof(IParcelApplication.CapabilitiesAsync) && Catalog is not null) return Task.FromResult(Catalog);
-        return method.Invoke(Inner, arguments);
+        var root = new DirectoryInfo(AppContext.BaseDirectory);
+        while (!File.Exists(Path.Combine(root.FullName, "ImporterPc.slnx")) && root.Parent is { } parent)
+            root = parent;
+        var evidenceRoot = Environment.GetEnvironmentVariable("IPC_UI_EVIDENCE") ?? Path.Combine(root.FullName, ".artifacts", "window-native");
+        var evidence = Path.Combine(evidenceRoot, args[0][2..] + "-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(evidence);
+        WindowsStoragePaths.UserRootForVerification = () => Path.Combine(evidence, "isolated-user-root");
+        typeof(PresentationPreferences).GetField("UserRootForVerification", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!
+            .SetValue(null, (Func<string>)(() => Path.Combine(evidence, "user-preferences")));
+        var lines = new List<string>();
+        var app = new System.Windows.Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+        app.Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Presentation.Wpf;component/Themes/Workstation.xaml", UriKind.Relative) });
+        using var watchdog = new Timer(_ => Environment.FailFast("UI verification exceeded five minutes."), null, TimeSpan.FromMinutes(5), Timeout.InfiniteTimeSpan);
+        app.Startup += async (_, _) =>
+        {
+            var code = 0;
+            try
+            {
+                if (args[0] == "--typography") await VerifyTypography(evidence, lines);
+                else await SmokeScreenshots(root.FullName, evidence, lines);
+            }
+            catch (Exception error)
+            {
+                Console.Error.WriteLine(error);
+                lines.Add(error.ToString());
+                code = 1;
+            }
+            finally
+            {
+                File.WriteAllLines(Path.Combine(evidence, "WINDOWS-WPF.log"), lines);
+                Console.WriteLine($"Evidence: {evidence}");
+                app.Shutdown(code);
+            }
+        };
+        return app.Run();
     }
-    async Task<ParcelSnapshot> Snapshot()
+
+    static async Task Capture(Window window, double width, double height, string evidence, string name, List<string> lines)
     {
-        var snapshot = await Inner.SnapshotAsync(); return Project?.Invoke(snapshot) ?? snapshot;
+        await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        var client = (FrameworkElement)window.Content;
+        if (Math.Abs(client.ActualWidth - width) >= 1 || Math.Abs(client.ActualHeight - height) >= 1)
+        {
+            await NativeClientSize.Set(window, client, width, height);
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        }
+        window.UpdateLayout();
+        CaptureInternal(evidence, name, client, lines);
+    }
+
+    static IEnumerable<T> Visuals<T>(DependencyObject root) where T : DependencyObject
+    {
+        if (root is T match) yield return match;
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+            foreach (var child in Visuals<T>(VisualTreeHelper.GetChild(root, i)))
+                yield return child;
+    }
+
+    static async Task AwaitUi(Func<bool> ready)
+    {
+        var started = Stopwatch.GetTimestamp();
+        do
+        {
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            if (ready()) return;
+            await Task.Delay(25);
+        } while (Stopwatch.GetElapsedTime(started) < TimeSpan.FromSeconds(20));
+        throw new TimeoutException("Native page did not become ready.");
     }
 }

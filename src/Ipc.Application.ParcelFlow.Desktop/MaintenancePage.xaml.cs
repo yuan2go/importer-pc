@@ -29,7 +29,16 @@ public partial class MaintenancePage : UserControl
     public event EventHandler? DisplayPreferencesRequested;
     public event EventHandler<ParameterDiagnosticTarget>? DiagnosticsRequested;
     public Func<string, FrameworkElement>? CameraPreviewFactory { get => MainParameterEditor.CameraPreviewFactory; set => MainParameterEditor.CameraPreviewFactory = value; }
-    public void SetStationSettingsLayout(bool value) => MainParameterEditor.SetStationSettingsLayout(value);
+    public void SetStationSettingsLayout(StackPanel? footer)
+    {
+        if (footer is not null) MainParameterEditor.SetStationSettingsLayout(true);
+        ConfigurationFooter.Visibility = footer is null ? Visibility.Visible : Visibility.Collapsed;
+        foreach (var action in new[] { ViewChanges, SaveChanges })
+        {
+            if (action.Parent is Panel current) current.Children.Remove(action);
+            (footer ?? ConfigurationActions).Children.Add(action);
+        }
+    }
     public MaintenancePage()
     {
         InitializeComponent();

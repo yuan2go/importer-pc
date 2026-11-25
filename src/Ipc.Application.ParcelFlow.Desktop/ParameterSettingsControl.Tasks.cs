@@ -8,6 +8,39 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed partial class ParameterSettingsControl
 {
     public Func<string, FrameworkElement>? CameraPreviewFactory { get; set; }
+
+    static Border ActivationBadge(string label, string background) => Themed(new Border
+    {
+        Child = Themed(new TextBlock { Text = label, FontSize = UiTypography.Diagnostic }, TextBlock.ForegroundProperty, "Muted"),
+        Padding = new(6, 2, 6, 2), CornerRadius = new(8), Margin = new(6, 0, 0, 4), VerticalAlignment = VerticalAlignment.Center
+    }, Border.BackgroundProperty, background);
+
+    DockPanel ReconnectHeading(TextBlock heading, ParameterFormPanel[] forms)
+    {
+        var header = new DockPanel { Margin = new(0, 0, 0, 8) };
+        var badge = ActivationBadge(FirstConfiguration ? "启动时连接" : "修改后自动重连生效", "AccentBackground");
+        badge.ToolTip = FirstConfiguration ? "进入工作站后校验已填写的连接。"
+            : "修改已配置连接时可自动重连。新增或移除连接需重启，具体以保存结果为准。";
+        badge.Visibility = Visibility.Collapsed;
+        DockPanel.SetDock(badge, Dock.Right);
+        header.Children.Add(badge);
+        heading.Margin = new(0);
+        heading.VerticalAlignment = VerticalAlignment.Center;
+        header.Children.Add(heading);
+        // Ownership filtering and reparenting finish before the heading summarizes these fields.
+        groupActivationLabels.Add(() =>
+        {
+            foreach (var form in forms)
+                foreach (UIElement field in form.Children)
+                    if (reconnectBadges.TryGetValue(field, out var individual))
+                    {
+                        individual.Visibility = Visibility.Collapsed;
+                        badge.Visibility = Visibility.Visible;
+                    }
+        });
+        return header;
+    }
+
     void ArrangeSportmasterPages()
     {
         var station = pages.First(p => p.Title == "供包台标识");
@@ -15,7 +48,7 @@ public sealed partial class ParameterSettingsControl
             station.Title = "本站与 RCS";
             // Station identity and RCS endpoint share a page; each camera owns its code.
             if (station.Body.Children.OfType<ParameterFormPanel>().FirstOrDefault() is { } identity)
-            { var heading = Text("本站身份", true); heading.Margin = new(0, 16, 0, 8); station.Body.Children.Insert(station.Body.Children.IndexOf(identity), heading); }
+                identity.SectionHeader = ReconnectHeading(Text("本站身份", true), [identity]);
             var service = Section(station, "RCS 服务");
             var protocol = AdvancedForm(station, "协议与心跳");
             foreach (var component in Model!.Components.Where(ParameterOwnership.IsRcs))
@@ -37,21 +70,25 @@ public sealed partial class ParameterSettingsControl
                 { rcs.Body.Children.Remove(running); station.Body.Children.Insert(station.Body.Children.IndexOf(service.Heading), running); }
                 rcs.Applicable = () => false;
             }
-            foreach (var section in new[] { service }.Where(x => x.Form.Children.Count == 0))
-            { station.Body.Children.Remove(section.Heading); station.Body.Children.Remove(section.Form); }
-            if (protocol.Children.Count == 0 && protocol.Parent is Expander folded) station.Body.Children.Remove(folded);
+            station.Body.Children.Remove(service.Heading);
+            service.Form.SectionHeader = ReconnectHeading(service.Heading, [service.Form]);
+            if (protocol.Parent is Expander folded)
+            {
+                if (protocol.Children.Count == 0) station.Body.Children.Remove(folded);
+                else folded.Header = ReconnectHeading(Text("协议与心跳", true), [protocol]);
+            }
         }
         var cameraPages = pages.Where(p => p.Category == 2 && p.Title is "左相机" or "右相机").ToArray();
         if (cameraPages.Length > 0)
         {
-            var combined = Page(2, "左右相机", "填写 IP 后，保存时自动读取并保存序列号；已有设备身份保持不变。不使用的位置清空 IP。保存后只重新连接改动的那台相机。");
+            var combined = Page(2, "左右相机", "填写相机 IP，保存时自动读取序列号。不用的相机请清空 IP。");
             var columns = new Grid(); columns.ColumnDefinitions.Add(new()); columns.ColumnDefinitions.Add(new()); columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
             combined.Body.Children.Add(columns);
             foreach (var (page, index) in cameraPages.Select((p, i) => (p, i)))
             {
                 foreach (var note in page.Body.Children.OfType<TextBlock>().Where(t => t.Text.StartsWith("填写要使用的相机", StringComparison.Ordinal) || t.Text.StartsWith("填写相机 IP", StringComparison.Ordinal) || t.Text.StartsWith("相机连续读码", StringComparison.Ordinal)).ToArray()) page.Body.Children.Remove(note);
                 var cameraDraft = Model!.Readers.First(r => (r.Role == "left" ? "左相机" : "右相机") == page.Title);
-                if (cameraDraft.Provider?.Implementation == "hikrobot-mvs-reader" && locations.TryGetValue(cameraDraft.InstanceId + "/Provider", out var provider) && provider.Row is { } providerRow && providerRow.Parent is Panel providerParent)
+                if (SmParameterOwnership.Show(Audience, cameraDraft.InstanceId + "/Provider") && cameraDraft.Provider?.Implementation == "hikrobot-mvs-reader" && locations.TryGetValue(cameraDraft.InstanceId + "/Provider", out var provider) && provider.Row is { } providerRow && providerRow.Parent is Panel providerParent)
                 {
                     providerParent.Children.Remove(providerRow);
                     if (provider.Control.Parent is Panel identityParent) identityParent.Children.Remove(provider.Control);
@@ -64,6 +101,13 @@ public sealed partial class ParameterSettingsControl
                 if (!FirstConfiguration && CameraPreviewFactory is { } preview)
                 {
                     page.Body.Children.Add(new Expander { Header = "实时预览", Content = preview(cameraDraft.InstanceId), Margin = new(0, 8, 0, 0) });
+                }
+                if (page.Body.Children[0] is TextBlock cameraHeading)
+                {
+                    var forms = page.Body.Children.OfType<ParameterFormPanel>().Concat(
+                        page.Body.Children.OfType<Expander>().Select(expander => expander.Content).OfType<ParameterFormPanel>()).ToArray();
+                    page.Body.Children.Remove(cameraHeading);
+                    page.Body.Children.Insert(0, ReconnectHeading(cameraHeading, forms));
                 }
                 var card = Card(page.Body); card.Margin = index == 0 ? new(0, 0, 8, 8) : new(8, 0, 0, 8);
                 page.Body.Margin = new(0);

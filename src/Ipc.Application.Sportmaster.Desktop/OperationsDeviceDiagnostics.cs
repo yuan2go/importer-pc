@@ -42,7 +42,7 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
         {
             var text = ProductText(""); text.SetBinding(TextBlock.TextProperty, new Binding(property) { Source = source }); return text;
         }
-        StackPanel Card(string title, string key, FrameworkElement status)
+        StackPanel Card(string title, string key, Border status)
         {
             var content = new StackPanel();
             var heading = new DockPanel { Margin = new(0, 0, 0, 4) };
@@ -55,28 +55,33 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
             content.Children.Add(heading);
 
             var column = cards.Children.Count % 2;
-            var card = new Border { Child = content, BorderThickness = new(1), Padding = new(14),
-                Margin = column == 0 ? new(0, 0, 4, 8) : new(4, 0, 0, 8) };
-            card.SetResourceReference(Border.CornerRadiusProperty, "RadiusCard");
-            card.SetResourceReference(Border.BackgroundProperty, "Surface");
-            card.SetResourceReference(Border.BorderBrushProperty, "Line");
+            var card = new Border { Child = content, Margin = column == 0 ? new(0, 0, 6, 12) : new(6, 0, 0, 12) };
+            card.SetResourceReference(StyleProperty, "WorkstationCard");
             AutomationProperties.SetAutomationId(card, "DiagnosticCard." + key);
             Grid.SetRow(card, cards.Children.Count / 2);
             Grid.SetColumn(card, column);
             cards.Children.Add(card);
             return content;
         }
-        TextBlock Badge(object source, string prefix)
+        Border Badge(TextBlock label)
         {
-            var badge = new TextBlock { Padding = new(8, 4, 8, 4), Margin = new(8, 0, 0, 0),
-                VerticalAlignment = VerticalAlignment.Center, FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap };
-            foreach (var (property, suffix) in new[] { (TextBlock.TextProperty, "Text"), (TextBlock.ForegroundProperty, "Foreground"), (TextBlock.BackgroundProperty, "Background") })
-                badge.SetBinding(property, new Binding(prefix + "." + suffix) { Source = source });
-            return badge;
+            var pill = new Border { Child = label, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center };
+            pill.SetResourceReference(StyleProperty, "OperatorStatusBadge");
+            pill.SetBinding(Border.BorderBrushProperty, new Binding(nameof(label.Foreground)) { Source = label });
+            return pill;
+        }
+        Border ConnectionBadge(object source, string prefix)
+        {
+            var label = new TextBlock { FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap };
+            var pill = Badge(label);
+            label.SetBinding(TextBlock.TextProperty, new Binding(prefix + ".Text") { Source = source });
+            label.SetBinding(TextBlock.ForegroundProperty, new Binding(prefix + ".Foreground") { Source = source });
+            pill.SetBinding(Border.BackgroundProperty, new Binding(prefix + ".Background") { Source = source });
+            return pill;
         }
         void Connection(string name, string id, string diagnosis, string time, SupplyStationPositionViewModel? position)
         {
-            var row = Card(name, id, position is null ? Badge(ViewModel, "RcsPresentation") : Badge(position, "DevicePresentation"));
+            var row = Card(name, id, position is null ? ConnectionBadge(ViewModel, "RcsPresentation") : ConnectionBadge(position, "DevicePresentation"));
             row.Children.Add(Bound(diagnosis, ViewModel));
             var buttons = new WrapPanel(); var primary = new Button { MinHeight = 44, MinWidth = 112, Margin = new(0, 6, 12, 6) }; buttons.Children.Add(primary);
             bool deferred = true, ready = false;
@@ -140,12 +145,10 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
         Connection("左相机", ViewModel.Left.ReaderId, nameof(ViewModel.LeftConnectionDiagnosis), nameof(ViewModel.LeftConnectionTime), ViewModel.Left);
         Connection("右相机", ViewModel.Right.ReaderId, nameof(ViewModel.RightConnectionDiagnosis), nameof(ViewModel.RightConnectionTime), ViewModel.Right);
         Connection("RCS", "shared", nameof(ViewModel.RcsConnectionDiagnosis), nameof(ViewModel.RcsConnectionTime), null);
-        var storageBadge = ProductText("等待读取");
-        storageBadge.FontSize = UiTypography.Label;
-        storageBadge.Padding = new(8, 4, 8, 4);
-        storageBadge.VerticalAlignment = VerticalAlignment.Center;
-        var storage = Card("存储", "storage", storageBadge); var storageText = ProductText(""); storage.Children.Add(storageText);
-        var storageSettings = new Button { Content = "数据与记录设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+        var storageBadge = new TextBlock { Text = "等待读取", FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap };
+        var storagePill = Badge(storageBadge);
+        var storage = Card("存储", "storage", storagePill); var storageText = ProductText(""); storage.Children.Add(storageText);
+        var storageSettings = new Button { Content = "数据与记录设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 0, 0, 10) };
         storageSettings.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
         storageSettings.Click += async (_, _) => await settings(null, "HistoryDays"); storage.Children.Add(storageSettings);
         var storageDetails = new StackPanel(); storageDetails.Children.Add(Bound(nameof(ViewModel.BackupStatusText), ViewModel));
@@ -159,7 +162,7 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
                 free is null ? ("状态未确认", "Muted") : ("正常", "Success");
             storageBadge.Text = label;
             storageBadge.SetResourceReference(TextBlock.ForegroundProperty, ink);
-            storageBadge.SetResourceReference(TextBlock.BackgroundProperty, ink == "Muted" ? "Soft" : ink + "Background");
+            storagePill.SetResourceReference(Border.BackgroundProperty, ink == "Muted" ? "Soft" : ink + "Background");
             storageText.Text = capacity is null ? "等待存储状态更新。" : free is { } bytes
                 ? $"剩余 {bytes / 1048576:N0} MiB。低于 {capacity.MinimumFreeBytes / 1048576:N0} MiB 时停止新供包。"
                 : "剩余空间未确认。请检查 D 盘并等待状态更新。";

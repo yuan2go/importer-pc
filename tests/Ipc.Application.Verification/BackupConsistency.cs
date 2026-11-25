@@ -17,7 +17,17 @@ internal static class BackupConsistency
         return json.RootElement.GetProperty("Background").EnumerateArray().Single(b => b.GetProperty("Name").GetString() == "maintenance").GetProperty("LastProgress").GetDateTimeOffset();
     }
     static async Task Command(ParcelRuntime app, string kind)
-    { var s = await app.SnapshotAsync(); Check((await app.CommandAsync(new(Wire.Id(), s.Revision, kind))).Status == "Persisted", kind + " uses actual application command"); }
+    {
+        for (var attempt = 0; attempt < 20; attempt++)
+        {
+            var snapshot = await app.SnapshotAsync();
+            var receipt = await app.CommandAsync(new(Wire.Id(), snapshot.Revision, kind));
+            if (receipt.Status == "Conflict") continue;
+            Check(receipt.Status == "Persisted", kind + " uses actual application command: " + receipt.Reason);
+            return;
+        }
+        throw new TimeoutException(kind + " never obtained an unchanged command revision");
+    }
     public static async Task Run(string workspace, string root)
     {
         foreach (var outcome in new[] { "complete", "cancel", "copy-failure" }) await Interleaving(workspace, Path.Combine(root, outcome), outcome == "cancel", outcome == "copy-failure");
@@ -29,7 +39,9 @@ internal static class BackupConsistency
     }
     static async Task Interleaving(string workspace, string root, bool cancel, bool fail)
     {
-        await using var h = new CameraRoundHarness(workspace, root);
+        // This fixture controls the backup boundary. A new periodic probe can
+        // reserve heartbeat work after the initial confirmation and pause.
+        await using var h = new CameraRoundHarness(workspace, root, heartbeatSeconds: 3600);
         h.Peer.ReplySlot = "";
         await h.StartAsync(rcsImplementationFingerprint: new string('A', 64)); await h.WaitForCameraAdmissionAsync();
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-BACKUP"), 1);

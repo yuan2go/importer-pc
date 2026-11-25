@@ -23,6 +23,7 @@ public sealed class ManagementModeMenu : Button
     readonly ContextMenu menu = new() { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body };
     public ManagementModeMenu()
     {
+        SetResourceReference(FocusVisualStyleProperty, "FocusRing");
         FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; MinHeight = 44; Padding = new(10, 6, 10, 6);
         SetResourceReference(BackgroundProperty, "Soft"); SetResourceReference(ForegroundProperty, "Muted"); BorderBrush = Brushes.Transparent;
         var content = new StackPanel { Orientation = Orientation.Horizontal };

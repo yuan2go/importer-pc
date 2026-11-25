@@ -1,18 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
- <ItemGroup><Compile Include="../../src/Ipc.Desktop/ParcelStartupWindow.cs" Link="ParcelStartupWindow.cs"/></ItemGroup>
- <PropertyGroup><DefineConstants>$(DefineConstants);SPORTMASTER;LATENCY_MEASUREMENT;P0_CRASH_HOOKS</DefineConstants></PropertyGroup>
- <ItemGroup><Compile Include="../../src/Ipc.Desktop/DesktopCrashHooks.cs" Link="DesktopCrashHooks.cs"/></ItemGroup>
- <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting><NuGetLockFilePath>packages.sportmaster.lock.json</NuGetLockFilePath></PropertyGroup>
- <ItemGroup><Using Include="System.IO"/><Using Include="System.Net.Http"/><Compile Include="../../src/Ipc.Assembly/ExtensionConsumerReaders.cs" Link="ExtensionConsumerReaders.cs"/><ProjectReference Include="../../src/Ipc.Application.Supply/Ipc.Application.Supply.csproj"/><Compile Include="../../src/Ipc.Assembly/ParcelCapabilityFactory.cs" Link="ParcelCapabilityFactory.cs"/><ProjectReference Include="../../src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj"/><ProjectReference Include="../../src/Ipc.Components/Ipc.Components.csproj"/><ProjectReference Include="../../src/Ipc.Drivers/Ipc.Drivers.csproj"/><ProjectReference Include="../../src/Ipc.Integrations/Ipc.Integrations.csproj"/><ProjectReference Include="../../src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj"/><Page Include="../../src/Ipc.Desktop/Themes/Workstation.xaml" Link="Themes/Workstation.xaml"/></ItemGroup>
- <ItemGroup><Compile Include="../Ipc.Application.Verification/CurrentConfigurationFixture.cs" Link="CurrentConfigurationFixture.cs"/><Compile Include="../Ipc.Application.Verification/NonCurrentStorageFixture.cs" Link="NonCurrentStorageFixture.cs"/><Compile Include="../Ipc.Application.Verification/CommercialProductization.cs" Link="CommercialProductization.cs"/><Compile Include="../../src/Ipc.Desktop/DesktopLaunchOptions.cs" Link="DesktopLaunchOptions.cs"/></ItemGroup>
- <ItemGroup><Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs" Link="RcsConfigurationValidation.cs"/><Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs" Link="RcsTaskOptions.cs"/></ItemGroup>
-<ItemGroup>
- <Compile Include="../../src/Ipc.Assembly/DeferredConnectionPorts.cs" Link="DeferredConnectionPorts.cs"/>
- <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs" Link="BuiltInRcs/SportmasterRcsTaskService.cs"/>
- <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs" Link="BuiltInRcs/RcsDestinationProtocol.cs"/>
- <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsDispatchResources.cs" Link="BuiltInRcs/RcsDispatchResources.cs"/>
- <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs" Link="BuiltInRcs/RcsHeartbeat.cs"/>
- <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsHeartbeatResponse.cs" Link="BuiltInRcs/RcsHeartbeatResponse.cs"/>
- <EmbeddedResource Include="../../src/Ipc.Integrations.SportmasterRcs/parameters.json" LogicalName="Ipc.BuiltInRcs.Parameters.json"/>
-</ItemGroup><ItemGroup><ProjectReference Include="../../src/Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj"/><ProjectReference Include="../../src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj"/></ItemGroup>
-<ItemGroup><Compile Include="../Ipc.Application.Verification/CameraRoundHarness.cs" Link="CameraRoundHarness.cs"/><Compile Include="../Ipc.Application.Verification/ManualSupplyChecks.cs" Link="ManualSupplyChecks.cs"/></ItemGroup><ItemGroup><Compile Include="../Ipc.Application.Verification/RcsVerificationClock.cs" Link="RcsVerificationClock.cs"/></ItemGroup></Project>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <NuGetLockFilePath>packages.sportmaster.lock.json</NuGetLockFilePath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Include="System.IO"/>
+    <ProjectReference Include="../../src/Ipc.Desktop/Ipc.Desktop.csproj"/>
+    <ProjectReference Include="../Ipc.Application.Verification/Ipc.Application.Verification.csproj" Aliases="Fixture"/>
+    <ProjectReference Include="../Ipc.Operations.Verification/Ipc.Operations.Verification.csproj" ReferenceOutputAssembly="false"/>
+  </ItemGroup>
+</Project>

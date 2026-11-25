@@ -34,6 +34,8 @@ public sealed partial class ParameterSettingsControl : UserControl
     Border? directoryRail;
     readonly StackPanel errors = new();
     readonly Dictionary<string, Location> locations = [];
+    readonly Dictionary<UIElement, Border> reconnectBadges = [];
+    readonly List<Action> groupActivationLabels = [];
     readonly List<Action> unsubscribe = [];
     readonly List<ObjectPage> pages = [];
     ICollectionView? directoryView;
@@ -95,7 +97,7 @@ public sealed partial class ParameterSettingsControl : UserControl
                 Grid.SetColumn(connector, step * 2 - 1); firstStepBar.Children.Add(connector);
             }
             firstStepBar.ColumnDefinitions.Add(new());
-            var button = new Button { Content = (step + 1) + " " + names[step], Tag = names[step], MinHeight = 44, Padding = new(6, 0, 6, 0) };
+            var button = new Button { Content = (step + 1).ToString(), Tag = names[step] }.Themed(StyleProperty, "WizardStep");
             AutomationProperties.SetName(button, "首次配置第" + (step + 1) + "步：" + names[step]);
             button.Click += async (_, _) => { var target = OrderedPages().FirstOrDefault(p => p.Category == FirstCategories[index]); if (target is not null) await RequestPageAsync(target); };
             Grid.SetColumn(button, step * 2); firstStepBar.Children.Add(button);
@@ -145,7 +147,9 @@ public sealed partial class ParameterSettingsControl : UserControl
     void EnsureReviewPage()
     {
         if (reviewPage is not null) return;
-        reviewPage = Page(4, FirstConfiguration ? "检查与完成" : "检查结果", "检查全部设置。条码规则、相机和RCS连接可按当前责任热生效；其他业务设置重启生效，本机偏好保存后立即生效。");
+        reviewPage = Page(4, FirstConfiguration ? "检查与完成" : "检查结果", FirstConfiguration
+            ? "请核对以下配置摘要；未填写的相机和 RCS 可在进入工作站后随时补配。"
+            : "核对配置与检查结果后保存。");
         if (errors.Parent is Panel old) old.Children.Remove(errors);
         if (UsesFirstReadiness)
         {
@@ -260,6 +264,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     // Wide values (addresses, patterns, lists) and narrow windows put the control under the text.
     void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
     {
+        if (control is CheckBox) control.SetResourceReference(FocusVisualStyleProperty, "FocusRing");
         var field = new Grid();
         FrameworkElement card = SectionLayout ? field : Card(field);
         if (SectionLayout) field.Margin = new(0, 0, 14, 12);
@@ -296,8 +301,8 @@ public sealed partial class ParameterSettingsControl : UserControl
             var hint = Text(help); hint.Margin = new(0, 2, 0, 0);
             if (SectionLayout)
             {
-                hint.Text = help.ReplaceLineEndings(" ");
-                hint.FontSize = UiTypography.Diagnostic; hint.TextWrapping = TextWrapping.NoWrap; hint.TextTrimming = TextTrimming.CharacterEllipsis;
+                hint.FontSize = UiTypography.Label;
+                hint.TextWrapping = TextWrapping.Wrap;
                 hint.ToolTip = help; Grid.SetRow(hint, 2); Grid.SetColumnSpan(hint, 2); field.Children.Add(hint);
             }
             else describe.Children.Add(hint);
@@ -321,11 +326,10 @@ public sealed partial class ParameterSettingsControl : UserControl
             if (control is not TextBox { IsReadOnly: true })
             {
                 var activation = fieldKey is "WindowOpeningMode" or "ShowPace" or "CueVolume" or "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator"
-                    ? "热生效" : draft?.Kind == "observation" || draft is not null && ParameterOwnership.IsRcs(draft) || fieldKey == "StationCode" ? "重连生效" : "需重启";
-                var badge = Themed(new Border { Child = new TextBlock { Text = activation, FontSize = UiTypography.Diagnostic },
-                    Padding = new(6, 2, 6, 2), CornerRadius = new(8), Margin = new(6, 0, 0, 4), VerticalAlignment = VerticalAlignment.Top },
-                    Border.BackgroundProperty, activation == "需重启" ? "Soft" : "AccentBackground");
+                    ? "立即生效" : draft?.Kind == "observation" || draft is not null && ParameterOwnership.IsRcs(draft) || fieldKey == "StationCode" ? "重连生效" : "需重启生效";
+                var badge = ActivationBadge(activation, activation == "需重启生效" ? "Soft" : "AccentBackground");
                 Grid.SetColumn(badge, 1); field.Children.Add(badge);
+                if (activation == "重连生效") reconnectBadges.Add(card, badge);
             }
             describe.Margin = new(0, 0, 0, 4);
             Grid.SetRow(entry, 1); Grid.SetColumnSpan(entry, 2);
@@ -411,6 +415,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         foreach (var action in unsubscribe) action(); unsubscribe.Clear();
         runtimeUpdates.Clear();
         directory.ItemsSource = null; pageHost.Content = null; locations.Clear(); errors.Children.Clear(); pages.Clear();
+        reconnectBadges.Clear(); groupActivationLabels.Clear();
         reviewPage = null;
         checkedPages.Clear();
         if (reviewContent?.Parent is Panel reviewParent) reviewParent.Children.Remove(reviewContent);
@@ -433,6 +438,7 @@ public sealed partial class ParameterSettingsControl : UserControl
                 if (!locations.Any(p => ReferenceEquals(p.Value.Page, page) && SmParameterOwnership.Show(Audience, p.Key)))
                     page.Applicable = () => false;
         }
+        foreach (var groupActivationLabel in groupActivationLabels) groupActivationLabel();
         if (SectionLayout)
         {
             foreach (var page in pages)
@@ -441,7 +447,16 @@ public sealed partial class ParameterSettingsControl : UserControl
                 {
                     var index = page.Body.Children.IndexOf(form);
                     page.Body.Children.RemoveAt(index);
-                    if (form.Children.Count > 0) page.Body.Children.Insert(index, page.Category == 2 ? form : Card(form));
+                    if (form.Children.Count == 0) continue;
+                    if (page.Category == 2) page.Body.Children.Insert(index, form);
+                    else if (form.SectionHeader is { } header)
+                    {
+                        var section = new StackPanel();
+                        section.Children.Add(header);
+                        section.Children.Add(form);
+                        page.Body.Children.Insert(index, Card(section));
+                    }
+                    else page.Body.Children.Insert(index, Card(form));
                 }
                 foreach (var advanced in page.Body.Children.OfType<Expander>())
                 {
@@ -540,6 +555,7 @@ public sealed partial class ParameterSettingsControl : UserControl
 // Rows share the tallest visible field, including its validation feedback.
 public sealed class ParameterFormPanel : Panel
 {
+    internal FrameworkElement? SectionHeader { get; set; }
     public bool TwoColumns { get; init; }
     int Columns => TwoColumns ? 2 : 1;
     protected override Size MeasureOverride(Size available)

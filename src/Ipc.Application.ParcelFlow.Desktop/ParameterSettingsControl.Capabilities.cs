@@ -24,7 +24,7 @@ public sealed partial class ParameterSettingsControl
         foreach (var component in m.Components.Where(c => (!FirstConfiguration || c.Bound) && (m.ApplicationId != "sportmaster" || c.Kind is not ("login" or "weight" or "plc" or "camera" or "upload"))))
         {
             var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "RCS 服务" : FirstConfiguration ? m.ComponentName(component) : m.ComponentLabel(component),
-                ParameterOwnership.IsRcs(component) && m.ApplicationId == "sportmaster" ? "左右投递位共用此连接。符合条件时保存后重连 RCS 生效，否则需受控重启；以保存回执为准。" : "保存并重启软件后生效。");
+                ParameterOwnership.IsRcs(component) && m.ApplicationId == "sportmaster" ? "左右投递位共用这个 RCS 地址。保存后按提示重连或重启。" : "保存并重启软件后生效。");
             if (!ParameterOwnership.IsRcs(component))
                 foreach (var role in m.ComponentRoles)
                 {
@@ -69,6 +69,12 @@ public sealed partial class ParameterSettingsControl
             locations[draft.InstanceId] = locations[draft.InstanceId + "/Provider"];
             if (!sdkSelected)
             {
+                if (!SmParameterOwnership.Show(Audience, draft.InstanceId + "/Provider"))
+                {
+                    page.Body.Children.Add(Text("请在运维工具的专业参数中核对相机驱动。"));
+                    CameraCode(page, draft);
+                    return;
+                }
                 page.Body.Children.Add(Text("这台相机的设置来自旧版本。请点击下方按钮重新配置，再填写 IP；序列号将在保存时自动读取，相机编码和另一台相机不受影响。"));
                 var sdk = draft.Providers.SingleOrDefault(p => p.Implementation == "hikrobot-mvs-reader");
                 var useSdk = new Button { Content = "按 MVS SDK 重新配置本相机", MinHeight = 44, IsEnabled = sdk is not null, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
@@ -163,7 +169,9 @@ public sealed partial class ParameterSettingsControl
         }
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
-            if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
+            if (Model!.ApplicationId == "sportmaster" && draft.Kind == "observation" &&
+                !SmParameterOwnership.Show(Audience, draft.InstanceId + "/" + p.Field.Key)) continue;
+            if (Model.ApplicationId == "sportmaster" && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
             if (!Ipc.Platform.ExtensionSchema.IsApplicable(draft.Provider.Parameters, draft.Parameters.ToDictionary(x => x.Field.Key, x => x.Value), p.Field)) continue;
             if (draft.IsSimpleCamera && p.Field.Key == "reader.engine") advanced.Add(p);
             else if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
@@ -201,8 +209,8 @@ public sealed partial class ParameterSettingsControl
     }
     static string ParameterLabel(CapabilityParameter p) => p.Field.Key switch
     {
-        "zone-id" => "仓ID",
-        "project-id" => "生产线ID",
+        "zone-id" => "仓 ID",
+        "project-id" => "生产线 ID",
         "device.ip" => "IP 地址",
         "device.port" or "port" => "端口",
         "left-bcr-code" => "左相机编码",

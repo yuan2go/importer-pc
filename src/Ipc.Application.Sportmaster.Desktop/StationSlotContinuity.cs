@@ -72,25 +72,15 @@ public sealed partial class SupplyStationPositionViewModel
         CurrentRound is null && Operation is null && Stopwatch.GetElapsedTime(recent.ShownTicks) < TimeSpan.FromSeconds(3);
     public string RecentChuteBarcode => ShowRecentChute ? $"上一件条码：{recentResult!.Barcode}　任务号：{recentResult.Task}" : "";
     public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Operation?.Id}/{Operation?.Wcs?.Request.Id}" : null;
-    public string ResultBackground => CenteredAttention ? OperatorTokens.Neutral : DisplayPresentation.Tone switch
-    {
-        ParcelPresentationTone.Accepted => OperatorTokens.Success,
-        ParcelPresentationTone.Rejected => OperatorTokens.Danger,
-        ParcelPresentationTone.Unknown => OperatorTokens.Warning,
-        ParcelPresentationTone.Stale => OperatorTokens.Inactive,
-        _ => OperatorTokens.Neutral
-    };
-    public string ResultForeground => !CenteredAttention && DisplayPresentation.Tone is (ParcelPresentationTone.Accepted or ParcelPresentationTone.Rejected or ParcelPresentationTone.Unknown or ParcelPresentationTone.Stale) ? OperatorTokens.Surface : OperatorTokens.Ink;
     public bool DisplaySlotVisible => ShowConfirmedTask || IsProcessing || ShowRecentChute;
     public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : ShowRecentChute ? recentResult!.Slot : "";
-    public string DisplaySlotForeground => ResultForeground;
     public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : ShowRecentChute ? ParcelPresentation.Neutral("上一件格口") : CenteredAttention
         ? CenteredAttentionTone == ParcelPresentationTone.Unknown ? ParcelPresentation.Unknown(CenteredStateTitle) : ParcelPresentation.Rejected(CenteredStateTitle) :
         ShowCenteredState ? ParcelPresentation.Neutral(CenteredStateTitle) : DisplayPaused && !PausedAttention ? ParcelPresentation.Neutral(PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停") : HasUncertainOriginal ? Presentation : OfflineCameraSurface ? ParcelPresentation.Neutral(ManualInputAvailable ? "等待输入条码" : "等待供包条件就绪") :
         CameraAwaitingRead && !HasUncertainOriginal ? ParcelPresentation.Neutral("等待重新扫码") : invalidReadFeedback ? ParcelPresentation.Unknown("本次读码已失效") : IsProcessing ? ParcelPresentation.Pending("处理中") : CurrentTaskAvailable && !SlotAvailable ? ParcelPresentation.Unknown("未取得格口") : Presentation;
     public string DisplaySlotLabel => ShowRecentChute ? "上一件格口，仅供查看" : IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";
     public string ContinuityNotice => "";
-    public string DisplayStatus => SupplyDisabled ? "已停用" : ShowRecentChute ? "上一件：格口已取得 · 仅供查看" : ShowConfirmedTask && IsTight ? "按本次格口投递" : !owner.Fresh ? "状态已失效" : DisplayPaused && !PausedAttention ? PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停" : OfflineCameraSurface ? ManualInputAvailable ? "等待输入条码" : "暂不能接收条码" : HasUncertainOriginal ? Operation?.State == ParcelState.WcsUnknown ? "格口结果未确认" : Status :
+    public string DisplayStatus => SupplyDisabled ? "已停用" : ShowRecentChute ? "上一件：格口已取得 · 仅供查看" : ShowConfirmedTask ? "格口已取得" : !owner.Fresh ? "状态已失效" : DisplayPaused && !PausedAttention ? PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停" : OfflineCameraSurface ? ManualInputAvailable ? "等待输入条码" : "暂不能接收条码" : HasUncertainOriginal ? Operation?.State == ParcelState.WcsUnknown ? "格口结果未确认" : Status :
         CameraAwaitingRead ? "等待重新扫码" : CameraNoCode ? CenteredStateTitle : invalidReadFeedback ? "本次读码已失效" : IsProcessing ? "本次处理中" : Operation?.State == ParcelState.WcsRejected ? "未取得格口" : Status;
     public string DisplayAttentionReason => CenteredAttention && !CenteredRcsRejection ? CenteredStateReason :
         SupplyDisabled || DisplayPaused && !PausedAttention ? PausedReadBlocked ? "本次扫码未发送请求，可查看本次图片。" : "" : OfflineCameraSurface ? ManualInputAvailable ? "可用扫码枪或键盘输入完整条码。" : AttentionReason :
@@ -164,7 +154,7 @@ public sealed partial class SupplyStationPositionViewModel
             (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId), (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity),
             (nameof(IsProcessing), IsProcessing), (nameof(SlotProvisional), SlotProvisional), (nameof(DisplaySlotVisible), DisplaySlotVisible), (nameof(DisplaySlot), DisplaySlot),
             (nameof(ShowRecentChute), ShowRecentChute), (nameof(RecentChuteBarcode), RecentChuteBarcode),
-            (nameof(DisplayPresentation), DisplayPresentation), (nameof(ResultBackground), ResultBackground), (nameof(ResultForeground), ResultForeground), (nameof(SuccessIdentity), SuccessIdentity), (nameof(DisplaySlotForeground), DisplaySlotForeground), (nameof(DisplaySlotLabel), DisplaySlotLabel), (nameof(ContinuityNotice), ContinuityNotice),
+            (nameof(DisplayPresentation), DisplayPresentation), (nameof(SuccessIdentity), SuccessIdentity), (nameof(DisplaySlotLabel), DisplaySlotLabel), (nameof(ContinuityNotice), ContinuityNotice),
             (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredAttention), CenteredAttention), (nameof(CenteredRcsRejection), CenteredRcsRejection), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(CenteredStateForeground), CenteredStateForeground),
             (nameof(CenteredStateReason), CenteredStateReason), (nameof(CenteredStateInstruction), CenteredStateInstruction), (nameof(CenteredStateFullInstruction), CenteredStateFullInstruction),
             (nameof(DisplayStatus), DisplayStatus), (nameof(DisplayAttentionReason), DisplayAttentionReason), (nameof(DisplayNextStep), DisplayNextStep), (nameof(ShowConfirmedTask), ShowConfirmedTask),

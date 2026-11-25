@@ -1,5 +1,5 @@
-#if P0_CRASH_HOOKS
 using System.Diagnostics;
+using System.IO;
 using Ipc.Platform;
 
 namespace Ipc.Desktop
@@ -19,6 +19,7 @@ static class P0Dispatcher
 {
     public static int Child(string root)
     {
+        WindowsStoragePaths.UserRootForVerification = () => root;
         var app = new Ipc.Desktop.App(root) { ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown };
         app.Startup += (_, _) => app.Dispatcher.BeginInvoke(new Action(() => throw new InvalidOperationException("synthetic dispatcher unhandled")));
         return app.Run();
@@ -37,4 +38,3 @@ static class P0Dispatcher
         return 0;
     }
 }
-#endif

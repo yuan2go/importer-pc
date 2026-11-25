@@ -121,7 +121,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     protected PresentationFeedbackKind MessageKind { get; private set; } = PresentationFeedbackKind.Idle;
     protected void SetPresentationMessage(string value, PresentationFeedbackKind kind)
     { Message = value; MessageKind = kind; Changed(nameof(Feedback)); }
-    public string Message { get => message ?? (IsSimulationMode ? "等待相机读码；模拟工程不操作真实设备。" : ""); set { MessageKind = PresentationFeedbackKind.General; message = value; messageScope = runningFeedbackScope ?? feedbackScope; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
+    public string Message { get => message ?? ""; set { MessageKind = PresentationFeedbackKind.General; message = value; messageScope = runningFeedbackScope ?? feedbackScope; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
     public string Feedback => Busy ? OperationStatus : ChineseInterfaceText.Message(Message);
     public string OperatorFeedback => (Busy ? OperationStatus : Message).Split(" · ", 2)[0] switch
     {
@@ -212,7 +212,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     }
     long? draftConfigurationRevision;
     Guid? draftRuntimeId;
-    public string DraftRevisionState => draftConfigurationRevision is { } revision ? "本窗草稿基于配置修订 " + revision + "；自动刷新不改变草稿CAS" : "尚未读取草稿修订";
+    public string DraftRevisionState => draftConfigurationRevision is { } revision ? "草稿基于版本 #" + revision + "。" : "尚未读取草稿修订";
     void SetConfigurationDraft(ParcelConfiguration value, long revision, Guid runtime)
     { ConfigurationDraft = Wire.Encode(value); draftConfigurationRevision = revision; draftRuntimeId = runtime; Changed(nameof(ConfigurationDraft)); Changed(nameof(DraftRevisionState)); }
     public void LoadConfigurationDraft()

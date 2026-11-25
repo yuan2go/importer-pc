@@ -25,12 +25,23 @@ public static class PresentationPreferences
             default: throw new ArgumentException("Unsupported saved preference surface", nameof(surface));
         }
     }
+    static T? ReadPreference<T>(string application, string surface, string oversized) where T : class
+    {
+        var path = FileFor(application, surface);
+        try
+        {
+            using var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete);
+            if (file.Length > 4096) throw new InvalidDataException(oversized);
+            using var reader = new StreamReader(file);
+            return Wire.Decode<T>(reader.ReadToEnd());
+        }
+        catch (FileNotFoundException) { return null; }
+        catch (DirectoryNotFoundException) { return null; }
+    }
     public static int ReadCueVolume(string application)
     {
-        var file = FileFor(application, "audio");
-        if (!File.Exists(file)) return 0;
-        if (new FileInfo(file).Length > 4096) throw new InvalidDataException("提示音偏好超出预算；保留原文件");
-        var value = Wire.Decode<AudioPreference>(File.ReadAllText(file));
+        var value = ReadPreference<AudioPreference>(application, "audio", "提示音偏好超出预算；保留原文件");
+        if (value is null) return 0;
         if (value.Schema != 1 || value.Volume is < 0 or > 100) throw new InvalidDataException("提示音音量无效；保留原文件");
         return value.Volume;
     }
@@ -46,10 +57,8 @@ public static class PresentationPreferences
     sealed record WindowPreference(int Schema, WindowOpeningMode Mode);
     public static WindowOpeningMode ReadWindowMode(string application)
     {
-        var file = FileFor(application, "window");
-        if (!File.Exists(file)) return WindowOpeningMode.Window;
-        if (new FileInfo(file).Length > 4096) throw new InvalidDataException("窗口偏好超出预算；保留原文件");
-        var value = Wire.Decode<WindowPreference>(File.ReadAllText(file));
+        var value = ReadPreference<WindowPreference>(application, "window", "窗口偏好超出预算；保留原文件");
+        if (value is null) return WindowOpeningMode.Window;
         if (value.Schema != 1 || !Enum.IsDefined(value.Mode)) throw new InvalidDataException("窗口偏好版本或模式不支持；保留原文件");
         return value.Mode;
     }
@@ -79,9 +88,8 @@ public static class PresentationPreferences
     }
     public static bool? Read(string application, string surface)
     {
-        var file = FileFor(application, surface); if (!File.Exists(file)) return null;
-        if (new FileInfo(file).Length > 4096) throw new InvalidDataException("展示偏好超出预算");
-        var preference = Wire.Decode<Preference>(File.ReadAllText(file));
+        var preference = ReadPreference<Preference>(application, surface, "展示偏好超出预算");
+        if (preference is null) return null;
         if (preference.Schema != 1) throw new InvalidDataException("展示偏好版本不支持；保留原文件");
         return preference.Compact;
     }
@@ -94,10 +102,9 @@ public static class PresentationPreferences
     static string StationSurface(string station) => "station-" + Wire.Hash(station)[..24].ToLowerInvariant();
     public static StationDisplay ReadStation(string application, string station)
     {
-        var file = FileFor(application, StationSurface(station));
-        if (!File.Exists(file)) return new(1, "", null);
-        if (new FileInfo(file).Length > 4096) throw new InvalidDataException("站点显示偏好超出预算；保留原文件");
-        var value = Wire.Decode<StationDisplay>(File.ReadAllText(file)); ValidateStation(value); return value;
+        var value = ReadPreference<StationDisplay>(application, StationSurface(station), "站点显示偏好超出预算；保留原文件");
+        if (value is null) return new(1, "", null);
+        ValidateStation(value); return value;
     }
     public static void ValidateStation(StationDisplay value)
     {

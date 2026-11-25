@@ -54,7 +54,7 @@ public partial class SupplyStationWindow : Window
         Grid.SetColumn(right, 1); work.Children.Add(left); work.Children.Add(right);
         BuildOperatorWorkspace();
         try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read("sportmaster", "supply-station") ?? false : layout == "compact"; }
-        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.SetPreferenceNotice("layout", "布局偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
+        catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.SetPreferenceNotice("layout", "布局偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
         ApplyLayout();
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : "workstation";
         SetPage(initialPage);
@@ -176,7 +176,7 @@ public partial class SupplyStationWindow : Window
             if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(ManagementDialogOwner, dirty,
                 dirty == 1 ? dirtyWindows[0].ViewModel.SaveIncompleteEditorAsync : null, "关闭")))
             {
-                ViewModel.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
+                ViewModel.Message = "已取消退出，当前输入已保留。";
                 RestoreAfterClose(); return;
             }
             if (activationRequested)

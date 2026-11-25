@@ -21,6 +21,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     readonly Func<Task> connect, offline;
     readonly Func<bool> connected;
     readonly ContentControl page = new();
+    readonly Border authorizationGuide;
+    readonly TextBlock guideHeading = Text("");
     readonly MaintenancePage parameters = new() { Audience = SmParameterAudience.Technical };
     readonly TextBlock status = new() { FontSize = UiTypography.Label };
     readonly Border statusPill = new() { CornerRadius = new(12), Padding = new(9, 4, 9, 4) };
@@ -28,10 +30,11 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     readonly TextBox message = new() { MaxHeight = 72, Margin = new(0, 4, 0, 4) };
     readonly TextBox technicalFailure = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 140, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly Button enterDebug = new() { Content = "进入设备调试（暂停整站供包）", MinHeight = 44 };
-    readonly Button leaveDebug = new() { Content = "结束调试并核对恢复", MinHeight = 44 };
+    readonly Button leaveDebug = new() { Content = "结束调试并恢复", MinHeight = 44, Visibility = Visibility.Collapsed };
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1) };
     string window = Wire.Id();
     readonly DockPanel device = new();
+    readonly Button evidenceViewToggle = new() { Content = "调试记录", Visibility = Visibility.Collapsed };
     readonly TextBlock deviceHeading = Text("浏览连接诊断");
     readonly ContentControl deviceView = new();
     readonly Button deviceViewToggle = new() { Content = "查看连接诊断", MinHeight = 44 };
@@ -53,6 +56,10 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     public FrameworkElement AuthorizationStatus => statusPill;
     public Button AuthorizationAction { get; }
     public FrameworkElement AuthorizationDetails { get; }
+    public FrameworkElement TechnicalFailure => technicalFailure;
+    public event EventHandler? AuthorizationOptionsRequested;
+    public event EventHandler? AuthorizationOptionsClosed;
+    readonly TextBlock guideDescription = Text("");
     public FrameworkElement Feedback => message;
 
     public OperationsWorkspaceControl(IParcelApplication application, Func<Task> connect, Func<bool> connected, Func<Task> offline)
@@ -68,10 +75,30 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.Sportmaster.Desktop;component/OperationsWorkspaceTheme.xaml", UriKind.Relative) });
         statusPill.Child = status;
         AutomationProperties.SetLiveSetting(status, AutomationLiveSetting.Polite);
-        SetAuthorizationStatus("只读 · 未授权", "查看、登录和切页不暂停供包。调试须明确进入。");
-        AuthorizationAction = Action("连接并验证管理密码…", Authenticate);
+        SetAuthorizationStatus("未授权（只读）", "验证本站管理密码后可执行运维操作。");
+        AuthorizationAction = Action("验证管理密码", async () =>
+        {
+            if (HasConfirmedGrant) AuthorizationOptionsRequested?.Invoke(this, EventArgs.Empty);
+            else await Authenticate();
+        });
         AuthorizationAction.Margin = new(0);
-        AuthorizationAction.SetResourceReference(StyleProperty, "Primary");
+        AuthorizationAction.MinWidth = 132;
+        AuthorizationAction.Padding = new(16, 0, 16, 0);
+        UpdateAuthorizationAction(authorized: false);
+        var authorizePage = Action("验证管理密码", Authenticate);
+        authorizePage.HorizontalAlignment = HorizontalAlignment.Left;
+        authorizePage.Margin = new(0, 10, 0, 0);
+        authorizePage.SetResourceReference(StyleProperty, "Primary");
+        AutomationProperties.SetAutomationId(authorizePage, "Operations.AuthorizePage");
+        guideHeading.FontSize = UiTypography.Position;
+        guideHeading.FontWeight = UiTypography.Emphasis;
+        var guide = new StackPanel();
+        guide.Children.Add(guideHeading);
+        guide.Children.Add(guideDescription);
+        guide.Children.Add(authorizePage);
+        authorizationGuide = new Border { Child = guide, Padding = new(24), Margin = new(0, 20, 0, 0), MaxWidth = 560,
+            HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top };
+        authorizationGuide.SetResourceReference(StyleProperty, "WorkstationCard");
         AutomationProperties.SetAutomationId(AuthorizationAction, "Operations.Authorize");
 
         var details = new StackPanel();
@@ -87,7 +114,6 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             await model.RefreshManagementModeAsync();
         }));
         AutomationProperties.SetAutomationId(technicalFailure, "Operations.Failure");
-        details.Children.Add(technicalFailure);
         AuthorizationDetails = details;
 
         var noticeStyle = new Style(typeof(TextBox), (Style)FindResource("OperatorCopyableNotice"));
@@ -102,6 +128,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         debugActions.Children.Add(enterDebug);
         debugActions.Children.Add(leaveDebug);
         debugActions.Children.Add(deviceViewToggle);
+        debugActions.Children.Add(evidenceViewToggle);
+        evidenceViewToggle.Click += (_, _) => evidenceViewToggle.Content = debug?.ToggleEvidence() == true ? "返回扫码调试" : "调试记录";
         enterDebug.SetResourceReference(StyleProperty, "OperationsDebugAction");
         var debugBar = new DockPanel();
         DockPanel.SetDock(debugActions, Dock.Right);
@@ -110,9 +138,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         deviceHeading.FontWeight = UiTypography.Emphasis;
         deviceHeading.VerticalAlignment = VerticalAlignment.Center;
         debugBar.Children.Add(deviceHeading);
-        var debugToolbar = new Border { Child = debugBar, BorderThickness = new(1), CornerRadius = new(8), Padding = new(14, 6, 6, 6) };
-        debugToolbar.SetResourceReference(Border.BackgroundProperty, "Surface");
-        debugToolbar.SetResourceReference(Border.BorderBrushProperty, "Line");
+        var debugToolbar = new Border { Child = debugBar, Padding = new(14, 2, 6, 2) };
+        debugToolbar.SetResourceReference(StyleProperty, "WorkstationCard");
         DockPanel.SetDock(debugToolbar, Dock.Top);
         device.Children.Add(debugToolbar);
         deviceViewToggle.Click += (_, _) => { if (ReferenceEquals(deviceView.Content, diagnostic) && workspace) ShowDebugView(); else ShowDiagnosticsView(); };
@@ -128,6 +155,20 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     }
 
     static TextBlock Text(string text) => new() { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0,4,0,4) };
+    bool HasConfirmedGrant => grant is not null && connected() && model.IsManagementMode &&
+        model.ManagementStatus.SessionId == grant;
+
+    void UpdateAuthorizationAction(bool authorized)
+    {
+        AuthorizationAction.Content = authorized ? "管理授权" : "验证管理密码";
+        if (authorized) AuthorizationAction.ClearValue(StyleProperty);
+        else
+        {
+            AuthorizationAction.SetResourceReference(StyleProperty, "Primary");
+            AuthorizationOptionsClosed?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
     void SetAuthorizationStatus(string label, string detail, string tone = "Muted")
     {
         status.Text = label;
@@ -144,7 +185,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     }
     async Task Run(Func<Task> action, Func<Exception, string>? failureMessage = null)
     {
-        if (acting || closing) { model.Message = "原操作尚未收口，请等待原结果。"; return; }
+        if (acting || closing) { model.Message = "上一项操作还在处理，请稍候。"; return; }
         acting = true;
         foreach (var button in actionButtons) button.IsEnabled = false;
         enterDebug.IsEnabled = leaveDebug.IsEnabled = false;
@@ -153,7 +194,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         {
             technicalFailure.Text = DiagnosticText.Protect(error.ToString());
             System.Diagnostics.Trace.TraceError("Operations UI action: {0}", technicalFailure.Text);
-            model.Message = failureMessage?.Invoke(error) ?? ChineseInterfaceText.ParameterMessage(error.Message, "操作未完成，请核对原结果；输入和原责任保留。");
+            model.Message = failureMessage?.Invoke(error) ?? ChineseInterfaceText.ParameterMessage(error.Message, "操作未完成，请查看结果后再处理。");
         }
         finally
         {
@@ -187,13 +228,13 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             if (!connected())
             {
                 if (grant is null)
-                    SetAuthorizationStatus("只读 · 未授权", "运维控制需要验证管理密码。查看、登录和切页不暂停供包。");
+                    SetAuthorizationStatus("未授权（只读）", "验证本站管理密码后可执行运维操作。");
                 else
-                    SetAuthorizationStatus("控制未连接", "控制连接不可用。原命令结果须核对；未连接不代表已停机。", "Warning");
+                    SetAuthorizationStatus("控制未连接", "工作站控制连接已中断，请恢复连接后核对操作结果。", "Warning");
                 Lock(); return;
             }
             await model.RefreshManagementModeAsync();
-            if (!model.IsManagementMode || model.ManagementStatus.SessionId != grant)
+            if (!HasConfirmedGrant)
             {
                 SetAuthorizationStatus("授权未确认", "本窗授权已结束或未确认。请验证管理密码，编辑输入保留。", "Warning");
                 Lock();
@@ -207,6 +248,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
                 debugHost.Content = Text("本会话的调试资源已由工作站核对释放。实际生产资格以当前工作站状态为准。");
             }
             else if (!workspace && actualOwner == window) { workspace = true; ShowDebugView(); }
+            UpdateAuthorizationAction(HasConfirmedGrant);
             if (workspace)
                 SetAuthorizationStatus("调试中 · 整站暂停", "设备调试已暂停整站供包及人工提交。按原调试会话结束并核对恢复。", "Warning");
             else
@@ -214,6 +256,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
                 var expiry = model.ManagementStatus.ExpiresAt?.ToLocalTime().ToString("HH:mm");
                 SetAuthorizationStatus(expiry is null ? "已授权" : "已授权 · " + expiry + " 到期", "浏览与编辑不暂停供包。", "Success");
             }
+            if (ReferenceEquals(page.Content, authorizationGuide)) ShowPage(selected);
             parameters.IsEnabled = model.Fresh;
             if (logs is not null) logs.IsEnabled = model.Fresh;
             diagnostic.IsEnabled = model.Fresh;
@@ -230,14 +273,28 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     }
     void Lock()
     {
+        UpdateAuthorizationAction(authorized: false);
         parameters.IsEnabled = false; diagnostic.IsEnabled = false;
         enterDebug.IsEnabled = false;
         logs?.Revoke(); debug?.Revoke();
         if (logs is not null) logs.IsEnabled = false;
     }
+    void ShowAuthorizationGuide()
+    {
+        guideHeading.Text = selected == "debug" ? "设备调试需管理授权" : "专业参数需管理授权";
+        guideDescription.Text = selected == "debug"
+            ? "请输入本站管理密码。进入调试时会单独确认整站暂停。"
+            : "请输入本站管理密码以查看或修改专业参数，操作不会暂停现场供包。";
+        page.Content = authorizationGuide;
+    }
     public void ShowPage(string target)
     {
         selected = target;
+        if (target is ("debug" or "parameters") && !workspace && (!model.IsManagementMode || !connected()))
+        {
+            ShowAuthorizationGuide();
+            return;
+        }
         page.Content = target switch
         {
             "parameters" => parameters,
@@ -304,7 +361,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     async Task BeginDebug()
     {
         await model.RequireManagementModeAsync();
-        if (MessageBox.Show(Window.GetWindow(this), "进入设备调试将暂停整站自动供包和人工提交，保留相机预览及原请求。结束后按原状态及实际资源核对恢复。", "进入设备调试",
+        if (MessageBox.Show(Window.GetWindow(this), "进入设备调试会暂停整站自动读码和人工提交。相机预览仍可查看。结束调试后，工作站会核对恢复条件。", "进入设备调试",
             MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
         window = Wire.Id();
         var receipt = await ((IManagementWorkspace)model.Application).SetManagementWorkspaceAsync(window, true, CancellationToken.None);
@@ -318,25 +375,31 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         debugHost.Content = debug;
         deviceView.Content = debugHost;
         deviceViewToggle.Content = "查看连接诊断";
-        deviceHeading.Text = "设备调试";
+        evidenceViewToggle.Visibility = Visibility.Visible;
+        deviceHeading.Text = "扫码调试";
+        enterDebug.Visibility = Visibility.Collapsed;
+        leaveDebug.Visibility = Visibility.Visible;
     }
     void ShowDiagnosticsView()
     {
         deviceView.Content = diagnostic;
+        evidenceViewToggle.Visibility = Visibility.Collapsed;
         deviceViewToggle.Content = workspace ? "返回调试画面" : "连接诊断";
         deviceHeading.Text = "浏览连接诊断";
+        enterDebug.Visibility = workspace ? Visibility.Collapsed : Visibility.Visible;
+        leaveDebug.Visibility = workspace ? Visibility.Visible : Visibility.Collapsed;
     }
     async Task EndDebug()
     {
         if (debug is not null) await debug.QuiesceAsync();
         var receipt = await ((IManagementWorkspace)model.Application).SetManagementWorkspaceAsync(window, false, CancellationToken.None);
         if (receipt.Status != "Restored") throw new InvalidOperationException(receipt.Reason);
-        workspace = false; debug?.ConfirmWorkspaceClosed(receipt); debugHost.Content = Text("调试已结束。原请求仍按原身份收口。"); ShowDiagnosticsView();
+        workspace = false; debug?.ConfirmWorkspaceClosed(receipt); debugHost.Content = Text("调试已结束，请查看工作站状态。"); ShowDiagnosticsView();
         await Refresh();
     }
     FrameworkElement Maintenance()
     {
-        var body = new StackPanel { Margin = new(24, 16, 24, 12) };
+        var body = new StackPanel { Margin = new(24, 10, 24, 4) };
 
         StackPanel Group(string title, string id, bool danger = false)
         {
@@ -350,9 +413,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             divider.SetResourceReference(Border.BorderBrushProperty, "Line");
             content.Children.Add(divider);
 
-            var card = new Border { Child = content, BorderThickness = new(1), CornerRadius = new(8), Padding = new(14), Margin = new(0, 0, 0, 12) };
-            card.SetResourceReference(Border.BackgroundProperty, danger ? "DangerBackground" : "Surface");
-            card.SetResourceReference(Border.BorderBrushProperty, danger ? "Danger" : "Line");
+            var card = new Border { Child = content, Padding = new(14, 8, 14, 8), Margin = new(0, 0, 0, 10) };
+            card.SetResourceReference(StyleProperty, danger ? "OperationsDangerCard" : "WorkstationCard");
             AutomationProperties.SetAutomationId(card, id);
             body.Children.Add(card);
             return content;
@@ -371,10 +433,10 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         var dailyActions = new UniformGrid { Columns = 4 };
         dailyActions.SizeChanged += (_, args) => dailyActions.Columns = args.NewSize.Width < 760 ? 2 : 4;
         daily.Children.Add(dailyActions);
-        backupAction = Action(pendingBackup is null ? "创建完整备份…" : "核对原次完整备份", Backup);
+        backupAction = Action(pendingBackup is null ? "创建完整备份…" : "查看备份结果", Backup);
         AutomationProperties.SetAutomationId(backupAction, "CompleteBackup.Operations");
         var cancelExport = new Button { Content = "取消导出", MinHeight = 44, Visibility = Visibility.Collapsed };
-        cancelExport.Click += (_, _) => { diagnosticExport?.Cancel(); cancelExport.IsEnabled = false; model.Message = "已请求取消诊断导出，正在等待原服务收口。"; };
+        cancelExport.Click += (_, _) => { diagnosticExport?.Cancel(); cancelExport.IsEnabled = false; model.Message = "正在取消诊断导出，请稍候。"; };
         AddTile(dailyActions, Action("导出诊断包…", async () =>
         {
             await model.RequireManagementModeAsync();
@@ -382,7 +444,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             if (picker.ShowDialog(Window.GetWindow(this)) != true) return;
             using var cancellation = new CancellationTokenSource(); diagnosticExport = cancellation;
             cancelExport.IsEnabled = true; cancelExport.Visibility = Visibility.Visible;
-            model.Message = "正在导出诊断包，业务状态保持原状。";
+            model.Message = "正在导出诊断包…";
             try
             {
                 var result = await ((IDiagnosticPackageApplication)model.Application).ExportDiagnosticPackageReportAsync(picker.FileName, cancellation.Token);
@@ -390,14 +452,14 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             }
             finally { diagnosticExport = null; cancelExport.Visibility = Visibility.Collapsed; }
         }), "导出系统日志与状态快照。");
-        AddTile(dailyActions, backupAction, "备份前明确暂停新供包。");
-        AddTile(dailyActions, Action("完整备份核验、交付与保管…", BackupSets), "按完整集合核验与交付。");
+        AddTile(dailyActions, backupAction, "创建备份前将暂停接收新包裹。");
+        AddTile(dailyActions, Action("备份校验与管理", BackupSets), "校验完整性、导出移交或清理旧备份。");
         AddTile(dailyActions, Action("检查并恢复供包", async () =>
         {
             await model.RequireManagementModeAsync();
             await model.CommandAsync("Resume");
             await model.RefreshAsync();
-        }), "由工作站检查当前责任和供包条件。");
+        }), "核对现场与未完成操作后恢复供包。");
         cancelExport.HorizontalAlignment = HorizontalAlignment.Left;
         daily.Children.Add(cancelExport);
         daily.Children.Add(backupOutcome);
@@ -405,26 +467,26 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         original.SetBinding(TextBox.TextProperty, new Binding(nameof(model.BackupStatusText)) { Source = model, Mode = BindingMode.OneWay });
         daily.Children.Add(new Expander { Header = "备份计划与执行状态", Content = original, Margin = new(4, 4, 4, 0) });
 
-        var responsibility = Group("异常与责任核对", "Operations.Maintenance.Responsibilities");
+        var responsibility = Group("异常与任务核对", "Operations.Maintenance.Responsibilities");
         var laneActions = new UniformGrid { Columns = 2 };
         responsibility.Children.Add(laneActions);
-        AddTile(laneActions, Action("核对左位未确认责任…", () => ConfirmRemotePositionRecovery("left")), "按左位原请求和外部依据核对。");
-        AddTile(laneActions, Action("核对右位未确认责任…", () => ConfirmRemotePositionRecovery("right")), "按右位原请求和外部依据核对。");
+        AddTile(laneActions, Action("核对左位未决请求", () => ConfirmRemotePositionRecovery("left")), "核对超时或结果未知的请求，确认后解除拦截。");
+        AddTile(laneActions, Action("核对右位未决请求", () => ConfirmRemotePositionRecovery("right")), "核对超时或结果未知的请求，确认后解除拦截。");
         var responsibilityActions = new UniformGrid { Columns = 3 };
         responsibilityActions.SizeChanged += (_, args) => responsibilityActions.Columns = args.NewSize.Width < 680 ? 2 : 3;
         responsibility.Children.Add(responsibilityActions);
-        AddTile(responsibilityActions, Action("恢复备份后核对…", () =>
+        AddTile(responsibilityActions, Action("备份恢复交接核对", () =>
         {
             parameters.ShowTechnicalTool(MaintenanceTool.RestoreHandoff);
             page.Content = parameters;
             return Task.CompletedTask;
-        }), "查看原恢复状态及待核对事项。");
+        }), "核验恢复结果与待处理任务。");
         AddTile(responsibilityActions, Action("核对异常作业与未完成输入…", async () =>
         {
             await model.RequireManagementModeAsync(); await model.EnsureMaintenanceLoadedAsync();
             parameters.ShowTechnicalTool(MaintenanceTool.Recovery); page.Content = parameters;
         }), "按原作业或原扫码输入检查处理状态。");
-        AddTile(responsibilityActions, Action("核对原业务记录与请求责任…", async () =>
+        AddTile(responsibilityActions, Action("关联追溯任务与日志", async () =>
         {
             await model.RequireManagementModeAsync();
             if (responsibilities is null)
@@ -436,10 +498,10 @@ public sealed partial class OperationsWorkspaceControl : UserControl
                 };
             }
             await model.OpenHistoryAsync(); page.Content = responsibilities;
-        }), "按原任务查看记录及相关日志。");
+        }), "按任务号联查作业记录与运行日志。");
 
         var danger = Group("高危离线维护", "DangerZoneCard", danger: true);
-        var offlineNotice = new TextBox { Text = "将关闭本工具并交接给同版受保护维护程序。离线维护会核验工作站已真正关闭，断线不代表停机。", IsTabStop = true };
+        var offlineNotice = new TextBox { Text = "离线维护前须先完全关闭工作站；点击后本工具将退出并启动独立维护程序。", IsTabStop = true };
         offlineNotice.SetResourceReference(StyleProperty, "ReadonlyValue");
         offlineNotice.Margin = new(4, 0, 4, 4);
         offlineNotice.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
@@ -461,11 +523,11 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         if (pendingBackup is not null) { await InspectPendingBackup(); return; }
         var picker = new SaveFileDialog { Filter = "完整备份数据库|*.db", FileName = "station-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".db" };
         if (picker.ShowDialog(Window.GetWindow(this)) != true) return;
-        if (MessageBox.Show(Window.GetWindow(this), "创建完整备份前将暂停新供包。完成后根据原责任明确恢复。", "创建完整备份", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
+        if (MessageBox.Show(Window.GetWindow(this), "创建备份会暂停接收新包裹。备份完成后，请核对现场并恢复供包。", "创建完整备份", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
         await model.PauseAsync("运维创建完整备份前暂停"); await model.RefreshAsync();
         if (model.Snapshot?.Paused != true || !model.Fresh) throw new InvalidOperationException("暂停尚未确认，未创建备份。");
         pendingBackup = picker.FileName; latestBackupDirectory = Path.GetDirectoryName(pendingBackup);
-        backupAction!.Content = "核对原次完整备份";
+        backupAction!.Content = "查看备份结果";
         backupOutcome.Text = "原目标：" + pendingBackup + "\n正在等待原工作站执行完整备份；完成前保持暂停。";
         try
         {
@@ -481,7 +543,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         }
         catch
         {
-            backupOutcome.Text = "原目标：" + pendingBackup + "\n原次结果未确认。请核对原次完整备份，不重复创建；暂停状态按工作站真实状态处理。";
+            backupOutcome.Text = "原目标：" + pendingBackup + "\n备份结果待确认。请选择“查看备份结果”，请勿重新创建。";
             throw;
         }
     }
@@ -496,7 +558,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             backupOutcome.Text += "\n完整集合身份：" + original.Identity;
             // A complete set currently at the path is useful evidence, but a
             // path alone cannot identify a lost original operation receipt.
-            backupOutcome.Text += "\n当前集合完整不等于原命令结果已确认；原次未知保留。";
+            backupOutcome.Text += "\n备份文件完整，创建结果仍待确认。";
             model.Message = "当前目标的完整集合已核验，可在备份保管中按该身份处理。原命令结果仍未确认，本次未重新创建；供包按实际状态明确恢复。";
         }
         else model.Message = "原目标尚未确认为完整。请在完整备份保管中核对原集合；本次没有重新创建。";

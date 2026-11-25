@@ -19,7 +19,7 @@ public partial class StationSettingsWindow : Window
     public StationSettingsWindow(SupplyStationViewModel model, MaintenancePage editor)
     {
         InitializeComponent(); UiTypography.Apply(this);
-        editor.SetStationSettingsLayout(true);
+        editor.SetStationSettingsLayout(EditActions);
         this.model = model; this.editor = editor; authority = (IWorkstationAdministration)model.Application;
         DataContext = model;
         Width = Math.Min(Width, SystemParameters.WorkArea.Width); Height = Math.Min(Height, SystemParameters.WorkArea.Height);
@@ -27,7 +27,7 @@ public partial class StationSettingsWindow : Window
         Loaded += (_, _) => UpdateState();
         IsVisibleChanged += (_, _) => { if (IsVisible) RefreshSavedPreferences(); };
         Closing += ClosingSettings;
-        Closed += (_, _) => { model.PropertyChanged -= Changed; EditorHost.Content = null; if (model.OwnedManagementSession == session) model.OwnedManagementSession = null; };
+        Closed += (_, _) => { model.PropertyChanged -= Changed; editor.SetStationSettingsLayout(null); EditorHost.Content = null; if (model.OwnedManagementSession == session) model.OwnedManagementSession = null; };
     }
     void Changed(object? sender, PropertyChangedEventArgs e)
     {
@@ -40,8 +40,13 @@ public partial class StationSettingsWindow : Window
         EditorHost.Visibility = granted ? Visibility.Visible : Visibility.Collapsed;
         ReadOnlyBody.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;
         EditSettings.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;
-        AuthorizationText.Text = granted ? $"编辑授权至 {model.ManagementStatus.ExpiresAt?.ToLocalTime():HH:mm} · 保存时执行原配置守卫" :
-            session is null ? "只读查看，不暂停供包；关闭后未保存输入仍保留在当前供包台窗口。" : "编辑授权未确认或已结束，输入保留。重新验证后继续；供包状态保持原状。";
+        EditActions.Visibility = SettingsDraft.Visibility = granted ? Visibility.Visible : Visibility.Collapsed;
+        ReturnToWorkstation.Content = granted ? "暂回作业" : "返回作业";
+        ReturnToWorkstation.ToolTip = granted ? "隐藏设置窗，保留当前输入与编辑授权" : "隐藏设置窗，返回工作站";
+        CloseSettings.Content = granted ? "结束编辑" : "关闭";
+        CloseSettings.ToolTip = granted ? "关闭设置窗并结束本次授权" : "关闭设置窗";
+        AuthorizationText.Text = granted ? $"编辑授权至 {model.ManagementStatus.ExpiresAt?.ToLocalTime():HH:mm}" :
+            session is null ? "只读模式" : "授权待核对 · 草稿保留";
         EffectiveSettingsCards.Visibility = model.Fresh && model.Snapshot is not null ? Visibility.Visible : Visibility.Collapsed;
         if (!model.Fresh || model.Snapshot is not { } snapshot)
         {
@@ -54,15 +59,16 @@ public partial class StationSettingsWindow : Window
         var host = rcs is not null && Uri.TryCreate(rcs.Target, UriKind.Absolute, out var uri)
             ? new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri.GetLeftPart(UriPartial.Authority) : "待配置";
         var revision = snapshot.Configuration.Revision.ToString();
-        var pending = snapshot.HasPendingConfiguration == true ? "有已保存待生效设置" : "无待生效设置";
-        ReadOnlySettings.Text = $"配置修订 {revision} · {pending}";
+        ReadOnlySettings.Text = snapshot.HasPendingConfiguration == true
+            ? $"设置版本 #{revision} · 有待生效变更"
+            : $"当前生效版本 #{revision} · 无待生效变更";
         UpdateFields(StationFields,
         [
             new("本站", configuration.StationId, "StationSettings.StationId"),
             new("供包台编号", string.IsNullOrWhiteSpace(configuration.StationCode) ? "待配置" : configuration.StationCode, "StationSettings.StationCode"),
             new("RCS 主机", host, "StationSettings.RcsHost"),
-            new("仓 ID（已保存值）", rcs?.Parameters.GetValueOrDefault("zone-id") ?? "未单独保存", "StationSettings.Zone"),
-            new("生产线 ID（已保存值）", rcs?.Parameters.GetValueOrDefault("project-id") ?? "未单独保存", "StationSettings.Project")
+            new("仓 ID", rcs?.Parameters.GetValueOrDefault("zone-id") ?? "未单独保存", "StationSettings.Zone"),
+            new("生产线 ID", rcs?.Parameters.GetValueOrDefault("project-id") ?? "未单独保存", "StationSettings.Project")
         ]);
         UpdateFields(LeftCameraFields, CameraFields("left"));
         UpdateFields(RightCameraFields, CameraFields("right"));
@@ -96,11 +102,13 @@ public partial class StationSettingsWindow : Window
             new("效率显示", Value("ShowPace", saved.ShowPace ? "显示" : "隐藏"), "StationSettings.Pace"),
             new("提示音音量", Value("CueVolume", saved.CueVolume == 0 ? "静音" : $"{saved.CueVolume}%"), "StationSettings.CueVolume")
         };
-        PreferenceReadFailure.Text = string.Join(Environment.NewLine, new[] { "WindowOpeningMode", "ShowPace", "CueVolume" }
-            .Select(saved.ReadFailure).Where(failure => failure.Length > 0));
-        PreferenceReadDetails.Visibility = PreferenceReadFailure.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-
-        string Value(string path, string value) => saved.CanEdit(path) ? value : "未能读取";
+        string Value(string path, string value)
+        {
+            var key = path switch { "WindowOpeningMode" => "window", "ShowPace" => "pace", _ => "audio" };
+            var name = path switch { "WindowOpeningMode" => "窗口方式", "ShowPace" => "效率显示", _ => "提示音" };
+            model.SetPreferenceNotice(key, saved.CanEdit(path) ? null : name + "偏好未能读取，原文件保留；请检查本机设置文件与访问权限。");
+            return saved.CanEdit(path) ? value : "未能读取";
+        }
     }
     async void Edit_Click(object sender, RoutedEventArgs e)
     {

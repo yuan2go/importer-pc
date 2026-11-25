@@ -51,10 +51,31 @@ public partial class ParcelViewModel
     public string[] HistoryStates => ["", .. Enum.GetNames<ParcelState>()];
     public string HistoryMetricsSummary { get; private set; } = "";
     public string HistoryMetricsDetail { get; private set; } = "查询后显示本次范围的统计。";
-    // One plain line for the operator; the technical counts stay in "更多筛选与查询信息".
-    // Only counted facts are shown: an unconfirmed image stage can overlap an accepted chute, so no count is derived by subtraction.
-    internal static string HistoryMetricsText(ParcelHistoryMetrics m) => m.Operations == 0 ? "本次查询没有包裹" :
-        $"共 {m.Operations} 件 · 已取得格口 {m.WcsAccepted}" + (m.Unknown > 0 ? $" · 格口未确认 {m.Unknown}，请核对" : " · 无待核对");
+    // Accepted chutes and unknown outcomes are independent counts.
+    internal static string HistoryMetricsText(ParcelHistoryMetrics m) =>
+        $"共 {m.Operations} 条（格口已取得 {m.WcsAccepted} · 待核对 {m.Unknown}）";
+
+    public string HistorySummary
+    {
+        get
+        {
+            if (historyLoading) return historyLoaded ? "正在查询，仍显示上次结果" : "正在查询作业记录…";
+            if (historyFailure is not null) return "查询未完成，请重试";
+            if (HistoryFiltersChanged) return "筛选已修改，点击“查询”更新结果";
+            if (!historyLoaded || historySelection is not { } selection) return "请选择条件后查询";
+            var (from, to) = (selection.Filter.From, selection.Filter.ToExclusive);
+            var recent = historyReadAt - to is { TotalMinutes: >= 0 and < 2 };
+            var range = from is null && to is null ? "不限时间" :
+                from == new DateTimeOffset(DateTime.Today) && to == new DateTimeOffset(DateTime.Today.AddDays(1)) ? "今天" :
+                recent && to - from == TimeSpan.FromDays(1) ? "最近24小时" :
+                recent && to - from == TimeSpan.FromDays(7) ? "最近7天" :
+                $"{from?.ToLocalTime():MM-dd HH:mm} 至 {to?.ToLocalTime():MM-dd HH:mm}".Trim();
+            if (from is null && to is { } end) range = $"截至 {end.ToLocalTime():MM-dd HH:mm}";
+            if (to is null && from is { } start) range = $"自 {start.ToLocalTime():MM-dd HH:mm} 起";
+            var limit = AppendHistory && HistoryItems.Length >= 1000 ? " · 已加载 1000 条，请缩小范围" : "";
+            return $"{HistoryMetricsSummary} ｜ 范围：{range} · 第 {historyPageIndex + 1} 页{limit}";
+        }
+    }
     ParcelHistorySelection? historySelection;
     string? appliedHistorySignature;
     string HistoryFilterSignature() => Ipc.Platform.Wire.Encode(new[] { HistoryBarcode, HistoryPosition, HistoryState, HistoryFrom, HistoryToExclusive, HistoryRequest });

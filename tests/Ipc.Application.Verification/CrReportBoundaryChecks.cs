@@ -129,6 +129,20 @@ internal static class CrReportBoundaryChecks
             System.Security.AccessControl.PropagationFlags.None, System.Security.AccessControl.AccessControlType.Allow));
         directory.Create(acl);
         WindowsStoragePaths.RequireUserDirectory(root, sid.Value);
+        var presentation = directory.CreateSubdirectory("presentation");
+        var existing = Path.Combine(presentation.FullName, "existing.json");
+        File.WriteAllText(existing, "{}");
+        var originalAcl = presentation.GetAccessControl();
+        originalAcl.SetAccessRuleProtection(true, false);
+        originalAcl.SetAccessRule(new FileSystemAccessRule(sid, FileSystemRights.ReadAndExecute,
+            InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+        presentation.SetAccessControl(originalAcl);
+        WindowsStoragePaths.PreparePresentationDirectory(presentation, sid);
+        var repaired = presentation.GetAccessControl().GetSecurityDescriptorSddlForm(AccessControlSections.Access);
+        WindowsStoragePaths.PreparePresentationDirectory(presentation, sid);
+        File.WriteAllText(Path.Combine(presentation.FullName, "probe.json"), "{}");
+        Check(File.ReadAllText(existing) == "{}" && repaired == presentation.GetAccessControl().GetSecurityDescriptorSddlForm(AccessControlSections.Access),
+            "existing personal presentation folder regains inheritable write access and repeated provisioning preserves its ACL and original files");
         Check(true, "ordinary per-user directory permits only its actual Windows owner and maintenance authorities");
         acl.AddAccessRule(new System.Security.AccessControl.FileSystemAccessRule(new System.Security.Principal.SecurityIdentifier("S-1-1-0"),
             System.Security.AccessControl.FileSystemRights.WriteData, System.Security.AccessControl.AccessControlType.Allow));

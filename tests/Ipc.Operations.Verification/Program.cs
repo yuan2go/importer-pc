@@ -32,6 +32,14 @@ internal static partial class Program
         Console.OutputEncoding = new UTF8Encoding(false);
         try
         {
+            if (args is ["--p0-crash-hooks"]) return P0Dispatcher.Parent();
+            if (args is ["--p0-dispatcher-child", var diagnostics]) return P0Dispatcher.Child(diagnostics);
+            if (args.Length == 3 && args[2] == "--smoke-screenshots")
+            {
+                workspace = Path.GetFullPath(args[0]);
+                root = Path.GetFullPath(args[1]);
+                return CaptureOperations().GetAwaiter().GetResult();
+            }
             if (args.Length == 2)
             {
                 workspace = Path.GetFullPath(args[0]); root = Path.GetFullPath(args[1]);
@@ -49,7 +57,7 @@ internal static partial class Program
             var role = Environment.GetEnvironmentVariable("IPC_FIXTURE_ROLE");
             if (role == "lease") { using var lease = new OperationsToolLease(Installation()); Console.WriteLine("READY"); Console.ReadLine(); return 0; }
             if (role == "ui-early-close") { EarlyCloseUi(); return 0; }
-            if (role is "ui-control" or "ui-owner-loss") { ControlUi(role == "ui-owner-loss"); return 0; }
+            if (role is "ui-control" or "ui-owner-loss" or "ui-smoke") { ControlUi(role == "ui-owner-loss", role == "ui-smoke"); return 0; }
             if (role is "ui" or "ui-crash" or "ui-offline" or "ui-cancel") { Ui(role == "ui-crash", role == "ui-offline", role == "ui-cancel"); return 0; }
             if (role is "server" or "server-restart") { Server(role != "server-restart").GetAwaiter().GetResult(); return 0; }
             if (role is "unapproved" or "wrong-role") { Unapproved().GetAwaiter().GetResult(); return 0; }
@@ -58,6 +66,31 @@ internal static partial class Program
             Run().GetAwaiter().GetResult(); return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }
+    }
+    static async Task<int> CaptureOperations()
+    {
+        Directory.CreateDirectory(root);
+        using var server = Child("server");
+        try
+        {
+            await Ready(server);
+            using var capture = Child("ui-smoke");
+            var output = capture.StandardOutput.ReadToEndAsync();
+            try { await capture.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(90)); }
+            finally { if (!capture.HasExited) capture.Kill(entireProcessTree: true); }
+            Console.Write(await output);
+            Console.Error.Write(await ErrorText(capture));
+            return capture.ExitCode;
+        }
+        finally
+        {
+            if (!server.HasExited)
+            {
+                await server.StandardInput.WriteLineAsync("stop");
+                await server.StandardInput.FlushAsync();
+                await server.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(20));
+            }
+        }
     }
     static string ReadCoordinatorOutput(Process process)
     {
@@ -602,7 +635,7 @@ internal static partial class Program
                     ((Button)window.FindName("QueryButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); return;
                 }
                 var connection = ((TextBlock)window.FindName("ConnectionText")).Text;
-                if (expectOffline ? !connection.StartsWith("未连接") : !connection.StartsWith("已核验")) return;
+                if (expectOffline ? !connection.StartsWith("未连接") : connection != "工作站已连接") return;
                 Check(expectOffline ? ((ItemsControl)window.FindName("PositionCards")).Items.Count == 0 :
                     ((ItemsControl)window.FindName("PositionCards")).Items.Count == 2, "online overview and offline invalidation reflect actual connection");
                 Check(grid.Items.Count <= 200 && window.ActualWidth >= 880, "WPF presents bounded real log page using shared native resources");

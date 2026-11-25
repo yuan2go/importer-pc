@@ -20,17 +20,20 @@ public partial class HistoryPage
             {
                 group.Children.Remove(barcode);
                 var entry = new Grid(); entry.Children.Add(barcode);
-                var hint = new TextBlock { Text = "扫码或输入完整条码", IsHitTestVisible = false, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center, Foreground = System.Windows.Media.Brushes.SlateGray };
+                var hint = new TextBlock { Text = "扫码或输入完整条码", IsHitTestVisible = false, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center, Foreground = (System.Windows.Media.Brush)FindResource("Muted") };
                 void Watermark() => hint.Visibility = barcode.Text.Length == 0 && !barcode.IsKeyboardFocused ? Visibility.Visible : Visibility.Collapsed;
                 barcode.TextChanged += (_, _) => Watermark(); barcode.IsKeyboardFocusWithinChanged += (_, _) => Watermark(); Watermark();
                 entry.Children.Add(hint); group.Children.Add(entry);
             }
             group.Margin = new(0, 0, 8, 4); HistoryQueryActions.Children.Insert(0, group);
         }
-        AllHistoryFilters.Header = "更多筛选与精确时间";
+        AllHistoryFilters.Template = (ControlTemplate)FindResource("HistoryFilterBody");
+        HistoryFilterBar.Children.Remove(HistoryQueryActions);
+        HistoryFilterBar.Children.Insert(1, HistoryQueryActions);
+        DockPanel.SetDock(HistoryQueryActions, Dock.Top);
+        DockPanel.SetDock(HistoryPresetHost, Dock.Top);
         var toggleFilters = new Button { Content = "更多筛选", MinHeight = 44, Margin = new(0, 0, 8, 4) };
-        var compact = new Style(typeof(Button), (Style)FindResource("ParameterAction")); compact.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));
-        var show = new DataTrigger { Binding = new System.Windows.Data.Binding("IsCompact"), Value = true }; show.Setters.Add(new Setter(VisibilityProperty, Visibility.Visible)); compact.Triggers.Add(show); toggleFilters.Style = compact;
+        toggleFilters.SetResourceReference(StyleProperty, "ParameterAction");
         toggleFilters.Click += (_, _) => AllHistoryFilters.IsExpanded = !AllHistoryFilters.IsExpanded;
         AllHistoryFilters.Expanded += (_, e) => { if (ReferenceEquals(e.OriginalSource, AllHistoryFilters)) toggleFilters.Content = "收起筛选"; }; AllHistoryFilters.Collapsed += (_, e) => { if (ReferenceEquals(e.OriginalSource, AllHistoryFilters)) toggleFilters.Content = "更多筛选"; };
         HistoryQueryActions.Children.Insert(3, toggleFilters);

@@ -70,9 +70,6 @@
       <StackPanel>
        <TextBlock Text="显示与提示音" Style="{StaticResource SettingsCardHeading}"/>
        <ItemsControl x:Name="PreferenceFields" ItemsPanel="{StaticResource SettingsTwoColumns}" ItemTemplate="{StaticResource ReadOnlySettingsField}"/>
-       <Expander x:Name="PreferenceReadDetails" Header="部分本机偏好无法读取，原文件保留" Visibility="Collapsed">
-        <TextBox x:Name="PreferenceReadFailure" Style="{DynamicResource ReadonlyValue}" IsTabStop="True" Padding="8" VerticalScrollBarVisibility="Auto" MaxHeight="160" AutomationProperties.Name="本机偏好读取诊断，可复制"/>
-       </Expander>
       </StackPanel>
      </Border>
      <TextBlock Text="开始修改时验证管理密码。保存继续核验完整配置、并发修订和实际设备责任；保存不等于已生效。" Foreground="{DynamicResource Muted}"/>
@@ -83,7 +80,7 @@
   <Border Grid.Row="2" Style="{StaticResource OperatorActionFooter}" Padding="20,10">
    <DockPanel>
     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-     <Button x:Name="ReturnToWorkstation" Content="返回作业" Click="Return_Click" Style="{DynamicResource Primary}" Margin="0,0,8,0"
+     <Button x:Name="ReturnToWorkstation" Content="返回作业" Click="Return_Click" Margin="0,0,8,0"
              ToolTip="暂时隐藏设置，保留当前草稿和有效编辑授权"/>
      <Button Content="关闭设置" Click="Close_Click" Margin="0"
              ToolTip="关闭本窗并结束本窗编辑授权"/>

@@ -260,6 +260,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     // Wide values (addresses, patterns, lists) and narrow windows put the control under the text.
     void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
     {
+        if (control is CheckBox) control.SetResourceReference(FocusVisualStyleProperty, "FocusRing");
         var field = new Grid();
         FrameworkElement card = SectionLayout ? field : Card(field);
         if (SectionLayout) field.Margin = new(0, 0, 14, 12);
@@ -296,8 +297,8 @@ public sealed partial class ParameterSettingsControl : UserControl
             var hint = Text(help); hint.Margin = new(0, 2, 0, 0);
             if (SectionLayout)
             {
-                hint.Text = help.ReplaceLineEndings(" ");
-                hint.FontSize = UiTypography.Diagnostic; hint.TextWrapping = TextWrapping.NoWrap; hint.TextTrimming = TextTrimming.CharacterEllipsis;
+                hint.FontSize = UiTypography.Label;
+                hint.TextWrapping = TextWrapping.Wrap;
                 hint.ToolTip = help; Grid.SetRow(hint, 2); Grid.SetColumnSpan(hint, 2); field.Children.Add(hint);
             }
             else describe.Children.Add(hint);

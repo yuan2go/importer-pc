@@ -7,9 +7,56 @@ using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster;
 using Ipc.Application.Sportmaster.Desktop;
 using Ipc.Assembly;
+using Ipc.Platform;
+using System.IO;
 
 static partial class Program
 {
+    static async Task VerifyUnconfiguredHome(string root, string evidence, List<string> lines)
+    {
+        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "unconfigured-home"), deferred: true);
+        h.Config.Wcs!.Parameters["left-bcr-code"] = "";
+        h.Config.Wcs.Parameters["right-bcr-code"] = "";
+        ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
+        var pace = Path.Combine(evidence, "user-preferences", "presentation", "sportmaster.pace.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(pace)!);
+        File.WriteAllText(pace, "{broken");
+        var layout = Path.Combine(Path.GetDirectoryName(pace)!, "sportmaster.supply-station.json");
+        const string invalidLayout = """{"schema":42,"compact":false}""";
+        File.WriteAllText(layout, invalidLayout);
+        var audio = Path.Combine(Path.GetDirectoryName(pace)!, "sportmaster.audio.json");
+        Directory.CreateDirectory(audio); // An unreadable preference must not be mistaken for a missing file.
+        await h.StartAsync();
+        var window = new SupplyStationWindow(h.App, null, null) { ConfirmDiscardDrafts = _ => true };
+        await using var owner = new NativeWindowOwner(window);
+        window.Show();
+        await SetClient(window, 1366, 768);
+        await CameraRoundHarness.Until(async () => { await window.ViewModel.RefreshAsync(); return window.ViewModel.Fresh; });
+        window.UpdateLayout();
+        var client = (FrameworkElement)window.Content;
+        var buttons = Descendants(client).OfType<Button>().Where(b => b.Name == "CenteredEnableSupply").ToArray();
+        if (buttons.Length != 2 || buttons.Any(b => !b.IsVisible || b.IsEnabled ||
+            !Equals(b.Foreground, b.FindResource("Muted"))))
+            throw new InvalidOperationException("Unconfigured positions require two readable disabled enable actions");
+        lines.Add("PASS OPERATOR-REVIEW both unconfigured positions display disabled enable actions with muted foreground");
+        CaptureInternal(evidence, "workstation-unconfigured", client, lines);
+        var bell = (System.Windows.Controls.Primitives.ToggleButton)window.FindName("PreferenceNoticeButton");
+        bell.IsChecked = true;
+        var popup = ((Grid)bell.Parent).Children.OfType<System.Windows.Controls.Primitives.Popup>().Single();
+        await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        var notice = Descendants(popup.Child).OfType<TextBox>().Single();
+        if (!popup.IsOpen || !notice.Text.Contains("效率显示") || !notice.Text.Contains("提示音") || !notice.Text.Contains("布局") || window.ViewModel.WorkFeedback.Contains("效率显示") || File.ReadAllText(pace) != "{broken" ||
+            File.ReadAllText(layout) != invalidLayout || !Directory.Exists(audio))
+            throw new InvalidOperationException("Failed preference read did not reach the isolated header notice");
+        lines.Add("PASS OPERATOR-REVIEW malformed pace, invalid layout and unreadable audio appear in the header notification with their originals preserved");
+        var popupBody = (FrameworkElement)popup.Child;
+        var popupOrigin = client.PointFromScreen(popupBody.PointToScreen(new Point()));
+        if (popupOrigin.X < -1 || popupOrigin.X + popupBody.ActualWidth > client.ActualWidth + 1)
+            throw new InvalidOperationException("Notification popover extends past the workstation client");
+        CaptureInternal(evidence, "workstation-notification", client, lines, (FrameworkElement)popup.Child);
+        bell.IsChecked = false;
+    }
+
     static async Task VerifyOperatorReviewUi(string root, string evidence, List<string> lines)
     {
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS OPERATOR-REVIEW " + text); }
@@ -101,6 +148,7 @@ static partial class Program
         }
         finally { await windows.DisposeAsync(); }
 
+        await VerifyUnconfiguredHome(root, evidence, lines);
         await using var factory = new ParcelCapabilityFactory(new(System.IO.Path.Combine(root, "config/sportmaster"), evidence, null, null));
         var draft = new StartupConfigurationDraft(new SportmasterFlow().InitialConfiguration(), factory.Catalog());
         var editor = new ParameterSettingsControl { FirstConfiguration = true, Model = draft.CreateParameterEditor((p, c) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(p, c))) };

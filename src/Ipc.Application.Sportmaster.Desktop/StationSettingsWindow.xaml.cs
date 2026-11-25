@@ -96,11 +96,13 @@ public partial class StationSettingsWindow : Window
             new("效率显示", Value("ShowPace", saved.ShowPace ? "显示" : "隐藏"), "StationSettings.Pace"),
             new("提示音音量", Value("CueVolume", saved.CueVolume == 0 ? "静音" : $"{saved.CueVolume}%"), "StationSettings.CueVolume")
         };
-        PreferenceReadFailure.Text = string.Join(Environment.NewLine, new[] { "WindowOpeningMode", "ShowPace", "CueVolume" }
-            .Select(saved.ReadFailure).Where(failure => failure.Length > 0));
-        PreferenceReadDetails.Visibility = PreferenceReadFailure.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-
-        string Value(string path, string value) => saved.CanEdit(path) ? value : "未能读取";
+        string Value(string path, string value)
+        {
+            var key = path switch { "WindowOpeningMode" => "window", "ShowPace" => "pace", _ => "audio" };
+            var name = path switch { "WindowOpeningMode" => "窗口方式", "ShowPace" => "效率显示", _ => "提示音" };
+            model.SetPreferenceNotice(key, saved.CanEdit(path) ? null : name + "偏好未能读取，原文件保留；请检查本机设置文件与访问权限。");
+            return saved.CanEdit(path) ? value : "未能读取";
+        }
     }
     async void Edit_Click(object sender, RoutedEventArgs e)
     {

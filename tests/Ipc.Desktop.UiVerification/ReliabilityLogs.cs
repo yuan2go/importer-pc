@@ -73,7 +73,7 @@ static partial class Program
             for (var i = 0; i < 200 && detail.Text != entries[201].Text; i++) await Task.Delay(10);
             if (detail.Text != entries[201].Text) throw new InvalidOperationException("Single-record original differs from the selected record");
             grid.SelectedItems.Add(entries[200]);
-            var previousClipboard = Clipboard.GetDataObject(); uint publishedClipboard = 0;
+            var previousClipboard = CaptureClipboardForRestore(); uint publishedClipboard = 0;
             var copyStatus = (TextBlock)typeof(SoftwareLogControl).GetField("status", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!;
             try
             {

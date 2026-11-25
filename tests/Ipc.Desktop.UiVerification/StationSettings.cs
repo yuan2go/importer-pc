@@ -46,10 +46,14 @@ static partial class Program
         var storageCard = Descendants(center).OfType<Border>()
             .Single(card => AutomationProperties.GetAutomationId(card) == "DiagnosticCard.storage");
         var storage = (StackPanel)storageCard.Child;
-        var badge = (TextBlock)((DockPanel)storage.Children[0]).Children[0];
+        var pill = (Border)((DockPanel)storage.Children[0]).Children[0];
+        var badge = (TextBlock)pill.Child;
         var reading = (TextBlock)storage.Children[1];
         bool UsesInk(string key) => Equals(badge.Foreground, badge.FindResource(key));
         await Until(() => badge.Text == "正常" && reading.Text.StartsWith("剩余 "));
+        Check(Equals(pill.Background, pill.FindResource("SuccessBackground")) &&
+            pill.CornerRadius == (CornerRadius)pill.FindResource("RadiusBadge") &&
+            ((Button)storage.Children[2]).Margin.Bottom == 10, "healthy storage uses the shared pill and separates its action from details");
         Check(UsesInk("Success"), "verified storage reading uses the success theme resource");
         Volatile.Write(ref probeBytes, -1);
         await Until(() => badge.Text == "作业存储异常");

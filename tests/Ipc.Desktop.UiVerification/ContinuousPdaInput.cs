@@ -176,7 +176,7 @@ static partial class Program
             await RightKeys(0x0D); await RightAccepted(typed);
             Check(transport.Commands.Last() is { PositionId: "right", Kind: ParcelBarcodeInputKind.Keyboard } && RequestSource(h.Peer.Requests.Last()) == "MANUAL",
                 "ordinary native typing and Enter on the right are classified as MANUAL while the left retains its own result");
-            var previousClipboard = Clipboard.GetDataObject();
+            var previousClipboard = CaptureClipboardForRestore();
             try
             {
                 await NextRound("right"); Clipboard.SetText(pasted); otherEntry.Paste(); await RightKeys(0x0D); await RightAccepted(pasted);

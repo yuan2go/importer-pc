@@ -44,6 +44,9 @@ static partial class Program
         try
         {
             await SetClient(window, 1366, 768); await Until(() => vm.Fresh && vm.RcsState == SupplyStationViewModel.RcsConnectionState.Online);
+            Check(vm.Snapshot?.Configuration.Effective.Mode == RunMode.Production && !vm.Message.Contains("模拟工程"),
+                "production snapshot suppresses the simulation-only feedback text");
+            CaptureInternal(evidence, "workstation-ready", client, lines);
             var rcs = (Button)window.FindName("RcsConnection");
             Check(rcs.IsEnabled && rcs.Focusable && rcs.ActualHeight >= 44 && Equals(rcs.Content, "RCS：在线"),
                 "RCS connection stays visible as a keyboard-accessible heartbeat button");

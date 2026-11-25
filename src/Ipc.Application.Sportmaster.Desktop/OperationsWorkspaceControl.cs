@@ -21,6 +21,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     readonly Func<Task> connect, offline;
     readonly Func<bool> connected;
     readonly ContentControl page = new();
+    readonly Border authorizationGuide;
+    readonly TextBlock guideHeading = Text("");
     readonly MaintenancePage parameters = new() { Audience = SmParameterAudience.Technical };
     readonly TextBlock status = new() { FontSize = UiTypography.Label };
     readonly Border statusPill = new() { CornerRadius = new(12), Padding = new(9, 4, 9, 4) };
@@ -71,7 +73,22 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         SetAuthorizationStatus("只读 · 未授权", "查看、登录和切页不暂停供包。调试须明确进入。");
         AuthorizationAction = Action("连接并验证管理密码…", Authenticate);
         AuthorizationAction.Margin = new(0);
-        AuthorizationAction.SetResourceReference(StyleProperty, "Primary");
+        var authorizePage = Action("验证管理密码", Authenticate);
+        authorizePage.HorizontalAlignment = HorizontalAlignment.Left;
+        authorizePage.Margin = new(0, 10, 0, 0);
+        authorizePage.SetResourceReference(StyleProperty, "Primary");
+        AutomationProperties.SetAutomationId(authorizePage, "Operations.AuthorizePage");
+        guideHeading.FontSize = UiTypography.Position;
+        guideHeading.FontWeight = UiTypography.Emphasis;
+        var guide = new StackPanel();
+        guide.Children.Add(guideHeading);
+        guide.Children.Add(Text("使用本站管理密码授权本窗口。验证和浏览保留工作站当前的供包状态。"));
+        guide.Children.Add(authorizePage);
+        authorizationGuide = new Border { Child = guide, Padding = new(20), Margin = new(24, 16, 24, 12),
+            VerticalAlignment = VerticalAlignment.Top, BorderThickness = new(1) };
+        authorizationGuide.SetResourceReference(Border.BackgroundProperty, "Surface");
+        authorizationGuide.SetResourceReference(Border.BorderBrushProperty, "Line");
+        authorizationGuide.SetResourceReference(Border.CornerRadiusProperty, "RadiusCard");
         AutomationProperties.SetAutomationId(AuthorizationAction, "Operations.Authorize");
 
         var details = new StackPanel();
@@ -214,6 +231,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
                 var expiry = model.ManagementStatus.ExpiresAt?.ToLocalTime().ToString("HH:mm");
                 SetAuthorizationStatus(expiry is null ? "已授权" : "已授权 · " + expiry + " 到期", "浏览与编辑不暂停供包。", "Success");
             }
+            if (ReferenceEquals(page.Content, authorizationGuide)) ShowPage(selected);
             parameters.IsEnabled = model.Fresh;
             if (logs is not null) logs.IsEnabled = model.Fresh;
             diagnostic.IsEnabled = model.Fresh;
@@ -235,9 +253,19 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         logs?.Revoke(); debug?.Revoke();
         if (logs is not null) logs.IsEnabled = false;
     }
+    void ShowAuthorizationGuide()
+    {
+        guideHeading.Text = selected == "debug" ? "验证后查看设备调试" : "验证后查看专业参数";
+        page.Content = authorizationGuide;
+    }
     public void ShowPage(string target)
     {
         selected = target;
+        if (target is ("debug" or "parameters") && !workspace && (!model.IsManagementMode || !connected()))
+        {
+            ShowAuthorizationGuide();
+            return;
+        }
         page.Content = target switch
         {
             "parameters" => parameters,
@@ -336,7 +364,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     }
     FrameworkElement Maintenance()
     {
-        var body = new StackPanel { Margin = new(24, 16, 24, 12) };
+        var body = new StackPanel { Margin = new(24, 10, 24, 4) };
 
         StackPanel Group(string title, string id, bool danger = false)
         {
@@ -350,7 +378,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             divider.SetResourceReference(Border.BorderBrushProperty, "Line");
             content.Children.Add(divider);
 
-            var card = new Border { Child = content, BorderThickness = new(1), CornerRadius = new(8), Padding = new(14), Margin = new(0, 0, 0, 12) };
+            var card = new Border { Child = content, BorderThickness = new(1), CornerRadius = new(8), Padding = new(14, 8, 14, 8), Margin = new(0, 0, 0, 8) };
             card.SetResourceReference(Border.BackgroundProperty, danger ? "DangerBackground" : "Surface");
             card.SetResourceReference(Border.BorderBrushProperty, danger ? "Danger" : "Line");
             AutomationProperties.SetAutomationId(card, id);

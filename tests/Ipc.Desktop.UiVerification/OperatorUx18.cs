@@ -47,6 +47,14 @@ static partial class Program
             Check(vm.InputTargetPosition == "" && !vm.Left.InputTargetActive && !vm.Right.InputTargetActive, "clicking outside both cards clears the selected input target");
             entry.Focus(); await Flush();
             Check(entry.IsKeyboardFocused && vm.InputTargetPosition == "left", "returning focus identifies the left camera position without asking for input device type");
+            await BarcodeNativeKeyboard.SendAsync(window, entry, [0x72], entry);
+            Check(otherEntry.IsKeyboardFocused && vm.InputTargetPosition == "right", "F3 selects the right input");
+            await BarcodeNativeKeyboard.SendAsync(window, otherEntry, [0x1b], otherEntry);
+            Check(vm.InputTargetPosition.Length == 0, "Escape clears the selected position");
+            var railToggle = (Button)window.FindName("NavigationToggle");
+            railToggle.Focus(); await Flush();
+            await BarcodeNativeKeyboard.SendAsync(window, entry, [0x71], railToggle);
+            Check(entry.IsKeyboardFocused && vm.InputTargetPosition == "left", "F2 selects the left input");
             entry.Text = "000UX180001"; await Flush(); Check(submit.IsEnabled, "complete new draft has an enabled primary action");
             Check(Math.Abs(((Border)left.FindName("ResultPanel")).ActualHeight - ((Border)right.FindName("ResultPanel")).ActualHeight) < 1,
                 "a draft notice on one side does not misalign the two chute regions");

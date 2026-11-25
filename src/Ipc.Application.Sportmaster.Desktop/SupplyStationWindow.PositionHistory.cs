@@ -65,9 +65,12 @@ public partial class SupplyStationWindow
     FrameworkElement RoundHistory()
     {
         var panel = new DockPanel(); var controls = new WrapPanel();
+        panel.Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/QueryWorkspaceTheme.xaml", UriKind.Relative) });
         var side = new ComboBox { ItemsSource = new[] { "全部投递位", "左投递位", "右投递位" }, SelectedIndex = 0, MinWidth = 140, MinHeight = 44 };
         var from = new DatePicker { SelectedDate = DateTime.Today, MinHeight = 44, MinWidth = 140 };
         var to = new DatePicker { SelectedDate = DateTime.Today, MinHeight = 44, MinWidth = 140 };
+        from.SetResourceReference(StyleProperty, "QueryDatePicker");
+        to.SetResourceReference(StyleProperty, "QueryDatePicker");
         var search = new TextBox { MinWidth = 240, MinHeight = 44, ToolTip = "精确查询条码、轮次或请求号；结果、结束原因和识读情况可从右侧选择" };
         System.Windows.Automation.AutomationProperties.SetName(search, "轮次查询条码或编号");
         var reason = new ComboBox

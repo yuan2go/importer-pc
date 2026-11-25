@@ -36,6 +36,14 @@ static partial class Program
         var pages = (TabControl)((ContentControl)window.FindName("PageHost")).Content;
         Check(pages.Items.OfType<TabItem>().Select(page => page.Header).SequenceEqual(new[] { "作业记录", "包裹轮次", "投递位启停记录" }),
             "station records expose three distinct sections in the visual order");
+        pages.SelectedIndex = 1; await Flush();
+        var roundDates = Descendants(pages).OfType<DatePicker>().Where(d => d.IsVisible).ToArray();
+        Check(roundDates.Length == 2 && roundDates.All(d => Descendants(d).OfType<DatePickerTextBox>().Single().Text ==
+            DateTime.Today.ToString("yyyy-MM-dd")), "round query renders both local dates as yyyy-MM-dd");
+        Click(pages, "查询轮次"); await Until(() => Descendants(pages).OfType<DataGrid>().Any(g => g.IsVisible && g.Items.Count > 0));
+        CaptureInternal(evidence, "records-parcel-rounds", client, lines);
+        pages.SelectedIndex = 0; await Flush();
+        KeyboardTraversal.CheckWindow(window, "station records", Check);
         var history = Descendants(pages).OfType<HistoryPage>().Single(page => page.IsVisible);
         Check(vm.HistoryItems.Length == 1 && vm.CanExportHistory, "history still reads its real fixed selection and export boundary");
         ((Expander)history.FindName("AllHistoryFilters")).IsExpanded = true; ((Expander)history.FindName("HistoryFilters")).IsExpanded = true; await Flush();

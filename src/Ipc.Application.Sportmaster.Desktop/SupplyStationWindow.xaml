@@ -56,7 +56,7 @@
      <ToggleButton x:Name="PreferenceNoticeButton" Width="44" Height="44" ToolTip="本机设置通知" AutomationProperties.Name="本机设置通知">
       <Path Data="M 3,14 L 5,11 V 7 A 4,4 0 0 1 13,7 V 11 L 15,14 Z M 7,16 A 2,2 0 0 0 11,16" Stroke="{DynamicResource Ink}" StrokeThickness="1.5" StrokeLineJoin="Round" Width="18" Height="18"/>
      </ToggleButton>
-     <Popup IsOpen="{Binding IsChecked,ElementName=PreferenceNoticeButton,Mode=TwoWay}" PlacementTarget="{Binding ElementName=PreferenceNoticeButton}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+     <Popup IsOpen="{Binding IsChecked,ElementName=PreferenceNoticeButton,Mode=TwoWay}" PlacementTarget="{Binding ElementName=PreferenceNoticeButton}" Placement="Bottom" HorizontalOffset="-276" StaysOpen="False" AllowsTransparency="True">
       <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="1" Padding="12" Width="320">
        <TextBox Text="{Binding PreferenceNoticeText,Mode=OneWay}" Style="{DynamicResource ReadonlyValue}" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="180" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="本机设置读取通知"/>
       </Border>

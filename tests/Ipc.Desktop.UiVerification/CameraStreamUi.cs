@@ -55,6 +55,8 @@ static partial class Program
             var retained = await h.App.ReadCameraReadRoundAsync(default);
             Check(retained.Id == locked.Id && retained.Frame!.Id == locked.Frame!.Id && retained.RequestBody == locked.RequestBody && retained.Barcode == locked.Barcode && h.Factory.Decoders[h.Left].Count == 2 && h.Peer.Requests.Count == 0,
                 "live video advances after lock without redecoding, replacing the locked result, changing frozen JSON or sending requests");
+            // The preview buffer and the sampled decoder counters are published separately.
+            await CameraRoundHarness.Until(async () => { await Poll(live); return Field<TextBlock>(live, "counters").Text.Contains("本轮解码已暂停"); });
             Check(Field<TextBlock>(live, "counters").Text.Contains("本轮解码已暂停"), "video explains that decoding is paused separately from acquisition");
             Check(!Descendants(control).OfType<Expander>().Any(e => Equals(e.Header, "隔离确认与结束调试")),
                 "the removed isolation confirmation panel is not restored by live video");

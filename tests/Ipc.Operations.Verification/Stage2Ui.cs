@@ -46,13 +46,15 @@ internal static partial class Program
         void Press(Button button) => window.Dispatcher.BeginInvoke(new Action(() => button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent))));
         void Capture(string name)
         {
-            var dpi = VisualTreeHelper.GetDpi(window);
-            var picture = new RenderTargetBitmap((int)(window.ActualWidth * dpi.DpiScaleX), (int)(window.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
-            picture.Render(window);
+            var client = (FrameworkElement)window.Content;
+            var dpi = VisualTreeHelper.GetDpi(client);
+            var picture = new RenderTargetBitmap((int)Math.Ceiling(client.ActualWidth * dpi.DpiScaleX), (int)Math.Ceiling(client.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
+            picture.Render(client);
             var png = new PngBitmapEncoder();
             png.Frames.Add(BitmapFrame.Create(picture));
             using var output = File.Create(Path.Combine(root, name + ".png"));
             png.Save(output);
+            Console.WriteLine($"CAPTURE {name}: client {client.ActualWidth:0.##}x{client.ActualHeight:0.##} DIP, {dpi.PixelsPerInchX} DPI");
         }
         app.Startup += async (_, _) =>
         {
@@ -61,6 +63,7 @@ internal static partial class Program
                 window.Show(); var tabs = (TabControl)window.FindName("Pages");
                 Check(tabs.Items.Cast<TabItem>().Select(t => t.Header?.ToString()).SequenceEqual(new[] { "运行总览", "日志中心", "设备调试", "专业参数", "维护中心" }), "five actual operations navigation targets are present");
                 var authorize = FindButton("连接并验证管理密码…");
+                NativeButtonLayout.CheckCaption(authorize, Check);
                 var environment = (ToggleButton)window.FindName("EnvironmentToggle");
                 var installation = (TextBox)window.FindName("InstallationText");
                 Check(authorize.IsVisible && !installation.IsVisible, "global authorization is available from overview and environment details start folded");
@@ -71,7 +74,19 @@ internal static partial class Program
                     "the environment disclosure shows the full source commit and local data path as copyable text");
                 environment.IsChecked = false;
                 tabs.SelectedIndex = 3; await Until(() => Visuals(window).OfType<OperationsWorkspaceControl>().Any());
-                Press(authorize);
+                foreach (var (index, name) in new[] { (2, "operations-debug-locked"), (3, "operations-parameters-locked") })
+                {
+                    tabs.SelectedIndex = index;
+                    await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+                    Check(FindButton("验证管理密码").IsVisible && !Visuals(window).OfType<TextBlock>().Any(t =>
+                        t.IsVisible && (t.Text.Contains("状态读取已中断") || t.Text == "正在读取设置…")),
+                        "unauthorized " + name + " offers an actionable grant without a false read failure");
+                    Check(!Visuals(window).OfType<TextBox>().Any(t => t.IsVisible && t.Text.Contains("模拟工程不操作真实设备")),
+                        "unconnected operations header does not claim a simulated engineering session");
+                    KeyboardTraversal.CheckWindow(window, name, Check);
+                    Capture(name);
+                }
+                Press(FindButton("验证管理密码"));
                 await Until(() => app.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible));
                 var login = app.Windows.OfType<ManagementModeWindow>().Single(w => w.IsVisible);
                 await Until(() => Visuals(login).OfType<PasswordBox>().Any(p => p.Name == "ManagementPassword" && p.IsVisible && p.IsEnabled));
@@ -135,6 +150,13 @@ internal static partial class Program
                 Check(FindButton("创建完整备份…").IsVisible &&
                     Visuals(danger).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Operations.Maintenance.Offline").IsVisible,
                     "online backup and detached offline maintenance are both reachable with offline maintenance isolated in its own card");
+                var client = (FrameworkElement)window.Content;
+                await NativeClientSize.Set(window, client, 1280, 760);
+                var offlineBottom = danger.TranslatePoint(new Point(0, danger.ActualHeight), client).Y;
+                Check(Math.Abs(client.ActualWidth - 1280) <= 1 && Math.Abs(client.ActualHeight - 760) <= 1 &&
+                    offlineBottom <= client.ActualHeight && danger.TranslatePoint(new Point(), client).Y >= 0,
+                    $"complete high-risk section in {client.ActualWidth:0.##}x{client.ActualHeight:0.##} client, bottom={offlineBottom:0.##}");
+                KeyboardTraversal.CheckWindow(window, "operations-maintenance-native", Check);
                 Capture("operations-maintenance-native");
                 tabs.SelectedIndex = 1;
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
@@ -142,6 +164,7 @@ internal static partial class Program
                 var onlineLogMode = (RadioButton)window.FindName("OnlineLogMode");
                 Check(offlineLogMode.IsChecked == true && onlineLogMode.IsChecked == false && ((FrameworkElement)window.FindName("OfflineLogs")).IsVisible,
                     "log center starts with the offline segment selected and its filters visible");
+                Check(!((Button)window.FindName("CancelQuery")).IsVisible, "idle offline log query hides cancellation");
                 var filters = (FrameworkElement)window.FindName("Filters");
                 var inputs = new[] { "LogAreas", "TimeRange", "Level", "SourceFilter", "Keyword" }
                     .Select(name => (FrameworkElement)window.FindName(name)).ToArray();
@@ -158,6 +181,7 @@ internal static partial class Program
                 var resultHeight = Visuals(fullLogs).OfType<DataGrid>().Single().ActualHeight;
                 Check(resultHeight >= 140,
                     "original full log UI completes an actual query with a usable native results viewport; height=" + resultHeight);
+                KeyboardTraversal.CheckWindow(window, "operations-stage2-native", Check);
                 Capture("operations-stage2-native");
                 offlineLogMode.IsChecked = true;
                 await Until(() => offlineLogMode.IsChecked == true && onlineLogMode.IsChecked == false &&
@@ -182,6 +206,7 @@ internal static partial class Program
                 Check(healthOrigins.Length == 4 && healthOrigins.All(origin => origin.Y == healthOrigins[0].Y) &&
                     healthOrigins[0].X < healthOrigins[1].X && healthOrigins[1].X < healthOrigins[2].X && healthOrigins[2].X < healthOrigins[3].X,
                     "three device confirmations and storage occupy four aligned columns");
+                KeyboardTraversal.CheckWindow(window, "operations-overview-native", Check);
                 Capture("operations-overview-native");
                 Check(!model.HasUnsavedConfiguration && !model.HasUnsavedDisplayPreferences, "ordinary page navigation does not modify the retained parameter draft");
                 window.Close();

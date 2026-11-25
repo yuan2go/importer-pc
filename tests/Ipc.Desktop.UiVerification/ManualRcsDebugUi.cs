@@ -59,7 +59,7 @@ static partial class Program
             }
             var raw = (await h.App.ReadCameraReadRoundAsync(default)).HttpResponse!;
             var expected = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(raw.BodyBase64));
-            var priorClipboard = Clipboard.GetDataObject();
+            var priorClipboard = CaptureClipboardForRestore();
             var feedback = Field<TextBlock>(control, "feedback");
             var descriptor = System.ComponentModel.DependencyPropertyDescriptor.FromProperty(TextBlock.TextProperty, typeof(TextBlock));
             uint publishedSequence = 0;

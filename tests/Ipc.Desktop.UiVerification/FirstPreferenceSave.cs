@@ -31,6 +31,27 @@ static partial class Program
         {
             var editor = await FirstConfigurationReady(first,busy,Check);
             Check(Descendants(first).OfType<Button>().Any(b => AutomationProperties.GetAutomationId(b) == "Startup.OpenRestore" && b.IsVisible), "first configuration can open complete-backup restore before creating business data");
+            var destination = Descendants(editor).OfType<ComboBox>().Single(b => b.IsVisible && AutomationProperties.GetAutomationId(b).EndsWith("/no-dest-to-exp"));
+            var field = (Grid)((DockPanel)destination.Parent).Parent;
+            var rule = field.Children.OfType<TextBlock>().Single(t => t.ToolTip is string);
+            Check(rule.TextWrapping == TextWrapping.Wrap && rule.TextTrimming == TextTrimming.None && rule.Text == (string)rule.ToolTip &&
+                double.IsNaN(rule.Height), "first-step no-destination instructions retain their complete text and automatic row height");
+            NativeButtonLayout.CheckCaption(Descendants(first).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.OpenRestore"), Check);
+            CaptureInternal(evidence, "first-step-1", (FrameworkElement)System.Windows.Media.VisualTreeHelper.GetChild(first, 0), lines);
+            KeyboardTraversal.CheckWindow(first, "first setup step 1", Check);
+            var menuButton = Descendants(first).OfType<ManagementModeMenu>().Single(b => b.IsVisible);
+            var menu = menuButton.ContextMenu!;
+            menu.PlacementTarget = menuButton; menu.IsOpen = true; await Flush();
+            var item = menu.Items.OfType<MenuItem>().First(b => b.IsVisible && b.IsEnabled);
+            Check(item.Focus() && item.IsKeyboardFocused && ReferenceEquals(item.FocusVisualStyle, item.FindResource("FocusRing")),
+                "available management menu action takes keyboard focus with the shared two-DIP solid ring");
+            menu.IsOpen = false; await Flush();
+            foreach (var (category, title) in new[] { (2, "左右相机"), (1, "条码筛选") })
+            {
+                Check(editor.ShowPage(category, title), "first setup opens " + title);
+                first.UpdateLayout();
+                KeyboardTraversal.CheckWindow(first, "first setup " + title, Check);
+            }
             var maintenanceField=type.GetField("maintenance",flags)!;
             var proxy=DispatchProxy.Create<IStartupMaintenance,FirstPreferenceMaintenanceProbe>();
             var probe=(FirstPreferenceMaintenanceProbe)(object)proxy;
@@ -51,6 +72,8 @@ static partial class Program
             Button Save() => Descendants(first).OfType<Button>().Single(b=>b.IsVisible && AutomationProperties.GetAutomationId(b)=="Startup.SaveAndStart");
             Check(Save().IsEnabled && Equals(Save().Content, "保存配置"),
                 "first setup offers the enabled save action with valid station identifiers and deferred equipment");
+            KeyboardTraversal.CheckWindow(first, "first setup step 4", Check);
+            CaptureInternal(evidence, "first-step-4", (FrameworkElement)System.Windows.Media.VisualTreeHelper.GetChild(first, 0), lines);
             Save().RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(()=>!(bool)busy.GetValue(first)! && probe.Saves>0);
             Check(probe.RecoveredReads > 0 && first.IsVisible && (bool)type.GetField("lastSaveConfirmed",flags)!.GetValue(first)! && !(bool)type.GetField("startupSaveUncertain",flags)!.GetValue(first)! && probe.Saves==1,

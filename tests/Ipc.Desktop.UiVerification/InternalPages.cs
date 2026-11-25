@@ -16,7 +16,7 @@ using Ipc.Platform;
 
 static partial class Program
 {
-    static void CaptureInternal(string evidence, string name, FrameworkElement target, List<string> lines)
+    static void CaptureInternal(string evidence, string name, FrameworkElement target, List<string> lines, FrameworkElement? popup = null)
     {
         target.UpdateLayout(); var dpi = VisualTreeHelper.GetDpi(target);
         var bounds = new Rect(0, 0, target.ActualWidth, target.ActualHeight);
@@ -25,6 +25,11 @@ static partial class Program
         {
             dc.DrawRectangle(Brushes.White, null, bounds);
             dc.DrawRectangle(new VisualBrush(target) { ViewboxUnits = BrushMappingMode.Absolute, Viewbox = bounds, Stretch = Stretch.Fill }, null, bounds);
+            if (popup is not null)
+            {
+                var origin = target.PointFromScreen(popup.PointToScreen(new Point()));
+                dc.DrawRectangle(new VisualBrush(popup), null, new Rect(origin, popup.RenderSize));
+            }
         }
         var bitmap = new RenderTargetBitmap((int)Math.Ceiling(bounds.Width * dpi.DpiScaleX), (int)Math.Ceiling(bounds.Height * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
         bitmap.Render(visual); var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap));

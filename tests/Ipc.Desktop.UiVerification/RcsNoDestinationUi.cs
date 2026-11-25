@@ -11,6 +11,23 @@ using Ipc.Presentation.Wpf;
 
 static partial class Program
 {
+    static IDataObject? CaptureClipboardForRestore()
+    {
+        var original = Clipboard.GetDataObject();
+        if (original is null) return null;
+        var formats = original.GetFormats(false);
+        if (formats.Length == 0) return null;
+        if (!formats.All(format => format is "UnicodeText" or "Text" or "OEMText" or "Locale"))
+            return original;
+
+        // Copy plain text while the original OLE source still owns it. Asking a
+        // live clipboard proxy for its old data during OleFlushClipboard can
+        // re-enter the clipboard while Windows already has it open.
+        var snapshot = new DataObject();
+        foreach (var format in formats)
+            if (original.GetData(format, false) is { } value) snapshot.SetData(format, value, false);
+        return snapshot;
+    }
     static async Task VerifyRcsNoDestinationUi(string root, string evidence, List<string> lines)
     {
         void Check(bool value, string text) { if (!value) throw new InvalidOperationException(text); lines.Add("PASS NO-DEST-UI " + text); }
@@ -154,7 +171,7 @@ static partial class Program
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             Check(message.ExtentHeight > message.ViewportHeight && offset > 0 && message.VerticalOffset == offset && message.SelectedText == longMessage &&
                 message.IsKeyboardFocused && vm.InputTargetPosition == "left", "refresh preserves the focused selection and scroll offset in the compact message area");
-            var priorClipboard = Clipboard.GetDataObject();
+            var priorClipboard = CaptureClipboardForRestore();
             try
             {
                 ApplicationCommands.Copy.Execute(null, message);

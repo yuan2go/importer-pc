@@ -336,7 +336,11 @@
        <DockPanel Grid.Row="1" Margin="0,0,0,8">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
          <Button x:Name="QueryButton" Content="查询" Click="QueryClick" Style="{DynamicResource Primary}"/>
-         <Button x:Name="CancelQuery" Content="取消查询" Click="CancelClick" IsEnabled="False" Margin="6,0,0,0"/>
+         <Button x:Name="CancelQuery" Content="取消查询" Click="CancelClick" IsEnabled="False" Margin="6,0,0,0">
+          <Button.Style><Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+           <Style.Triggers><Trigger Property="IsEnabled" Value="False"><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers>
+          </Style></Button.Style>
+         </Button>
         </StackPanel>
         <TextBlock x:Name="LogStatus" Text="只读取已落盘运行日志。" Style="{StaticResource OperationsHint}"
                    VerticalAlignment="Center" Margin="0,0,8,0" AutomationProperties.LiveSetting="Polite"/>

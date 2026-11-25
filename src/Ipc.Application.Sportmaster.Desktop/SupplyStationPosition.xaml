@@ -378,8 +378,13 @@
       <Border Grid.Column="1" Width="{x:Static type:OperatorTokens.TouchGap}"/>
       <Button x:Name="SubmitBarcode" Content="提交 (Enter)" Click="SubmitBarcode_Click">
        <Button.Style>
-        <Style TargetType="Button" BasedOn="{StaticResource StationPrimaryTouch}">
+        <Style TargetType="Button" BasedOn="{StaticResource StationTouch}">
          <Style.Triggers>
+          <DataTrigger Binding="{Binding InputTargetActive}" Value="True">
+           <Setter Property="Background" Value="{DynamicResource Accent}"/>
+           <Setter Property="Foreground" Value="{DynamicResource Surface}"/>
+           <Setter Property="BorderBrush" Value="{DynamicResource Accent}"/>
+          </DataTrigger>
           <DataTrigger Binding="{Binding Visibility,ElementName=RebaseInput}" Value="Visible">
            <Setter Property="Visibility" Value="Collapsed"/>
           </DataTrigger>

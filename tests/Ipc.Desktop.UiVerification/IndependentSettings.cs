@@ -49,8 +49,9 @@ static partial class Program
             try { await Until(() => !login.IsVisible && ((ContentControl)settings.FindName("EditorHost")).IsVisible && vm.HasLoadedConfiguration && !vm.Busy); }
             catch (TimeoutException error) { throw new InvalidOperationException($"Settings login visible={login.IsVisible}; entered={login.Entered}; authorized={vm.IsManagementMode}; fresh={vm.Fresh}; loaded={vm.HasLoadedConfiguration}; busy={vm.Busy}; feedback={vm.Message}", error); }
         }
+        KeyboardTraversal.CheckWindow(window, "workstation", Check);
         var first = await Open();
-        CaptureInternal(evidence, "settings-independent-readonly", first, lines);
+        CaptureInternal(evidence, "settings-independent-readonly", (FrameworkElement)first.Content, lines);
         Check(((ScrollViewer)first.FindName("ReadOnlyBody")).IsVisible && !((ContentControl)first.FindName("EditorHost")).IsVisible,
             "a foreign existing grant cannot turn the new settings window into an editor");
         TextBox Field(string id) => Descendants(first).OfType<TextBox>().Single(field =>
@@ -66,6 +67,23 @@ static partial class Program
         Check((await h.App.ManagementModeStatusAsync()).SessionId == priorSession && !(await h.App.SnapshotAsync()).Paused,
             "canceling fresh password verification preserves the original authorization and production state");
         await Authenticate(first);
+        var fields = Descendants(first).OfType<ParameterSettingsControl>().Single();
+        var readers = vm.ReaderDrafts.Select(d => d.Capability.InstanceId).ToArray();
+        Check(fields.Audience == SmParameterAudience.Field && readers.Length == 2 &&
+            fields.NavigateTo(readers[0] + "/device.ip"), "authorized workstation opens its field-owned camera card");
+        first.UpdateLayout();
+        Check(!(await h.App.SnapshotAsync()).Paused && ((TextBlock)first.FindName("AuthorizationText")).Text.StartsWith("编辑授权至 ") &&
+            readers.All(id => !fields.NavigateTo(id + "/code.formats") && !fields.NavigateTo(id + "/reader.engine")) &&
+            !Descendants(fields).OfType<FrameworkElement>().Any(e => AutomationProperties.GetAutomationId(e).EndsWith("/code.formats")) &&
+            new[] { "left-bcr-code", "right-bcr-code" }.All(key => Descendants(fields).OfType<TextBox>()
+                .Any(box => box.IsVisible && AutomationProperties.GetAutomationId(box).EndsWith("/" + key))),
+            "unpaused editor exposes both camera codes and excludes professional readers and barcode formats");
+        var hints = Descendants(fields).OfType<TextBlock>().Where(t => t.IsVisible &&
+            (t.Text.StartsWith("根据 IP 自动读取") || t.Text.Contains("投递位取格口与心跳共用的相机编码"))).ToArray();
+        Check(hints.Length == 4 && hints.All(t => t.TextWrapping == TextWrapping.Wrap && t.TextTrimming == TextTrimming.None &&
+            t.ActualHeight > t.FontSize * 1.5), "both serial numbers and both lane codes display complete multiline operator guidance");
+        KeyboardTraversal.CheckWindow(first, "authorized settings", Check);
+        CaptureInternal(evidence, "settings-unpaused-cameras", (FrameworkElement)first.Content, lines);
         first.Width = 760; first.Height = 480;
         first.UpdateLayout(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
         CaptureInternal(evidence, "settings-independent-editor-minimum", first, lines);

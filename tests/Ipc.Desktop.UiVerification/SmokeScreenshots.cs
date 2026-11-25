@@ -59,6 +59,7 @@ static partial class Program
             if (left.OperationId is null) throw new InvalidOperationException(left.Detail);
             await AwaitUi(() => model.Left.ShowConfirmedTask && model.Left.Slot == "CH-08" && model.Right.CenteredStateTitle == "等待投包");
             await Capture(window, 1536, 816, evidence, "work-success-waiting", lines);
+            AssertStatusDot(window, SupplyStationViewModel.StationStatusTone.Ready, "#FF147450");
 
             fixture.Peer.Mode = "reject";
             fixture.Peer.RejectionMessage = string.Concat(Enumerable.Repeat("当前包裹未取得可用格口，请保留包裹和本条记录，联系维护人员核对原结果。", 7));
@@ -108,8 +109,25 @@ static partial class Program
             {
                 await AwaitUi(() => Visuals<Button>(station).Any(b => b.Name == "SaveChanges" && b.IsEnabled));
                 await Capture(station, 1220, 800, evidence, "settings-edit-unpaused", lines);
+                var editor = Visuals<MaintenancePage>(station).Single();
+                var reader = model.ReaderDrafts.Single(draft => draft.Capability.Role == "left").Capability;
+                if (!editor.NavigateToParameter(reader.InstanceId + "/device.ip"))
+                    throw new InvalidOperationException("The left camera settings could not be opened from station settings.");
+                await Capture(station, 1220, 800, evidence, "settings-edit-cameras", lines);
+                if ((await fixture.App.SnapshotAsync()).Paused)
+                    throw new InvalidOperationException("Camera settings paused the workstation.");
             }
             finally { policy.StationCode = savedStationCode; }
+
+            var snapshot = await fixture.App.SnapshotAsync();
+            var rightControl = snapshot.Positions!.Single(position => position.Id == "right").SupplyControl!;
+            await fixture.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "right", rightControl.Revision, false), default);
+            await AwaitUi(() => model.Right.SupplyDisabled && model.OperatorStatusTone == SupplyStationViewModel.StationStatusTone.Warning);
+            AssertStatusDot(window, SupplyStationViewModel.StationStatusTone.Warning, "#FF895509");
+
+            fixture.Factory.RcsOffline = true;
+            await AwaitUi(() => model.RcsState == SupplyStationViewModel.RcsConnectionState.Offline);
+            AssertStatusDot(window, SupplyStationViewModel.StationStatusTone.Blocked, "#FFB52F38");
         }
 
         await using var unconfigured = new ManualSupplyHarness(root, Path.Combine(evidence, "empty"), deferred: true);
@@ -122,6 +140,18 @@ static partial class Program
         empty.Show();
         await AwaitUi(() => empty.ViewModel.Fresh);
         await Capture(empty, 1536, 816, evidence, "work-unconfigured", lines);
+        AssertStatusDot(empty, SupplyStationViewModel.StationStatusTone.Blocked, "#FFB52F38");
+    }
+
+    static void AssertStatusDot(SupplyStationWindow window, SupplyStationViewModel.StationStatusTone expected, string color)
+    {
+        var dot = (System.Windows.Shapes.Ellipse)window.FindName("WorkStatusDot");
+        if (window.ViewModel.OperatorStatusTone != expected || dot.Fill.ToString() != color)
+        {
+            var model = window.ViewModel;
+            var reasons = string.Join(" / ", model.Snapshot?.Positions?.SelectMany(p => p.BlockingReasons) ?? []);
+            throw new InvalidOperationException($"Station status: {model.OperatorStatus} · {dot.Fill} · {reasons}");
+        }
     }
 
     static async Task CaptureFirstConfiguration(string evidence, List<string> lines)
@@ -137,9 +167,18 @@ static partial class Program
         ParameterSettingsControl? editor = null;
         await AwaitUi(() => (editor = Visuals<ParameterSettingsControl>(wizard).FirstOrDefault()) is { IsVisible: true, IsEnabled: true, Model: not null });
         await Capture(wizard, 1080, 700, evidence, "setup-step-1", lines);
-        editor!.ShowReview();
-        await AwaitUi(() => Visuals<Button>(wizard).Any(b => b.IsVisible && b.IsEnabled &&
-            AutomationProperties.GetAutomationId(b) == "Startup.SaveAndStart"));
+        foreach (var label in new[] { "继续：左右相机", "继续：识读规则", "检查配置", "保存并进入" })
+        {
+            var actionId = label == "保存并进入" ? "Startup.SaveAndStart" : "Startup.Next";
+            Button? primary = null;
+            await AwaitUi(() => (primary = Visuals<Button>(wizard).FirstOrDefault(button =>
+                button.IsVisible && button.IsEnabled && Equals(button.Content, label) &&
+                AutomationProperties.GetAutomationId(button) == actionId)) is not null);
+            var visible = ((Panel)primary!.Parent).Children.OfType<Button>().Where(button => button.IsVisible).ToArray();
+            if (visible[^1] != primary)
+                throw new InvalidOperationException($"Wizard primary action is not last: {label}");
+            if (label != "保存并进入") Press(primary);
+        }
         await Capture(wizard, 1080, 700, evidence, "setup-step-4", lines);
     }
 }

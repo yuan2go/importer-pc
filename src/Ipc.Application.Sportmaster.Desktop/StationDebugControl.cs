@@ -81,6 +81,12 @@ internal sealed partial class StationDebugControl : UserControl
         viewport.MouseMove += (_, e) => { if (pan is not { } point || !viewport.IsMouseCaptured) return; var now = e.GetPosition(viewport); viewport.ScrollToHorizontalOffset(panX + point.X - now.X); viewport.ScrollToVerticalOffset(panY + point.Y - now.Y); };
         viewport.MouseLeftButtonUp += (_, _) => { pan = null; viewport.ReleaseMouseCapture(); };
         SizeChanged += (_, _) => LayoutColumns();
+        debugScroll.ScrollChanged += (_, args) =>
+        {
+            if (args.ViewportHeightChange != 0) FitRequestCard();
+        };
+        foreach (var row in requestPanel.Children.OfType<FrameworkElement>().Where(child => child != requestBody && child != responseBody))
+            row.SizeChanged += (_, _) => FitRequestCard();
         left.Click += (_, _) => SelectPosition("left"); right.Click += (_, _) => SelectPosition("right");
         trigger.Click += async (_, _) => await Run(TriggerAsync); send.Click += async (_, _) => await Run(SendAsync);
         prepare.Click += async (_, _) => await Run(PrepareManualAsync);
@@ -226,10 +232,10 @@ internal sealed partial class StationDebugControl : UserControl
         if (!active || !vm.IsManagementMode || token.IsCancellationRequested) return;
         camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus;
         var sameCamera = value.DeviceId == Position.ReaderId;
-        var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Faulted" ? "本轮扫码未完成，未发送请求。请点击“再次扫码”；也可停止试扫后返回作业。" :
+        var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Faulted" ? "本轮扫码未完成，未发送请求。请点击“再次扫码”重读。" :
             value.State == "Locked" && value.CanSend ? "结果已锁定，等待手动发送或再次扫码。" : Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(value.Detail, DebugFailure);
         state.ToolTip = detail;
-        state.Text = value.Id is null ? "点击“触发扫码”开始读取。" : detail;
+        state.Text = value.Id is null || value.SendAttempts > 0 ? "" : detail;
         if (!sameCamera) { ClearRoundDisplay(); Buttons(); return; }
         SetText(barcode, value.Barcode ?? "");
         if (!requestDirty) { updatingRequest = true; try { SetText(requestBarcode, value.Barcode ?? ""); } finally { updatingRequest = false; } }
@@ -271,11 +277,11 @@ internal sealed partial class StationDebugControl : UserControl
             { Complete: false } => "回包接收不完整，仅显示已收到的部分。",
             not null when originalResponseText is null => "回包正文无法按文本读取。",
             not null when originalResponseText?.Length == 0 => "RCS 返回了空正文。",
-            not null => "",
+            not null => "已收到回包，请核对结果（调试不自动重发）",
             _ when value.SendBlockedReason is { } blocked => "尚未发送 · " + blocked,
             _ when value.State == "Sending" => "正在发送，等待 RCS 回包。",
             _ when value.SendAttempts > 0 => "未收到 RCS 回包正文，请核对本轮请求结果。",
-            _ => "本轮尚未发送请求。"
+            _ => "尚未发送请求"
         };
         result.Visibility = result.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
     }
@@ -303,7 +309,7 @@ internal sealed partial class StationDebugControl : UserControl
         Buttons();
     }
     void ClearPhoto() { photo.Source = null; imageHint.Visibility = Visibility.Visible; marks.Children.Clear(); displayedFrame = null; loadedFrame = ""; imageLayer.Width = imageLayer.Height = 0; }
-    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); updatingRequest = true; try { SetText(requestBarcode, manualDrafts.GetValueOrDefault(position, "")); } finally { updatingRequest = false; } requestDirty = manualDrafts.ContainsKey(position); requestBody.Clear(); responseBody.Clear(); displayedResponse = null; originalResponseText = null; copyResponse.IsEnabled = false; send.ToolTip = state.ToolTip = null; result.Text = "本轮尚未发送请求。"; result.Visibility = Visibility.Visible; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
+    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); updatingRequest = true; try { SetText(requestBarcode, manualDrafts.GetValueOrDefault(position, "")); } finally { updatingRequest = false; } requestDirty = manualDrafts.ContainsKey(position); requestBody.Clear(); responseBody.Clear(); displayedResponse = null; originalResponseText = null; copyResponse.IsEnabled = false; send.ToolTip = state.ToolTip = null; result.Text = "尚未发送请求"; result.Visibility = Visibility.Visible; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
     void Buttons()
     {
         UpdateBatchButtons();
@@ -316,13 +322,13 @@ internal sealed partial class StationDebugControl : UserControl
         var canCheckCamera = vm.Fresh && vm.Snapshot is { } snapshot && !Position.SupplyDisabled &&
             !ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, Position.ReaderId);
         readStatus.Text = !cameraOnline && current?.State is not ("Reading" or "Preparing" or "Sealing" or "Locked") ?
-            canCheckCamera ? "触发扫码时核对当前相机状态" : "相机待配置或本位已停用；可手工输入条码" :
+            canCheckCamera ? "触发时检查相机连接" : "" :
             current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.ManualRequest == true ? "人工请求" : current?.State switch
         { "Reading" or "Preparing" or "Sealing" => "正在读取", "Locked" => "读码已锁定", "Sending" => "正在发送", "Faulted" => "读取异常", _ => "尚未开始扫码" };
         photoState.Text = current?.ManualRequest == true ? "人工请求，无扫码照片" : noCode ? "无条码" : displayedFrame is null ? "等待扫码" : "结果已锁定";
         if (current?.ManualRequest == true) photoCaption.Text = "本次为手工输入请求。";
         fillStatus.Text = requestDirty ? "输入已更改，请准备当前条码的请求。" : current?.DeviceId == Position.ReaderId && current.RequestBody is not null ?
-            (current.ManualRequest ? "来自手工输入 · " : "来自本轮扫码 · ") + Position.Heading + " · 已填入请求" : "可扫码或手工输入条码。";
+            (current.ManualRequest ? "手工输入" : "相机读码") + " · " + Position.Heading : "";
         feedback.Visibility = string.IsNullOrWhiteSpace(feedback.Text) ? Visibility.Collapsed : Visibility.Visible;
         var waiting = batch is not null || observed?.State is "Preparing" or "Reading" or "Sealing" or "Sending";
         trigger.Content = armCommand is not null || beginCommand is not null ? "检查触发" : current?.State is "Preparing" or "Reading" or "Sealing" ? "扫码中…" : current?.Id is null || current.ManualRequest ? "触发扫码" : "再次扫码";
@@ -340,13 +346,25 @@ internal sealed partial class StationDebugControl : UserControl
         copyResponse.IsEnabled = active && !busy && vm.IsManagementMode && displayedResponse?.Complete == true && originalResponseText is { Length: > 0 };
         left.IsEnabled = right.IsEnabled = !busy && batch is null; left.SetResourceReference(BackgroundProperty, position == "left" ? "AccentBackground" : "Surface"); right.SetResourceReference(BackgroundProperty, position == "right" ? "AccentBackground" : "Surface");
     }
+    void FitRequestCard()
+    {
+        // The outer scrolling surface measures without a height limit. Give the
+        // star rows a finite budget so a large JSON body scrolls inside its box.
+        var controls = requestPanel.RowDefinitions.Where(row => row.Height.IsAuto).Sum(row => row.ActualHeight);
+        var verticalChrome = requestCard.Padding.Top + requestCard.Padding.Bottom +
+            requestCard.BorderThickness.Top + requestCard.BorderThickness.Bottom;
+        var minimum = controls + verticalChrome + requestBody.MinHeight + responseBody.MinHeight;
+        requestCard.Height = Math.Max(minimum, debugScroll.ViewportHeight - requestCard.Margin.Top - requestCard.Margin.Bottom);
+    }
+
     void LayoutColumns()
     {
         var split = ActualWidth >= 940;
         requestColumn.Width = split ? new(4, GridUnitType.Star) : new(0);
         Grid.SetColumn(requestCard, split ? 1 : 0);
         Grid.SetRow(requestCard, split ? 0 : 1);
-        requestCard.Margin = split ? new(14, 0, 0, 0) : new(0, 14, 0, 0);
+        requestCard.Margin = split ? new(14, 6, 4, 8) : new(4, 6, 4, 8);
+        FitRequestCard();
     }
     void Scale(double factor) { fit = false; zoom = Math.Clamp(zoom * factor, .02, 16); ApplyZoom(); }
     void ApplyZoom()

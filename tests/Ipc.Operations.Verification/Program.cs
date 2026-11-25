@@ -635,7 +635,7 @@ internal static partial class Program
                     ((Button)window.FindName("QueryButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); return;
                 }
                 var connection = ((TextBlock)window.FindName("ConnectionText")).Text;
-                if (expectOffline ? !connection.StartsWith("未连接") : !connection.StartsWith("已核验")) return;
+                if (expectOffline ? !connection.StartsWith("未连接") : connection != "工作站已连接") return;
                 Check(expectOffline ? ((ItemsControl)window.FindName("PositionCards")).Items.Count == 0 :
                     ((ItemsControl)window.FindName("PositionCards")).Items.Count == 2, "online overview and offline invalidation reflect actual connection");
                 Check(grid.Items.Count <= 200 && window.ActualWidth >= 880, "WPF presents bounded real log page using shared native resources");

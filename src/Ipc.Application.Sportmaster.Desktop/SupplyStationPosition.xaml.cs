@@ -365,3 +365,16 @@ public partial class SupplyStationPosition : UserControl
     async void Reconcile_Click(object sender, RoutedEventArgs e) { if (Host is { } h && DataContext is SupplyStationPositionViewModel p) await h.ViewModel.ReconcilePositionAsync(p); }
     async void Continue_Click(object sender, RoutedEventArgs e) { if (Host is { } h && DataContext is SupplyStationPositionViewModel p) await h.ViewModel.ContinuePositionAsync(p); }
 }
+
+/// <summary>Keeps a multiline RCS response selectable in a viewport sized to whole text lines.</summary>
+public sealed class RejectionMessageBox : TextBox
+{
+    protected override Size ArrangeOverride(Size arrangeBounds)
+    {
+        var line = FontFamily.LineSpacing * FontSize;
+        var lines = Math.Floor(arrangeBounds.Height / line);
+        if (lines >= 1)
+            arrangeBounds.Height = lines * line;
+        return base.ArrangeOverride(arrangeBounds);
+    }
+}

@@ -17,7 +17,7 @@ public partial class SupplyStationWindow
         var panel = new DockPanel();
         var actions = new StackPanel { Orientation = Orientation.Horizontal };
         var refresh = new Button { Content = "最近记录", MinHeight = 44, Margin = new Thickness(0, 0, 8, 4) };
-        var earlier = new Button { Content = "更早记录", MinHeight = 44, Margin = new Thickness(0, 0, 0, 4) };
+        var earlier = new Button { Content = "加载更多", MinHeight = 44, Margin = new Thickness(0, 0, 0, 4) };
         refresh.Click += async (_, _) => await ViewModel.RunAsync(() => ViewModel.LoadSupplyHistoryAsync(), "读取启停记录");
         earlier.Click += async (_, _) => await ViewModel.RunAsync(() => ViewModel.LoadSupplyHistoryAsync(true), "读取更早启停记录");
         actions.Children.Add(refresh); actions.Children.Add(earlier); DockPanel.SetDock(actions, Dock.Top); panel.Children.Add(actions);
@@ -46,7 +46,7 @@ public partial class SupplyStationWindow
         public string Barcode => Round.SelectedCode ?? (Round.FormalCodes.Length == 0 ? "无条码" : string.Join(";", Round.FormalCodes));
         public string Identity => Round.Id;
         public string Request => Round.ProtocolRequestId?.ToString() ?? Round.RequestId ?? "未提交";
-        public string Result => Round.RcsOutcome switch { "Accepted" => "格口已取得", "Rejected" => "业务拒绝", "Unknown" or "Conflict" => "结果未知", "Dispatching" => "调用中", "Prepared" => "已准备", _ => "未提交" };
+        public string Result => Round.RcsOutcome switch { "Accepted" => "格口已取得", "Rejected" => "RCS 拒绝", "Unknown" or "Conflict" => "结果未知", "Dispatching" => "处理中", "Prepared" => "已准备", _ => "未提交" };
         public string Read => Round.ReadOutcome == "ReadWindowExpired" ? Round.OperationId is null ? "自动识读超时，未提交" : "快速识读超时后提交" : Round.ReadOutcome switch
         {
             "AmbiguousCodes" or "MultipleCodes" => "多个有效条码",
@@ -58,10 +58,10 @@ public partial class SupplyStationWindow
             "InvalidPattern" => "条码规则无效",
             "JoinedCodeTooLong" => "拼接条码过长",
             "ExecutionCapacityBlocked" => "本位在途资源已满",
-            "Selected" or "StrictSingleCode" or "JoinedCodes" => "已取得可提交条码",
+            "Selected" or "StrictSingleCode" or "JoinedCodes" => "读码成功",
             _ => "未取得识读结果"
         };
-        public string End => Round.EndReason switch { "TrustedRemoval" => "可信移出", "OperatorConfirmedRemoval" => "人工确认取下", "SuccessDisplayElapsed" => "成功显示3秒结束", "InterruptedOnRestart" => "重启中断，未重发", _ => Round.EndedAt is null ? "本轮尚未结束" : "已结束" };
+        public string End => Round.EndReason switch { "TrustedRemoval" => "自动确认取下", "OperatorConfirmedRemoval" => "人工确认取下", "SuccessDisplayElapsed" => "展示结束", "InterruptedOnRestart" => "重启中断，未重发", _ => Round.EndedAt is null ? "进行中" : "已结束" };
     }
     FrameworkElement RoundHistory()
     {
@@ -82,13 +82,14 @@ public partial class SupplyStationWindow
             DisplayMemberPath = "Value",
             ItemsSource = new Dictionary<string, string>
             {
-                [""] = "按左侧输入查询",
+                [""] = "全部结果",
                 ["Accepted"] = "格口已取得",
-                ["Rejected"] = "业务拒绝",
+                ["Rejected"] = "RCS 拒绝",
                 ["Unknown"] = "结果未知",
-                ["TrustedRemoval"] = "可信移出",
+                ["Dispatching"] = "处理中",
+                ["TrustedRemoval"] = "自动确认取下",
                 ["OperatorConfirmedRemoval"] = "人工确认取下",
-                ["SuccessDisplayElapsed"] = "成功显示3秒结束",
+                ["SuccessDisplayElapsed"] = "展示结束",
                 ["InterruptedOnRestart"] = "重启中断",
                 ["ReadWindowExpired"] = "自动识读超时",
                 ["AmbiguousCodes"] = "多个有效条码",
@@ -118,7 +119,7 @@ public partial class SupplyStationWindow
         DockPanel.SetDock(controls, Dock.Top); panel.Children.Add(controls);
         var table = new DataGrid { IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, RowHeight = 44 };
         var cell = (Style)panel.FindResource("QueryCellText");
-        foreach (var (label, path) in new[] { ("开始时间", "Time"), ("投递位", "Position"), ("正式条码", "Barcode"), ("识读情况", "Read"), ("结果", "Result"), ("结束原因", "End"), ("轮次", "Identity"), ("请求号", "Request") })
+        foreach (var (label, path) in new[] { ("开始时间", "Time"), ("投递位", "Position"), ("识别条码", "Barcode"), ("识读情况", "Read"), ("结果", "Result"), ("结束原因", "End"), ("轮次", "Identity"), ("请求号", "Request") })
             table.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = new DataGridLength(1, DataGridLengthUnitType.Star), ElementStyle = cell });
         table.SelectionChanged += (_, _) => picture.IsEnabled = table.SelectedItem is RoundRow { Round.OriginalFrame.State: "Saved" };
         picture.Click += (_, _) => { if (table.SelectedItem is RoundRow selected) ParcelPictureWindow.Open(this, ViewModel, new(RoundId: selected.Round.Id), selected.Barcode); };
@@ -130,7 +131,7 @@ public partial class SupplyStationWindow
             try
             {
                 var term = reason.SelectedValue is string { Length: > 0 } selected ? selected : search.Text.Trim() switch
-                { "格口已取得" => "Accepted", "业务拒绝" => "Rejected", "结果未知" => "Unknown", "调用中" => "Dispatching", "" => null, var text => text };
+                { "格口已取得" => "Accepted", "RCS 拒绝" or "业务拒绝" => "Rejected", "结果未知" => "Unknown", "处理中" or "调用中" => "Dispatching", "" => null, var text => text };
                 // ServiceAsync runs off the dispatcher. Freeze control values on
                 // their owner thread before handing the read to Application.
                 var position = side.SelectedIndex == 0 ? null : side.SelectedIndex == 1 ? "left" : "right";
@@ -139,7 +140,7 @@ public partial class SupplyStationWindow
                 var result = await ViewModel.ServiceAsync(() => ViewModel.Application.RoundHistoryAsync(position, 100, term, startedFrom, startedTo));
                 table.ItemsSource = result.Items.Select(r => new RoundRow(r)).ToArray();
             }
-            catch (Exception) { ViewModel.Message = "轮次记录未能读取，请保留原数据，稍后重试。"; }
+            catch (Exception) { ViewModel.Message = "轮次记录读取失败，请稍后重试。"; }
             finally { load.IsEnabled = true; }
         };
         return panel;

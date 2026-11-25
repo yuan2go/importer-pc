@@ -23,7 +23,7 @@ public partial class ParcelViewModel
     public string ConfigurationSubmissionDetail => configurationSubmissionDetail;
     public bool ConfigurationReviewIsCurrent => reviewedConfigurationSignature is not null && reviewedConfigurationSignature == CurrentReviewSignature();
     public bool CanReviewConfiguration => !Busy && (HasUnconfirmedConfigurationSubmission || HasUnsavedConfiguration || HasUnsavedDisplayPreferences);
-    public string ConfigurationSaveActionText => HasUnconfirmedConfigurationSubmission ? "查看保存结果…" : "保存设置…";
+    public string ConfigurationSaveActionText => HasUnconfirmedConfigurationSubmission ? "查看保存结果…" : "保存设置";
     public bool CanSubmitReviewedConfiguration => (CanConfigure || IsManagementMode && !HasUnsavedConfiguration && HasUnsavedDisplayPreferences) && ConfigurationReviewIsCurrent && reviewedConfigurationChanges.Length > 0 && !HasUnconfirmedConfigurationSubmission && (HasUnsavedConfiguration || HasUnsavedDisplayPreferences);
     public ConfigurationChangeItem[] ReviewedConfigurationChanges => reviewedConfigurationChanges;
     public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果未确认" : HasUnsavedConfiguration || HasUnsavedDisplayPreferences ? "有未保存的更改" : "没有未保存的更改";

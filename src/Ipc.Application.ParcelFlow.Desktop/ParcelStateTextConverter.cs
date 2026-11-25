@@ -14,10 +14,10 @@ public sealed class ParcelStateTextConverter : IValueConverter
         return state switch
         {
             ParcelState.Prepared => "待处理",
-            ParcelState.ResolvingWcs => "正在获取格口",
+            ParcelState.ResolvingWcs => "处理中",
             ParcelState.SlotResolved => "格口已取得",
-            ParcelState.WcsUnknown => "格口未确认",
-            ParcelState.WcsRejected => "未分配格口",
+            ParcelState.WcsUnknown => "结果未知",
+            ParcelState.WcsRejected => "RCS 拒绝",
             ParcelState.Blocked => "已受阻",
             ParcelState.UnpackRequired => "需拆包检查",
             ParcelState.Abandoned => "未发送 · 已撤销",

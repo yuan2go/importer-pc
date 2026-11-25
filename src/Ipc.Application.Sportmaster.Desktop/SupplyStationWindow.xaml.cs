@@ -176,7 +176,7 @@ public partial class SupplyStationWindow : Window
             if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(ManagementDialogOwner, dirty,
                 dirty == 1 ? dirtyWindows[0].ViewModel.SaveIncompleteEditorAsync : null, "关闭")))
             {
-                ViewModel.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
+                ViewModel.Message = "已取消退出，当前输入已保留。";
                 RestoreAfterClose(); return;
             }
             if (activationRequested)

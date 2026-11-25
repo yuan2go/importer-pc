@@ -43,7 +43,7 @@ public partial class ParcelViewModel
             var next = new PresentationPreferences.StationDisplay(1, displayNameDraft, target);
             PresentationPreferences.SaveStation(c.ApplicationId, c.StationId, next); stationDisplay = next;
             targetEfficiencyDraft = target?.ToString(CultureInfo.InvariantCulture) ?? "";
-            DisplayPreferenceStatus = "本机显示已应用；运行配置修订未改变";
+            DisplayPreferenceStatus = "本机显示偏好已应用";
             Changed(nameof(TargetEfficiencyDraft)); Changed(nameof(TargetEfficiencyPerHour)); Changed(nameof(HasUnsavedDisplayPreferences)); Changed(nameof(StationDisplaySummary)); Changed(nameof(Title)); return true;
         }
         catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or System.Text.Json.JsonException)

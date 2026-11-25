@@ -43,6 +43,7 @@ internal static partial class Program
             }
         }
         Button FindButton(string text) => Visuals(window).OfType<Button>().Single(b => Equals(b.Content, text));
+        Button AuthorizeButton() => Visuals(window).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Operations.Authorize");
         void Press(Button button) => window.Dispatcher.BeginInvoke(new Action(() => button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent))));
         void Capture(string name)
         {
@@ -66,7 +67,7 @@ internal static partial class Program
             {
                 window.Show(); var tabs = (TabControl)window.FindName("Pages");
                 await NativeClientSize.Set(window, (FrameworkElement)window.Content, 1280, 760);
-                await Until(() => ((TextBlock)window.FindName("ConnectionText")).Text == "已核验工作站");
+                await Until(() => ((TextBlock)window.FindName("ConnectionText")).Text == "工作站已连接");
                 Capture("operations-overview");
                 tabs.SelectedIndex = 1;
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
@@ -81,7 +82,8 @@ internal static partial class Program
                 tabs.SelectedIndex = 3;
                 await Until(() => Visuals(window).OfType<OperationsWorkspaceControl>().Any());
                 Capture("operations-parameters-locked");
-                Press(FindButton("验证管理密码"));
+                Check(Equals(AuthorizeButton().Content, "验证管理密码"), "unauthorized action has the full password label");
+                Press(AuthorizeButton());
                 await Until(() => app.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible));
                 var login = app.Windows.OfType<ManagementModeWindow>().Single(w => w.IsVisible);
                 await Until(() => Visuals(login).OfType<PasswordBox>().Any(p => p.Name == "ManagementPassword" && p.IsVisible && p.IsEnabled));
@@ -97,6 +99,16 @@ internal static partial class Program
                 }
                 Check(!model.HasUnsavedConfiguration && !model.HasUnsavedDisplayPreferences,
                     "opening professional parameters creates no phantom dirty draft; business=" + model.HasUnsavedConfiguration + "; preferences=" + model.HasUnsavedDisplayPreferences);
+                await Until(() => Equals(AuthorizeButton().Content, "管理授权") && AuthorizeButton().IsEnabled);
+                if (smoke)
+                {
+                    Press(AuthorizeButton());
+                    var options = (System.Windows.Controls.Primitives.Popup)window.FindName("AuthorizationOptions");
+                    await Until(() => options.IsOpen);
+                    Check(Visuals(options.Child).OfType<Button>().Any(button => Equals(button.Content, "延长本窗授权")),
+                        "authorized action opens the existing renewal options");
+                    options.IsOpen = false;
+                }
                 var editor = Visuals(window).OfType<MaintenancePage>().Single();
                 Check(editor.Audience == Ipc.Application.Contracts.SmParameterAudience.Technical, "operations reuses the existing complete editor in technical scope");
                 Check(editor.NavigateToParameter("ReadTimeoutMs"), "technical read deadline is reachable in the real operations editor");
@@ -114,7 +126,7 @@ internal static partial class Program
                     if (process == Environment.ProcessId) { SendMessage(dialog, 0x111, new IntPtr(1), IntPtr.Zero); confirm.Stop(); }
                 };
                 confirm.Start(); Press(FindButton("进入设备调试（暂停整站供包）"));
-                await Until(() => FindButton("结束调试并核对恢复").IsEnabled && Visuals(window).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"));
+                await Until(() => FindButton("结束调试并恢复").IsEnabled && Visuals(window).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"));
                 await Until(() => model.Snapshot!.Positions!.All(p => !p.Admit));
                 if (smoke)
                 {
@@ -129,6 +141,18 @@ internal static partial class Program
                     await Until(() => ((TextBox)debugView.FindName("responseBody")) is { IsVisible: true, Text.Length: > 0 });
                 }
                 Capture("operations-debug-authorized");
+                if (smoke)
+                {
+                    var debugView = Visuals(window).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
+                    var surface = (FrameworkElement)window.Content;
+                    foreach (var part in new[] { "requestBody", "responseBody" })
+                    {
+                        var box = (TextBox)debugView.FindName(part);
+                        var bottom = box.TranslatePoint(new Point(0, box.ActualHeight), surface).Y;
+                        Check(box.ActualHeight >= 6 * box.FontSize * box.FontFamily.LineSpacing && bottom <= surface.ActualHeight - 32,
+                            $"{part} keeps six full lines in view at 1280×760 DIP (box {box.ActualHeight}, bottom {bottom})");
+                    }
+                }
                 if (loseOwner)
                 {
                     Console.WriteLine("READY");
@@ -137,7 +161,7 @@ internal static partial class Program
                     await Until(() => !channel.Connected);
                     window.Close(); return;
                 }
-                Press(FindButton("结束调试并核对恢复"));
+                Press(FindButton("结束调试并恢复"));
                 await Until(() => model.Snapshot is { Paused: false, Positions: { } positions } &&
                     (smoke ? positions.Single(p => p.Id == "right").Admit : positions.All(p => p.Admit)) &&
                     FindButton("进入设备调试（暂停整站供包）").IsEnabled);

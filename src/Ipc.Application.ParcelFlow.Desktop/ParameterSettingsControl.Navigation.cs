@@ -13,7 +13,7 @@ public sealed partial class ParameterSettingsControl
     ObjectPage[] OrderedPages() => (FirstConfiguration ? pages.OrderBy(p => p.Order) : Model?.ApplicationId == "sportmaster" ? pages.OrderBy(p => p.TaskOrder) : pages.AsEnumerable()).Where(p => p.Available).ToArray();
     int[] FirstCategories => Model?.ApplicationId == "sportmaster" ? [0, 2, 1, 4] : [0, 1, 2, 3, 4];
     public string CurrentPageTitle => currentPage?.Title ?? "";
-    public string PageProgress => FirstConfiguration && currentPage is not null ? $"第 {Array.IndexOf(FirstCategories, currentPage.Category) + 1} / {FirstCategories.Length} 步 · {currentPage.GroupTitle}" : currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
+    public string PageProgress => FirstConfiguration && currentPage is not null ? $"第 {Array.IndexOf(FirstCategories, currentPage.Category) + 1} / {FirstCategories.Length} 步" : currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
     public bool IsReviewPage => currentPage?.Category == 4;
     public bool HasPreviousPage => currentPage is not null && Array.IndexOf(OrderedPages(), currentPage) > 0;
     public string? NextPageTitle

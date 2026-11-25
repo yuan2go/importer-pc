@@ -24,7 +24,7 @@ public sealed partial class ParameterSettingsControl
         foreach (var component in m.Components.Where(c => (!FirstConfiguration || c.Bound) && (m.ApplicationId != "sportmaster" || c.Kind is not ("login" or "weight" or "plc" or "camera" or "upload"))))
         {
             var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "RCS 服务" : FirstConfiguration ? m.ComponentName(component) : m.ComponentLabel(component),
-                ParameterOwnership.IsRcs(component) && m.ApplicationId == "sportmaster" ? "左右投递位共用此连接。符合条件时保存后重连 RCS 生效，否则需受控重启；以保存回执为准。" : "保存并重启软件后生效。");
+                ParameterOwnership.IsRcs(component) && m.ApplicationId == "sportmaster" ? "左右投递位共用这个 RCS 地址。保存后按提示重连或重启。" : "保存并重启软件后生效。");
             if (!ParameterOwnership.IsRcs(component))
                 foreach (var role in m.ComponentRoles)
                 {
@@ -209,8 +209,8 @@ public sealed partial class ParameterSettingsControl
     }
     static string ParameterLabel(CapabilityParameter p) => p.Field.Key switch
     {
-        "zone-id" => "仓ID",
-        "project-id" => "生产线ID",
+        "zone-id" => "仓 ID",
+        "project-id" => "生产线 ID",
         "device.ip" => "IP 地址",
         "device.port" or "port" => "端口",
         "left-bcr-code" => "左相机编码",

@@ -87,7 +87,7 @@
     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
      <Button x:Name="ReturnToWorkstation" Content="返回作业" Click="Return_Click" Margin="0,0,8,0"
              ToolTip="暂时隐藏设置，保留当前草稿和有效编辑授权"/>
-     <Button Content="关闭设置" Click="Close_Click" Margin="0,0,8,0"
+     <Button x:Name="CloseSettings" Content="关闭" Click="Close_Click" Margin="0,0,8,0"
              ToolTip="关闭本窗并结束本窗编辑授权"/>
      <StackPanel x:Name="EditActions" Orientation="Horizontal" Visibility="Collapsed"/>
     </StackPanel>

@@ -138,18 +138,18 @@
        <Button x:Name="ResumeSupply" Grid.Column="4" Content="恢复供包" Click="ResumeSupply_Click" Visibility="{Binding ResumeVisibility}" IsEnabled="{Binding CanResumeInViewport}" MinHeight="44" Margin="12,0,0,0" VerticalAlignment="Center" Style="{StaticResource StationButton}" ToolTip="核对当前供包条件后恢复；未确认的原请求仍须核对，不会重新发送。"/>
        <ScrollViewer x:Name="StatusDiagnostics" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" MaxHeight="40" VerticalAlignment="Center">
         <DockPanel LastChildFill="True">
-         <Ellipse DockPanel.Dock="Left" Width="9" Height="9" Margin="0,0,8,0" VerticalAlignment="Center">
+         <Ellipse x:Name="WorkStatusDot" DockPanel.Dock="Left" Width="9" Height="9" Margin="0,0,8,0" VerticalAlignment="Center">
           <Ellipse.Style><Style TargetType="Ellipse"><Setter Property="Fill" Value="{DynamicResource Warning}"/><Style.Triggers>
-           <DataTrigger Binding="{Binding RcsState}" Value="Online"><Setter Property="Fill" Value="{DynamicResource Success}"/></DataTrigger>
-           <DataTrigger Binding="{Binding RcsState}" Value="Offline"><Setter Property="Fill" Value="{DynamicResource Danger}"/></DataTrigger>
+           <DataTrigger Binding="{Binding OperatorStatusTone}" Value="Ready"><Setter Property="Fill" Value="{DynamicResource Success}"/></DataTrigger>
+           <DataTrigger Binding="{Binding OperatorStatusTone}" Value="Blocked"><Setter Property="Fill" Value="{DynamicResource Danger}"/></DataTrigger>
           </Style.Triggers></Style></Ellipse.Style>
          </Ellipse>
-         <TextBlock x:Name="WorkStatus" DockPanel.Dock="Left" Text="{Binding OperatorStatus}" ToolTip="{Binding OperatorStatus}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Margin="0,0,16,0" FontSize="{x:Static type:UiTypography.Body}" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{Binding WorkspaceStatusForeground}" VerticalAlignment="Center"/>
+         <TextBlock x:Name="WorkStatus" DockPanel.Dock="Left" Text="{Binding OperatorStatus}" ToolTip="{Binding OperatorStatus}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Margin="0,0,16,0" FontSize="{x:Static type:UiTypography.Body}" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{DynamicResource Ink}" VerticalAlignment="Center"/>
          <TextBlock x:Name="SettingsRunMode" DockPanel.Dock="Left" Text="{Binding SettingsRunMode}" FontSize="{x:Static type:UiTypography.Label}" Margin="0,0,16,0" Foreground="{DynamicResource Muted}" VerticalAlignment="Center">
           <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsSettingsWorkspace}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
          </TextBlock>
          <Border DockPanel.Dock="Left" Height="18" Width="1" Background="{DynamicResource Line}" Margin="0,0,12,0"/>
-         <TextBlock x:Name="ActiveBlockingReasons" Text="{Binding OperatorNotice}" ToolTip="{Binding OperatorNotice}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" FontSize="{x:Static type:UiTypography.Label}" Foreground="{Binding WorkspaceStatusForeground}" VerticalAlignment="Center" AutomationProperties.Name="暂不能供包的原因"/>
+         <TextBlock x:Name="ActiveBlockingReasons" Text="{Binding OperatorNotice}" ToolTip="{Binding OperatorNotice}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" AutomationProperties.Name="工作站状态说明"/>
         </DockPanel>
        </ScrollViewer>
        <Button x:Name="CompactActivationAction" Grid.Column="1" Content="{Binding ConfigurationActivationCompactText}" Click="ProductRestart_Click" IsEnabled="{Binding CanOpenConfigurationActivation}" MinHeight="44" Margin="12,0,0,0" VerticalAlignment="Center" ToolTip="{Binding ConfigurationActivationOutcome}">

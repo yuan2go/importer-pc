@@ -44,6 +44,9 @@ public partial class OperationsWindow : Window
         AuthorizationStatusHost.Content = workspace.AuthorizationStatus;
         AuthorizationActionHost.Content = workspace.AuthorizationAction;
         AuthorizationDetailsHost.Content = workspace.AuthorizationDetails;
+        TechnicalFailureHost.Content = workspace.TechnicalFailure;
+        workspace.AuthorizationOptionsRequested += (_, _) => AuthorizationOptions.IsOpen = true;
+        workspace.AuthorizationOptionsClosed += (_, _) => AuthorizationOptions.IsOpen = false;
         WorkspaceNoticeHost.Content = workspace.Feedback;
         workspace.NavigationRequested += (_, target) =>
         {
@@ -102,7 +105,7 @@ public partial class OperationsWindow : Window
     }
     async Task OfflineMaintenance()
     {
-        if (MessageBox.Show(this, "将从同版受保护维护缓存打开维护中心，并关闭本工具释放程序文件。维护程序仍核验工作站已真正关闭；不会替您停止生产。", "打开离线维护",
+        if (MessageBox.Show(this, "请先完全关闭工作站。继续后，本工具将退出并启动独立维护程序。", "打开离线维护",
             MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
         await workspace.CloseAsync(activeHandoff: true);
         try { await Task.Run(() => WindowsDeploymentSetup.LaunchOperationsMaintenance("sportmaster")); }
@@ -168,15 +171,15 @@ public partial class OperationsWindow : Window
         OverviewStatus.Text = "实时状态不可用";
         OverviewStatus.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
         VisibleOperationsText.Text = UnconfirmedOperationsText.Text = PendingOverviewText.Text = "待确认";
-        OverviewSummary.Text = reason + " 工具不启动或接管业务。";
+        ExecutingRequestsText.Text = "";
         PositionCards.ItemsSource = null;
         ShowDeviceCards(null, DateTimeOffset.UtcNow);
-        TechnicalText.Clear();
+        TechnicalText.Text = reason;
     }
 
     void ShowOverview(OperationsOverview value)
     {
-        SetConnectionStatus("已核验工作站", "本机只读状态连接已核验 · 状态时间 " +
+        SetConnectionStatus("工作站已连接", "本机只读状态连接已核验 · 状态时间 " +
             value.CapturedAt.ToLocalTime().ToString("HH:mm:ss"), verified: true);
         StationText.Text = "站点 " + value.Station;
         StationText.ToolTip = StationText.Text;
@@ -185,7 +188,7 @@ public partial class OperationsWindow : Window
         VisibleOperationsText.Text = value.VisibleOperations + " 件";
         UnconfirmedOperationsText.Text = $"{value.UnconfirmedOperations} / {value.HistoricalUnknown?.ToString() ?? "待确认"}";
         PendingOverviewText.Text = value.PendingConfiguration ? "有待生效设置" : "无待生效设置";
-        OverviewSummary.Text = $"实际执行请求 {value.ExecutingRequests?.ToString() ?? "待确认"}。按各投递位实际准入供包，原请求责任保留，查看不会重发。";
+        ExecutingRequestsText.Text = $"在途请求 {value.ExecutingRequests?.ToString() ?? "待确认"}";
 
         PositionCards.ItemsSource = new[]
         {
@@ -209,11 +212,12 @@ public partial class OperationsWindow : Window
         {
             "Disabled" => "已停用",
             "Disabling" => "停用中",
-            _ => position.Admit ? "允许接收包裹" : "当前暂不接收包裹"
+            _ => position.Admit ? "正常准入" : "暂不能供包"
         };
         return new(title, status, position.Admit && position.Control is not ("Disabled" or "Disabling"),
             (position.Vehicle ?? "待确认") + " · " + VehicleStatus(position.VehicleStatus),
-            position.RoundId ?? "无", position.OperationId ?? "无", position.Manual ? "允许" : "受限", PositionNotice(position));
+            position.RoundId ?? "无", position.OperationId ?? "无", position.Manual ? "允许" : "受限", PositionNotice(position, overview.Devices.Any(device =>
+                device.Name == (id == "left" ? "左相机" : "右相机") && HasCurrentConfirmation(device, overview.CapturedAt))));
     }
 
     void ShowDeviceCards(OperationsOverview? overview, DateTimeOffset now)
@@ -221,16 +225,16 @@ public partial class OperationsWindow : Window
         DeviceCard Connection(string name)
         {
             var device = overview?.Devices.FirstOrDefault(d => d.Name == name);
-            if (device is null) return new(name, "连接待确认", "尚无设备确认。");
+            if (device is null) return new(name, "未连接", "暂无检测记录");
             var confirmed = HasCurrentConfirmation(device, now);
-            return new(name, confirmed ? "连接确认有效" : "连接待确认",
-                "确认时间 " + device.ConfirmedAt.ToLocalTime().ToString("HH:mm:ss"), confirmed);
+            return new(name, confirmed ? "在线正常" : "未连接",
+                "上次检测 " + device.ConfirmedAt.ToLocalTime().ToString("HH:mm:ss"), confirmed);
         }
 
         var storage = overview?.FreeStorageBytes is { } free
             ? new DeviceCard("存储", $"剩余 {free / (1024d * 1024 * 1024):F1} GiB",
-                $"最低保留 {overview.MinimumFreeBytes / (1024d * 1024 * 1024):F1} GiB。空间数值不代表数据库或全部执行责任已核验。")
-            : new DeviceCard("存储", "剩余空间待确认", "工作站尚未提供有效数值。请按实际阻断原因核对存储。");
+                $"警戒下限 {overview.MinimumFreeBytes / (1024d * 1024 * 1024):F1} GiB")
+            : new DeviceCard("存储", "剩余空间待检测", "");
         DeviceRows.ItemsSource = new[] { Connection("左相机"), Connection("右相机"), Connection("RCS"), storage };
     }
 
@@ -238,11 +242,13 @@ public partial class OperationsWindow : Window
         device.Ready && device.ValidUntil > now && device.ConfirmedAt <= now;
 
     static string VehicleStatus(string? value) => value switch { "IDLE" => "空闲", "TASKING" => "工作中", _ => "状态待确认" };
-    static string PositionNotice(OperationsPosition position)
+    static string PositionNotice(OperationsPosition position, bool cameraOnline)
     {
         var notices = position.Reasons.Select(r => Enum.TryParse<ParcelInputBlockReason>(r, out var reason) ? ParcelInputReasons.ActionableNotice(reason) : null)
             .OfType<string>().Distinct().ToArray();
-        return notices.Length > 0 ? string.Join("\n", notices) : position.Admit ? "按工作站提示正常供包。" : "请查看工作站提示及下方技术详情中的阻断原因。";
+        if (position.Admit && position.Control is not ("Disabled" or "Disabling"))
+            return position.Manual ? cameraOnline ? "可自动读码或人工扫码" : "可人工扫码" : "可自动读码";
+        return notices.Length > 0 ? string.Join("\n", notices) : "请查看工作站本位提示。";
     }
 
     async void QueryClick(object sender, RoutedEventArgs e) => await RunQuery(0, fresh: true);
@@ -288,9 +294,9 @@ public partial class OperationsWindow : Window
             stop.Token.ThrowIfCancellationRequested();
             selection = page.Selection; offset = requestedOffset;
             LogGrid.ItemsSource = page.Entries.Select(entry => entry with { At = entry.At?.ToLocalTime() }).ToArray();
-            PageText.Text = $"第 {offset / 200 + 1} 页 · 本页 {page.Entries.Length} 条";
+            PageText.Text = $"第 {offset / 200 + 1} 页";
             PreviousButton.IsEnabled = offset > 0; NextButton.IsEnabled = page.HasMore;
-            LogStatus.Text = "已读取 · 本次时间至 " + applied.ToExclusive.ToLocalTime().ToString("HH:mm:ss") + "。选择记录查看完整原文，支持多选复制。";
+            LogStatus.Text = $"本页 {page.Entries.Length} 条（截至 {applied.ToExclusive.ToLocalTime():HH:mm:ss}）· 选中行查看原文，支持多选复制";
             LogNotices.Text = "本次固定范围：" + logDirectory + "\n" + string.Join("\n", page.Notices);
         }
         catch (OperationCanceledException) { LogStatus.Text = "查询已取消，未显示本次结果。"; }

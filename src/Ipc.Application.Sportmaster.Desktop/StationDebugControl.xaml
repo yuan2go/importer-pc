@@ -26,15 +26,18 @@
    <Setter Property="TextWrapping" Value="Wrap"/>
    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-   <Setter Property="Height" Value="84"/>
+   <Setter Property="MinHeight" Value="152"/>
   </Style>
  </UserControl.Resources>
  <TabControl x:Name="tabs" SelectedIndex="0" Style="{StaticResource ContentOnlyTabs}" Background="{DynamicResource Background}" Padding="0">
   <TabItem Header="扫码调试" Style="{StaticResource ContentOnlyTab}">
-   <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-    <StackPanel Margin="4,8,4,12">
-     <Border Style="{StaticResource WorkstationCard}" Padding="12,8" Margin="0,0,0,12">
-      <StackPanel>
+   <ScrollViewer x:Name="debugScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+     <Grid x:Name="inspectionPanels" MinHeight="{Binding ViewportHeight,ElementName=debugScroll}">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="5*"/><ColumnDefinition x:Name="requestColumn" Width="4*"/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Border Style="{StaticResource WorkstationCard}" Margin="4,6,0,8">
+       <StackPanel>
+        <StackPanel Margin="0,0,0,10">
        <DockPanel LastChildFill="True">
         <WrapPanel DockPanel.Dock="Right">
          <Button x:Name="trigger" Content="触发扫码" Style="{StaticResource Primary}" Margin="0,0,8,0"/>
@@ -51,13 +54,7 @@
         <TextBlock x:Name="state" Style="{StaticResource DebugLabel}" Margin="0" AutomationProperties.LiveSetting="Polite"/>
        </WrapPanel>
        <TextBlock x:Name="feedback" Foreground="{DynamicResource Danger}" AutomationProperties.LiveSetting="Assertive" Visibility="Collapsed"/>
-      </StackPanel>
-     </Border>
-     <Grid x:Name="inspectionPanels">
-      <Grid.ColumnDefinitions><ColumnDefinition Width="5*"/><ColumnDefinition x:Name="requestColumn" Width="4*"/></Grid.ColumnDefinitions>
-      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-      <Border Style="{StaticResource WorkstationCard}">
-       <StackPanel>
+        </StackPanel>
         <DockPanel Margin="0,0,0,8">
          <Border DockPanel.Dock="Right" Style="{StaticResource OperatorStatusBadge}" Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}">
           <TextBlock x:Name="photoState" Text="等待扫码" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}"/>
@@ -95,10 +92,14 @@
         <Expander Header="连续试扫" Margin="0,8,0,0"><StackPanel x:Name="batchPanel"/></Expander>
        </StackPanel>
       </Border>
-      <Border x:Name="requestCard" Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Top" Style="{StaticResource WorkstationCard}">
-       <StackPanel>
+      <Border x:Name="requestCard" Grid.Column="1" Margin="14,6,4,8" VerticalAlignment="Top" Style="{StaticResource WorkstationCard}">
+       <Grid x:Name="requestPanel">
+        <Grid.RowDefinitions>
+         <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+         <RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <TextBlock Text="RCS 请求测试" Style="{StaticResource DebugHeading}"/>
-        <DockPanel>
+        <DockPanel Grid.Row="1">
          <WrapPanel DockPanel.Dock="Right" Margin="8,0,0,0">
           <Button x:Name="prepare" Content="准备请求" Style="{StaticResource DebugAction}" Margin="0,0,8,0"/>
           <Button x:Name="send" Content="发送请求" Style="{StaticResource DebugAction}" Margin="0" ToolTip="实际发送会接管所选小车的本次到位，请先核对报文。"/>
@@ -106,21 +107,23 @@
          <TextBox x:Name="requestBarcode" Margin="0" MaxHeight="64" MaxLength="4096" TextWrapping="Wrap"
                   AutomationProperties.Name="请求条码" ToolTip="可扫码或手工输入条码"/>
         </DockPanel>
-        <TextBlock x:Name="fillStatus" Style="{StaticResource DebugLabel}"/>
-        <TextBlock Text="请求报文" Style="{StaticResource DebugHeading}" Margin="0,8,0,8"/>
-        <TextBox x:Name="requestBody" Style="{StaticResource DebugJson}" AutomationProperties.Name="本轮冻结的请求报文"/>
-        <DockPanel Margin="0,10,0,6">
-         <Button x:Name="copyResponse" DockPanel.Dock="Right" Content="复制原文" Margin="0" IsEnabled="False"/>
-         <TextBlock Text="RCS 回包" Style="{StaticResource DebugHeading}" Margin="0"/>
+        <DockPanel Grid.Row="2" Margin="0,8,0,6">
+         <TextBlock DockPanel.Dock="Left" Text="请求报文" Style="{StaticResource DebugHeading}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+         <TextBlock x:Name="fillStatus" Style="{StaticResource DebugLabel}" Margin="0" VerticalAlignment="Center" TextWrapping="Wrap"/>
         </DockPanel>
-        <TextBlock x:Name="result" Text="本轮尚未发送请求。" Style="{StaticResource DebugLabel}" AutomationProperties.LiveSetting="Polite"/>
-        <TextBox x:Name="responseBody" Style="{StaticResource DebugJson}" AutomationProperties.Name="本轮回包正文"/>
-       </StackPanel>
+        <TextBox x:Name="requestBody" Grid.Row="3" Style="{StaticResource DebugJson}" AutomationProperties.Name="本轮请求报文"/>
+        <DockPanel Grid.Row="4" Margin="0,8,0,6">
+         <TextBlock DockPanel.Dock="Left" Text="RCS 回包" Style="{StaticResource DebugHeading}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+         <Button x:Name="copyResponse" DockPanel.Dock="Right" Content="复制原文" Margin="8,0,0,0" IsEnabled="False"/>
+         <TextBlock x:Name="result" Text="尚未发送请求" Style="{StaticResource DebugLabel}" Margin="0"
+                    VerticalAlignment="Center" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
+        </DockPanel>
+        <TextBox x:Name="responseBody" Grid.Row="5" Style="{StaticResource DebugJson}" AutomationProperties.Name="本轮回包正文"/>
+       </Grid>
       </Border>
      </Grid>
-    </StackPanel>
    </ScrollViewer>
   </TabItem>
-  <TabItem Header="历史证据" Style="{StaticResource ContentOnlyTab}"><ContentControl x:Name="evidenceHost"/></TabItem>
+  <TabItem Header="调试记录" Style="{StaticResource ContentOnlyTab}"><ContentControl x:Name="evidenceHost"/></TabItem>
  </TabControl>
 </UserControl>

@@ -38,7 +38,7 @@
        <MenuItem Header="重新连接全部设备和服务" AutomationProperties.AutomationId="ReconnectAllDevices" Click="Reconnect_Click" IsEnabled="{Binding CanStartFreshOperation}"/>
       </MenuItem>
      </Menu>
-     <Button x:Name="ViewChanges" Content="查看修改" Click="ReviewChanges_Click" Style="{StaticResource ParameterAction}" IsEnabled="{Binding CanStartOperation}" Margin="0,0,8,0"/>
+     <Button x:Name="ViewChanges" Content="查看改动" Click="ReviewChanges_Click" Style="{StaticResource ParameterAction}" IsEnabled="{Binding CanStartOperation}" Margin="0,0,8,0"/>
      <Button x:Name="SaveChanges" Content="{Binding ConfigurationSaveActionText}" Click="SaveChanges_Click" Style="{StaticResource ParameterPrimaryAction}" IsEnabled="{Binding CanReviewConfiguration}" ToolTip="{Binding ConfigurationDraftStatusText}" ToolTipService.ShowOnDisabled="True" MinWidth="120"/>
     </StackPanel>
     <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">

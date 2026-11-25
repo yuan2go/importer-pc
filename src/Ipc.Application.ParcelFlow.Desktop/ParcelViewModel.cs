@@ -212,7 +212,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     }
     long? draftConfigurationRevision;
     Guid? draftRuntimeId;
-    public string DraftRevisionState => draftConfigurationRevision is { } revision ? "本窗草稿基于配置修订 " + revision + "；自动刷新不改变草稿CAS" : "尚未读取草稿修订";
+    public string DraftRevisionState => draftConfigurationRevision is { } revision ? "草稿基于版本 #" + revision + "。" : "尚未读取草稿修订";
     void SetConfigurationDraft(ParcelConfiguration value, long revision, Guid runtime)
     { ConfigurationDraft = Wire.Encode(value); draftConfigurationRevision = revision; draftRuntimeId = runtime; Changed(nameof(ConfigurationDraft)); Changed(nameof(DraftRevisionState)); }
     public void LoadConfigurationDraft()

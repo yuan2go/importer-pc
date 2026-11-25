@@ -79,6 +79,7 @@ internal sealed class StationCameraPreviewControl : UserControl
                 image.Source = bitmap; shown = key; capturedAt = frame.CapturedAt;
             }
             hint.Visibility = Visibility.Collapsed;
+            status.Visibility = Visibility.Visible;
             status.Text = "实时视频 · 帧 " + frame.FrameNumber + " · " + frame.CapturedAt.ToLocalTime().ToString("HH:mm:ss.fff");
         }
         catch (OperationCanceledException) { if (version == generation) Clear("预览已停止"); }
@@ -107,7 +108,12 @@ internal sealed class StationCameraPreviewControl : UserControl
             (d.LastFrameRejection is null ? "" : "\n本次连接记录过异常图像；累计次数属于历史，不代表当前没有画面。") +
             (d.Failure is null ? "" : "\n采集故障，请导出诊断记录并联系维护人员。");
     }
-    void Clear(string message) { image.Source = null; bitmap = null; shown = ""; capturedAt = null; hint.Text = message; hint.Visibility = Visibility.Visible; status.Text = message; }
+    void Clear(string message)
+    {
+        image.Source = null; bitmap = null; shown = ""; capturedAt = null;
+        hint.Text = message; hint.Visibility = Visibility.Visible;
+        status.Visibility = Visibility.Collapsed;
+    }
     public void Revoke() { generation++; timer.Stop(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; Clear("预览已停止"); counters.Text = ""; }
     static TextBlock Label() => new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 5, 0, 0) }
         .Themed(TextBlock.ForegroundProperty, "Muted");

@@ -180,7 +180,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 SelectRestoreStage(original); Render(false); Message(original.Summary);
             }
         });
-        Action(RepairAction.OpenRestore, "从完整备份恢复本站…", async () =>
+        Action(RepairAction.OpenRestore, "从备份恢复", async () =>
         {
             if (!MayDiscard()) return;
             await ReleaseMaintenanceAsync();
@@ -242,7 +242,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             else if (selectedTask == RepairTask.Directory) SelectTask(RepairTask.Parameters);
             else { SelectTask(RepairTask.Review); await CheckCandidate(); }
         });
-        Action(RepairAction.SaveAndStart, initialConfiguration ? "保存配置" : "保存并启动", async () =>
+        Action(RepairAction.SaveAndStart, initialConfiguration ? "保存并进入" : "保存并启动", async () =>
         {
             if (!(lastSaveConfirmed && !startupSaveUncertain && document?.Candidate is { } confirmed && Wire.Encode(RequireDraft()) == Wire.Encode(confirmed))) await CheckCandidate();
             savingCandidate = true;
@@ -255,13 +255,16 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             else { await CheckCandidate(); await StartReviewed(); }
         });
         if (initialConfiguration) Action(RepairAction.Reload, "重新读取配置…", Read);
-        Action(RepairAction.Exit, initialConfiguration ? "稍后配置" : "关闭", () => { Busy = false; Close(); return Task.CompletedTask; });
+        Action(RepairAction.Exit, initialConfiguration ? "跳过向导" : "关闭", () => { Busy = false; Close(); return Task.CompletedTask; });
         Action(RepairAction.Tools, "配置工具…", () => { OpenTools(); return Task.CompletedTask; });
         if (initialConfiguration)
         {
             foreach (var (kind, button) in actionButtons)
                 if (kind is not (RepairAction.Previous or RepairAction.Next or RepairAction.SaveAndStart or RepairAction.Reload or RepairAction.Import or RepairAction.SaveDraft or RepairAction.Exit or RepairAction.OpenRestore)) Actions.Children.Remove(button);
-            var saveDraft = actionButtons[RepairAction.SaveDraft]; saveDraft.Content = "保存草稿并退出";
+            var saveDraft = actionButtons[RepairAction.SaveDraft];
+            saveDraft.Content = "暂存草稿";
+            saveDraft.ToolTip = "保存已填写内容并退出，下次可继续。";
+            actionButtons[RepairAction.Exit].ToolTip = "退出首次配置。未保存内容将在退出前提示处理。";
             DockPanel.SetDock(saveState, Dock.Left); FooterHost.Children.Insert(0, saveState);
             FooterHost.MinHeight = 64;
             Actions.VerticalAlignment = VerticalAlignment.Center;
@@ -270,8 +273,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             var restoreEntry = actionButtons[RepairAction.OpenRestore];
             Actions.Children.Remove(restoreEntry); restoreEntry.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, restoreEntry);
             restoreEntry.Padding = new(16, 0, 16, 0);
-            var saveConfig = actionButtons[RepairAction.SaveAndStart];
-            Actions.Children.Remove(saveConfig); Actions.Children.Add(saveConfig);
+            foreach (var kind in new[] { RepairAction.SaveDraft, RepairAction.Previous, RepairAction.Exit, RepairAction.Next, RepairAction.SaveAndStart })
+            {
+                var button = actionButtons[kind];
+                Actions.Children.Remove(button);
+                Actions.Children.Add(button);
+            }
         }
         var editEvents = initialConfiguration ? (UIElement)WorkflowBody : Body;
         editEvents.AddHandler(System.Windows.Controls.Primitives.TextBoxBase.TextChangedEvent, new TextChangedEventHandler((_, e) => { if (e.OriginalSource is TextBox { IsReadOnly: false }) Changed(); }));
@@ -364,8 +371,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             throw new InvalidOperationException("配置检查未通过：" + string.Join("；", report.Checks.Where(c => c.Status == "FAIL").Select(c => ChineseInterfaceText.ParameterMessage(c.Reason))));
         }
         checkedInput = Input(); checkedCandidateHash = report.CandidateHash;
-        if (initialConfiguration) saveState.Text = SaveIsComplete ? "已保存，启动时检查" : report.Checks.Any(c => c.Status == "BLOCKED") ? "部署条件未满足" : "检查通过 · 未保存";
-        Message(report.Checks.Any(c => c.Status == "BLOCKED") ? "参数检查通过，但部署条件未满足。可以先保存，启动前需处理部署条件。" : "参数检查通过。保存和启动时还会检查实际运行条件。");
+        if (initialConfiguration) saveState.Text = SaveIsComplete ? "已保存，启动时检查" : report.Checks.Any(c => c.Status == "BLOCKED") ? "可以保存 · 启动条件待核对" : "检查通过 · 未保存";
+        Message(report.Checks.Any(c => c.Status == "BLOCKED") ? "参数检查通过。可先保存配置，启动前请处理检查中列出的问题。" : "参数检查通过，可以保存。");
         diagnosticDetails = string.Join("\n", report.Checks.Select(c => c.Layer + " · " + c.Status + " · " + c.Reason));
     }
     string diagnosticDetails = "";
@@ -792,7 +799,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 WorkflowBody.Content = sharedEditor;
                 sharedEditor.SelectedPageChanged += (_, _) =>
                 {
-                    WorkflowBusinessName.Text = sharedEditor.PageProgress + " · 相机和 RCS 可稍后配置";
+                    WorkflowBusinessName.Text = sharedEditor.PageProgress;
                     WorkflowBusinessName.Visibility = Visibility.Visible;
                     selectedParameterCategory = sharedEditor.SelectedCategory;
                     if (sharedEditor.IsReviewPage) refreshReview?.Invoke(); UpdateActions();
@@ -882,7 +889,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             button.IsEnabled = CanExecute(kind);
             button.IsDefault = false;
             if (kind == RepairAction.Next) button.Content = initialConfiguration
-                ? parameterControl?.NextPageIsReview == true ? "检查配置" : "继续：" + parameterControl?.NextPageTitle
+                ? parameterControl?.NextPageIsReview == true ? "检查配置" : parameterControl?.NextPageTitle switch
+                {
+                    "条码筛选" => "继续：识读规则",
+                    var title => "继续：" + title
+                }
                 : selectedTask == RepairTask.Directory ? "继续填写参数" : "检查配置";
             if (kind == RepairAction.AdoptRestore) button.Content = restoredPreview?.State == "ProjectionPending" ? "修复原恢复入口…" : "核对并接管原恢复…";
             button.IsCancel = kind == RepairAction.Exit;

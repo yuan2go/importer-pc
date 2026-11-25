@@ -55,8 +55,8 @@ static class HistoryDetailSheet
         // Record page summary line: counts in station words, technical counts stay behind "更多筛选与查询信息".
         var all = ParcelViewModel.HistoryMetricsText(new(12, 12, 12, 0, 0, 13));
         var pending = ParcelViewModel.HistoryMetricsText(new(5, 5, 2, 1, 0, 5));
-        Check(all == "共 12 件 · 已取得格口 12 · 无待核对" && !all.Contains("序号") && !all.Contains("发送次数"), "a clean query reads as parcels and chutes, without sequence numbers or send counts");
-        Check(pending == "共 5 件 · 已取得格口 2 · 格口未确认 1，请核对", "unconfirmed results ask for a check; no count is derived by subtraction");
-        Check(ParcelViewModel.HistoryMetricsText(new(0, 0, 0, 0, 0, 0)) == "本次查询没有包裹", "an empty query says so plainly");
+        Check(all == "共 12 条（格口已取得 12 · 待核对 0）" && !all.Contains("序号") && !all.Contains("发送次数"), "a clean query reads as parcels and chutes, without sequence numbers or send counts");
+        Check(pending == "共 5 条（格口已取得 2 · 待核对 1）", "unconfirmed results ask for a check; no count is derived by subtraction");
+        Check(ParcelViewModel.HistoryMetricsText(new(0, 0, 0, 0, 0, 0)) == "共 0 条（格口已取得 0 · 待核对 0）", "an empty query says so plainly");
     }
 }

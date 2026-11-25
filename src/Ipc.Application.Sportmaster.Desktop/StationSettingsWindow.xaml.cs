@@ -41,6 +41,10 @@ public partial class StationSettingsWindow : Window
         ReadOnlyBody.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;
         EditSettings.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;
         EditActions.Visibility = SettingsDraft.Visibility = granted ? Visibility.Visible : Visibility.Collapsed;
+        ReturnToWorkstation.Content = granted ? "暂回作业" : "返回作业";
+        ReturnToWorkstation.ToolTip = granted ? "隐藏设置窗，保留当前输入与编辑授权" : "隐藏设置窗，返回工作站";
+        CloseSettings.Content = granted ? "结束编辑" : "关闭";
+        CloseSettings.ToolTip = granted ? "关闭设置窗并结束本次授权" : "关闭设置窗";
         AuthorizationText.Text = granted ? $"编辑授权至 {model.ManagementStatus.ExpiresAt?.ToLocalTime():HH:mm}" :
             session is null ? "只读模式" : "授权待核对 · 草稿保留";
         EffectiveSettingsCards.Visibility = model.Fresh && model.Snapshot is not null ? Visibility.Visible : Visibility.Collapsed;
@@ -55,15 +59,16 @@ public partial class StationSettingsWindow : Window
         var host = rcs is not null && Uri.TryCreate(rcs.Target, UriKind.Absolute, out var uri)
             ? new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri.GetLeftPart(UriPartial.Authority) : "待配置";
         var revision = snapshot.Configuration.Revision.ToString();
-        var pending = snapshot.HasPendingConfiguration == true ? "有已保存待生效设置" : "无待生效设置";
-        ReadOnlySettings.Text = $"配置修订 {revision} · {pending}";
+        ReadOnlySettings.Text = snapshot.HasPendingConfiguration == true
+            ? $"设置版本 #{revision} · 有待生效变更"
+            : $"当前生效版本 #{revision} · 无待生效变更";
         UpdateFields(StationFields,
         [
             new("本站", configuration.StationId, "StationSettings.StationId"),
             new("供包台编号", string.IsNullOrWhiteSpace(configuration.StationCode) ? "待配置" : configuration.StationCode, "StationSettings.StationCode"),
             new("RCS 主机", host, "StationSettings.RcsHost"),
-            new("仓 ID（已保存值）", rcs?.Parameters.GetValueOrDefault("zone-id") ?? "未单独保存", "StationSettings.Zone"),
-            new("生产线 ID（已保存值）", rcs?.Parameters.GetValueOrDefault("project-id") ?? "未单独保存", "StationSettings.Project")
+            new("仓 ID", rcs?.Parameters.GetValueOrDefault("zone-id") ?? "未单独保存", "StationSettings.Zone"),
+            new("生产线 ID", rcs?.Parameters.GetValueOrDefault("project-id") ?? "未单独保存", "StationSettings.Project")
         ]);
         UpdateFields(LeftCameraFields, CameraFields("left"));
         UpdateFields(RightCameraFields, CameraFields("right"));

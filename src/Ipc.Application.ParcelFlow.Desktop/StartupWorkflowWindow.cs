@@ -68,7 +68,7 @@ public abstract partial class StartupWorkflowWindow : Window
         };
         if (installation)
         {
-            var buildIdentity = new Expander { Header = "构建身份（可选择复制）", Content = BuildIdentityDetails, Margin = new(0, 4, 0, 4) };
+            var buildIdentity = new Expander { Header = "版本信息（可选择复制）", Content = BuildIdentityDetails, Margin = new(0, 4, 0, 4) };
             Width = 880; Height = 560; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
             var layout = new Grid(); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
             var rail = new StackPanel { Margin = new(16, 28, 16, 24) };
@@ -105,7 +105,7 @@ public abstract partial class StartupWorkflowWindow : Window
         FooterHost.Children.Add(Actions); Grid.SetRow(FooterHost, 2);
         FooterHost.Margin = new(20, 0, 20, 8);
         FooterHost.Themed(DockPanel.BackgroundProperty, "Surface");
-        var identityButton = new ToggleButton { Content = "构建身份", Margin = new(8, 0, 0, 0) };
+        var identityButton = new ToggleButton { Content = "版本信息", Margin = new(8, 0, 0, 0) };
         var identityCard = new Border { Child = BuildIdentityDetails, Width = 420, Margin = new(8) }.Themed(StyleProperty, "WorkstationCard");
         var identityPopup = new Popup { Child = identityCard, PlacementTarget = identityButton, Placement = PlacementMode.Bottom,
             HorizontalOffset = -300, StaysOpen = false, AllowsTransparency = true };

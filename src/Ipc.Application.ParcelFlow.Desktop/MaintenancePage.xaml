@@ -8,9 +8,9 @@
   </DockPanel>
   <local:ParameterSettingsControl x:Name="MainParameterEditor" RuntimeContext="{Binding}" Grid.Row="1" Model="{Binding ParameterEditor}" IsEnabled="{Binding CanEditFormConfiguration}"/>
   <!-- Save bar: draft status on the left; tools, review and the one save action on the right. -->
-  <Border Grid.Row="2" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="24,10">
+  <Border x:Name="ConfigurationFooter" Grid.Row="2" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="24,10">
    <DockPanel LastChildFill="True">
-    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+    <StackPanel x:Name="ConfigurationActions" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
      <Menu Background="Transparent" Margin="0,0,8,0" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Body}" FontWeight="Normal">
       <MenuItem x:Name="AdvancedToggle" Header="更多工具" MinHeight="44" Padding="12,8" Foreground="{DynamicResource Ink}" SubmenuOpened="AdvancedToggle_SubmenuOpened">
        <MenuItem x:Name="ManagementPasswordTool" Header="管理模式与密码…" Click="ManagementMode_Click"/>

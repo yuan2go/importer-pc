@@ -48,11 +48,7 @@ public sealed partial class ParameterSettingsControl
             var categoryPages = OrderedPages().Where(p => p.Category == category).ToArray();
             var complete = categoryPages.Length > 0 && categoryPages.All(checkedPages.Contains);
             var current = currentPage?.Category == category;
-            button.Content = (index + 1) + "  " + button.Tag;
-            button.SetResourceReference(Control.BackgroundProperty, current ? "AccentBackground" : "Surface");
-            button.SetResourceReference(Control.ForegroundProperty, current ? "Accent" : "Ink");
             System.Windows.Automation.AutomationProperties.SetItemStatus(button, current ? "当前步骤" : complete ? "已检查" : "未检查");
-            button.FontWeight = currentPage?.Category == category ? UiTypography.Emphasis : FontWeights.Normal;
             button.ToolTip = currentPage?.Category == category ? "当前步骤" : "前进时检查前置页面，返回保留输入";
         }
         var currentIndex = currentPage is null ? -1 : Array.IndexOf(FirstCategories, currentPage.Category);

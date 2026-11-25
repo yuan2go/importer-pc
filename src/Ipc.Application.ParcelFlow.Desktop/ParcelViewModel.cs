@@ -121,7 +121,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     protected PresentationFeedbackKind MessageKind { get; private set; } = PresentationFeedbackKind.Idle;
     protected void SetPresentationMessage(string value, PresentationFeedbackKind kind)
     { Message = value; MessageKind = kind; Changed(nameof(Feedback)); }
-    public string Message { get => message ?? (IsSimulationMode ? "等待相机读码；模拟工程不操作真实设备。" : ""); set { MessageKind = PresentationFeedbackKind.General; message = value; messageScope = runningFeedbackScope ?? feedbackScope; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
+    public string Message { get => message ?? ""; set { MessageKind = PresentationFeedbackKind.General; message = value; messageScope = runningFeedbackScope ?? feedbackScope; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
     public string Feedback => Busy ? OperationStatus : ChineseInterfaceText.Message(Message);
     public string OperatorFeedback => (Busy ? OperationStatus : Message).Split(" · ", 2)[0] switch
     {

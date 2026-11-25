@@ -19,7 +19,7 @@ public partial class StationSettingsWindow : Window
     public StationSettingsWindow(SupplyStationViewModel model, MaintenancePage editor)
     {
         InitializeComponent(); UiTypography.Apply(this);
-        editor.SetStationSettingsLayout(true);
+        editor.SetStationSettingsLayout(EditActions);
         this.model = model; this.editor = editor; authority = (IWorkstationAdministration)model.Application;
         DataContext = model;
         Width = Math.Min(Width, SystemParameters.WorkArea.Width); Height = Math.Min(Height, SystemParameters.WorkArea.Height);
@@ -27,7 +27,7 @@ public partial class StationSettingsWindow : Window
         Loaded += (_, _) => UpdateState();
         IsVisibleChanged += (_, _) => { if (IsVisible) RefreshSavedPreferences(); };
         Closing += ClosingSettings;
-        Closed += (_, _) => { model.PropertyChanged -= Changed; EditorHost.Content = null; if (model.OwnedManagementSession == session) model.OwnedManagementSession = null; };
+        Closed += (_, _) => { model.PropertyChanged -= Changed; editor.SetStationSettingsLayout(null); EditorHost.Content = null; if (model.OwnedManagementSession == session) model.OwnedManagementSession = null; };
     }
     void Changed(object? sender, PropertyChangedEventArgs e)
     {
@@ -40,8 +40,9 @@ public partial class StationSettingsWindow : Window
         EditorHost.Visibility = granted ? Visibility.Visible : Visibility.Collapsed;
         ReadOnlyBody.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;
         EditSettings.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;
-        AuthorizationText.Text = granted ? $"编辑授权至 {model.ManagementStatus.ExpiresAt?.ToLocalTime():HH:mm} · 保存时执行原配置守卫" :
-            session is null ? "只读查看，不暂停供包；关闭后未保存输入仍保留在当前供包台窗口。" : "编辑授权未确认或已结束，输入保留。重新验证后继续；供包状态保持原状。";
+        EditActions.Visibility = SettingsDraft.Visibility = granted ? Visibility.Visible : Visibility.Collapsed;
+        AuthorizationText.Text = granted ? $"编辑授权至 {model.ManagementStatus.ExpiresAt?.ToLocalTime():HH:mm}" :
+            session is null ? "只读模式" : "授权待核对 · 草稿保留";
         EffectiveSettingsCards.Visibility = model.Fresh && model.Snapshot is not null ? Visibility.Visible : Visibility.Collapsed;
         if (!model.Fresh || model.Snapshot is not { } snapshot)
         {

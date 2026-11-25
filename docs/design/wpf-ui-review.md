@@ -33,7 +33,7 @@
 
 ### 变更的必要验证
 
-按受影响范围复用现有 `Ipc.Operations.Verification`、`--station-exit-dialog`、`--home-centered-states` 和 `--chute-readability`，重点核对暂停状态、可复制原文、固定底栏、长中文及低高度布局、键盘焦点、100%/125%/150% DPI。构建/原生 WPF/SDK/客户 RCS/现场验收分别陈述实际结果，不用静态资源或文档审查代替运行证据。未做设备联调时不可宣称达到工业现场验收。
+按受影响范围复用现有 `Ipc.Operations.Verification`、`--typography` 和 `--smoke-screenshots`，重点核对暂停状态、可复制原文、固定底栏、长中文及低高度布局、键盘焦点、100%/125%/150% DPI。构建/原生 WPF/SDK/客户 RCS/现场验收分别陈述实际结果，不用静态资源或文档审查代替运行证据。未做设备联调时不可宣称达到工业现场验收。
 
 ## 从 Hallmark 保留什么
 
@@ -90,23 +90,16 @@
 
 先在 Windows 项目根目录执行 `. ./scripts/project-environment.ps1`，按当前环境规则使用 D 盘隔离输出、合成数据及测试配置，不操作正在供包的实例。测试入口以执行提交的 `tests/Ipc.Desktop.UiVerification/Program.cs` 为准。
 
-| 改动风险 | 优先复用的原生入口（按需选择） |
-|---|---|
-| 退出确认 | `--station-exit-dialog`；涉及关闭生命周期再核对 `--startup-close` 及相关业务回归 |
-| 待机/离线/停用构图 | `--home-centered-states`、`--station-position-control-ui`；涉及暂停遮盖结果时加 `--paused-workstation` |
-| 导航/窗口 | `--operator-workspace`、`Ipc.Operations.Verification`、`--window-preference` |
-| 输入与焦点 | `--position-input-ui`、`--continuous-pda-input` |
-| 字体/尺寸/共享布局 | `--chute-readability`、`--station-responsive-ui`，并抽查受影响的其他宿主 |
-
-命令示例（每次一个场景；第一个程序参数是仓库路径，不是开关）：
+同一可执行文件提供两个入口。截图工具以隔离工作区和合成 RCS 数据打开真实 WPF 窗口，运维截图经已验证的本机跨进程连接生成。默认输出到 `.artifacts/window-native`，可用 `IPC_UI_EVIDENCE` 指定目录。
 
 ```powershell
 . ./scripts/project-environment.ps1
-$repo = (Get-Location).Path
-dotnet run --project tests/Ipc.Desktop.UiVerification -- "$repo" --station-exit-dialog
+dotnet build tests/Ipc.Desktop.UiVerification -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true
+$env:IPC_EXPECTED_DPI = '1.25'
+$ui = 'tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Desktop.UiVerification.dll'
+dotnet $ui --typography
+dotnet $ui --smoke-screenshots
 ```
-
-当前入口按分支选择场景，不能把多个开关拼进一次运行后宣称全部执行。运行前读对应夹具和依赖；安装器检查等要求同源发布产物时，按其现行说明设置，不能借用旧提交的二进制。
 
 布局基线参考1366×768 DIP，覆盖目标设备实际可用客户区及低高度窗口；按改动涉及的范围选择 Windows 100%、125%、150% 的真实缩放。记录物理分辨率、DPI、客户区DIP、最终渲染字号与场景。缩放PNG、浏览器截图和仅设置WPF窗口大小不是实际系统DPI证据。跨显示器是目标部署需要时的追加场景，不能虚报覆盖。
 

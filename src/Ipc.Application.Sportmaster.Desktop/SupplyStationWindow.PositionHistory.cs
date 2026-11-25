@@ -12,7 +12,8 @@ public partial class SupplyStationWindow
     FrameworkElement PositionHistory()
     {
         if (positionHistory is not null) return positionHistory;
-        positionHistory = new TabControl { DataContext = ViewModel, Padding = new Thickness(4, 0, 4, 0) };
+        positionHistory = new TabControl { DataContext = ViewModel, Padding = new Thickness(0), Margin = new(0, 6, 0, 0) };
+        positionHistory.SetResourceReference(ItemsControl.ItemContainerStyleProperty, "SegmentedTab");
         var panel = new DockPanel();
         var actions = new StackPanel { Orientation = Orientation.Horizontal };
         var refresh = new Button { Content = "最近记录", MinHeight = 44, Margin = new Thickness(0, 0, 8, 4) };
@@ -64,7 +65,7 @@ public partial class SupplyStationWindow
     }
     FrameworkElement RoundHistory()
     {
-        var panel = new DockPanel(); var controls = new WrapPanel();
+        var panel = new DockPanel { Margin = new(12, 10, 12, 12) }; var controls = new WrapPanel();
         panel.Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/QueryWorkspaceTheme.xaml", UriKind.Relative) });
         var side = new ComboBox { ItemsSource = new[] { "全部投递位", "左投递位", "右投递位" }, SelectedIndex = 0, MinWidth = 140, MinHeight = 44 };
         var from = new DatePicker { SelectedDate = DateTime.Today, MinHeight = 44, MinWidth = 140 };
@@ -105,15 +106,24 @@ public partial class SupplyStationWindow
         System.Windows.Automation.AutomationProperties.SetName(reason, "轮次结果、结束原因或识读情况");
         reason.SelectionChanged += (_, _) => search.IsEnabled = reason.SelectedValue is not string selected || selected.Length == 0;
         System.Windows.Automation.AutomationProperties.SetName(from, "轮次开始日期"); System.Windows.Automation.AutomationProperties.SetName(to, "轮次结束日期");
-        var load = new Button { Content = "查询轮次", MinHeight = 44 }; var picture = new Button { Content = "查看本轮原图", MinHeight = 44, IsEnabled = false };
-        foreach (var control in new FrameworkElement[] { side, from, to, search, reason, load, picture }) { control.Margin = new Thickness(0, 0, 8, 8); controls.Children.Add(control); }
+        var load = new Button { Content = "查询轮次", MinHeight = 44 }.Themed(StyleProperty, "Primary"); var picture = new Button { Content = "查看本轮原图", MinHeight = 44, IsEnabled = false };
+        var placeholder = new TextBlock { Text = "输入条码、轮次或请求号", Margin = new(10, 0, 0, 0), IsHitTestVisible = false }
+            .Themed(TextBlock.ForegroundProperty, "Muted");
+        var searchField = new Grid();
+        search.Margin = new(0);
+        searchField.Children.Add(search);
+        searchField.Children.Add(placeholder);
+        search.TextChanged += (_, _) => placeholder.Visibility = search.Text.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
+        foreach (var control in new FrameworkElement[] { side, from, to, searchField, reason, load, picture }) { control.Margin = new Thickness(0, 0, 8, 8); controls.Children.Add(control); }
         DockPanel.SetDock(controls, Dock.Top); panel.Children.Add(controls);
         var table = new DataGrid { IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, RowHeight = 44 };
+        var cell = (Style)panel.FindResource("QueryCellText");
         foreach (var (label, path) in new[] { ("开始时间", "Time"), ("投递位", "Position"), ("正式条码", "Barcode"), ("识读情况", "Read"), ("结果", "Result"), ("结束原因", "End"), ("轮次", "Identity"), ("请求号", "Request") })
-            table.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
+            table.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = new DataGridLength(1, DataGridLengthUnitType.Star), ElementStyle = cell });
         table.SelectionChanged += (_, _) => picture.IsEnabled = table.SelectedItem is RoundRow { Round.OriginalFrame.State: "Saved" };
         picture.Click += (_, _) => { if (table.SelectedItem is RoundRow selected) ParcelPictureWindow.Open(this, ViewModel, new(RoundId: selected.Round.Id), selected.Barcode); };
         panel.Children.Add(table);
+        System.Windows.Automation.AutomationProperties.SetAutomationId(load, "PositionHistory.QueryRounds");
         load.Click += async (_, _) =>
         {
             load.IsEnabled = false;

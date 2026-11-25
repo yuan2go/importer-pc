@@ -1,6 +1,8 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Media;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
@@ -19,7 +21,7 @@ public abstract partial class StartupWorkflowWindow : Window
     protected readonly WrapPanel SessionActions = new() { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(12, 0, 0, 0) };
     protected readonly StackPanel AuthorizationGate = new() { Visibility = Visibility.Collapsed, Margin = new(8, 16, 8, 16), MaxWidth = 570, HorizontalAlignment = HorizontalAlignment.Left };
     protected readonly TextBlock WorkflowHeading = new() { FontSize = UiTypography.Position, FontWeight = UiTypography.Emphasis };
-    protected readonly TextBlock WorkflowBusinessName = new() { FontSize = UiTypography.Label, Foreground = Brushes.SlateGray, Margin = new(0, 4, 0, 0), Visibility = Visibility.Collapsed };
+    protected readonly TextBlock WorkflowBusinessName = new TextBlock() { FontSize = UiTypography.Label, Margin = new(0, 4, 0, 0), Visibility = Visibility.Collapsed }.Themed(TextBlock.ForegroundProperty, "Muted");
     protected StackPanel Form;
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
     protected readonly TextBlock InstallationHeading = new() { Text = "安装菜鸟供包台", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis };
@@ -56,7 +58,7 @@ public abstract partial class StartupWorkflowWindow : Window
         VersionLabel.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
         Title = title; FontSize = UiTypography.Body; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         SetResourceReference(BackgroundProperty, "Background"); SetResourceReference(ForegroundProperty, "Ink");
-        var buildIdentity = new Expander { Header = "构建身份（可选择复制）", Content = BuildIdentityDetails, Margin = new(0, 4, 0, 4) };
+
         System.Windows.Automation.AutomationProperties.SetAutomationId(BuildIdentityDetails, "Maintenance.BuildIdentity");
         Loaded += (_, _) =>
         {
@@ -66,6 +68,7 @@ public abstract partial class StartupWorkflowWindow : Window
         };
         if (installation)
         {
+            var buildIdentity = new Expander { Header = "构建身份（可选择复制）", Content = BuildIdentityDetails, Margin = new(0, 4, 0, 4) };
             Width = 880; Height = 560; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
             var layout = new Grid(); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
             var rail = new StackPanel { Margin = new(16, 28, 16, 24) };
@@ -87,10 +90,10 @@ public abstract partial class StartupWorkflowWindow : Window
             SizeChanged += (_, _) => { layout.ColumnDefinitions[0].Width = new(ActualWidth < 760 ? 136 : 176); content.Margin = new(ActualWidth < 760 ? 20 : 28, 24, ActualWidth < 760 ? 20 : 28, 20); };
             Closing += (_, e) => { if (Busy) e.Cancel = true; }; return;
         }
-        var grid = new Grid { Margin = new(20, 12, 20, 16) };
+        var grid = new Grid().Themed(Panel.BackgroundProperty, "Background");
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var heading = new StackPanel(); WorkflowHeading.Text = title.Split(" · ")[0]; heading.Children.Add(WorkflowHeading);
-        heading.Children.Add(WorkflowBusinessName); heading.Children.Add(buildIdentity);
+        heading.Children.Add(WorkflowBusinessName);
         heading.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 64, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 200, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         diagnostic.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding(nameof(TextBlock.Text)) { Source = Status });
@@ -98,9 +101,24 @@ public abstract partial class StartupWorkflowWindow : Window
         // Full diagnostics remain selectable through the named tools menu.
         Status.ToolTip = diagnostic;
         WorkflowBody.Content = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-        var bodyHost = new Grid(); bodyHost.Children.Add(WorkflowBody); bodyHost.Children.Add(AuthorizationGate); Grid.SetRow(bodyHost, 1);
+        var bodyHost = new Grid { Margin = new(20, 0, 20, 0) }; bodyHost.Children.Add(WorkflowBody); bodyHost.Children.Add(AuthorizationGate); Grid.SetRow(bodyHost, 1);
         FooterHost.Children.Add(Actions); Grid.SetRow(FooterHost, 2);
-        var sessionHeader = new DockPanel(); DockPanel.SetDock(SessionActions, Dock.Right); sessionHeader.Children.Add(SessionActions); sessionHeader.Children.Add(heading);
+        FooterHost.Margin = new(20, 0, 20, 8);
+        FooterHost.Themed(DockPanel.BackgroundProperty, "Surface");
+        var identityButton = new ToggleButton { Content = "构建身份", Margin = new(8, 0, 0, 0) };
+        var identityCard = new Border { Child = BuildIdentityDetails, Width = 420, Margin = new(8) }.Themed(StyleProperty, "WorkstationCard");
+        var identityPopup = new Popup { Child = identityCard, PlacementTarget = identityButton, Placement = PlacementMode.Bottom,
+            HorizontalOffset = -300, StaysOpen = false, AllowsTransparency = true };
+        identityPopup.SetBinding(Popup.IsOpenProperty, new Binding(nameof(ToggleButton.IsChecked)) { Source = identityButton, Mode = BindingMode.TwoWay });
+        var identity = new Grid { VerticalAlignment = VerticalAlignment.Top };
+        identity.Children.Add(identityButton);
+        identity.Children.Add(identityPopup);
+        var sessionHeader = new DockPanel { MinHeight = 56, Margin = new(20, 8, 20, 4) };
+        DockPanel.SetDock(identity, Dock.Right);
+        DockPanel.SetDock(SessionActions, Dock.Right);
+        sessionHeader.Children.Add(identity);
+        sessionHeader.Children.Add(SessionActions);
+        sessionHeader.Children.Add(heading);
         grid.Children.Add(sessionHeader); grid.Children.Add(bodyHost); grid.Children.Add(FooterHost); Content = grid;
         Closing += (_, e) => { if (Busy) e.Cancel = true; };
     }

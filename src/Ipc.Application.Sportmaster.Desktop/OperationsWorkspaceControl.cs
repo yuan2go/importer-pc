@@ -30,10 +30,11 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     readonly TextBox message = new() { MaxHeight = 72, Margin = new(0, 4, 0, 4) };
     readonly TextBox technicalFailure = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 140, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly Button enterDebug = new() { Content = "进入设备调试（暂停整站供包）", MinHeight = 44 };
-    readonly Button leaveDebug = new() { Content = "结束调试并核对恢复", MinHeight = 44 };
+    readonly Button leaveDebug = new() { Content = "结束调试并核对恢复", MinHeight = 44, Visibility = Visibility.Collapsed };
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1) };
     string window = Wire.Id();
     readonly DockPanel device = new();
+    readonly Button evidenceViewToggle = new() { Content = "历史证据", Visibility = Visibility.Collapsed };
     readonly TextBlock deviceHeading = Text("浏览连接诊断");
     readonly ContentControl deviceView = new();
     readonly Button deviceViewToggle = new() { Content = "查看连接诊断", MinHeight = 44 };
@@ -73,6 +74,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         SetAuthorizationStatus("只读 · 未授权", "查看、登录和切页不暂停供包。调试须明确进入。");
         AuthorizationAction = Action("连接并验证管理密码…", Authenticate);
         AuthorizationAction.Margin = new(0);
+        AuthorizationAction.SetResourceReference(StyleProperty, "Primary");
         var authorizePage = Action("验证管理密码", Authenticate);
         authorizePage.HorizontalAlignment = HorizontalAlignment.Left;
         authorizePage.Margin = new(0, 10, 0, 0);
@@ -84,11 +86,9 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         guide.Children.Add(guideHeading);
         guide.Children.Add(Text("使用本站管理密码授权本窗口。验证和浏览保留工作站当前的供包状态。"));
         guide.Children.Add(authorizePage);
-        authorizationGuide = new Border { Child = guide, Padding = new(20), Margin = new(24, 16, 24, 12),
-            VerticalAlignment = VerticalAlignment.Top, BorderThickness = new(1) };
-        authorizationGuide.SetResourceReference(Border.BackgroundProperty, "Surface");
-        authorizationGuide.SetResourceReference(Border.BorderBrushProperty, "Line");
-        authorizationGuide.SetResourceReference(Border.CornerRadiusProperty, "RadiusCard");
+        authorizationGuide = new Border { Child = guide, Padding = new(24), Margin = new(0, 20, 0, 0), MaxWidth = 560,
+            HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top };
+        authorizationGuide.SetResourceReference(StyleProperty, "WorkstationCard");
         AutomationProperties.SetAutomationId(AuthorizationAction, "Operations.Authorize");
 
         var details = new StackPanel();
@@ -119,6 +119,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         debugActions.Children.Add(enterDebug);
         debugActions.Children.Add(leaveDebug);
         debugActions.Children.Add(deviceViewToggle);
+        debugActions.Children.Add(evidenceViewToggle);
+        evidenceViewToggle.Click += (_, _) => evidenceViewToggle.Content = debug?.ToggleEvidence() == true ? "返回扫码调试" : "历史证据";
         enterDebug.SetResourceReference(StyleProperty, "OperationsDebugAction");
         var debugBar = new DockPanel();
         DockPanel.SetDock(debugActions, Dock.Right);
@@ -127,9 +129,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         deviceHeading.FontWeight = UiTypography.Emphasis;
         deviceHeading.VerticalAlignment = VerticalAlignment.Center;
         debugBar.Children.Add(deviceHeading);
-        var debugToolbar = new Border { Child = debugBar, BorderThickness = new(1), CornerRadius = new(8), Padding = new(14, 6, 6, 6) };
-        debugToolbar.SetResourceReference(Border.BackgroundProperty, "Surface");
-        debugToolbar.SetResourceReference(Border.BorderBrushProperty, "Line");
+        var debugToolbar = new Border { Child = debugBar, Padding = new(14, 2, 6, 2) };
+        debugToolbar.SetResourceReference(StyleProperty, "WorkstationCard");
         DockPanel.SetDock(debugToolbar, Dock.Top);
         device.Children.Add(debugToolbar);
         deviceViewToggle.Click += (_, _) => { if (ReferenceEquals(deviceView.Content, diagnostic) && workspace) ShowDebugView(); else ShowDiagnosticsView(); };
@@ -255,7 +256,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     }
     void ShowAuthorizationGuide()
     {
-        guideHeading.Text = selected == "debug" ? "验证后查看设备调试" : "验证后查看专业参数";
+        guideHeading.Text = selected == "debug" ? "设备调试需管理授权" : "专业参数需管理授权";
         page.Content = authorizationGuide;
     }
     public void ShowPage(string target)
@@ -346,13 +347,19 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         debugHost.Content = debug;
         deviceView.Content = debugHost;
         deviceViewToggle.Content = "查看连接诊断";
-        deviceHeading.Text = "设备调试";
+        evidenceViewToggle.Visibility = Visibility.Visible;
+        deviceHeading.Text = "扫码调试";
+        enterDebug.Visibility = Visibility.Collapsed;
+        leaveDebug.Visibility = Visibility.Visible;
     }
     void ShowDiagnosticsView()
     {
         deviceView.Content = diagnostic;
+        evidenceViewToggle.Visibility = Visibility.Collapsed;
         deviceViewToggle.Content = workspace ? "返回调试画面" : "连接诊断";
         deviceHeading.Text = "浏览连接诊断";
+        enterDebug.Visibility = workspace ? Visibility.Collapsed : Visibility.Visible;
+        leaveDebug.Visibility = workspace ? Visibility.Visible : Visibility.Collapsed;
     }
     async Task EndDebug()
     {
@@ -378,9 +385,8 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             divider.SetResourceReference(Border.BorderBrushProperty, "Line");
             content.Children.Add(divider);
 
-            var card = new Border { Child = content, BorderThickness = new(1), CornerRadius = new(8), Padding = new(14, 8, 14, 8), Margin = new(0, 0, 0, 8) };
-            card.SetResourceReference(Border.BackgroundProperty, danger ? "DangerBackground" : "Surface");
-            card.SetResourceReference(Border.BorderBrushProperty, danger ? "Danger" : "Line");
+            var card = new Border { Child = content, Padding = new(14, 8, 14, 8), Margin = new(0, 0, 0, 10) };
+            card.SetResourceReference(StyleProperty, danger ? "OperationsDangerCard" : "WorkstationCard");
             AutomationProperties.SetAutomationId(card, id);
             body.Children.Add(card);
             return content;

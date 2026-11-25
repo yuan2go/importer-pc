@@ -32,7 +32,6 @@ public partial class SupplyStationPosition : UserControl
         {
             if (DataContext is SupplyStationPositionViewModel p) p.SetInputFocused(IsKeyboardFocusWithin);
         };
-        TaskFields.IsVisibleChanged += (_, _) => RefreshTaskRegionGeometry();
         DataContextChanged += (_, e) =>
         {
             presentationGeneration++; feedbackShown = readMeasured = slotMeasured = rejectionShown = successShown = null;
@@ -84,7 +83,6 @@ public partial class SupplyStationPosition : UserControl
             RefreshSubmitAvailability();
             Host?.RefreshEnabledPositionFocus();
         }
-        if (e.PropertyName is nameof(SupplyStationPositionViewModel.IsProcessing) or nameof(SupplyStationPositionViewModel.ShowConfirmedTask)) RefreshTaskRegionGeometry();
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.CanSubmitBarcode)) RefreshSubmitAvailability();
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.CanViewCurrentPicture) or nameof(SupplyStationPositionViewModel.PictureUnavailableReason)) RefreshPictureAvailability();
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.SuccessIdentity) or nameof(SupplyStationPositionViewModel.ReadFeedbackKey) or nameof(SupplyStationPositionViewModel.RejectionIdentity) or nameof(SupplyStationPositionViewModel.ShowConfirmedTask)) ObservePresentation();
@@ -94,14 +92,6 @@ public partial class SupplyStationPosition : UserControl
             if (editing && showingDraftNotice) InputFeedback.Text = DraftNotice;
             RefreshDraftNoticeVisibility();
         }
-    }
-    void RefreshTaskRegionGeometry()
-    {
-        // Retain geometry, never old facts, only across a live request. Errors,
-        // pause/offline/stale states reclaim space for actionable instructions.
-        if (IsLoaded && DataContext is SupplyStationPositionViewModel { IsProcessing: true } && TaskFields.ActualHeight > 0)
-            TaskFields.Height = TaskFields.ActualHeight;
-        else TaskFields.Height = double.NaN;
     }
     void RefreshBarcodeDisplay()
     {

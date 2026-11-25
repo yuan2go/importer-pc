@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="h-full bg-[#1A222D]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>菜鸟供包台 & 供包运维工具 — .NET 10 WPF UI Specification & Prototype</title>
+  
+  <!-- TYPOGRAPHY-01: Google Font Noto Sans SC (400 & 500 ONLY) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#F1F4F7',
+            surface: '#FFFFFF',
+            soft: '#F6F8FA',
+            ink: '#192736',
+            muted: '#536577',
+            line: '#D8E0E7',
+            'line-strong': '#CDD6DF',
+            accent: {
+              DEFAULT: '#205FCE',
+              hover: '#184FAA',
+              pressed: '#123D8B',
+              bg: '#EEF4FF'
+            },
+            success: {
+              DEFAULT: '#147450',
+              bg: '#EDF7F1',
+              border: '#B7E4CE'
+            },
+            warning: {
+              DEFAULT: '#895509',
+              bg: '#FFF5DF',
+              border: '#F5D799'
+            },
+            danger: {
+              DEFAULT: '#B52F38',
+              bg: '#FDF0F0',
+              border: '#F2C4C7'
+            }
+          },
+          fontFamily: {
+            sans: ['"Noto Sans SC"', '"Noto Sans CJK SC"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* STRICT GLOBAL TYPOGRAPHY RULES PER TYPOGRAPHY-01 */
+    html, body, input, button, select, textarea, code, pre, table, td, th {
+      font-family: 'Noto Sans SC', 'Noto Sans CJK SC', sans-serif !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Disallow any weight other than 400 and 500 */
+    *, ::before, ::after {
+      font-weight: 400;
+    }
+    .font-medium, th, h1, h2, h3, h4, h5, h6, strong, b, .font-500 {
+      font-weight: 500 !important;
+    }
+
+    /* Zero dashed outlines, 2px solid --accent focus ring */
+    *:focus-visible {
+      outline: 2px solid #205FCE !important;
+      outline-offset: 1px;
+    }
+
+    /* Custom scrollbar for crisp WPF aesthetic */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F4F7;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CDD6DF;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #536577;
+    }
+
+    /* WPF Window Shadow */
+    .wpf-window-shadow {
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+    .wpf-card-shadow {
+      box-shadow: 0 1px 3px rgba(25, 39, 54, 0.06);
+    }
+    .wpf-modal-shadow {
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.35);
+    }
+  </style>
+</head>
+<body class="h-full bg-[#1A222D] text-ink overflow-hidden select-none flex flex-col">
+
+  <!-- ========================================== -->
+  <!-- 0. STUDIO TOP CONTROL BAR (Review Stage)   -->
+  <!-- ========================================== -->
+  <header id="studio-bar" class="h-12 min-h-[48px] bg-[#11161E] border-b border-[#2A3646] px-4 flex items-center justify-between z-50 text-white text-xs">
+    <!-- View Switcher -->
+    <div class="flex items-center space-x-1">
+      <div class="flex items-center space-x-2 mr-3 font-medium text-blue-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <span class="text-sm">importer-pc Prototype</span>
+      </div>
+      
+      <div class="flex bg-[#1D2633] p-1 rounded-md border border-[#2D3B4E]">
+        <button onclick="switchView('workstation')" id="nav-workstation" class="px-3 py-1 rounded text-xs transition bg-[#205FCE] text-white font-medium">1. 菜鸟供包台 (1600×900)</button>
+        <button onclick="switchView('settings')" id="nav-settings" class="px-3 py-1 rounded text-xs transition text-gray-300 hover:text-white hover:bg-[#2A374A]">2. 供包台设置 (1220×800)</button>
+        <button onclick="switchView('operations')" id="nav-operations" class="px-3 py-1 rounded text-xs transition text-gray-300 hover:text-white hover:bg-[#2A374A]">3. 供包运维工具 (1280×760)</button>
+        <button onclick="switchView('setup')" id="nav-setup" class="px-3 py-1 rounded text-xs transition text-gray-300 hover:text-white hover:bg-[#2A374A]">4. 安装与首配 (1080×700)</button>
+        <button onclick="switchView('ds')" id="nav-ds" class="px-3 py-1 rounded text-xs transition text-gray-300 hover:text-white hover:bg-[#2A374A]">5. 弹窗画廊 & WPF规范</button>
+      </div>
+    </div>
+
+    <!-- Scenario Switcher & Canvas Controls -->
+    <div class="flex items-center space-x-3">
+      <!-- Context Scenario Switcher (Active for Workstation) -->
+      <div id="scenario-controls" class="flex items-center space-x-2">
+        <span class="text-[#8B9BB0] text-[12px]">工况预设:</span>
+        <select id="scenario-select" onchange="applyScenario(this.value)" class="bg-[#1D2633] border border-[#2D3B4E] text-xs text-gray-200 rounded px-2 py-1 focus:outline-none cursor-pointer">
+          <option value="normal">正常作业 (左已取格口 / 右等待投包)</option>
+          <option value="rcs_offline">RCS离线阻断 (原截图工况)</option>
+          <option value="abnormal_mixed">异常混态 (左业务拒绝 / 右Unknown围栏)</option>
+          <option value="continuous">连续供包 (左3秒上一件摘要 / 右停用中)</option>
+          <option value="manual_rebase">人工干预 (左多码待补录 / 右确认本位包裹)</option>
+        </select>
+      </div>
+
+      <!-- Inspection Quick Buttons -->
+      <div class="flex items-center space-x-1 border-l border-[#2D3B4E] pl-3">
+        <button onclick="openModal('exit-modal')" class="px-2 py-1 bg-[#253244] hover:bg-[#314259] text-gray-200 rounded text-[12px]">退出弹窗</button>
+        <button onclick="openModal('pwd-modal')" class="px-2 py-1 bg-[#253244] hover:bg-[#314259] text-gray-200 rounded text-[12px]">密码弹窗</button>
+        <button onclick="openParcelPicture('SF16890234410', 'CH-08', '左投递位', '2026-11-21 23:32:15')" class="px-2 py-1 bg-[#253244] hover:bg-[#314259] text-gray-200 rounded text-[12px]">Mono8原图</button>
+        <button onclick="openModal('diff-modal')" class="px-2 py-1 bg-[#253244] hover:bg-[#314259] text-gray-200 rounded text-[12px]">Diff核对</button>
+      </div>
+
+      <!-- Studio Native Resolution Scale Badge -->
+      <div class="flex items-center space-x-2 border-l border-[#2D3B4E] pl-3 text-[#8B9BB0] text-[12px]">
+        <span id="resolution-badge" class="bg-[#151C26] px-2 py-0.5 rounded border border-[#2A3646] font-mono text-gray-300">1600 × 900 DIP</span>
+        <span id="scale-badge" class="text-blue-400 font-medium">100%</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- MAIN STAGE CANVAS CONTAINER               -->
+  <!-- ========================================== -->
+  <main id="stage-viewport" class="flex-1 relative overflow-auto flex items-center justify-center p-4">
+    
+    <!-- ---------------------------------------------------- -->
+    <!-- VIEW 1: 菜鸟供包台 · 工作站主窗 (1600 × 900)        -->
+    <!-- ---------------------------------------------------- -->
+    <div id="view-workstation" class="stage-window w-[1600px] h-[900px] bg-bg rounded-lg overflow-hidden flex flex-col wpf-window-shadow shrink-0 relative">
+      
+      <!-- Windows Title Bar -->
+      <div class="h-[36px] min-h-[36px] bg-surface border-b border-line px-4 flex items-center justify-between text-ink select-none">
+        <div class="flex items-center space-x-2">
+          <!-- Cainiao Geometric Badge -->
+          <div class="w-5 h-5 bg-[#205FCE] rounded flex items-center justify-center text-white text-xs font-medium">菜</div>
+          <span class="text-14 font-medium tracking-tight">菜鸟供包台 — 工作站 (station-01)</span>
+        </div>
+        <div class="flex items-center space-x-3 text-muted">
+          <button class="hover:text-ink p-1">─</button>
+          <button class="hover:text-ink p-1">□</button>
+          <button onclick="openModal('exit-modal')" class="hover:bg-danger hover:text-white px-2 py-0.5 rounded text-14">✕</button>
+        </div>
+      </div>
+
+      <!-- Main Body Container with Left Rail + Right Content -->
+      <div class="flex-1 flex overflow-hidden">
+        
+        <!-- Left Navigation Rail (Collapsible 112px / 56px) -->
+        <nav id="left-rail" class="w-[112px] bg-surface border-r border-line flex flex-col justify-between py-3 transition-all duration-200 relative shrink-0">
+          
+          <!-- Top Group -->
+          <div class="space-y-2 px-2">
+            <button onclick="switchWorkstationSubTab('作业')" id="rail-btn-workstation" class="w-full h-[76px] rounded-lg flex flex-col items-center justify-center space-y-1 bg-accent-bg text-accent relative font-medium">
+              <div class="absolute left-0 top-3 bottom-3 w-1 bg-accent rounded-r"></div>
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m-8-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              <span class="text-16">作业</span>
+            </button>
+            <button onclick="switchWorkstationSubTab('记录')" id="rail-btn-history" class="w-full h-[76px] rounded-lg flex flex-col items-center justify-center space-y-1 text-muted hover:bg-soft hover:text-ink transition">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+              <span class="text-16">记录</span>
+            </button>
+          </div>
+
+          <!-- Rail Collapse Toggle Handle -->
+          <button onclick="toggleLeftRail()" class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-surface border border-line rounded-full flex items-center justify-center text-muted shadow hover:text-accent z-10">
+            <span id="rail-toggle-arrow">‹</span>
+          </button>
+
+          <!-- Bottom Pinned Settings Button -->
+          <div class="px-2">
+            <button onclick="openSettingsOverlay()" class="w-full h-[76px] rounded-lg flex flex-col items-center justify-center space-y-1 text-muted hover:bg-soft hover:text-accent border border-transparent hover:border-line transition">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+              <span class="text-16">设置</span>
+            </button>
+          </div>
+        </nav>
+
+        <!-- Right Content Area -->
+        <div class="flex-1 flex flex-col min-w-0 bg-bg">
+          
+          <!-- SUB-PAGE 1A: 作业 View -->
+          <div id="ws-sub-workstation" class="flex-1 flex flex-col min-h-0">
+            
+            <!-- Operational Header Bar (56px) -->
+            <div class="h-[56px] min-h-[56px] bg-surface border-b border-line px-5 flex items-center justify-between">
+              <!-- Left Status Indicator -->
+              <div class="flex items-center space-x-3">
+                <span id="hdr-status-dot" class="w-3.5 h-3.5 rounded-full bg-success"></span>
+                <span id="hdr-status-title" class="text-18 font-medium text-ink">运行就绪</span>
+                <span class="text-line-strong">|</span>
+                <span id="hdr-status-reason" class="text-14 text-muted">设备网络连接正常 · 已准备好接收包裹扫码</span>
+              </div>
+
+              <!-- Right Pace Metric, Heartbeat Pill & System Notice Bell -->
+              <div class="flex items-center space-x-4">
+                <div class="text-14 text-muted bg-soft px-3 py-1.5 rounded-md border border-line">
+                  本班取得格口 <span class="font-medium text-ink">142</span> 次 · 近10分钟 <span class="font-medium text-accent">18.4</span> 次/分
+                </div>
+
+                <!-- RCS Heartbeat Pill Button -->
+                <button onclick="triggerHeartbeatCheck()" id="hdr-rcs-pill" class="px-3 py-1.5 rounded-full text-14 font-medium bg-success-bg text-success border border-success-border flex items-center space-x-1.5 hover:opacity-90 transition">
+                  <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+                  <span id="hdr-rcs-text">RCS: 在线 · 18ms</span>
+                </button>
+
+                <!-- System Notice Bell (Calm Popover Trigger for Error Diagnostic) -->
+                <div class="relative">
+                  <button onclick="toggleNoticePopover()" class="p-2 text-muted hover:text-ink relative rounded-md hover:bg-soft">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    <span class="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-warning border-2 border-surface"></span>
+                  </button>
+
+                  <!-- Calm Popover Notice -->
+                  <div id="notice-popover" class="hidden absolute right-0 top-10 w-[420px] bg-surface rounded-lg border border-line wpf-modal-shadow p-4 z-40 text-14">
+                    <div class="flex items-center justify-between border-b border-line pb-2 mb-2">
+                      <span class="font-medium text-ink flex items-center space-x-1.5">
+                        <span class="w-2 h-2 rounded-full bg-warning"></span>
+                        <span>系统诊断提醒 (1 条)</span>
+                      </span>
+                      <button onclick="toggleNoticePopover()" class="text-muted hover:text-ink">✕</button>
+                    </div>
+                    <div class="bg-warning-bg border border-warning-border p-3 rounded text-13 text-warning">
+                      <p class="font-medium mb-1">窗口偏好读取失败，原文件保留：</p>
+                      <code class="block text-12 text-ink/80 bg-white/60 p-2 rounded border border-warning-border/50 break-all select-all font-sans">
+                        Access to the path 'D:\ImporterPc\UserData\S-1-5-21-732559097-496526457-2177757339-1001\presentation' is denied.
+                      </code>
+                      <div class="mt-2 text-right">
+                        <button onclick="copyToClipboard('D:\\ImporterPc\\UserData\\S-1-5-21-732559097-496526457-2177757339-1001\\presentation')" class="px-2 py-1 bg-surface border border-line text-ink rounded hover:bg-soft text-12">复制路径</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Clock -->
+                <div id="live-clock" class="text-14 text-muted font-mono font-sans">2026-11-21 23:32:56</div>
+              </div>
+            </div>
+
+            <!-- DUAL-LANE WORKSPACE: STRICT 50/50 GRID -->
+            <div class="flex-1 p-4 grid grid-cols-2 gap-4 min-h-0 overflow-y-auto">
+              
+              <!-- LEFT LANE CARD (左投递位) -->
+              <div id="card-left-lane" class="bg-surface rounded-xl border border-line p-5 flex flex-col justify-between wpf-card-shadow">
+                
+                <!-- Lane Header -->
+                <div class="flex items-center justify-between pb-3 border-b border-line">
+                  <div class="flex items-center space-x-3">
+                    <h2 class="text-18 font-medium text-ink">左投递位</h2>
+                    <!-- Segmented Switch (启用 / 停用) -->
+                    <div class="flex bg-soft p-0.5 rounded-lg border border-line">
+                      <button onclick="toggleLaneEnable('left', true)" id="btn-left-enable" class="px-3 py-1 rounded-md text-14 font-medium bg-surface text-ink shadow-sm">启用</button>
+                      <button onclick="toggleLaneEnable('left', false)" id="btn-left-disable" class="px-3 py-1 rounded-md text-14 text-muted hover:text-ink">停用</button>
+                    </div>
+                    <span class="bg-accent-bg text-accent text-13 px-2.5 py-1 rounded border border-accent/20 font-medium">当前输入目标 · F2</span>
+                  </div>
+                  <div class="text-14 text-muted bg-soft px-3 py-1 rounded border border-line">
+                    <span id="left-vehicle-pill" class="text-success font-medium">小车: AGV-042 · 已到位</span>
+                  </div>
+                </div>
+
+                <!-- Scan Input Row -->
+                <div class="mt-4 flex items-center space-x-2">
+                  <input type="text" id="left-barcode-input" onkeydown="handleBarcodeEnter(event, 'left')" placeholder="扫描或手动输入条码 (按 Enter 提交)..." value="SF16890234410" class="flex-1 h-[48px] px-4 text-24 border border-line rounded-lg focus:border-accent bg-surface text-ink placeholder:text-muted/40 transition">
+                  <button onclick="openParcelPicture('SF16890234410', 'CH-08', '左投递位', '2026-11-21 23:32:15')" class="min-w-[76px] h-[48px] px-4 bg-soft border border-line rounded-lg hover:bg-accent-bg hover:text-accent hover:border-accent text-ink text-14 flex items-center justify-center space-x-1 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span>图片</span>
+                  </button>
+                </div>
+
+                <!-- DYNAMIC RESULT PANEL (Flex-1) -->
+                <div id="left-result-panel" class="my-4 flex-1 rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all bg-success-bg border border-success-border">
+                  <div class="text-16 font-medium text-success flex items-center space-x-2 mb-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <span>格口已取得</span>
+                  </div>
+                  <!-- Giant Chute Number (<=6 chars -> 72px) -->
+                  <div id="left-chute-display" class="text-[72px] font-medium text-ink leading-tight my-2 tracking-tight">CH-08</div>
+                  <p class="text-16 text-muted mt-1">请将包裹投递至 <span class="text-ink font-medium">CH-08</span> 格口</p>
+                </div>
+
+                <!-- 4 CONFIRMED TASK FIELDS (104px Reserved Height, 2x2 Grid) -->
+                <div id="left-task-fields" class="h-[104px] min-h-[104px] bg-soft rounded-lg p-3 grid grid-cols-2 gap-x-6 gap-y-2 border border-line">
+                  <div>
+                    <span class="text-16 text-muted block">波次号</span>
+                    <span id="left-field-wave" class="text-22 font-medium text-ink select-all">W20261121-04</span>
+                  </div>
+                  <div>
+                    <span class="text-16 text-muted block">任务号</span>
+                    <span id="left-field-task" class="text-22 font-medium text-ink select-all">SM-TASK-000142</span>
+                  </div>
+                  <div>
+                    <span class="text-16 text-muted block">商品编码</span>
+                    <span id="left-field-sku" class="text-22 font-medium text-ink select-all">SKU-8849201A</span>
+                  </div>
+                  <div>
+                    <span class="text-16 text-muted block">返回数量</span>
+                    <span id="left-field-qty" class="text-22 font-medium text-ink select-all">1</span>
+                  </div>
+                </div>
+
+                <!-- Action Button Row (52px) -->
+                <div class="mt-4 flex items-center justify-between pt-3 border-t border-line">
+                  <div class="flex items-center space-x-2">
+                    <button id="left-btn-submit" onclick="submitLaneAction('left')" class="h-[44px] px-6 bg-accent text-white rounded-lg hover:bg-accent-hover active:bg-accent-pressed text-16 font-medium transition shadow-sm">提交</button>
+                    <button id="left-btn-takeoff" onclick="takeOffParcel('left')" class="hidden h-[44px] px-4 bg-warning-bg text-warning border border-warning-border hover:bg-warning/10 rounded-lg text-16 font-medium transition">已取下包裹</button>
+                  </div>
+                  <button onclick="openParcelDetail('SF16890234410', 'CH-08', '左投递位', 'W20261121-04', 'SM-TASK-000142')" class="h-[44px] px-4 bg-soft border border-line rounded-lg hover:bg-line/40 text-ink text-16 transition">查看详情</button>
+                </div>
+
+                <!-- Device Footer Row -->
+                <div class="mt-3 pt-2 border-t border-line/60 flex items-center justify-between text-14 text-muted">
+                  <span class="flex items-center space-x-1.5 text-success">
+                    <span class="w-2 h-2 rounded-full bg-success"></span>
+                    <span>相机: 已连接 · MVID 原生 · 192.168.10.21</span>
+                  </span>
+                  <span>本位本班取得格口 <strong class="text-ink">74</strong> 次</span>
+                </div>
+              </div>
+
+              <!-- RIGHT LANE CARD (右投递位) -->
+              <div id="card-right-lane" class="bg-surface rounded-xl border border-line p-5 flex flex-col justify-between wpf-card-shadow">
+                
+                <!-- Lane Header -->
+                <div class="flex items-center justify-between pb-3 border-b border-line">
+                  <div class="flex items-center space-x-3">
+                    <h2 class="text-18 font-medium text-ink">右投递位</h2>
+                    <!-- Segmented Switch (启用 / 停用) -->
+                    <div class="flex bg-soft p-0.5 rounded-lg border border-line">
+                      <button onclick="toggleLaneEnable('right', true)" id="btn-right-enable" class="px-3 py-1 rounded-md text-14 font-medium bg-surface text-ink shadow-sm">启用</button>
+                      <button onclick="toggleLaneEnable('right', false)" id="btn-right-disable" class="px-3 py-1 rounded-md text-14 text-muted hover:text-ink">停用</button>
+                    </div>
+                    <span class="bg-soft text-muted text-13 px-2.5 py-1 rounded border border-line font-medium">快捷键 F3</span>
+                  </div>
+                  <div class="text-14 text-muted bg-soft px-3 py-1 rounded border border-line">
+                    <span id="right-vehicle-pill" class="text-muted font-medium">小车: 待确认</span>
+                  </div>
+                </div>
+
+                <!-- Scan Input Row -->
+                <div class="mt-4 flex items-center space-x-2">
+                  <input type="text" id="right-barcode-input" onkeydown="handleBarcodeEnter(event, 'right')" placeholder="扫描或手动输入条码 (按 Enter 提交)..." value="" class="flex-1 h-[48px] px-4 text-24 border border-line rounded-lg focus:border-accent bg-surface text-ink placeholder:text-muted/40 transition">
+                  <button onclick="openParcelPicture('YT88301928401', '等待扫码', '右投递位', '2026-11-21 23:31:00')" class="min-w-[76px] h-[48px] px-4 bg-soft border border-line rounded-lg hover:bg-accent-bg hover:text-accent hover:border-accent text-ink text-14 flex items-center justify-center space-x-1 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span>图片</span>
+                  </button>
+                </div>
+
+                <!-- DYNAMIC RESULT PANEL (Flex-1) -->
+                <div id="right-result-panel" class="my-4 flex-1 rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all bg-soft border border-line">
+                  <div class="w-12 h-12 rounded-full bg-line/40 flex items-center justify-center text-muted mb-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m-8-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                  </div>
+                  <div class="text-18 font-medium text-ink my-1">等待投包 / 可人工扫码</div>
+                  <p class="text-14 text-muted">请放置包裹至托盘，或使用 PDA / 键盘扫描条码</p>
+                </div>
+
+                <!-- 4 CONFIRMED TASK FIELDS (Reserved Height) -->
+                <div id="right-task-fields" class="h-[104px] min-h-[104px] bg-soft/50 rounded-lg p-3 grid grid-cols-2 gap-x-6 gap-y-2 border border-line/60 opacity-40">
+                  <div>
+                    <span class="text-16 text-muted block">波次号</span>
+                    <span id="right-field-wave" class="text-22 font-medium text-ink">--</span>
+                  </div>
+                  <div>
+                    <span class="text-16 text-muted block">任务号</span>
+                    <span id="right-field-task" class="text-22 font-medium text-ink">--</span>
+                  </div>
+                  <div>
+                    <span class="text-16 text-muted block">商品编码</span>
+                    <span id="right-field-sku" class="text-22 font-medium text-ink">--</span>
+                  </div>
+                  <div>
+                    <span class="text-16 text-muted block">返回数量</span>
+                    <span id="right-field-qty" class="text-22 font-medium text-ink">--</span>
+                  </div>
+                </div>
+
+                <!-- Action Button Row -->
+                <div class="mt-4 flex items-center justify-between pt-3 border-t border-line">
+                  <div class="flex items-center space-x-2">
+                    <button id="right-btn-submit" onclick="submitLaneAction('right')" class="h-[44px] px-6 bg-accent text-white rounded-lg hover:bg-accent-hover active:bg-accent-pressed text-16 font-medium transition shadow-sm">提交</button>
+                    <button id="right-btn-takeoff" onclick="takeOffParcel('right')" class="hidden h-[44px] px-4 bg-warning-bg text-warning border border-warning-border hover:bg-warning/10 rounded-lg text-16 font-medium transition">已取下包裹</button>
+                  </div>
+                  <button onclick="openParcelDetail('待输入', '无', '右投递位', '--', '--')" class="h-[44px] px-4 bg-soft border border-line rounded-lg hover:bg-line/40 text-ink text-16 transition">查看详情</button>
+                </div>
+
+                <!-- Device Footer Row -->
+                <div class="mt-3 pt-2 border-t border-line/60 flex items-center justify-between text-14 text-muted">
+                  <span class="flex items-center space-x-1.5 text-success">
+                    <span class="w-2 h-2 rounded-full bg-success"></span>
+                    <span>相机: 已连接 · MVID 原生 · 192.168.10.22</span>
+                  </span>
+                  <span>本位本班取得格口 <strong class="text-ink">68</strong> 次</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Bottom Safety Footer (32px) -->
+            <div class="h-[32px] min-h-[32px] bg-surface border-t border-line px-5 flex items-center justify-between text-14 text-muted">
+              <span class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-success"></span>
+                <span class="font-medium text-ink">生产模式</span>
+                <span>· 软件暂停不是安全急停，紧急情况请按现场急停按钮</span>
+              </span>
+              <span>importer-pc v1.0.0 · WPF .NET 10 Enterprise</span>
+            </div>
+          </div>
+
+          <!-- SUB-PAGE 1B: 记录 View -->
+          <div id="ws-sub-history" class="hidden flex-1 flex flex-col min-h-0 bg-surface">
+            <!-- Modern Segmented Tab Bar -->
+            <div class="px-6 pt-4 border-b border-line flex items-center space-x-4">
+              <div class="flex bg-soft p-1 rounded-lg border border-line">
+                <button onclick="switchHistoryTab('records')" id="htab-records" class="px-4 py-1.5 rounded-md text-14 font-medium bg-surface text-ink shadow-sm">作业记录 (142)</button>
+                <button onclick="switchHistoryTab('lanes')" id="htab-lanes" class="px-4 py-1.5 rounded-md text-14 text-muted hover:text-ink">投递位启停记录 (8)</button>
+                <button onclick="switchHistoryTab('rounds')" id="htab-rounds" class="px-4 py-1.5 rounded-md text-14 text-muted hover:text-ink">包裹轮次 · 含无码与未提交 (168)</button>
+              </div>
+            </div>
+
+            <!-- Filter Toolbar -->
+            <div class="p-4 bg-soft border-b border-line space-y-3">
+              <div class="flex flex-wrap items-center gap-3">
+                <input type="text" placeholder="完整条码，保留前导零..." class="h-[44px] px-3 border border-line rounded-lg text-16 bg-surface text-ink w-64">
+                
+                <select class="h-[44px] px-3 border border-line rounded-lg text-16 bg-surface text-ink">
+                  <option value="">全部投递位</option>
+                  <option value="left">左投递位</option>
+                  <option value="right">右投递位</option>
+                </select>
+
+                <select class="h-[44px] px-3 border border-line rounded-lg text-16 bg-surface text-ink">
+                  <option value="">全部状态</option>
+                  <option value="success">格口已取得</option>
+                  <option value="rejected">业务拒绝</option>
+                  <option value="unknown">结果未知</option>
+                </select>
+
+                <!-- Quick Time Pill Group -->
+                <div class="flex bg-surface p-1 rounded-lg border border-line text-14">
+                  <button class="px-3 py-1 rounded bg-accent-bg text-accent font-medium">今天</button>
+                  <button class="px-3 py-1 rounded text-muted hover:text-ink">最近24小时</button>
+                  <button class="px-3 py-1 rounded text-muted hover:text-ink">最近7天</button>
+                  <button class="px-3 py-1 rounded text-muted hover:text-ink">不限时间</button>
+                </div>
+
+                <div class="flex items-center space-x-2 ml-auto">
+                  <button class="h-[44px] px-5 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium">查询</button>
+                  <button class="h-[44px] px-4 bg-surface border border-line rounded-lg hover:bg-soft text-ink text-16">清除筛选</button>
+                  <button class="h-[44px] px-4 bg-surface border border-line rounded-lg hover:bg-soft text-ink text-16 flex items-center space-x-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>导出表格…</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats Strip -->
+            <div class="px-6 py-2 bg-accent-bg/40 border-b border-line text-14 text-muted flex items-center justify-between">
+              <span>本次查询：今天 · 第 1 页 · 共 11 件 · 已取得格口 9 · 业务拒绝 1 · 待核对 1</span>
+              <span>实时自动同步已开启</span>
+            </div>
+
+            <!-- DataGrid Table (44px row height, 16px font, 14px header) -->
+            <div class="flex-1 overflow-auto p-4">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-soft border-b border-line text-14 text-muted">
+                    <th class="p-3 font-medium">扫描时间</th>
+                    <th class="p-3 font-medium">投递位</th>
+                    <th class="p-3 font-medium">格口</th>
+                    <th class="p-3 font-medium">条码 / 图片</th>
+                    <th class="p-3 font-medium">输入来源</th>
+                    <th class="p-3 font-medium">任务号</th>
+                    <th class="p-3 font-medium">状态</th>
+                    <th class="p-3 font-medium">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="history-table-body" class="divide-y divide-line text-16 text-ink">
+                  <tr class="hover:bg-soft/60">
+                    <td class="p-3">2026-11-21 23:32:15</td>
+                    <td class="p-3 font-medium">左投递位</td>
+                    <td class="p-3 font-medium text-accent">CH-08</td>
+                    <td class="p-3">
+                      <div class="flex items-center space-x-2">
+                        <span class="font-sans">SF16890234410</span>
+                        <button onclick="openParcelPicture('SF16890234410', 'CH-08', '左投递位', '23:32:15')" class="px-2 py-0.5 bg-accent-bg text-accent rounded text-13 hover:underline">查看原图</button>
+                      </div>
+                    </td>
+                    <td class="p-3"><span class="bg-soft px-2 py-0.5 rounded border border-line text-14">设备读码</span></td>
+                    <td class="p-3 font-sans text-muted">SM-TASK-000142</td>
+                    <td class="p-3"><span class="px-2.5 py-1 bg-success-bg text-success border border-success-border rounded text-14 font-medium">格口已取得</span></td>
+                    <td class="p-3"><button onclick="openParcelDetail('SF16890234410', 'CH-08', '左投递位', 'W20261121-04', 'SM-TASK-000142')" class="text-accent hover:underline text-14 font-medium">详情</button></td>
+                  </tr>
+                  <tr class="hover:bg-soft/60">
+                    <td class="p-3">2026-11-21 23:30:42</td>
+                    <td class="p-3 font-medium">右投递位</td>
+                    <td class="p-3 font-medium text-muted">--</td>
+                    <td class="p-3">
+                      <div class="flex items-center space-x-2">
+                        <span class="font-sans">YT99401928400</span>
+                        <button onclick="openParcelPicture('YT99401928400', '拒绝', '右投递位', '23:30:42')" class="px-2 py-0.5 bg-accent-bg text-accent rounded text-13 hover:underline">查看原图</button>
+                      </div>
+                    </td>
+                    <td class="p-3"><span class="bg-soft px-2 py-0.5 rounded border border-line text-14">PDA键盘</span></td>
+                    <td class="p-3 font-sans text-muted">SM-TASK-000141</td>
+                    <td class="p-3"><span class="px-2.5 py-1 bg-danger-bg text-danger border border-danger-border rounded text-14 font-medium">业务拒绝</span></td>
+                    <td class="p-3"><button onclick="openParcelDetail('YT99401928400', 'ERR_NO_CHUTE', '右投递位', 'W20261121-04', 'SM-TASK-000141')" class="text-accent hover:underline text-14 font-medium">详情</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="p-3 border-t border-line bg-soft flex items-center justify-between text-14 text-muted">
+              <span>显示 1 至 11 项，共 142 项</span>
+              <div class="flex items-center space-x-2">
+                <button class="px-3 py-1 bg-surface border border-line rounded text-ink hover:bg-soft disabled:opacity-50" disabled>首屏</button>
+                <button class="px-3 py-1 bg-surface border border-line rounded text-ink hover:bg-soft disabled:opacity-50" disabled>上一页</button>
+                <button class="px-3 py-1 bg-accent text-white rounded font-medium">加载更早记录</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------------------------------------------------- -->
+    <!-- VIEW 2: 供包台设置 (1220 × 800)                     -->
+    <!-- ---------------------------------------------------- -->
+    <div id="view-settings" class="stage-window hidden w-[1220px] h-[800px] bg-bg rounded-lg overflow-hidden flex flex-col wpf-window-shadow shrink-0 relative">
+      
+      <!-- Window Header Bar (68px) -->
+      <div class="h-[68px] min-h-[68px] bg-surface border-b border-line px-6 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <h1 class="text-20 font-medium text-ink">供包台设置</h1>
+          <!-- Mode Status Pill -->
+          <div id="settings-mode-pill" class="px-3 py-1 bg-soft border border-line rounded-full text-14 text-muted flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-muted"></span>
+            <span id="settings-mode-text">只读查看 · 不暂停供包</span>
+          </div>
+        </div>
+
+        <!-- Auth Toggle CTAs -->
+        <div id="settings-auth-actions" class="flex items-center space-x-3">
+          <button onclick="openModal('pwd-modal')" id="btn-settings-unlock" class="h-[44px] px-5 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium shadow-sm transition">验证密码并编辑</button>
+          <div id="settings-edit-actions" class="hidden flex items-center space-x-2">
+            <span class="text-14 text-success font-medium">编辑授权至 23:47 · 保存时执行原配置守卫</span>
+            <button onclick="lockSettingsMode()" class="h-[44px] px-4 bg-soft border border-line rounded-lg hover:bg-line/40 text-ink text-16">退出编辑</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Body Container -->
+      <div class="flex-1 flex overflow-hidden">
+        
+        <!-- MODE A: READ-ONLY OVERVIEW (Structured Cards) -->
+        <div id="settings-readonly-view" class="flex-1 p-6 overflow-y-auto space-y-6">
+          
+          <!-- Card 1: 本站身份与 RCS 接入 -->
+          <div class="bg-surface rounded-xl border border-line p-5 wpf-card-shadow">
+            <h3 class="text-18 font-medium text-ink mb-4 pb-2 border-b border-line flex items-center justify-between">
+              <span>本站身份与 RCS 接入</span>
+              <span class="text-14 text-muted">修订 3 · 无待生效设置</span>
+            </h3>
+            <div class="grid grid-cols-3 gap-6 text-16">
+              <div>
+                <span class="text-muted block text-14">本站 ID</span>
+                <span class="text-ink font-medium select-all">station-01</span>
+              </div>
+              <div>
+                <span class="text-muted block text-14">供包台编码</span>
+                <span class="text-ink font-medium select-all">station-01</span>
+              </div>
+              <div>
+                <span class="text-muted block text-14">RCS 主机地址</span>
+                <span class="text-ink font-medium select-all font-sans">http://127.0.0.1:18848</span>
+              </div>
+              <div>
+                <span class="text-muted block text-14">仓 ID (zone-id)</span>
+                <span class="text-ink font-medium">1</span>
+              </div>
+              <div>
+                <span class="text-muted block text-14">生产线 ID (project-id)</span>
+                <span class="text-ink font-medium">1</span>
+              </div>
+              <div>
+                <span class="text-muted block text-14">格口分配方式</span>
+                <span class="text-ink font-medium">由 RCS 分配</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: 左右相机配置 (Strict 1:1 Side-by-Side Cards) -->
+          <div class="grid grid-cols-2 gap-6">
+            <!-- Left Camera Card -->
+            <div class="bg-surface rounded-xl border border-line p-5 wpf-card-shadow">
+              <div class="flex items-center justify-between mb-4 pb-2 border-b border-line">
+                <h3 class="text-18 font-medium text-ink">左相机</h3>
+                <span class="px-2.5 py-0.5 bg-success-bg text-success border border-success-border rounded text-13 font-medium">已配置</span>
+              </div>
+              <div class="space-y-3 text-16">
+                <div>
+                  <span class="text-muted block text-14">IPv4 地址</span>
+                  <span class="text-ink font-medium font-sans">192.168.10.21</span>
+                </div>
+                <div>
+                  <span class="text-muted block text-14">物理序列号 (只读)</span>
+                  <span class="text-ink font-medium font-sans">DA8932014</span>
+                </div>
+                <div>
+                  <span class="text-muted block text-14">RCS 相机编码</span>
+                  <span class="text-ink font-medium font-sans">SIM-LEFT</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Camera Card -->
+            <div class="bg-surface rounded-xl border border-line p-5 wpf-card-shadow">
+              <div class="flex items-center justify-between mb-4 pb-2 border-b border-line">
+                <h3 class="text-18 font-medium text-ink">右相机</h3>
+                <span class="px-2.5 py-0.5 bg-success-bg text-success border border-success-border rounded text-13 font-medium">已配置</span>
+              </div>
+              <div class="space-y-3 text-16">
+                <div>
+                  <span class="text-muted block text-14">IPv4 地址</span>
+                  <span class="text-ink font-medium font-sans">192.168.10.22</span>
+                </div>
+                <div>
+                  <span class="text-muted block text-14">物理序列号 (只读)</span>
+                  <span class="text-ink font-medium font-sans">DA8932015</span>
+                </div>
+                <div>
+                  <span class="text-muted block text-14">RCS 相机编码</span>
+                  <span class="text-ink font-medium font-sans">SIM-RIGHT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: 本机显示与提示音偏好 + Diagnostic Error Card -->
+          <div class="bg-surface rounded-xl border border-line p-5 wpf-card-shadow space-y-4">
+            <h3 class="text-18 font-medium text-ink border-b border-line pb-2">本机显示与提示音偏好</h3>
+            <div class="grid grid-cols-3 gap-6 text-16">
+              <div>
+                <span class="text-muted block text-14">默认打开方式</span>
+                <span class="text-ink font-medium">窗口化运行</span>
+              </div>
+              <div>
+                <span class="text-muted block text-14">效率显示</span>
+                <span class="text-ink font-medium">显示班次取得次数与近10分钟速度</span>
+              </div>
+              <div>
+                <span class="text-muted block text-14">提示音音量</span>
+                <span class="text-ink font-medium">80%</span>
+              </div>
+            </div>
+
+            <!-- Diagnostic Card for Screenshot Error -->
+            <div class="mt-4 p-4 bg-warning-bg/60 border border-warning-border rounded-lg text-14 text-warning">
+              <div class="flex items-start justify-between">
+                <div class="space-y-1">
+                  <div class="font-medium flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>本机窗口偏好文件读取失败，已保留原文件且暂锁定该项修改，不影响供包作业</span>
+                  </div>
+                  <p class="text-muted text-13">若需重置该配置，请前往“供包运维工具 → 维护中心”在管理授权下手动修复权限。</p>
+                </div>
+                <button onclick="copyToClipboard('D:\\ImporterPc\\UserData\\presentation')" class="px-3 py-1 bg-surface border border-line rounded text-ink hover:bg-soft text-13">复制错误路径</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- MODE B: PASSWORD UNLOCKED EDIT MODE -->
+        <div id="settings-edit-view" class="hidden flex-1 flex overflow-hidden">
+          <!-- Left Directory Rail (230px) -->
+          <div class="w-[230px] bg-soft border-r border-line p-3 space-y-1 shrink-0 text-16">
+            <button onclick="switchSettingsSection('station')" id="ssec-station" class="w-full text-left px-4 py-3 rounded-lg font-medium bg-accent-bg text-accent">1. 站点编号与 RCS</button>
+            <button onclick="switchSettingsSection('cameras')" id="ssec-cameras" class="w-full text-left px-4 py-3 rounded-lg text-muted hover:bg-surface hover:text-ink">2. 左右相机</button>
+            <button onclick="switchSettingsSection('sorting')" id="ssec-sorting" class="w-full text-left px-4 py-3 rounded-lg text-muted hover:bg-surface hover:text-ink">3. 分拣业务选项</button>
+            <button onclick="switchSettingsSection('audio')" id="ssec-audio" class="w-full text-left px-4 py-3 rounded-lg text-muted hover:bg-surface hover:text-ink">4. 显示与声音偏好</button>
+          </div>
+
+          <!-- Right Form Scroll Area -->
+          <div class="flex-1 p-6 overflow-y-auto bg-surface space-y-6">
+            
+            <!-- Section 1: 站点编号与 RCS -->
+            <div id="form-sec-station" class="space-y-4">
+              <h3 class="text-18 font-medium text-ink pb-2 border-b border-line">站点编号与 RCS 配置</h3>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-14 text-muted mb-1">供包台编码 *</label>
+                  <input type="text" value="station-01" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 text-ink bg-surface">
+                </div>
+                <div>
+                  <label class="block text-14 text-muted mb-1">仓 ID (zone-id) *</label>
+                  <input type="text" value="1" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 text-ink bg-surface">
+                </div>
+                <div>
+                  <label class="block text-14 text-muted mb-1">生产线 ID (project-id) *</label>
+                  <input type="text" value="1" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 text-ink bg-surface">
+                </div>
+                <div>
+                  <label class="block text-14 text-muted mb-1">RCS 主机地址 *</label>
+                  <input type="text" value="http://127.0.0.1:18848" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 text-ink font-sans bg-surface">
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: 显示与声音偏好 (with Web Audio Synth) -->
+            <div id="form-sec-audio" class="space-y-4">
+              <h3 class="text-18 font-medium text-ink pb-2 border-b border-line">提示音与 Web Audio 诊断</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-14 text-muted mb-2">提示音音量 (<span id="vol-val">80%</span>)</label>
+                  <input type="range" min="0" max="100" value="80" oninput="document.getElementById('vol-val').innerText = this.value + '%'" class="w-full accent-accent">
+                </div>
+
+                <!-- Web Audio Sound Trigger Buttons -->
+                <div class="p-4 bg-soft rounded-lg border border-line space-y-3">
+                  <span class="text-14 font-medium text-ink block">声音试听 (使用系统 Web Audio API 合成)</span>
+                  <div class="flex items-center space-x-3">
+                    <button onclick="playDiagnosticSound('read')" class="h-[44px] px-4 bg-surface border border-line rounded-lg hover:bg-accent-bg hover:text-accent text-16 transition flex items-center space-x-1">
+                      <span>🔊 试听“读到”</span>
+                    </button>
+                    <button onclick="playDiagnosticSound('success')" class="h-[44px] px-4 bg-surface border border-line rounded-lg hover:bg-success-bg hover:text-success text-16 transition flex items-center space-x-1">
+                      <span>🔔 试听“成功”</span>
+                    </button>
+                    <button onclick="playDiagnosticSound('reject')" class="h-[44px] px-4 bg-surface border border-line rounded-lg hover:bg-danger-bg hover:text-danger text-16 transition flex items-center space-x-1">
+                      <span>⚠️ 试听“拒绝”</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Unified Bottom Footer (64px) -->
+      <div class="h-[64px] min-h-[64px] bg-surface border-t border-line px-6 flex items-center justify-between">
+        <div class="text-14 text-muted">
+          <span id="settings-footer-hint">只读模式 · 修改需点击“验证密码并编辑”</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="switchView('workstation')" class="h-[44px] px-5 bg-soft border border-line text-ink rounded-lg hover:bg-line/40 text-16 transition">返回作业</button>
+          <button onclick="openModal('diff-modal')" id="btn-settings-review" class="hidden h-[44px] px-5 bg-surface border border-line text-ink rounded-lg hover:bg-soft text-16 font-medium">查看修改</button>
+          <button onclick="openModal('diff-modal')" id="btn-settings-save" class="hidden h-[44px] px-6 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium shadow-sm">保存设置…</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ---------------------------------------------------- -->
+    <!-- VIEW 3: 供包运维工具 (1280 × 760)                   -->
+    <!-- ---------------------------------------------------- -->
+    <div id="view-operations" class="stage-window hidden w-[1280px] h-[760px] bg-bg rounded-lg overflow-hidden flex flex-col wpf-window-shadow shrink-0 relative">
+      
+      <!-- Unified Global Header Bar (64px) — Eliminates old nested redundant banners -->
+      <div class="h-[64px] min-h-[64px] bg-surface border-b border-line px-6 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-accent text-white flex items-center justify-center font-medium">运维</div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h1 class="text-20 font-medium text-ink">供包运维工具</h1>
+              <span class="px-2 py-0.5 bg-soft border border-line rounded text-13 font-mono text-muted">station-01</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center Status Capsules -->
+        <div class="flex items-center space-x-3 text-14">
+          <div class="px-3 py-1 bg-success-bg border border-success-border rounded-full text-success flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-success"></span>
+            <span>观察通道: 已核验本机工作站 · 18:19:31</span>
+          </div>
+          <div id="ops-auth-pill" class="px-3 py-1 bg-soft border border-line rounded-full text-muted">
+            控制权限: 只读权限
+          </div>
+        </div>
+
+        <!-- Right Unlock CTA -->
+        <div>
+          <button onclick="openModal('pwd-modal')" id="btn-ops-auth" class="h-[44px] px-5 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium shadow-sm">连接并验证管理密码</button>
+        </div>
+      </div>
+
+      <!-- Clean Horizontal Tab Bar (48px) -->
+      <div class="h-[48px] bg-surface border-b border-line px-6 flex items-center space-x-8 text-16">
+        <button onclick="switchOpsTab('overview')" id="opstab-overview" class="h-full border-b-2 border-accent text-accent font-medium px-1 flex items-center space-x-2">
+          <span>运行总览</span>
+        </button>
+        <button onclick="switchOpsTab('logs')" id="opstab-logs" class="h-full border-b-2 border-transparent text-muted hover:text-ink px-1 flex items-center space-x-2">
+          <span>日志中心</span>
+        </button>
+        <button onclick="switchOpsTab('debug')" id="opstab-debug" class="h-full border-b-2 border-transparent text-muted hover:text-ink px-1 flex items-center space-x-2">
+          <span>设备调试</span>
+        </button>
+        <button onclick="switchOpsTab('params')" id="opstab-params" class="h-full border-b-2 border-transparent text-muted hover:text-ink px-1 flex items-center space-x-2">
+          <span>专业参数</span>
+        </button>
+        <button onclick="switchOpsTab('maintenance')" id="opstab-maintenance" class="h-full border-b-2 border-transparent text-muted hover:text-ink px-1 flex items-center space-x-2">
+          <span>维护中心</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="flex-1 overflow-hidden bg-bg">
+        
+        <!-- TAB 1: 运行总览 -->
+        <div id="opspage-overview" class="h-full p-6 overflow-y-auto space-y-6">
+          <!-- KPI Top Strip -->
+          <div class="grid grid-cols-4 gap-4">
+            <div class="bg-surface rounded-xl p-4 border border-line wpf-card-shadow">
+              <span class="text-14 text-muted block">工作站状态</span>
+              <span class="text-20 font-medium text-success mt-1 block">运行中 · 准入正常</span>
+            </div>
+            <div class="bg-surface rounded-xl p-4 border border-line wpf-card-shadow">
+              <span class="text-14 text-muted block">当前可见作业</span>
+              <span class="text-20 font-medium text-ink mt-1 block">11 件</span>
+            </div>
+            <div class="bg-surface rounded-xl p-4 border border-line wpf-card-shadow">
+              <span class="text-14 text-muted block">未确认责任 / 历史保管</span>
+              <span class="text-20 font-medium text-ink mt-1 block">0 / 0</span>
+            </div>
+            <div class="bg-surface rounded-xl p-4 border border-line wpf-card-shadow">
+              <span class="text-14 text-muted block">待生效设置</span>
+              <span class="text-20 font-medium text-muted mt-1 block">无待生效设置</span>
+            </div>
+          </div>
+
+          <!-- Strict 1:1 Side-by-Side Lane Status Cards -->
+          <div class="grid grid-cols-2 gap-6">
+            <!-- Left Lane -->
+            <div class="bg-surface rounded-xl border border-line p-5 space-y-3 wpf-card-shadow">
+              <div class="flex items-center justify-between pb-2 border-b border-line">
+                <h3 class="text-18 font-medium text-ink">左投递位</h3>
+                <span class="px-2.5 py-0.5 bg-success-bg text-success border border-success-border rounded text-13 font-medium">启用就绪</span>
+              </div>
+              <div class="space-y-2 text-16">
+                <div class="flex justify-between"><span class="text-muted">小车状态</span><span class="text-ink font-medium">AGV-042 (已到位)</span></div>
+                <div class="flex justify-between"><span class="text-muted">当前轮次</span><span class="text-ink font-sans">ROUND-20261121-0089</span></div>
+                <div class="flex justify-between"><span class="text-muted">阻断原因</span><span class="text-success font-medium">无阻断</span></div>
+              </div>
+            </div>
+
+            <!-- Right Lane -->
+            <div class="bg-surface rounded-xl border border-line p-5 space-y-3 wpf-card-shadow">
+              <div class="flex items-center justify-between pb-2 border-b border-line">
+                <h3 class="text-18 font-medium text-ink">右投递位</h3>
+                <span class="px-2.5 py-0.5 bg-success-bg text-success border border-success-border rounded text-13 font-medium">启用就绪</span>
+              </div>
+              <div class="space-y-2 text-16">
+                <div class="flex justify-between"><span class="text-muted">小车状态</span><span class="text-ink font-medium">待确认</span></div>
+                <div class="flex justify-between"><span class="text-muted">当前轮次</span><span class="text-ink font-sans">ROUND-20261121-0090</span></div>
+                <div class="flex justify-between"><span class="text-muted">阻断原因</span><span class="text-success font-medium">无阻断</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4-Column Device Status Row -->
+          <div class="bg-surface rounded-xl border border-line p-5 wpf-card-shadow">
+            <h3 class="text-18 font-medium text-ink mb-4 pb-2 border-b border-line">关键设备与存储确认</h3>
+            <div class="grid grid-cols-4 gap-4 text-16">
+              <div class="p-3 bg-soft rounded-lg border border-line">
+                <span class="text-muted text-14 block">左相机</span>
+                <span class="text-success font-medium flex items-center space-x-1 mt-1">
+                  <span class="w-2 h-2 rounded-full bg-success"></span>
+                  <span>已连接 (192.168.10.21)</span>
+                </span>
+              </div>
+              <div class="p-3 bg-soft rounded-lg border border-line">
+                <span class="text-muted text-14 block">右相机</span>
+                <span class="text-success font-medium flex items-center space-x-1 mt-1">
+                  <span class="w-2 h-2 rounded-full bg-success"></span>
+                  <span>已连接 (192.168.10.22)</span>
+                </span>
+              </div>
+              <div class="p-3 bg-soft rounded-lg border border-line">
+                <span class="text-muted text-14 block">RCS 通信</span>
+                <span class="text-success font-medium flex items-center space-x-1 mt-1">
+                  <span class="w-2 h-2 rounded-full bg-success"></span>
+                  <span>正常 (延迟 18ms)</span>
+                </span>
+              </div>
+              <div class="p-3 bg-soft rounded-lg border border-line">
+                <span class="text-muted text-14 block">本地存储 (D:)</span>
+                <span class="text-success font-medium flex items-center space-x-1 mt-1">
+                  <span class="w-2 h-2 rounded-full bg-success"></span>
+                  <span>空间充足 (剩余 148 GB)</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: 日志中心 -->
+        <div id="opspage-logs" class="hidden h-full flex flex-col bg-surface">
+          <!-- Toolbar -->
+          <div class="p-4 bg-soft border-b border-line space-y-3">
+            <div class="flex items-center justify-between">
+              <!-- Segmented Log Mode Switcher -->
+              <div class="flex bg-surface p-1 rounded-lg border border-line text-14">
+                <button class="px-4 py-1.5 rounded font-medium bg-accent-bg text-accent">离线运行日志 · 免密只读</button>
+                <button onclick="openModal('pwd-modal')" class="px-4 py-1.5 rounded text-muted hover:text-ink">完整在线日志 · 需管理授权</button>
+              </div>
+
+              <div class="flex items-center space-x-2">
+                <input type="text" placeholder="搜索日志关键词..." class="h-[44px] px-3 border border-line rounded-lg text-16 bg-surface text-ink w-64">
+                <button class="h-[44px] px-5 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium">查询</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Log DataGrid -->
+          <div class="flex-1 overflow-auto p-4 font-sans text-14">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-soft border-b border-line text-muted">
+                  <th class="p-2.5 font-medium">时间(本机)</th>
+                  <th class="p-2.5 font-medium">级别</th>
+                  <th class="p-2.5 font-medium">来源</th>
+                  <th class="p-2.5 font-medium">事件</th>
+                  <th class="p-2.5 font-medium">原文</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-line text-ink">
+                <tr class="hover:bg-soft">
+                  <td class="p-2.5 text-muted">23:32:15.102</td>
+                  <td class="p-2.5"><span class="px-2 py-0.5 bg-success-bg text-success rounded text-12 font-medium">INFO</span></td>
+                  <td class="p-2.5 font-medium">WorkstationHost</td>
+                  <td class="p-2.5">ChuteAssigned</td>
+                  <td class="p-2.5 text-muted truncate max-w-md">Parcel SF16890234410 successfully bound to chute CH-08</td>
+                </tr>
+                <tr class="hover:bg-soft">
+                  <td class="p-2.5 text-muted">23:30:42.880</td>
+                  <td class="p-2.5"><span class="px-2 py-0.5 bg-danger-bg text-danger rounded text-12 font-medium">WARN</span></td>
+                  <td class="p-2.5 font-medium">RcsService</td>
+                  <td class="p-2.5">ChuteReject</td>
+                  <td class="p-2.5 text-muted truncate max-w-md">RCS responded code 404: ERR_NO_CHUTE for parcel YT99401928400</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: 设备调试 (Mono8 Canvas + JSON Bench) -->
+        <div id="opspage-debug" class="hidden h-full flex flex-col bg-bg p-6 overflow-y-auto space-y-6">
+          <div class="bg-surface rounded-xl border border-line p-4 flex items-center justify-between wpf-card-shadow">
+            <div class="flex items-center space-x-3 text-16">
+              <span class="w-3 h-3 rounded-full bg-success"></span>
+              <span class="font-medium text-ink">浏览诊断模式 (供包未暂停)</span>
+            </div>
+            <button onclick="openModal('pwd-modal')" class="h-[44px] px-5 bg-warning-bg text-warning border border-warning-border rounded-lg hover:bg-warning/10 text-16 font-medium">进入设备调试 (暂停整站供包)</button>
+          </div>
+
+          <!-- Sub Bench: Mono8 Canvas & JSON Request Test -->
+          <div class="grid grid-cols-2 gap-6 flex-1 min-h-[480px]">
+            <!-- Left: Mono8 Canvas -->
+            <div class="bg-surface rounded-xl border border-line p-5 flex flex-col wpf-card-shadow">
+              <div class="flex items-center justify-between mb-3 pb-2 border-b border-line">
+                <h3 class="text-18 font-medium text-ink">左相机 Mono8 帧缓冲</h3>
+                <div class="flex items-center space-x-2">
+                  <label class="text-14 text-muted flex items-center space-x-1 cursor-pointer">
+                    <input type="checkbox" id="dbg-bbox-toggle" checked onchange="drawDebugMono8Frame()" class="rounded accent-accent">
+                    <span>识别位置</span>
+                  </label>
+                  <button onclick="drawDebugMono8Frame()" class="px-3 py-1 bg-soft border border-line rounded text-14 text-ink hover:bg-line/40">触发扫码</button>
+                </div>
+              </div>
+
+              <!-- Canvas Viewport Container -->
+              <div class="flex-1 bg-[#0F151D] rounded-lg border border-line overflow-hidden flex items-center justify-center relative p-2">
+                <canvas id="mono8-debug-canvas" width="600" height="400" class="max-w-full max-h-full rounded shadow"></canvas>
+              </div>
+            </div>
+
+            <!-- Right: JSON Request Bench -->
+            <div class="bg-surface rounded-xl border border-line p-5 flex flex-col wpf-card-shadow">
+              <h3 class="text-18 font-medium text-ink mb-3 pb-2 border-b border-line">RCS 提格口接口请求测试</h3>
+              <div class="space-y-3 flex-1 flex flex-col">
+                <div>
+                  <label class="block text-14 text-muted mb-1">测试请求条码</label>
+                  <input type="text" value="SF16890234410" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 font-sans text-ink bg-surface">
+                </div>
+
+                <div class="flex-1 flex flex-col">
+                  <label class="block text-14 text-muted mb-1">待发送 JSON 报文</label>
+                  <pre class="flex-1 p-3 bg-soft border border-line rounded-lg text-13 font-sans text-ink/90 overflow-auto select-all">
+{
+  "stationId": "station-01",
+  "laneId": "LEFT",
+  "barcode": "SF16890234410",
+  "timestamp": 1763739175000,
+  "requestId": "REQ-20261121-008912"
+}</pre>
+                </div>
+
+                <div class="flex items-center justify-end space-x-2 pt-2 border-t border-line">
+                  <button onclick="alert('测试请求发送成功 (模拟)')" class="h-[44px] px-6 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium">发送调试请求</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: 专业参数 -->
+        <div id="opspage-params" class="hidden h-full p-6 overflow-y-auto space-y-6">
+          <div class="bg-surface rounded-xl border border-line p-5 space-y-4 wpf-card-shadow">
+            <h3 class="text-18 font-medium text-ink pb-2 border-b border-line">专业参数配置 (按分类)</h3>
+            <div class="grid grid-cols-2 gap-6 text-16">
+              <div>
+                <label class="block text-14 text-muted mb-1">取格口请求超时 (毫秒)</label>
+                <input type="number" value="1000" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 font-sans text-ink bg-surface">
+              </div>
+              <div>
+                <label class="block text-14 text-muted mb-1">心跳间隔 (毫秒)</label>
+                <input type="number" value="1000" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 font-sans text-ink bg-surface">
+              </div>
+              <div>
+                <label class="block text-14 text-muted mb-1">SDK 图像队列节点 (帧)</label>
+                <input type="number" value="3" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 font-sans text-ink bg-surface">
+              </div>
+              <div>
+                <label class="block text-14 text-muted mb-1">磁盘预留下限 (MiB)</label>
+                <input type="number" value="512" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 font-sans text-ink bg-surface">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: 维护中心 (3 Risk-Graded Sections) -->
+        <div id="opspage-maintenance" class="hidden h-full p-6 overflow-y-auto space-y-6">
+          <!-- Section 1: 日常保障与诊断 -->
+          <div class="bg-surface rounded-xl border border-line p-5 space-y-4 wpf-card-shadow">
+            <h3 class="text-18 font-medium text-ink pb-2 border-b border-line">Section 1: 日常保障与诊断</h3>
+            <div class="grid grid-cols-3 gap-4">
+              <button onclick="alert('已导出完整诊断包')" class="p-4 bg-soft border border-line rounded-lg text-left hover:border-accent transition">
+                <span class="text-16 font-medium text-ink block">导出诊断包…</span>
+                <span class="text-14 text-muted mt-1 block">导出系统日志与状态快照，不暂停供包</span>
+              </button>
+              <button onclick="alert('已成功备份配置与数据库')" class="p-4 bg-soft border border-line rounded-lg text-left hover:border-accent transition">
+                <span class="text-16 font-medium text-ink block">创建完整备份…</span>
+                <span class="text-14 text-muted mt-1 block">备份前将明确暂停新供包</span>
+              </button>
+              <button onclick="alert('设备网络与通信自检正常')" class="p-4 bg-soft border border-line rounded-lg text-left hover:border-accent transition">
+                <span class="text-16 font-medium text-ink block">检查并恢复供包</span>
+                <span class="text-14 text-muted mt-1 block">核对设备与责任后一键恢复</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 2: 异常与责任核对 -->
+          <div class="bg-surface rounded-xl border border-line p-5 space-y-4 wpf-card-shadow">
+            <h3 class="text-18 font-medium text-ink pb-2 border-b border-line">Section 2: 异常与责任核对</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <button onclick="alert('左投递位未确认责任已核实并清空')" class="p-4 bg-soft border border-line rounded-lg text-left hover:border-accent transition flex items-center justify-between">
+                <div>
+                  <span class="text-16 font-medium text-ink block">核对左位未确认责任…</span>
+                  <span class="text-14 text-muted mt-1 block">清除待确认围栏或解绑小车</span>
+                </div>
+                <span class="px-3 py-1 bg-accent-bg text-accent font-medium rounded-full text-14">0 件待核</span>
+              </button>
+              <button onclick="alert('右投递位未确认责任已核实并清空')" class="p-4 bg-soft border border-line rounded-lg text-left hover:border-accent transition flex items-center justify-between">
+                <div>
+                  <span class="text-16 font-medium text-ink block">核对右位未确认责任…</span>
+                  <span class="text-14 text-muted mt-1 block">清除待确认围栏或解绑小车</span>
+                </div>
+                <span class="px-3 py-1 bg-accent-bg text-accent font-medium rounded-full text-14">0 件待核</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 3: 高危离线维护区 (Danger Zone) -->
+          <div class="bg-danger-bg/40 border border-danger-border rounded-xl p-5 space-y-4 wpf-card-shadow">
+            <h3 class="text-18 font-medium text-danger pb-2 border-b border-danger-border/60">Section 3: 高危离线维护区 (Danger Zone)</h3>
+            <p class="text-14 text-danger">警告：离线维护将先关闭工作站主程序并释放锁定，请在确保现场设备安全后操作！</p>
+            <div class="grid grid-cols-2 gap-4">
+              <button onclick="openModal('pwd-modal')" class="p-4 bg-surface border border-danger-border rounded-lg text-left hover:bg-danger-bg transition">
+                <span class="text-16 font-medium text-danger block">离线配置、恢复与数据库清理…</span>
+                <span class="text-14 text-muted mt-1 block">需二次验证超级管理密码</span>
+              </button>
+              <button onclick="openModal('pwd-modal')" class="p-4 bg-surface border border-danger-border rounded-lg text-left hover:bg-danger-bg transition">
+                <span class="text-16 font-medium text-danger block">卸载并清理本机导入套件…</span>
+                <span class="text-14 text-muted mt-1 block">彻底清除安装与日志文件</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Footer -->
+      <div class="h-[32px] min-h-[32px] bg-surface border-t border-line px-6 flex items-center justify-between text-14 text-muted">
+        <span>查看不会暂停供包。软件暂停不是安全急停。</span>
+        <span>importer-ops v1.0.0</span>
+      </div>
+
+    </div>
+
+    <!-- ---------------------------------------------------- -->
+    <!-- VIEW 4: 安装与首次配置向导 (1080 × 700)             -->
+    <!-- ---------------------------------------------------- -->
+    <div id="view-setup" class="stage-window hidden w-[1080px] h-[700px] bg-surface rounded-lg overflow-hidden flex flex-col wpf-window-shadow shrink-0 relative">
+      
+      <!-- Wizard Header Bar -->
+      <div class="h-[64px] min-h-[64px] border-b border-line px-8 flex items-center justify-between bg-soft">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-accent text-white flex items-center justify-center font-medium">向导</div>
+          <h1 class="text-20 font-medium text-ink">安装与首次配置向导</h1>
+        </div>
+        
+        <!-- Toggle Wizard Mode -->
+        <div class="flex bg-surface p-1 rounded-lg border border-line text-14">
+          <button onclick="switchSetupMode('install')" id="setup-mode-install" class="px-4 py-1.5 rounded font-medium bg-accent-bg text-accent">安装程序 (3步)</button>
+          <button onclick="switchSetupMode('config')" id="setup-mode-config" class="px-4 py-1.5 rounded text-muted hover:text-ink">首次配置向导 (4步)</button>
+        </div>
+      </div>
+
+      <!-- Wizard Body -->
+      <div class="flex-1 p-8 overflow-y-auto space-y-6">
+        
+        <!-- Stepper Indicator Bar -->
+        <div class="flex items-center justify-between max-w-2xl mx-auto pb-6 border-b border-line">
+          <div class="flex items-center space-x-2 text-accent font-medium text-16">
+            <span class="w-7 h-7 rounded-full bg-accent text-white flex items-center justify-center text-14">1</span>
+            <span>本站与 RCS</span>
+          </div>
+          <div class="h-0.5 flex-1 bg-accent mx-4"></div>
+          <div class="flex items-center space-x-2 text-muted text-16">
+            <span class="w-7 h-7 rounded-full bg-soft border border-line flex items-center justify-center text-14">2</span>
+            <span>左右相机</span>
+          </div>
+          <div class="h-0.5 flex-1 bg-line mx-4"></div>
+          <div class="flex items-center space-x-2 text-muted text-16">
+            <span class="w-7 h-7 rounded-full bg-soft border border-line flex items-center justify-center text-14">3</span>
+            <span>识读规则</span>
+          </div>
+          <div class="h-0.5 flex-1 bg-line mx-4"></div>
+          <div class="flex items-center space-x-2 text-muted text-16">
+            <span class="w-7 h-7 rounded-full bg-soft border border-line flex items-center justify-center text-14">4</span>
+            <span>检查与完成</span>
+          </div>
+        </div>
+
+        <!-- Form Step Content -->
+        <div class="max-w-2xl mx-auto space-y-5 pt-4">
+          <h2 class="text-18 font-medium text-ink">步骤 1: 基础身份与 RCS 接入配置</h2>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-14 text-muted mb-1">供包台编码 *</label>
+              <input type="text" value="station-01" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 text-ink">
+            </div>
+            <div>
+              <label class="block text-14 text-muted mb-1">RCS 主机地址 *</label>
+              <input type="text" value="http://127.0.0.1:18848" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 text-ink font-sans">
+            </div>
+            <div>
+              <label class="block text-14 text-muted mb-1">仓 ID (zone-id) *</label>
+              <input type="text" value="1" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 text-ink">
+            </div>
+            <div>
+              <label class="block text-14 text-muted mb-1">生产线 ID (project-id) *</label>
+              <input type="text" value="1" class="w-full h-[44px] px-3 border border-line rounded-lg text-16 text-ink">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Wizard Bottom Navigation -->
+      <div class="h-[64px] min-h-[64px] border-t border-line px-8 flex items-center justify-between bg-soft">
+        <button class="h-[44px] px-5 bg-surface border border-line text-muted rounded-lg text-16 opacity-50 cursor-not-allowed" disabled>上一步</button>
+        <div class="flex items-center space-x-3">
+          <button onclick="switchView('workstation')" class="h-[44px] px-5 bg-surface border border-line text-ink rounded-lg hover:bg-line/40 text-16">跳过向导</button>
+          <button onclick="alert('下一步：相机检测与配对')" class="h-[44px] px-6 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium shadow-sm">下一步</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ---------------------------------------------------- -->
+    <!-- VIEW 5: 弹窗画廊 & WPF 工程交接规范 (Design System) -->
+    <!-- ---------------------------------------------------- -->
+    <div id="view-ds" class="stage-window hidden w-[1400px] h-[850px] bg-surface rounded-lg overflow-hidden flex flex-col wpf-window-shadow shrink-0 relative">
+      <div class="h-[64px] border-b border-line px-8 flex items-center justify-between bg-soft">
+        <h1 class="text-20 font-medium text-ink">.NET 10 WPF 工程交接规范 & 弹窗画廊</h1>
+        <span class="text-14 text-muted">Strict Design System Spec Compliance v1.0</span>
+      </div>
+
+      <div class="flex-1 p-8 overflow-y-auto space-y-8">
+        
+        <!-- Modal Launcher Gallery -->
+        <div class="space-y-4">
+          <h2 class="text-18 font-medium text-ink pb-2 border-b border-line">1. 交互弹窗与抽屉画廊 (点击即刻唤起)</h2>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="openParcelPicture('SF16890234410', 'CH-08', '左投递位', '23:32:15')" class="h-[44px] px-5 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium">唤起 Mono8 原图查看弹窗</button>
+            <button onclick="openParcelDetail('SF16890234410', 'CH-08', '左投递位', 'W20261121-04', 'SM-TASK-000142')" class="h-[44px] px-5 bg-soft border border-line text-ink rounded-lg hover:bg-accent-bg hover:text-accent text-16 font-medium">唤起作业详情右侧抽屉</button>
+            <button onclick="openModal('pwd-modal')" class="h-[44px] px-5 bg-soft border border-line text-ink rounded-lg hover:bg-accent-bg hover:text-accent text-16 font-medium">唤起管理密码验证弹窗</button>
+            <button onclick="openModal('diff-modal')" class="h-[44px] px-5 bg-soft border border-line text-ink rounded-lg hover:bg-accent-bg hover:text-accent text-16 font-medium">唤起配置 Diff 核对弹窗</button>
+            <button onclick="openModal('exit-modal')" class="h-[44px] px-5 bg-danger-bg text-danger border border-danger-border rounded-lg hover:bg-danger/10 text-16 font-medium">唤起退出供包台确认弹窗</button>
+            <button onclick="openModal('calibration-modal')" class="h-[44px] px-5 bg-warning-bg text-warning border border-warning-border rounded-lg hover:bg-warning/10 text-16 font-medium">唤起空托盘校准弹窗</button>
+          </div>
+        </div>
+
+        <!-- Design Tokens Reference Grid -->
+        <div class="space-y-4">
+          <h2 class="text-18 font-medium text-ink pb-2 border-b border-line">2. WPF Color Tokens 规范</h2>
+          <div class="grid grid-cols-4 gap-4 text-14">
+            <div class="p-3 rounded border border-line bg-bg"><span class="block font-medium">--bg</span><code class="text-muted">#F1F4F7</code></div>
+            <div class="p-3 rounded border border-line bg-surface"><span class="block font-medium">--surface</span><code class="text-muted">#FFFFFF</code></div>
+            <div class="p-3 rounded border border-line bg-soft"><span class="block font-medium">--soft</span><code class="text-muted">#F6F8FA</code></div>
+            <div class="p-3 rounded border border-line bg-accent text-white"><span class="block font-medium">--accent</span><code>#205FCE</code></div>
+            <div class="p-3 rounded border border-success-border bg-success-bg text-success"><span class="block font-medium">--success</span><code>#147450</code></div>
+            <div class="p-3 rounded border border-warning-border bg-warning-bg text-warning"><span class="block font-medium">--warning</span><code>#895509</code></div>
+            <div class="p-3 rounded border border-danger-border bg-danger-bg text-danger"><span class="block font-medium">--danger</span><code>#B52F38</code></div>
+          </div>
+        </div>
+
+        <!-- GPT Implementation Roadmap -->
+        <div class="space-y-4">
+          <h2 class="text-18 font-medium text-ink pb-2 border-b border-line">3. 3-PR GPT WPF 实施路线图 (GPT Implementation Roadmap)</h2>
+          <div class="grid grid-cols-3 gap-6 text-14">
+            <div class="p-4 bg-soft rounded-lg border border-line space-y-2">
+              <span class="px-2 py-0.5 bg-accent-bg text-accent font-medium rounded text-12">PR-1</span>
+              <h3 class="text-16 font-medium text-ink">Design Tokens & Shared WPF Templates</h3>
+              <p class="text-muted">重构 Workstation.xaml 与 ControlTemplates，严格注入 TYPOGRAPHY-01 与 Noto Sans SC 400/500 字阶。</p>
+            </div>
+            <div class="p-4 bg-soft rounded-lg border border-line space-y-2">
+              <span class="px-2 py-0.5 bg-accent-bg text-accent font-medium rounded text-12">PR-2</span>
+              <h3 class="text-16 font-medium text-ink">StationSettings & Auth Guards</h3>
+              <p class="text-muted">整合只读/编辑双态分流，配置 Diff 确认与诊断路径保护。</p>
+            </div>
+            <div class="p-4 bg-soft rounded-lg border border-line space-y-2">
+              <span class="px-2 py-0.5 bg-accent-bg text-accent font-medium rounded text-12">PR-3</span>
+              <h3 class="text-16 font-medium text-ink">Mono8 Renderer & Ops Modernization</h3>
+              <p class="text-muted">统一 OperationsWindow 顶部授权，升级 Hikrobot Mono8 诊断调试画廊。</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODALS & DRAWERS OVERLAY CONTAINER         -->
+  <!-- ========================================== -->
+
+  <!-- 1. Parcel Picture Window Modal (Mono8 原图查看弹窗) -->
+  <div id="picture-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="w-[880px] h-[640px] bg-surface rounded-xl border border-line wpf-modal-shadow flex flex-col overflow-hidden">
+      <!-- Header -->
+      <div class="h-[56px] px-6 border-b border-line flex items-center justify-between bg-soft">
+        <div class="flex items-center space-x-3">
+          <h3 class="text-18 font-medium text-ink">Mono8 读码原图 — <span id="pic-modal-barcode" class="font-sans text-accent">SF16890234410</span></h3>
+          <span id="pic-modal-meta" class="text-14 text-muted">左投递位 · 2026-11-21 23:32:15</span>
+        </div>
+        <button onclick="closeModal('picture-modal')" class="text-muted hover:text-ink text-20">✕</button>
+      </div>
+
+      <!-- Canvas Viewport -->
+      <div class="flex-1 bg-[#0D121A] p-4 flex items-center justify-center relative overflow-hidden">
+        <canvas id="mono8-modal-canvas" width="800" height="480" class="max-w-full max-h-full rounded shadow-lg"></canvas>
+      </div>
+
+      <!-- Toolbar & Footer -->
+      <div class="h-[60px] px-6 border-t border-line flex items-center justify-between bg-surface">
+        <div class="flex items-center space-x-4 text-14">
+          <label class="flex items-center space-x-2 text-ink cursor-pointer">
+            <input type="checkbox" id="pic-bbox-toggle" checked onchange="drawModalMono8Frame()" class="rounded accent-accent">
+            <span>显示识别位置边框 (Green #10B981)</span>
+          </label>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="copyToClipboard('SF16890234410')" class="h-[44px] px-4 bg-soft border border-line rounded-lg text-ink hover:bg-line/40 text-14">复制条码号</button>
+          <button onclick="closeModal('picture-modal')" class="h-[44px] px-6 bg-accent text-white rounded-lg hover:bg-accent-hover text-14 font-medium">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Parcel Detail Sheet Drawer (作业详情右侧抽屉) -->
+  <div id="detail-drawer" class="hidden fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex justify-end">
+    <div class="w-[460px] h-full bg-surface border-l border-line shadow-2xl flex flex-col justify-between p-6">
+      <div class="space-y-6">
+        <div class="flex items-center justify-between border-b border-line pb-4">
+          <h3 class="text-20 font-medium text-ink">包裹作业详情</h3>
+          <button onclick="closeModal('detail-drawer')" class="text-muted hover:text-ink text-20">✕</button>
+        </div>
+
+        <!-- Details List -->
+        <div class="space-y-4 text-16">
+          <div class="p-4 bg-success-bg border border-success-border rounded-lg text-success">
+            <span class="text-14 font-medium block">状态结论</span>
+            <span id="dtl-status" class="text-18 font-medium mt-1 block">✓ 格口已取得 (CH-08)</span>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between"><span class="text-muted">扫描条码</span><span id="dtl-barcode" class="text-ink font-medium font-sans select-all">SF16890234410</span></div>
+            <div class="flex justify-between"><span class="text-muted">投递位置</span><span id="dtl-lane" class="text-ink font-medium">左投递位</span></div>
+            <div class="flex justify-between"><span class="text-muted">波次号</span><span id="dtl-wave" class="text-ink font-medium font-sans">W20261121-04</span></div>
+            <div class="flex justify-between"><span class="text-muted">任务号</span><span id="dtl-task" class="text-ink font-medium font-sans">SM-TASK-000142</span></div>
+            <div class="flex justify-between"><span class="text-muted">识别时间</span><span class="text-ink font-sans">2026-11-21 23:32:15</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-line flex items-center justify-between">
+        <button onclick="copyToClipboard('SF16890234410')" class="h-[44px] px-4 bg-soft border border-line rounded-lg text-ink text-14 hover:bg-line/40">复制完整JSON</button>
+        <button onclick="closeModal('detail-drawer')" class="h-[44px] px-6 bg-accent text-white rounded-lg text-14 font-medium hover:bg-accent-hover">关闭抽屉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Management Mode Password Modal (管理密码验证弹窗) -->
+  <div id="pwd-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="w-[460px] bg-surface rounded-xl border border-line wpf-modal-shadow p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-line pb-3">
+        <h3 class="text-18 font-medium text-ink">管理模式授权验证</h3>
+        <button onclick="closeModal('pwd-modal')" class="text-muted hover:text-ink text-18">✕</button>
+      </div>
+
+      <div class="space-y-3">
+        <p class="text-14 text-muted">编辑供包台参数或进行设备调试前，请输入管理密码：</p>
+        <input type="password" id="pwd-input" placeholder="输入管理密码..." class="w-full h-[48px] px-4 text-18 border border-line rounded-lg bg-surface text-ink">
+        <div class="text-right">
+          <button onclick="document.getElementById('pwd-input').value = '123456'" class="text-13 text-accent hover:underline">一键填入演示密码 (123456)</button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-3 pt-3 border-t border-line">
+        <button onclick="closeModal('pwd-modal')" class="h-[44px] px-5 bg-soft border border-line rounded-lg text-ink text-16">取消</button>
+        <button onclick="verifyPasswordSubmit()" class="h-[44px] px-6 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium">验证授权</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Configuration Save Review Modal (修改对比与保存核对弹窗) -->
+  <div id="diff-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="w-[720px] bg-surface rounded-xl border border-line wpf-modal-shadow p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-line pb-3">
+        <h3 class="text-18 font-medium text-ink">配置修改对比与 CAS 守护核对</h3>
+        <button onclick="closeModal('diff-modal')" class="text-muted hover:text-ink text-18">✕</button>
+      </div>
+
+      <div class="space-y-3">
+        <table class="w-full text-left text-14 border-collapse">
+          <thead>
+            <tr class="bg-soft border-b border-line text-muted">
+              <th class="p-2.5 font-medium">配置项</th>
+              <th class="p-2.5 font-medium">修改前</th>
+              <th class="p-2.5 font-medium">修改后</th>
+              <th class="p-2.5 font-medium">生效类型</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line text-ink">
+            <tr>
+              <td class="p-2.5 font-medium">RCS 主机地址</td>
+              <td class="p-2.5 text-muted font-sans">http://127.0.0.1:18848</td>
+              <td class="p-2.5 text-accent font-medium font-sans">http://192.168.1.100:18848</td>
+              <td class="p-2.5"><span class="px-2 py-0.5 bg-warning-bg text-warning rounded text-12">重连生效</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex items-center justify-end space-x-3 pt-3 border-t border-line">
+        <button onclick="closeModal('diff-modal')" class="h-[44px] px-5 bg-soft border border-line rounded-lg text-ink text-16">返回修改</button>
+        <button onclick="alert('配置已成功保存！'); closeModal('diff-modal')" class="h-[44px] px-6 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium">确认并保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Exit Workstation Confirmation Modal (退出供包台确认弹窗) -->
+  <div id="exit-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="w-[580px] bg-surface rounded-xl border border-line wpf-modal-shadow p-6 space-y-5">
+      <div class="flex items-center space-x-3 text-danger border-b border-line pb-3">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <h3 class="text-20 font-medium text-ink">确认退出菜鸟供包台？</h3>
+      </div>
+
+      <p class="text-16 text-ink">退出工作站将停止本机所有自动扫码与 RCS 交互。当前有 <strong class="text-accent">0</strong> 件正在处理中的包裹。</p>
+
+      <div class="flex items-center justify-end space-x-3 pt-3 border-t border-line">
+        <button onclick="closeModal('exit-modal')" class="h-[44px] px-6 bg-soft border border-line rounded-lg text-ink text-16">取消</button>
+        <button onclick="alert('已安全退出供包台'); closeModal('exit-modal')" class="h-[44px] px-6 bg-danger text-white rounded-lg hover:bg-danger/90 text-16 font-medium">确认退出供包台</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Empty Tray Calibration Modal (空托盘校准弹窗) -->
+  <div id="calibration-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="w-[600px] bg-surface rounded-xl border border-line wpf-modal-shadow p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-line pb-3">
+        <h3 class="text-18 font-medium text-ink">相机空托盘基准校准</h3>
+        <button onclick="closeModal('calibration-modal')" class="text-muted hover:text-ink text-18">✕</button>
+      </div>
+
+      <div class="space-y-4">
+        <div class="p-4 bg-warning-bg border border-warning-border rounded-lg text-warning text-14">
+          <p class="font-medium">请务必确认物理托盘上没有任何包裹或遮挡杂物！</p>
+        </div>
+
+        <div id="calib-progress-box" class="hidden space-y-2">
+          <div class="flex justify-between text-14 text-muted">
+            <span>正在采样采样 3 帧 Mono8 图像...</span>
+            <span id="calib-pct" class="font-medium text-accent">66%</span>
+          </div>
+          <div class="w-full bg-soft h-3 rounded-full overflow-hidden border border-line">
+            <div id="calib-bar" class="bg-accent h-full w-[66%] transition-all duration-300"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-3 pt-3 border-t border-line">
+        <button onclick="closeModal('calibration-modal')" class="h-[44px] px-5 bg-soft border border-line rounded-lg text-ink text-16">取消</button>
+        <button onclick="startCalibrationAnimation()" class="h-[44px] px-6 bg-accent text-white rounded-lg hover:bg-accent-hover text-16 font-medium">开始校准</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- COMPLETE INTERACTIVE JAVASCRIPT LOGIC      -->
+  <!-- ========================================== -->
+  <script>
+    // Global State
+    let currentView = 'workstation';
+    let isRailExpanded = true;
+    let isManagementAuth = false;
+    let currentBarcodeLeft = 'SF16890234410';
+    let currentBarcodeRight = '';
+
+    // Standard Resolutions for Scaling Stage
+    const RESOLUTIONS = {
+      workstation: { w: 1600, h: 900, label: '1600 × 900 DIP' },
+      settings: { w: 1220, h: 800, label: '1220 × 800 DIP' },
+      operations: { w: 1280, h: 760, label: '1280 × 760 DIP' },
+      setup: { w: 1080, h: 700, label: '1080 × 700 DIP' },
+      ds: { w: 1400, h: 850, label: '1400 × 850 DIP Spec' }
+    };
+
+    // Auto DIP Scaling Engine
+    function updateDesktopScaling() {
+      const stage = document.getElementById('stage-viewport');
+      const activeWin = document.querySelector('.stage-window:not(.hidden)');
+      if (!activeWin) return;
+
+      const res = RESOLUTIONS[currentView] || { w: 1600, h: 900 };
+      const availWidth = stage.clientWidth - 32;
+      const availHeight = stage.clientHeight - 32;
+
+      const scaleX = availWidth / res.w;
+      const scaleY = availHeight / res.h;
+      const scale = Math.min(1, Math.min(scaleX, scaleY));
+
+      activeWin.style.transform = `scale(${scale})`;
+      activeWin.style.transformOrigin = 'center center';
+
+      document.getElementById('scale-badge').innerText = `缩放 ${Math.round(scale * 100)}%`;
+      document.getElementById('resolution-badge').innerText = res.label;
+    }
+
+    window.addEventListener('resize', updateDesktopScaling);
+
+    // View Switcher Engine
+    function switchView(viewId) {
+      currentView = viewId;
+      document.querySelectorAll('.stage-window').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`view-${viewId}`).classList.remove('hidden');
+
+      // Update Studio Nav Buttons
+      document.querySelectorAll('#studio-bar button[id^="nav-"]').forEach(btn => {
+        btn.className = 'px-3 py-1 rounded text-xs transition text-gray-300 hover:text-white hover:bg-[#2A374A]';
+      });
+      document.getElementById(`nav-${viewId}`).className = 'px-3 py-1 rounded text-xs transition bg-[#205FCE] text-white font-medium';
+
+      // Show/Hide Scenario controls based on view
+      const scenarioBox = document.getElementById('scenario-controls');
+      if (viewId === 'workstation') {
+        scenarioBox.style.display = 'flex';
+      } else {
+        scenarioBox.style.display = 'none';
+      }
+
+      updateDesktopScaling();
+
+      // Render Mono8 Canvas when operations view is active
+      if (viewId === 'operations') {
+        setTimeout(drawDebugMono8Frame, 100);
+      }
+    }
+
+    // Workstation Sub-tab Switcher
+    function switchWorkstationSubTab(tab) {
+      const btnWs = document.getElementById('rail-btn-workstation');
+      const btnHist = document.getElementById('rail-btn-history');
+      const viewWs = document.getElementById('ws-sub-workstation');
+      const viewHist = document.getElementById('ws-sub-history');
+
+      if (tab === '作业') {
+        viewWs.classList.remove('hidden');
+        viewHist.classList.add('hidden');
+        btnWs.className = 'w-full h-[76px] rounded-lg flex flex-col items-center justify-center space-y-1 bg-accent-bg text-accent relative font-medium';
+        btnWs.innerHTML = `<div class="absolute left-0 top-3 bottom-3 w-1 bg-accent rounded-r"></div><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m-8-10L4 7m8 4v10M4 7v10l8 4"/></svg><span class="text-16">作业</span>`;
+        btnHist.className = 'w-full h-[76px] rounded-lg flex flex-col items-center justify-center space-y-1 text-muted hover:bg-soft hover:text-ink transition';
+      } else {
+        viewWs.classList.add('hidden');
+        viewHist.classList.remove('hidden');
+        btnHist.className = 'w-full h-[76px] rounded-lg flex flex-col items-center justify-center space-y-1 bg-accent-bg text-accent relative font-medium';
+        btnHist.innerHTML = `<div class="absolute left-0 top-3 bottom-3 w-1 bg-accent rounded-r"></div><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg><span class="text-16">记录</span>`;
+        btnWs.className = 'w-full h-[76px] rounded-lg flex flex-col items-center justify-center space-y-1 text-muted hover:bg-soft hover:text-ink transition';
+      }
+    }
+
+    // Left Navigation Rail Collapse Engine
+    function toggleLeftRail() {
+      const rail = document.getElementById('left-rail');
+      const arrow = document.getElementById('rail-toggle-arrow');
+      isRailExpanded = !isRailExpanded;
+
+      if (isRailExpanded) {
+        rail.style.width = '112px';
+        arrow.innerText = '‹';
+        rail.querySelectorAll('span.text-16').forEach(s => s.style.display = 'block');
+      } else {
+        rail.style.width = '56px';
+        arrow.innerText = '›';
+        rail.querySelectorAll('span.text-16').forEach(s => s.style.display = 'none');
+      }
+    }
+
+    // Open Settings Overlay over Workstation
+    function openSettingsOverlay() {
+      switchView('settings');
+    }
+
+    // AUTHENTIC PROCEDURAL MONO8 INDUSTRIAL CAMERA CANVAS RENDERER
+    function renderMono8ParcelCanvas(canvas, options = {}) {
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+
+      // 1. Dark metallic industrial background with sensor noise
+      ctx.fillStyle = '#1A212B';
+      ctx.fillRect(0, 0, width, height);
+
+      // Industrial metallic roller lines
+      ctx.strokeStyle = '#283445';
+      ctx.lineWidth = 1.5;
+      for (let y = 20; y < height; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      if (options.isEmptyTray) {
+        // Draw empty tray calibration state
+        ctx.fillStyle = '#536577';
+        ctx.font = '16px "Noto Sans SC"';
+        ctx.textAlign = 'center';
+        ctx.fillText('相机空托盘基准采样中 (Mono8 Grayscale)', width / 2, height / 2);
+        return;
+      }
+
+      // 2. Grayscale Corrugated Cardboard Parcel Body
+      const px = width * 0.22;
+      const py = height * 0.18;
+      const pw = width * 0.56;
+      const ph = height * 0.64;
+
+      // Parcel Box Shadow & Body
+      ctx.fillStyle = '#6E7781'; // 8-bit cardboard gray value
+      ctx.fillRect(px, py, pw, ph);
+
+      // Packing Tape strip
+      ctx.fillStyle = '#8B949E';
+      ctx.fillRect(px + pw * 0.42, py, pw * 0.16, ph);
+
+      // 3. White Thermal Shipping Label with Barcode
+      const lx = px + pw * 0.15;
+      const ly = py + ph * 0.2;
+      const lw = pw * 0.52;
+      const lh = ph * 0.55;
+
+      ctx.fillStyle = '#F0F3F6'; // Thermal label background
+      ctx.fillRect(lx, ly, lw, lh);
+
+      // Label Header Line
+      ctx.fillStyle = '#1F2328';
+      ctx.fillRect(lx + 10, ly + 10, lw - 20, 3);
+
+      // Simulated Code128 Barcode Bars
+      const barcodeX = lx + 15;
+      const barcodeY = ly + 22;
+      const barcodeW = lw - 30;
+      const barcodeH = lh * 0.45;
+
+      ctx.fillStyle = '#090D12';
+      let currX = barcodeX;
+      while (currX < barcodeX + barcodeW) {
+        const barWidth = Math.random() > 0.4 ? 2 : 4;
+        ctx.fillRect(currX, barcodeY, barWidth, barcodeH);
+        currX += barWidth + (Math.random() > 0.5 ? 2 : 3);
+      }
+
+      // Barcode Text Below
+      ctx.fillStyle = '#090D12';
+      ctx.font = '500 13px "Noto Sans SC"';
+      ctx.textAlign = 'center';
+      ctx.fillText(options.barcode || 'SF16890234410', lx + lw / 2, barcodeY + barcodeH + 16);
+
+      // 4. Toggleable Green Recognition Bounding Box (#10B981)
+      if (options.showBoundingBox !== false) {
+        ctx.strokeStyle = '#10B981';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(lx - 6, ly - 6, lw + 12, lh + 12);
+
+        // Corner Anchors
+        ctx.fillStyle = '#10B981';
+        ctx.fillRect(lx - 9, ly - 9, 8, 8);
+        ctx.fillRect(lx + lw + 1, ly - 9, 8, 8);
+        ctx.fillRect(lx - 9, ly + lh + 1, 8, 8);
+        ctx.fillRect(lx + lw + 1, ly + lh + 1, 8, 8);
+      }
+    }
+
+    // Trigger Canvas Renders
+    function drawDebugMono8Frame() {
+      const canvas = document.getElementById('mono8-debug-canvas');
+      const showBox = document.getElementById('dbg-bbox-toggle').checked;
+      renderMono8ParcelCanvas(canvas, { barcode: 'SF16890234410', showBoundingBox: showBox });
+    }
+
+    function drawModalMono8Frame() {
+      const canvas = document.getElementById('mono8-modal-canvas');
+      const showBox = document.getElementById('pic-bbox-toggle').checked;
+      const barcode = document.getElementById('pic-modal-barcode').innerText;
+      renderMono8ParcelCanvas(canvas, { barcode: barcode, showBoundingBox: showBox });
+    }
+
+    // Modal Manager
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.remove('hidden');
+    }
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+
+    function openParcelPicture(barcode, chute, lane, time) {
+      document.getElementById('pic-modal-barcode').innerText = barcode;
+      document.getElementById('pic-modal-meta').innerText = `${lane} · ${time}`;
+      openModal('picture-modal');
+      setTimeout(drawModalMono8Frame, 50);
+    }
+
+    function openParcelDetail(barcode, chute, lane, wave, task) {
+      document.getElementById('dtl-barcode').innerText = barcode;
+      document.getElementById('dtl-status').innerText = chute === 'ERR_NO_CHUTE' ? '✕ RCS 业务拒绝' : `✓ 格口已取得 (${chute})`;
+      document.getElementById('dtl-lane').innerText = lane;
+      document.getElementById('dtl-wave').innerText = wave;
+      document.getElementById('dtl-task').innerText = task;
+      openModal('detail-drawer');
+    }
+
+    // Dynamic Barcode Enter Submission
+    function handleBarcodeEnter(e, lane) {
+      if (e.key === 'Enter') {
+        const val = e.target.value.trim();
+        if (!val) return;
+
+        if (lane === 'left') {
+          currentBarcodeLeft = val;
+          document.getElementById('left-chute-display').innerText = 'CH-12';
+          document.getElementById('left-field-wave').innerText = 'W20261121-05';
+          document.getElementById('left-field-task').innerText = 'SM-TASK-000145';
+        } else {
+          currentBarcodeRight = val;
+          const panel = document.getElementById('right-result-panel');
+          panel.className = 'my-4 flex-1 rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all bg-success-bg border border-success-border';
+          panel.innerHTML = `
+            <div class="text-16 font-medium text-success flex items-center space-x-2 mb-2">
+              <span>✓ 格口已取得</span>
+            </div>
+            <div class="text-[72px] font-medium text-ink leading-tight my-2 tracking-tight">CH-19</div>
+            <p class="text-16 text-muted mt-1">请将包裹投递至 <span class="text-ink font-medium">CH-19</span> 格口</p>
+          `;
+          document.getElementById('right-field-wave').innerText = 'W20261121-05';
+          document.getElementById('right-field-task').innerText = 'SM-TASK-000146';
+          document.getElementById('right-field-sku').innerText = 'SKU-7729103B';
+          document.getElementById('right-field-qty').innerText = '1';
+          document.getElementById('right-task-fields').classList.remove('opacity-40');
+        }
+      }
+    }
+
+    // 5 State-Machine Scenario Presets for Studio Bar
+    function applyScenario(scenario) {
+      const leftPanel = document.getElementById('left-result-panel');
+      const rightPanel = document.getElementById('right-result-panel');
+
+      if (scenario === 'normal') {
+        leftPanel.className = 'my-4 flex-1 rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all bg-success-bg border border-success-border';
+        leftPanel.innerHTML = `
+          <div class="text-16 font-medium text-success flex items-center space-x-2 mb-2">
+            <span>✓ 格口已取得</span>
+          </div>
+          <div class="text-[72px] font-medium text-ink leading-tight my-2 tracking-tight">CH-08</div>
+          <p class="text-16 text-muted mt-1">请将包裹投递至 <span class="text-ink font-medium">CH-08</span> 格口</p>
+        `;
+
+        rightPanel.className = 'my-4 flex-1 rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all bg-soft border border-line';
+        rightPanel.innerHTML = `
+          <div class="w-12 h-12 rounded-full bg-line/40 flex items-center justify-center text-muted mb-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m-8-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          </div>
+          <div class="text-18 font-medium text-ink my-1">等待投包 / 可人工扫码</div>
+          <p class="text-14 text-muted">请放置包裹至托盘，或使用 PDA / 键盘扫描条码</p>
+        `;
+      } else if (scenario === 'rcs_offline') {
+        leftPanel.className = 'my-4 flex-1 rounded-xl p-6 flex flex-col items-center justify-center text-center bg-danger-bg/50 border border-danger-border';
+        leftPanel.innerHTML = `
+          <div class="text-28 font-medium text-danger my-1">暂不能投包</div>
+          <p class="text-16 text-muted mt-1">RCS 服务离线，自动扫码已暂停</p>
+          <div class="w-full my-3 border-t border-danger-border/40"></div>
+          <p class="text-14 text-muted">请检查网络连接，恢复在线后自动继续</p>
+        `;
+
+        rightPanel.className = 'my-4 flex-1 rounded-xl p-6 flex flex-col items-center justify-center text-center bg-danger-bg/50 border border-danger-border';
+        rightPanel.innerHTML = `
+          <div class="text-28 font-medium text-danger my-1">暂不能投包</div>
+          <p class="text-16 text-muted mt-1">RCS 服务离线，自动扫码已暂停</p>
+          <div class="w-full my-3 border-t border-danger-border/40"></div>
+          <p class="text-14 text-muted">请检查网络连接，恢复在线后自动继续</p>
+        `;
+      } else if (scenario === 'abnormal_mixed') {
+        leftPanel.className = 'my-4 flex-1 rounded-xl p-6 flex flex-col items-center justify-center text-center bg-soft border border-line';
+        leftPanel.innerHTML = `
+          <div class="text-20 font-medium text-danger mb-1">无可用分拣格口 (ERR_NO_CHUTE)</div>
+          <p class="text-14 text-muted">已确认业务拒绝 · 本车未分配格口</p>
+          <div class="w-full my-3 border-t border-line"></div>
+          <p class="text-14 text-muted">请取下包裹交人工处理；取下后本件结束</p>
+        `;
+
+        rightPanel.className = 'my-4 flex-1 rounded-xl p-6 flex flex-col items-center justify-center text-center bg-warning-bg border border-warning-border';
+        rightPanel.innerHTML = `
+          <div class="text-20 font-medium text-warning mb-1">? 结果未确认 · 请求待核对</div>
+          <p class="text-14 text-muted">取格口请求超时，远端绑定尚未确认；本位已启用发送围栏</p>
+        `;
+      }
+    }
+
+    // Password Verification Submit
+    function verifyPasswordSubmit() {
+      const pwd = document.getElementById('pwd-input').value;
+      if (pwd === '123456') {
+        isManagementAuth = true;
+        closeModal('pwd-modal');
+        
+        // Unlock Settings Mode
+        document.getElementById('settings-readonly-view').classList.add('hidden');
+        document.getElementById('settings-edit-view').classList.remove('hidden');
+        document.getElementById('settings-unlock-btn')?.classList.add('hidden');
+        document.getElementById('settings-edit-actions').classList.remove('hidden');
+        document.getElementById('btn-settings-review').classList.remove('hidden');
+        document.getElementById('btn-settings-save').classList.remove('hidden');
+        document.getElementById('btn-settings-unlock').classList.add('hidden');
+        document.getElementById('settings-mode-pill').className = 'px-3 py-1 bg-success-bg border border-success-border rounded-full text-14 text-success flex items-center space-x-1.5';
+        document.getElementById('settings-mode-text').innerText = '编辑授权至 23:47 · 保存时执行原配置守卫';
+
+        // Unlock Operations
+        document.getElementById('ops-auth-pill').className = 'px-3 py-1 bg-success-bg border border-success-border rounded-full text-success';
+        document.getElementById('ops-auth-pill').innerText = '控制权限: 已授权至 23:47';
+        document.getElementById('btn-ops-auth').innerText = '延长授权';
+
+        alert('管理权限验证成功！已解锁编辑模式。');
+      } else {
+        alert('密码错误！演示密码为 123456');
+      }
+    }
+
+    function lockSettingsMode() {
+      document.getElementById('settings-readonly-view').classList.remove('hidden');
+      document.getElementById('settings-edit-view').classList.add('hidden');
+      document.getElementById('settings-edit-actions').classList.add('hidden');
+      document.getElementById('btn-settings-review').classList.add('hidden');
+      document.getElementById('btn-settings-save').classList.add('hidden');
+      document.getElementById('btn-settings-unlock').classList.remove('hidden');
+      document.getElementById('settings-mode-pill').className = 'px-3 py-1 bg-soft border border-line rounded-full text-14 text-muted flex items-center space-x-1.5';
+      document.getElementById('settings-mode-text').innerText = '只读查看 · 不暂停供包';
+    }
+
+    // Web Audio Sound Synth Engine
+    function playDiagnosticSound(type) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === 'read') {
+        osc.frequency.setValueAtTime(800, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+      } else if (type === 'success') {
+        osc.frequency.setValueAtTime(1200, ctx.currentTime);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.2);
+      } else if (type === 'reject') {
+        osc.frequency.setValueAtTime(300, ctx.currentTime);
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
+      }
+    }
+
+    // Toggle System Notice Popover
+    function toggleNoticePopover() {
+      const popover = document.getElementById('notice-popover');
+      popover.classList.toggle('hidden');
+    }
+
+    // Copy to Clipboard Fallback Safe Engine
+    function copyToClipboard(text) {
+      const input = document.createElement('textarea');
+      input.value = text;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      alert('已复制到剪贴板:\n' + text);
+    }
+
+    // Operations Tab Switcher Engine
+    function switchOpsTab(tabId) {
+      const tabs = ['overview', 'logs', 'debug', 'params', 'maintenance'];
+      tabs.forEach(t => {
+        document.getElementById(`opspage-${t}`).classList.add('hidden');
+        const tabBtn = document.getElementById(`opstab-${t}`);
+        if (tabBtn) {
+          tabBtn.className = 'h-full border-b-2 border-transparent text-muted hover:text-ink px-1 flex items-center space-x-2';
+        }
+      });
+
+      document.getElementById(`opspage-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`opstab-${tabId}`);
+      if (activeBtn) {
+        activeBtn.className = 'h-full border-b-2 border-accent text-accent font-medium px-1 flex items-center space-x-2';
+      }
+
+      if (tabId === 'debug') {
+        setTimeout(drawDebugMono8Frame, 50);
+      }
+    }
+
+    // Settings Directory Switcher
+    function switchSettingsSection(secId) {
+      ['station', 'audio'].forEach(s => {
+        const sec = document.getElementById(`form-sec-${s}`);
+        const btn = document.getElementById(`ssec-${s}`);
+        if (sec) sec.classList.add('hidden');
+        if (btn) btn.className = 'w-full text-left px-4 py-3 rounded-lg text-muted hover:bg-surface hover:text-ink';
+      });
+
+      const activeSec = document.getElementById(`form-sec-${secId}`);
+      const activeBtn = document.getElementById(`ssec-${secId}`);
+      if (activeSec) activeSec.classList.remove('hidden');
+      if (activeBtn) activeBtn.className = 'w-full text-left px-4 py-3 rounded-lg font-medium bg-accent-bg text-accent';
+    }
+
+    // Calibration Progress Simulation
+    function startCalibrationAnimation() {
+      const box = document.getElementById('calib-progress-box');
+      const bar = document.getElementById('calib-bar');
+      const pct = document.getElementById('calib-pct');
+      box.classList.remove('hidden');
+
+      let current = 0;
+      const interval = setInterval(() => {
+        current += 33;
+        if (current > 100) current = 100;
+        bar.style.width = current + '%';
+        pct.innerText = current + '%';
+
+        if (current >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            alert('空托盘基准校准完成！校准参数已写入系统。');
+            closeModal('calibration-modal');
+            box.classList.add('hidden');
+          }, 300);
+        }
+      }, 300);
+    }
+
+    // Live Heartbeat Simulation
+    function triggerHeartbeatCheck() {
+      const text = document.getElementById('hdr-rcs-text');
+      text.innerText = 'RCS: 检查中...';
+      setTimeout(() => {
+        text.innerText = 'RCS: 在线 · 14ms';
+      }, 400);
+    }
+
+    // INITIALIZATION ON WINDOW LOAD
+    window.onload = function () {
+      updateDesktopScaling();
+      drawDebugMono8Frame();
+      
+      // Update Live Clock
+      setInterval(() => {
+        const now = new Date();
+        const str = now.getFullYear() + '-' +
+          String(now.getMonth() + 1).padStart(2, '0') + '-' +
+          String(now.getDate()).padStart(2, '0') + ' ' +
+          String(now.getHours()).padStart(2, '0') + ':' +
+          String(now.getMinutes()).padStart(2, '0') + ':' +
+          String(now.getSeconds()).padStart(2, '0');
+        const clockEl = document.getElementById('live-clock');
+        if (clockEl) clockEl.innerText = str;
+      }, 1000);
+    };
+  </script>
+</body>
+</html>

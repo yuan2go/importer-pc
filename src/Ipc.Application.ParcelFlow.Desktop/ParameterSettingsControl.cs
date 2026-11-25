@@ -95,7 +95,7 @@ public sealed partial class ParameterSettingsControl : UserControl
                 Grid.SetColumn(connector, step * 2 - 1); firstStepBar.Children.Add(connector);
             }
             firstStepBar.ColumnDefinitions.Add(new());
-            var button = new Button { Content = (step + 1) + " " + names[step], Tag = names[step], MinHeight = 44, Padding = new(6, 0, 6, 0) };
+            var button = new Button { Content = (step + 1).ToString(), Tag = names[step] }.Themed(StyleProperty, "WizardStep");
             AutomationProperties.SetName(button, "首次配置第" + (step + 1) + "步：" + names[step]);
             button.Click += async (_, _) => { var target = OrderedPages().FirstOrDefault(p => p.Category == FirstCategories[index]); if (target is not null) await RequestPageAsync(target); };
             Grid.SetColumn(button, step * 2); firstStepBar.Children.Add(button);

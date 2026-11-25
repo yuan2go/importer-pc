@@ -34,7 +34,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     int selectedParameterCategory;
     bool authorityAllowed;
     readonly ManagementModeMenu managementMenu = new() { UnauthorizedLabel = "未授权" };
-    readonly TextBlock saveState = new() { Text = "未保存", FontSize = UiTypography.Label, Foreground = Brushes.SlateGray, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 12, 0) };
+    readonly TextBlock saveState = new TextBlock() { Text = "未保存", FontSize = UiTypography.Label, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 12, 0) }.Themed(TextBlock.ForegroundProperty, "Muted");
     Button? headerImport;
     Action? refreshReview;
     internal Func<bool> ConfirmDiscardInputs { get; set; } = null!;
@@ -62,7 +62,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         SelectedLaunch = launch;
         this.initialConfiguration = initialConfiguration;
-        if (initialConfiguration) { StartupAppearance.Apply(this); Width = 960; Height = 656; WorkflowHeading.FontSize = UiTypography.PageTitle; WorkflowBusinessName.Text = ChineseInterfaceText.BusinessName(ParcelStartupServices.ApplicationId); WorkflowBusinessName.Visibility = Visibility.Visible; MinHeight = 360; WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; Status.Visibility = Visibility.Collapsed; }
+        if (initialConfiguration) { StartupAppearance.Apply(this); Width = 1080; Height = 700; WorkflowHeading.FontSize = UiTypography.PageTitle; MinHeight = 360; WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; Status.Visibility = Visibility.Collapsed; }
         ConfirmDiscardInputs = () => MessageBox.Show(this, "有未保存的输入。返回可保存为草稿；继续退出将丢弃这些输入，已保存的配置和草稿不受影响。", "有未保存的配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) == MessageBoxResult.OK;
         if (initialConfiguration) reason = "首次配置供包台";
         Message("无需先启动软件。检查和编辑不会连接设备；保存后在下次启动时生效。" + (failure is null ? "" : "\n启动诊断：" + failure));

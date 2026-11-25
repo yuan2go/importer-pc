@@ -5,13 +5,7 @@
         Title="供包运维工具" Width="1280" Height="760" MinWidth="880" MinHeight="560"
         Background="{DynamicResource Background}" WindowStartupLocation="CenterScreen">
  <Window.Resources>
-  <Style x:Key="OperationsCard" TargetType="Border">
-   <Setter Property="Background" Value="{DynamicResource Surface}"/>
-   <Setter Property="BorderBrush" Value="{DynamicResource Line}"/>
-   <Setter Property="BorderThickness" Value="1"/>
-   <Setter Property="CornerRadius" Value="8"/>
-   <Setter Property="Padding" Value="14"/>
-  </Style>
+  <Style x:Key="OperationsCard" TargetType="Border" BasedOn="{StaticResource WorkstationCard}"/>
   <Style x:Key="OperationsSection" TargetType="TextBlock">
    <Setter Property="FontSize" Value="{x:Static type:UiTypography.Group}"/>
    <Setter Property="FontWeight" Value="{x:Static type:UiTypography.Emphasis}"/>
@@ -155,10 +149,10 @@
    </Border>
   </DataTemplate>
  </Window.Resources>
- <DockPanel>
+ <DockPanel Background="{DynamicResource Background}">
   <StackPanel DockPanel.Dock="Top">
    <Border x:Name="HeaderBar" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}"
-           BorderThickness="0,0,0,1" Padding="24,0" MinHeight="64">
+           BorderThickness="0,0,0,1" Padding="24,0" Height="64">
     <Grid>
      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
      <Grid VerticalAlignment="Center" Margin="0,0,8,0">
@@ -166,13 +160,13 @@
       <TextBlock Text="供包运维工具" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"
                  Foreground="{DynamicResource Ink}" VerticalAlignment="Center"/>
       <Border Grid.Column="1" Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}" BorderThickness="1"
-              CornerRadius="6" Padding="8,3" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+              CornerRadius="{StaticResource RadiusBadge}" Padding="8,3" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
        <TextBlock x:Name="StationText" Text="站点待核验" TextTrimming="CharacterEllipsis"
                   Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}"/>
       </Border>
      </Grid>
      <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
-      <Border x:Name="ConnectionPill" Padding="9,4" Background="{DynamicResource Soft}" CornerRadius="{DynamicResource RadiusBadge}" VerticalAlignment="Center">
+      <Border x:Name="ConnectionPill" Style="{StaticResource OperatorStatusBadge}" BorderBrush="{DynamicResource Line}" Padding="9,4" Background="{DynamicResource Soft}" CornerRadius="{DynamicResource RadiusBadge}" VerticalAlignment="Center">
        <TextBlock x:Name="ConnectionText" Text="核验连接中" FontSize="{x:Static type:UiTypography.Label}"
                   AutomationProperties.LiveSetting="Polite" Foreground="{DynamicResource Muted}"/>
       </Border>
@@ -184,28 +178,21 @@
      </StackPanel>
     </Grid>
    </Border>
-   <Border x:Name="EnvironmentInfo" Margin="24,4,24,4" Padding="12,4">
-    <Border.Style>
-     <Style TargetType="Border" BasedOn="{StaticResource OperationsCard}">
-      <Setter Property="Visibility" Value="Collapsed"/>
-      <Style.Triggers>
-       <DataTrigger Binding="{Binding IsChecked, ElementName=EnvironmentToggle}" Value="True">
-        <Setter Property="Visibility" Value="Visible"/>
-       </DataTrigger>
-      </Style.Triggers>
-     </Style>
-    </Border.Style>
-    <ScrollViewer MaxHeight="150" VerticalScrollBarVisibility="Auto">
+   <Popup IsOpen="{Binding IsChecked,ElementName=EnvironmentToggle,Mode=TwoWay}" PlacementTarget="{Binding ElementName=EnvironmentToggle}"
+          Placement="Bottom" HorizontalOffset="-360" AllowsTransparency="True" StaysOpen="False">
+    <Border x:Name="EnvironmentInfo" Style="{StaticResource OperationsCard}" Width="460" Margin="8" Effect="{StaticResource ShadowPopup}">
+    <ScrollViewer MaxHeight="260" VerticalScrollBarVisibility="Auto">
      <Grid>
-      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <StackPanel Margin="0,0,12,0">
        <TextBox x:Name="InstallationText" Style="{DynamicResource ReadonlyValue}" IsTabStop="True" AutomationProperties.Name="版本、完整来源和本机路径"/>
        <TextBlock x:Name="ConnectionDetails" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
       </StackPanel>
-      <ContentControl x:Name="AuthorizationDetailsHost" Grid.Column="1"/>
+      <ContentControl x:Name="AuthorizationDetailsHost" Grid.Row="1" Margin="0,12,0,0"/>
      </Grid>
     </ScrollViewer>
-   </Border>
+    </Border>
+   </Popup>
    <ContentControl x:Name="WorkspaceNoticeHost" Margin="24,0"/>
   </StackPanel>
   <Border DockPanel.Dock="Bottom" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}"
@@ -379,9 +366,7 @@
    </TabItem>
    <TabItem Header="设备调试" Tag="debug"><ContentControl x:Name="DeviceDebugPage" Margin="24,16,24,12"/></TabItem>
    <TabItem Header="专业参数" Tag="parameters">
-    <Border Style="{StaticResource OperationsCard}" Margin="24,16,24,12" Padding="0" ClipToBounds="True">
-     <ContentControl x:Name="ProfessionalPage"/>
-    </Border>
+    <ContentControl x:Name="ProfessionalPage" Margin="24,16,24,12"/>
    </TabItem>
    <TabItem Header="维护中心" Tag="maintenance"><ContentControl x:Name="MaintenancePage"/></TabItem>
   </TabControl>

@@ -42,7 +42,7 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --mvs-software-flow
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-sdk-editing
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll --typography
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --ordinary-runtime-startup
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
@@ -94,13 +94,13 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-      - name: Build and run native synthetic SDK editing
+      - name: Build native SM verification and check shipped glyphs
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
           dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:BusinessModule=Sportmaster -p:SelfContained=false -p:RestoreLockedMode=true -m:1 -nr:false
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --hikrobot-sdk-editing
+          dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll --typography
           exit $LASTEXITCODE
       - name: Retain synthetic HWND evidence
         if: always()

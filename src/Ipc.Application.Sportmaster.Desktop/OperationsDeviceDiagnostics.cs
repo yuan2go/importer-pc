@@ -55,11 +55,8 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
             content.Children.Add(heading);
 
             var column = cards.Children.Count % 2;
-            var card = new Border { Child = content, BorderThickness = new(1), Padding = new(14),
-                Margin = column == 0 ? new(0, 0, 4, 8) : new(4, 0, 0, 8) };
-            card.SetResourceReference(Border.CornerRadiusProperty, "RadiusCard");
-            card.SetResourceReference(Border.BackgroundProperty, "Surface");
-            card.SetResourceReference(Border.BorderBrushProperty, "Line");
+            var card = new Border { Child = content, Margin = column == 0 ? new(0, 0, 6, 12) : new(6, 0, 0, 12) };
+            card.SetResourceReference(StyleProperty, "WorkstationCard");
             AutomationProperties.SetAutomationId(card, "DiagnosticCard." + key);
             Grid.SetRow(card, cards.Children.Count / 2);
             Grid.SetColumn(card, column);

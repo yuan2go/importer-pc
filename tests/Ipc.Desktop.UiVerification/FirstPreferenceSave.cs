@@ -72,8 +72,8 @@ static partial class Program
             Button Save() => Descendants(first).OfType<Button>().Single(b=>b.IsVisible && AutomationProperties.GetAutomationId(b)=="Startup.SaveAndStart");
             Check(Save().IsEnabled && Equals(Save().Content, "保存配置"),
                 "first setup offers the enabled save action with valid station identifiers and deferred equipment");
-            KeyboardTraversal.CheckWindow(first, "first setup step 4", Check);
             CaptureInternal(evidence, "first-step-4", (FrameworkElement)System.Windows.Media.VisualTreeHelper.GetChild(first, 0), lines);
+            KeyboardTraversal.CheckWindow(first, "first setup step 4", Check);
             Save().RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(()=>!(bool)busy.GetValue(first)! && probe.Saves>0);
             Check(probe.RecoveredReads > 0 && first.IsVisible && (bool)type.GetField("lastSaveConfirmed",flags)!.GetValue(first)! && !(bool)type.GetField("startupSaveUncertain",flags)!.GetValue(first)! && probe.Saves==1,

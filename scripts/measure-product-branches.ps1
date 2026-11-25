@@ -25,6 +25,7 @@ $env:IPC_VERIFICATION_EXECUTABLE=Join-Path $child 'Ipc.Application.Verification.
 $env:IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME='1'
 $env:IPC_FROZEN_DESKTOP=Join-Path $repo "src/Ipc.Desktop/bin/$Configuration/net10.0-windows/Ipc.Desktop.dll"
 $executions=[Collections.Generic.List[object]]::new()
+$previousUiEvidence=$env:IPC_UI_EVIDENCE
 function Get-BranchSourceInputs {
  $items=@(Get-ChildItem -LiteralPath (Join-Path $repo 'src'),(Join-Path $repo 'config') -Recurse -File | Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' -and $_.Extension -in @('.cs','.json','.xaml','.csproj','.props','.targets') } | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName.Substring($repo.Length+1).Replace('\','/'); sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash} })
  return ($items | ConvertTo-Json -Compress)
@@ -56,15 +57,13 @@ try {
    foreach($extension in @('.dll','.pdb')){ Copy-Item -LiteralPath (Join-Path $repo "src/Ipc.Desktop/bin/$Configuration/net10.0-windows/$name$extension") -Destination $ui }
   }
   $env:IPC_FROZEN_DESKTOP=Join-Path $ui 'Ipc.Desktop.dll'
-  foreach($suite in @('startup-defaults-ui','window-preference','first-preference-save','parameter-guidance-startup','startup-read-failure','station-settings')){
-   $pointer=Join-Path $repo '.artifacts/WINDOWS-WPF-EVIDENCE.txt'
-   if(Test-Path -LiteralPath $pointer){Remove-Item -LiteralPath $pointer -Force}
-   $code=Invoke-BranchMeasurement "wpf-$suite" $ui (Get-Command dotnet).Source ('"'+(Join-Path $ui 'Ipc.Desktop.UiVerification.dll')+'" "'+$repo+'" --'+$suite)
+  foreach($suite in @('typography','smoke-screenshots')){
+   $env:IPC_UI_EVIDENCE=Join-Path $env:TEMP ('ipc-wpf-coverage-'+[guid]::NewGuid().ToString('N'))
+   $code=Invoke-BranchMeasurement "wpf-$suite" $ui (Get-Command dotnet).Source ('"'+(Join-Path $ui 'Ipc.Desktop.UiVerification.dll')+'" --'+$suite)
    if($code){$failed=1}
-   # Preserve native assertions, actual DPI and captures, not just collector exits.
-   $pointer=Join-Path $repo '.artifacts/WINDOWS-WPF-EVIDENCE.txt'
-   $evidence=if(Test-Path -LiteralPath $pointer){(Get-Content -LiteralPath $pointer -Raw).Trim()}else{$null}
-   $nativeLog=if($evidence){Join-Path $evidence 'WINDOWS-WPF.log'}else{$null}
+   # The native process writes one fresh evidence directory for this run.
+   $nativeLogs=@(Get-ChildItem -LiteralPath $env:IPC_UI_EVIDENCE -Filter 'WINDOWS-WPF.log' -File -Recurse -ErrorAction SilentlyContinue)
+   $nativeLog=if($nativeLogs.Count -eq 1){$nativeLogs[0].FullName}else{$null}
    if(!$nativeLog -or !(Test-Path -LiteralPath $nativeLog) -or (Get-Item -LiteralPath $nativeLog).LastWriteTimeUtc -lt [DateTimeOffset]::Parse($executions[-1].startedUtc).UtcDateTime){
     $executions[-1]['nativeEvidenceValid']=$false
     $failed=1; "Missing current native evidence: $suite" | Add-Content -LiteralPath (Join-Path $run "wpf-$suite.log")
@@ -72,7 +71,7 @@ try {
     $executions[-1]['nativeEvidenceValid']=$true
     $native=Join-Path $run "windows/$suite"; New-Item -ItemType Directory -Path $native -Force | Out-Null
     Copy-Item -LiteralPath $nativeLog -Destination $native
-    Get-ChildItem -LiteralPath $evidence -File -Filter '*.png' | Copy-Item -Destination $native
+    Get-ChildItem -LiteralPath (Split-Path -Parent $nativeLog) -File | Where-Object { $_.Extension -eq '.png' -or $_.Name -eq 'FONT-RESOLUTION.json' } | Copy-Item -Destination $native
    }
    ConvertTo-Json -InputObject @($executions) -Depth 6 | Set-Content -LiteralPath (Join-Path $run 'executions.json') -Encoding utf8
   }
@@ -85,5 +84,6 @@ try {
  if($sourceIdentity.sourceInputsChanged){throw 'Production inputs changed during measurement; keep raw evidence but rerun a frozen checkout'}
  if($failed){throw 'Regression failed; branch evidence retained but is not a passing qualification'}
 } finally {
+ $env:IPC_UI_EVIDENCE=$previousUiEvidence
  Remove-Item Env:IPC_VERIFICATION_EXECUTABLE -ErrorAction SilentlyContinue
 }

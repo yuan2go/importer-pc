@@ -122,6 +122,11 @@
     <Setter Property="Background" Value="{DynamicResource DangerBackground}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource DangerBorder}"/>
    </DataTrigger>
+   <DataTrigger Binding="{Binding ShowRcsGuidance}" Value="True">
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Background" Value="{DynamicResource WarningBackground}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource WarningBorder}"/>
+   </DataTrigger>
    <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="8,4"/></DataTrigger>
   </Style.Triggers>
  </Style>

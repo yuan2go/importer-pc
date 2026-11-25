@@ -1,3 +1,4 @@
+using System.Globalization;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Platform;
@@ -30,6 +31,33 @@ public sealed partial class SupplyStationPositionViewModel
     ParcelInputSnapshot? CurrentInputException => CurrentResultVisible && InputUnadmitted &&
         Input is { Outcome: ParcelInputOutcome.Blocked or ParcelInputOutcome.Rejected } input ? input : null;
     bool CenteredOriginalAttention => owner.Fresh && !SupplyDisabled && HasUncertainOriginal;
+    public bool ShowRcsGuidance => owner.Fresh && !SupplyDisabled && !CenteredRcsRejection &&
+        CurrentInputException is null && !ParcelPresentation.RcsNotDelivered(Operation) &&
+        (Arrival?.RecoveryReason is not null || CenteredOriginalAttention && Operation?.Wcs?.State is StageState.Unknown or StageState.Conflict);
+    bool RcsResultConflict => Operation?.Wcs?.State == StageState.Conflict;
+    public string RcsGuidanceTitle => RcsResultConflict ? "格口结果冲突 · 本位已锁定" : "结果未确认 · 本位已锁定";
+    public string RcsGuidanceSummary => RcsResultConflict ? "返回结果与原请求存在冲突，请勿盲目投递" :
+        ParcelPresentation.RcsTimedOut(Operation) ? "取格口响应超时，系统不会自动重发，请勿重复扫码" :
+        "取格口结果未确认，系统不会自动重发，请勿重复扫码";
+    public string RcsGuidanceBarcode => ShowRcsGuidance && CurrentRound is { } round
+        ? SingleDisplayCode(Operation is { } operation && operation.RoundId == round.Id ? operation.ParcelCode : round.SelectedCode)
+        : "";
+    public string RcsGuidanceBarcodeSuffix
+    {
+        get
+        {
+            var barcode = new StringInfo(RcsGuidanceBarcode);
+            return barcode.LengthInTextElements switch
+            {
+                0 => "",
+                < 4 => "完整条码：" + barcode.String,
+                _ => "后 4 位：" + barcode.SubstringByTextElements(barcode.LengthInTextElements - 4)
+            };
+        }
+    }
+    public string RcsGuidanceSecondStep => RcsGuidanceBarcode.Length == 0 ? "2. 保留当前包裹与单据" :
+        new StringInfo(RcsGuidanceBarcode).LengthInTextElements < 4 ? "2. 记下完整条码" : "2. 记下条码后 4 位";
+
     bool CenteredReadAttention => !RoundReadActive && owner.Fresh && !SupplyDisabled && (!DisplayPaused || PausedAttention) &&
         (invalidReadFeedback || CurrentInputException is not null);
     bool MissingConfirmedSlot => CurrentTaskAvailable && !SlotAvailable;
@@ -97,7 +125,7 @@ public sealed partial class SupplyStationPositionViewModel
     bool RoundReadDisplay => owner.Fresh && RoundReadActive && Arrival is not { Confirmed: false } && Arrival?.RecoveryReason is null && !RcsUnavailableForDisplay;
     bool CenteredArrival => owner.Fresh && SupplyEnabled && !DisplayPaused && !PreserveDetailedResult &&
         !RcsUnavailableForDisplay && Arrival is { } arrival && (!arrival.Confirmed || arrival.RecoveryReason is not null || arrival.Submitted || arrival.PlacementClosed);
-    public bool ShowCenteredState => RoundReadActive || !ShowRecentChute && (CenteredArrival || CenteredAttention || SupplyDisabled || CenteredSoftwarePause || CenteredRcsPause || CenteredWaiting || CenteredNoBarcodeBlocked);
+    public bool ShowCenteredState => ShowRcsGuidance || RoundReadActive || !ShowRecentChute && (CenteredArrival || CenteredAttention || SupplyDisabled || CenteredSoftwarePause || CenteredRcsPause || CenteredWaiting || CenteredNoBarcodeBlocked);
     public string CenteredStateTitle => RoundReadDisplay ? CurrentRound!.ReadOutcome == "ExecutionCapacityBlocked" ? "本位在途资源已满" : CurrentRound.AutoExpired ? CurrentRound.SafeContinuation ? "继续识读" : "识读异常，可补录" : "正在识读" : CenteredStale ? "状态读取中断" : CenteredOriginalAttention ? OriginalAttentionTitle : CenteredReadAttention ? ReadAttentionTitle :
         CurrentRcsRejection is { } rejection ? string.IsNullOrWhiteSpace(rejection.Message) ? "RCS 未分配格口" : rejection.Message :
         CenteredOperationAttention ? MissingConfirmedSlot ? "未取得有效格口" : Operation?.State switch

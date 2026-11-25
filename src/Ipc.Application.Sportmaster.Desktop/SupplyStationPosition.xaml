@@ -215,6 +215,40 @@
         <Style.Triggers><DataTrigger Binding="{Binding ShowRecentChute}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
        </Style></TextBox.Style>
       </TextBox>
+      <ScrollViewer x:Name="RcsGuidancePanel" Grid.Row="1" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                    AutomationProperties.Name="取格口结果待核对">
+       <ScrollViewer.Style><Style TargetType="ScrollViewer">
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers><DataTrigger Binding="{Binding ShowRcsGuidance}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
+       </Style></ScrollViewer.Style>
+       <StackPanel VerticalAlignment="Center">
+        <TextBlock Text="{Binding RcsGuidanceTitle}" Foreground="{DynamicResource Warning}" TextWrapping="Wrap"
+                   FontSize="{x:Static type:UiTypography.Exception}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.LiveSetting="Polite"/>
+        <TextBlock Text="{Binding RcsGuidanceSummary}" Foreground="{DynamicResource Muted}" TextWrapping="Wrap"
+                   FontSize="{x:Static type:UiTypography.Label}" Margin="0,3,0,8"/>
+        <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource WarningBorder}" BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusControl}" Padding="10,5" Margin="0,0,0,6">
+         <Border.Style><Style TargetType="Border">
+          <Style.Triggers><DataTrigger Binding="{Binding RcsGuidanceBarcode}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers>
+         </Style></Border.Style>
+         <StackPanel>
+          <TextBlock Text="当前条码" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}"/>
+          <TextBox Text="{Binding RcsGuidanceBarcode,Mode=OneWay}" Style="{DynamicResource ReadonlyValue}"
+                   IsTabStop="True" AutomationProperties.Name="当前条码，可选择复制"/>
+          <TextBlock Text="{Binding RcsGuidanceBarcodeSuffix}" FontSize="{x:Static type:UiTypography.Body}" TextWrapping="Wrap"
+                     Foreground="{DynamicResource Warning}" FontWeight="{x:Static type:UiTypography.Emphasis}"/>
+         </StackPanel>
+        </Border>
+        <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource WarningBorder}" BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusControl}" Padding="10,5">
+         <StackPanel TextBlock.FontSize="{x:Static type:UiTypography.Body}">
+          <TextBlock Text="1. 取下包裹，放到异常暂存篮" TextWrapping="Wrap"/>
+          <TextBlock Text="{Binding RcsGuidanceSecondStep}" TextWrapping="Wrap" Margin="0,2"/>
+          <TextBlock Text="3. 呼叫班长或运维核对，请勿再次上件" TextWrapping="Wrap"/>
+         </StackPanel>
+        </Border>
+       </StackPanel>
+      </ScrollViewer>
       <Border x:Name="CenteredSupplyPanel" Grid.RowSpan="3" Grid.ColumnSpan="2" Background="Transparent">
        <Border.Style>
         <Style TargetType="Border">
@@ -222,6 +256,7 @@
          <Setter Property="Padding" Value="8"/>
          <Style.Triggers>
           <DataTrigger Binding="{Binding ShowCenteredState}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+          <DataTrigger Binding="{Binding ShowRcsGuidance}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
           <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="8,2"/></DataTrigger>
          </Style.Triggers>
         </Style>
@@ -412,8 +447,7 @@
       </Button>
       <Button x:Name="RebaseInput" Height="44" MinHeight="44" Content="确认本位包裹" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationTouch}"
               ToolTip="本位状态已变化。请确认手上的包裹属于本位后再提交。"/>
-      <Button x:Name="ConfirmManualPlacementRemoval" Height="44" MinHeight="44" Grid.Column="2" Content="已取下包裹" Click="ConfirmPlacementRemoval_Click"
-              ToolTip="取下本件后确认，准备接收下一件">
+      <Button x:Name="ConfirmManualPlacementRemoval" Height="44" MinHeight="44" Grid.Column="2" Content="已取下包裹" Click="ConfirmPlacementRemoval_Click">
        <Button.Style>
         <Style TargetType="Button" BasedOn="{StaticResource StationTouch}">
          <Setter Property="Background" Value="{DynamicResource WarningBackground}"/>
@@ -421,7 +455,11 @@
          <Setter Property="BorderBrush" Value="{DynamicResource Warning}"/>
          <Setter Property="Margin" Value="0,0,8,0"/>
          <Setter Property="Visibility" Value="Collapsed"/>
+         <Setter Property="ToolTip" Value="取下本件后确认，准备接收下一件"/>
          <Style.Triggers>
+          <DataTrigger Binding="{Binding ShowRcsGuidance}" Value="True">
+           <Setter Property="ToolTip" Value="确认包裹已取下。原请求仍需核对，本位暂不能再次上件。"/>
+          </DataTrigger>
           <DataTrigger Binding="{Binding ShowConfirmedPlacementRemoval}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
          </Style.Triggers>
         </Style>

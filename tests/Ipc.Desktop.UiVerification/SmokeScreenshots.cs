@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
@@ -22,7 +23,7 @@ static partial class Program
         await CaptureWorkstation(root, evidence, lines);
         await CaptureFirstConfiguration(evidence, lines);
 
-        var build = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
+        var build = typeof(Program).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()!.Configuration;
         var operations = Path.Combine(root, "tests", "Ipc.Operations.Verification", "bin", build,
             "net10.0-windows", "Ipc.Operations.Verification.exe");
         var operationsEvidence = Path.Combine(evidence, "operations");
@@ -55,18 +56,74 @@ static partial class Program
             window.Show();
             var model = window.ViewModel;
             await AwaitUi(() => model.Fresh && model.Left.CanSubmitBarcode);
-            var left = await fixture.App.SubmitParcelBarcodeAsync(await fixture.Command("left", "6950123456789"), default);
+            var left = await fixture.App.SubmitParcelBarcodeAsync(await fixture.Command("left", "6950123456833"), default);
             if (left.OperationId is null) throw new InvalidOperationException(left.Detail);
             await AwaitUi(() => model.Left.ShowConfirmedTask && model.Left.Slot == "CH-08" && model.Right.CenteredStateTitle == "等待投包");
             await Capture(window, 1536, 816, evidence, "work-success-waiting", lines);
             AssertStatusDot(window, SupplyStationViewModel.StationStatusTone.Ready, "#FF147450");
+            var mute = (ToggleButton)window.FindName("MuteToggleButton");
+            if (!mute.IsVisible || mute.IsChecked != false || mute.ActualWidth != 44 || mute.ActualHeight != 44)
+                throw new InvalidOperationException("The 44 DIP cue control must start audible on a new profile.");
+            mute.IsChecked = true;
+            if (!Equals(AutomationProperties.GetName(mute), "恢复提示音（80%）") ||
+                PresentationPreferences.ReadCueVolume("sportmaster") != PresentationPreferences.DefaultCueVolume ||
+                (await fixture.App.SnapshotAsync()).Paused)
+                throw new InvalidOperationException("Temporary mute changed the saved volume or paused supply.");
+            await Capture(window, 1536, 816, evidence, "work-muted", lines);
+            mute.IsChecked = false;
 
             fixture.Peer.Mode = "reject";
             fixture.Peer.RejectionMessage = string.Concat(Enumerable.Repeat("当前包裹未取得可用格口，请保留包裹和本条记录，联系维护人员核对原结果。", 7));
             var right = await fixture.App.SubmitParcelBarcodeAsync(await fixture.Command("right", "6950123456796"), default);
             if (right.OperationId is null) throw new InvalidOperationException(right.Detail);
             await AwaitUi(() => model.Right.CenteredRcsRejection);
+            if (model.Right.ShowRcsGuidance)
+                throw new InvalidOperationException("A confirmed business rejection must keep its own result view.");
             await Capture(window, 1536, 816, evidence, "work-long-rejection", lines);
+
+            var rightPosition = Visuals<SupplyStationPosition>(window).Single(control => ReferenceEquals(control.DataContext, model.Right));
+            var remove = (Button)rightPosition.FindName("ConfirmManualPlacementRemoval");
+            await AwaitUi(() => remove.IsVisible && remove.IsEnabled);
+            Press(remove);
+            await AwaitUi(() => model.Right.CurrentRound is null && model.Right.CanSubmitBarcode);
+            var hold = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            fixture.Peer.Hold = hold;
+            try
+            {
+                var pending = await fixture.App.SubmitParcelBarcodeAsync(await fixture.Command("right", "6950123456789"), default);
+                if (pending.OperationId is null) throw new InvalidOperationException(pending.Detail);
+                await AwaitUi(() => model.Right.Operation?.Wcs?.State == StageState.Unknown && model.Right.ShowRcsGuidance);
+                var guidance = (ScrollViewer)rightPosition.FindName("RcsGuidancePanel");
+                var details = (Button)rightPosition.FindName("WorkDetails");
+                if (!guidance.IsVisible || model.Right.RcsGuidanceBarcode != "6950123456789" ||
+                    model.Right.RcsGuidanceBarcodeSuffix != "后 4 位：6789" ||
+                    !model.Right.RcsGuidanceSummary.StartsWith("取格口响应超时", StringComparison.Ordinal) ||
+                    !remove.IsVisible || !details.IsEnabled || model.Right.CanSubmitBarcode)
+                    throw new InvalidOperationException("The timed-out current parcel must show its barcode, recovery actions and existing submission block.");
+                await Capture(window, 1536, 816, evidence, "work-unknown-guidance", lines);
+                AssertStatusDot(window, SupplyStationViewModel.StationStatusTone.Warning, "#FF895509");
+                if (guidance.ScrollableHeight > 1)
+                    throw new InvalidOperationException("All three recovery steps must be visible at the regular workstation size.");
+                var glyphs = GlyphRuns(guidance).ToArray();
+                if (glyphs.Length == 0 || glyphs.Any(run =>
+                    !run.GlyphTypeface.FontUri.ToString().Contains("NotoSansCJKsc-", StringComparison.OrdinalIgnoreCase) ||
+                    run.GlyphTypeface.Weight.ToOpenTypeWeight() is not (400 or 500) ||
+                    run.GlyphIndices.Any(index => index == 0)))
+                    throw new InvalidOperationException("The visible recovery guidance must use the shipped Noto glyphs at 400 or 500.");
+                lines.Add("PASS FONT visible RCS guidance uses only the shipped Noto Sans CJK SC glyphs");
+
+                var sends = fixture.Peer.Requests.Count;
+                Press(remove);
+                await AwaitUi(() => model.Right.CurrentRound is null && model.Right.ShowRcsGuidance && !remove.IsVisible);
+                if (model.Right.RcsGuidanceBarcode.Length != 0 || model.Right.CanSubmitBarcode ||
+                    model.Right.Arrival?.TargetOperation != pending.OperationId || fixture.Peer.Requests.Count != sends || !details.IsEnabled)
+                    throw new InvalidOperationException("Removing the parcel must clear the barcode and preserve the original remote fence and details without a new send.");
+                Press(details);
+                await AwaitUi(() => model.SelectedPage == "history" && model.Selected?.Id == pending.OperationId && !model.Busy);
+                Press(Visuals<Button>(window).Single(button => Equals(button.Content, "作业")));
+                await AwaitUi(() => model.SelectedPage == "workstation");
+            }
+            finally { fixture.Peer.Hold = null; hold.TrySetResult(); }
 
             Press(Visuals<Button>(window).Single(b => Equals(b.Content, "记录")));
             await AwaitUi(() => model.HistoryLoaded && !model.Busy);
@@ -88,6 +145,9 @@ static partial class Program
             var station = window.OwnedWindows.OfType<StationSettingsWindow>().Single(w => w.IsVisible);
             await using var stationOwner = new NativeWindowOwner(station);
             await Capture(station, 1220, 800, evidence, "settings-readonly", lines);
+            if (!Visuals<System.Windows.Controls.TextBox>(station).Any(value =>
+                AutomationProperties.GetAutomationId(value) == "StationSettings.CueVolume" && value.Text == "80%"))
+                throw new InvalidOperationException("The read-only station settings must show the default 80% cue volume.");
             Press((Button)station.FindName("EditSettings"));
             ManagementModeWindow? login = null;
             await AwaitUi(() =>
@@ -167,6 +227,7 @@ static partial class Program
         ParameterSettingsControl? editor = null;
         await AwaitUi(() => (editor = Visuals<ParameterSettingsControl>(wizard).FirstOrDefault()) is { IsVisible: true, IsEnabled: true, Model: not null });
         await Capture(wizard, 1080, 700, evidence, "setup-step-1", lines);
+        var step = 0;
         foreach (var label in new[] { "继续：左右相机", "继续：识读规则", "检查配置", "保存并进入" })
         {
             var actionId = label == "保存并进入" ? "Startup.SaveAndStart" : "Startup.Next";
@@ -177,6 +238,8 @@ static partial class Program
             var visible = ((Panel)primary!.Parent).Children.OfType<Button>().Where(button => button.IsVisible).ToArray();
             if (visible[^1] != primary)
                 throw new InvalidOperationException($"Wizard primary action is not last: {label}");
+            ++step;
+            if (step is 2 or 3) await Capture(wizard, 1080, 700, evidence, $"setup-step-{step}", lines);
             if (label != "保存并进入") Press(primary);
         }
         await Capture(wizard, 1080, 700, evidence, "setup-step-4", lines);

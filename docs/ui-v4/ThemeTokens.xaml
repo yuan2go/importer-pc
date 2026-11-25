@@ -58,7 +58,7 @@
 
     <Color x:Key="ColorWarning">#895509</Color>
     <Color x:Key="ColorWarningBackground">#FFF5DF</Color>
-    <Color x:Key="ColorWarningBorder">#EED094</Color>
+    <Color x:Key="ColorWarningBorder">#F5D799</Color>
 
     <Color x:Key="ColorDanger">#B52F38</Color>
     <Color x:Key="ColorDangerHover">#95242C</Color>

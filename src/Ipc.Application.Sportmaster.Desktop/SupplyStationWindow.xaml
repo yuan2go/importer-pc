@@ -69,7 +69,32 @@
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <TextBlock x:Name="TestInstallationLabel" Text="测试版" Margin="0,0,8,0" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Warning}" VerticalAlignment="Center" Visibility="Collapsed"/>
     <TextBlock x:Name="StationClock" Grid.Column="2" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Ink}" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.Name="本机时间"/>
-    <Grid Grid.Column="1" Margin="0,0,8,0">
+    <StackPanel Grid.Column="1" Orientation="Horizontal">
+     <ToggleButton x:Name="MuteToggleButton" Width="44" Height="44" Margin="0" Padding="0"
+                   Checked="MuteToggle_Changed" Unchecked="MuteToggle_Changed" PreviewGotKeyboardFocus="MuteToggle_PreviewGotKeyboardFocus"
+                   FocusVisualStyle="{DynamicResource FocusRing}" AutomationProperties.AutomationId="Work.MuteToggle">
+      <ToggleButton.Style>
+       <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+        <Setter Property="Background" Value="Transparent"/><Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers>
+         <DataTrigger Binding="{Binding SelectedPage}" Value="workstation"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+         <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource SurfaceHover}"/></Trigger>
+         <Trigger Property="IsChecked" Value="True"><Setter Property="Foreground" Value="{DynamicResource Accent}"/><Setter Property="Background" Value="{DynamicResource AccentBackground}"/></Trigger>
+        </Style.Triggers>
+       </Style>
+      </ToggleButton.Style>
+      <Path Width="22" Height="22" Stretch="Uniform" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
+            StrokeThickness="1.7" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" IsHitTestVisible="False">
+       <Path.Style><Style TargetType="Path">
+        <Setter Property="Data" Value="M 2,8 L 6,8 11,4 11,20 6,16 2,16 Z M 15,8 Q 19,12 15,16 M 18,5 Q 25,12 18,19"/>
+        <Style.Triggers><DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
+         <Setter Property="Data" Value="M 2,8 L 6,8 11,4 11,20 6,16 2,16 Z M 15,9 L 21,15 M 21,9 L 15,15"/>
+        </DataTrigger></Style.Triggers>
+       </Style></Path.Style>
+      </Path>
+     </ToggleButton>
+     <Grid Margin="0,0,8,0">
      <ToggleButton x:Name="PreferenceNoticeButton" Width="44" Height="44" Margin="0" Padding="0" ToolTip="本机设置通知" AutomationProperties.Name="本机设置通知">
       <Grid><Path Data="M 3,14 L 5,11 V 7 A 4,4 0 0 1 13,7 V 11 L 15,14 Z M 7,16 A 2,2 0 0 0 11,16" Stroke="{DynamicResource Ink}" StrokeThickness="1.5" StrokeLineJoin="Round" Width="18" Height="18"/>
        <Ellipse Width="7" Height="7" Fill="{DynamicResource Warning}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0">
@@ -84,7 +109,8 @@
        <TextBox Text="{Binding PreferenceNoticeText,Mode=OneWay,TargetNullValue=暂无本机设置通知}" Style="{DynamicResource ReadonlyValue}" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="180" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="本机设置读取通知"/>
       </Border>
      </Popup>
-    </Grid>
+     </Grid>
+    </StackPanel>
     <Button x:Name="MinimizeFullScreen" Grid.Column="3" Click="MinimizeFullScreen_Click" HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="最小化到任务栏" AutomationProperties.Name="最小化到任务栏">
      <Path Data="M 3,10 L 17,10" Stroke="{DynamicResource Ink}" StrokeThickness="1.7" Width="20" Height="20"/>
     </Button>

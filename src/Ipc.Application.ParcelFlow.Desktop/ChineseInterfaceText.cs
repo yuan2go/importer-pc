@@ -171,6 +171,8 @@ public static class ChineseInterfaceText
     static readonly (string Source, string Text)[] Notices =
     [
         ("UntrustedObservation", "本次读码未受理，请重新扫描"),
+        ("配置修订已变化，保留输入；重新读取比较后再决定", "设置已更新，输入仍保留。请重新读取并核对后再保存。"),
+        ("生效配置修订或维护状态已变化，请重新核对后操作。", "当前设置或维护状态已变化，请核对后再操作。"),
         ("Global software pause", "供包已暂停"),
         ("SIMULATION identity; frozen only when a parcel is admitted", "模拟身份已验证，受理时记入本件作业"),
         ("Authenticated provider identity; frozen only at admission", "身份已验证，受理时记入本件作业"),

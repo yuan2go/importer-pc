@@ -15,7 +15,7 @@ static partial class Program
             return 2;
         }
 
-        var root = new DirectoryInfo(AppContext.BaseDirectory);
+        var root = new DirectoryInfo(Environment.GetEnvironmentVariable("IPC_REPO_ROOT") ?? AppContext.BaseDirectory);
         while (!File.Exists(Path.Combine(root.FullName, "ImporterPc.slnx")) && root.Parent is { } parent)
             root = parent;
         var evidenceRoot = Environment.GetEnvironmentVariable("IPC_UI_EVIDENCE") ?? Path.Combine(root.FullName, ".artifacts", "window-native");

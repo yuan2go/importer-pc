@@ -37,12 +37,12 @@ public sealed partial class SupplyStationViewModel
         if (RcsState == RcsConnectionState.Offline)
             return (StationStatusTone.Blocked, "暂不能供包", "RCS 离线，连接恢复后自动继续");
         if (snapshot.Paused)
-            return (StationStatusTone.Warning, "供包已暂停", CanResumeInViewport
+            return (StationStatusTone.Blocked, "供包已暂停", CanResumeInViewport
                 ? "确认现场后点击“恢复供包”"
                 : Left.PauseReason + " · " + Left.PauseInstruction);
         if (snapshot.Positions?.Any(position => position.BlockingReasons.Any(reason =>
             reason.StartsWith("运维设备调试已进入，", StringComparison.Ordinal))) == true)
-            return (StationStatusTone.Warning, "供包已暂停", "运维调试中，请等待调试结束");
+            return (StationStatusTone.Blocked, "供包已暂停", "运维调试中，请等待调试结束");
         if ((!Left.SupplyEnabled || !Left.SupplyConfigured) && (!Right.SupplyEnabled || !Right.SupplyConfigured))
             return (StationStatusTone.Blocked, Left.SupplyDisabling || Right.SupplyDisabling ? "停用中" : "已停用",
                 Left.SupplyDisabling || Right.SupplyDisabling

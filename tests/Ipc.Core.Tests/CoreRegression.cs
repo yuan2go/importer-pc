@@ -35,6 +35,7 @@ public sealed class CoreRegression
     [TestMethod]
     [TestCategory("Core")]
     [DataRow("--sm-parameters")]
+    [DataRow("--reader-feedback-22")]
     [DataRow("--cr-sm-removal")]
     [DataRow("--cr-report-boundaries")]
     [DataRow("--cr-report-cameras")]

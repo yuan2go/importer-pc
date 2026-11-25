@@ -8,6 +8,7 @@ public static class PresentationPreferences
     // Isolated native verification only; no command line/configuration exposes this.
     internal static Func<string>? UserRootForVerification = null;
     public enum WindowOpeningMode { Window, FullScreen }
+    public const int DefaultCueVolume = 80;
     sealed record AudioPreference(int Schema, int Volume);
     public static event Action<string, int>? CueVolumeChanged;
     public static event Action<string, WindowOpeningMode>? WindowModeChanged;
@@ -41,7 +42,7 @@ public static class PresentationPreferences
     public static int ReadCueVolume(string application)
     {
         var value = ReadPreference<AudioPreference>(application, "audio", "提示音偏好超出预算；保留原文件");
-        if (value is null) return 0;
+        if (value is null) return DefaultCueVolume;
         if (value.Schema != 1 || value.Volume is < 0 or > 100) throw new InvalidDataException("提示音音量无效；保留原文件");
         return value.Volume;
     }

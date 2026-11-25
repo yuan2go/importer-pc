@@ -44,7 +44,10 @@ public sealed partial class SupplyStationPositionViewModel
                 input.Observation.AdmissionId == current.Acquisition.AdmissionId) ? new(ObservationId: input.Observation.Id) :
         Input is null && Operation is { } operation ? new(OperationId: operation.Id) : null;
     public bool CanViewCurrentPicture => CurrentPictureQuery is not null;
-    public bool CanViewWorkDetails => CanReconcile && !ShowRecentChute && !(CameraNoCode && CenteredWaiting);
+    internal string? WorkDetailsOperationId =>
+        CanReconcile && !ShowRecentChute && !(CameraNoCode && CenteredWaiting) ? Operation?.Id :
+        ShowRcsGuidance && CurrentRound is null && owner.CanUseWorkspace && !owner.Busy ? Arrival?.TargetOperation : null;
+    public bool CanViewWorkDetails => WorkDetailsOperationId is not null;
     public string PictureUnavailableReason => !owner.Fresh ? "SnapshotUnavailable" : CameraNoCode ? "NoCurrentCode" :
         CameraObservationUnmatched ? "CameraObservationAheadOfSnapshot" : unreadFeedback ? "ReadAheadOfSnapshot" :
         IsProcessing ? "Processing" : CurrentPictureQuery is null ? "NoPictureIdentity" : "Available";
@@ -72,7 +75,7 @@ public sealed partial class SupplyStationPositionViewModel
         CurrentRound is null && Operation is null && Stopwatch.GetElapsedTime(recent.ShownTicks) < TimeSpan.FromSeconds(3);
     public string RecentChuteBarcode => ShowRecentChute ? $"上一件条码：{recentResult!.Barcode}　任务号：{recentResult.Task}" : "";
     public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Operation?.Id}/{Operation?.Wcs?.Request.Id}" : null;
-    public bool DisplaySlotVisible => ShowConfirmedTask || IsProcessing || ShowRecentChute;
+    public bool DisplaySlotVisible => !ShowRcsGuidance && (ShowConfirmedTask || IsProcessing || ShowRecentChute);
     public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : ShowRecentChute ? recentResult!.Slot : "";
     public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : ShowRecentChute ? ParcelPresentation.Neutral("上一件格口") : CenteredAttention
         ? CenteredAttentionTone == ParcelPresentationTone.Unknown ? ParcelPresentation.Unknown(CenteredStateTitle) : ParcelPresentation.Rejected(CenteredStateTitle) :
@@ -156,6 +159,8 @@ public sealed partial class SupplyStationPositionViewModel
             (nameof(ShowRecentChute), ShowRecentChute), (nameof(RecentChuteBarcode), RecentChuteBarcode),
             (nameof(DisplayPresentation), DisplayPresentation), (nameof(SuccessIdentity), SuccessIdentity), (nameof(DisplaySlotLabel), DisplaySlotLabel), (nameof(ContinuityNotice), ContinuityNotice),
             (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredAttention), CenteredAttention), (nameof(CenteredRcsRejection), CenteredRcsRejection), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(CenteredStateForeground), CenteredStateForeground),
+            (nameof(ShowRcsGuidance), ShowRcsGuidance), (nameof(RcsGuidanceTitle), RcsGuidanceTitle), (nameof(RcsGuidanceSummary), RcsGuidanceSummary),
+            (nameof(RcsGuidanceBarcode), RcsGuidanceBarcode), (nameof(RcsGuidanceBarcodeSuffix), RcsGuidanceBarcodeSuffix), (nameof(RcsGuidanceSecondStep), RcsGuidanceSecondStep),
             (nameof(CenteredStateReason), CenteredStateReason), (nameof(CenteredStateInstruction), CenteredStateInstruction), (nameof(CenteredStateFullInstruction), CenteredStateFullInstruction),
             (nameof(DisplayStatus), DisplayStatus), (nameof(DisplayAttentionReason), DisplayAttentionReason), (nameof(DisplayNextStep), DisplayNextStep), (nameof(ShowConfirmedTask), ShowConfirmedTask),
             (nameof(DisplaySlotFontSize), DisplaySlotFontSize), (nameof(CameraReadFeedback), CameraReadFeedback), (nameof(ReadFeedbackIdentity), ReadFeedbackIdentity),

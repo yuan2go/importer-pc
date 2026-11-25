@@ -76,6 +76,7 @@ internal static class UiVerificationArguments
         "--station-position-control-ui",
         "--station-responsive-ui",
         "--station-settings",
+        "--station-theme-resources",
         "--task-hierarchy",
         "--task-hierarchy-chain",
         "--task-hierarchy-parameters",

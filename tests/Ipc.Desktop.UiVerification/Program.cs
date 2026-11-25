@@ -72,6 +72,7 @@ static partial class Program
                 else if (args.Contains("--camera-settings-feedback")) await VerifyCameraSettingsFeedback(root, evidence, lines);
                 else if (args.Contains("--startup-defaults-ui")) await VerifyStartupDefaultsUi(root, evidence, lines);
                 else if (args.Contains("--chute-readability")) await VerifyChuteReadability(root, evidence, lines);
+                else if (args.Contains("--station-theme-resources")) await VerifyStationThemeResources(root, evidence, lines);
                 else if (args.Contains("--site-ui-refinement")) { await VerifyStartupDefaultsUi(root, evidence, lines); await VerifyFieldReadability(root, evidence, lines); }
                 else if (args.Contains("--position-input-ui")) await VerifyPositionInputUi(root, evidence, lines);
                 else if (args.Contains("--operator-review-ui")) await VerifyOperatorReviewUi(root, evidence, lines);

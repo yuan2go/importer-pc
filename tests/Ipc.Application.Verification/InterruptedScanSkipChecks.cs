@@ -143,7 +143,8 @@ static class InterruptedScanSkipChecks
     }
     static async Task IndependentRequests(string workspace, string root)
     {
-        await using var h = new CameraRoundHarness(workspace, root, nativeResults: true);
+        // The fixture holds the left reply through two complete right-side frame handoffs.
+        await using var h = new CameraRoundHarness(workspace, root, nativeResults: true, rcsTimeoutMs: 5000);
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var held = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         h.Peer.Hold = held; h.Peer.HoldWhen = body => body.Contains("TEST-LEFT-READER", StringComparison.Ordinal) && body.Contains("sorter.task.dest_request", StringComparison.Ordinal);

@@ -76,15 +76,16 @@ internal static class BackupConsistency
             });
             Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(10))), "backup reached deterministic " + (cancel || fail ? "snapshot" : "inventory") + " boundary");
             // Real driver/decoder empty-frame completion, not decode-start counts.
-            var first = DateTimeOffset.UtcNow;
+            var first = Stopwatch.GetTimestamp();
             for (uint frame = 2; frame <= 4; frame++)
             {
                 h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, frame);
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == frame)));
-                if (frame < 4) await Task.Delay(420);
+                if (frame < 4) await Task.Delay(CameraRoundHarness.SyntheticBlankSpanMs / (CameraRoundHarness.SyntheticBlankFrames - 1));
             }
             Check(h.Factory.Trays[h.Left].Observe(TrayPresence.Absent), "qualified observation retires normally at the backup ingress fence");
-            Check(DateTimeOffset.UtcNow - first >= TimeSpan.FromMilliseconds(800), "three delivered no-code frames are followed by an independent qualified removal fact");
+            Check(Stopwatch.GetElapsedTime(first) >= TimeSpan.FromMilliseconds(CameraRoundHarness.SyntheticBlankSpanMs),
+                "three delivered no-code frames are followed by an independent qualified removal fact");
             var before = Progress(h.App);
             await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > before));
             Check(await h.App.OperationAsync(original!.Id) is not null && files.All(f => File.Exists(f.Key) && Wire.FileHash(f.Key) == f.Value),

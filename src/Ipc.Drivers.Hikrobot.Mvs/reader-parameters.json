@@ -172,12 +172,25 @@
     "Group": "识别 / 静止判定",
     "Label": "放稳后再识别",
     "Type": "integer",
-    "Default": "200",
+    "Default": "150",
     "Minimum": 0,
     "Maximum": 2000,
     "MaximumLength": 4,
     "Unit": "毫秒",
-    "Description": "放稳后接收识别结果，默认200毫秒。软件识别在放稳后执行；海康原生识码已随采图完成，放置过程中的结果不进入供包业务。0表示每帧接收。",
+    "Description": "画面放稳后再触发读码，默认 150 毫秒，可减少放包晃动导致的误读；设为 0 则每帧直接识别。",
+    "ApplyLevel": "GuardedLive"
+  },
+  {
+    "Key": "presence.empty-ms",
+    "Group": "识别 / 静止判定",
+    "Label": "空托盘移除确认",
+    "Type": "integer",
+    "Default": "300",
+    "Minimum": 150,
+    "Maximum": 2000,
+    "MaximumLength": 4,
+    "Unit": "毫秒",
+    "Description": "拿走异常包裹后，画面连续保持空托盘达到此时长（且不少于3帧）即自动结束本件，默认300毫秒。过短可能因反光误判，过长会影响快速换包节奏。",
     "ApplyLevel": "GuardedLive"
   }
 ]

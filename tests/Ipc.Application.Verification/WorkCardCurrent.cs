@@ -124,8 +124,14 @@ internal static class WorkCardCurrent
         var first = await h.App.ReadParcelPictureAsync(query, default);
         Check(first.Archived is not null && first.Archived.Metadata.Acquisition == operation.Acquisition, "current-round original is archived with exact acquisition identity");
         var originalHash = Wire.Hash(Convert.ToBase64String(first.Archived!.Png));
-        var before = await h.App.SnapshotAsync();
-        Check((await h.App.CommandAsync(new(Wire.Id(), before.Revision, "Pause"))).Status == "Persisted", "picture fixture confirms the original software pause");
+        await CameraRoundHarness.Until(async () =>
+        {
+            var before = await h.App.SnapshotAsync();
+            var pause = await h.App.CommandAsync(new(Wire.Id(), before.Revision, "Pause"));
+            if (pause.Status == "Conflict") return false;
+            Check(pause.Status == "Persisted", "picture fixture confirms the original software pause");
+            return true;
+        });
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-BLOCKED-PICTURE-B"), 2);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == 2)));
         var paused = await h.App.SnapshotAsync();

@@ -30,7 +30,7 @@ internal static partial class CameraRoundChecks
             (await h.App.ReadCameraFramesAsync(first.SessionId!, h.Right, 0, null, 20, default)).Rows.Length == 0,
             $"{native}: production acquisition/store captures only the selected camera, including its original image");
         using (var preview = await h.App.ReadCameraPreviewLeaseAsync(h.Right, default))
-            Check(preview.Diagnostics?.Window?.DecodedFrames == 0 && h.Api(h.Right).PreviewAcquires > 0,
+            Check(preview.Diagnostics?.Window?.DecodedFrames == 0 && h.Api(h.Right).LastRawFrame == 1,
                 $"{native}: unselected camera stays preview-only without software or native recognition");
         var second = await h.App.BeginCameraInspectionAsync(Begin(h.Right), default);
         await Frame(h.Left, 2); await Frame(h.Right, 2);

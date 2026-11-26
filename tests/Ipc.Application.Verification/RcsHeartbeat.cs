@@ -30,7 +30,8 @@ static partial class SportmasterRcs
             Check((await service.HealthAsync(default)) is { RemoteConfirmedAt: null, RemoteValidUntil: null }, "health reads before first response cannot fabricate remote timestamps");
             peer.ResponseHold.TrySetResult(); peer.ResponseHold = null;
             await Healthy(service); await Until(() => schedule.PendingTimers == 1);
-            Check(peer.Requests.Count == 1 && RcsRequestPolicy.HeartbeatMs(binding) == 1000, "the initial heartbeat completes before any periodic clock tick");
+            var defaultInterval = RcsRequestPolicy.DefaultHeartbeatMs;
+            Check(peer.Requests.Count == 1 && RcsRequestPolicy.HeartbeatMs(binding) == defaultInterval, "the initial heartbeat completes before any periodic clock tick");
             var exchange = peer.Requests.Single();
             using var json = JsonDocument.Parse(exchange.Body); var envelope = json.RootElement;
             var data = envelope.GetProperty("data").EnumerateArray().ToArray();
@@ -51,8 +52,8 @@ static partial class SportmasterRcs
             for (var tick = 0; tick < 2; tick++)
             {
                 var sent = peer.Requests.Count;
-                schedule.Advance(999); await Task.Delay(20);
-                Check(peer.Requests.Count == sent, "no periodic heartbeat is sent before the controlled one-second deadline");
+                schedule.Advance(defaultInterval - 1); await Task.Delay(20);
+                Check(peer.Requests.Count == sent, "no periodic heartbeat is sent before the controlled default deadline");
                 schedule.Advance(1);
                 await Until(() => peer.Requests.Count == sent + 1 && schedule.PendingTimers == 1);
                 Check(peer.Requests.Count == sent + 1, "each controlled periodic tick owns exactly one heartbeat");
@@ -73,8 +74,9 @@ static partial class SportmasterRcs
         binding = binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-ms"] = "1000" } };
         config = HeartbeatConfiguration(workspace, binding);
         var schema = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(workspace, "src/Ipc.Integrations.SportmasterRcs/parameters.json")));
-        Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 && schema.Single(f => f.Key == "heartbeat-interval-ms") is { Default: "1000", Minimum: 100, Maximum: 3600000 } &&
-            ExtensionSchema.Validate(schema, binding.Parameters).Length == 0, "component parameter schema exposes a valid one-second default and bounded editable interval");
+        Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 && schema.Single(f => f.Key == "heartbeat-interval-ms") is { Default: "500", Minimum: 100, Maximum: 3600000 } &&
+            RcsRequestPolicy.HeartbeatMs(binding) == 1000 && ExtensionSchema.Validate(schema, binding.Parameters).Length == 0,
+            "component parameter schema defaults to 500ms and preserves an explicitly configured 1000ms interval");
         await using (var service = new SportmasterRcsTaskService(binding))
         {
             service.ConfigureRuntime(config); peer.Mode = "http-error";
@@ -172,11 +174,141 @@ static partial class SportmasterRcs
         }
         await ManualHeartbeatChecks(peer, workspace, binding);
         await VehicleHeartbeatChecks(peer, binding, HeartbeatConfiguration(workspace, binding));
+        await FastProbeChecks(workspace);
         await VehicleProjectionChecks(workspace);
         Console.WriteLine("PASS RCS HEARTBEAT COMPLETE");
     }
 
     static async Task Until(Func<bool> predicate) => await Until(() => Task.FromResult(predicate()));
+
+    sealed class ProbeHeartbeatOwner(SmHeartbeatMember[] members) : ISmHeartbeatOwner
+    {
+        public volatile SmHeartbeatMember[] Members = members;
+        public Task<SmHeartbeatIntent?> BeginHeartbeatAsync(long requestId, CancellationToken token)
+            => Task.FromResult<SmHeartbeatIntent?>(new(requestId, "synthetic", Members));
+        public Task CompleteHeartbeatAsync(SmHeartbeatIntent intent, SmHeartbeatConfirmation confirmation) => Task.CompletedTask;
+    }
+
+    static async Task FastProbeChecks(string workspace)
+    {
+        await using var peer = new Peer();
+        var binding = Binding(peer.Endpoint) with { Parameters = new(Binding(peer.Endpoint).Parameters) { ["heartbeat-interval-ms"] = "1000" } };
+        var schedule = new RequestClock();
+        var deadline = new RequestClock();
+        await using var service = new SportmasterRcsTaskService(binding)
+        {
+            HeartbeatScheduleForVerification = schedule, HeartbeatTimeForVerification = schedule, RequestTimeForVerification = deadline
+        };
+        var configuration = HeartbeatConfiguration(workspace, binding);
+        var left = binding.Parameters["left-bcr-code"];
+        var owner = new ProbeHeartbeatOwner(RcsConfigurationValidation.HeartbeatMapping(configuration)
+            .Select(p => new SmHeartbeatMember(p.Bcr == left ? "left" : "right", p.Station, p.Bcr, 0)).ToArray());
+        service.SetHeartbeatOwner(owner);
+        service.ConfigureRuntime(configuration);
+        await service.StartAsync(default);
+        int CountHeartbeats() => peer.Requests.Count(r => r.Body.Contains(SportmasterRcsTaskService.HeartbeatCommand, StringComparison.Ordinal));
+        long requestId = 100;
+        Task<StageReply> Send(string position = "left")
+        {
+            var request = Request(binding, position);
+            return service.RequestDestinationAsync(request with { IntegrationRequest = service.PrepareRequest(request, ++requestId) }, default);
+        }
+        Task WaitForTimer(int ms) => Until(() => schedule.NextTimerMs == ms);
+        async Task Tick(int ms, int next)
+        {
+            await WaitForTimer(ms);
+            var sent = CountHeartbeats();
+            schedule.Advance(ms - 1);
+            Check(CountHeartbeats() == sent, $"no heartbeat before the scheduled {ms}ms deadline");
+            schedule.Advance(1);
+            await Until(() => CountHeartbeats() == sent + 1);
+            await WaitForTimer(next);
+        }
+
+        await Until(() => CountHeartbeats() == 1);
+        await Tick(1000, 1000);
+        List<double> delays = [];
+        foreach (var phase in new[] { 100, 350, 600, 850 })
+        {
+            Check((await Send()).BusinessAccepted == true, "only a confirmed assignment starts the probe window");
+            var nextVehicle = "SYNTH-NEXT-" + phase;
+            for (var tick = 250; tick < phase; tick += 250) await Tick(250, 250);
+            await WaitForTimer(250);
+            var elapsedInPeriod = phase % 250;
+            schedule.Advance(elapsedInPeriod);
+            var arrived = schedule.GetTimestamp();
+            peer.Vehicles[left] = nextVehicle;
+            await Tick(250 - elapsedInPeriod, 1000);
+            delays.Add(schedule.GetElapsedTime(arrived).TotalMilliseconds);
+            var health = await service.HealthAsync(default);
+            Check(health.StationVehicles.Single(v => v.CameraCode == left).VehicleNo == nextVehicle &&
+                health.RemoteValidUntil - health.RemoteConfirmedAt == TimeSpan.FromMilliseconds(6000),
+                "a valid new vehicle ends the fast cadence while heartbeat confirmation keeps its original lifetime");
+        }
+        Check(delays.All(d => d == 150), $"controlled new-car detection after acceptance averages {delays.Average():F0}ms across arrival phases 100/350/600/850ms");
+
+        peer.Mode = "reject";
+        Check((await Send()).BusinessAccepted == false, "explicit rejection is not a probe trigger");
+        await Tick(1000, 1000);
+        peer.Mode = "withhold-response";
+        var exchanges = peer.Requests.Count;
+        var pending = Send();
+        await Until(() => peer.Requests.Count == exchanges + 1 && deadline.PendingTimers == 1);
+        deadline.Advance(RcsRequestPolicy.DefaultTimeoutMs);
+        try { await pending; throw new InvalidOperationException("Withheld destination response was accepted"); }
+        catch (TimeoutException) { Check(true, "destination timeout leaves the heartbeat schedule unchanged"); }
+        peer.Mode = "assigned";
+        await Tick(1000, 1000);
+
+        Check((await Send()).BusinessAccepted == true && (await Send("right")).BusinessAccepted == true,
+            "both accepted lanes share the heartbeat loop");
+        await WaitForTimer(250);
+        peer.Vehicles[left] = "SYNTH-LEFT-NEXT";
+        await Tick(250, 250);
+        var sent = CountHeartbeats();
+        var held = peer.ResponseHold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        try
+        {
+            schedule.Advance(250);
+            await Until(() => CountHeartbeats() == sent + 1);
+            var manual = service.SendHeartbeatAsync(default);
+            schedule.Advance(500);
+            Check(CountHeartbeats() == sent + 1 && await service.SendHeartbeatAsync(default) == RcsHeartbeatResult.Busy,
+                "fast cadence and manual activation share the same single in-flight heartbeat");
+            peer.Vehicles[binding.Parameters["right-bcr-code"]] = "SYNTH-RIGHT-NEXT";
+            held.TrySetResult();
+            Check(await manual == RcsHeartbeatResult.Received && CountHeartbeats() == sent + 2, "the original manual heartbeat runs once after the in-flight probe drains");
+            await WaitForTimer(1000);
+        }
+        finally { held.TrySetResult(); peer.ResponseHold = null; }
+
+        Check((await Send()).BusinessAccepted == true, "a subsequent assignment opens its own bounded window");
+        for (var i = 0; i < 9; i++) await Tick(250, 250);
+        sent = CountHeartbeats();
+        schedule.Advance(250);
+        await WaitForTimer(750);
+        Check(CountHeartbeats() == sent, "unchanged vehicle ends the compact cadence at the 2500ms bound");
+        await Tick(750, 1000);
+
+        Check((await Send()).BusinessAccepted == true, "an accepted assignment starts the final probe");
+        peer.Mode = "http-error";
+        await Tick(250, 1000);
+        Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed,
+            "heartbeat failure ends the fast cadence without extending remote validity");
+
+        peer.Mode = "assigned";
+        await Tick(1000, 1000);
+        Check((await Send()).BusinessAccepted == true, "confirmed telemetry permits a later assignment to start another probe");
+        await WaitForTimer(250);
+        sent = CountHeartbeats();
+        owner.Members = owner.Members.Where(m => m.BcrCode != left).ToArray();
+        service.RefreshHeartbeat();
+        await Until(() => CountHeartbeats() == sent + 1);
+        await WaitForTimer(1000);
+        Check(!peer.Requests.Last().Body.Contains(left, StringComparison.Ordinal),
+            "the member refresh uses current membership and drops the removed lane's probe");
+    }
+
     static async Task ManualHeartbeatChecks(Peer peer, string workspace, CapabilityBinding binding)
     {
         var manual = binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-ms"] = "60000" } };

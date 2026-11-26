@@ -21,11 +21,12 @@ static class RcsOfflineCameraReads
         {
             initial.Peer.HeartbeatUnavailable = true;
             await initial.StartAsync(waitForRcs: false);
+            await CameraRoundHarness.Until(() => Task.FromResult(initial.Peer.HeartbeatRequests.Count > 0));
             initial.Factory.Sources[initial.Left].ReadPreview();
             initial.Api(initial.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-BEFORE-FIRST-HEARTBEAT"), 1);
             await CameraRoundHarness.Until(() => Task.FromResult(initial.Factory.Sources[initial.Left].ReadPreview()?.FrameNumber == 1 && initial.Api(initial.Left).Acquires == initial.Api(initial.Left).Releases));
             var initialState = await initial.App.SnapshotAsync();
-            Check(initial.Factory.Sources[initial.Left].ReadPreview()?.FrameNumber == 1 && initial.Api(initial.Left).PreviewAcquires > 0 &&
+            Check(initial.Factory.Sources[initial.Left].ReadPreview()?.FrameNumber == 1 && initial.Api(initial.Left).LastRawFrame == 1 &&
                 initial.Factory.Decoders[initial.Left].Count == 0 && initial.Peer.Requests.IsEmpty && initial.Peer.HeartbeatRequests.Count > 0 &&
                 initialState.Operations.Length == 0 && initialState.Positions!.Single(p => p.Id == "left").BarcodeInput is { Camera: false, Manual: false },
                 "before first heartbeat response both camera routes only acquire preview, without recognition or a business request");
@@ -35,7 +36,9 @@ static class RcsOfflineCameraReads
         var readAllowed = false; var inputs = 0; using var cycleDone = new ManualResetEventSlim();
         var binding = new DeviceBinding("parcel-reader", "hikrobot-mvs-reader", "preview-race", "1.0.0")
         { Parameters = new() { ["device.ip"] = "192.0.2.91", ["device.serial"] = "SYNTH-PREVIEW-RACE", ["reader.engine"] = nativeResults ? "mvid-native" : "zxing-cpp", ["motion.still-ms"] = "0" } };
-        var api = new CameraRoundHarness.RoundApi(binding) { BeforePreviewReturn = () => readAllowed = true };
+        var api = new CameraRoundHarness.RoundApi(binding);
+        if (nativeResults) api.BeforePreviewReturn = () => readAllowed = true;
+        else api.BeforeAcquireReturn = () => readAllowed = true;
         var decoder = new CameraRoundHarness.RoundDecoder(api, binding.Parameters!);
         await using (var source = new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), api,
             serial => new ResourceLease(Path.Combine(root, "preview-lease"), [serial]),
@@ -48,7 +51,7 @@ static class RcsOfflineCameraReads
                 [new("SYNTH-RAW-PREVIEW", "Code128", [new(10, 10), new(50, 10), new(50, 30), new(10, 30)], 0)]);
             await CameraRoundHarness.Until(() => Task.FromResult(cycleDone.IsSet));
             await source.SetInspectionAsync(null, default);
-            Check(inputs == 0 && decoder.Count == 0, "a readiness change inside raw acquisition cannot promote that preview into a recognition fact");
+            Check(readAllowed && inputs == 0 && decoder.Count == 0, "a readiness change inside raw acquisition cannot promote that preview into a recognition fact");
         }
 
         h.Peer.ReplyVehicleStates = true; h.Peer.HeartbeatUnavailable = true;
@@ -101,9 +104,9 @@ static class RcsOfflineCameraReads
             await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).LastReturnedFrame == number && h.Api(h.Left).Acquires == h.Api(h.Left).Releases));
         }
         var decoded = h.Factory.Decoders[h.Left].Count;
-        var previewCalls = h.Api(h.Left).PreviewAcquires;
         await Frame(1, "SYNTH-OFFLINE");
-        Check(h.Factory.Sources[h.Left].ReadPreview()?.FrameNumber == 1 && h.Api(h.Left).PreviewAcquires > previewCalls && h.Factory.Decoders[h.Left].Count == decoded && Requests() == 0 &&
+        Check(h.Factory.Sources[h.Left].ReadPreview()?.FrameNumber == 1 && h.Api(h.Left).LastRawFrame == 1 &&
+            h.Factory.Decoders[h.Left].Count == decoded && Requests() == 0 &&
             (await h.App.SnapshotAsync()).Operations.Length == 0, "offline RCS permits preview but no automatic recognition, work card or destination request");
         Check((await h.App.SnapshotAsync()).Devices!.All(d => d.IsValid(DateTimeOffset.UtcNow)), "RCS loss does not mark the connected cameras offline");
         await SwitchLeft(false);
@@ -128,9 +131,9 @@ static class RcsOfflineCameraReads
         h.Factory.Expect(candidate);
         var saved = await h.App.StageConfigurationAsync(beforeReplacement.Configuration.Revision, candidate, "Synthetic disabled camera replacement");
         Check(saved.Status == "Effective" && h.Api(h.Left).Starts == 0, "replacing a disabled camera applies its configuration without opening it");
-        await SwitchLeft(true); previewCalls = h.Api(h.Left).PreviewAcquires;
+        await SwitchLeft(true);
         await Frame(1, "SYNTH-REPLACED-OFFLINE");
-        Check(h.Api(h.Left).PreviewAcquires > previewCalls && h.Factory.Decoders[h.Left].Count == 0 && Requests() == 0 &&
+        Check(h.Api(h.Left).LastRawFrame == 1 && h.Factory.Decoders[h.Left].Count == 0 && Requests() == 0 &&
             (await h.App.SnapshotAsync()).Operations.Length == 0, "enabling the disabled replacement retains the RCS read guard before its first frame");
         var window = Wire.Id(); await h.App.SetManagementWorkspaceAsync(window, true, default);
         await h.BeginAsync(); await h.ArmAsync(h.Left);

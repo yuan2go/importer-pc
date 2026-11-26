@@ -51,7 +51,7 @@ internal static class SmArrivalChecks
         await h.NextVehicleAsync("left", "CAR-B");
         var b = Lane(await h.App.SnapshotAsync()).Arrival!;
         Check(b.Generation != first.Generation && !b.Submitted && (await h.App.SnapshotAsync()).Rounds.Length == 0,
-            "A with parcel to empty B resets current round and presence without waiting 800ms");
+            "A with parcel to empty B resets current round and presence without waiting for visual removal");
         var stale = await h.App.SubmitParcelBarcodeAsync(oldCommand, default);
         Check(stale.Status == "Conflict" && h.Peer.Requests.Count == 1, "old queued manual command cannot target B");
         await Read(["SAME-001"]);

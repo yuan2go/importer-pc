@@ -11,6 +11,8 @@ namespace Ipc.Integrations.SportmasterRcs;
 public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
 {
     internal const string HeartbeatCommand = "sorter.task.station_heartbeat";
+    const int FastProbeIntervalMs = 250, FastProbeWindowMs = 2500;
+    readonly Dictionary<(string Station, string Bcr), (string VehicleNo, long StartedAt, long UntilTicks)> fastProbes = [];
     (string Station, string Bcr)[]? heartbeatStations;
     CancellationTokenSource? heartbeatStop;
     Task? heartbeatTask;
@@ -46,6 +48,56 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
             try { heartbeatRefresh.Release(); } catch (SemaphoreFullException) { }
     }
 
+    void StartFastProbe(FrozenRequest request)
+    {
+        if (options.HeartbeatIntervalMs <= FastProbeIntervalMs) return;
+        var target = options.Position(Wire.Decode<ParcelPayload>(request.Payload));
+        lock (lifecycle)
+        {
+            if (!running || disposed || heartbeatFailure is not null) return;
+            var now = HeartbeatTimeForVerification.GetUtcNow();
+            var vehicle = stationVehicles.SingleOrDefault(v => v.StationCode == target.Station && v.CameraCode == target.Bcr &&
+                v.ReceivedAt <= now && v.ValidUntil > now);
+            if (vehicle is null) return;
+            var clock = HeartbeatScheduleForVerification;
+            var startedAt = clock.GetTimestamp();
+            if (fastProbes.TryGetValue(target, out var current) && current.UntilTicks > startedAt && current.VehicleNo == vehicle.VehicleNo)
+                return;
+            fastProbes[target] = (vehicle.VehicleNo, startedAt, startedAt + FastProbeWindowMs * clock.TimestampFrequency / 1000);
+        }
+        // Recalculate the outstanding wait without requesting an extra heartbeat.
+        SignalHeartbeat();
+    }
+
+    TimeSpan HeartbeatWait(long cycleStartedAt)
+    {
+        var clock = HeartbeatScheduleForVerification;
+        var now = clock.GetTimestamp();
+        lock (lifecycle)
+        {
+            foreach (var target in fastProbes.Keys.ToArray())
+                if (fastProbes[target].UntilTicks <= now) fastProbes.Remove(target);
+            var fast = fastProbes.Count != 0;
+            var start = fast ? Math.Max(cycleStartedAt, fastProbes.Values.Min(p => p.StartedAt)) : cycleStartedAt;
+            var interval = fast ? Math.Min(options.HeartbeatIntervalMs, FastProbeIntervalMs) : options.HeartbeatIntervalMs;
+            var remaining = TimeSpan.FromMilliseconds(interval) - clock.GetElapsedTime(start, now);
+            if (fast)
+            {
+                var untilExpiry = clock.GetElapsedTime(now, fastProbes.Values.Min(p => p.UntilTicks));
+                if (untilExpiry < remaining) remaining = untilExpiry;
+            }
+            return remaining > TimeSpan.Zero ? TimeSpan.FromMilliseconds(Math.Ceiling(remaining.TotalMilliseconds)) : TimeSpan.Zero;
+        }
+    }
+
+    void ClearFastProbes()
+    {
+        // Called with lifecycle held, including when a manual heartbeat fails.
+        if (fastProbes.Count == 0) return;
+        fastProbes.Clear();
+        SignalHeartbeat();
+    }
+
     public void ConfigureRuntime(ParcelConfiguration configuration)
     {
         lock (lifecycle)
@@ -64,21 +116,27 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
     {
         try
         {
+            var clock = HeartbeatScheduleForVerification;
+            var cycleStartedAt = clock.GetTimestamp();
             while (!stop.IsCancellationRequested)
             {
                 using var tick = CancellationTokenSource.CreateLinkedTokenSource(stop);
-                var delay = Task.Delay(TimeSpan.FromMilliseconds(options.HeartbeatIntervalMs), HeartbeatScheduleForVerification, tick.Token);
+                var delay = Task.Delay(HeartbeatWait(cycleStartedAt), clock, tick.Token);
                 var refresh = heartbeatRefresh.WaitAsync(tick.Token);
                 await Task.WhenAny(delay, refresh).ConfigureAwait(false);
                 tick.Cancel();
                 try { await Task.WhenAll(delay, refresh).ConfigureAwait(false); }
                 catch (OperationCanceledException) when (!stop.IsCancellationRequested) { }
                 stop.ThrowIfCancellationRequested();
-                if (!heartbeatSerial.Wait(0)) continue;
-                try { await SendHeartbeatCoreAsync(stop).ConfigureAwait(false); }
-                catch (OperationCanceledException) when (stop.IsCancellationRequested) { throw; }
-                catch (Exception error) { HeartbeatOwnerFailed(error); }
-                finally { heartbeatSerial.Release(); }
+                if (Volatile.Read(ref heartbeatRefreshPending) == 0 && HeartbeatWait(cycleStartedAt) > TimeSpan.Zero) continue;
+                if (heartbeatSerial.Wait(0))
+                {
+                    try { await SendHeartbeatCoreAsync(stop).ConfigureAwait(false); }
+                    catch (OperationCanceledException) when (stop.IsCancellationRequested) { throw; }
+                    catch (Exception error) { HeartbeatOwnerFailed(error); }
+                    finally { heartbeatSerial.Release(); }
+                }
+                cycleStartedAt = clock.GetTimestamp();
             }
         }
         catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
@@ -119,6 +177,7 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
     {
         lock (lifecycle)
         {
+            ClearFastProbes();
             heartbeatResponseReceived = false; heartbeatValidUntil = default; stationVehicles = [];
             heartbeatFailure = "RCS heartbeat owner failed: " + error;
             heartbeatEvidence = "Heartbeat completion unconfirmed; no business request was repeated";
@@ -140,6 +199,7 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
         SmHeartbeatIntent? intent = null;
         var confirmation = new SmHeartbeatConfirmation(false, false, [], default, default);
         var started = System.Diagnostics.Stopwatch.GetTimestamp();
+        var scheduledAt = HeartbeatScheduleForVerification.GetTimestamp();
         try
         {
             await InstallationResourceBoundary.RequireRcsEndpointAsync(options.Endpoint, timeout.Token).ConfigureAwait(false);
@@ -150,6 +210,15 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
                 intent = await owner.BeginHeartbeatAsync(requestId, timeout.Token).ConfigureAwait(false);
                 if (intent is null) return RcsHeartbeatResult.Busy;
                 mapping = intent.Members.Select(x => (x.StationCode, x.BcrCode)).ToArray();
+            }
+            lock (lifecycle)
+            {
+                foreach (var target in fastProbes.Keys.ToArray())
+                    if (!mapping.Contains(target) && fastProbes[target].StartedAt <= scheduledAt)
+                    {
+                        fastProbes.Remove(target);
+                        SignalHeartbeat();
+                    }
             }
             var body = JsonSerializer.Serialize(new
             {
@@ -195,6 +264,16 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
                 if (!running || disposed) return RcsHeartbeatResult.Unavailable;
                 stationVehicles = vehicles;
                 heartbeatFailure = null; heartbeatResponseReceived = true;
+                if (Volatile.Read(ref heartbeatRefreshPending) == 0)
+                    foreach (var vehicle in vehicles)
+                    {
+                        var target = (vehicle.StationCode, vehicle.CameraCode);
+                        if (fastProbes.TryGetValue(target, out var probe) && probe.StartedAt <= scheduledAt && probe.VehicleNo != vehicle.VehicleNo)
+                        {
+                            fastProbes.Remove(target);
+                            SignalHeartbeat();
+                        }
+                    }
                 heartbeatReceivedAt = receivedAt; heartbeatValidUntil = receivedAt + lifetime;
                 heartbeatEvidence = "RCS heartbeat HTTP " + (int)response.StatusCode + " at " + timestamp.ToString(CultureInfo.InvariantCulture) + "; heartbeat protocol and membership acknowledged; destination outcome unconfirmed";
             }
@@ -203,9 +282,10 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
         catch (Exception e) when (e is HttpRequestException or IOException or OperationCanceledException or InvalidDataException)
         {
             confirmation = confirmation with { Failure = e is OperationCanceledException ? stop.IsCancellationRequested ? "Heartbeat stopped or cancelled" : "Heartbeat timed out" : e.Message };
-            stop.ThrowIfCancellationRequested();
             lock (lifecycle)
             {
+                ClearFastProbes();
+                stop.ThrowIfCancellationRequested();
                 if (!running || disposed) return RcsHeartbeatResult.Unavailable;
                 stationVehicles = []; heartbeatFailure = "RCS heartbeat failed: " + (e is OperationCanceledException ? "timeout" : e.Message) + "; no business request was retried";
             }

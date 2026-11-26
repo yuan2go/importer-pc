@@ -12,7 +12,8 @@ internal sealed class MvsTrayPresence
     readonly object gate = new();
     byte[]? reference, teaching;
     int width, height, count;
-    long first, previous, lastPublished;
+    long first, previous, lastPublished, teachingStarted, teachingFirst;
+    int teachingCount;
     long? publishedFirstPresentTicks;
     bool requested;
     TrayPresence pending, published;
@@ -26,9 +27,15 @@ internal sealed class MvsTrayPresence
     public long? ContinuousPresenceTicks { get { lock (gate) return pending == TrayPresence.Present && published == TrayPresence.Present ? first : null; } }
     public TrayPresenceModelSnapshot Snapshot()
     {
-        lock (gate) return new(Status, reference is not null, requested, reference is null ? null : referenceId,
-            width, height, published, pending, count, previous != 0 && first != 0 ? Math.Max(0, Elapsed(first, previous)) : 0,
-            changedFraction, brightnessShift, exposureValid);
+        lock (gate)
+        {
+            ExpireTeaching();
+            var since = requested ? teachingFirst : first;
+            return new(Status, reference is not null, requested, reference is null ? null : referenceId,
+                width, height, published, pending, requested ? teachingCount : count,
+                previous != 0 && since != 0 ? Math.Max(0, Elapsed(since, previous)) : 0,
+                changedFraction, brightnessShift, exposureValid);
+        }
     }
     public void BreakContinuity()
     {
@@ -40,16 +47,27 @@ internal sealed class MvsTrayPresence
             if (reference is not null) Status = "图像连续性中断；在位状态未知";
         }
     }
-    void FailTeaching()
+    void ExpireTeaching()
+    {
+        if (requested && Stopwatch.GetElapsedTime(teachingStarted) >= TimeSpan.FromSeconds(5))
+            FailTeaching("校准失败，未连续收到画面。请检查相机连接后重试。");
+    }
+    void FailTeaching(string? reason = null)
     {
         requested = false; teaching = reference = null; referenceId = "";
-        Status = "校准失败；请保持空托盘和稳定图像后重新校准";
+        Status = reason ?? "校准失败，画面不连续。请保持空托盘后重试。";
+    }
+    public void CancelTeaching()
+    {
+        lock (gate)
+            if (requested) FailTeaching("校准已停止。请重新确认空托盘后再校准。");
     }
     public void Teach()
     {
         lock (gate)
         {
             reference = teaching = null; requested = true; count = 0; previous = 0;
+            teachingStarted = Stopwatch.GetTimestamp(); teachingFirst = 0; teachingCount = 0;
             changedFraction = null; brightnessShift = null; exposureValid = null;
             published = pending = TrayPresence.Unknown; lastPublished = 0; referenceId = "";
             Status = "空托盘校准中；请保持托盘为空且画面稳定";
@@ -59,6 +77,7 @@ internal sealed class MvsTrayPresence
     {
         lock (gate)
         {
+            ExpireTeaching();
             if (!requested && reference is null) return null;
             var samples = new byte[Columns * Rows];
             var row = new byte[w];
@@ -86,19 +105,19 @@ internal sealed class MvsTrayPresence
             {
                 if (exposureValid == false)
                 {
-                    FailTeaching();
+                    FailTeaching("校准失败，画面过暗或过亮。请调整照明后重试。");
                     return new(TrayPresence.Unknown, "EmptyTeachingExposureInvalid; explicit calibration must be repeated");
                 }
                 var delta = teaching is null ? (Changed: 1d, Shift: 0) : Difference(teaching, samples);
                 changedFraction = teaching is null ? null : delta.Changed; brightnessShift = teaching is null ? null : delta.Shift;
-                if (teaching is null) { teaching = samples; first = ticks; count = 0; }
+                if (teaching is null) { teaching = samples; teachingFirst = ticks; }
                 else if (delta.Changed > .001 || Math.Abs(delta.Shift) > 12)
                 {
-                    FailTeaching();
+                    FailTeaching("校准失败，画面有移动。请清空托盘并保持画面稳定后重试。");
                     return new(TrayPresence.Unknown, "EmptyTeachingChanged; explicit calibration must be repeated");
                 }
-                count++;
-                if (count >= 3 && Elapsed(first, ticks) >= 800)
+                teachingCount++;
+                if (teachingCount >= 3 && Elapsed(teachingFirst, ticks) >= 800)
                 {
                     reference = teaching; referenceId = Wire.Hash(Convert.ToBase64String(reference));
                     requested = false; teaching = null; count = 0; pending = TrayPresence.Unknown;

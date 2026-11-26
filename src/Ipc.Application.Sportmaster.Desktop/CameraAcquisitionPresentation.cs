@@ -5,6 +5,30 @@ namespace Ipc.Application.Sportmaster.Desktop;
 
 internal static class CameraAcquisitionPresentation
 {
+    internal static (string Label, string Tone, string Detail, bool CanStart) Calibration(
+        SupplyStationViewModel vm, SupplyStationPositionViewModel position, bool stationDebug)
+    {
+        var tray = position.TrayPresence;
+        var (label, tone) = tray switch
+        {
+            { Calibrating: true } => ("校准中…", "Accent"),
+            { Status: var status } when status.StartsWith("校准失败", StringComparison.Ordinal) => ("校准失败", "Danger"),
+            { Presence: Ipc.Platform.TrayPresence.Absent } => ("空托盘已确认", "Success"),
+            { Presence: Ipc.Platform.TrayPresence.Present } => ("包裹在位", "Accent"),
+            { Calibrated: true } => ("已校准，等候确认", "Muted"),
+            _ => ("未校准", "Warning")
+        };
+        var problem = !vm.IsManagementMode ? "请先验证管理密码。" :
+            !vm.Fresh ? "请等待工作站状态恢复。" :
+            position.CurrentRound is not null ? "本位还有包裹，请结束本件后校准。" :
+            !stationDebug && !position.SupplyDisabled ? $"请先停用{position.Heading}，或进入整站调试。" :
+            tray is null ? "相机未连接，或不支持空托盘校准。" : null;
+        var detail = problem ?? (tray?.Calibrating == true
+            ? $"请保持空托盘和画面稳定。已采样 {tray.StableFrames} 帧。"
+            : tone == "Danger" ? tray!.Status : "请确认实时画面中没有包裹，再点击校准。");
+        return (label, tone, detail, problem is null && tray?.Calibrating == false);
+    }
+
     internal static string Describe(CameraAcquisitionResult value)
     {
         if (value.Deferred) return "相机待配置，请填写 IP 后保存；软件会自动读取序列号。";

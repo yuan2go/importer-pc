@@ -432,20 +432,23 @@ public static partial class ParcelStartupServices
         }
     }
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-    static void CreateShortcuts(DeploymentLocation location) => DeploymentShortcuts.Create(location,
-        Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory));
+    static void CreateShortcuts(DeploymentLocation location) => CreateShortcuts(location, location.PreviousDeployment);
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static void CreateShortcuts(DeploymentLocation location, DeploymentLocation? previous)
     {
         var programs = Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms);
         var desktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
-        DeploymentShortcuts.Create(location, programs, desktop, previous);
+        var startup = DeploymentShortcuts.CurrentUserStartupDirectory();
+        if (location.Shortcuts?.AutoStart == true && startup.Length == 0)
+            throw new IOException("当前 Windows 用户的启动目录不可用，开机自启尚未设置。");
+        DeploymentShortcuts.Create(location, programs, desktop, previous, startup);
         if (previous is not null && previous.ReleaseRoot != location.ReleaseRoot)
-            DeploymentShortcuts.Remove(previous, programs, desktop);
+            DeploymentShortcuts.Remove(previous, programs, desktop, startup);
     }
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static void RemoveShortcuts(DeploymentLocation location) => DeploymentShortcuts.Remove(location,
-        Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory));
+        Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory),
+        DeploymentShortcuts.CurrentUserStartupDirectory());
     static async Task<string?> ElevateAsync(StartupMaintenanceRequest request, IProgress<WindowsInstallationStage>? progress = null, IProgress<MaintenanceProgress>? maintenanceProgress = null, CancellationToken cancellationToken = default)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
@@ -563,6 +566,7 @@ public static partial class ParcelStartupServices
     sealed class ElevatedMaintenance(BusinessLaunch launch) : IStartupMaintenance, IStartupRetentionMaintenance
     {
         readonly ParcelStartupMaintenance core = Core(launch);
+        public Task<DiscoveredCamera[]> DiscoverCamerasAsync(string readerEngine) => core.DiscoverCamerasAsync(readerEngine);
         public Task<string> ReadCameraSerialAsync(string ip, string readerEngine) => core.ReadCameraSerialAsync(ip, readerEngine);
         public ValueTask DisposeAsync() => core.DisposeAsync();
         public Task<StartupRetentionPlan> PlanRetentionAsync(string destination, CancellationToken token = default) => core.PlanRetentionAsync(destination, token);

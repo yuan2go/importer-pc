@@ -47,6 +47,9 @@ public sealed partial class ParcelRuntime : IStationPositionControl
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, StationPositionState> positionControls = new(StringComparer.Ordinal);
     readonly HashSet<string> supplySuspendedReaders = new(StringComparer.Ordinal);
     bool ReaderSupplyActive(string reader) => Id != "sportmaster" || !positions.Values.Any(p => p.ReaderDeviceId == reader && PositionControl(p.Id).Mode == StationPositionMode.Disabled);
+    bool ReaderCaptureActive(ObservationSession reader) => ReaderSupplyActive(reader.Source.DeviceId) ||
+        reader.Source is ITrayPresenceSource && positions.Values.Any(position => position.ReaderDeviceId == reader.Source.DeviceId &&
+            PositionHasRcsCode(position.Id));
     StationPositionState PositionControl(string position) => positionControls.GetValueOrDefault(position)
         ?? new(position, StationPositionMode.Enabled, 0, null, null, null, null);
     bool PositionSupplyEnabled(string position) => Id != "sportmaster" || PositionControl(position).Mode == StationPositionMode.Enabled;
@@ -134,6 +137,9 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 repository.Commit(null, "PositionSupplyUnchanged", unchanged.Reason, command: command, commandResult: unchanged);
                 return unchanged;
             }
+            if (request.Enabled && readers.GetValueOrDefault(positions[request.PositionId].ReaderDeviceId)?.Source is ITrayPresenceSource presence &&
+                presence.ReadTrayPresenceModel()?.Calibrating == true)
+                return new("Rejected", "本位正在校准空托盘，请等待校准结束后启用。", repository.Revision);
             if (UsesSmArrival(request.PositionId) && request.Enabled && previous.Mode == StationPositionMode.Disabled &&
                 (SmCycle(request.PositionId).HeartbeatPending is not null || SmCycle(request.PositionId).UncertainMembership is not null ||
                 SmCycle(request.PositionId).RecoveryReason is not null || SmCycle(request.PositionId).TargetOperation is not null ||

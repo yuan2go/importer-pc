@@ -2,11 +2,24 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Automation;
 using Ipc.Platform;
+using Ipc.Application.Contracts;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed partial class ParameterSettingsControl
 {
+    void AutoStartPreference(ObjectPage page, Panel fields, SmDisplayPreferenceDraft preferences)
+    {
+        if (FirstConfiguration || Audience == SmParameterAudience.Technical) return;
+        var toggle = new CheckBox { Content = "登录后自动启动", MinHeight = 44, IsEnabled = preferences.CanEdit("AutoStart") };
+        toggle.SetBinding(CheckBox.IsCheckedProperty, new System.Windows.Data.Binding(nameof(preferences.AutoStart))
+            { Source = preferences, Mode = System.Windows.Data.BindingMode.TwoWay });
+        Field(fields, "开机自动启动供包台", toggle, preferences.CanEdit("AutoStart")
+            ? "仅在当前 Windows 用户登录后启动。使用底部“保存设置”应用。"
+            : preferences.ReadFailure("AutoStart"), "AutoStart", page);
+        AutomationProperties.SetAutomationId(toggle, "StationSettings.AutoStart");
+    }
+
     void AudioPreferences(ObjectPage page, Panel fields, SmDisplayPreferenceDraft preferences)
     {
         var status = Text("");
@@ -29,5 +42,6 @@ public sealed partial class ParameterSettingsControl
         }
         actions.Unloaded += (_, _) => { preview?.Dispose(); preview = null; };
         page.Body.Children.Add(actions); page.Body.Children.Add(status);
+        AutoStartPreference(page, fields, preferences);
     }
 }

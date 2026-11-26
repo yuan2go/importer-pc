@@ -61,7 +61,7 @@
          </Border>
          <TextBlock Text="相机预览与锁定帧" Style="{StaticResource DebugHeading}" Margin="0"/>
         </DockPanel>
-        <TabControl Margin="0,0,0,8" Padding="0" ItemContainerStyle="{StaticResource SegmentedTab}">
+        <TabControl x:Name="previewTabs" Margin="0,0,0,8" Padding="0" ItemContainerStyle="{StaticResource SegmentedTab}">
          <TabItem Header="实时画面"><ContentControl x:Name="previewHost"/></TabItem>
          <TabItem x:Name="lockedFrameTab" Header="本轮 Mono8">
           <StackPanel>
@@ -87,9 +87,26 @@
           </StackPanel>
          </TabItem>
         </TabControl>
+        <Border Style="{StaticResource WorkstationCard}" Margin="0,0,0,8">
+         <Grid>
+          <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <StackPanel Margin="0,0,8,0">
+           <WrapPanel>
+            <TextBlock Text="空托盘校准" Style="{StaticResource DebugHeading}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <Border x:Name="calibrationBadge" Style="{StaticResource OperatorStatusBadge}">
+             <TextBlock x:Name="calibrationStatus" AutomationProperties.LiveSetting="Polite"/>
+            </Border>
+           </WrapPanel>
+           <TextBlock x:Name="calibrationHint" Style="{StaticResource DebugLabel}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+          </StackPanel>
+          <Button x:Name="calibrate" Grid.Column="1" Margin="0" MinHeight="44" VerticalAlignment="Center"
+                  AutomationProperties.AutomationId="CameraPreview.CalibrateEmptyTray" Content="确认空托盘并校准"/>
+         </Grid>
+        </Border>
+        <ContentControl x:Name="previewDiagnostics" Margin="0,0,0,8"/>
         <TextBox x:Name="barcode" Style="{StaticResource DebugJson}" Height="Auto" MinHeight="44" MaxHeight="96"
                  AutomationProperties.Name="本轮完整条码，可选择复制"/>
-        <Expander Header="连续试扫" Margin="0,8,0,0"><StackPanel x:Name="batchPanel"/></Expander>
+        <Expander x:Name="batchExpander" Header="连续试扫" Margin="0,8,0,0"><StackPanel x:Name="batchPanel"/></Expander>
        </StackPanel>
       </Border>
       <Border x:Name="requestCard" Grid.Column="1" Margin="14,6,4,8" VerticalAlignment="Top" Style="{StaticResource WorkstationCard}">

@@ -47,7 +47,29 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
     public Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> Preview { get; } = preview;
     public Func<string, string, Task<string>>? CameraSerialReader { get; set; }
-    public async Task ReadCameraIdentityAsync(CapabilityDraft reader)
+    public Func<string, Task<DiscoveredCamera[]>>? CameraDiscoverer { get; set; }
+    readonly Dictionary<CapabilityDraft, (string Ip, string Serial, string Engine)> discovered = [];
+    internal static string CameraField(CapabilityDraft reader, string key) =>
+        reader.Parameters.FirstOrDefault(field => field.Field.Key == key)?.Value ?? "";
+    internal void BindDiscoveredCamera(CapabilityDraft reader, DiscoveredCamera camera, string engine)
+    {
+        if (!Readers.Contains(reader) || !reader.IsSimpleCamera || CameraField(reader, "reader.engine") != engine)
+            throw new InvalidOperationException("所选识码方式与本位不同，请按本位识码方式重新扫描。");
+        if (camera.HasIpConflict || string.IsNullOrWhiteSpace(camera.Serial) || camera.Serial.Length > 32 || camera.Serial.Any(char.IsControl))
+            throw new InvalidOperationException("此相机的地址或序列号无法确认，请核对后重新扫描。");
+        if (OtherCameraOwns(reader, camera))
+            throw new InvalidOperationException("另一侧已使用此相机。请先清空另一侧的 IP，再设为本位相机。");
+        reader.Parameters.Single(field => field.Field.Key == "device.ip").Value = camera.Ip;
+        reader.Parameters.Single(field => field.Field.Key == "device.serial").Value = camera.Serial;
+        discovered[reader] = (camera.Ip, camera.Serial, engine);
+    }
+    internal bool OtherCameraOwns(CapabilityDraft reader, DiscoveredCamera camera) =>
+        Readers.Any(other => other != reader && (CameraField(other, "device.ip") == camera.Ip ||
+            CameraField(other, "device.serial") == camera.Serial));
+
+    public Task ReadCameraIdentityAsync(CapabilityDraft reader) => ReadCameraIdentityAsync(reader, null);
+
+    async Task ReadCameraIdentityAsync(CapabilityDraft reader, string? expectedSerial)
     {
         if (!Readers.Contains(reader) || !reader.IsSimpleCamera) throw new InvalidOperationException("请选择本页的内置相机。");
         var ip = reader.Parameters.Single(p => p.Field.Key == "device.ip").Value;
@@ -59,14 +81,20 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         if (!reader.Parameters.Contains(serial) || reader.Provider != provider || reader.Parameters.Single(p => p.Field.Key == "device.ip").Value != ip ||
             reader.Parameters.Single(p => p.Field.Key == "reader.engine").Value != engine || serial.Value != originalSerial)
             throw new InvalidOperationException("读取期间相机设置已改变，本次结果未采用；请重新保存。");
+        if (expectedSerial is not null && value != expectedSerial)
+            throw new InvalidOperationException("该 IP 的相机已更换。请重新扫描并核对序列号。");
         serial.Value = value;
+        if (expectedSerial is null) discovered.Remove(reader);
     }
     public async Task<bool> PrepareCameraIdentitiesAsync()
     {
-        foreach (var reader in Readers.Where(r => r.IsSimpleCamera && !r.ConfigureLater &&
-            string.IsNullOrWhiteSpace(r.Parameters.Single(p => p.Field.Key == "device.serial").Value)))
+        foreach (var reader in Readers.Where(reader => reader.IsSimpleCamera && !reader.ConfigureLater))
         {
-            try { await ReadCameraIdentityAsync(reader); }
+            var serial = CameraField(reader, "device.serial");
+            var selected = discovered.TryGetValue(reader, out var camera) &&
+                camera == (CameraField(reader, "device.ip"), serial, CameraField(reader, "reader.engine"));
+            if (!selected && !string.IsNullOrWhiteSpace(serial)) continue;
+            try { await ReadCameraIdentityAsync(reader, selected ? camera.Serial : null); }
             catch (Exception error)
             {
                 ReportField("驱动", reader.InstanceId + "/device.ip", ChineseInterfaceText.ParameterMessage(error.Message,

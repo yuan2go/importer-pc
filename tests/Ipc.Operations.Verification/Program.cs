@@ -1,6 +1,7 @@
 extern alias Fixture;
 using ManualSupplyHarness = Fixture::ManualSupplyHarness;
 using CameraRoundHarness = Fixture::CameraRoundHarness;
+using P1PreviewCamera = Fixture::P1PreviewCamera;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
@@ -59,7 +60,8 @@ internal static partial class Program
             if (role == "ui-early-close") { EarlyCloseUi(); return 0; }
             if (role is "ui-control" or "ui-owner-loss" or "ui-smoke") { ControlUi(role == "ui-owner-loss", role == "ui-smoke"); return 0; }
             if (role is "ui" or "ui-crash" or "ui-offline" or "ui-cancel") { Ui(role == "ui-crash", role == "ui-offline", role == "ui-cancel"); return 0; }
-            if (role is "server" or "server-restart") { Server(role != "server-restart").GetAwaiter().GetResult(); return 0; }
+            if (role is "server" or "server-restart" or "server-smoke")
+            { Server(role != "server-restart", role == "server-smoke").GetAwaiter().GetResult(); return 0; }
             if (role is "unapproved" or "wrong-role") { Unapproved().GetAwaiter().GetResult(); return 0; }
             if (role == "control-crash") { ControlCrash().GetAwaiter().GetResult(); return 0; }
             if (role == "control-inflight") { ControlInflight().GetAwaiter().GetResult(); return 0; }
@@ -70,7 +72,7 @@ internal static partial class Program
     static async Task<int> CaptureOperations()
     {
         Directory.CreateDirectory(root);
-        using var server = Child("server");
+        using var server = Child("server-smoke");
         try
         {
             await Ready(server);
@@ -121,7 +123,7 @@ internal static partial class Program
         start.Environment["IPC_FIXTURE_WORKSPACE"] = workspace;
         start.Environment["IPC_FIXTURE_ROOT"] = root;
         start.Environment["IPC_FIXTURE_ROLE"] = role;
-        if (role is not ("server" or "server-restart" or "wrong-role")) start.ArgumentList.Add(InstallationIdentity.OperationsArgument);
+        if (role is not ("server" or "server-restart" or "server-smoke" or "wrong-role")) start.ArgumentList.Add(InstallationIdentity.OperationsArgument);
         var child = Process.Start(start)!; childErrors.Add(child.Id, child.StandardError.ReadToEndAsync()); return child;
     }
     static async Task Ready(Process process)
@@ -171,11 +173,12 @@ internal static partial class Program
             { await Task.Delay(50); }
         }
     }
-    static async Task Server(bool ready)
+    static async Task Server(bool ready, bool smoke)
     {
         Trace.Listeners.Add(new TextWriterTraceListener(Console.Error));
-        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "station"), deferred: true)
+        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "station"), deferred: !smoke)
         {
+            CameraSource = smoke ? binding => P1PreviewCamera.Create(binding, root) : null,
             RootOwnership = () => new ResourceLease(Path.Combine(root, "leases"), ["operations-synthetic-business-owner"])
         };
         await h.StartAsync(ready); var initial = await h.App.SnapshotAsync();
@@ -327,10 +330,18 @@ internal static partial class Program
             await control.ConnectAsync(default); IParcelApplication remote = Remote(control);
             var authority = (IWorkstationAdministration)remote;
             await Reject(() => remote.SnapshotAsync(), "authenticated installation alone cannot read privileged configuration");
+            await Reject(() => remote.CommandAsync(new(Wire.Id(), 0, "CalibrateEmptyTray", "left", "DisabledLane")),
+                "isolated calibration still requires a session grant across the control pipe");
             var grant = await authority.EnterManagementSessionAsync(OperationsPassword);
             Check(grant?.Authorized == true && (await observer.ReadAsync(default)).Positions.All(p => p.Admit),
                 "login grants a scoped session without acquiring production pause");
             var snapshot = await remote.SnapshotAsync(); var before = snapshot.Configuration.Pending ?? snapshot.Configuration.Effective;
+            var camera = snapshot.Positions!.Single(position => position.Id == "left").ReaderDeviceId;
+            await Reject(() => remote.CommandAsync(new(Wire.Id(), snapshot.Revision, "CalibrateEmptyTray", camera, "StationDebug")),
+                "an authorized pipe cannot borrow station debug without owning its workspace");
+            var guarded = await remote.CommandAsync(new(Wire.Id(), snapshot.Revision, "CalibrateEmptyTray", camera, "DisabledLane"));
+            Check(guarded.Status != "Persisted" && (await observer.ReadAsync(default)).Positions.All(p => p.Admit),
+                "the isolated calibration route reaches the application guard without acquiring a production pause");
             await Reject(() => remote.StageConfigurationAsync(snapshot.Configuration.Revision, before with { StationCode = "ILLEGAL-TECHNICAL-IDENTITY" }),
                 "technical control rejects changes to field-owned station identity before save");
             var candidate = before with { ReadTimeoutMs = before.EffectiveReadTimeoutMs + 100 };

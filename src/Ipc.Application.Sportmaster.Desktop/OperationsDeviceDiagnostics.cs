@@ -120,12 +120,16 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
                 AutomationProperties.SetAutomationId(teach, "CalibrateEmptyTray." + id);
                 teach.Click += async (_, _) => await ViewModel.RunAsync(async () =>
                 {
-                    await ViewModel.RequireManagementModeAsync();
-                    var snapshot = ViewModel.Snapshot ?? throw new InvalidOperationException("请等待状态读取恢复。");
-                    var result = await ViewModel.Application.CommandAsync(new(Wire.Id(), snapshot.Revision, "CalibrateEmptyTray", position.ReaderId));
-                    ViewModel.Message = result.Status == "Persisted" ? "空托盘校准已开始，请保持画面稳定并查看设备详情。" : "校准未开始。请确认本位没有当前包裹、相机已连接，并刷新后重试。";
+                    await ViewModel.CalibrateEmptyTrayAsync(position, DebugActive);
                 }, "校准空托盘");
-                actions.Add(() => teach.IsEnabled = DebugActive && ViewModel.IsManagementMode && ViewModel.Fresh && !ViewModel.Busy);
+                actions.Add(() =>
+                {
+                    var calibration = CameraAcquisitionPresentation.Calibration(ViewModel, position, DebugActive);
+                    teach.IsEnabled = calibration.CanStart && !ViewModel.Busy;
+                    teach.Content = position.TrayPresence?.Calibrating == true ? "校准中…" : "确认空托盘并校准";
+                    teach.ToolTip = calibration.Detail;
+                    ToolTipService.SetShowOnDisabled(teach, true);
+                });
                 facts.Children.Add(teach);
             }
             row.Children.Add(new Expander { Header = "详情", Content = facts, Margin = new(0, 8, 0, 0) });

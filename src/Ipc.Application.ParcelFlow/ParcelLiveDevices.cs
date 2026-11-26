@@ -88,7 +88,7 @@ public sealed partial class ParcelRuntime
                 await ExternalAsync(async () =>
                 {
                     foreach (var (id, session) in oldSessions)
-                        try { if (ReaderSupplyActive(id)) await DeviceCallAsync(id, () => session.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false); RegisterCameraReadFeedback(session); if (ManagementWorkspaceOpen && session.Source is IObservationInspectionSource restored) await ApplyInspectionAsync(restored, null, stopping.Token).ConfigureAwait(false); }
+                        try { if (ReaderCaptureActive(session)) await DeviceCallAsync(id, () => session.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false); RegisterCameraReadFeedback(session); if (ManagementWorkspaceOpen && session.Source is IObservationInspectionSource restored) await ApplyInspectionAsync(restored, null, stopping.Token).ConfigureAwait(false); }
                         catch (Exception reconnect) when (reconnect is not OperationCanceledException || !stopping.IsCancellationRequested) { Diagnostic("相机通信", "保存设置时原相机未能恢复", "警告", id + ": " + reconnect.GetType().Name); }
                     if (oldWcs is not null) try { await oldWcs.StartAsync(stopping.Token).ConfigureAwait(false); } catch (Exception restart) when (restart is not OperationCanceledException || !stopping.IsCancellationRequested) { Diagnostic("设备通信", "保存设置时原 RCS 连接未能恢复", "警告", restart.GetType().Name); }
                     return true;
@@ -138,7 +138,7 @@ public sealed partial class ParcelRuntime
                     {
                         if (Id == "sportmaster" && session.Source is IObservationInspectionSource startedSource)
                             await ApplyInspectionAsync(startedSource, null, connect.Token).ConfigureAwait(false);
-                        if (!ReaderSupplyActive(id)) { supplySuspendedReaders.Add(id); continue; }
+                        if (!ReaderCaptureActive(session)) { supplySuspendedReaders.Add(id); continue; }
                         supplySuspendedReaders.Remove(id);
                         await DeviceCallAsync(id, () => session.StartAsync(Enqueue, ReaderHealthChanged, connect.Token), connect.Token).ConfigureAwait(false);
                     }

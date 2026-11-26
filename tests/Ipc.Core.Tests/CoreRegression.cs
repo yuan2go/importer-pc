@@ -73,6 +73,7 @@ public sealed class CoreRegression
     [DataRow("--sm-runtime-responsibility")]
     [DataRow("--sm-dispatch-resources")]
     [DataRow("--sm-arrival-cameras")]
+    [DataRow("--sm-field-p1")]
     [DataRow("--sm-arrivals")]
     [DataRow("--camera-chain-reliability")]
     [DataRow("--sm-round-lifecycle")]

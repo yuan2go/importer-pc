@@ -244,12 +244,17 @@ public sealed class OperationsControlServer : IAsyncDisposable
         }
         if (name is "ICameraInspection.BeginCameraInspectionAsync/1" or "ICameraInspection.EndCameraInspectionAsync/1" or
             "ICameraInspection.StopCameraInspectionCaptureAsync/2" or "ICameraReadRounds.CloseUnsentDebugRoundAsync/1" or "ICameraReadRounds.ArmCameraReadAsync/1" or
-            "ICameraReadRounds.PrepareManualRcsRequestAsync/1" or "ICameraReadRounds.SendCameraRoundAsync/1" or "IParcelApplication.ReconnectDeviceAsync/1" ||
-            name == "IBusinessApplication.CommandAsync/1" && request.Arguments[0].GetProperty("Kind").GetString() == "CalibrateEmptyTray")
+            "ICameraReadRounds.PrepareManualRcsRequestAsync/1" or "ICameraReadRounds.SendCameraRoundAsync/1" or "IParcelApplication.ReconnectDeviceAsync/1")
             if (!session.WorkspaceOwned || session.WorkspaceGrant != session.Grant) throw new UnauthorizedAccessException("请先明确进入设备调试；影响范围为整站自动供包和人工提交。");
         if (name == "IBusinessApplication.CommandAsync/1")
         {
-            var kind = request.Arguments[0].Deserialize<BusinessCommand>()!.Kind;
+            var command = request.Arguments[0].Deserialize<BusinessCommand>()!;
+            var kind = command.Kind;
+            // Only the owning pipe may use station-wide debug authority. The local
+            // runtime rechecks the disabled lane under its own gate at execution.
+            if (kind == "CalibrateEmptyTray" && command.Value != "DisabledLane" &&
+                (!session.WorkspaceOwned || session.WorkspaceGrant != session.Grant))
+                throw new UnauthorizedAccessException("请先停用要校准的投递位，或从本窗进入整站调试。");
             if (kind is not ("Pause" or "Resume" or "CalibrateEmptyTray" or "ArchiveHistory" or "InspectRestore" or "ConfirmRestore" or
                 "IngressResponsibilities" or "InspectInterruptedIngress" or "AcknowledgeOverload" or "AcknowledgeIdentityConflict" or
                 "AbandonUnsubmitted" or "ContinuePrepared" or "ContinueUpload" or "ReceiptResponsibilities" or "ReconcileReceipt"))

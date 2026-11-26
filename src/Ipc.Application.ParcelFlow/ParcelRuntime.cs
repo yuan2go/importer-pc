@@ -264,7 +264,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 // source. Install the read policy before deferring acquisition.
                 if (Id == "sportmaster" && reader.Source is IObservationInspectionSource source)
                     await ApplyInspectionAsync(source, null, token).ConfigureAwait(false);
-                if (!ReaderSupplyActive(reader.Source.DeviceId)) { supplySuspendedReaders.Add(reader.Source.DeviceId); continue; }
+                if (!ReaderCaptureActive(reader)) { supplySuspendedReaders.Add(reader.Source.DeviceId); continue; }
                 try
                 {
                     await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false);

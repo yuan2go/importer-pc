@@ -13,6 +13,29 @@ public sealed partial class ParcelRepository
 }
 public sealed partial class ParcelRuntime
 {
+    public async Task<DiscoveredCamera[]> DiscoverCamerasAsync(string readerEngine)
+    {
+        await gate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            Management.Require();
+            if (Id != "sportmaster" || stopped || stopping.IsCancellationRequested)
+                throw new InvalidOperationException("当前供包台无法扫描相机。");
+            try
+            {
+                var cameras = await ExternalAsync(() => Task.Run(() => factory.DiscoverCameras(readerEngine))).ConfigureAwait(false);
+                WriteRuntimeLog("设备", "局域网相机扫描完成", new { ReaderEngine = readerEngine, Count = cameras.Length });
+                return cameras;
+            }
+            catch (Exception error)
+            {
+                WriteRuntimeLog("设备", "局域网相机扫描失败", new { ReaderEngine = readerEngine, Error = error.ToString() }, "错误");
+                throw;
+            }
+        }
+        finally { gate.Release(); }
+    }
+
     public async Task<string> ReadCameraSerialAsync(string ip, string readerEngine)
     {
         await gate.WaitAsync().ConfigureAwait(false);

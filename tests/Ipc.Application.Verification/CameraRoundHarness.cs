@@ -241,6 +241,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         // Live replacement bookkeeping: how many ports were rebuilt, and whether new cameras are found.
         public int ReaderBuilds, WcsBuilds;
         public bool DiscoverReplacements = true;
+        public bool UseAcquisitionDirectly { get; set; }
         public Func<IControlledObservationSource, IControlledObservationSource>? DecorateReader { get; set; }
         public bool RejectLiveReaders = false, FailCandidateRelease = false;
         public bool CheckBuiltInProductionAdmission { get; set; }
@@ -269,7 +270,16 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         {
             Validate(c); var readers = new Dictionary<string, IControlledObservationSource>();
             foreach (var binding in c.Topology!.Readers)
-            { var source = new QualifiedTraySource(Reader(binding)); Trays[binding.DeviceId] = source; readers.Add(binding.DeviceId, DecorateReader?.Invoke(source) ?? source); }
+            {
+                var acquisition = Reader(binding);
+                if (UseAcquisitionDirectly) readers.Add(binding.DeviceId, acquisition);
+                else
+                {
+                    var source = new QualifiedTraySource(acquisition);
+                    Trays[binding.DeviceId] = source;
+                    readers.Add(binding.DeviceId, DecorateReader?.Invoke(source) ?? source);
+                }
+            }
             var wcs = new SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
             if (RcsRequestClock is { } clock) wcs.RequestTimeForVerification = clock;
             return new(readers[c.Reader.DeviceId], null, wcs, null, new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint }, Readers: readers);
@@ -348,14 +358,19 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         }
         internal bool WasReturned(byte[] pixels)
         { lock (copiedLoans) return copiedLoans.TryGetValue(pixels, out var loan) && Volatile.Read(ref loan.Returned); }
+        internal RoundPixels? AutomaticPreview { get; set; }
+        uint automaticFrame;
+        long lastAutomaticFrame;
         public bool HasFrame { get; private set; }
         public bool ReturnsDecodedFrames => binding.Parameters?.GetValueOrDefault("reader.engine") == "mvid-native";
         public void Enqueue(RoundPixels p, uint number) => queue.Enqueue((p, number, null, null));
         public void EnqueueNative(RoundPixels p, uint number, RecognitionSymbol[] symbols, MvsFrameRejection? rejection = null)
             => queue.Enqueue((p, number, symbols, rejection));
         public void Initialize() { }
-        public MvsDevice[] Enumerate() => Discovered ? [new(binding.Parameters!["device.ip"], binding.Parameters["device.serial"], "SYNTHETIC", "SYNTHETIC", [])] : [];
-        public void Create(MvsDevice d) { }
+        public Func<MvsDevice[]>? EnumerationOverride { get; set; }
+        public MvsDevice[] Enumerate() => EnumerationOverride is { } enumerate ? enumerate() : Discovered ? [new(binding.Parameters!["device.ip"], binding.Parameters["device.serial"], "SYNTHETIC", "SYNTHETIC", [])] : [];
+        public int Creates;
+        public void Create(MvsDevice d) => Interlocked.Increment(ref Creates);
         public void Open() => Interlocked.Increment(ref Opens);
         public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : key == "AcquisitionMode" ? acquisition : trigger;
         public void SetEnumValue(string key, uint value) { if (key == "TriggerMode") trigger = value; else if (key == "AcquisitionMode") acquisition = value; else throw new InvalidOperationException(key); }
@@ -375,7 +390,14 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         }
         MvsFrame? AcquireFrame()
         {
-            if (!queue.TryDequeue(out var frame)) { Thread.Sleep(4); return null; }
+            if (!queue.TryDequeue(out var frame))
+            {
+                if (AutomaticPreview is not { } preview ||
+                    System.Diagnostics.Stopwatch.GetElapsedTime(lastAutomaticFrame) < TimeSpan.FromMilliseconds(75))
+                { Thread.Sleep(4); return null; }
+                lastAutomaticFrame = System.Diagnostics.Stopwatch.GetTimestamp();
+                frame = (preview, ++automaticFrame, [], null);
+            }
             if (HasFrame) throw new InvalidOperationException("Synthetic SDK loan leaked");
             borrowedFrame = frame.Number;
             borrowedLoan = new(frame.Number);

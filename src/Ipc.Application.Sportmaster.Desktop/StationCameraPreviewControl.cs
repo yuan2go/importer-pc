@@ -25,6 +25,8 @@ internal sealed class StationCameraPreviewControl : UserControl
     };
     readonly TextBlock status = Label(), counters = Label();
     CancellationTokenSource? lifetime;
+    internal bool HasLiveFrame => IsVisible && capturedAt is { } at &&
+        DateTimeOffset.UtcNow - at >= TimeSpan.Zero && DateTimeOffset.UtcNow - at <= TimeSpan.FromSeconds(2);
     string device = "", shown = "";
     DateTimeOffset? capturedAt;
     long generation;
@@ -37,7 +39,7 @@ internal sealed class StationCameraPreviewControl : UserControl
         var screen = new Grid { Height = previewHeight }.Themed(Panel.BackgroundProperty, "Ink");
         hint.SetResourceReference(TextBlock.ForegroundProperty, "Surface");
         screen.Children.Add(image); screen.Children.Add(hint); body.Children.Add(screen); body.Children.Add(status);
-        if (showDiagnostics) body.Children.Add(new Expander { Header = "取帧与解码诊断", Content = counters, Margin = new(0, 4, 0, 0) });
+        if (showDiagnostics) body.Children.Add(CreateDiagnostics());
         screen.ToolTip = "实时预览持续显示；不改变现有作业状态或本轮锁定结果。";
         Content = body; AutomationProperties.SetName(screen, "所选相机实时视频，与本轮锁定照片独立");
         timer.Tick += async (_, _) => await PollAsync();
@@ -45,6 +47,7 @@ internal sealed class StationCameraPreviewControl : UserControl
         Unloaded += (_, _) => Revoke();
         IsVisibleChanged += async (_, _) => { generation++; Clear("等待当前相机的新画面"); if (IsVisible) await PollAsync(); };
     }
+    internal Expander CreateDiagnostics() => new() { Header = "取帧与解码诊断", Content = counters, Margin = new(0, 4, 0, 0) };
     public void SelectDevice(string id) { if (device == id) return; device = id; generation++; Clear("等待所选相机的新画面"); counters.Text = ""; }
     public async Task PollAsync()
     {

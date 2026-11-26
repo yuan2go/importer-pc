@@ -47,6 +47,7 @@ if (args.Contains("--cr-sm-templates")) { await CrVerifiedSmChecks.Templates(wor
 if (args.Contains("--cr-sm-preferences")) { await CrVerifiedSmChecks.Preferences(workspace, root); return; }
 if (args.Contains("--mvs-presence")) { await MvsPresenceChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-single-station")) { await SmSingleStationChecks.Run(workspace, root); return; }
+if (args.Contains("--sm-field-p1")) { await SmFieldReadiness.Run(workspace, root); return; }
 if (args.Contains("--sm-arrival-cameras")) { await Ipc.Verification.SmArrivalCameraChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-arrivals")) { await Ipc.Verification.SmArrivalChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-round-lifecycle")) { await Ipc.Verification.SmRoundLifecycle.Run(workspace, root); return; }

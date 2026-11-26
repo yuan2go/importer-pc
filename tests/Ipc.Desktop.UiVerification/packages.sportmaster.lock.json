@@ -336,6 +336,12 @@
           "Ipc.Platform": "[1.0.0, )"
         }
       },
+      "ipc.application.directplc": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.ParcelFlow": "[1.0.0, )"
+        }
+      },
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
@@ -363,10 +369,51 @@
           "Ipc.Application.ParcelFlow.Desktop": "[1.0.0, )"
         }
       },
+      "ipc.application.verification": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.DirectPlc": "[1.0.0, )",
+          "Ipc.Application.Sportmaster": "[1.0.0, )",
+          "Ipc.Application.WcsToPlc": "[1.0.0, )",
+          "Ipc.Components": "[1.0.0, )",
+          "Ipc.Drivers": "[1.0.0, )",
+          "Ipc.Drivers.Hikrobot.Mvs": "[1.0.0, )",
+          "Ipc.Integrations": "[1.0.0, )",
+          "Ipc.Integrations.SportmasterRcs": "[1.0.0, )",
+          "Ipc.Supply": "[1.0.0, )"
+        }
+      },
+      "ipc.application.wcstoplc": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.ParcelFlow": "[1.0.0, )"
+        }
+      },
+      "ipc.assembly": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Sportmaster": "[1.0.0, )",
+          "Ipc.Components": "[1.0.0, )",
+          "Ipc.Drivers": "[1.0.0, )",
+          "Ipc.Drivers.Hikrobot.Mvs": "[1.0.0, )",
+          "Ipc.Integrations": "[1.0.0, )",
+          "Ipc.Platform": "[1.0.0, )",
+          "Ipc.Supply": "[1.0.0, )"
+        }
+      },
       "ipc.components": {
         "type": "Project",
         "dependencies": {
           "Ipc.Reference.Protocol": "[1.0.0, )"
+        }
+      },
+      "ipc.desktop": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Sportmaster.Desktop": "[1.0.0, )",
+          "Ipc.Assembly": "[1.0.0, )",
+          "Ipc.Operations.Desktop": "[1.0.0, )",
+          "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },
       "ipc.diagnostics": {
@@ -381,12 +428,6 @@
           "Ipc.Reference.Protocol": "[1.0.0, )"
         }
       },
-      "ipc.drivers.hikrobot": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Platform": "[1.0.0, )"
-        }
-      },
       "ipc.drivers.hikrobot.mvs": {
         "type": "Project",
         "dependencies": {
@@ -399,6 +440,26 @@
         "dependencies": {
           "Ipc.Reference.Protocol": "[1.0.0, )",
           "Ipc.Supply.Contracts": "[1.0.0, )"
+        }
+      },
+      "ipc.integrations.sportmasterrcs": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
+        }
+      },
+      "ipc.operations": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Diagnostics": "[1.0.0, )"
+        }
+      },
+      "ipc.operations.desktop": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Sportmaster.Desktop": "[1.0.0, )",
+          "Ipc.Operations": "[1.0.0, )",
+          "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },
       "ipc.platform": {

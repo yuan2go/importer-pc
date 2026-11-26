@@ -140,7 +140,12 @@ public static class WindowsStoragePaths
         var directory = new DirectoryInfo(path);
         if (!directory.Exists) directory.Create(MachineRuntimeSetup.DirectoryAcl(account, FileSystemRights.FullControl));
         RequireUserDirectory(path, account.Value);
-        var presentation = new DirectoryInfo(Path.Combine(path, "presentation"));
+        PreparePresentationDirectory(new DirectoryInfo(Path.Combine(path, "presentation")), account);
+        return path;
+    }
+    [SupportedOSPlatform("windows")]
+    internal static void PreparePresentationDirectory(DirectoryInfo presentation, SecurityIdentifier account)
+    {
         DeploymentPaths.RequireOrdinaryAncestors(presentation.FullName);
         if (!presentation.Exists)
             presentation.Create(MachineRuntimeSetup.DirectoryAcl(account, FileSystemRights.Modify));
@@ -159,7 +164,6 @@ public static class WindowsStoragePaths
                 presentation.SetAccessControl(acl);
             }
         }
-        return path;
     }
     [SupportedOSPlatform("windows")]
     internal static void RequireUserDirectory(string path, string windowsSid)

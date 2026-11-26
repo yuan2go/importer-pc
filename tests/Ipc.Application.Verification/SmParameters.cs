@@ -64,7 +64,7 @@ static class SmParameters
             var prefs = editor.DisplayPreferences!;
             prefs.ShowPace = false; prefs.CueVolume = 35; prefs.OpeningMode = PresentationPreferences.WindowOpeningMode.FullScreen;
             var capture = startup.Capture(); var restored = new StartupConfigurationDraft(initial, catalog, true).WithRestored(capture);
-            Check(restored.DisplayPreferences!.Signature == prefs.Signature && restored.DisplayPreferences.HasChanges && PresentationPreferences.ReadCueVolume("sportmaster") == 0, "current encrypted draft captures all local preferences without applying them");
+            Check(restored.DisplayPreferences!.Signature == prefs.Signature && restored.DisplayPreferences.HasChanges && PresentationPreferences.ReadCueVolume("sportmaster") == PresentationPreferences.DefaultCueVolume, "current encrypted draft captures all local preferences without applying them");
             var template = StartupSiteTemplates.Export("sportmaster", capture);
             Check(!template.Defaults.Values.Keys.Any(k => k.StartsWith("preference.")), "portable site templates never carry another Windows user's preference drafts");
             var dir = Path.Combine(root, "preferences", "presentation"); Directory.CreateDirectory(dir);

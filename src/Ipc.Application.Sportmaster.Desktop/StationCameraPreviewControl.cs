@@ -18,7 +18,6 @@ internal sealed class StationCameraPreviewControl : UserControl
     readonly TextBlock hint = new()
     {
         Text = "等待相机实时画面",
-        Foreground = Brushes.White,
         TextWrapping = TextWrapping.Wrap,
         HorizontalAlignment = HorizontalAlignment.Center,
         VerticalAlignment = VerticalAlignment.Center,
@@ -34,7 +33,9 @@ internal sealed class StationCameraPreviewControl : UserControl
     public StationCameraPreviewControl(SupplyStationViewModel vm, double previewHeight = 286, bool showDiagnostics = true)
     {
         this.vm = vm;
-        var body = new StackPanel(); var screen = new Grid { Height = previewHeight, Background = new SolidColorBrush(Color.FromRgb(37, 43, 51)) };
+        var body = new StackPanel();
+        var screen = new Grid { Height = previewHeight }.Themed(Panel.BackgroundProperty, "Ink");
+        hint.SetResourceReference(TextBlock.ForegroundProperty, "Surface");
         screen.Children.Add(image); screen.Children.Add(hint); body.Children.Add(screen); body.Children.Add(status);
         if (showDiagnostics) body.Children.Add(new Expander { Header = "取帧与解码诊断", Content = counters, Margin = new(0, 4, 0, 0) });
         screen.ToolTip = "实时预览持续显示；不改变现有作业状态或本轮锁定结果。";
@@ -59,8 +60,13 @@ internal sealed class StationCameraPreviewControl : UserControl
             var value = borrowed is null ? await vm.ServiceAsync(() => api.ReadCameraPreviewAsync(selected, token)) :
                 new CameraPreviewResult(borrowed.Status, borrowed.Frame) { Diagnostics = borrowed.Diagnostics };
             if (token.IsCancellationRequested || version != generation || !IsVisible || !vm.IsManagementMode) return;
-            status.Text = value.Status; counters.Text = Describe(value.Diagnostics);
-            if (value.Frame is not { } frame) { Clear(value.Status); return; }
+            counters.Text = Describe(value.Diagnostics);
+            if (value.Frame is not { } frame)
+            {
+                var deferred = vm.Snapshot is { } snapshot && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, selected);
+                Clear(deferred ? "相机待配置。请填写 IP，保存时自动读取序列号。" : value.Status);
+                return;
+            }
             if (frame.DeviceId != selected || frame.Width <= 0 || frame.Height <= 0 || frame.Width > 640 || frame.Height > 480 ||
                 frame.Gray8.LongLength < (long)frame.Width * frame.Height || frame.CapturedAt > DateTimeOffset.UtcNow ||
                 DateTimeOffset.UtcNow - frame.CapturedAt > TimeSpan.FromSeconds(3)) { Clear("画面身份或时间无效，等待当前连接的新帧"); return; }
@@ -73,6 +79,7 @@ internal sealed class StationCameraPreviewControl : UserControl
                 image.Source = bitmap; shown = key; capturedAt = frame.CapturedAt;
             }
             hint.Visibility = Visibility.Collapsed;
+            status.Visibility = Visibility.Visible;
             status.Text = "实时视频 · 帧 " + frame.FrameNumber + " · " + frame.CapturedAt.ToLocalTime().ToString("HH:mm:ss.fff");
         }
         catch (OperationCanceledException) { if (version == generation) Clear("预览已停止"); }
@@ -101,7 +108,13 @@ internal sealed class StationCameraPreviewControl : UserControl
             (d.LastFrameRejection is null ? "" : "\n本次连接记录过异常图像；累计次数属于历史，不代表当前没有画面。") +
             (d.Failure is null ? "" : "\n采集故障，请导出诊断记录并联系维护人员。");
     }
-    void Clear(string message) { image.Source = null; bitmap = null; shown = ""; capturedAt = null; hint.Text = message; hint.Visibility = Visibility.Visible; status.Text = message; }
+    void Clear(string message)
+    {
+        image.Source = null; bitmap = null; shown = ""; capturedAt = null;
+        hint.Text = message; hint.Visibility = Visibility.Visible;
+        status.Visibility = Visibility.Collapsed;
+    }
     public void Revoke() { generation++; timer.Stop(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; Clear("预览已停止"); counters.Text = ""; }
-    static TextBlock Label() => new() { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 5, 0, 0) };
+    static TextBlock Label() => new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 5, 0, 0) }
+        .Themed(TextBlock.ForegroundProperty, "Muted");
 }

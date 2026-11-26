@@ -13,7 +13,7 @@ public sealed partial class ParameterSettingsControl
     ObjectPage[] OrderedPages() => (FirstConfiguration ? pages.OrderBy(p => p.Order) : Model?.ApplicationId == "sportmaster" ? pages.OrderBy(p => p.TaskOrder) : pages.AsEnumerable()).Where(p => p.Available).ToArray();
     int[] FirstCategories => Model?.ApplicationId == "sportmaster" ? [0, 2, 1, 4] : [0, 1, 2, 3, 4];
     public string CurrentPageTitle => currentPage?.Title ?? "";
-    public string PageProgress => FirstConfiguration && currentPage is not null ? $"第 {Array.IndexOf(FirstCategories, currentPage.Category) + 1} / {FirstCategories.Length} 步 · {currentPage.GroupTitle}" : currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
+    public string PageProgress => FirstConfiguration && currentPage is not null ? $"第 {Array.IndexOf(FirstCategories, currentPage.Category) + 1} / {FirstCategories.Length} 步" : currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
     public bool IsReviewPage => currentPage?.Category == 4;
     public bool HasPreviousPage => currentPage is not null && Array.IndexOf(OrderedPages(), currentPage) > 0;
     public string? NextPageTitle
@@ -48,11 +48,7 @@ public sealed partial class ParameterSettingsControl
             var categoryPages = OrderedPages().Where(p => p.Category == category).ToArray();
             var complete = categoryPages.Length > 0 && categoryPages.All(checkedPages.Contains);
             var current = currentPage?.Category == category;
-            button.Content = (index + 1) + "  " + button.Tag;
-            button.SetResourceReference(Control.BackgroundProperty, current ? "AccentBackground" : "Surface");
-            button.SetResourceReference(Control.ForegroundProperty, current ? "Accent" : "Ink");
             System.Windows.Automation.AutomationProperties.SetItemStatus(button, current ? "当前步骤" : complete ? "已检查" : "未检查");
-            button.FontWeight = currentPage?.Category == category ? UiTypography.Emphasis : FontWeights.Normal;
             button.ToolTip = currentPage?.Category == category ? "当前步骤" : "前进时检查前置页面，返回保留输入";
         }
         var currentIndex = currentPage is null ? -1 : Array.IndexOf(FirstCategories, currentPage.Category);

@@ -104,7 +104,6 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string SettingsRunMode => (Snapshot?.Configuration.Effective.Mode switch
     { RunMode.Simulation => "模拟模式", RunMode.Production => "生产模式", _ => "模式未确认" }) + " · 软件暂停不是安全急停";
     public string WorkspaceStatusBackground => OperatorTokens.Neutral;
-    public string WorkspaceStatusForeground => Fresh && !Left.SupplyEnabled && !Right.SupplyEnabled ? OperatorTokens.Warning : OperatorTokens.Ink;
     internal void ReportBarcodeFeedback(ParcelBarcodeReceipt receipt, string value) => SetPresentationMessage(value, receipt.Status == "Admitted" ? PresentationFeedbackKind.ResultMirrored : PresentationFeedbackKind.General);
     public string WorkFeedback => SelectedPage == "maintenance" ? ChineseInterfaceText.ParameterMessage(TaskFeedback) : TaskFeedback;
     // This release hides page entrances only; the business ledger and retained pages remain.
@@ -113,7 +112,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string SelectedPage
     {
         get => selectedPage;
-        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug" or "statistics" or "exceptions")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
+        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug" or "statistics" or "exceptions")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(WorkspaceStatusBackground)); }
     }
     public string PageTitle => SelectedPage switch { "statistics" => "统计与班次", "exceptions" => "异常处理", "history" => "记录", "maintenance" => "设置", "diagnostics" => "设备与诊断", "debug" => "调试", "logs" => "日志", _ => "作业" };
     public SupplyStationViewModel(IParcelApplication application) : base(application, "供包工作台", "扫码 → 上游格口")
@@ -132,7 +131,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
         NotifyOperatorWorkspace();
-        foreach (var name in new[] { nameof(Station), nameof(WorkNotice), nameof(WorkspaceStatusBackground), nameof(WorkspaceStatusForeground), nameof(SettingsRunMode), nameof(RcsState), nameof(RcsServiceStatus), nameof(RcsPresentation), nameof(RcsButtonText), nameof(CanCheckRcs) }) Changed(name);
+        foreach (var name in new[] { nameof(Station), nameof(WorkNotice), nameof(WorkspaceStatusBackground), nameof(SettingsRunMode), nameof(RcsState), nameof(RcsServiceStatus), nameof(RcsPresentation), nameof(RcsButtonText), nameof(CanCheckRcs) }) Changed(name);
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)
@@ -193,10 +192,10 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string PositionId { get; private set; }
     public string Heading => requestedPosition == "left" ? "左投递位" : "右投递位";
     StationVehicleState? vehicle;
-    public string VehicleNumberText => vehicle is null ? "小车" : "小车 " + vehicle.VehicleNo;
+    public string VehicleNumberText => vehicle?.VehicleNo ?? "小车";
     public string VehicleStatusText => vehicle is null ? "小车：待确认" : VehicleNumberText + " · " + (vehicle.Status switch
-    { "IDLE" => CanAdmit || CanSubmitBarcode ? "空闲，可以投包" : "空闲，等待就绪", "TASKING" => "工作中，不可以投包", _ => "状态待确认" });
-    public string CompactVehicleStatusText => vehicle?.Status switch { "IDLE" => CanAdmit || CanSubmitBarcode ? "空闲 可投包" : "空闲 待就绪", "TASKING" => "工作中 勿投包", _ => "待确认" };
+    { "IDLE" => CanAdmit || CanSubmitBarcode ? "可投包" : "待就绪", "TASKING" => "作业中", _ => "待确认" });
+    public string CompactVehicleStatusText => vehicle?.Status switch { "IDLE" => CanAdmit || CanSubmitBarcode ? "可投包" : "待就绪", "TASKING" => "作业中", _ => "待确认" };
     public string VehicleStatusForeground => vehicle?.Status switch { "IDLE" => CanAdmit || CanSubmitBarcode ? OperatorTokens.Success : OperatorTokens.Muted, "TASKING" => OperatorTokens.Danger, _ => OperatorTokens.Muted };
     public bool InputTargetActive => owner.InputTargetPosition == PositionId;
     public string InputTargetBrush => InputTargetActive ? OperatorTokens.Accent : "Transparent";

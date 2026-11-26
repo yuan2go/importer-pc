@@ -9,7 +9,6 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed partial class ParameterSettingsControl
 {
     readonly StackPanel readinessLines = new();
-    readonly TextBlock readinessSummary = Themed(new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Body, FontWeight = UiTypography.Emphasis, Margin = new(0, 0, 0, 8) }, TextBlock.ForegroundProperty, "Ink");
     readonly StackPanel networkResults = new() { Margin = new(0, 8, 0, 0) };
     string? networkFingerprint;
     bool networkChecking, readinessHooked;
@@ -22,17 +21,17 @@ public sealed partial class ParameterSettingsControl
 
     FrameworkElement ReadinessCard()
     {
-        foreach (var content in new FrameworkElement[] { readinessSummary, readinessLines, networkResults })
+        foreach (var content in new FrameworkElement[] { readinessLines, networkResults })
             if (content.Parent is Panel previous) previous.Children.Remove(content);
         var panel = new StackPanel();
-        panel.Children.Add(Text("各来源情况", true));
-        AutomationProperties.SetLiveSetting(readinessSummary, AutomationLiveSetting.Polite);
-        panel.Children.Add(readinessSummary); panel.Children.Add(readinessLines);
+        panel.Children.Add(Text("配置检查结果", true));
+        AutomationProperties.SetLiveSetting(readinessLines, AutomationLiveSetting.Polite);
+        panel.Children.Add(readinessLines);
         var check = new Button { Content = "检查网络连接", MinHeight = 38, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0), Style = (Style)Resources["ParameterQuietAction"] };
         AutomationProperties.SetHelpText(check, "只检查网络能否到达相机和 RCS 地址，不连接相机、不发送取格口请求。");
         check.Click += async (_, _) => await CheckNetwork(check);
         panel.Children.Add(check);
-        panel.Children.Add(Text("网络检查只说明地址能否到达；相机身份、采图和 RCS 心跳在保存并启动后确认。"));
+        panel.Children.Add(Text("仅测试网络连通性，相机采图与 RCS 心跳将在启动后校验。"));
         panel.Children.Add(networkResults);
         var card = Card(panel); card.Margin = new(0, 0, 0, 16); return card;
     }
@@ -42,7 +41,6 @@ public sealed partial class ParameterSettingsControl
         if (!UsesFirstReadiness) return;
         var cameras = CameraSlots(); var target = RcsTarget();
         var lines = FirstConfigurationReadiness.Lines(cameras, target);
-        readinessSummary.Text = FirstConfigurationReadiness.Summary(lines);
         readinessLines.Children.Clear();
         foreach (var line in lines)
         {

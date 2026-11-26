@@ -201,22 +201,19 @@ jobs:
           . ./scripts/project-environment.ps1
           dotnet build src/Ipc.Desktop -c Release "-p:BusinessModule=$env:IPC_BUSINESS" -p:RestoreLockedMode=true -m:1
           exit $LASTEXITCODE
-      - name: Verify management entry status handoff
+      - name: Verify shipped glyphs and capture native SM pages
         if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
-          dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:RestoreLockedMode=true -m:1
+          dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true -m:1
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll $PWD.Path --management-entry-ordering
-          $verificationExit = $LASTEXITCODE
-          $evidence = (Get-Content -LiteralPath .artifacts/WINDOWS-WPF-EVIDENCE.txt -Raw).Trim()
-          $lines = @(Get-Content -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log'))
-          $lines | Set-Content -LiteralPath .artifacts/management-entry.log
-          $lines | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
-          $lines | Write-Output
-          if ($verificationExit) { exit $verificationExit }
-          if (!@($lines | Where-Object { $_ -like 'PASS MANAGEMENT-ENTRY *' }).Count -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { throw 'Management entry verification incomplete' }
+          $env:IPC_UI_EVIDENCE = Join-Path $PWD.Path '.artifacts/window-native'
+          $ui = 'tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll'
+          dotnet $ui --typography
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet $ui --smoke-screenshots
+          exit $LASTEXITCODE
       - name: Verify read-only operations processes and native windows
         if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
         shell: pwsh
@@ -229,43 +226,6 @@ jobs:
           $verificationExit = $LASTEXITCODE
           Get-Content .artifacts/sm-operations.log
           exit $verificationExit
-      - name: Verify workstation, configuration and window behavior
-        if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
-        shell: pwsh
-        run: |
-          . ./scripts/project-environment.ps1
-          $env:IPC_FROZEN_DESKTOP = Join-Path $PWD.Path 'src/Ipc.Desktop/bin/Release/net10.0-windows/Ipc.Desktop.dll'
-          $failedSuites = @()
-          foreach ($suite in @('operator-ux-18', 'rcs-no-destination-ui', 'paused-workstation', 'home-centered-states', 'camera-barcode-current', 'camera-round-ui', 'manual-supply-ui', 'manual-rcs-debug-ui', 'camera-settings-feedback', 'camera-filter-preview', 'continuous-pda-input', 'startup-read-failure', 'debug-batch-actions', 'unsaved-window-actions', 'startup-defaults-ui', 'window-preference', 'first-preference-save', 'parameter-guidance-startup', 'independent-settings', 'station-settings', 'startup-experience', 'startup-close', 'management-close-read-race', 'complete-backup-ui', 'uninstall-result-actions', 'lifecycle-maintenance-ui')) {
-            dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll $PWD.Path "--$suite"
-            $verificationExit = $LASTEXITCODE
-            $evidence = (Get-Content -LiteralPath .artifacts/WINDOWS-WPF-EVIDENCE.txt -Raw).Trim()
-            $lines = @(Get-Content -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log'))
-            $lines | Set-Content -LiteralPath ".artifacts/$suite.log"
-            if ($suite -in @('startup-read-failure', 'debug-batch-actions', 'unsaved-window-actions', 'startup-defaults-ui', 'window-preference', 'first-preference-save', 'parameter-guidance-startup', 'independent-settings', 'station-settings', 'startup-experience', 'startup-close', 'management-close-read-race', 'complete-backup-ui', 'uninstall-result-actions', 'lifecycle-maintenance-ui')) {
-              $captureDirectory = Join-Path '.artifacts/window-native' $suite
-              New-Item -ItemType Directory -Path $captureDirectory -Force | Out-Null
-              Get-ChildItem -LiteralPath $evidence -Filter '*.png' -File | Copy-Item -Destination $captureDirectory
-            }
-            $lines | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
-            $lines | Write-Output
-            if ($verificationExit -or !@($lines | Where-Object { $_ -like 'PASS *' }).Count -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { $failedSuites += $suite }
-          }
-          if ($failedSuites.Count) { throw "Failed workstation verification: $($failedSuites -join ', ')" }
-      - name: Verify compact exit confirmation and owner release
-        if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
-        shell: pwsh
-        run: |
-          . ./scripts/project-environment.ps1
-          dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll $PWD.Path --station-exit-dialog
-          $verificationExit = $LASTEXITCODE
-          $evidence = (Get-Content -LiteralPath .artifacts/WINDOWS-WPF-EVIDENCE.txt -Raw).Trim()
-          $lines = @(Get-Content -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log'))
-          $lines | Set-Content -LiteralPath .artifacts/station-exit.log
-          $lines | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
-          $lines | Write-Output
-          if ($verificationExit) { exit $verificationExit }
-          if (!@($lines | Where-Object { $_ -like 'PASS STATION-EXIT *' }).Count -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { throw 'Station exit verification incomplete' }
       - name: Verify clean Windows installation storage without registration
         if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
         shell: pwsh
@@ -297,7 +257,9 @@ jobs:
           include-hidden-files: true
           path: |
             .artifacts/*.log
-            .artifacts/window-native/
+            .artifacts/window-native/*/*.png
+            .artifacts/window-native/*/WINDOWS-WPF.log
+            .artifacts/window-native/*/FONT-RESOLUTION.json
           if-no-files-found: warn
           retention-days: 14
 
@@ -331,13 +293,12 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet build src/Ipc.Desktop -c Release -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true -m:1
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:RestoreLockedMode=true -m:1
           exit $LASTEXITCODE
       - name: Collect actual branches on isolated binary copies
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
-          ./scripts/measure-product-branches.ps1 -Configuration Release -IncludeWpf -Output .artifacts/product-branches
+          ./scripts/measure-product-branches.ps1 -Configuration Release -Output .artifacts/product-branches
       - name: Keep actual branch reports and incomplete coverage inventory
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

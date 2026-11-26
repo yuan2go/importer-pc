@@ -77,7 +77,7 @@ public partial class SupplyStationWindow
             if (ViewModel.SelectedPage != "workstation") return;
             for (var source = args.OriginalSource as DependencyObject; source is not null;
                 source = source is System.Windows.Media.Visual or System.Windows.Media.Media3D.Visual3D ? System.Windows.Media.VisualTreeHelper.GetParent(source) : LogicalTreeHelper.GetParent(source))
-                if (source is SupplyStationPosition) return;
+                if (source is SupplyStationPosition || source == MuteToggleButton) return;
             CancelBarcodeSelection();
         };
         ViewModel.PropertyChanged += (_, args) =>

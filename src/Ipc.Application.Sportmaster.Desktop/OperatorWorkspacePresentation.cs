@@ -23,21 +23,66 @@ public sealed partial class SupplyStationViewModel
     public string SetupHeading => $"还差 {MissingConnections.Length} 项连接配置";
     public string SetupItems => string.Join("、", MissingConnections);
     public string SetupInstruction => "配置并启用 RCS 后，可手动输入条码取格口；不要求配置或连接相机。";
-    // Lead with the position that needs attention; a positive phrase never sits on a warning band.
-    // PositionName is the shared ParcelViewModel display mapping.
-    public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "供包已暂停" :
-        !Left.SupplyEnabled && !Right.SupplyEnabled ? Left.SupplyDisabling || Right.SupplyDisabling ? "暂停接收新包裹 · 投递位停用中" : "暂停供包 · 左右投递位均已停用" :
-        Left.SupplyEnabled != Right.SupplyEnabled && (Left.CanSubmitBarcode || Right.CanSubmitBarcode) ? "可以供包 · 仅" + (Left.SupplyEnabled ? "左投递位" : "右投递位") :
-        Snapshot?.Positions is { } positions && positions.Any(p => p.Admit || p.BarcodeInput?.Manual == true)
-            ? (positions.All(p => p.Admit || p.BarcodeInput?.Manual == true) ? positions.All(p => p.Admit) ? "可以供包" : "可输入条码取格口" : string.Join("、", positions.Where(p => !p.Admit && p.BarcodeInput?.Manual != true).Select(p => PositionName(p.Id))) + "暂不能供包") : "暂不能供包";
-    public string OperatorNotice => !Fresh ? OperatorCopy.StaleStep :
-        Snapshot?.BlockingReasons.Any(x => x.Contains("authentication required", StringComparison.OrdinalIgnoreCase)) == true ?
-            "本站身份配置需要核对，请联系运维人员在运维工具中检查；设备维护期间请等待维护完成。" :
-        Snapshot?.Paused == true ? CanResumeInViewport ? "本件暂勿投递；确认现场后，点击“恢复供包”。" : Left.PauseReason + "；" + Left.PauseInstruction :
-        RcsState == RcsConnectionState.Offline ? "RCS 服务离线，自动扫码已暂停；连接恢复后自动继续。" :
-        Snapshot?.Positions is { } shown && shown.Any(p => p.Admit) && shown.Any(p => !p.Admit)
-            ? string.Join("、", shown.Where(p => p.Admit).Select(p => PositionName(p.Id))) + "照常作业；其余投递位按卡片提示处理。" :
-        Snapshot?.Positions?.Any(p => !p.Admit) == true ? "请按各投递位卡片上的提示处理。" : "";
+    public enum StationStatusTone { Ready, Warning, Blocked }
+    (StationStatusTone Tone, string Title, string Notice) operatorHeader =
+        (StationStatusTone.Blocked, "状态读取中断", OperatorCopy.StaleStep);
+    public StationStatusTone OperatorStatusTone => operatorHeader.Tone;
+    public string OperatorStatus => operatorHeader.Title;
+    public string OperatorNotice => operatorHeader.Notice;
+
+    (StationStatusTone, string, string) DescribeOperatorHeader()
+    {
+        if (!Fresh || Snapshot is not { } snapshot)
+            return (StationStatusTone.Blocked, "状态读取中断", OperatorCopy.StaleStep);
+        if (RcsState == RcsConnectionState.Offline)
+            return (StationStatusTone.Blocked, "暂不能供包", "RCS 离线，连接恢复后自动继续");
+        if (snapshot.Paused)
+            return (StationStatusTone.Blocked, "供包已暂停", CanResumeInViewport
+                ? "确认现场后点击“恢复供包”"
+                : Left.PauseReason + " · " + Left.PauseInstruction);
+        if (snapshot.Positions?.Any(position => position.BlockingReasons.Any(reason =>
+            reason.StartsWith("运维设备调试已进入，", StringComparison.Ordinal))) == true)
+            return (StationStatusTone.Blocked, "供包已暂停", "运维调试中，请等待调试结束");
+        if ((!Left.SupplyEnabled || !Left.SupplyConfigured) && (!Right.SupplyEnabled || !Right.SupplyConfigured))
+            return (StationStatusTone.Blocked, Left.SupplyDisabling || Right.SupplyDisabling ? "停用中" : "已停用",
+                Left.SupplyDisabling || Right.SupplyDisabling
+                    ? "不再接收新包裹，正在等待本位请求结束"
+                    : "左右投递位均未启用，请先配置或启用工位");
+        if (RcsState == RcsConnectionState.Deferred)
+            return (StationStatusTone.Blocked, "暂不能供包", "请在“设置”填写 RCS 地址");
+        if (RcsState is RcsConnectionState.Unknown or RcsConnectionState.AwaitingConfirmation)
+            return (StationStatusTone.Blocked, "暂不能供包", "等待 RCS 心跳确认");
+        if (snapshot.State == "Stopped")
+            return (StationStatusTone.Blocked, "暂不能供包", "工作站正在停止");
+
+        var left = PositionWorking(Left, snapshot);
+        var right = PositionWorking(Right, snapshot);
+        if (left && right)
+        {
+            var waitingForRemoval = snapshot.Positions?.Any(p => p.Admit || p.BarcodeInput?.Manual == true) != true;
+            return (StationStatusTone.Ready, waitingForRemoval ? "等待取件" : "可以供包", "");
+        }
+        if (left) return (StationStatusTone.Warning, "右投递位暂不能供包", "左位照常作业，请按右卡提示处理");
+        if (right) return (StationStatusTone.Warning, "左投递位暂不能供包", "右位照常作业，请按左卡提示处理");
+        return (StationStatusTone.Blocked, "暂不能供包", "请按投递位卡片上的提示处理");
+    }
+
+    static bool PositionWorking(SupplyStationPositionViewModel view, ParcelSnapshot snapshot)
+    {
+        var position = snapshot.Positions?.SingleOrDefault(p => p.Id == view.PositionId);
+        if (position is null || !view.SupplyEnabled || !view.SupplyConfigured ||
+            view.HasUncertainOriginal || position.Arrival?.RecoveryReason is not null) return false;
+        if (position.Admit || position.BarcodeInput?.Manual == true) return true;
+        // The placement may still be waiting for removal after its success display expires.
+        // Ignore the placement's normal hold only when there is no independent blocker.
+        var waitingForRemoval = view.SlotAvailable || view.CenteredRcsRejection ||
+            position is { CurrentRoundId: null, AutomaticSuppressed: true,
+                Arrival: { Confirmed: true, Submitted: true, SubmissionAttempted: true } };
+        return waitingForRemoval && position.Arrival?.TargetOperation is null &&
+            position.BlockingReasons.All(reason => reason is
+                "本件已提交，请先取下包裹结束本件，再处理下一件。" or
+                "本轮已提交，请先结束本轮，不得重复取格口。");
+    }
     bool HasConfiguredWorkConnection => Snapshot is { } s &&
         (ParcelBindings.Readers(s.Configuration.Effective).Any(r => !ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, r.DeviceId)) ||
          s.Configuration.Effective.Wcs is { } w && !ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, w.InstanceId));
@@ -143,7 +188,8 @@ public sealed partial class SupplyStationViewModel
         p.SelectionSummary, "作业：" + p.OperationId, "请求：" + p.RequestId, p.OriginalResponsibility, p.ResultReason });
     void NotifyOperatorWorkspace()
     {
-        foreach (var name in new[] { nameof(ShowSetupGuidance), nameof(SetupHeading), nameof(SetupItems), nameof(SetupInstruction),
+        operatorHeader = DescribeOperatorHeader();
+        foreach (var name in new[] { nameof(OperatorStatusTone), nameof(ShowSetupGuidance), nameof(SetupHeading), nameof(SetupItems), nameof(SetupInstruction),
             nameof(OperatorStatus), nameof(OperatorNotice), nameof(ShowSupplyControlNotice), nameof(CanReconnectConfigured), nameof(ReconnectHint),
             nameof(LeftConnectionDiagnosis), nameof(RightConnectionDiagnosis), nameof(RcsConnectionDiagnosis),
             nameof(LeftConnectionTime), nameof(RightConnectionTime), nameof(RcsConnectionTime), nameof(HasConfigurationActivationFailure), nameof(ConfigurationActivationActionText), nameof(ConfigurationActivationCompactText), nameof(CanOpenConfigurationActivation), nameof(DiagnosticConfiguration), nameof(DiagnosticCapacity), nameof(DiagnosticBlockers) }) Changed(name);

@@ -34,4 +34,8 @@
    <Setter Property="BorderBrush" Value="{DynamicResource Danger}"/>
    <Setter Property="Foreground" Value="{DynamicResource Danger}"/>
   </Style>
+  <Style x:Key="OperationsDangerCard" TargetType="Border" BasedOn="{StaticResource WorkstationCard}">
+   <Setter Property="BorderBrush" Value="{DynamicResource DangerBorder}"/>
+   <Setter Property="Background" Value="{DynamicResource DangerBackground}"/>
+  </Style>
 </ResourceDictionary>

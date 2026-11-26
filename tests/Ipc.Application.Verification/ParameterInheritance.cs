@@ -88,6 +88,9 @@ static class ParameterInheritance
             await vm.ContinueIncompleteEditorAsync();
             var changes = vm.GetConfigurationChangeItems();
             Check(changes.Any(x => x.Path == "BarcodeExclusionPattern" && x.Category == "业务模块") && changes.Any(x => x.Path == "DiagnosticLogDays" && x.Category == "系统"), "review uses the same business/system field paths as navigation and errors");
+            // The native host refreshes during draft review. This headless fixture
+            // has no dispatcher polling, so read the current revision before Save.
+            await vm.RefreshAsync();
             await vm.SaveStructuredConfigurationAsync(); var saved = await app.SnapshotAsync();
             Check(saved.Configuration.Pending?.BarcodeFilter?.ExclusionPattern == "OK00[1-3]" && saved.Configuration.Effective.BarcodeFilter == rule && Wire.Encode(saved.Operations.Single().Wcs) == frozen, "new rules save as Pending while the active rule and original request stay frozen");
         }

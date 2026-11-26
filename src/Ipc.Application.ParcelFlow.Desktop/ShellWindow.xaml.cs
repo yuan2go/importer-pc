@@ -150,7 +150,7 @@ public partial class ShellWindow : Window
             var dirtyWindows = affected.Where(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.vm, x.maintenance)).ToArray(); var dirty = dirtyWindows.Length;
             if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(this, dirty, dirty == 1 ? dirtyWindows[0].vm.SaveIncompleteEditorAsync : null, "关闭")))
             {
-                vm.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
+                vm.Message = "已取消退出，当前输入已保留。";
                 RestoreAfterClose(); return;
             }
             if (activationRequested || retentionRequested) await vm.RequireManagementModeAsync();

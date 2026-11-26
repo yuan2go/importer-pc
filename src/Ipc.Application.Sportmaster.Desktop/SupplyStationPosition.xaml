@@ -1,4 +1,4 @@
-<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" x:Class="Ipc.Application.Sportmaster.Desktop.SupplyStationPosition">
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:local="clr-namespace:Ipc.Application.Sportmaster.Desktop" x:Class="Ipc.Application.Sportmaster.Desktop.SupplyStationPosition">
  <UserControl.Resources>
   <ResourceDictionary>
    <ResourceDictionary.MergedDictionaries>
@@ -6,8 +6,17 @@
    </ResourceDictionary.MergedDictionaries>
   </ResourceDictionary>
  </UserControl.Resources>
+ <UserControl.Style>
+  <Style TargetType="UserControl">
+   <Setter Property="Margin" Value="0,0,6,0"/>
+   <Style.Triggers><DataTrigger Binding="{Binding PositionId}" Value="right"><Setter Property="Margin" Value="6,0,0,0"/></DataTrigger></Style.Triggers>
+  </Style>
+ </UserControl.Style>
  <Border x:Name="InputTargetOutline" BorderBrush="{Binding InputTargetBrush}" BorderThickness="2" Margin="2" CornerRadius="{DynamicResource RadiusCard}">
-  <Border x:Name="PositionOutline" Style="{StaticResource StationPositionCard}">
+  <Grid>
+   <Border Background="{DynamicResource Surface}" CornerRadius="{DynamicResource RadiusCard}"
+           Effect="{StaticResource ShadowCard}" IsHitTestVisible="False"/>
+   <Border x:Name="PositionOutline" Style="{StaticResource StationPositionCard}">
    <Grid>
     <Grid.RowDefinitions>
      <RowDefinition Height="Auto" SharedSizeGroup="PositionHeading"/>
@@ -27,7 +36,7 @@
      <Grid>
       <Grid.Resources>
        <Style x:Key="SupplySwitch" TargetType="Button" BasedOn="{StaticResource StationButton}">
-        <Setter Property="MinWidth" Value="64"/>
+        <Setter Property="MinWidth" Value="56"/><Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="8,4"/>
         <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MinWidth" Value="52"/></DataTrigger></Style.Triggers>
        </Style>
@@ -37,13 +46,16 @@
       <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
        <TextBlock Text="{Binding Heading}" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
        <Border Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}" BorderThickness="1" CornerRadius="{DynamicResource RadiusControl}" Margin="10,0,0,0">
+        <Border.Style><Style TargetType="Border"><Style.Triggers>
+         <DataTrigger Binding="{Binding SupplyConfigured}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
+        </Style.Triggers></Style></Border.Style>
         <StackPanel Orientation="Horizontal">
          <Button x:Name="EnableSupply" Content="启用" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" Background="{Binding EnableBackground}" Foreground="{Binding EnableForeground}" AutomationProperties.Name="启用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
          <Button x:Name="DisableSupply" Content="{Binding DisableLabel}" Click="DisableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" Background="{Binding DisableBackground}" Foreground="{Binding DisableForeground}" AutomationProperties.Name="停用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
         </StackPanel>
        </Border>
       </StackPanel>
-      <Border Grid.Column="1" Margin="6,0,0,0" Padding="6,2" Background="{DynamicResource Soft}" CornerRadius="{DynamicResource RadiusControl}"
+      <Border Grid.Column="1" Margin="6,0,0,0" Padding="8,4" Background="{DynamicResource Soft}" CornerRadius="{DynamicResource RadiusBadge}"
               BorderBrush="{DynamicResource Line}" BorderThickness="1" HorizontalAlignment="Right" VerticalAlignment="Center">
       <Grid x:Name="VehicleState" VerticalAlignment="Center" ToolTip="{Binding VehicleStatusText}">
        <Grid.Resources>
@@ -67,12 +79,12 @@
      </Grid>
      </Border>
     </DockPanel>
-    <Grid Grid.Row="1" x:Name="ScanInformation" Style="{StaticResource StationPositionSection}">
+    <Grid Grid.Row="1" x:Name="ScanInformation" Height="48" Style="{StaticResource StationPositionSection}">
      <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*"/>
       <ColumnDefinition Width="Auto"/>
      </Grid.ColumnDefinitions>
-     <TextBox x:Name="BarcodeEntry" MinHeight="48" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。完整条码输入后按回车或点击提交。">
+     <TextBox x:Name="BarcodeEntry" MinHeight="48" Padding="10,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。完整条码输入后按回车或点击提交。">
       <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
        <Setter Property="MaxHeight" Value="80"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="48"/></DataTrigger></Style.Triggers>
       </Style></TextBox.Style>
@@ -125,7 +137,7 @@
      <TextBlock x:Name="DisablingNotice" Text="{Binding SupplyNotice}" Foreground="{DynamicResource Warning}" TextWrapping="Wrap" Margin="0,0,0,4" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.LiveSetting="Polite">
       <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding SupplyDisabling}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
      </TextBlock>
-    <Border x:Name="ResultPanel" Grid.Row="1" Background="{Binding ResultBackground}" Style="{StaticResource StationResultPanel}">
+    <Border x:Name="ResultPanel" Grid.Row="1" Style="{StaticResource StationResultPanel}">
      <Grid>
       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
@@ -134,10 +146,10 @@
        <RowDefinition Height="Auto"/>
        <RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
-      <DockPanel x:Name="DetailedStatus" Grid.ColumnSpan="2">
-       <DockPanel.Style><Style TargetType="DockPanel"><Style.Triggers><DataTrigger Binding="{Binding ShowCenteredState}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></DockPanel.Style>
-       <TextBlock Text="{Binding DisplayPresentation.Icon}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:UiTypography.Exception}" Margin="0,0,8,0" AutomationProperties.Name="本位状态符号"/>
-       <TextBlock Text="{Binding DisplayStatus}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:UiTypography.Status}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
+      <DockPanel x:Name="DetailedStatus" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,2,0,4">
+       <DockPanel.Style><Style TargetType="DockPanel"><Style.Triggers><DataTrigger Binding="{Binding ShowCenteredState}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></DockPanel.Style>
+       <TextBlock Text="{Binding DisplayPresentation.Icon}" Style="{StaticResource StationResultHeading}" FontSize="{x:Static type:UiTypography.Exception}" Margin="0,0,8,0" AutomationProperties.Name="本位状态符号"/>
+       <TextBlock Text="{Binding DisplayStatus}" Style="{StaticResource StationResultHeading}" FontSize="{x:Static type:UiTypography.Status}" FontWeight="{x:Static type:UiTypography.Emphasis}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
       </DockPanel>
       <Grid Grid.Row="1" x:Name="SlotViewport">
        <Grid.Style>
@@ -151,7 +163,7 @@
         </Style>
        </Grid.Style>
        <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
-       <TextBox x:Name="CurrentSlot" Text="{Binding DisplaySlot,Mode=OneWay}" FontSize="{Binding DisplaySlotFontSize}" MaxWidth="{Binding ActualWidth,ElementName=SlotViewport}" TextWrapping="Wrap" TextAlignment="Center" Foreground="{Binding ResultForeground}" Background="Transparent" BorderThickness="0" Padding="0" IsReadOnly="True" FontFamily="{x:Static type:UiTypography.Interface}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="{Binding DisplaySlotLabel}">
+       <TextBox x:Name="CurrentSlot" Text="{Binding DisplaySlot,Mode=OneWay}" FontSize="{Binding DisplaySlotFontSize}" MaxWidth="{Binding ActualWidth,ElementName=SlotViewport}" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Ink}" Background="Transparent" BorderThickness="0" Padding="0" IsReadOnly="True" FontFamily="{x:Static type:UiTypography.Interface}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="{Binding DisplaySlotLabel}">
         <TextBox.Style>
          <Style TargetType="TextBox" BasedOn="{StaticResource WorkstationTextBox}"><Setter Property="Margin" Value="0"/><Setter Property="MinHeight" Value="0"/>
           <Style.Triggers>
@@ -176,10 +188,10 @@
         </Style>
        </ScrollViewer.Style>
        <StackPanel>
-        <TextBox x:Name="AttentionReason" Text="{Binding DisplayAttentionReason,Mode=OneWay}" Foreground="{Binding ResultForeground}" Style="{StaticResource StationValue}" Margin="0" AutomationProperties.Name="本位原因，可选择复制"/>
+        <TextBox x:Name="AttentionReason" Text="{Binding DisplayAttentionReason,Mode=OneWay}" Foreground="{DynamicResource Ink}" Style="{StaticResource StationValue}" Margin="0" AutomationProperties.Name="本位原因，可选择复制"/>
        </StackPanel>
       </ScrollViewer>
-      <TextBlock x:Name="NextStep" Text="{Binding DisplayNextStep}" Foreground="{Binding ResultForeground}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite">
+      <TextBlock x:Name="NextStep" Text="{Binding DisplayNextStep}" Foreground="{DynamicResource Ink}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite">
        <TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource StationInstruction}">
         <Setter Property="FontSize" Value="{x:Static type:OperatorTokens.InstructionSize}"/>
         <Setter Property="Grid.Row" Value="2"/><Setter Property="Grid.ColumnSpan" Value="2"/>
@@ -194,7 +206,7 @@
        </Style></TextBlock.Style>
       </TextBlock>
       <TextBox x:Name="RecentChuteBarcode" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,4,0,0" MaxHeight="48"
-               Text="{Binding RecentChuteBarcode,Mode=OneWay}" Foreground="{Binding ResultForeground}"
+               Text="{Binding RecentChuteBarcode,Mode=OneWay}" Foreground="{DynamicResource Ink}"
                Background="Transparent" BorderThickness="0" Padding="0" IsReadOnly="True"
                FontSize="{x:Static type:UiTypography.Body}"
                TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Center"
@@ -203,6 +215,40 @@
         <Style.Triggers><DataTrigger Binding="{Binding ShowRecentChute}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
        </Style></TextBox.Style>
       </TextBox>
+      <ScrollViewer x:Name="RcsGuidancePanel" Grid.Row="1" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                    AutomationProperties.Name="取格口结果待核对">
+       <ScrollViewer.Style><Style TargetType="ScrollViewer">
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers><DataTrigger Binding="{Binding ShowRcsGuidance}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
+       </Style></ScrollViewer.Style>
+       <StackPanel VerticalAlignment="Center">
+        <TextBlock Text="{Binding RcsGuidanceTitle}" Foreground="{DynamicResource Warning}" TextWrapping="Wrap"
+                   FontSize="{x:Static type:UiTypography.Exception}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.LiveSetting="Polite"/>
+        <TextBlock Text="{Binding RcsGuidanceSummary}" Foreground="{DynamicResource Muted}" TextWrapping="Wrap"
+                   FontSize="{x:Static type:UiTypography.Label}" Margin="0,3,0,8"/>
+        <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource WarningBorder}" BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusControl}" Padding="10,5" Margin="0,0,0,6">
+         <Border.Style><Style TargetType="Border">
+          <Style.Triggers><DataTrigger Binding="{Binding RcsGuidanceBarcode}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers>
+         </Style></Border.Style>
+         <StackPanel>
+          <TextBlock Text="当前条码" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}"/>
+          <TextBox Text="{Binding RcsGuidanceBarcode,Mode=OneWay}" Style="{DynamicResource ReadonlyValue}"
+                   IsTabStop="True" AutomationProperties.Name="当前条码，可选择复制"/>
+          <TextBlock Text="{Binding RcsGuidanceBarcodeSuffix}" FontSize="{x:Static type:UiTypography.Body}" TextWrapping="Wrap"
+                     Foreground="{DynamicResource Warning}" FontWeight="{x:Static type:UiTypography.Emphasis}"/>
+         </StackPanel>
+        </Border>
+        <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource WarningBorder}" BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusControl}" Padding="10,5">
+         <StackPanel TextBlock.FontSize="{x:Static type:UiTypography.Body}">
+          <TextBlock Text="1. 取下包裹，放到异常暂存篮" TextWrapping="Wrap"/>
+          <TextBlock Text="{Binding RcsGuidanceSecondStep}" TextWrapping="Wrap" Margin="0,2"/>
+          <TextBlock Text="3. 呼叫班长或运维核对，请勿再次上件" TextWrapping="Wrap"/>
+         </StackPanel>
+        </Border>
+       </StackPanel>
+      </ScrollViewer>
       <Border x:Name="CenteredSupplyPanel" Grid.RowSpan="3" Grid.ColumnSpan="2" Background="Transparent">
        <Border.Style>
         <Style TargetType="Border">
@@ -210,29 +256,42 @@
          <Setter Property="Padding" Value="8"/>
          <Style.Triggers>
           <DataTrigger Binding="{Binding ShowCenteredState}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+          <DataTrigger Binding="{Binding ShowRcsGuidance}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
           <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="8,2"/></DataTrigger>
          </Style.Triggers>
         </Style>
        </Border.Style>
-       <Grid x:Name="CenteredSupplyContent" VerticalAlignment="Center" HorizontalAlignment="Center">
+       <Grid x:Name="CenteredSupplyContent" VerticalAlignment="Center" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
          <RowDefinition Height="*"/>
          <RowDefinition Height="Auto"/>
          <RowDefinition Height="Auto"/>
          <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <StackPanel VerticalAlignment="Center">
+         <Path Width="28" Height="25" Margin="0,0,0,8" Stretch="Uniform" HorizontalAlignment="Center"
+               Stroke="{DynamicResource Success}" StrokeThickness="1.7" StrokeLineJoin="Round"
+               Data="M 2,8 L 14,2 26,8 26,22 14,28 2,22 Z M 2,8 L 14,14 26,8 M 14,14 L 14,28">
+          <Path.Style><Style TargetType="Path"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers>
+           <MultiDataTrigger><MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding CenteredStateTitle}" Value="等待投包"/>
+            <Condition Binding="{Binding IsTight}" Value="False"/>
+           </MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger>
+          </Style.Triggers></Style></Path.Style>
+         </Path>
         <TextBlock x:Name="CenteredStateTitle" Text="{Binding CenteredStateTitle}" TextAlignment="Center" TextWrapping="Wrap" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{Binding CenteredStateForeground}" HorizontalAlignment="Center" AutomationProperties.LiveSetting="Polite">
-         <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.PageTitle}"/></DataTrigger><DataTrigger Binding="{Binding CenteredRcsRejection}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+         <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Exception}"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.PageTitle}"/></DataTrigger><DataTrigger Binding="{Binding CenteredRcsRejection}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
         </TextBlock>
-        <TextBox x:Name="CenteredRcsMessage" Text="{Binding CenteredStateTitle,Mode=OneWay}" Foreground="{Binding CenteredStateForeground}"
-                 TextAlignment="Center" FontWeight="{x:Static type:UiTypography.Emphasis}" IsTabStop="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+        </StackPanel>
+        <local:RejectionMessageBox x:Name="CenteredRcsMessage" Text="{Binding CenteredStateTitle,Mode=OneWay}" Foreground="{Binding CenteredStateForeground}"
+                 TextAlignment="Center" TextWrapping="Wrap" VerticalContentAlignment="Stretch" FontWeight="{x:Static type:UiTypography.Emphasis}" IsTabStop="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                  AutomationProperties.Name="RCS 返回消息，可选择复制" AutomationProperties.LiveSetting="Polite">
          <TextBox.Style>
           <Style TargetType="TextBox" BasedOn="{StaticResource OperatorCopyableNotice}">
            <!-- Keep the RCS original selectable without changing its centered result appearance. -->
            <Setter Property="Background" Value="Transparent"/>
-           <Setter Property="Padding" Value="0"/>
-           <Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/>
+           <Setter Property="Padding" Value="8,0"/>
+           <Setter Property="FontSize" Value="{x:Static type:UiTypography.Exception}"/>
            <Setter Property="Visibility" Value="Collapsed"/>
            <Style.Triggers>
             <DataTrigger Binding="{Binding CenteredRcsRejection}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
@@ -240,7 +299,7 @@
            </Style.Triggers>
           </Style>
          </TextBox.Style>
-        </TextBox>
+        </local:RejectionMessageBox>
         <TextBlock x:Name="CenteredStateReason" Grid.Row="1" Text="{Binding CenteredStateReason}" Foreground="{DynamicResource Muted}" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center">
           <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.TaskValue}"/><Setter Property="Margin" Value="0,12,0,0"/><Style.Triggers><DataTrigger Binding="{Binding SupplyDisabled}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/></DataTrigger><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/><Setter Property="Margin" Value="0"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding CenteredAttention}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Margin" Value="0,4,0,0"/></MultiDataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding SupplyDisabled}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></TextBlock.Style>
         </TextBlock>
@@ -272,12 +331,18 @@
           </TextBlock.Style>
          </TextBlock>
         </StackPanel>
-        <Button x:Name="CenteredEnableSupply" Grid.Row="3" Content="{Binding EnableLabel}" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" MinHeight="44">
+        <Button x:Name="CenteredEnableSupply" HorizontalAlignment="Center" Grid.Row="3" Content="{Binding EnableLabel}" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" MinHeight="44">
          <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationButton}">
           <Setter Property="Background" Value="{DynamicResource Success}"/><Setter Property="Foreground" Value="{DynamicResource Surface}"/>
           <Setter Property="Margin" Value="0,12,0,0"/><Setter Property="Visibility" Value="Collapsed"/>
           <Style.Triggers>
-           <DataTrigger Binding="{Binding SupplyDisabled}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+           <MultiDataTrigger>
+            <MultiDataTrigger.Conditions>
+             <Condition Binding="{Binding SupplyDisabled}" Value="True"/>
+             <Condition Binding="{Binding SupplyConfigured}" Value="True"/>
+            </MultiDataTrigger.Conditions>
+            <Setter Property="Visibility" Value="Visible"/>
+           </MultiDataTrigger>
            <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0,4,0,0"/></DataTrigger>
            <Trigger Property="IsEnabled" Value="False"><Setter Property="Background" Value="{DynamicResource Soft}"/><Setter Property="Foreground" Value="{DynamicResource Muted}"/><Setter Property="BorderBrush" Value="{DynamicResource Line}"/></Trigger>
           </Style.Triggers>
@@ -322,19 +387,12 @@
      </Grid.Resources>
      <Grid.Style>
       <Style TargetType="Grid">
-       <Setter Property="Visibility" Value="Collapsed"/>
        <Setter Property="Height" Value="104"/>
        <Setter Property="Margin" Value="0,8,0,0"/>
        <Style.Triggers>
         <DataTrigger Binding="{Binding IsTight}" Value="True">
          <Setter Property="Height" Value="72"/>
          <Setter Property="Margin" Value="0,2,0,0"/>
-        </DataTrigger>
-        <DataTrigger Binding="{Binding IsProcessing}" Value="True">
-         <Setter Property="Visibility" Value="Hidden"/>
-        </DataTrigger>
-        <DataTrigger Binding="{Binding ShowConfirmedTask}" Value="True">
-         <Setter Property="Visibility" Value="Visible"/>
         </DataTrigger>
        </Style.Triggers>
       </Style>
@@ -345,19 +403,19 @@
              BorderThickness="1" CornerRadius="{DynamicResource RadiusControl}" IsHitTestVisible="False"/>
      <DockPanel Grid.Row="0" Grid.Column="0" Margin="8,2,6,0">
       <TextBlock Text="波次号" Style="{StaticResource LaneTaskLabel}"/>
-      <TextBox x:Name="WaveValue" Text="{Binding WaveNo,Mode=OneWay}" ToolTip="{Binding WaveNo}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务波次号"/>
+      <TextBox x:Name="WaveValue" Tag="{Binding WaveNo}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务波次号"/>
      </DockPanel>
      <DockPanel Grid.Row="0" Grid.Column="1" Margin="8,2,6,0">
       <TextBlock Text="任务号" Style="{StaticResource LaneTaskLabel}"/>
-      <TextBox x:Name="TaskValue" Text="{Binding TaskId,Mode=OneWay}" ToolTip="{Binding TaskId}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次调度任务号"/>
+      <TextBox x:Name="TaskValue" Tag="{Binding TaskId}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次调度任务号"/>
      </DockPanel>
      <DockPanel Grid.Row="1" Grid.Column="0" Margin="8,0,6,2">
       <TextBlock Text="商品编码" Style="{StaticResource LaneTaskLabel}"/>
-      <TextBox x:Name="SkuValue" Text="{Binding SkuId,Mode=OneWay}" ToolTip="{Binding SkuId}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务商品编码"/>
+      <TextBox x:Name="SkuValue" Tag="{Binding SkuId}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务商品编码"/>
      </DockPanel>
      <DockPanel Grid.Row="1" Grid.Column="1" Margin="8,0,6,2">
       <TextBlock Text="返回数量" Style="{StaticResource LaneTaskLabel}"/>
-      <TextBox x:Name="QuantityValue" Text="{Binding ResponseQuantity,Mode=OneWay}" ToolTip="{Binding ResponseQuantity}" Style="{StaticResource StationTaskValue}" FontFamily="{x:Static type:UiTypography.Interface}" AutomationProperties.Name="本次调度返回数量"/>
+      <TextBox x:Name="QuantityValue" Tag="{Binding ResponseQuantity}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" FontFamily="{x:Static type:UiTypography.Interface}" AutomationProperties.Name="本次调度返回数量"/>
      </DockPanel>
     </Grid>
     <StackPanel Grid.Row="4" x:Name="FixedActions" Style="{StaticResource StationPositionActions}">
@@ -370,15 +428,15 @@
      <TextBlock x:Name="InputFeedback" TextWrapping="Wrap" MaxHeight="52" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationNotice}" AutomationProperties.LiveSetting="Polite"/>
      <Grid Grid.Row="1" x:Name="PositionActionButtons">
       <Grid.ColumnDefinitions>
+       <ColumnDefinition Width="Auto"/>
+       <ColumnDefinition Width="8"/>
+       <ColumnDefinition Width="Auto"/>
        <ColumnDefinition Width="*"/>
        <ColumnDefinition Width="Auto"/>
-       <ColumnDefinition Width="Auto"/>
-       <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
-      <Border Grid.Column="1" Width="{x:Static type:OperatorTokens.TouchGap}"/>
-      <Button x:Name="SubmitBarcode" Content="提交 (Enter)" Click="SubmitBarcode_Click">
+      <Button x:Name="SubmitBarcode" Height="44" Content="提交" Click="SubmitBarcode_Click" MinWidth="80" Margin="0">
        <Button.Style>
-        <Style TargetType="Button" BasedOn="{StaticResource StationPrimaryTouch}">
+        <Style TargetType="Button" BasedOn="{StaticResource Primary}">
          <Style.Triggers>
           <DataTrigger Binding="{Binding Visibility,ElementName=RebaseInput}" Value="Visible">
            <Setter Property="Visibility" Value="Collapsed"/>
@@ -387,9 +445,9 @@
         </Style>
        </Button.Style>
       </Button>
-      <Button x:Name="RebaseInput" Content="确认本位包裹" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationTouch}" ToolTip="本位状态已变化。请确认手上的包裹属于本位后再提交。"/>
-      <Button x:Name="ConfirmManualPlacementRemoval" Grid.Column="2" Content="已取下包裹" Click="ConfirmPlacementRemoval_Click"
-              ToolTip="取下本件后确认，准备接收下一件">
+      <Button x:Name="RebaseInput" Height="44" MinHeight="44" Content="确认本位包裹" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationTouch}"
+              ToolTip="本位状态已变化。请确认手上的包裹属于本位后再提交。"/>
+      <Button x:Name="ConfirmManualPlacementRemoval" Height="44" MinHeight="44" Grid.Column="2" Content="已取下包裹" Click="ConfirmPlacementRemoval_Click">
        <Button.Style>
         <Style TargetType="Button" BasedOn="{StaticResource StationTouch}">
          <Setter Property="Background" Value="{DynamicResource WarningBackground}"/>
@@ -397,13 +455,17 @@
          <Setter Property="BorderBrush" Value="{DynamicResource Warning}"/>
          <Setter Property="Margin" Value="0,0,8,0"/>
          <Setter Property="Visibility" Value="Collapsed"/>
+         <Setter Property="ToolTip" Value="取下本件后确认，准备接收下一件"/>
          <Style.Triggers>
+          <DataTrigger Binding="{Binding ShowRcsGuidance}" Value="True">
+           <Setter Property="ToolTip" Value="确认包裹已取下。原请求仍需核对，本位暂不能再次上件。"/>
+          </DataTrigger>
           <DataTrigger Binding="{Binding ShowConfirmedPlacementRemoval}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
          </Style.Triggers>
         </Style>
        </Button.Style>
       </Button>
-      <Button x:Name="WorkDetails" Grid.Column="3" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanViewWorkDetails}" Style="{StaticResource StationTouch}" Background="{DynamicResource AccentBackground}" BorderBrush="{DynamicResource Accent}"/>
+      <Button x:Name="WorkDetails" Height="44" MinHeight="44" Grid.Column="4" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanViewWorkDetails}" Style="{StaticResource StationTouch}"/>
      </Grid>
      <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Line}" Margin="0,3,0,0" IsHitTestVisible="False">
       <Border.Style><Style TargetType="Border"><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Border.Style>
@@ -417,6 +479,7 @@
      </Grid>
     </StackPanel>
    </Grid>
-  </Border>
+   </Border>
+  </Grid>
  </Border>
 </UserControl>

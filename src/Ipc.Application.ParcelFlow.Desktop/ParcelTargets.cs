@@ -81,9 +81,6 @@ public partial class ParcelViewModel
     bool AppendHistory => Snapshot?.ApplicationId == "sportmaster";
     public bool UsesHistoryPaging => !AppendHistory;
     public bool HasPreviousHistory => !AppendHistory && !historyLoading && !HistoryFiltersChanged && historyPageIndex > 0;
-    string compactHistoryMetrics = "";
-    public string CompactHistoryStatus => (HistoryFiltersChanged ? "筛选未应用 · " : historyLoading ? "读取中，仍显示原结果 · " : historyFailure is not null ? "查询未完成 · " + historyFailure + " · " : "") +
-        (historyLoaded ? compactHistoryMetrics + " · 已加载 " + HistoryItems.Length + " 条" : HistoryStatus);
     public string HistoryStatus => (HistoryFiltersChanged ? "筛选条件已修改，尚未应用；列表仍是上次查询的结果，翻页和导出已暂停。\n" : "") +
         (historyLoading ? "正在读取作业记录，原结果仍属于上次范围…" : historyFailure is { } failure ? "查询未完成 · " + failure + "；之前读取的记录仅供参考" : !historyLoaded ? "尚未读取作业记录" : HistoryItems.Length == 0 ? "此页没有作业记录" : "已读取 " + HistoryItems.Length + " 条作业" + (AppendHistory && HistoryItems.Length >= 1000 ? "（本窗已达1000条，请缩小查询范围）" : "") + " · 查询完成 " + historyReadAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss"));
     public Task PreviousHistoryAsync() => LoadHistoryPageAsync(historyPageIndex - 1, false);
@@ -122,7 +119,6 @@ public partial class ParcelViewModel
                 }
                 cancellation.Token.ThrowIfCancellationRequested();
                 if (generation != Volatile.Read(ref historyGeneration) || signature != HistoryFilterSignature()) return;
-                compactHistoryMetrics = HistoryMetricsText(metrics);
                 HistoryMetricsSummary = HistoryMetricsText(metrics);
                 HistoryMetricsDetail = $"统计到查询时的第 {selection.UpperSequence} 号作业 · 作业 {metrics.Operations} · 取格口请求 {metrics.WcsRequests} · 已取得格口 {metrics.WcsAccepted} · 格口未确认 {metrics.Unknown} · 报告已落格 {metrics.PhysicalCompleted} · 发送次数 {metrics.SendAttempts}。同一条码的每次放置分别统计；取得格口不代表已落格。";
                 Changed(nameof(HistoryMetricsSummary)); Changed(nameof(HistoryMetricsDetail)); appliedHistorySignature = signature; historySelection = selection;
@@ -160,12 +156,12 @@ public partial class ParcelViewModel
         Interlocked.Increment(ref historyGeneration); historyLoading = false; historyFailure = null; historyLoaded = false; historyReadAt = null;
         CancelHistoryRead();
         HistoryItems = []; nextHistory = null; selectedHistory = null;
-        HistoryMetricsSummary = HistoryMetricsDetail = compactHistoryMetrics = "";
+        HistoryMetricsSummary = HistoryMetricsDetail = "";
         historySelection = null; appliedHistorySignature = null; CancelHistoryExport();
         historyCursors.Clear(); historyPageIndex = 0; historicalPositions.Clear();
         Changed(nameof(HistoryItems)); Changed(nameof(SelectedHistory)); Changed(nameof(HistoryMetricsSummary)); Changed(nameof(HistoryMetricsDetail)); Changed(nameof(HistoryLoaded)); NotifyHistory();
     }
-    void NotifyHistory() { foreach (var name in new[] { nameof(CompactHistoryStatus), nameof(UsesHistoryPaging), nameof(HistoryLoading), nameof(HistoryStatus), nameof(HasNextHistory), nameof(HasPreviousHistory), nameof(HistoryFiltersChanged), nameof(AppliedHistoryRange), nameof(HistoryRangeSummary), nameof(CanExportHistory) }) Changed(name); }
+    void NotifyHistory() { foreach (var name in new[] { nameof(HistorySummary), nameof(UsesHistoryPaging), nameof(HistoryLoading), nameof(HistoryStatus), nameof(HasNextHistory), nameof(HasPreviousHistory), nameof(HistoryFiltersChanged), nameof(AppliedHistoryRange), nameof(HistoryRangeSummary), nameof(CanExportHistory) }) Changed(name); }
     public async Task QuerySelectedAsync()
     {
         RequireFreshSnapshot(); var op = Selected ?? throw new InvalidOperationException("请先在详情中选择作业"); var generation = selectionGeneration;

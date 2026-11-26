@@ -1,0 +1,129 @@
+<UserControl x:Class="Ipc.Application.Sportmaster.Desktop.StationDebugControl" x:ClassModifier="internal"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf"
+ Background="{DynamicResource Background}" Foreground="{DynamicResource Ink}">
+ <UserControl.Resources>
+  <Style x:Key="DebugHeading" TargetType="TextBlock">
+   <Setter Property="FontSize" Value="{x:Static type:UiTypography.Group}"/>
+   <Setter Property="FontWeight" Value="{x:Static type:UiTypography.Emphasis}"/>
+   <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+   <Setter Property="Margin" Value="0,0,0,8"/>
+  </Style>
+  <Style x:Key="DebugLabel" TargetType="TextBlock" BasedOn="{StaticResource FieldLabel}">
+   <Setter Property="Margin" Value="0,4,0,6"/>
+  </Style>
+  <Style x:Key="DebugAction" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+   <Setter Property="Margin" Value="0,0,8,8"/>
+  </Style>
+  <Style x:Key="DebugJson" TargetType="TextBox" BasedOn="{StaticResource WorkstationTextBox}">
+   <Setter Property="Margin" Value="0"/>
+   <Setter Property="Background" Value="{DynamicResource Soft}"/>
+   <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+   <Setter Property="FontFamily" Value="{x:Static type:UiTypography.Code}"/>
+   <Setter Property="FontSize" Value="{x:Static type:UiTypography.Log}"/>
+   <Setter Property="IsReadOnly" Value="True"/>
+   <Setter Property="TextWrapping" Value="Wrap"/>
+   <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+   <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+   <Setter Property="MinHeight" Value="152"/>
+  </Style>
+ </UserControl.Resources>
+ <TabControl x:Name="tabs" SelectedIndex="0" Style="{StaticResource ContentOnlyTabs}" Background="{DynamicResource Background}" Padding="0">
+  <TabItem Header="扫码调试" Style="{StaticResource ContentOnlyTab}">
+   <ScrollViewer x:Name="debugScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+     <Grid x:Name="inspectionPanels" MinHeight="{Binding ViewportHeight,ElementName=debugScroll}">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="5*"/><ColumnDefinition x:Name="requestColumn" Width="4*"/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Border Style="{StaticResource WorkstationCard}" Margin="4,6,0,8">
+       <StackPanel>
+        <StackPanel Margin="0,0,0,10">
+       <DockPanel LastChildFill="True">
+        <WrapPanel DockPanel.Dock="Right">
+         <Button x:Name="trigger" Content="触发扫码" Style="{StaticResource Primary}" Margin="0,0,8,0"/>
+         <Button x:Name="stopRead" Content="停止扫码" Margin="0" Visibility="Collapsed" AutomationProperties.AutomationId="StopCameraReadRound"/>
+        </WrapPanel>
+        <WrapPanel>
+         <Button x:Name="left" Content="左相机" Margin="0,0,8,0"/>
+         <Button x:Name="right" Content="右相机" Margin="0,0,12,0"/>
+         <TextBlock x:Name="readStatus" Text="尚未开始扫码" Style="{StaticResource DebugLabel}"/>
+        </WrapPanel>
+       </DockPanel>
+       <WrapPanel Margin="0,4,0,0">
+        <TextBlock x:Name="camera" Text="左相机" Style="{StaticResource DebugLabel}" Margin="0,0,12,0"/>
+        <TextBlock x:Name="state" Style="{StaticResource DebugLabel}" Margin="0" AutomationProperties.LiveSetting="Polite"/>
+       </WrapPanel>
+       <TextBlock x:Name="feedback" Foreground="{DynamicResource Danger}" AutomationProperties.LiveSetting="Assertive" Visibility="Collapsed"/>
+        </StackPanel>
+        <DockPanel Margin="0,0,0,8">
+         <Border DockPanel.Dock="Right" Style="{StaticResource OperatorStatusBadge}" Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}">
+          <TextBlock x:Name="photoState" Text="等待扫码" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}"/>
+         </Border>
+         <TextBlock Text="相机预览与锁定帧" Style="{StaticResource DebugHeading}" Margin="0"/>
+        </DockPanel>
+        <TabControl Margin="0,0,0,8" Padding="0" ItemContainerStyle="{StaticResource SegmentedTab}">
+         <TabItem Header="实时画面"><ContentControl x:Name="previewHost"/></TabItem>
+         <TabItem x:Name="lockedFrameTab" Header="本轮 Mono8">
+          <StackPanel>
+           <Grid Margin="0,8,0,0">
+            <ScrollViewer x:Name="viewport" Height="192" Background="{DynamicResource Ink}" HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto" AutomationProperties.Name="同帧读码照片，绿色条码定位框">
+             <Grid x:Name="imageLayer" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
+              <Image x:Name="photo" Stretch="Fill" IsHitTestVisible="False"/>
+              <Canvas x:Name="marks" IsHitTestVisible="False" ClipToBounds="True"/>
+             </Grid>
+            </ScrollViewer>
+            <TextBlock x:Name="imageHint" Text="等待本轮扫码照片" Foreground="{DynamicResource Surface}" Margin="24"
+                       TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"/>
+           </Grid>
+           <WrapPanel Margin="0,10,0,0">
+            <Button x:Name="adapt" Content="适应窗口" Style="{StaticResource DebugAction}"/>
+            <Button x:Name="actual" Content="1:1" Style="{StaticResource DebugAction}"/>
+            <Button x:Name="more" Content="放大" Style="{StaticResource DebugAction}"/>
+            <Button x:Name="less" Content="缩小" Style="{StaticResource DebugAction}"/>
+            <CheckBox x:Name="overlay" Content="条码标注" IsChecked="True" VerticalAlignment="Center" Margin="2,0,0,8"/>
+           </WrapPanel>
+           <TextBlock x:Name="photoCaption" Text="本轮读码照片" Style="{StaticResource DebugLabel}"/>
+          </StackPanel>
+         </TabItem>
+        </TabControl>
+        <TextBox x:Name="barcode" Style="{StaticResource DebugJson}" Height="Auto" MinHeight="44" MaxHeight="96"
+                 AutomationProperties.Name="本轮完整条码，可选择复制"/>
+        <Expander Header="连续试扫" Margin="0,8,0,0"><StackPanel x:Name="batchPanel"/></Expander>
+       </StackPanel>
+      </Border>
+      <Border x:Name="requestCard" Grid.Column="1" Margin="14,6,4,8" VerticalAlignment="Top" Style="{StaticResource WorkstationCard}">
+       <Grid x:Name="requestPanel">
+        <Grid.RowDefinitions>
+         <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+         <RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="RCS 请求测试" Style="{StaticResource DebugHeading}"/>
+        <DockPanel Grid.Row="1">
+         <WrapPanel DockPanel.Dock="Right" Margin="8,0,0,0">
+          <Button x:Name="prepare" Content="准备请求" Style="{StaticResource DebugAction}" Margin="0,0,8,0"/>
+          <Button x:Name="send" Content="发送请求" Style="{StaticResource DebugAction}" Margin="0" ToolTip="实际发送会接管所选小车的本次到位，请先核对报文。"/>
+         </WrapPanel>
+         <TextBox x:Name="requestBarcode" Margin="0" MaxHeight="64" MaxLength="4096" TextWrapping="Wrap"
+                  AutomationProperties.Name="请求条码" ToolTip="可扫码或手工输入条码"/>
+        </DockPanel>
+        <DockPanel Grid.Row="2" Margin="0,8,0,6">
+         <TextBlock DockPanel.Dock="Left" Text="请求报文" Style="{StaticResource DebugHeading}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+         <TextBlock x:Name="fillStatus" Style="{StaticResource DebugLabel}" Margin="0" VerticalAlignment="Center" TextWrapping="Wrap"/>
+        </DockPanel>
+        <TextBox x:Name="requestBody" Grid.Row="3" Style="{StaticResource DebugJson}" AutomationProperties.Name="本轮请求报文"/>
+        <DockPanel Grid.Row="4" Margin="0,8,0,6">
+         <TextBlock DockPanel.Dock="Left" Text="RCS 回包" Style="{StaticResource DebugHeading}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+         <Button x:Name="copyResponse" DockPanel.Dock="Right" Content="复制原文" Margin="8,0,0,0" IsEnabled="False"/>
+         <TextBlock x:Name="result" Text="尚未发送请求" Style="{StaticResource DebugLabel}" Margin="0"
+                    VerticalAlignment="Center" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
+        </DockPanel>
+        <TextBox x:Name="responseBody" Grid.Row="5" Style="{StaticResource DebugJson}" AutomationProperties.Name="本轮回包正文"/>
+       </Grid>
+      </Border>
+     </Grid>
+   </ScrollViewer>
+  </TabItem>
+  <TabItem Header="调试记录" Style="{StaticResource ContentOnlyTab}"><ContentControl x:Name="evidenceHost"/></TabItem>
+ </TabControl>
+</UserControl>

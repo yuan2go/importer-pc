@@ -225,10 +225,8 @@ static partial class SportmasterRcs
                 Arrival = p.Arrival! with { RecoveryReason = "SYNTHETIC placement blocker", Submitted = true }
             }).ToArray()
         });
-        Check(display.Left.VehicleStatusText.Contains(snapshot.Positions!.Single(p => p.Id == "left").Vehicle!.VehicleNo) &&
-            display.Left.VehicleStatusText.Contains("空闲，等待就绪") &&
-            display.Right.VehicleStatusText.Contains(snapshot.Positions!.Single(p => p.Id == "right").Vehicle!.VehicleNo) &&
-            display.Right.VehicleStatusText.Contains("工作中"),
+        Check(display.Left.VehicleStatusText == snapshot.Positions!.Single(p => p.Id == "left").Vehicle!.VehicleNo + " · 待就绪" &&
+            display.Right.VehicleStatusText == snapshot.Positions!.Single(p => p.Id == "right").Vehicle!.VehicleNo + " · 作业中",
             "a blocked or submitted parcel cannot replace the actual heartbeat vehicle number and status on either lane");
         var receipt = await station.App.SubmitParcelBarcodeAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "right", "SYNTH-WORKING-AGV", ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedArrivalGeneration = snapshot.Positions!.Single(p => p.Id == "right").Arrival!.Generation, ExpectedPlacementBoundary = snapshot.Positions!.Single(p => p.Id == "right").Arrival!.PlacementBoundary }, default);
         Check(receipt.Status == "Admitted", "a working vehicle is informational and cannot block a real manual admission");

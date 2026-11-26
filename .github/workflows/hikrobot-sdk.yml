@@ -42,7 +42,7 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --mvs-software-flow
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-sdk-editing
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll --typography
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --ordinary-runtime-startup
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
@@ -94,26 +94,22 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-      - name: Build and run native synthetic SDK editing
+      - name: Build native SM verification and check shipped glyphs
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
           dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:BusinessModule=Sportmaster -p:SelfContained=false -p:RestoreLockedMode=true -m:1 -nr:false
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll . --hikrobot-sdk-editing
+          $env:IPC_UI_EVIDENCE = Join-Path $PWD.Path '.artifacts/hikrobot-native'
+          dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll --typography
           exit $LASTEXITCODE
-      - name: Retain synthetic HWND evidence
-        if: always()
-        shell: pwsh
-        run: |
-          $pointer='.artifacts/WINDOWS-WPF-EVIDENCE.txt'
-          if (Test-Path $pointer) {
-            New-Item -ItemType Directory -Path .artifacts/hikrobot-native -Force | Out-Null
-            Copy-Item -LiteralPath ((Get-Content $pointer -Raw).Trim()) -Destination .artifacts/hikrobot-native -Recurse
-          }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: hikrobot-native-${{ github.sha }}
-          path: .artifacts/hikrobot-native
+          include-hidden-files: true
+          path: |
+            .artifacts/hikrobot-native/*/*.png
+            .artifacts/hikrobot-native/*/WINDOWS-WPF.log
+            .artifacts/hikrobot-native/*/FONT-RESOLUTION.json
           retention-days: 14

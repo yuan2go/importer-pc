@@ -22,7 +22,12 @@ public partial class ParameterSettingsControl
             Margin = new(0, 0, 8, 0),
             VerticalContentAlignment = VerticalAlignment.Center
         }).ToArray();
-        foreach (var check in checks) { AutomationProperties.SetName(check, label + "：" + check.Content); wrap.Children.Add(check); }
+        foreach (var check in checks)
+        {
+            check.SetResourceReference(FocusVisualStyleProperty, "FocusRing");
+            AutomationProperties.SetName(check, label + "：" + check.Content);
+            wrap.Children.Add(check);
+        }
         var section = new Expander { Content = wrap, IsExpanded = false, MinHeight = 44 };
         var updating = false;
         void Refresh()

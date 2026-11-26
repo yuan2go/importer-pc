@@ -75,8 +75,18 @@ internal static class ReaderFeedback22
         Check(h.Peer.Requests.Count == 2, "an expired observation cannot dispatch");
 
         var oldEpoch = h.Factory.Sources[h.Left].Epoch;
-        await h.App.ReconnectDeviceAsync(h.Left);
-        await CameraRoundHarness.Until(async () => h.Factory.Sources[h.Left].Epoch != oldEpoch && (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Left).IsValid(DateTimeOffset.UtcNow));
+        Check(current.Epoch == oldEpoch, "the saved observation belongs to the session about to be retired");
+        var reconnect = await h.App.ReconnectDeviceAsync(h.Left);
+        Check(reconnect.Status == "Reconnected", "the fixture reconnects the left camera: " + reconnect.Reason);
+        // Healthy device registration can publish before the new arrival capture boundary.
+        await CameraRoundHarness.Until(async () =>
+        {
+            var snapshot = await h.App.SnapshotAsync();
+            var device = snapshot.Devices!.Single(d => d.DeviceId == h.Left);
+            return device.Epoch != oldEpoch && device.Epoch == h.Factory.Sources[h.Left].Epoch &&
+                device.IsValid(DateTimeOffset.UtcNow) &&
+                snapshot.Positions!.Single(lane => lane.Id == "left").Arrival?.CameraBoundaryReady == true;
+        });
         await ObserveRejected(current with
         {
             Id = Wire.Id(),

@@ -38,7 +38,7 @@ B2首轮CI：aqa01-boundaries与p0-stability-boundaries通过；current-contract
 
 ## B3基线与门禁
 
-实际旧链规范化快照与当前基线对比见[等价证明](../../verification/fresh-baseline-01/README.md)。Parcel10/Supply6一次建库，迁移执行器与多代解释删除。当前读者在打开写连接前拒绝非当前身份，缺回包索引明确拒绝且原文/哈希/冲突校验保留。Supply/Parcel维护结果移除退休升级字段，当前责任阻断仍保护备份恢复和包卸载。Platform.Storage/ParcelFlow升2.0.0，Supply升3.0.0，项目锁与组合同步；本批不再次改Application.Contracts版本。
+实际旧链规范化快照与当前基线对比见[等价证明](../verification/fresh-baseline-01/README.md)。Parcel10/Supply6一次建库，迁移执行器与多代解释删除。当前读者在打开写连接前拒绝非当前身份，缺回包索引明确拒绝且原文/哈希/冲突校验保留。Supply/Parcel维护结果移除退休升级字段，当前责任阻断仍保护备份恢复和包卸载。Platform.Storage/ParcelFlow升2.0.0，Supply升3.0.0，项目锁与组合同步；本批不再次改Application.Contracts版本。
 
 C16不再重建多代完整旧schema，只构造非当前身份输入验证只读拒绝；现有当前恢复、强杀、Unknown和原件责任测试继续执行。新增结构等价、实际WAL/FULL、独立从零运行时起停验证。历史ZIP、回执、发布和冻结证据未修改。`platform_migrations`/`schema_history`名称保留以避免无关消费标记改名，但仅含一条当前基线身份，无迁移步骤。
 

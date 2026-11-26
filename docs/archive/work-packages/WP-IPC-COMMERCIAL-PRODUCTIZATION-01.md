@@ -28,7 +28,7 @@
 |[必要验收](../runtime/validation/commercial-productization-01.md)|风险驱动验证、证据身份、Windows/真实接口门槛|
 |[Codex 执行提示词](Codex-WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)|精简执行入口；细节以上述文档为准|
 
-开始实施必须先读 [AGENTS](../../../AGENTS.md)、[INDEX](../../INDEX.md)、本包与基线核对，再读 [framework](../../design/framework.md)、[F 决策](../../design/framework-decisions.md)、[22 独立 Application](../../design/application-architecture-22.md)、[恢复设计](../design/architecture-quality-closure-01.md)、[现行启动部署](../../runtime/startup-deployment-02.md)以及受影响运行指南和代码。UI 修改前还须读 [实物 UI 入口](../../ui/ss-ui-vis-001-v1.1/README.md)、图册、原 HTML、分离 CSS/JS 和完整交接，不把历史模拟流程照搬成当前业务。
+开始实施必须先读 [AGENTS](../../../AGENTS.md)、[INDEX](../../INDEX.md)、本包与基线核对，再读 [framework](../../design/framework.md)、[F 决策](../design/framework-decisions.md)、[22 独立 Application](../../design/application-architecture-22.md)、[恢复设计](../design/architecture-quality-closure-01.md)、[现行启动部署](../../runtime/startup-deployment-02.md)以及受影响运行指南和代码。UI 修改前还须读 [实物 UI 入口](../../ui/ss-ui-vis-001-v1.1/README.md)、图册、原 HTML、分离 CSS/JS 和完整交接，不把历史模拟流程照搬成当前业务。
 
 对过期文档的处理必须在实际代码修改前形成可审查差异：修正当前指引、合并重复入口、标明替代范围；历史原件与证据保留。后续新发现直接影响实现的文档矛盾也先裁决再编码。不能为了开始编码而删除限制、改写批准状态或覆盖旧验证。
 

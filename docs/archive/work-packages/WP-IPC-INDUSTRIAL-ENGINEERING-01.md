@@ -4,7 +4,7 @@
 
 2026-11-03。本轮授权为完善全方案设计；状态：**DESIGNED，产品实施NOT_STARTED，产品验证NOT_RUN**。基线main `38cb7dc0e8e15f009ee88c5a35f1db53c27d5205`，开工时GitHub连接器返回open PR为0。源工作区有他人未提交内容，本轮使用独立D盘worktree，不纳入这些文件。
 
-主交付：[总设计与需求映射](../../design/industrial-engineering-01.md)、[安全](../../design/industrial-security-recovery-01.md)、[生命周期](../../design/industrial-lifecycle-01.md)、[操作与质量](../../design/industrial-operations-quality-01.md)、[基线核查](../../reviews/industrial-engineering-design-01.md)。本包不启用Actions、不安装或卸载现有部署、不重置真实密码、不连接设备、不重写Git历史、不改变D/RV状态。
+主交付：[总设计与需求映射](../design/industrial-engineering-01.md)、[安全](../../design/industrial-security-recovery-01.md)、[生命周期](../../design/industrial-lifecycle-01.md)、[操作与质量](../../design/industrial-operations-quality-01.md)、[基线核查](../../reviews/industrial-engineering-design-01.md)。本包不启用Actions、不安装或卸载现有部署、不重置真实密码、不连接设备、不重写Git历史、不改变D/RV状态。
 
 ## 1. 实施切片与退出条件
 

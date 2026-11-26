@@ -13,7 +13,7 @@
 
 目标是让客户能够完成“取得正确软件 → 安装 → 配置工位 → 判断是否具备开工条件 → 连续操作 → 定位并恢复异常 → 升级和维护 → 保留可追溯资料”的完整过程。减少用户手工维护 JSON、路径、散列和内部编号的工作；每项自动化仍需有明确输入、可靠结果、失败后的可继续路径和可导出的证据。
 
-沿用[框架](../../design/framework.md)、[F 决策](../../design/framework-decisions.md)和[独立 Application 架构](../../design/application-architecture-22.md)：基座负责机制，Application 拥有业务规则、状态、命令守卫及所属 UI，驱动负责设备，组件负责外部服务适配。一个已打包 Application 对应独立主业务；导航和布局复用同一运行实例、连接、发送器及状态，不引入运行时“切换任意业务”的万能流程。
+沿用[框架](../../design/framework.md)、[F 决策](framework-decisions.md)和[独立 Application 架构](../../design/application-architecture-22.md)：基座负责机制，Application 拥有业务规则、状态、命令守卫及所属 UI，驱动负责设备，组件负责外部服务适配。一个已打包 Application 对应独立主业务；导航和布局复用同一运行实例、连接、发送器及状态，不引入运行时“切换任意业务”的万能流程。
 
 Sportmaster 保留读码、请求上游目标、展示格口以及左右独立业务链，不增设 PLC、图片显示或长期图片保存。历史 Supply 视觉基线中的共享箱、拆包、数量字段不得套入 Sportmaster；WcsToPlc 独立适配自己的业务，DirectPlc 完整业务 UI 延期不变。跨产品共用的是部署、设置框架、健康表达、诊断和样式机制，页面字段及动作仍由各 Application 决定。
 

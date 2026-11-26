@@ -42,7 +42,7 @@
 
 2026-10-21（北京时间）重新读取远端 main，固定基线为 `42a047c3c0dbba3208e6bc6ce2910cd6ffabbf5e`；本地 HEAD 与远端一致，开工工作区干净、开放 PR 为 0。PR78 参数 V3 与 PR79 启动恢复已合并，见[发布记录](../runtime/publication-pr78-pr79-20261021.md)。**完整设计与主要原生源码已在 main，下一步为现有 PS-05 的原生交付收口及实际缺口修复。** 不再把四类参数、统一保存或“维护与迁移”入口拆分当成从零开发事项。
 
-完成用户对实际参数页面的美学与可用性纠偏。先读 AGENTS、[文档索引](../../INDEX.md)、[框架](../../design/framework.md)与[F 决策](../../design/framework-decisions.md)，再读 [PARAM-UX-02](../design/parameter-settings-experience-02.md)、[V3交付](../../ui/parameter-settings-v3-20261020/README.md)、[交接](../../ui/parameter-settings-v3-20261020/HANDOFF.md)、[原验证](../../ui/parameter-settings-v3-20261020/QA.md)及实际代码。编码前先清理本任务冲突的当前指引；PR74三组作业、首配、字段合同、PR76会话修复与PR79启动回退继续复用。
+完成用户对实际参数页面的美学与可用性纠偏。先读 AGENTS、[文档索引](../../INDEX.md)、[框架](../../design/framework.md)与[F 决策](../design/framework-decisions.md)，再读 [PARAM-UX-02](../design/parameter-settings-experience-02.md)、[V3交付](../../ui/parameter-settings-v3-20261020/README.md)、[交接](../../ui/parameter-settings-v3-20261020/HANDOFF.md)、[原验证](../../ui/parameter-settings-v3-20261020/QA.md)及实际代码。编码前先清理本任务冲突的当前指引；PR74三组作业、首配、字段合同、PR76会话修复与PR79启动回退继续复用。
 
 V3目录中的 README、HANDOFF、CODEX-NEXT 及 SOURCE-STATE 保留形成时字节和分支语境；其中“开发分支进入 main PR”已由上述合并事实更新。当前实现与验证以本文开头链接的本轮原生验证为准；末尾执行提示保留原始授权。原 `bf61337`、原源码指纹、历史 PASS / NOT_RUN 及旧安装包身份不改写为本次验证。
 

@@ -1,4 +1,4 @@
-> 本文保留形成时的设计及验证背景。当前 SM 实施及验收见[文档索引](../INDEX.md)与[实施手册](../operator/implementation-guide.md)。
+> 本文保留形成时的设计及验证背景。当前 SM 实施及验收见[文档索引](../../INDEX.md)与[实施手册](../../operator/implementation-guide.md)。
 
 # Sportmaster 交付、故障处理与生命周期手册
 

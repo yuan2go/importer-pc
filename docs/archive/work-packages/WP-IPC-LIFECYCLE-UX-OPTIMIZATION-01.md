@@ -32,7 +32,7 @@
 首次阅读顺序：
 
 1. `AGENTS.md`、`docs/INDEX.md`、本包、[问题总账](../../reviews/lifecycle-ux-reconciliation-01.md)。
-2. [框架](../../design/framework.md)、[F决策](../../design/framework-decisions.md)、[本批增量设计](../design/lifecycle-ux-optimization-01.md)、[当前操作入口](../../runtime/lifecycle-ux-current-guidance-01.md)。
+2. [框架](../../design/framework.md)、[F决策](../design/framework-decisions.md)、[本批增量设计](../design/lifecycle-ux-optimization-01.md)、[当前操作入口](../../runtime/lifecycle-ux-current-guidance-01.md)。
 3. 当前[管理模式](../../runtime/management-mode-01.md)、[PR107纠偏](WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)、[字体规范](../../design/typography-01.md)、[参数体验](../design/parameter-settings-experience-02.md)、[参数设计机制](../design/parameter-refactor-01.md)及[运行机制](../../runtime/parameter-refactor-01.md)。
 4. 依据本包子项，实际查看V2作业/首配、V3参数的原型、相关全部界面、HANDOFF、字段/原功能迁移表与当前同源截图；旧HTML不作原生验收。遵守AGENTS规定的实物阅读要求，明确后续纠偏对原型的覆盖。
 5. 相关源文件、定向测试、D/CAPI/RV与[公开范围](../../baseline/PUBLICATION.md)，再拟定实际修改。

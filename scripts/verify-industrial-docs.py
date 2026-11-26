@@ -1,8 +1,11 @@
-"""Check current operator entry links and all runtime CP fault codes, not archives."""
+"""Check the active document index, repository links, delivery inputs and CP fault codes."""
 from pathlib import Path
 import re
 import sys
 import xml.etree.ElementTree as ET
+from urllib.parse import unquote, urlsplit
+
+from release_documents import ALL_GUIDES
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -15,18 +18,32 @@ def package_index():
 
 
 def verify():
-    files = [ROOT / 'README.md', ROOT / 'CHANGELOG.md', ROOT / 'docs/INDEX.md',
-             *sorted((ROOT / 'docs/operator').glob('*.md'))]
+    docs = ROOT / 'docs'
+    index = docs / 'INDEX.md'
+    active = {path for path in docs.rglob('*')
+              if path.relative_to(docs).parts[0] != 'archive' and path.is_file()}
+    files = [ROOT / name for name in ('AGENTS.md', 'README.md', 'CHANGELOG.md')]
+    files.extend(sorted(path for path in active if path.suffix.lower() == '.md'))
     errors = []
+    indexed = set()
     count = 0
     for path in files:
         text = path.read_text(encoding='utf-8-sig')
-        for target in re.findall(r'\]\(([^)]+)\)', text):
-            if target.startswith(('https://', 'http://', '#', 'mailto:')):
+        for target in re.findall(r'\]\(([^)\n]+)\)', text):
+            url = urlsplit(target.strip('<>'))
+            if url.scheme or url.netloc or not url.path:
                 continue
+            destination = (path.parent / unquote(url.path)).resolve()
             count += 1
-            if not (path.parent / target.split('#')[0]).exists():
-                errors.append(f'{path.relative_to(ROOT)}: missing {target}')
+            if not destination.is_relative_to(ROOT) or not destination.exists():
+                errors.append(f'{path.relative_to(ROOT)}: missing or outside repository: {target}')
+            if path == index:
+                indexed.add(destination)
+    for path in sorted(active - indexed - {index}):
+        errors.append(f'Not linked from docs/INDEX.md: {path.relative_to(ROOT)}')
+    for source in sorted(ALL_GUIDES):
+        if not (ROOT / source).is_file():
+            errors.append(f'Missing packaged guide: {source}')
     codes = set()
     for path in (ROOT / 'src').rglob('*.cs'):
         if 'obj' not in path.parts and 'bin' not in path.parts:
@@ -40,7 +57,7 @@ def verify():
         errors.append('Operator manual version differs from actual SM project')
     if errors:
         raise ValueError('\n'.join(errors))
-    print(f'PASS DOCS: {len(files)} entry pages, {count} local links, {len(codes)} CP codes; physical printing/native/site NOT_RUN; PDF generation and visual review recorded separately')
+    print(f'PASS DOCS: {len(active) - 1} indexed files, {len(files)} Markdown pages, {count} local links, {len(ALL_GUIDES)} delivery sources, {len(codes)} CP codes')
 
 
 if __name__ == '__main__':

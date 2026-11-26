@@ -1,12 +1,10 @@
-当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见收口前归档，不用于当前操作。
+# Parcel 应用拓扑与角色
 
-# Application架构22 · 现行增量
-
-当前实施和格式规则见[运行说明](../runtime/application-architecture-22.md)及[从零安装工作包](../archive/work-packages/WP-IPC-FRESH-BASELINE-01.md)。
+本页是既有 Parcel 装配的随包拓扑说明。平台分层及新业务改动见[架构基线](framework.md)，存储版本见[当前格式](../runtime/version-compatibility-01.md)。
 
 ## 所有权与拓扑
 
-构建只选择一个Application，同一实例服务所属页面。Sportmaster明确两个独立投递位left/right、两个独立reader；每位扫码→WCS有效格口→应用结果，不调PLC。DirectPlc和WcsToPlc明确一个main投递位、一个reader，按配置关联本件重量，然后分别PLC或WCS→PLC。Supply的箱/数量/AGV规则仅在该业务适用。
+构建只选择一个Application，同一实例服务所属页面。Sportmaster明确两个独立投递位left/right、两个独立reader；每位扫码→内置 RCS 取格口→应用结果，不调PLC。DirectPlc和WcsToPlc明确一个main投递位、一个reader，按配置关联本件重量，然后分别PLC或WCS→PLC。Supply的箱/数量/AGV规则仅在该业务适用。
 
 Application声明角色、数量、绑定和完成规则。Platform保持通用设备会话、资源、会话、配置、契约机制；驱动提供采集/PLC，组件提供认证/WCS/上传。WCS字段、单位、缺省操作人、认证和响应转换归组件；PLC地址、编码和握手归驱动。无登录不造操作人。
 
@@ -30,8 +28,8 @@ Application声明角色、数量、绑定和完成规则。Platform保持通用�
 
 同一CAS/Pending/Effective账管理完整schema3候选，绑定受控重启后生效；失败保持原有效配置。在途冻结位置、reader、操作员、报文、配置及实现，不随Pending变化。当前未完成种子的InitialRepair和retainingOriginal保留原件，非当前schema拒绝。编辑草稿live-v2所有当前字段必填，校验成功才替换窗口输入。
 
-Parcel 10与Supply 6从零建库；无历史迁移链、旧格式解释器或回包索引补写。数据库版本、基线哈希、完整性与原件责任分别校验；非当前格式拒绝且文件字节不变。完整备份/恢复、崩溃与强杀恢复、Unknown及独立接收责任继续有效。
+Parcel DB14 与独立的 Supply 格式 6 各自建库；无历史迁移链、旧格式解释器或回包索引补写。数据库版本、基线哈希、完整性与原件责任分别校验；非当前格式拒绝且文件字节不变。完整备份/恢复、崩溃与强杀恢复、Unknown及独立接收责任继续有效。
 
 观察与称重只有受控注册端口。所有调用端、驱动、测试替身与示例按当前契约编译；外部RCS version1、厂商SDK签名及SIMULATION-v1语义不变。
 
-定向验证覆盖当前成功路径、非当前格式只读拒绝、基线等价、原始回包/Unknown及崩溃恢复。结构证据见[快照比对](../verification/fresh-baseline-01/README.md)；Windows CI、真实SDK和现场验收分开记录，原D/RV不由本轮测试自动关闭。
+定向验证覆盖当前成功路径、非当前格式只读拒绝、基线等价、原始回包/Unknown及崩溃恢复。结构证据见[快照比对](../archive/verification/fresh-baseline-01/README.md)；Windows CI、真实SDK和现场验收分开记录，原D/RV不由本轮测试自动关闭。

@@ -267,6 +267,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 Note(current?.LifecycleState == "Purged" ? "原本站数据和管理密码已删除。本次沿用原登记位置重新配置，不恢复已删除的业务记录；机器部署和审计证据保留。"
                     : "本次操作：" + installationKind + "。保留现有账户、数据与配置；请先关闭供包台。安装会核验程序已退出并释放资源，不要求清空作业或暂停供包。");
                 Note("安装需要 Windows 管理员授权，与软件管理密码无关。");
+                Summary("开机自启", reviewed!.Shortcuts!.AutoStart ? "开启" : "关闭");
                 foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
             }
             Section("安装位置");

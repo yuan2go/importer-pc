@@ -132,7 +132,7 @@ internal static class SmContinuousInductionChecks
         await Presence(TrayPresence.Present); // Empty hysteresis retains Present but withdraws continuity.
         await Deliver(lateOriginal);
         Check(h.Peer.Requests.Count == 3 && (await h.App.SnapshotAsync()).Rounds.Single().OperationId is null,
-            "expired delayed original decode cannot submit after continuity is withdrawn before the 800ms physical ending");
+            "expired delayed original decode cannot submit after continuity is withdrawn while removal is still pending");
         var replacement = Stopwatch.GetTimestamp(); await Presence(TrayPresence.Present, replacement);
         await Deliver(left.Capture(["GOOD-10"]) with { ContinuousPresenceTicks = replacement });
         Check(h.Peer.Requests.Count == 3 && (await h.App.SnapshotAsync()).Rounds.Single() is { OperationId: null, SafeContinuation: false },

@@ -23,10 +23,11 @@ internal static class MvsPresenceChecks
     {
         ReplaySamples(root);
         var model = new MvsTrayPresence(); var ticks = Stopwatch.GetTimestamp();
-        TrayPresenceEvidence? Sample(bool parcel, int ms, int exposure = 0)
+        TrayPresenceEvidence? Sample(bool parcel, int ms, int exposure = 0, int changedSamples = 0)
         {
-            ticks += (long)(ms / 1000d * Stopwatch.Frequency);
+            ticks += ms * Stopwatch.Frequency / 1000;
             var pixels = Pixels(parcel, exposure); var memory = Marshal.AllocHGlobal(pixels.Length);
+            for (var i = 0; i < changedSamples; i++) pixels[(2 * (i / 192) + 1) * W + 2 * (i % 192) + 1] = 180;
             try { Marshal.Copy(pixels, 0, memory, pixels.Length); return model.Observe(memory, W, H, ticks); }
             finally { Marshal.FreeHGlobal(memory); }
         }
@@ -34,19 +35,29 @@ internal static class MvsPresenceChecks
         model.Teach(); Sample(false, 100); Sample(true, 100);
         for (var i = 0; i < 20; i++) Sample(true, 100);
         Check(model.Status.Contains("校准失败"), "a parcel placed during teaching cannot become a newly learned empty background");
-        model.Teach();
-        for (var i = 0; i < 20; i++) Sample(false, 100);
-        Check(model.Status == "空托盘已确认", "explicit empty teaching requires stable multi-frame evidence");
+        model.Teach(); Sample(false, 1); Sample(false, 400); Sample(false, 399);
+        Check(model.Snapshot() is { Calibrating: true, Calibrated: false }, "explicit empty teaching remains unfinished at 799ms");
+        Sample(false, 1);
+        Check(model.Snapshot() is { Calibrating: false, Calibrated: true }, "explicit empty teaching freezes the reference at 800ms");
+        Sample(false, 150); Sample(false, 150);
         Check(model.Snapshot() is { Calibrated: true, Calibrating: false, Presence: TrayPresence.Absent, ExposureValid: true, ReferenceSha256: { Length: 64 }, ChangedFraction: 0 },
             "structured model evidence identifies the calibrated reference, actual empty state and measured scene difference");
         Sample(true, 100); Sample(true, 100); Sample(true, 100);
         Check(model.Status == "包裹在位", "parcel pixels establish presence independently of barcode results");
         Check(Sample(false, 100) is { State: TrayPresence.Present, FirstPresentTicks: null },
             "first empty candidate immediately withdraws continuation evidence while retaining the occupied removal hysteresis");
-        Sample(false, 100); Sample(false, 700);
-        Check(model.Status != "空托盘已确认", "a frame gap resets the continuous removal span");
-        for (var i = 0; i < 10; i++) Sample(false, 100);
-        Check(model.Status == "空托盘已确认", "return to the taught reference confirms removal after 800ms");
+        Sample(false, 100, changedSamples: 49); Sample(false, 100, changedSamples: 49);
+        Check(model.Status == "包裹在位" && model.Snapshot() is { Candidate: TrayPresence.Absent, ChangedFraction: > .001 and <= .0025 },
+            "200ms and three frames are insufficient, but 0.2% local disturbance preserves the empty candidate");
+        Check(Sample(false, 100, changedSamples: 49) is { State: TrayPresence.Absent } absence &&
+            absence.Evidence.Contains("spanMs=300;emptyMs=300") && model.Status == "空托盘已确认",
+            "default runtime removal is confirmed at 300ms against the fixed reference (previously 800ms)");
+        Sample(true, 100); Sample(true, 50); Sample(true, 50);
+        Sample(false, 100); Sample(false, 150);
+        Check(Sample(false, 501) is { State: TrayPresence.Unknown } && model.Snapshot() is { StableFrames: 1 },
+            "a frame gap above 500ms immediately resets the continuous removal span");
+        Sample(false, 150);
+        Check(Sample(false, 150) is { State: TrayPresence.Absent }, "qualified removal requires a full new span after the gap");
         model.BreakContinuity();
         Check(model.Snapshot() is { Calibrated: true, Presence: TrayPresence.Unknown, ChangedFraction: null } && model.Status.Contains("未知"),
             "a broken frame sequence withdraws the stale empty status immediately while retaining only the reference");
@@ -54,12 +65,39 @@ internal static class MvsPresenceChecks
         Check(model.Status.Contains("未知"), "large exposure changes invalidate physical inference");
         Check(model.Snapshot() is { Calibrated: true, Presence: TrayPresence.Unknown, ExposureValid: false, BrightnessShift: 40 },
             "exposure-invalid evidence remains explicitly unknown despite retaining the session's calibrated reference");
+        model.Teach(); Sample(false, 1); Sample(false, 400, changedSamples: 49);
+        Check(model.Status.Contains("校准失败"), "0.2% local disturbance still exceeds the 0.1% teaching threshold");
+        model.Teach(); Sample(false, 1, -70);
+        Check(model.Status.Contains("校准失败"), "invalid exposure cannot teach an empty reference");
+        model = new MvsTrayPresence(800);
+        model.Teach(); Sample(false, 1); Sample(false, 400); Sample(false, 400);
+        Sample(true, 100); Sample(true, 50); Sample(true, 50);
+        Sample(false, 100); Sample(false, 150); Sample(false, 150);
+        Check(model.Status == "包裹在位", "an explicit 800ms runtime override remains in force after 300ms");
+        Sample(false, 499);
+        Check(Sample(false, 1) is { State: TrayPresence.Absent } overridden && overridden.Evidence.Contains("spanMs=800;emptyMs=800"),
+            "an explicitly selected 800ms runtime span is honored");
+
+        var schema = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(workspace, "src/Ipc.Drivers.Hikrobot.Mvs/reader-parameters.json")));
+        const string emptyKey = "presence.empty-ms";
+        var setting = schema.Single(f => f.Key == emptyKey);
+        Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 &&
+            setting is { Default: "300", Minimum: 150, Maximum: 2000, ApplyLevel: "GuardedLive" } &&
+            SmParameterOwnership.Show(SmParameterAudience.Technical, "camera/" + emptyKey) &&
+            !SmParameterOwnership.Show(SmParameterAudience.Field, "camera/" + emptyKey),
+            "the 150–2000ms guarded live parameter belongs to the technical editor");
+        var acquiredAbsence = new TaskCompletionSource<TrayPresenceEvidence>(TaskCreationOptions.RunContinuationsAsynchronously);
         await using (var restarted = new MvsAcquisition(new("presence-restart", "presence-restart", new Dictionary<string, string>
-        { ["device.ip"] = "192.0.2.21", ["device.serial"] = "SYNTH-OFFLINE-0" }), new Camera(false), _ => new Lease(), decoder: new Decoder()))
+        { ["device.ip"] = "192.0.2.21", ["device.serial"] = "SYNTH-OFFLINE-0", [emptyKey] = "200" }), new Camera(false), _ => new Lease(), decoder: new Decoder()))
         {
-            await restarted.StartControlledAsync(Wire.Id(), _ => true, _ => { }, default);
+            await restarted.StartControlledAsync(Wire.Id(), observation =>
+            {
+                if (observation.TrayPresence is { State: TrayPresence.Absent } evidence) acquiredAbsence.TrySetResult(evidence);
+                return true;
+            }, _ => { }, default);
             restarted.CalibrateEmptyTray();
-            await CameraRoundHarness.Until(() => Task.FromResult(restarted.TrayPresenceStatus == "空托盘已确认"));
+            Check((await acquiredAbsence.Task.WaitAsync(TimeSpan.FromSeconds(5))).Evidence.Contains("emptyMs=200"),
+                "the acquisition applies the configured runtime threshold to the session presence model");
             await restarted.StopAsync(default);
             await restarted.StartControlledAsync(Wire.Id(), _ => true, _ => { }, default);
             Check(restarted.TrayPresenceStatus.Contains("未校准"), "reconnecting the actual acquisition discards its old empty reference");

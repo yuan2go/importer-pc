@@ -8,7 +8,11 @@ namespace Ipc.Drivers.Hikrobot.Mvs;
 // No unsupervised background adaptation: a stationary parcel must never become empty.
 internal sealed class MvsTrayPresence
 {
+    internal const int DefaultEmptyConfirmMs = 300, MinimumEmptyConfirmMs = 150, MaximumEmptyConfirmMs = 2000;
+    internal const int TeachingConfirmMs = 800;
     const int Columns = 192, Rows = 128;
+    const double TeachingMaxChanged = .001, RuntimeAbsentMaxChanged = .0025, RuntimePresentMinChanged = .01;
+    readonly int emptyConfirmMs;
     readonly object gate = new();
     byte[]? reference, teaching;
     int width, height, count;
@@ -21,6 +25,14 @@ internal sealed class MvsTrayPresence
     int? brightnessShift;
     bool? exposureValid;
     string status = "未校准；在位状态未知";
+
+    internal MvsTrayPresence(int emptyConfirmMs = DefaultEmptyConfirmMs)
+    {
+        if (emptyConfirmMs is < MinimumEmptyConfirmMs or > MaximumEmptyConfirmMs)
+            throw new ArgumentOutOfRangeException(nameof(emptyConfirmMs));
+        this.emptyConfirmMs = emptyConfirmMs;
+    }
+
     public string Status { get { lock (gate) return status; } private set => status = value; }
     public bool CanDecode { get { lock (gate) return !requested && (reference is null || published == TrayPresence.Present); } }
     public long? ContinuousPresenceTicks { get { lock (gate) return pending == TrayPresence.Present && published == TrayPresence.Present ? first : null; } }
@@ -92,13 +104,13 @@ internal sealed class MvsTrayPresence
                 var delta = teaching is null ? (Changed: 1d, Shift: 0) : Difference(teaching, samples);
                 changedFraction = teaching is null ? null : delta.Changed; brightnessShift = teaching is null ? null : delta.Shift;
                 if (teaching is null) { teaching = samples; first = ticks; count = 0; }
-                else if (delta.Changed > .001 || Math.Abs(delta.Shift) > 12)
+                else if (delta.Changed > TeachingMaxChanged || Math.Abs(delta.Shift) > 12)
                 {
                     FailTeaching();
                     return new(TrayPresence.Unknown, "EmptyTeachingChanged; explicit calibration must be repeated");
                 }
                 count++;
-                if (count >= 3 && Elapsed(first, ticks) >= 800)
+                if (count >= 3 && Elapsed(first, ticks) >= TeachingConfirmMs)
                 {
                     reference = teaching; referenceId = Wire.Hash(Convert.ToBase64String(reference));
                     requested = false; teaching = null; count = 0; pending = TrayPresence.Unknown;
@@ -112,11 +124,12 @@ internal sealed class MvsTrayPresence
                 changedFraction = changed; brightnessShift = shift; exposureValid = exposureValid == true && Math.Abs(shift) <= 12;
                 // Large exposure shifts, near-black and saturation invalidate inference.
                 if (exposureValid == true)
-                    state = changed <= .001 ? TrayPresence.Absent : changed >= .01 ? TrayPresence.Present : TrayPresence.Unknown;
+                    state = changed <= RuntimeAbsentMaxChanged ? TrayPresence.Absent :
+                        changed >= RuntimePresentMinChanged ? TrayPresence.Present : TrayPresence.Unknown;
             }
             if (pending != state || first == 0) { pending = state; count = 0; first = ticks; }
             count++;
-            var confirmed = state == TrayPresence.Unknown || count >= 3 && Elapsed(first, ticks) >= (state == TrayPresence.Absent ? 800 : 100);
+            var confirmed = state == TrayPresence.Unknown || count >= 3 && Elapsed(first, ticks) >= (state == TrayPresence.Absent ? emptyConfirmMs : 100);
             var output = confirmed ? state : state == TrayPresence.Absent && published == TrayPresence.Present
                 ? TrayPresence.Present : TrayPresence.Unknown;
             // Hysteresis retains the last confirmed occupied state while a matching
@@ -125,11 +138,11 @@ internal sealed class MvsTrayPresence
             { TrayPresence.Absent => "空托盘已确认", TrayPresence.Present => "包裹在位", _ => "在位状态未知；等待可靠图像" };
             var continuousStart = output == TrayPresence.Present && state == TrayPresence.Present ? first : (long?)null;
             // Loss of continuity invalidates late-decode authority immediately;
-            // the independent 800ms empty hysteresis still decides physical removal.
+            // the independent empty hysteresis still decides physical removal.
             if (published == output && publishedFirstPresentTicks == continuousStart && lastPublished != 0 && Elapsed(lastPublished, ticks) < 1000) return null;
             publishedFirstPresentTicks = continuousStart;
             published = output; lastPublished = ticks;
-            return new(output, $"TaughtMono8-v1;reference={referenceId};size={w}x{h};changed={changed:F5};shift={shift};frames={count};spanMs={Elapsed(first, ticks):F0}")
+            return new(output, $"TaughtMono8-v1;reference={referenceId};size={w}x{h};changed={changed:F5};shift={shift};frames={count};spanMs={Elapsed(first, ticks):F0};emptyMs={emptyConfirmMs}")
             { ReferenceSha256 = reference is null ? null : referenceId, FirstPresentTicks = continuousStart };
         }
     }

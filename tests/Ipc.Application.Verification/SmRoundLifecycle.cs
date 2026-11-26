@@ -194,6 +194,8 @@ internal static class SmRoundLifecycle
             h.Peer.Hold.TrySetResult(); await Resolved(a.OperationId!);
             Check(Current(await h.App.SnapshotAsync()) is null && (await h.App.OperationAsync(rightResult.Id))!.Slot == rightResult.Slot,
                 "T09 late departed A result does not claim the new left vehicle or overwrite independently completed right B");
+            await CameraRoundHarness.Until(async () =>
+                (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
             s = await Observe(["GOOD-401"]); var b = Current(s)!;
             var bResult = await Resolved(b.OperationId!);
             Check(h.Peer.Requests.Count == 6 && bResult.Slot is not null,

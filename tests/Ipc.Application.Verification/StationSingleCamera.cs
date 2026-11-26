@@ -70,7 +70,7 @@ static partial class SportmasterRcs
                 "functional success uses the real default frozen request budget, not a short latency assertion");
             Check(original.Wcs.Request.Payload.Length > 0 && original.Wcs.Request.Binding.Target == peer.Endpoint,
                 "recovery comparison reads authenticated original payload and target, not the redacted operator projection");
-            var request = Wire.Encode(original.Wcs!.Request); var sent = peer.Requests.Count;
+            var request = Wire.Encode(original.Wcs!.Request); var sent = NonHeartbeatRequests(peer).Length;
             app.ManagementPasswordResetApproval = replacement =>
             {
                 var mode = LocalManagementMode.ForRoot(launch.DataRoot);
@@ -83,13 +83,13 @@ static partial class SportmasterRcs
             Check(!(await app.ManagementModeStatusAsync()).Authorized, "Application recovery requires a new management login");
             Check(await app.EnterManagementModeAsync("Recovered-12345"), "explicit replacement-password login required to inspect original bytes");
             var preserved = (await app.OperationAsync(original.Id))!;
-            Check(Wire.Encode(preserved.Wcs!.Request) == request && peer.Requests.Count == sent, "recovery preserves original request and sends no duplicate");
+            Check(Wire.Encode(preserved.Wcs!.Request) == request && NonHeartbeatRequests(peer).Length == sent, "recovery preserves original request and sends no duplicate");
             if (mask == 0)
             {
                 peer.Mode = "withhold-response"; Check(app.EmitReferenceAt("right", "unknown-single-entity", "000987654", Wire.Id()), "independent position admits the Unknown recovery fixture");
                 snapshot = await Wait(s => s.Operations.Any(o => o.State == ParcelState.WcsUnknown));
                 var unknown = snapshot.Operations.Single(o => o.State == ParcelState.WcsUnknown);
-                Check(unknown.Wcs!.LocalFailure == RequestLocalFailure.DeadlineExpired && peer.Requests.Count == sent + 1,
+                Check(unknown.Wcs!.LocalFailure == RequestLocalFailure.DeadlineExpired && NonHeartbeatRequests(peer).Length == sent + 1,
                     "withheld response reaches the real frozen deadline with exactly one business send");
                 var frozen = Wire.Encode(unknown.Wcs!.Request);
                 Check(await app.EnterManagementModeAsync("Recovered-12345"), "replacement password enters for Unknown recovery verification");

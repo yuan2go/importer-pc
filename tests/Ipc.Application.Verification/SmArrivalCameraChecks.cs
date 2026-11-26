@@ -43,7 +43,8 @@ internal static class SmArrivalCameraChecks
             }
             Check(source.ReadDiagnostics().TrayPresenceModel?.Calibrated == true, "actual stable frame span teaches a static reference: " + Wire.Encode(source.ReadDiagnostics().TrayPresenceModel));
             var reference = source.ReadDiagnostics().TrayPresenceModel!.ReferenceSha256;
-            for (var sample = 0; sample < 3; sample++)
+            // Keep streaming the initial parcel if fixture handoff resets the frame span.
+            for (var sample = 0; sample < 8 && (sample < 3 || source.TrayPresenceStatus != "包裹在位"); sample++)
             {
                 var before = h.Handled(h.Left); var targetFrame = frame; Queue();
                 await h.WaitFrameAsync(h.Left, targetFrame, before);
@@ -138,10 +139,13 @@ internal static class SmArrivalCameraChecks
             await Frames(empty, [], 11); await Frames(unread, [], 4);
             var unreadRound = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
             Check(unreadRound.OperationId is null && h.Peer.Requests.Count == 3, "E01 real image presence creates an unread parcel without HTTP: native=" + native);
-            await Frames(empty, [], 11); await Ready();
+            await Frames(empty, [], 2);
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CurrentRoundId == unreadRound.Id,
+                "two empty frames are insufficient to end the unread round: native=" + native);
+            await Frames(empty, [], 3); await Ready();
             Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CurrentRoundId: null, BarcodeInput.Camera: true } nextLane &&
                 nextLane.Arrival!.Generation == unreadRound.ArrivalGeneration && h.Peer.Requests.Count == 3,
-                "N03/E01 actual 800ms empty evidence closes unread parcel and readies same car: native=" + native);
+                "N03/E01 actual 300ms empty evidence closes unread parcel and readies same car: native=" + native);
             await Frames(unread, [], 14);
             Check((await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left") is { AutoExpired: true, SafeContinuation: true },
                 "E09 capture continuity survives the fast deadline without inventing a new parcel: native=" + native);

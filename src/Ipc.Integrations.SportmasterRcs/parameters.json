@@ -92,12 +92,12 @@
     "Group": "RCS 心跳",
     "Label": "心跳间隔",
     "Type": "integer",
-    "Default": "1000",
+    "Default": "500",
     "Minimum": 100,
     "Maximum": 3600000,
     "MaximumLength": 7,
     "Unit": "毫秒",
-    "Description": "默认1000毫秒，按允许频率及实测节拍调整。周期与3000毫秒总响应预算独立；相邻可信车号变化决定到位代次，状态文字只作提示。取格口与心跳共用本位编码。",
+    "Description": "默认 500 毫秒，可按客户 RCS 允许频率在 100～3600000 毫秒内调整。",
     "ApplyLevel": "GuardedLive"
   }
 ]

@@ -43,21 +43,21 @@ internal static class SmRoundFixture
         }
         else if (VehiclePeers.TryGetValue(binding.Target, out var setVehicle)) setVehicle(code, vehicle);
         else throw new InvalidOperationException("Fixture must explicitly advance its own RCS vehicle boundary");
-        // A busy manual check did not confirm the new synthetic vehicle.
-        // The one-hour automatic interval cannot supply the missing observation.
-        await CameraRoundHarness.Until(async () =>
-        {
-            var result = await app.CheckRcsHeartbeatAsync(default);
-            return result switch
-            {
-                RcsHeartbeatResult.Received => true,
-                RcsHeartbeatResult.Busy => false,
-                _ => throw new InvalidOperationException($"Synthetic vehicle change on {position} received heartbeat result {result}")
-            };
-        });
+        if (await CompletedHeartbeatAsync(app) != RcsHeartbeatResult.Received)
+            throw new InvalidOperationException("Synthetic vehicle heartbeat failed for " + position);
         await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.VehicleNo == vehicle);
         if (s.Devices?.Any(d => d.DeviceId == s.Positions!.Single(p => p.Id == position).ReaderDeviceId && d.IsValid(DateTimeOffset.UtcNow)) == true)
             await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.CameraBoundaryReady == true);
+    }
+    internal static async Task<RcsHeartbeatResult> CompletedHeartbeatAsync(IStationRcsHeartbeat app)
+    {
+        var result = RcsHeartbeatResult.Busy;
+        await CameraRoundHarness.Until(async () =>
+        {
+            result = await app.CheckRcsHeartbeatAsync(default);
+            return result != RcsHeartbeatResult.Busy;
+        });
+        return result;
     }
     // A test-only explicit local enable command, after external reconciliation or
     // configuration. Guard rejections write no state; only the first acceptance
@@ -177,9 +177,10 @@ internal sealed partial class ManualSupplyHarness : IAsyncDisposable
     {
         if (vehicle is null) { await SmRoundFixture.NextVehicleAsync(App, position); return; }
         var code = Config.Wcs!.Parameters[position + "-bcr-code"];
-        Peer.Vehicles[code] = vehicle ?? "CAR-" + Wire.Id();
-        await ((IStationRcsHeartbeat)App).CheckRcsHeartbeatAsync(default);
-        await CameraRoundHarness.Until(async () => (await App.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.VehicleNo == Peer.Vehicles[code]);
+        Peer.Vehicles[code] = vehicle;
+        if (await SmRoundFixture.CompletedHeartbeatAsync(App) != RcsHeartbeatResult.Received)
+            throw new InvalidOperationException("Synthetic vehicle heartbeat failed for " + position);
+        await CameraRoundHarness.Until(async () => (await App.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival is { Confirmed: true } arrival && arrival.VehicleNo == vehicle);
         if (Factory.Cameras.TryGetValue(Config.Topology!.Positions.Single(p => p.Id == position).ReaderDeviceId, out var source) && source.Epoch.Length > 0 && (await App.SnapshotAsync()).Devices!.Any(d => d.DeviceId == source.DeviceId && d.IsValid(DateTimeOffset.UtcNow)))
             await CameraRoundHarness.Until(async () => (await App.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.CameraBoundaryReady == true);
     }

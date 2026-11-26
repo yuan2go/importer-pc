@@ -3,33 +3,40 @@ using Ipc.Platform;
 
 // IE-P04 installation receipts in the diagnostics package: synthetic journals in a temporary
 // deployments folder; only allowlisted fields may leave them.
-internal static class InstallationReceipts04
+internal static class InstallationReceiptChecks
 {
-    static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS RECEIPTS04 " + text); }
+    static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS INSTALLATION-RECEIPTS " + text); }
     internal static void Run(string root)
     {
-        var folder = Path.Combine(root, "installation-receipts-04", "deployments");
-        Check(DeploymentReceipts.Summarize(folder, "sportmaster").All(s => s.Count == 0 && s.Latest is null), "a station without journals reports no receipts");
+        VerifySummaryOrder(Path.Combine(root, "summary-order"));
+        var folder = Path.Combine(root, "receipt-inventory", "deployments");
+        Check(DeploymentReceipts.Summarize(folder, "fixture-station").All(s => s.Count == 0 && s.Latest is null), "a station without journals reports no receipts");
         Directory.CreateDirectory(folder);
         string Op() => Guid.NewGuid().ToString("N");
-        void Write(string kind, string operation, object value) => File.WriteAllText(Path.Combine(folder, $"sportmaster.{kind}-{operation}.json"), JsonSerializer.Serialize(value));
+        void Write(string kind, string operation, object value) => File.WriteAllText(Path.Combine(folder, $"fixture-station.{kind}-{operation}.json"), JsonSerializer.Serialize(value));
 
         var oldSetup = Op(); var newSetup = Op();
         Write("setup", oldSetup, new { Status = "Committed", ReleaseRoot = @"D:\Secret\releases\a", DataRoot = @"D:\Data" });
-        File.SetLastWriteTimeUtc(Path.Combine(folder, $"sportmaster.setup-{oldSetup}.json"), DateTime.UtcNow.AddDays(-2));
+        File.SetLastWriteTimeUtc(Path.Combine(folder, $"fixture-station.setup-{oldSetup}.json"), DateTime.UtcNow.AddDays(-2));
         Write("setup", newSetup, new { Status = "Prepared", ReleaseRoot = @"D:\Secret\releases\b", RequestIdentity = new string('b', 64) });
         var quiet = Op();
-        Write("quiet", quiet, new { Schema = 1, Status = "Completed", ExitCode = 0, LogSha256 = new string('c', 64),
-            Intent = new { ApplicationId = "sportmaster", OperationId = quiet, Action = "Repair", LogFile = @"D:\Logs\secret.log" } });
+        Write("quiet", quiet, new
+        {
+            Schema = 1,
+            Status = "Completed",
+            ExitCode = 0,
+            LogSha256 = new string('c', 64),
+            Intent = new { ApplicationId = "fixture-station", OperationId = quiet, Action = "Repair", LogFile = @"D:\Logs\secret.log" }
+        });
         var rollback = Op();
         Write("rollback", rollback, new { SchemaVersion = 1, Status = "Failed", At = "2026-10-01T08:00:00+00:00", ErrorCode = "x", Plan = new { Identity = "p" } });
         Write("prune", Op(), new { Status = "Deleted; rm -rf", At = "2026-10-02T08:00:00+00:00" });
-        File.WriteAllText(Path.Combine(folder, $"sportmaster.remove-{Op()}.json"), "{ not json");
-        File.WriteAllText(Path.Combine(folder, "sportmaster.remove-not-a-guid.json"), "{}");
-        File.WriteAllText(Path.Combine(folder, $"sportmaster.setup-{Op().ToUpperInvariant()}.json"), "{\"Status\":\"Committed\"}");
+        File.WriteAllText(Path.Combine(folder, $"fixture-station.remove-{Op()}.json"), "{ not json");
+        File.WriteAllText(Path.Combine(folder, "fixture-station.remove-not-a-guid.json"), "{}");
+        File.WriteAllText(Path.Combine(folder, $"fixture-station.setup-{Op().ToUpperInvariant()}.json"), "{\"Status\":\"Committed\"}");
         File.WriteAllText(Path.Combine(folder, $"direct-plc.setup-{Op()}.json"), "{\"Status\":\"Committed\"}");
 
-        var summary = DeploymentReceipts.Summarize(folder, "sportmaster").ToDictionary(s => s.Kind);
+        var summary = DeploymentReceipts.Summarize(folder, "fixture-station").ToDictionary(s => s.Kind);
         var setup = summary["setup"];
         Check(setup.Latest is { Status: "Prepared" } latest && latest.OperationId == newSetup, "the newest setup journal is the latest receipt");
         Check(summary["quiet"].Latest is { Status: "Completed", Action: "Repair", ExitCode: 0 }, "a quiet receipt keeps its action and exit code");
@@ -43,5 +50,16 @@ internal static class InstallationReceipts04
             "another application's journals and non-canonical operation names are not counted");
         var refused = false; try { DeploymentReceipts.Summarize(folder, "../x"); } catch (ArgumentException) { refused = true; }
         Check(refused, "an application id that could escape the folder is refused");
+    }
+
+    internal static void VerifySummaryOrder(string root)
+    {
+        Directory.CreateDirectory(root);
+        var old = DateTimeOffset.UtcNow.AddDays(-1);
+        for (var i = 0; i < 1030; i++) File.WriteAllText(Path.Combine(root, "fixture-station.quiet-" + Wire.Id() + ".json"), Wire.Encode(new { Status = "Completed", At = old, Intent = new { Action = 1 } }));
+        var newest = Wire.Id(); File.WriteAllText(Path.Combine(root, "fixture-station.quiet-" + newest + ".json"), Wire.Encode(new { Status = "Completed", At = DateTimeOffset.UtcNow, Intent = new { Action = "Install" } }));
+        var summary = DeploymentReceipts.Summarize(root, "fixture-station").Single(x => x.Kind == "quiet");
+        Check(summary.Count == 1031 && summary.Latest?.OperationId == newest && summary.Unreadable == 0,
+            "deployment summaries include every eligible receipt and tolerate malformed optional actions");
     }
 }

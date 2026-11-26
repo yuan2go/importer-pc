@@ -21,6 +21,7 @@ internal static class MvsNetworkReconnect
         }
         var left = h.Api(h.Left); var right = h.Api(h.Right);
         h.Peer.Mode = "malformed";
+        await h.WaitForCameraAdmissionAsync(h.Left);
         left.Enqueue(CameraRoundHarness.Barcode("NETWORK-UNKNOWN"), 1);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Unknown));
         var original = (await h.App.SnapshotAsync()).Operations.Single(o => o.PositionId == "left");

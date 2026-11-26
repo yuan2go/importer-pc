@@ -2,9 +2,9 @@ using Ipc.Application.ParcelFlow.Desktop;
 
 // First configuration: actual per-source readiness wording and the bounded,
 // side-effect-free network check. Probes are substituted; no camera SDK and no RCS request.
-internal static class FirstConfiguration03
+internal static class FirstConfigurationChecks
 {
-    static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS FIRST03 " + text); }
+    static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS FIRST-CONFIGURATION " + text); }
     internal static async Task Run()
     {
         var initial = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration();

@@ -36,7 +36,7 @@ static class DualCameraCommunication
             Parameters = new()
             { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)(i == 0 ? leftListener : rightListener).LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" }
         }).ToArray();
-        c = c with { Reader = rs[0], Topology = c.Topology with { Readers = rs } };
+        c = c with { Reader = rs[0], TimeoutMs = 30000, Topology = c.Topology with { Readers = rs } };
         Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         var factory = new StartupFactory(new ParcelCapabilityFactory(launch));
@@ -55,25 +55,32 @@ static class DualCameraCommunication
         await start.WaitAsync(TimeSpan.FromSeconds(8));
         using var right = await rightListener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(5));
         Check(await factory.FirstIngress.Task, "legal frame sent immediately on connect enters bounded queue during startup");
-        Check((await Wait(app, s => s.Inputs?.Length == 1)).Devices!.Single(d => d.DeviceId == rs[0].DeviceId).Health == DeviceHealth.Ready,
-            "startup ingress rejection does not spuriously disconnect left camera");
+        Check((await Wait(app, s => s.Operations.Any(o => o.PositionId == "left"))).Devices!.Single(d => d.DeviceId == rs[0].DeviceId).Health == DeviceHealth.Ready,
+            "a frame accepted during startup keeps the original camera connected");
         var original = await Wait(app, s => s.Operations.Any(o => o.State == ParcelState.SlotResolved));
         var first = original.Operations.Single();
         Check(first.PositionId == "left" && first.ReaderBinding!.DeviceId == rs[0].DeviceId && first.Acquisition!.Epoch == original.Devices!.Single(d => d.DeviceId == rs[0].DeviceId).Epoch,
             "effective endpoint maps through DeviceId and topology to original left acquisition");
         await left.GetStream().WriteAsync(new byte[] { 255, 10 });
         await Wait(app, s => s.Devices!.Single(d => d.DeviceId == rs[0].DeviceId).Health == DeviceHealth.Faulted);
+        Check(!original.Devices!.Any(d => d.Source.Contains("127.0.0.1")) && !original.Health.Any(h => h.Detail.Contains("127.0.0.1")), "ordinary health projection conceals actual TCP endpoints");
+        // Use the empty right lane for the pause guard. A different barcode on a
+        // settled parcel would exercise same-placement suppression instead.
+        await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
+        await right.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000456\n"));
+        await CameraRoundHarness.Until(async () =>
+            (await app.ReadCameraBusinessAsync(rs[1].DeviceId, 0, null, 10, default)).Rows.Any(row =>
+                row.Candidates.Contains("000456") && row.Outcome == nameof(ParcelInputOutcome.Blocked)));
+        var blocked = await app.SnapshotAsync();
+        Check(blocked.Operations.Length == 1 && blocked.Devices!.Single(d => d.DeviceId == rs[1].DeviceId).Health == DeviceHealth.Ready,
+            "business guard rejection is audited without disconnecting healthy TCP or creating an RCS request");
+        await Command(app, "Resume");
         await right.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000123\n"));
         var dual = await Wait(app, s => s.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
         Check(dual.Operations.Select(o => o.AdmissionId).Distinct().Count() == 2 && dual.Operations.Single(o => o.PositionId == "right").ReaderBinding!.DeviceId == rs[1].DeviceId,
             "left protocol fault does not block right; same barcode retains two entities and matching original requests");
-        Check(!dual.Devices!.Any(d => d.Source.Contains("127.0.0.1")) && !dual.Health.Any(h => h.Detail.Contains("127.0.0.1")), "ordinary health projection conceals actual TCP endpoints");
         await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
-        await right.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000456\n"));
-        var blocked = await Wait(app, s => s.Inputs!.Any(i => i.PositionId == "right" && i.Observation.Codes.Contains("000456")));
-        Check(blocked.Inputs!.Single(i => i.PositionId == "right").Outcome == ParcelInputOutcome.Blocked && blocked.Operations.Length == 2 && blocked.Devices!.Single(d => d.DeviceId == rs[1].DeviceId).Health == DeviceHealth.Ready,
-            "business guard rejection is audited without disconnecting healthy TCP or creating an RCS request");
-        var rightEpoch = blocked.Devices!.Single(d => d.DeviceId == rs[1].DeviceId).Epoch;
+        var rightEpoch = dual.Devices!.Single(d => d.DeviceId == rs[1].DeviceId).Epoch;
         Check((await app.ReconnectDeviceAsync(rs[0].DeviceId)).Status == "Reconnected", "explicit single-side reconnect stops original and opens a new epoch");
         using var leftAgain = await leftListener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(3));
         var reconnected = await app.SnapshotAsync();
@@ -242,9 +249,19 @@ static class DualCameraCommunication
             var start = app.StartAsync(default); using var peer = await listener.AcceptTcpClientAsync();
             await peer.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000123\n000456\n"));
             await Until(() => factory.Left?.Failure == "IngressRejected"); factory.Release.TrySetResult(true); await start;
-            var s = await Wait(app, x => x.Inputs?.Length == 1);
-            Check(s.Inputs!.Single().Outcome == ParcelInputOutcome.Blocked && s.Operations.Length == 0 && File.Exists(Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, "overload.json")),
-                "startup queue overflow preserves durable side-specific overload fence; no dropped-frame success");
+            await ManagementModeFixture.Authorize(app);
+            // A full SM lane refuses the second frame to its producer before the
+            // durable write. Only the first frame belongs to the application.
+            await CameraRoundHarness.Until(async () =>
+            {
+                var history = await app.ReadCameraBusinessAsync(r.DeviceId, 0, null, 10, default);
+                return history.Rows is [var first] && first.Candidates.Contains("000123") &&
+                    first.Outcome == nameof(ParcelInputOutcome.Blocked);
+            });
+            var snapshot = await app.SnapshotAsync();
+            Check(snapshot.Operations.Length == 0 && factory.Left!.Failure == "IngressRejected" &&
+                snapshot.Devices!.Single(d => d.DeviceId == r.DeviceId).Health == DeviceHealth.Faulted,
+                "startup capacity rejection remains visible on the source, with one durable input and no dispatch");
             Check(app.EmitReferenceAt("right", "right-overload", "000789", "right-overload"), "healthy right source still receives after left startup overflow");
             await Wait(app, x => x.Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
         }
@@ -259,14 +276,18 @@ static class DualCameraCommunication
         Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null); var factory = new StartupFactory(new(launch)) { Fail = !cancel };
         int failureAuditCompleted = 0, prematureDisposition = 0;
+        var auditEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var allowAudit = new ManualResetEventSlim();
         var app = new ParcelRuntime(launch, new SportmasterFlow(), factory)
         {
             RuntimeIdentityPreflight = () => { },
             Boundary = point =>
             {
-                // Hold the original startup writer while another worker can run.
-                // This detects the ownership overlap without relying on SQLite to crash.
-                if (point == "BeforeStartupFailureAudit") Thread.Sleep(150);
+                if (point == "BeforeStartupFailureAudit")
+                {
+                    auditEntered.TrySetResult();
+                    if (!allowAudit.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException("Startup audit was not released");
+                }
                 if (point == "AfterStartupFailureAudit") Volatile.Write(ref failureAuditCompleted, 1);
                 if (point == "BeforeStartupIngressDisposition" && Volatile.Read(ref failureAuditCompleted) == 0)
                     Interlocked.Exchange(ref prematureDisposition, 1);
@@ -277,17 +298,30 @@ static class DualCameraCommunication
         {
             var start = app.StartAsync(cancellation.Token); using var peer = await listener.AcceptTcpClientAsync();
             await peer.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000123\n")); await factory.FirstIngress.Task.WaitAsync(TimeSpan.FromSeconds(3));
-            if (cancel) cancellation.Cancel(); else factory.Release.TrySetResult(true);
+            var cancellationCallbacks = cancel ? cancellation.CancelAsync() : Task.CompletedTask;
+            if (!cancel) factory.Release.TrySetResult(true);
+            try
+            {
+                await auditEntered.Task.WaitAsync(TimeSpan.FromSeconds(10));
+                Check(Volatile.Read(ref prematureDisposition) == 0, "queued ingress remains under its original owner at the audit boundary");
+            }
+            finally { allowAudit.Set(); }
+            await cancellationCallbacks;
             var failed = false; try { await start; } catch (Exception e) when (e is InvalidDataException or OperationCanceledException) { failed = true; }
             Check(failed && (await app.SnapshotAsync()).Operations.Length == 0, (cancel ? "cancelled" : "failed") + " startup cannot dispatch buffered observations");
         }
-        finally { factory.Release.TrySetResult(true); await app.DisposeAsync(); }
+        finally { allowAudit.Set(); factory.Release.TrySetResult(true); await app.DisposeAsync(); }
         Check(failureAuditCompleted == 1 && prematureDisposition == 0,
             (cancel ? "cancelled" : "failed") + " startup records its terminal audit before buffered-input disposition shares the database owner");
         var db = Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, "sportmaster.db");
         using var connection = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder { DataSource = db, Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); connection.Open();
-        using var command = connection.CreateCommand(); command.CommandText = "SELECT count(*) FROM parcel_audit WHERE event='StartupIngressBlocked'";
-        Check(Convert.ToInt64(command.ExecuteScalar()) == 1, "unsuccessful startup drains bounded input into explicit durable inspection evidence");
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT count(*) FROM parcel_ingress
+            WHERE position = 'left' AND state = 'Processed' AND detail LIKE 'SkippedAtStop;%'
+              AND json_extract(body, '$.Observation.Codes[0]') = '000123'
+            """;
+        Check(Convert.ToInt64(command.ExecuteScalar()) == 1, "unsuccessful SM startup preserves the original queued barcode and durably marks it skipped without dispatch");
     }
     static async Task SingleSideUnavailable(string workspace, string path)
     {

@@ -32,8 +32,14 @@ static class ManagementWorkspaceChecks
         await CameraRoundHarness.Until(async () => (await h.App.ReadCameraReadRoundAsync(default)).State == "Locked");
         Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Count(o => o.DebugRequest is null) == 1, "explicit debug reads never create an automatic production request");
         var afterDebug = await h.App.SnapshotAsync();
-        Check(afterDebug.Inputs!.Single(p => p.PositionId == "left").Observation.Codes.SequenceEqual(new[] { "SYNTH-BEFORE-MANAGEMENT" }),
-            "explicit management reads preserve the original production parcel card and input evidence");
+        var production = before.Operations.Single(o => o.PositionId == "left");
+        var history = await h.App.ReadCameraBusinessAsync(h.Left, 0, null, 10, default);
+        var originalInput = history.Rows.Single(row => row.OperationId == production.Id);
+        var shownInputs = afterDebug.Inputs!.Where(input => input.PositionId == "left");
+        Check(afterDebug.Operations.Any(o => o.Id == production.Id) &&
+            originalInput.Candidates.SequenceEqual(new[] { "SYNTH-BEFORE-MANAGEMENT" }) &&
+            shownInputs.All(input => input.Observation.Id == originalInput.ObservationId),
+            "the debug read preserves the original production input and cannot replace it on the parcel card");
         // Force expiry cleanup to queue behind the window close, without timing
         // sleeps: close owns inspectionControl while waiting for the runtime gate.
         var fields = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;

@@ -263,7 +263,7 @@ internal static class StationPositionControlChecks
                 { State: ParcelState.Abandoned, Wcs.Attempts: 0, Wcs.State: StageState.Cancelled },
                 "a prepared request disabled before its first attempt never reaches RCS");
             await CameraRoundHarness.Until(async () => await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received);
-            Check((await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default)).Status == "Accepted", "withdrawal acknowledgement permits explicit re-enable");
+            Check((await SmRoundFixture.EnableAsync(h.App, "left")).Status == "Accepted", "withdrawal acknowledgement permits explicit re-enable");
             await h.NextVehicleAsync();
             var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-UNSENT-DISABLE"), default);
             await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(next.OperationId!))?.State == ParcelState.SlotResolved);

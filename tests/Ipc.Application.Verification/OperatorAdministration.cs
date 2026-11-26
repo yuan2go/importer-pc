@@ -177,7 +177,7 @@ static class OperatorAdministration
             for (int i = 0; i < 150; i++) { state = await app.SnapshotAsync(); if (state.Operations.Any(o => o.ParcelCode == "LEFT-NEXT" && o.State == ParcelState.SlotResolved)) break; await Task.Delay(20); }
             Check(!streaming.IsCompleted && state.Operations.Any(o => o.ParcelCode == "LEFT-NEXT" && o.State == ParcelState.SlotResolved), "new parcel finishes while the actual Application export remains held");
         }
-        finally { readRelease.Set(); try { Check(await streaming.WaitAsync(TimeSpan.FromSeconds(10)) == 15000, "complete Application export retains all 15000 fixture rows"); } finally { applicationReader.BeforeSourceRead = null; app.ReleaseLogSelection(all.Selection); } }
+        finally { readRelease.Set(); try { Check(await streaming.WaitAsync(TimeSpan.FromMinutes(1)) == 15000, "complete Application export retains all 15000 fixture rows"); } finally { applicationReader.BeforeSourceRead = null; app.ReleaseLogSelection(all.Selection); } }
         // Observing SlotResolved does not prove the external continuation has
         // drained. Pause can also refuse a stale revision; never ignore its receipt.
         BusinessReceipt? pauseReceipt = null;

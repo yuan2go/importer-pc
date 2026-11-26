@@ -3,10 +3,10 @@ using Ipc.Application.ParcelFlow;
 using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
-internal static class DebugNoIsolation31
+internal static class DebugRequestChecks
 {
     static void Check(bool condition, string reason)
-    { if (!condition) throw new InvalidOperationException(reason); Console.WriteLine("PASS DEBUG31 " + reason); }
+    { if (!condition) throw new InvalidOperationException(reason); Console.WriteLine("PASS DEBUG " + reason); }
     internal static string RuntimeDirectory(BusinessLaunch launch, ParcelConfiguration c) => Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId);
     static string SeedHistoricalAudit(string directory)
     {

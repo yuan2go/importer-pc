@@ -8,7 +8,7 @@ using Microsoft.Data.Sqlite;
 
 static partial class SportmasterRcs
 {
-    public static async Task Audit03Checks(string workspace, string root)
+    public static async Task RequestOrderChecks(string workspace, string root)
     {
         await using var peer = new Peer();
         var standard = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
@@ -28,13 +28,21 @@ static partial class SportmasterRcs
             };
             var run = Path.Combine(root, "rcs-t1-" + delayedPosition); Directory.CreateDirectory(run); ExtensionStore.AtomicWrite(Path.Combine(run, "business.json"), c);
             var data = Path.Combine(run, "data");
-            async Task<ParcelRuntime> Open(string dataRoot, HoldFactory? holder = null)
+            async Task<ParcelRuntime> Open(string dataRoot, HoldFactory? holder = null, bool waitForArrival = true)
             {
                 var launch = new BusinessLaunch(run, dataRoot, null, null);
                 IParcelCapabilityFactory factory = new Factory(new ParcelCapabilityFactory(launch));
                 if (holder is not null) { holder.Inner = factory; factory = holder; }
                 var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
-                try { await app.StartAsync(default); return app; } catch { await app.DisposeAsync(); throw; }
+                try
+                {
+                    await app.StartAsync(default);
+                    SmRoundFixture.Register(app, launch, c);
+                    await ManagementModeFixture.Authorize(app);
+                    if (waitForArrival) await Wait(app, s => s.Positions!.All(p => p.Arrival?.CameraBoundaryReady == true));
+                    return app;
+                }
+                catch { await app.DisposeAsync(); throw; }
             }
             async Task<BusinessReceipt> Command(ParcelRuntime app, string kind, string? owner = null, string? value = null)
             {
@@ -49,7 +57,7 @@ static partial class SportmasterRcs
                 }
                 throw new Exception("RCS fixture command CAS did not settle");
             }
-            var hold = new HoldFactory(delayedPosition); string firstRequest, secondRequest; long lastId; var startPosts = peer.Requests.Count;
+            var hold = new HoldFactory(delayedPosition); string firstRequest, secondRequest; long lastId; var startPosts = NonHeartbeatRequests(peer).Length;
             var backup = Path.Combine(root, "rcs-t1-" + delayedPosition + ".backup.db");
             await using (var app = await Open(data, hold))
             {
@@ -63,7 +71,7 @@ static partial class SportmasterRcs
                     Check(independent.Operations.Single(o => o.PositionId == delayedPosition).Wcs is null, "A03 independent position reaches actual HTTP T1 while other capture is held");
                     hold.Release.TrySetResult();
                     var result = await Wait(app, s => s.Operations.Length == 2 && s.Operations.All(o => o.State is ParcelState.SlotResolved or ParcelState.Blocked));
-                    Check(result.Operations.All(o => o.State == ParcelState.SlotResolved && o.Wcs!.Attempts == 1) && peer.Requests.Count == startPosts + 2,
+                    Check(result.Operations.All(o => o.State == ParcelState.SlotResolved && o.Wcs!.Attempts == 1) && NonHeartbeatRequests(peer).Length == startPosts + 2,
                         "A03 " + delayedPosition + " capture delay gives both positions one actual T1 and POST without global serialization");
                     await ManagementModeFixture.Authorize(app); result = await app.SnapshotAsync();
                     var ordered = result.Operations.OrderBy(o => o.Wcs!.Request.IntegrationRequest!.RequestId).ToArray();
@@ -79,23 +87,24 @@ static partial class SportmasterRcs
                 }
                 finally { hold.Release.TrySetResult(); }
             }
-            var posts = peer.Requests.Count;
+            var posts = NonHeartbeatRequests(peer).Length;
             await using (var app = await Open(data))
             {
                 var history = await app.HistoryAsync(long.MaxValue, 20);
-                Check(history.Items.Count(x => x.Archived) == 2 && history.Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(new[] { firstRequest, secondRequest }.Order()) && peer.Requests.Count == posts, "A03 restart/archive preserve both original wire IDs and exact bodies without POST");
-                await Command(app, "Resume"); app.EmitReferenceAt("left", "after-backup", "SYNTH-0001", "after-backup-event");
+                Check(history.Items.Count(x => x.Archived) == 2 && history.Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(new[] { firstRequest, secondRequest }.Order()) && NonHeartbeatRequests(peer).Length == posts, "A03 restart/archive preserve both original wire IDs and exact bodies without POST");
+                await Command(app, "Resume"); await SmRoundFixture.NextVehicleAsync(app, "left");
+                app.EmitReferenceAt("left", "after-backup", "SYNTH-0001", "after-backup-event");
                 var after = await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "after-backup" && o.State == ParcelState.SlotResolved && o.ImageReleased));
                 Check(after.Operations.Single(o => o.AdmissionId == "after-backup").Wcs!.Request.IntegrationRequest!.RequestId > lastId, "A03 source consumes a new persistent ID after the backup cut");
             }
-            posts = peer.Requests.Count;
+            posts = NonHeartbeatRequests(peer).Length;
             var restored = Path.Combine(run, "restored"); var directory = Path.Combine(restored, "Simulation", c.StationId, c.ApplicationId);
             ParcelRecovery.Restore(backup, directory);
-            await using (var app = await Open(restored))
+            await using (var app = await Open(restored, waitForArrival: false))
             {
                 var denied = await Command(app, "Resume"); app.EmitReferenceAt("left", "restore-old-range", "SYNTH-0001", "restore-old-event");
-                var isolated = await Wait(app, x => x.Inputs?.Any(i => i.Observation.AdmissionId == "restore-old-range") == true);
-                Check(denied.Status == "Rejected" && isolated.Paused && !isolated.Operations.Any(o => o.AdmissionId == "restore-old-range") && peer.Requests.Count == posts,
+                var isolated = await app.SnapshotAsync();
+                Check(denied.Status == "Rejected" && isolated.Paused && isolated.BlockingReasons.Any(r => r.StartsWith("RestoreHandoffRequired", StringComparison.Ordinal)) && !isolated.Operations.Any(o => o.AdmissionId == "restore-old-range") && NonHeartbeatRequests(peer).Length == posts,
                     "A03 stale restored backup stays isolated before protected handoff; no entity, request or POST is invented");
                 using var repository = new ParcelRepository(directory, "sportmaster");
                 await using var preparer = new SportmasterRcsTaskService(binding);
@@ -115,9 +124,10 @@ static partial class SportmasterRcs
             }
             await using (var app = await Open(data))
             {
-                await Command(app, "Resume"); app.EmitReferenceAt("right", "current-new-range", "SYNTH-0001", "new-range-event");
+                await Command(app, "Resume"); await SmRoundFixture.NextVehicleAsync(app, "right");
+                app.EmitReferenceAt("right", "current-new-range", "SYNTH-0001", "new-range-event");
                 var snapshot = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "current-new-range" && o.State == ParcelState.SlotResolved));
-                Check(snapshot.Operations.Single(o => o.AdmissionId == "current-new-range").Wcs!.Request.IntegrationRequest!.RequestId > lastId && peer.Requests.Count == posts + 1,
+                Check(snapshot.Operations.Single(o => o.AdmissionId == "current-new-range").Wcs!.Request.IntegrationRequest!.RequestId > lastId && NonHeartbeatRequests(peer).Length == posts + 1,
                     "A03 current root uses the newly allocated range exactly once after controlled restart");
             }
             using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(data, "Simulation", c.StationId, c.ApplicationId, "sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))

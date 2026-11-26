@@ -14,8 +14,13 @@ static class StorageBaseline
     {
         await CurrentStorageChecks.Run(workspace, root);
         var parcelRoot = Path.Combine(root, "baseline-parcel");
+        // DB14 accepts registered business identities. Exercise shared storage with
+        // a different supported owner from the SM application smoke test below.
+        var applicationId = new Ipc.Application.DirectPlc.DirectPlcFlow().Id;
+        var parcelName = applicationId + ".db";
+        var parcelFile = Path.Combine(parcelRoot, parcelName);
         var supplyFile = Path.Combine(root, "baseline-supply", "station.db");
-        using (var parcel = new ParcelRepository(parcelRoot, "sportmaster"))
+        using (var parcel = new ParcelRepository(parcelRoot, applicationId))
         using (var supply = new SupplyStore(supplyFile))
         {
             foreach (var owner in new object[] { parcel, supply })
@@ -27,7 +32,7 @@ static class StorageBaseline
                 Check(Convert.ToInt32(c.ExecuteScalar()) == 2, owner.GetType().Name + " uses synchronous=FULL");
             }
         }
-        foreach (var (name, file) in new[] { ("parcel", Path.Combine(parcelRoot, "sportmaster.db")), ("supply", supplyFile) })
+        foreach (var (name, file) in new[] { ("parcel", parcelFile), ("supply", supplyFile) })
         {
             using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = file, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
             using var c = db.CreateCommand();
@@ -37,25 +42,25 @@ static class StorageBaseline
             c.CommandText = name == "parcel" ? "SELECT count(*) FROM platform_migrations" : "SELECT count(*) FROM schema_history";
             Check(Convert.ToInt32(c.ExecuteScalar()) == 1, name + " contains no historical migration entries");
         }
-        Check(ParcelRepository.ReadStorageVersion(Path.Combine(parcelRoot, "sportmaster.db"), "sportmaster") == ParcelRepository.CurrentStorageVersion && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel14/Supply6");
-        var analyzed = Path.Combine(root, "analyzed-current.db"); File.Copy(Path.Combine(parcelRoot, "sportmaster.db"), analyzed);
+        Check(ParcelRepository.ReadStorageVersion(parcelFile, applicationId) == ParcelRepository.CurrentStorageVersion && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel14/Supply6");
+        var analyzed = Path.Combine(root, "analyzed-current.db"); File.Copy(parcelFile, analyzed);
         using (var db = new SqliteConnection("Data Source=" + analyzed + ";Pooling=False"))
         { db.Open(); using var c = db.CreateCommand(); c.CommandText = "ANALYZE;"; c.ExecuteNonQuery(); }
-        Check(ParcelRepository.ReadStorageVersion(analyzed, "sportmaster") == ParcelRepository.CurrentStorageVersion, "SQLite-owned optimizer tables remain valid in the current schema");
+        Check(ParcelRepository.ReadStorageVersion(analyzed, applicationId) == ParcelRepository.CurrentStorageVersion, "SQLite-owned optimizer tables remain valid in the current schema");
         foreach (var unexpected in new[] { "unexpected_payload", "sqliteX_payload" })
         {
             var file = Path.Combine(root, unexpected + ".db"); File.Copy(analyzed, file);
             using (var db = new SqliteConnection("Data Source=" + file + ";Pooling=False"))
             { db.Open(); using var c = db.CreateCommand(); c.CommandText = "CREATE TABLE " + unexpected + "(id TEXT);"; c.ExecuteNonQuery(); }
             var hash = Wire.FileHash(file);
-            try { ParcelRepository.ReadStorageVersion(file, "sportmaster"); throw new Exception("Unexpected schema accepted"); }
+            try { ParcelRepository.ReadStorageVersion(file, applicationId); throw new Exception("Unexpected schema accepted"); }
             catch (InvalidDataException) { Check(Wire.FileHash(file) == hash, "current schema refuses unknown and SQLite-lookalike objects without changing bytes: " + unexpected); }
         }
         foreach (var parcel in new[] { true, false })
         {
             var directory = Path.Combine(root, parcel ? "malformed-parcel-identity" : "malformed-supply-identity"); Directory.CreateDirectory(directory);
-            var file = Path.Combine(directory, parcel ? "sportmaster.db" : "station.db");
-            File.Copy(parcel ? Path.Combine(parcelRoot, "sportmaster.db") : supplyFile, file);
+            var file = Path.Combine(directory, parcel ? parcelName : "station.db");
+            File.Copy(parcel ? parcelFile : supplyFile, file);
             using (var db = new SqliteConnection("Data Source=" + file + ";Pooling=False"))
             {
                 db.Open(); using var c = db.CreateCommand();
@@ -65,7 +70,7 @@ static class StorageBaseline
             var hash = Wire.FileHash(file);
             try
             {
-                if (parcel) { using var denied = new ParcelRepository(directory, "sportmaster"); }
+                if (parcel) { using var denied = new ParcelRepository(directory, applicationId); }
                 else { using var denied = new SupplyStore(file); }
                 throw new Exception("Malformed format identity accepted");
             }
@@ -73,11 +78,11 @@ static class StorageBaseline
             { Check(Wire.FileHash(file) == hash, "malformed " + (parcel ? "Parcel" : "Supply") + " identity refuses with fresh-directory guidance and unchanged database bytes"); }
         }
         var brokenRoot = Path.Combine(root, "missing-index"); Directory.CreateDirectory(brokenRoot);
-        var broken = Path.Combine(brokenRoot, "sportmaster.db"); File.Copy(Path.Combine(parcelRoot, "sportmaster.db"), broken);
+        var broken = Path.Combine(brokenRoot, parcelName); File.Copy(parcelFile, broken);
         using (var db = new SqliteConnection("Data Source=" + broken + ";Pooling=False"))
         { db.Open(); using var c = db.CreateCommand(); c.CommandText = "DROP TABLE parcel_reply_identities"; c.ExecuteNonQuery(); }
         var before = Wire.FileHash(broken);
-        try { using var denied = new ParcelRepository(brokenRoot, "sportmaster"); throw new Exception("Missing identity table accepted"); }
+        try { using var denied = new ParcelRepository(brokenRoot, applicationId); throw new Exception("Missing identity table accepted"); }
         // Current DB14 verifies the complete schema before the old, narrower
         // reply-identity check. Keep typed rejection and byte/no-directory guards;
         // a historical diagnostic phrase is not the storage safety contract.

@@ -6,13 +6,14 @@ using Ipc.Application.Sportmaster.Desktop;
 using Ipc.Drivers.Hikrobot.Mvs;
 using Ipc.Platform;
 
-internal static class ReaderFeedback22
+internal static class ReaderFeedbackChecks
 {
     static void Check(bool ok, string detail) { if (!ok) throw new InvalidOperationException(detail); Console.WriteLine("PASS READER22 " + detail); }
     internal static async Task Run(string workspace, string root)
     {
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "reader22"), 1500);
         await h.StartAsync();
+        await h.WaitForCameraAdmissionAsync(h.Left);
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-CURRENT"), 1);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.SlotResolved));
         var first = await h.App.SnapshotAsync();
@@ -113,7 +114,7 @@ internal static class ReaderFeedback22
             (Stopwatch.GetTimestamp(), "old-epoch"), (Stopwatch.GetTimestamp(), state.Epoch) })
         {
             vm.Left.ApplyReadFeedback(new(vm.Snapshot.RuntimeId, "left", Wire.Id(), h.Left, epoch, "SYNTH-LATEST", at, DateTimeOffset.UtcNow)
-                { SourceSequence = 100, PendingDisplayBudgetMs = 1000 });
+            { SourceSequence = 100, PendingDisplayBudgetMs = 1000 });
             Check(vm.Left.SuccessIdentity == success && !vm.Left.IsProcessing,
                 "read feedback alone cannot replace the confirmed round's result");
         }

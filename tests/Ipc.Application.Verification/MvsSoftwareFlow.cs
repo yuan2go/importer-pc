@@ -124,7 +124,7 @@ static partial class SportmasterRcs
 
             // Three decoded results must remain independent. The newest-video policy may
             // intentionally supersede *undecoded* frames, so await each recognition boundary.
-            // Pipeline custody only (placement judgement off; covered by --same-placement-29).
+            // Pipeline custody only (placement judgement off; covered by --sm-round-lifecycle).
             var count = 0;
             string? generation = null;
             foreach (var number in new uint[] { 1, 2, 5 })

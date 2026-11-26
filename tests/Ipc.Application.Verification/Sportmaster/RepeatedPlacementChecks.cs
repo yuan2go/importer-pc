@@ -4,9 +4,9 @@ using Ipc.Application.Sportmaster;
 using Ipc.Platform;
 using Ipc.Drivers.Hikrobot.Mvs;
 
-// SM-SAME-PLACEMENT-29: one placement on the supply tray is one RCS request.
+// one placement on the supply tray is one RCS request.
 // Real ZXing, synthetic MVS frames, built-in RCS over loopback HTTP and the SM work card.
-internal static class SamePlacement29
+internal static class RepeatedPlacementChecks
 {
     static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS PLACE29 " + text); }
     internal static async Task Run(string workspace, string root)
@@ -53,15 +53,19 @@ internal static class SamePlacement29
                 await Deliver(h, h.Left, blank, ++frame);
                 await Task.Delay(CameraRoundHarness.SyntheticBlankSpanMs / 2);
             }
-            if (frames >= 3) { await h.TrayAsync(h.Left, TrayPresence.Absent);
+            if (frames >= 3)
+            {
+                await h.TrayAsync(h.Left, TrayPresence.Absent);
                 var lane = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left");
-                if (lane.Arrival!.RecoveryReason is not null) {
+                if (lane.Arrival!.RecoveryReason is not null)
+                {
                     await h.AuthorizeAsync();
                     await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC peer refusal settled; withdrawal applied");
                     var state = await h.App.SnapshotAsync();
                     await h.App.SetPositionEnabledAsync(new(Wire.Id(), state.RuntimeId, "left", state.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
                 }
-                await SmRoundFixture.NextVehicleAsync(h.App, "left"); await h.TrayAsync(h.Left, TrayPresence.Present); }
+                await SmRoundFixture.NextVehicleAsync(h.App, "left"); await h.TrayAsync(h.Left, TrayPresence.Present);
+            }
         }
         async Task<ParcelInputSnapshot> Latest() => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
 

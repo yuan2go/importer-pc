@@ -64,7 +64,7 @@ static class LatencyProjectionChecks
             Check(!ReferenceEquals(shared1, differentAuthority), "a different authority generation cannot join the earlier privileged read");
         }
         finally { release.Set(); await Task.WhenAll(reads).WaitAsync(TimeSpan.FromSeconds(5)); runtime.Boundary = null; }
-        var probe = new SportmasterUi.SnapshotProbe(runtime);
+        var probe = new SnapshotReadFixture.SnapshotProbe(runtime);
         var vm = new ParcelViewModel(probe, "classic", "sportmaster"); await vm.RefreshAsync();
         var delayed = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
         var current = vm.Snapshot!;

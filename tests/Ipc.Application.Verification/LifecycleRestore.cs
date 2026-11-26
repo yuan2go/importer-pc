@@ -110,11 +110,19 @@ static class LifecycleRestore
                 var confirmedCycle = LastCycle();
                 await CameraRoundHarness.Until(() => Task.FromResult(LastCycle() > confirmedCycle));
                 Check((await restored.SnapshotAsync()).Paused && restoredFactory.Sends == 0, "restore confirmation remains paused after an actual background maintenance cycle, with no automatic supply or RCS send");
-                var ready = await restored.SnapshotAsync();
-                var resumed = await restored.CommandAsync(new(Wire.Id(), ready.Revision, "Resume"));
-                Check(resumed.Status == "Persisted" && !(await restored.SnapshotAsync()).Paused && restoredFactory.Sends == 0, "explicit Resume remains legal after verified restore and never replays an original request");
                 return true;
             }, expectedPorts);
+            // Confirmation holds the maintenance probes. Resume uses their live health after release.
+            await CameraRoundHarness.Until(async () =>
+            {
+                var ready = await restored.SnapshotAsync();
+                if (ready.Availability?.Resume != true) return false;
+                var resumed = await restored.CommandAsync(new(Wire.Id(), ready.Revision, "Resume"));
+                if (resumed.Status == "Conflict") return false;
+                Check(resumed.Status == "Persisted" && !(await restored.SnapshotAsync()).Paused && restoredFactory.Sends == 0,
+                    "explicit Resume after verified restore preserves original requests: " + resumed.Reason);
+                return true;
+            });
         }
         Check((await service.ReadRestoreOperationsAsync()).Single() is { State: "Enabled", ResponsibilityStatus: "Confirmed", EverEnabled: true, BusinessPaused: false },
             "reopened maintenance projects actual confirmed and explicitly enabled restore facts from persisted audit");

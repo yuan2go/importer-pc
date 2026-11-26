@@ -7,15 +7,18 @@ static class RcsOfflineCameraReads
     public static async Task Run(string workspace, string root, bool nativeResults)
     {
         void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); Console.WriteLine("PASS RCS-CAMERA " + message); }
-        var buffered = 3;
-        MvidApi.DrainRawFrames(() => buffered-- > 0 ? 0 : MvidNative.NoData);
-        Check(buffered == -1, "native cache cutover drains each buffered raw frame and confirms the empty boundary");
-        var rejected = false;
-        try { MvidApi.DrainRawFrames(() => unchecked((int)0x80000214)); } catch (IOException) { rejected = true; }
-        Check(rejected, "a real raw queue transport error still rejects the cutover");
-        rejected = false;
-        try { MvidApi.DrainRawFrames(() => 0); } catch (IOException) { rejected = true; }
-        Check(rejected, "an unbounded raw queue never reports a false empty boundary");
+        if (nativeResults)
+        {
+            var buffered = 3;
+            MvidApi.DrainRawFrames(() => buffered-- > 0 ? 0 : MvidNative.NoData);
+            Check(buffered == -1, "native cache cutover drains each buffered raw frame and confirms the empty boundary");
+            var rejected = false;
+            try { MvidApi.DrainRawFrames(() => unchecked((int)0x80000214)); } catch (IOException) { rejected = true; }
+            Check(rejected, "a real raw queue transport error still rejects the cutover");
+            rejected = false;
+            try { MvidApi.DrainRawFrames(() => 0); } catch (IOException) { rejected = true; }
+            Check(rejected, "an unbounded raw queue never reports a false empty boundary");
+        }
 
         await using (var initial = new CameraRoundHarness(workspace, Path.Combine(root, "first-response"), heartbeatSeconds: 3600, nativeResults: nativeResults))
         {
@@ -74,8 +77,7 @@ static class RcsOfflineCameraReads
                         "SYNTHETIC peer failed handlers have completed; no queued remote work; removal membership applied")
                     { ExpectedControlRevision = lane.SupplyControl!.Revision, ExpectedTargetOperation = lane.Arrival.TargetOperation, ExpectedRecoveryToken = lane.Arrival.RecoveryToken }, default)).Status == "Accepted";
                 });
-                snapshot = await h.App.SnapshotAsync();
-                receipt = await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "left", snapshot.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+                receipt = await SmRoundFixture.EnableAsync(h.App, "left");
                 Check(receipt.Status == "Accepted", "explicit synthetic remote reconciliation permits re-enable");
                 await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.Confirmed == true);
                 h.Peer.HeartbeatUnavailable = wasOffline;

@@ -3,9 +3,9 @@ using Ipc.Platform;
 
 // Saving camera or RCS settings reconnects only those devices; the other camera keeps supplying.
 // Real ZXing, real SQLite, real MVS driver over a synthetic SDK and the built-in RCS over loopback HTTP.
-internal static class LiveDevices30
+internal static class CameraReconfigurationChecks
 {
-    static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS LIVE30 " + text); }
+    static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS LIVE-DEVICES " + text); }
     static ParcelConfiguration WithReader(ParcelConfiguration c, string device, string key, string value)
     {
         var readers = c.Topology!.Readers.Select(r => r.DeviceId != device ? r : r with { Parameters = new Dictionary<string, string>(r.Parameters!) { [key] = value } }).ToArray();
@@ -31,8 +31,15 @@ internal static class LiveDevices30
             await h.TrayAsync(device, TrayPresence.Absent);
             if (present) await h.TrayAsync(device, TrayPresence.Present);
             var before = Processed(position);
-            h.Api(device).Enqueue(CameraRoundHarness.Barcode(code), ++frame);
-            await CameraRoundHarness.Until(() => Task.FromResult(Processed(position) > before));
+            var pixels = CameraRoundHarness.Barcode(code);
+            await CameraRoundHarness.Until(async () =>
+            {
+                var number = ++frame;
+                var handled = h.Handled(device);
+                h.Api(device).Enqueue(pixels, number);
+                await h.WaitFrameAsync(device, number, handled);
+                return Processed(position) > before;
+            });
         }
         async Task Requested(CameraRoundHarness.RoundPeer peer, string code) =>
             await CameraRoundHarness.Until(() => Task.FromResult(peer.Requests.Any(r => r.Contains(code, StringComparison.Ordinal))));

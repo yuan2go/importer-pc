@@ -72,7 +72,7 @@ jobs:
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
-          dotnet test tests/Ipc.Core.Tests -c Release -p:RestoreLockedMode=true --settings scripts/industrial-coverage.runsettings --collect "Code Coverage;Format=cobertura" --logger "trx;LogFileName=core.trx" --results-directory .artifacts/core
+          dotnet test tests/Ipc.Core.Tests -c Release -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true --settings scripts/industrial-coverage.runsettings --collect "Code Coverage;Format=cobertura" --logger "trx;LogFileName=core.trx" --results-directory .artifacts/core
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Verify whitespace across src and tests
         shell: pwsh

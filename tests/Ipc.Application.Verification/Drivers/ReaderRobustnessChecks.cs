@@ -7,9 +7,9 @@ using Ipc.Drivers.Hikrobot.Mvs;
 using Ipc.Platform;
 using ZXingCpp;
 
-internal static class ReaderRobustness28
+internal static class ReaderRobustnessChecks
 {
-    static void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); Console.WriteLine("PASS READER28 " + message); }
+    static void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); Console.WriteLine("PASS READER " + message); }
     internal static async Task Run(string workspace, string root)
     {
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "reader28"), barcodeFilter: new("", "BG-28")) { StationClock = new TimeStorageFaultChecks.ManualTime() };
@@ -128,7 +128,7 @@ internal static class ReaderRobustness28
             Check(capacityRejected, "a frame reaching the 64-candidate limit is rejected in full rather than selecting a truncated subset");
             Check(ordinary.Decode(a.Data, a.Data.Length, a.Width, a.Height).SequenceEqual(new[] { "SYNTH-SAME-28" }), "candidate-limit rejection releases native results and leaves the next frame usable");
             using var gcStop = new CancellationTokenSource(); using var gcStarted = new ManualResetEventSlim();
-            var collector = Task.Run(() => { while (!gcStop.IsCancellationRequested) { GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: true, compacting: true); GC.WaitForPendingFinalizers(); gcStarted.Set(); Thread.Sleep(1); } });
+            var collector = Task.Run(() => { while (!gcStop.IsCancellationRequested) { GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: true, compacting: true); GC.WaitForPendingFinalizers(); gcStarted.Set(); gcStop.Token.WaitHandle.WaitOne(1); } });
             var completed = 0; var decodeWindowsWithCollection = 0;
             try
             {
@@ -166,7 +166,7 @@ internal static class ReaderRobustness28
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask && vm.Right.ShowConfirmedTask; });
         var old = vm.Snapshot!;
         h.Api(h.Left).Enqueue(new(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240), 2);
-        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 2) ; });
+        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 2); });
         Check(vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == 2, "no-code frame cannot retire current-round display authority");
         await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left"); await vm.RefreshAsync();
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("BG-28"), 3);
@@ -221,11 +221,11 @@ internal static class ReaderRobustness28
         var h = (int)Math.Ceiling(Math.Abs(s) * input.Width + Math.Abs(c) * input.Height) + 80;
         var pixels = Enumerable.Repeat((byte)255, w * h).ToArray();
         for (var y = 0; y < h; y++) for (var x = 0; x < w; x++)
-            {
-                var sourceX = (int)Math.Round((x - w / 2d) * c + (y - h / 2d) * s + input.Width / 2d);
-                var sourceY = (int)Math.Round(-(x - w / 2d) * s + (y - h / 2d) * c + input.Height / 2d);
-                if (sourceX >= 0 && sourceX < input.Width && sourceY >= 0 && sourceY < input.Height) pixels[y * w + x] = input.Data[sourceY * input.Width + sourceX];
-            }
+        {
+            var sourceX = (int)Math.Round((x - w / 2d) * c + (y - h / 2d) * s + input.Width / 2d);
+            var sourceY = (int)Math.Round(-(x - w / 2d) * s + (y - h / 2d) * c + input.Height / 2d);
+            if (sourceX >= 0 && sourceX < input.Width && sourceY >= 0 && sourceY < input.Height) pixels[y * w + x] = input.Data[sourceY * input.Width + sourceX];
+        }
         return new(pixels, w, h);
     }
     static CameraRoundHarness.RoundPixels Blur(CameraRoundHarness.RoundPixels input, int radius)
@@ -234,12 +234,12 @@ internal static class ReaderRobustness28
         var kernel = radius == 1 ? new[] { 1, 2, 1 } : new[] { 1, 4, 6, 4, 1 };
         var total = kernel.Sum(); var w = input.Width; var h = input.Height; var result = new byte[input.Data.Length];
         for (var y = 0; y < h; y++) for (var x = 0; x < w; x++)
-            {
-                var sum = 0;
-                for (var ky = -radius; ky <= radius; ky++) for (var kx = -radius; kx <= radius; kx++)
-                        sum += input.Data[Math.Clamp(y + ky, 0, h - 1) * w + Math.Clamp(x + kx, 0, w - 1)] * kernel[ky + radius] * kernel[kx + radius];
-                result[y * w + x] = (byte)(sum / (total * total));
-            }
+        {
+            var sum = 0;
+            for (var ky = -radius; ky <= radius; ky++) for (var kx = -radius; kx <= radius; kx++)
+                sum += input.Data[Math.Clamp(y + ky, 0, h - 1) * w + Math.Clamp(x + kx, 0, w - 1)] * kernel[ky + radius] * kernel[kx + radius];
+            result[y * w + x] = (byte)(sum / (total * total));
+        }
         return new(result, w, h);
     }
 }

@@ -24,8 +24,7 @@ static class InterruptedScanSkipChecks
     {
         await using var h = new CameraRoundHarness(workspace, root, nativeResults: true);
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
-        var s = await h.App.SnapshotAsync();
-        await h.App.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
+        await SmContractFixture.Pause(h.App);
         var pixels = CameraRoundHarness.Barcode("SYNTH-SKIP-A");
         h.Api(h.Left).EnqueueNative(pixels, 1, [Symbol("SYNTH-SKIP-A")]); await Delivered(h, "left", 1);
         await h.App.ExitManagementModeAsync(); await h.App.DisposeAsync();
@@ -46,10 +45,10 @@ static class InterruptedScanSkipChecks
                 insert.ExecuteNonQuery();
             }
         }
-        using (var repo = new ParcelRepository(DirectoryFor(h), "sportmaster", ["left", "right"]))
+        using (var repo = new ParcelRepository(DirectoryFor(h), h.Config.ApplicationId, ["left", "right"]))
             repo.Commit(null, "IngressRecoveryRequired", "Synthetic previous build input barrier", paused: true);
         await h.StartAsync(authorizeManagement: false, supervisedRestart: true); await h.WaitForCameraAdmissionAsync();
-        s = await h.App.SnapshotAsync();
+        var s = await h.App.SnapshotAsync();
         Check(!s.Paused && s.Positions!.All(p => p.Admit) && !s.BlockingReasons.Any(r => r.StartsWith("IngressInterrupted:")),
             "both positions resume automatically after old Pending and Interrupted scans, without a management command");
         Check(!(await h.App.ManagementModeStatusAsync()).Active && h.Peer.Requests.Count == 0 && s.Operations.Length == 0 && s.Inputs!.Length == 0,
@@ -83,7 +82,7 @@ static class InterruptedScanSkipChecks
         {
             using var c = db.CreateCommand(); c.CommandText = "UPDATE parcel_ingress SET state='Pending',completed_at=NULL WHERE id=(SELECT id FROM parcel_ingress ORDER BY received_at DESC LIMIT 1)"; c.ExecuteNonQuery();
         }
-        using (var repo = new ParcelRepository(DirectoryFor(h), "sportmaster", ["left", "right"]))
+        using (var repo = new ParcelRepository(DirectoryFor(h), h.Config.ApplicationId, ["left", "right"]))
             repo.Commit(null, "IngressRecoveryRequired", "Synthetic receipt lost after original request", paused: true);
         await h.StartAsync(authorizeManagement: false);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").Admit);
@@ -103,18 +102,24 @@ static class InterruptedScanSkipChecks
         await using var h = new CameraRoundHarness(workspace, root, nativeResults: true, timeoutMs: 1000);
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         await h.TrayAsync(h.Left, TrayPresence.Present);
-        var delay = 0; var pixels = CameraRoundHarness.Barcode("SYNTH-SLOW-A");
-        using var entered = new ManualResetEventSlim();
-        h.App.Boundary = point => { if (point == "BeforeIngressDurable" && Interlocked.Exchange(ref delay, 1) == 0) { entered.Set(); Thread.Sleep(5500); } };
-        h.Api(h.Left).EnqueueNative(pixels, 1, [Symbol("SYNTH-SLOW-A")]);
-        await CameraRoundHarness.Until(() => Task.FromResult(entered.IsSet));
+        var pixels = CameraRoundHarness.Barcode("SYNTH-SLOW-A");
+        using var release = new ManualResetEventSlim();
+        h.HoldNextPersistence(release);
         var rightPixels = CameraRoundHarness.Barcode("SYNTH-RIGHT-FAST");
-        h.Api(h.Right).EnqueueNative(rightPixels, 1, [Symbol("SYNTH-RIGHT-FAST")]); await Delivered(h, "right", 1);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-RIGHT-FAST" && o.State == ParcelState.SlotResolved));
-        var right = (await h.App.SnapshotAsync()).Operations.Single(o => o.PositionId == "right");
-        Check(right.State == ParcelState.SlotResolved && h.App.WorkerProgress().Single(w => w.Position == "left").Processed == 1,
-            "right camera completes its own RCS request while left camera durable handoff is stalled for 5.5 seconds");
-        await Delivered(h, "left", 2); h.App.Boundary = null;
+        ParcelOperation right;
+        try
+        {
+            h.Api(h.Left).EnqueueNative(pixels, 1, [Symbol("SYNTH-SLOW-A")]);
+            await h.WaitForPersistenceAgeAsync("left", 0);
+            h.Api(h.Right).EnqueueNative(rightPixels, 1, [Symbol("SYNTH-RIGHT-FAST")]); await Delivered(h, "right", 1);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-RIGHT-FAST" && o.State == ParcelState.SlotResolved));
+            right = (await h.App.SnapshotAsync()).Operations.Single(o => o.PositionId == "right");
+            Check(right.State == ParcelState.SlotResolved && h.App.WorkerProgress().Single(w => w.Position == "left").Processed == 1,
+                "right camera completes its own RCS request while left camera durable handoff is stalled for 5.5 seconds");
+            await h.WaitForPersistenceAgeAsync("left", 5500);
+        }
+        finally { release.Set(); h.App.Boundary = null; }
+        await Delivered(h, "left", 2);
         var s = await h.App.SnapshotAsync();
         var inputRows = await h.App.ReadCameraBusinessAsync(h.Left, 0, null, 100, default);
         var leftInput = (await h.App.ReadCameraBusinessDetailAsync(inputRows.Rows.Last().Sequence, default))!;
@@ -143,8 +148,9 @@ static class InterruptedScanSkipChecks
     }
     static async Task IndependentRequests(string workspace, string root)
     {
-        // The fixture holds the left reply through two complete right-side frame handoffs.
-        await using var h = new CameraRoundHarness(workspace, root, nativeResults: true, rcsTimeoutMs: 5000);
+        // Hold the peer's response until the other lane has completed. Protocol
+        // timeout behavior is exercised separately by the RCS deadline fixture.
+        await using var h = new CameraRoundHarness(workspace, root, nativeResults: true, rcsTimeoutMs: 30000);
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var held = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         h.Peer.Hold = held; h.Peer.HoldWhen = body => body.Contains("TEST-LEFT-READER", StringComparison.Ordinal) && body.Contains("sorter.task.dest_request", StringComparison.Ordinal);

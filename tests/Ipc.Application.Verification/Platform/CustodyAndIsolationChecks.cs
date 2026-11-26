@@ -6,10 +6,10 @@ using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster;
 using Ipc.Platform;
 
-internal static class CrReportBoundaryChecks
+internal static class CustodyAndIsolationChecks
 {
     static void Check(bool value, string message)
-    { if (!value) throw new InvalidOperationException(message); Console.WriteLine("PASS CR-BOUNDARY " + message); }
+    { if (!value) throw new InvalidOperationException(message); Console.WriteLine("PASS PLATFORM " + message); }
     static void Reject(Action action, string message)
     {
         try { action(); }
@@ -20,11 +20,9 @@ internal static class CrReportBoundaryChecks
     {
         TextAndSchemas(workspace);
         await ArgumentSelection(workspace);
-        ConfigurationOwnership(root);
         ExportIdentity(Path.Combine(root, "exports"));
         ExportExpiry(Path.Combine(root, "export-expiry"));
         UserIsolation(Path.Combine(root, "user-isolation"));
-        DeploymentSummaries(Path.Combine(root, "receipts"));
         using (var execution = new MaintenanceExecution())
         {
             using var callback = execution.Token.Register(execution.Dispose);
@@ -37,7 +35,6 @@ internal static class CrReportBoundaryChecks
         Check(second.Status().Authorized && second.Evidence?.SessionId == secondId, "exit from the retired client cannot revoke the replacement grant or mix its evidence"); second.Exit();
         await Custody(workspace, Path.Combine(root, "custody"));
         await ArchiveCommit(workspace, Path.Combine(root, "archive"));
-        await EditorIdentity(workspace, Path.Combine(root, "editor"));
         await RetentionFixtureOwnership(workspace, Path.Combine(root, "retention-fixture"));
     }
     static async Task RetentionFixtureOwnership(string workspace, string root)
@@ -89,7 +86,7 @@ internal static class CrReportBoundaryChecks
     }
     static async Task ArgumentSelection(string workspace)
     {
-        foreach (var extra in new[] { "--misspelled-suite", "--cr-report-cameras" })
+        foreach (var extra in new[] { "--misspelled-suite", "--camera-acquisition-boundaries" })
         {
             var refused = false;
             try { VerificationArguments.Require([workspace, "--log-readable", extra]); }
@@ -99,7 +96,7 @@ internal static class CrReportBoundaryChecks
         VerificationArguments.Require([workspace, "--decode-tilt-benchmark", "--expect", "--literal-barcode", "--rounds", "1"]);
         Check(true, "a documented option consumes its literal value without mistaking it for another suite");
         var start = new System.Diagnostics.ProcessStartInfo(Environment.ProcessPath!) { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false, CreateNoWindow = true };
-        if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath), "dotnet", StringComparison.OrdinalIgnoreCase)) start.ArgumentList.Add(typeof(CrReportBoundaryChecks).Assembly.Location);
+        if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath), "dotnet", StringComparison.OrdinalIgnoreCase)) start.ArgumentList.Add(typeof(CustodyAndIsolationChecks).Assembly.Location);
         foreach (var value in new[] { workspace, "--log-readable", "--misspelled-suite" }) start.ArgumentList.Add(value);
         using var child = System.Diagnostics.Process.Start(start)!;
         var output = child.StandardOutput.ReadToEndAsync(); var error = child.StandardError.ReadToEndAsync();
@@ -179,48 +176,6 @@ internal static class CrReportBoundaryChecks
         catch (Exception error) when (error is IOException or System.ComponentModel.Win32Exception) { blocked = true; }
         Check(blocked && Wire.FileHash(destination) == hash, "handle rename never replaces a competing completed export");
     }
-    static void DeploymentSummaries(string root)
-    {
-        Directory.CreateDirectory(root);
-        var old = DateTimeOffset.UtcNow.AddDays(-1);
-        for (var i = 0; i < 1030; i++) File.WriteAllText(Path.Combine(root, "sportmaster.quiet-" + Wire.Id() + ".json"), Wire.Encode(new { Status = "Completed", At = old, Intent = new { Action = 1 } }));
-        var newest = Wire.Id(); File.WriteAllText(Path.Combine(root, "sportmaster.quiet-" + newest + ".json"), Wire.Encode(new { Status = "Completed", At = DateTimeOffset.UtcNow, Intent = new { Action = "Install" } }));
-        var summary = DeploymentReceipts.Summarize(root, "sportmaster").Single(x => x.Kind == "quiet");
-        Check(summary.Count == 1031 && summary.Latest?.OperationId == newest && summary.Unreadable == 0,
-            "deployment summaries include every eligible receipt and tolerate malformed optional actions");
-    }
-    sealed record MutableConfiguration(Dictionary<string, string> Values);
-    static void ConfigurationOwnership(string root)
-    {
-        var seed = new MutableConfiguration(new() { ["original"] = "seed" });
-        var revisions = new ConfigurationRevisions<MutableConfiguration>(Path.Combine(root, "configuration.json"), seed, _ => []);
-        seed.Values["original"] = "changed";
-        Check(revisions.Current.Effective.Values["original"] == "seed", "configuration seed is a defensive snapshot");
-        var candidate = new MutableConfiguration(new() { ["candidate"] = "saved" });
-        var staged = revisions.Stage(revisions.Current.Revision, candidate);
-        candidate.Values["candidate"] = "caller"; staged.Pending!.Values["candidate"] = "returned";
-        var exposed = revisions.Current; exposed.Pending!.Values["candidate"] = "snapshot";
-        Check(revisions.Current.Pending!.Values["candidate"] == "saved", "caller, returned receipt and public snapshots cannot mutate the configuration ledger");
-        _ = revisions.BeginActivation(_ => true, value => value.Values["candidate"] = "preflight");
-        var attempt = revisions.Current.Activation!.Id;
-        try { revisions.Stage(revisions.Current.Revision, candidate); throw new Exception("staging during activation was accepted"); }
-        catch (InvalidOperationException) { }
-        try { revisions.FailActivation(Wire.Id(), seed, candidate, new IOException("wrong attempt")); throw new Exception("wrong activation failure was accepted"); }
-        catch (InvalidOperationException) { }
-        Check(revisions.Current.Activation!.Id == attempt && revisions.Current.Pending!.Values["candidate"] == "saved", "activation callback, staging and foreign failure cannot replace the active candidate");
-        revisions.ConfirmActivation(attempt);
-        Check(revisions.Current.Effective.Values["candidate"] == "saved", "activation confirms the exact frozen candidate");
-        revisions.Stage(revisions.Current.Revision, seed); var revision = revisions.Current.Revision;
-        if (OperatingSystem.IsWindows())
-        {
-            using var blocked = new FileStream(Path.Combine(root, "configuration.json"), FileMode.Open, FileAccess.Read, FileShare.Read);
-            var failed = false;
-            try { revisions.BeginActivation(_ => true, _ => { }); }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException) { failed = true; }
-            Check(failed && revisions.Current.Revision == revision && revisions.Current.Status == "PendingRestart",
-                "failed activation publication does not rewrite an uncommitted transition as activation failure");
-        }
-    }
     static void TextAndSchemas(string workspace)
     {
         foreach (var key in new[] { "private_key", "private-key", "privatekey", "token" })
@@ -233,11 +188,6 @@ internal static class CrReportBoundaryChecks
         Check(!QueryTime.DisplayNotice("现存日志记录时间：。早于首条/晚于末条的请求范围无法证明完整；无记录不等于无异常。").Contains("已清理", StringComparison.Ordinal), "missing logs remain unconfirmed instead of being declared deleted");
         foreach (var json in new[] { "null", "[]", "123", "{\"Source\":123,\"Event\":\"test\"}", "{\"Source\":\"test\",\"Detail\":\"[]\"}" })
             Check(SoftwareLogText.Summary(json).Length > 0, "malformed log shape remains displayable: " + json);
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
-        var flow = new SportmasterFlow();
-        Check(flow.Validate(config with { Topology = config.Topology! with { Readers = null! }, DeferredConnections = [config.Reader.DeviceId] }).Length > 0,
-            "missing topology collection returns configuration errors before connection validation");
-        Check(flow.Validate(config with { BackupSchedule = new(null!, 15, 5) }).Length > 0, "missing backup directory is a configuration error, not a null dereference");
         var list = new CapabilityParameter(new("test", "test", "test", "string-list", MaximumLength: 32, MaximumItems: 3), "");
         Check(!ExtensionSchema.IsId("abc\n") && !ExtensionSchema.IsVersion("1.2.3\n"), "protocol identity/version validators reject trailing control characters");
         Check(ExtensionSchema.Validate([new("fixed", "test", "fixed", "string", Default: "constant", ReadOnly: true)], new Dictionary<string, string> { ["fixed"] = "" }).Length > 0,
@@ -256,7 +206,7 @@ internal static class CrReportBoundaryChecks
         var operation = (await h.App.OperationAsync(receipt.OperationId!))!;
         await h.App.DisposeAsync();
         var directory = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, h.Config.ApplicationId);
-        using var repository = new ParcelRepository(directory, "sportmaster");
+        using var repository = new ParcelRepository(directory, h.Config.ApplicationId);
         var original = Wire.Encode(repository.ReadOperation(operation.Id));
         foreach (var changed in new[] { operation with { AdmissionId = Wire.Id() }, operation with { ObservationId = Wire.Id() }, operation with { PositionId = "right" }, operation with { Wcs = null } })
         {
@@ -316,33 +266,5 @@ internal static class CrReportBoundaryChecks
         finally { repository.Boundary = null; }
         Check(!(await h.App.SnapshotAsync()).Operations.Any(o => o.Id == receipt.OperationId) && await h.App.OperationAsync(receipt.OperationId!) is not null && h.Peer.Requests.Count == 1,
             "post-commit archive failure still reconciles the resident set and retains the original history without resending");
-    }
-    static async Task EditorIdentity(string workspace, string root)
-    {
-        await using var h = new ManualSupplyHarness(workspace, root, deferred: false, mode: RunMode.Simulation);
-        await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
-        var catalog = await h.App.CapabilitiesAsync(); var binding = h.Config.Wcs!;
-        var draft = new CapabilityDraft("integration", catalog.Providers, binding with { Contract = "different-contract" }, true);
-        Check(draft.Provider is null, "exact provider lookup includes its contract identity");
-        var original = new CapabilityDraft("integration", catalog.Providers, binding with { Parameters = new(binding.Parameters) { ["unknown-original"] = "must not resurrect" } }, true);
-        var provider = original.Provider!;
-        original.Provider = null; original.Provider = provider;
-        foreach (var parameter in original.Parameters)
-            if (binding.Parameters.TryGetValue(parameter.Field.Key, out var value)) parameter.Value = value;
-        var built = Wire.Encode(original.Build());
-        Check(Wire.Encode(CapabilityDraft.RestoreRaw(original.CaptureRaw(), catalog.Providers).Build()) == built && !built.Contains("must not resurrect", StringComparison.Ordinal),
-            "provider reset survives encrypted draft capture and restore without resurrecting old parameters");
-        var startup = new StartupConfigurationDraft(h.Config, catalog);
-        var editor = startup.CreateParameterEditor((policy, codes) => Task.FromResult(BarcodeFiltering.Select(policy, codes)));
-        var camera = startup.Readers[0]; var pending = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
-        editor.CameraSerialReader = (_, _) => pending.Task;
-        var originalParameters = camera.Parameters.ToDictionary(p => p.Field.Key, p => p.Value);
-        var reading = editor.ReadCameraIdentityAsync(camera); var cameraProvider = camera.Provider;
-        camera.Provider = null; camera.Provider = cameraProvider;
-        foreach (var parameter in camera.Parameters) parameter.Value = originalParameters[parameter.Field.Key];
-        pending.SetResult("SYNTH-DETACHED-SERIAL");
-        try { await reading; throw new Exception("Detached serial accepted"); }
-        catch (InvalidOperationException error) when (error.Message.Contains("读取期间", StringComparison.Ordinal)) { }
-        Check(camera.Parameters.Single(p => p.Field.Key == "device.serial").Value != "SYNTH-DETACHED-SERIAL", "late camera identity cannot write a detached parameter collection");
     }
 }

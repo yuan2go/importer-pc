@@ -2,7 +2,7 @@ using Ipc.Platform;
 
 // Real files and the platform deletion fence. No business database or request
 // inspection is required after program ownership has been released.
-static class PermanentDeletion02
+static class PermanentDeletionChecks
 {
     public static Task Run(string workspace, string root)
     {

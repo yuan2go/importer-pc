@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+    <sys:String x:Key="Common.Cancel">取消</sys:String>
+    <sys:String x:Key="Common.Continue">继续</sys:String>
+    <sys:String x:Key="Common.Close">关闭</sys:String>
+    <sys:String x:Key="Common.Back">上一步</sys:String>
+    <sys:String x:Key="Common.Next">下一步</sys:String>
+    <sys:String x:Key="Common.Finish">完成</sys:String>
+    <sys:String x:Key="Common.Save">保存设置</sys:String>
+    <sys:String x:Key="Common.Settings">设置</sys:String>
+    <sys:String x:Key="Common.Language">界面语言</sys:String>
+    <sys:String x:Key="Common.Theme">界面主题</sys:String>
+    <sys:String x:Key="Common.AppliesNow">立即生效</sys:String>
+    <sys:String x:Key="Common.LanguageHelp">仅影响当前 Windows 用户的界面文字。点击“保存设置”立即生效。</sys:String>
+    <sys:String x:Key="Common.LanguageUnreadable">本机界面语言未能读取，原文件保留。已使用简体中文。</sys:String>
+    <sys:String x:Key="Common.LanguageSaveFailed">安装已完成，但无法保存所选界面语言。请在供包台设置中重试。</sys:String>
+    <sys:String x:Key="Installer.LanguageTitle">选择安装语言 / Select Setup Language / Выбор языка установки</sys:String>
+    <sys:String x:Key="Installer.LanguagePrompt">安装语言 / Setup language / Язык установки</sys:String>
+</ResourceDictionary>

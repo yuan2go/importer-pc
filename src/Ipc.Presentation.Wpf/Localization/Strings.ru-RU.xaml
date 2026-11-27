@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+    <sys:String x:Key="Common.Cancel">Отмена</sys:String>
+    <sys:String x:Key="Common.Continue">Далее</sys:String>
+    <sys:String x:Key="Common.Close">Закрыть</sys:String>
+    <sys:String x:Key="Common.Back">Назад</sys:String>
+    <sys:String x:Key="Common.Next">Далее</sys:String>
+    <sys:String x:Key="Common.Finish">Готово</sys:String>
+    <sys:String x:Key="Common.Save">Сохранить</sys:String>
+    <sys:String x:Key="Common.Settings">Настройки</sys:String>
+    <sys:String x:Key="Common.Language">Язык интерфейса</sys:String>
+    <sys:String x:Key="Common.Theme">Тема оформления</sys:String>
+    <sys:String x:Key="Common.AppliesNow">Применяется сразу</sys:String>
+    <sys:String x:Key="Common.LanguageHelp">Меняет язык интерфейса для этого пользователя Windows. Нажмите «Сохранить», чтобы применить.</sys:String>
+    <sys:String x:Key="Common.LanguageUnreadable">Не удалось прочитать язык интерфейса. Файл сохранён, используется упрощённый китайский.</sys:String>
+    <sys:String x:Key="Common.LanguageSaveFailed">Установка завершена, но язык сохранить не удалось. Повторите попытку в настройках станции.</sys:String>
+    <sys:String x:Key="Installer.LanguageTitle">选择安装语言 / Select Setup Language / Выбор языка установки</sys:String>
+    <sys:String x:Key="Installer.LanguagePrompt">安装语言 / Setup language / Язык установки</sys:String>
+</ResourceDictionary>

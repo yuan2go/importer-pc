@@ -13,7 +13,7 @@ public sealed partial class ParameterSettingsControl
         var choice = new ComboBox
         {
             ItemsSource = profile.SupportedThemes,
-            DisplayMemberPath = "DisplayName",
+            ItemTemplate = (DataTemplate)Resources["ThemeNameTemplate"],
             SelectedValuePath = "Id",
             MinHeight = 44,
             IsEnabled = preferences.CanEdit(nameof(preferences.ThemeId))
@@ -39,10 +39,28 @@ public sealed partial class ParameterSettingsControl
         }
     }
 
+    void LanguagePreference(ObjectPage page, Panel fields, SmDisplayPreferenceDraft preferences)
+    {
+        var choice = new ComboBox
+        {
+            ItemsSource = WorkstationLocalizationManager.Languages,
+            DisplayMemberPath = nameof(UiLanguageDescriptor.NativeName), SelectedValuePath = nameof(UiLanguageDescriptor.Code),
+            IsEnabled = preferences.CanEdit(nameof(preferences.Language)), MinHeight = 44
+        };
+        choice.SetBinding(ComboBox.SelectedValueProperty, new System.Windows.Data.Binding(nameof(preferences.Language))
+            { Source = preferences, Mode = System.Windows.Data.BindingMode.TwoWay });
+        Field(fields, "界面语言", choice, "仅影响当前 Windows 用户的界面文字。点击“保存设置”立即生效。", nameof(preferences.Language), page);
+        AutomationProperties.SetAutomationId(choice, "StationSettings.Language");
+        if (!choice.IsEnabled) page.Body.Children.Add(Text(preferences.ReadFailure(nameof(preferences.Language))));
+    }
+
     void AutoStartPreference(ObjectPage page, Panel fields, SmDisplayPreferenceDraft preferences)
     {
         if (FirstConfiguration || Audience == SmParameterAudience.Technical) return;
-        var toggle = new CheckBox { Content = "登录后自动启动", MinHeight = 44, IsEnabled = preferences.CanEdit("AutoStart") };
+        var toggle = new CheckBox { MinHeight = 44, IsEnabled = preferences.CanEdit("AutoStart") };
+        var autoStart = new TextBlock { TextWrapping = TextWrapping.Wrap };
+        WorkstationLocalizationManager.Bind(autoStart, TextBlock.TextProperty, "Settings.AutoStartToggle");
+        toggle.Content = autoStart;
         toggle.SetBinding(CheckBox.IsCheckedProperty, new System.Windows.Data.Binding(nameof(preferences.AutoStart))
             { Source = preferences, Mode = System.Windows.Data.BindingMode.TwoWay });
         Field(fields, "开机自动启动供包台", toggle, preferences.CanEdit("AutoStart")
@@ -67,7 +85,8 @@ public sealed partial class ParameterSettingsControl
         OperatorCuePlayer? preview = null;
         foreach (var (cue, label) in new[] { (OperatorCue.Read, "试听读到"), (OperatorCue.Success, "试听成功"), (OperatorCue.Rejected, "试听拒绝") })
         {
-            var test = new Button { Content = label, MinHeight = 44, Margin = new(8, 0, 0, 0) };
+            var test = new Button { MinHeight = 44, Margin = new(8, 0, 0, 0) };
+            WorkstationLocalizationManager.BindAuthored(test, ContentControl.ContentProperty, label);
             test.Click += (_, _) => { preview ??= new(message => status.Text = message); preview.Play(cue, (int)volume.Value); };
             actions.Children.Add(test);
         }

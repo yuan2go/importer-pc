@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,7 +35,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     int selectedParameterCategory;
     bool authorityAllowed;
     readonly ManagementModeMenu managementMenu = new() { UnauthorizedLabel = "未授权" };
-    readonly TextBlock saveState = new TextBlock() { Text = "未保存", FontSize = UiTypography.Label, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 12, 0) }.Themed(TextBlock.ForegroundProperty, "Muted");
+    readonly TextBlock saveState = new TextBlock() { Text = UiText.Get("First.NotSaved"), FontSize = UiTypography.Label, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 12, 0) }.Themed(TextBlock.ForegroundProperty, "Muted");
     Button? headerImport;
     Action? refreshReview;
     internal Func<bool> ConfirmDiscardInputs { get; set; } = null!;
@@ -70,12 +71,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         data = Folder("数据目录（含 Simulation/Production、站点和应用子目录）", launch.DataRoot);
         pathFields = Body.Children.Cast<UIElement>().ToArray();
         SessionActions.Children.Add(managementMenu);
-        var administratorLogin = new Button { Content = "进入管理模式…", MinHeight = 44 };
+        var administratorLogin = new Button { Content = UiText.Get("First.Admin"), MinHeight = 44 };
         var gateTitle = new TextBlock { FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis, TextWrapping = TextWrapping.Wrap };
         var gateDescription = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 20), FontSize = UiTypography.Body }.Themed(TextBlock.ForegroundProperty, "Muted");
         var gateActions = new WrapPanel();
         AuthorizationGate.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/StartupAppearance.xaml", UriKind.Relative) });
-        var gateExit = new Button { Content = "退出配置", MinHeight = 40, MinWidth = 88, Margin = new(12, 0, 0, 0) };
+        var gateExit = new Button { Content = UiText.Get("First.Exit"), MinHeight = 40, MinWidth = 88, Margin = new(12, 0, 0, 0) };
         gateExit.Click += (_, _) => { if (!Busy && MayDiscard()) Close(); };
         AuthorizationGate.Children.Add(gateTitle); AuthorizationGate.Children.Add(gateDescription); AuthorizationGate.Children.Add(gateActions); gateActions.Children.Add(gateExit);
         bool seenAuthorization = false, manuallyExited = false;
@@ -167,7 +168,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             StartupAppearance.FitToWorkArea(dialog);
             var layout = new DockPanel { Margin = new(20) };
             var footer = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 12, 0, 0) };
-            var cancel = new Button { Content = "取消", IsCancel = true, IsDefault = true, MinHeight = 44, MinWidth = 96 };
+            var cancel = new Button { Content = UiText.Get("Common.Cancel"), IsCancel = true, IsDefault = true, MinHeight = 44, MinWidth = 96 };
             var select = new Button { Content = "查看原结果", MinHeight = 44, Margin = new(12, 0, 0, 0) };
             var list = new ListBox { ItemsSource = originals.Select(p => p.State + " · " + p.Station + "\n备份：" + p.Backup + "\n目标：" + p.DataRoot + "\n" + p.Summary).ToArray() };
             cancel.Click += (_, _) => dialog.DialogResult = false;
@@ -262,14 +263,14 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             foreach (var (kind, button) in actionButtons)
                 if (kind is not (RepairAction.Previous or RepairAction.Next or RepairAction.SaveAndStart or RepairAction.Reload or RepairAction.Import or RepairAction.SaveDraft or RepairAction.Exit or RepairAction.OpenRestore)) Actions.Children.Remove(button);
             var saveDraft = actionButtons[RepairAction.SaveDraft];
-            saveDraft.Content = "暂存草稿";
-            saveDraft.ToolTip = "保存已填写内容并退出，下次可继续。";
-            actionButtons[RepairAction.Exit].ToolTip = "退出首次配置。未保存内容将在退出前提示处理。";
+            saveDraft.Content = UiText.Get("First.SaveDraft");
+            saveDraft.ToolTip = UiText.Get("First.SaveDraftHelp");
+            actionButtons[RepairAction.Exit].ToolTip = UiText.Get("First.ExitHelp");
             DockPanel.SetDock(saveState, Dock.Left); FooterHost.Children.Insert(0, saveState);
             FooterHost.MinHeight = 64;
             Actions.VerticalAlignment = VerticalAlignment.Center;
             Actions.HorizontalAlignment = HorizontalAlignment.Right;
-            Actions.Children.Remove(headerImport); headerImport.Content = "导入配置"; headerImport.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, headerImport);
+            Actions.Children.Remove(headerImport); headerImport.Content = UiText.Get("First.Import"); headerImport.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, headerImport);
             var restoreEntry = actionButtons[RepairAction.OpenRestore];
             Actions.Children.Remove(restoreEntry); restoreEntry.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, restoreEntry);
             restoreEntry.Padding = new(16, 0, 16, 0);
@@ -443,12 +444,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (path is null) return;
         if (new FileInfo(path).Length > 4 * 1024 * 1024) throw new InvalidDataException("配置文件超出4兆字节限制。");
         var replacement = StartupConfigurationFiles.Import(File.ReadAllText(path), document.Candidate, draft, document.Catalog);
-        var comparison = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "导入配置预览", Width = 720, Height = 560, MinWidth = 520, MinHeight = 320, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var comparison = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = UiText.Get("First.ImportPreview"), Width = 720, Height = 560, MinWidth = 520, MinHeight = 320, WindowStartupLocation = WindowStartupLocation.CenterOwner };
         StartupAppearance.FitToWorkArea(comparison);
         var panel = new DockPanel { Margin = new(20) };
         var footer = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 12, 0, 0) };
-        var cancel = new Button { Content = "取消", IsCancel = true, IsDefault = true, MinHeight = 44, MinWidth = 100, Margin = new(0, 0, 8, 0) };
-        var apply = new Button { Content = "应用到当前填写内容", MinHeight = 44 };
+        var cancel = new Button { Content = UiText.Get("Common.Cancel"), IsCancel = true, IsDefault = true, MinHeight = 44, MinWidth = 100, Margin = new(0, 0, 8, 0) };
+        var apply = new Button { Content = UiText.Get("First.ApplyDraft"), MinHeight = 44 };
         cancel.Click += (_, _) => comparison.DialogResult = false;
         apply.Click += (_, _) => comparison.DialogResult = true;
         footer.Children.Add(cancel); footer.Children.Add(apply); DockPanel.SetDock(footer, Dock.Bottom); panel.Children.Add(footer);
@@ -462,9 +463,9 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var menu = new ContextMenu { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body };
         foreach (var kind in new[] { RepairAction.Import, RepairAction.SaveDraft, RepairAction.ContinueDraft }) Add(menu.Items, kind);
         menu.Items.Add(new Separator());
-        var advanced = new MenuItem { Header = "备份、诊断与修复" };
+        var advanced = new MenuItem { Header = UiText.Get("First.AdvancedLinks") };
         foreach (var kind in new[] { RepairAction.Read, RepairAction.Check, RepairAction.Save, RepairAction.ExportTemplate, RepairAction.Backup, RepairAction.Retention, RepairAction.Repair, RepairAction.AdoptRestore, RepairAction.Install }) Add(advanced.Items, kind);
-        var diagnostic = new MenuItem { Header = "查看完整诊断…" };
+        var diagnostic = new MenuItem { Header = UiText.Get("First.FullDiagnostics") };
         System.Windows.Automation.AutomationProperties.SetAutomationId(diagnostic, "Startup.OpenDiagnosticDetails");
         diagnostic.Click += (_, _) => ShowStartupDiagnostics();
         advanced.Items.Add(diagnostic); menu.Items.Add(advanced);
@@ -485,7 +486,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             FontFamily = UiTypography.Interface,
             FontSize = UiTypography.Body,
             Owner = this,
-            Title = "启动诊断",
+            Title = UiText.Get("First.Diagnostics"),
             Width = 760,
             Height = 520,
             MinWidth = 520,
@@ -496,7 +497,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         System.Windows.Automation.AutomationProperties.SetAutomationId(dialog, "StartupDiagnosticDetails");
         var content = new DockPanel { Margin = new(20) };
         var footer = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 12, 0, 0) };
-        var close = new Button { Content = "关闭", IsCancel = true, IsDefault = true, MinHeight = 44, MinWidth = 100 };
+        var close = new Button { Content = UiText.Get("Common.Close"), IsCancel = true, IsDefault = true, MinHeight = 44, MinWidth = 100 };
         System.Windows.Automation.AutomationProperties.SetAutomationId(close, "StartupDiagnostic.Close");
         close.Click += (_, _) => dialog.Close(); footer.Children.Add(close); DockPanel.SetDock(footer, Dock.Bottom); content.Children.Add(footer);
         content.Children.Add(new TextBox { Text = diagnosticDetails + "\n" + Status.Text, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
@@ -698,7 +699,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             var c = document!.Candidate!;
             Note($"{ChineseInterfaceText.BusinessName(c.ApplicationId)} · {ChineseInterfaceText.Choice(c.Mode)} · 修订 {document.Revision}\n供包台身份只读；设备尚未启动。");
-            Body.Children.Add(new Expander { Header = "配置信息", Content = new TextBox { IsReadOnly = true, Text = $"配置校验码：{document.ConfigurationHash}\n设备列表只表示可选项，不表示已连接。启动时会完整检查运行条件。", TextWrapping = TextWrapping.Wrap }, Margin = new(0, 8, 0, 8) });
+            Body.Children.Add(new Expander { Header = UiText.Get("First.ConfigInfo"), Content = new TextBox { IsReadOnly = true, Text = $"配置校验码：{document.ConfigurationHash}\n设备列表只表示可选项，不表示已连接。启动时会完整检查运行条件。", TextWrapping = TextWrapping.Wrap }, Margin = new(0, 8, 0, 8) });
             policyStart = Body.Children.Count;
             Note("首次配置与日常设置使用相同的参数和检查规则。投递位数量和设备身份不在此修改。");
             parameterEditor = draft.CreateParameterEditor((p, samples) => maintenance.TestBarcodeFilterAsync(p, samples), new(config.Text, data.Text));
@@ -774,7 +775,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             if (sharedEditor is null)
             {
-                WorkflowBody.Content = new TextBlock { Text = "无法读取配置，请查看诊断后使用启动修复。原文件保留。", TextWrapping = TextWrapping.Wrap };
+                WorkflowBody.Content = new TextBlock { Text = UiText.Get("First.CannotReadConfiguration"), TextWrapping = TextWrapping.Wrap };
             }
             else
             {
@@ -784,8 +785,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent };
                 review.Children.Add(state);
                 var sections = new StackPanel(); review.Children.Add(sections);
-                review.Children.Add(new Expander { Header = "本次更改与配置详情", Content = summary });
-                review.Children.Add(new Expander { Header = "配置检查诊断详情", Content = diagnostic, Margin = new(0, 16, 0, 0) });
+                review.Children.Add(new Expander { Header = UiText.Get("First.ReviewChanges"), Content = summary });
+                review.Children.Add(new Expander { Header = UiText.Get("First.CheckDetails"), Content = diagnostic, Margin = new(0, 16, 0, 0) });
                 refreshReview = () =>
                 {
                     state.Text = maintenanceReleasePending ? "维护资源尚未释放；处理原因后再次完成或关闭，原服务和保存结果保留。" : startupSaveUncertain ? "上次保存结果未确认，暂不重复保存。" : SaveIsComplete ? "配置已保存，完成后自动检查并启动供包台。" : lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? "业务配置已保存；本机偏好尚未全部保存，请重试保存。本次不会重复提交业务配置。" : "检查填写内容并保存配置，完成后自动检查并启动。";
@@ -798,7 +799,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     }
                     try { summary.Text = StartupConfigurationFiles.Summary(draft!, document!.Candidate!) + "\n\n本次更改\n" + StartupConfigurationFiles.Describe(new StartupConfigurationDraft(document.Candidate!, document.Catalog), draft!); }
                     catch (Exception error) when (error is InvalidOperationException or ArgumentException or System.Text.Json.JsonException)
-                    { summary.Text = "还有参数需要修改，请按检查结果逐项修正。"; diagnostic.Text += "\n" + Ipc.Platform.DiagnosticText.Protect(error.Message); }
+                    { summary.Text = UiText.Get("First.EditRequired"); diagnostic.Text += "\n" + Ipc.Platform.DiagnosticText.Protect(error.Message); }
                 };
                 sharedEditor.SetReviewContent(review);
                 WorkflowBody.Content = sharedEditor;

@@ -78,6 +78,8 @@ public static class PresentationPreferences
         ThemeChanged?.Invoke(application, themeId);
     }
 
+    public static string LanguagePreferenceFile(string application) => FileFor(application, "language");
+
     static string? ReadSavedLanguage(string application)
     {
         var value = ReadPreference<LanguagePreference>(application, "language", "界面语言偏好超出预算；保留原文件",

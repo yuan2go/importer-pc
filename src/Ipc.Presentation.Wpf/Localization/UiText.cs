@@ -9,7 +9,13 @@ public sealed class UiText : INotifyPropertyChanged
     const string DefaultLanguage = "zh-CN";
     static readonly System.Collections.Concurrent.ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> dictionaries = new(StringComparer.Ordinal);
     static volatile string language = DefaultLanguage;
+    static readonly Lazy<IReadOnlyDictionary<string, string>> authoredKeys = new(() => Strings(DefaultLanguage)
+        .GroupBy(pair => pair.Value, StringComparer.Ordinal)
+        .ToDictionary(group => group.Key, group => group.First().Key, StringComparer.Ordinal));
+
     public static UiText Current { get; } = new();
+    public static string Language => language;
+    public string CurrentLanguage => Language;
     UiText() { }
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -21,6 +27,10 @@ public sealed class UiText : INotifyPropertyChanged
         if (Strings(selected).TryGetValue(key, out var value)) return value;
         return Strings(DefaultLanguage).GetValueOrDefault(key) ?? throw new KeyNotFoundException("Missing UI string resource: " + key);
     }
+
+    // The caller must provide an authored UI label, never an operational value or remote message.
+    public static string Authored(string label) => AuthoredKey(label) is { } key ? Get(key) : label;
+    internal static string? AuthoredKey(string label) => authoredKeys.Value.GetValueOrDefault(label);
 
     public static string Format(string key, params object?[] args) =>
         string.Format(CultureInfo.GetCultureInfo(language), Get(key), args);
@@ -41,5 +51,6 @@ public sealed class UiText : INotifyPropertyChanged
         _ = Strings(code);
         language = code;
         Current.PropertyChanged?.Invoke(Current, new("Item[]"));
+        Current.PropertyChanged?.Invoke(Current, new(nameof(CurrentLanguage)));
     }
 }

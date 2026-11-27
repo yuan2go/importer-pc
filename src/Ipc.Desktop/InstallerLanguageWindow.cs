@@ -53,9 +53,9 @@ public sealed class InstallerLanguageWindow : Window
         Loaded += (_, _) => languages.Focus();
     }
 
-    public static string? Choose(ResourceDictionary resources)
+    public static string? Choose(ResourceDictionary resources, string? initialLanguage = null)
     {
-        var picker = new InstallerLanguageWindow();
+        var picker = new InstallerLanguageWindow(initialLanguage);
         if (picker.ShowDialog() != true) return null;
         new WorkstationLocalizationManager().Apply(resources, picker.SelectedLanguage);
         return picker.SelectedLanguage;

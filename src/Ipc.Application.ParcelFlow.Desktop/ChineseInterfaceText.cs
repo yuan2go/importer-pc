@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 
@@ -6,25 +7,25 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 // Presentation only. Never write translated text into contracts, audit or drafts.
 public static class ChineseInterfaceText
 {
-    public static string BusinessName(string id) => BusinessDesktopCatalog.For(id).BusinessDisplayName;
+    public static string BusinessName(string id) => UiText.Authored(BusinessDesktopCatalog.For(id).BusinessDisplayName);
     public static string ParameterName(string key, string? label = null) => key switch
     {
-        "BarcodePattern" or "BarcodeFilter.Pattern" => "条码筛选规则",
-        "BarcodeExclusionPattern" or "BarcodeFilter.ExclusionPattern" => "条码排除规则",
+        "BarcodePattern" or "BarcodeFilter.Pattern" => UiText.Get("Param.BarcodeRules"),
+        "BarcodeExclusionPattern" or "BarcodeFilter.ExclusionPattern" => UiText.Get("Param.BarcodeExclude"),
         "RejectMultipleCodes" or "BarcodeFilter.RejectMultipleCodes" => "拒绝多码",
-        "MultiCodeSeparator" or "BarcodeFilter.MultiCodeSeparator" => "多条码分隔符",
+        "MultiCodeSeparator" or "BarcodeFilter.MultiCodeSeparator" => UiText.Get("Param.MultiCodeSeparator"),
         "decision" => "模拟业务结果",
         "reply-mode" => "模拟返回方式",
         "complete-on-query" => "查询时报告完成",
         "queue" or "QueueCapacity" => "扫码消息缓冲上限",
         "timeout" or "TimeoutMs" => "外部服务等待时间",
-        "ReadTimeoutMs" => "自动识读期限",
+        "ReadTimeoutMs" => UiText.Get("Param.ReadTimeout"),
         "operations" or "MaximumOperations" => "待处理作业上限",
-        "resident" or "ResidentHistory" => "运行记录归档阈值",
-        "reserveMiB" or "MinimumFreeMiB" => "磁盘预留",
-        "StationCode" => "供包台编号",
-        "DiagnosticLogDays" => "日志最长保留时间",
-        "HistoryDays" => "已结记录清理期限",
+        "resident" or "ResidentHistory" => UiText.Get("Param.ArchiveLimit"),
+        "reserveMiB" or "MinimumFreeMiB" => UiText.Get("Param.StorageReserve"),
+        "StationCode" => UiText.Get("Settings.StationCode"),
+        "DiagnosticLogDays" => UiText.Get("Param.LogDays"),
+        "HistoryDays" => UiText.Get("Param.CleanupDays"),
         "SessionLifetimeMs" => "登录会话时长",
         "WeightRange.MinimumWeight" or "MinimumWeight" => "包裹重量下限",
         "WeightRange.MaximumWeight" or "MaximumWeight" => "包裹重量上限",
@@ -40,18 +41,18 @@ public static class ChineseInterfaceText
         "ConfiguredWeight" => "配置重量",
         "Unit" => "重量单位",
         "Validity" => "重量有效期",
-        "BackupEnabled" => "自动备份",
-        "BackupDirectory" => "备份目录",
-        "BackupIntervalMinutes" => "备份间隔",
+        "BackupEnabled" => UiText.Get("Param.AutoBackup"),
+        "BackupDirectory" => UiText.Get("Param.BackupDirectory"),
+        "BackupIntervalMinutes" => UiText.Get("Param.BackupInterval"),
         "BackupMaximumSets" => "备份份数上限",
         "AutomaticHistoryCleanup" => "自动清理已结记录",
-        "CleanupTimeZoneId" => "清理时区",
-        "CleanupHour" => "清理时刻",
+        "CleanupTimeZoneId" => UiText.Get("Param.CleanupZone"),
+        "CleanupHour" => UiText.Get("Param.CleanupTime"),
         "CleanupMaximumBackupSets" => "清理前备份份数上限",
-        "device.ip" => "相机网络地址",
-        "device.serial" => "相机序列号",
+        "device.ip" => UiText.Get("Param.CameraIp"),
+        "device.serial" => UiText.Get("Param.CameraSerial"),
         "code.encoding" => "条码字符编码",
-        "reader.engine" => "识码方式",
+        "reader.engine" => UiText.Get("Param.CameraChoice"),
         "code.formats" => "需要识别的条码种类",
         "code.try-invert" => "识别反色条码",
         "entity.mode" => "包裹关联方式",
@@ -59,17 +60,17 @@ public static class ChineseInterfaceText
         "quantity" => "请求数量",
         "specified-chute" or RcsRequestPolicy.DestinationMode => "格口分配方式",
         "chute-code" or RcsRequestPolicy.DestinationChuteCode => "格口编码",
-        "request-timeout-ms" => "取格口请求超时",
-        "no-dest-to-exp" => "无可用格口时",
-        "zone-id" => "仓ID",
-        "project-id" => "生产线ID",
+        "request-timeout-ms" => UiText.Get("Param.RequestTimeout"),
+        "no-dest-to-exp" => UiText.Get("Param.MissingChute"),
+        "zone-id" => UiText.Get("Param.Warehouse"),
+        "project-id" => UiText.Get("Param.Line"),
         "request-id-base" => "请求编号起点",
         "request-id-count" => "请求编号数量",
-        "left-bcr-code" => "左相机编码",
-        "right-bcr-code" => "右相机编码",
+        "left-bcr-code" => UiText.Get("Param.CameraLeftCode"),
+        "right-bcr-code" => UiText.Get("Param.CameraRightCode"),
         "source" => "协议来源",
         "locale" => "协议语言",
-        "endpoint" => "服务地址",
+        "endpoint" => UiText.Get("Param.Target"),
         "subjects" => "允许登录的账号",
         "roles" => "账号权限",
         _ => label is not null && label.Any(c => c >= '\u4e00' && c <= '\u9fff') ? label : "其他设置"
@@ -81,17 +82,19 @@ public static class ChineseInterfaceText
     public static string ParameterMessage(string text, string fallback)
     {
         if (string.IsNullOrWhiteSpace(text)) return "";
-        text = Notice(text);
+        var notice = Notice(text);
+        if (!string.Equals(text, notice, StringComparison.Ordinal) && UiText.Language != PresentationPreferences.DefaultLanguage) return notice;
+        text = notice;
         if (text.Contains(": required", StringComparison.Ordinal) || text.Contains(": invalid value", StringComparison.Ordinal))
-            return "有参数尚未设置或格式不正确，请修正标出的字段。";
-        if (text.Contains("Invalid pattern", StringComparison.Ordinal)) return "条码规则格式不正确，请检查括号、符号和转义。";
+            return UiText.Get("Param.ValidateFailure");
+        if (text.Contains("Invalid pattern", StringComparison.Ordinal)) return UiText.Get("Param.PatternFailure");
         foreach (var key in new[] { "BarcodeFilter.MultiCodeSeparator", "BarcodeFilter.RejectMultipleCodes", "MultiCodeSeparator", "RejectMultipleCodes", "BarcodeFilter.ExclusionPattern", "BarcodeFilter.Pattern", "BarcodeExclusionPattern", "BarcodePattern", "WeightRange.MinimumWeight", "WeightRange.MaximumWeight", "BackupIntervalMinutes", "BackupMaximumSets", "CleanupMaximumBackupSets", "AutomaticHistoryCleanup", "CleanupTimeZoneId", "CleanupHour", "BackupDirectory", "BackupEnabled", "DisplayNameDraft", "TargetEfficiencyDraft", "MaximumAgeMs", "WaitTimeoutMs", "ConfiguredWeight", "MinimumWeight", "MaximumWeight", "WeightSource", "ImageBytes", "TotalBytes", "MaximumPending", "Precision", "SessionLifetimeMs", "QueueCapacity", "MaximumOperations", "ResidentHistory", "MinimumFreeMiB", "DiagnosticLogDays", "HistoryDays", "ReadTimeoutMs", "TimeoutMs", "StationCode", "device.ip", "device.serial", "entity.mode", "queue.capacity", "code.encoding", "left-bcr-code", "right-bcr-code", "request-id-base", "request-id-count", "specified-chute", "chute-code", "zone-id", "project-id", "quantity", "source", "locale", "reply-mode", "decision" })
             text = text.Replace(key, ParameterName(key), StringComparison.Ordinal);
         text = System.Text.RegularExpressions.Regex.Replace(text, @"^\w*Exception:\s*", "");
         // Raw property paths and exception types belong to diagnostic details.
         if (System.Text.RegularExpressions.Regex.IsMatch(text, @"\b[A-Z][a-z]+(?:[A-Z][A-Za-z0-9]+)+\b|\b[a-z]+(?:\.[a-zA-Z_][a-zA-Z0-9_-]*)+\b"))
-            return fallback;
-        return text.Any(c => c is >= '\u4e00' and <= '\u9fff') ? Notice(text) : fallback;
+            return UiText.Authored(fallback);
+        return text.Any(c => c is >= '\u4e00' and <= '\u9fff') ? Notice(text) : UiText.Authored(fallback);
     }
     public static string Status(string value) => value switch
     {
@@ -116,7 +119,7 @@ public static class ChineseInterfaceText
         "Validated" => "检查通过",
         "NotReady" => "尚未就绪",
         "QueryUnsupported" => "当前接口不支持结果查询",
-        "NotSaved" => "未保存",
+        "NotSaved" => UiText.Get("First.NotSaved"),
         "Selected" => "已选中唯一条码",
         "NoMatchingCode" => "没有匹配条码",
         "AmbiguousCodes" => "多个条码匹配",
@@ -130,28 +133,28 @@ public static class ChineseInterfaceText
         "InvalidCode" => "条码无效",
         "StrictSingleCode" => "严格单码校验",
         "WaitingWeight" => "等待有效重量",
-        "ResolvingWcs" => "正在获取格口",
-        "WcsUnknown" => "格口未确认",
-        "WcsRejected" => "未分配格口",
-        "SlotResolved" => "格口已取得",
+        "ResolvingWcs" => UiText.Get("Work.GettingChute"),
+        "WcsUnknown" => UiText.Get("Work.ChutePending"),
+        "WcsRejected" => UiText.Get("Work.ChuteNotAssigned"),
+        "SlotResolved" => UiText.Get("Work.ChuteReceived"),
         "SubmittingPlc" => "控制器请求处理中",
         "PlcUnknown" => "控制器结果未确认",
         "PlcRejected" => "控制器明确拒绝",
         "PlcAccepted" => "控制器已接受",
         "PhysicalCompleted" => "已报告物理完成",
-        "Blocked" => "已受阻",
+        "Blocked" => UiText.Get("Work.Blocked"),
         "CapturingImage" => "正在采集图像",
-        "UploadingImage" => "正在上传原图",
-        "ImageUnknown" => "图片上传未确认",
-        "ImageRejected" => "图像阶段拒绝",
+        "UploadingImage" => UiText.Get("Work.UploadingOriginal"),
+        "ImageUnknown" => UiText.Get("Work.UploadUnconfirmed"),
+        "ImageRejected" => UiText.Get("Work.ImageRejected"),
         "WeightTimedOut" => "称重超时",
-        "Abandoned" => "未发送 · 已撤销",
-        "UnpackRequired" => "需拆包检查",
+        "Abandoned" => UiText.Get("Work.CancelledUnsent"),
+        "UnpackRequired" => UiText.Get("Work.UnpackRequired"),
         _ => value
     };
     public static string Notice(string value)
     {
-        if (Enum.TryParse<ParcelInputBlockReason>(value, out var block) && value == block.ToString() && ParcelInputReasons.ActionableNotice(block) is { } notice) return notice;
+        if (Enum.TryParse<ParcelInputBlockReason>(value, out var block) && value == block.ToString() && ParcelInputReasons.ActionableNotice(block) is { } notice) return UiText.Authored(notice);
         // Match only our complete local receipts; never translate remote identifiers.
         const string noIntent = "; no operation or external intent created";
         foreach (var outcome in new[] { "NoMatchingCode", "ExcludedCodes", "AmbiguousCodes", "IncompleteCandidates", "FilterTimeout", "InvalidPattern", "NoCode", "MultipleCodes", "InvalidCode", "JoinedCodeTooLong" })
@@ -165,7 +168,7 @@ public static class ChineseInterfaceText
         if (value.StartsWith("Authentication unavailable:", StringComparison.Ordinal)) return "操作员认证服务暂不可用，请稍后重试或查看诊断。";
         // Translate known application explanations without changing source facts
         // or replacing identifiers supplied by an adapter or remote service.
-        foreach (var (source, text) in Notices) if (value == source) return text;
+        foreach (var (source, text) in Notices) if (value == source) return UiText.Authored(text);
         return value;
     }
     static readonly (string Source, string Text)[] Notices =
@@ -215,8 +218,8 @@ public static class ChineseInterfaceText
     }
     public static string Choice(object? value) => value switch
     {
-        RunMode.Simulation => "模拟模式",
-        RunMode.Production => "生产模式",
+        RunMode.Simulation => UiText.Get("Work.Simulation"),
+        RunMode.Production => UiText.Get("Work.Production"),
         WeightSource.Disabled => "不使用重量",
         WeightSource.Configured => "配置重量",
         WeightSource.Measured => "实测重量",
@@ -239,8 +242,8 @@ public static class ChineseInterfaceText
         "existing" => "沿用设备设置",
         "on" => "要求设备已开启",
         "off" => "要求设备已关闭",
-        "true" => "启用",
-        "false" => "关闭",
+        "true" => UiText.Get("Work.Enable"),
+        "false" => UiText.Get("Common.Close"),
         "normal" => "正常返回",
         "unavailable" => "不可用",
         "lose-after-commit" => "提交后未收到返回",

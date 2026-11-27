@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf"
-        Title="供包运维工具" Width="1280" Height="760" MinWidth="880" MinHeight="560"
+        Title="{DynamicResource Ops.Title}" Width="1280" Height="760" MinWidth="880" MinHeight="560"
         Background="{DynamicResource Background}" WindowStartupLocation="CenterScreen">
  <Window.Resources>
   <Style x:Key="OperationsCard" TargetType="Border" BasedOn="{StaticResource WorkstationCard}"/>
@@ -112,16 +112,16 @@
        <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
        <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
-      <TextBlock Text="小车状态" Style="{StaticResource OperationsHint}"/>
+      <TextBlock Text="{DynamicResource Ops.Vehicle}" Style="{StaticResource OperationsHint}"/>
       <TextBox Grid.Column="1" Text="{Binding Vehicle, Mode=OneWay}" Style="{DynamicResource ReadonlyValue}"/>
-      <TextBlock Grid.Row="1" Text="当前轮次" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
+      <TextBlock Grid.Row="1" Text="{DynamicResource Ops.Round}" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
       <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Round, Mode=OneWay}" Style="{DynamicResource ReadonlyValue}" Margin="0,4,0,0"/>
-      <TextBlock Grid.Row="2" Text="当前任务" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
+      <TextBlock Grid.Row="2" Text="{DynamicResource Ops.Task}" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
       <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Operation, Mode=OneWay}" Style="{DynamicResource ReadonlyValue}" Margin="0,4,0,0"/>
-      <TextBlock Grid.Row="3" Text="人工输入" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
+      <TextBlock Grid.Row="3" Text="{DynamicResource Ops.Manual}" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
       <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Manual}" TextWrapping="Wrap" Margin="0,4,0,0"/>
-      <TextBlock Grid.Row="4" Text="供包提示" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
-      <TextBox Grid.Row="4" Grid.Column="1" Style="{DynamicResource ReadonlyValue}" Text="{Binding Notice,Mode=OneWay}" IsTabStop="True" Margin="0,4,0,0" AutomationProperties.Name="本位供包提示，可复制"/>
+      <TextBlock Grid.Row="4" Text="{DynamicResource Ops.SupplyNotice}" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
+      <TextBox Grid.Row="4" Grid.Column="1" Style="{DynamicResource ReadonlyValue}" Text="{Binding Notice,Mode=OneWay}" IsTabStop="True" Margin="0,4,0,0" AutomationProperties.Name="{DynamicResource Ops.SupplyNoticeCopy}"/>
      </Grid>
     </StackPanel>
    </Border>
@@ -155,24 +155,24 @@
      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
      <Grid VerticalAlignment="Center" Margin="0,0,8,0">
       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition MaxWidth="160"/></Grid.ColumnDefinitions>
-      <TextBlock Text="供包运维工具" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"
+      <TextBlock Text="{DynamicResource Ops.Title}" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"
                  Foreground="{DynamicResource Ink}" VerticalAlignment="Center"/>
       <Border Grid.Column="1" Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}" BorderThickness="1"
               CornerRadius="{DynamicResource RadiusBadge}" Padding="8,3" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
-       <TextBlock x:Name="StationText" Text="站点待核验" TextTrimming="CharacterEllipsis"
+       <TextBlock x:Name="StationText" Text="{DynamicResource Ops.VerifyStation}" TextTrimming="CharacterEllipsis"
                   Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}"/>
       </Border>
      </Grid>
      <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
       <Border x:Name="ConnectionPill" Style="{StaticResource OperatorStatusBadge}" BorderBrush="{DynamicResource Line}" Padding="9,4" Background="{DynamicResource Soft}" CornerRadius="{DynamicResource RadiusBadge}" VerticalAlignment="Center">
-       <TextBlock x:Name="ConnectionText" Text="核验连接中" FontSize="{x:Static type:UiTypography.Label}"
+       <TextBlock x:Name="ConnectionText" Text="{DynamicResource Ops.CheckConnection}" FontSize="{x:Static type:UiTypography.Label}"
                   AutomationProperties.LiveSetting="Polite" Foreground="{DynamicResource Muted}"/>
       </Border>
       <ContentControl x:Name="AuthorizationStatusHost" Margin="6,0,0,0" VerticalAlignment="Center"/>
      </StackPanel>
      <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
       <ContentControl x:Name="AuthorizationActionHost" VerticalAlignment="Center"/>
-      <ToggleButton x:Name="EnvironmentToggle" Content="环境信息" Style="{StaticResource OperationsToggle}" Margin="6,0,0,0"/>
+      <ToggleButton x:Name="EnvironmentToggle" Content="{DynamicResource Ops.Environment}" Style="{StaticResource OperationsToggle}" Margin="6,0,0,0"/>
      </StackPanel>
     </Grid>
    </Border>
@@ -189,7 +189,7 @@
      <Grid>
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <StackPanel Margin="0,0,12,0">
-       <TextBox x:Name="InstallationText" Style="{DynamicResource ReadonlyValue}" IsTabStop="True" AutomationProperties.Name="版本、完整来源和本机路径"/>
+       <TextBox x:Name="InstallationText" Style="{DynamicResource ReadonlyValue}" IsTabStop="True" AutomationProperties.Name="{DynamicResource Ops.EnvironmentAccessible}"/>
        <TextBlock x:Name="ConnectionDetails" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
       </StackPanel>
       <ContentControl x:Name="TechnicalFailureHost" Grid.Row="1" Margin="0,12,0,0"/>
@@ -203,7 +203,7 @@
           BorderThickness="0,1,0,0" MinHeight="32" Padding="24,0">
    <DockPanel VerticalAlignment="Center">
     <TextBlock x:Name="VersionText" DockPanel.Dock="Right" Style="{StaticResource OperationsHint}" Margin="12,0,0,0"/>
-    <TextBlock Text="仅浏览不会暂停供包 · 软件暂停非安全急停" Style="{StaticResource OperationsHint}"/>
+    <TextBlock Text="{DynamicResource Ops.ReadOnlySafety}" Style="{StaticResource OperationsHint}"/>
    </DockPanel>
   </Border>
   <TabControl x:Name="Pages" ItemContainerStyle="{StaticResource OperationsTab}" Padding="0" SelectionChanged="PageChanged">
@@ -217,33 +217,33 @@
      </DockPanel>
     </ControlTemplate>
    </TabControl.Template>
-   <TabItem Header="运行总览">
+   <TabItem Header="{DynamicResource Ops.Overview}">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
      <StackPanel Margin="20,16,20,14">
       <UniformGrid x:Name="OverviewMetrics" Columns="4" Margin="0,0,0,8">
        <Border Style="{StaticResource OperationsCard}" Margin="4">
         <StackPanel>
-         <TextBlock Text="工作站状态" Style="{StaticResource OperationsHint}"/>
-         <TextBlock x:Name="OverviewStatus" Text="待确认" Style="{StaticResource OperationsSummaryValue}"/>
+         <TextBlock Text="{DynamicResource Ops.WorkstationStatus}" Style="{StaticResource OperationsHint}"/>
+         <TextBlock x:Name="OverviewStatus" Text="{DynamicResource Common.Pending}" Style="{StaticResource OperationsSummaryValue}"/>
         </StackPanel>
        </Border>
        <Border Style="{StaticResource OperationsCard}" Margin="4">
         <StackPanel>
-         <TextBlock Text="当前可见作业" Style="{StaticResource OperationsHint}"/>
-         <TextBlock x:Name="VisibleOperationsText" Text="待确认" Style="{StaticResource OperationsSummaryValue}"/>
+         <TextBlock Text="{DynamicResource Ops.VisibleTasks}" Style="{StaticResource OperationsHint}"/>
+         <TextBlock x:Name="VisibleOperationsText" Text="{DynamicResource Common.Pending}" Style="{StaticResource OperationsSummaryValue}"/>
          <TextBlock x:Name="ExecutingRequestsText" Style="{StaticResource OperationsHint}"/>
         </StackPanel>
        </Border>
        <Border Style="{StaticResource OperationsCard}" Margin="4">
         <StackPanel>
-         <TextBlock Text="待核对 / 历史留存" Style="{StaticResource OperationsHint}"/>
-         <TextBlock x:Name="UnconfirmedOperationsText" Text="待确认" Style="{StaticResource OperationsSummaryValue}"/>
+         <TextBlock Text="{DynamicResource Ops.Custody}" Style="{StaticResource OperationsHint}"/>
+         <TextBlock x:Name="UnconfirmedOperationsText" Text="{DynamicResource Common.Pending}" Style="{StaticResource OperationsSummaryValue}"/>
         </StackPanel>
        </Border>
        <Border Style="{StaticResource OperationsCard}" Margin="4">
         <StackPanel>
-         <TextBlock Text="待生效设置" Style="{StaticResource OperationsHint}"/>
-         <TextBlock x:Name="PendingOverviewText" Text="待确认" Style="{StaticResource OperationsSummaryValue}"/>
+         <TextBlock Text="{DynamicResource Ops.PendingSettings}" Style="{StaticResource OperationsHint}"/>
+         <TextBlock x:Name="PendingOverviewText" Text="{DynamicResource Common.Pending}" Style="{StaticResource OperationsSummaryValue}"/>
         </StackPanel>
        </Border>
       </UniformGrid>
@@ -253,31 +253,31 @@
       <Border Style="{StaticResource OperationsCard}" Margin="4,4,4,8">
        <StackPanel>
         <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="4,0,4,4">
-         <TextBlock Text="设备与存储状态" Style="{StaticResource OperationsSection}"/>
+         <TextBlock Text="{DynamicResource Ops.DevicesStorage}" Style="{StaticResource OperationsSection}"/>
         </Border>
         <ItemsControl x:Name="DeviceRows" ItemTemplate="{StaticResource DeviceOverviewCard}">
          <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="4"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
         </ItemsControl>
        </StackPanel>
       </Border>
-      <Expander Header="技术说明" Margin="0,2,8,0">
+      <Expander Header="{DynamicResource Ops.Technical}" Margin="0,2,8,0">
        <TextBox x:Name="TechnicalText" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
                 VerticalScrollBarVisibility="Auto" MaxHeight="220"/>
       </Expander>
      </StackPanel>
     </ScrollViewer>
    </TabItem>
-   <TabItem Header="日志中心">
+   <TabItem Header="{DynamicResource Ops.LogCenter}">
     <DockPanel Margin="24,16,24,12" Background="{DynamicResource Surface}">
      <Border DockPanel.Dock="Top" Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}"
              BorderThickness="0,0,0,1" Padding="12,8">
-      <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" AutomationProperties.Name="日志来源">
-       <RadioButton x:Name="OfflineLogMode" Content="离线运行日志 · 只读" GroupName="OperationsLogMode" IsChecked="True"
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" AutomationProperties.Name="{DynamicResource Ops.LogSource}">
+       <RadioButton x:Name="OfflineLogMode" Content="{DynamicResource Ops.OfflineLog}" GroupName="OperationsLogMode" IsChecked="True"
                     Style="{StaticResource OperationsToggle}" AutomationProperties.AutomationId="Operations.LogMode.Offline"
-                    ToolTip="只读取已落盘运行日志"/>
-       <RadioButton x:Name="OnlineLogMode" Content="完整在线日志 · 需授权" GroupName="OperationsLogMode" Margin="4,0,0,0"
+                    ToolTip="{DynamicResource Ops.OfflineLogHelp}"/>
+       <RadioButton x:Name="OnlineLogMode" Content="{DynamicResource Ops.CompleteLog}" GroupName="OperationsLogMode" Margin="4,0,0,0"
                     Style="{StaticResource OperationsToggle}" AutomationProperties.AutomationId="Operations.LogMode.Online"
-                    ToolTip="使用工作站的已授权连接查询完整在线日志"/>
+                    ToolTip="{DynamicResource Ops.CompleteLogHelp}"/>
       </StackPanel>
      </Border>
      <Grid>
@@ -292,8 +292,8 @@
          <ResourceDictionary Source="/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml"/>
         </WrapPanel.Resources>
         <StackPanel Style="{StaticResource LogFilterField}" MinWidth="268">
-         <TextBlock Text="日志范围" Style="{StaticResource OperationsHint}"/>
-         <ComboBox x:Name="LogAreas" Margin="0" Height="44" TextSearch.TextPath="Label" AutomationProperties.Name="日志范围">
+         <TextBlock Text="{DynamicResource Ops.LogArea}" Style="{StaticResource OperationsHint}"/>
+         <ComboBox x:Name="LogAreas" Margin="0" Height="44" TextSearch.TextPath="Label" AutomationProperties.Name="{DynamicResource Ops.LogArea}">
           <ComboBox.ItemTemplate>
            <DataTemplate>
             <TextBlock Text="{Binding Label}" ToolTip="{Binding Label}" MaxWidth="244"
@@ -303,63 +303,63 @@
          </ComboBox>
         </StackPanel>
         <StackPanel Style="{StaticResource LogFilterField}" Width="148">
-         <TextBlock Text="时间" Style="{StaticResource OperationsHint}"/>
-         <ComboBox x:Name="TimeRange" Margin="0" SelectedIndex="0" Height="44" AutomationProperties.Name="日志时间范围">
-          <ComboBoxItem Content="最近1小时"/><ComboBoxItem Content="今天"/><ComboBoxItem Content="最近24小时"/>
+         <TextBlock Text="{DynamicResource Common.Time}" Style="{StaticResource OperationsHint}"/>
+         <ComboBox x:Name="TimeRange" Margin="0" SelectedIndex="0" Height="44" AutomationProperties.Name="{DynamicResource Ops.TimeAccessible}">
+          <ComboBoxItem Content="{DynamicResource Ops.LastHour}"/><ComboBoxItem Content="{DynamicResource Common.DateToday}"/><ComboBoxItem Content="{DynamicResource Common.LastDay}"/>
          </ComboBox>
         </StackPanel>
         <StackPanel Style="{StaticResource LogFilterField}" Width="88">
-         <TextBlock Text="级别" Style="{StaticResource OperationsHint}"/>
-         <ComboBox x:Name="Level" Margin="0" SelectedIndex="0" Height="44" AutomationProperties.Name="日志级别">
-          <ComboBoxItem Content="全部"/><ComboBoxItem Content="错误"/><ComboBoxItem Content="警告"/><ComboBoxItem Content="信息"/>
+         <TextBlock Text="{DynamicResource Common.Level}" Style="{StaticResource OperationsHint}"/>
+         <ComboBox x:Name="Level" Margin="0" SelectedIndex="0" Height="44" AutomationProperties.Name="{DynamicResource Ops.LevelAccessible}">
+          <ComboBoxItem Content="{DynamicResource Common.All}"/><ComboBoxItem Content="{DynamicResource Common.Error}"/><ComboBoxItem Content="{DynamicResource Common.Warning}"/><ComboBoxItem Content="{DynamicResource Common.Info}"/>
          </ComboBox>
         </StackPanel>
         <StackPanel Style="{StaticResource LogFilterField}" Width="88">
-         <TextBlock Text="来源" Style="{StaticResource OperationsHint}"/>
-         <TextBox x:Name="SourceFilter" Height="44" Margin="0" AutomationProperties.Name="日志来源"/>
+         <TextBlock Text="{DynamicResource Common.Source}" Style="{StaticResource OperationsHint}"/>
+         <TextBox x:Name="SourceFilter" Height="44" Margin="0" AutomationProperties.Name="{DynamicResource Ops.LogSource}"/>
         </StackPanel>
         <StackPanel Style="{StaticResource LogFilterField}" Width="126">
-         <TextBlock Text="关键词" Style="{StaticResource OperationsHint}"/>
-         <TextBox x:Name="Keyword" Height="44" Margin="0" AutomationProperties.Name="日志关键词"/>
+         <TextBlock Text="{DynamicResource Ops.Keyword}" Style="{StaticResource OperationsHint}"/>
+         <TextBox x:Name="Keyword" Height="44" Margin="0" AutomationProperties.Name="{DynamicResource Ops.KeywordAccessible}"/>
         </StackPanel>
-        <CheckBox x:Name="KeyEvents" Content="关键事件" IsChecked="True" VerticalAlignment="Bottom" MinHeight="44" Margin="0,0,0,6"/>
+        <CheckBox x:Name="KeyEvents" Content="{DynamicResource Ops.KeyEvents}" IsChecked="True" VerticalAlignment="Bottom" MinHeight="44" Margin="0,0,0,6"/>
        </WrapPanel>
        <DockPanel Grid.Row="1" Margin="0,0,0,8">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-         <Button x:Name="QueryButton" Content="查询" Click="QueryClick" Style="{DynamicResource Primary}"/>
-         <Button x:Name="CancelQuery" Content="取消查询" Click="CancelClick" IsEnabled="False" Margin="6,0,0,0">
+         <Button x:Name="QueryButton" Content="{DynamicResource Common.Query}" Click="QueryClick" Style="{DynamicResource Primary}"/>
+         <Button x:Name="CancelQuery" Content="{DynamicResource Common.CancelQuery}" Click="CancelClick" IsEnabled="False" Margin="6,0,0,0">
           <Button.Style><Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
            <Style.Triggers><Trigger Property="IsEnabled" Value="False"><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers>
           </Style></Button.Style>
          </Button>
         </StackPanel>
-        <TextBlock x:Name="LogStatus" Text="请选择日志范围后查询" Style="{StaticResource OperationsHint}"
+        <TextBlock x:Name="LogStatus" Text="{DynamicResource Ops.PickScope}" Style="{StaticResource OperationsHint}"
                    VerticalAlignment="Center" Margin="0,0,8,0" AutomationProperties.LiveSetting="Polite"/>
        </DockPanel>
        <DataGrid x:Name="LogGrid" Grid.Row="2" RowHeight="44" FontSize="{x:Static type:UiTypography.Log}" SelectionMode="Extended"
-                 SelectionUnit="FullRow" SelectionChanged="LogSelectionChanged" ClipboardCopyMode="IncludeHeader" AutomationProperties.Name="查询日志">
+                 SelectionUnit="FullRow" SelectionChanged="LogSelectionChanged" ClipboardCopyMode="IncludeHeader" AutomationProperties.Name="{DynamicResource Ops.QueryLog}">
         <DataGrid.Columns>
-         <DataGridTextColumn Header="时间（本机）" Binding="{Binding At, StringFormat={}{0:MM-dd HH:mm:ss.fff}}" Width="180"/>
-         <DataGridTextColumn Header="级别" Binding="{Binding Level}" Width="75"/>
-         <DataGridTextColumn Header="来源" Binding="{Binding Source}" Width="110"/>
-         <DataGridTextColumn Header="事件" Binding="{Binding EventCode}" Width="210"/>
-         <DataGridTextColumn Header="原文" Binding="{Binding Text}" Width="*"/>
+         <DataGridTextColumn Header="{Binding [Ops.TimeLocal], Source={x:Static type:UiText.Current}}" Binding="{Binding At, StringFormat={}{0:MM-dd HH:mm:ss.fff}}" Width="180"/>
+         <DataGridTextColumn Header="{Binding [Common.Level], Source={x:Static type:UiText.Current}}" Binding="{Binding Level}" Width="75"/>
+         <DataGridTextColumn Header="{Binding [Common.Source], Source={x:Static type:UiText.Current}}" Binding="{Binding Source}" Width="110"/>
+         <DataGridTextColumn Header="{Binding [Ops.Event], Source={x:Static type:UiText.Current}}" Binding="{Binding EventCode}" Width="210"/>
+         <DataGridTextColumn Header="{Binding [Common.Original], Source={x:Static type:UiText.Current}}" Binding="{Binding Text}" Width="*"/>
         </DataGrid.Columns>
        </DataGrid>
        <TextBox x:Name="LogDetail" Grid.Row="3" Visibility="Collapsed" Height="100" IsReadOnly="True" TextWrapping="NoWrap"
-                AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AutomationProperties.Name="所选日志原文"/>
+                AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AutomationProperties.Name="{DynamicResource Ops.RawLog}"/>
        <DockPanel Grid.Row="4" Margin="0,6,0,0">
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-         <Button Content="复制所选原文" Click="CopyClick"/>
-         <Button x:Name="PreviousButton" Content="上一页" Click="PreviousClick" IsEnabled="False" Margin="6,0,0,0"/>
-         <Button x:Name="NextButton" Content="下一页" Click="NextClick" IsEnabled="False" Margin="6,0,0,0"/>
+         <Button Content="{DynamicResource Ops.CopyLog}" Click="CopyClick"/>
+         <Button x:Name="PreviousButton" Content="{DynamicResource Common.Previous}" Click="PreviousClick" IsEnabled="False" Margin="6,0,0,0"/>
+         <Button x:Name="NextButton" Content="{DynamicResource Common.NextPage}" Click="NextClick" IsEnabled="False" Margin="6,0,0,0"/>
         </StackPanel>
         <TextBlock x:Name="PageText" Style="{StaticResource OperationsHint}" VerticalAlignment="Center"/>
        </DockPanel>
-       <Expander Grid.Row="5" Header="查询范围与技术说明">
+       <Expander Grid.Row="5" Header="{DynamicResource Ops.LogScopeHelp}">
         <ScrollViewer MaxHeight="116" VerticalScrollBarVisibility="Auto">
          <StackPanel>
-          <TextBlock Text="离线查询只读取运行日志，不读取业务数据库或认证日志。" Style="{StaticResource OperationsHint}"/>
+          <TextBlock Text="{DynamicResource Ops.OfflineBoundary}" Style="{StaticResource OperationsHint}"/>
           <TextBox x:Name="LogNotices" Style="{DynamicResource ReadonlyValue}"/>
          </StackPanel>
         </ScrollViewer>
@@ -368,11 +368,11 @@
      </Grid>
     </DockPanel>
    </TabItem>
-   <TabItem Header="设备调试" Tag="debug"><ContentControl x:Name="DeviceDebugPage" Margin="24,16,24,12"/></TabItem>
-   <TabItem Header="专业参数" Tag="parameters">
+   <TabItem Header="{DynamicResource Ops.Debug}" Tag="debug"><ContentControl x:Name="DeviceDebugPage" Margin="24,16,24,12"/></TabItem>
+   <TabItem Header="{DynamicResource Ops.Parameters}" Tag="parameters">
     <ContentControl x:Name="ProfessionalPage" Margin="24,16,24,12"/>
    </TabItem>
-   <TabItem Header="维护中心" Tag="maintenance"><ContentControl x:Name="MaintenancePage"/></TabItem>
+   <TabItem Header="{DynamicResource Ops.Maintenance}" Tag="maintenance"><ContentControl x:Name="MaintenancePage"/></TabItem>
   </TabControl>
  </DockPanel>
 </Window>

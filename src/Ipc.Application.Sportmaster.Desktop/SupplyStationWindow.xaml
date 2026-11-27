@@ -1,4 +1,4 @@
-<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:parameters="clr-namespace:Ipc.Application.ParcelFlow.Desktop;assembly=Ipc.Application.ParcelFlow.Desktop" xmlns:local="clr-namespace:Ipc.Application.Sportmaster.Desktop" x:Class="Ipc.Application.Sportmaster.Desktop.SupplyStationWindow" Title="菜鸟供包台" Width="1600" Height="900" MinWidth="640" MinHeight="420" Background="{DynamicResource Background}" UseLayoutRounding="True">
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:parameters="clr-namespace:Ipc.Application.ParcelFlow.Desktop;assembly=Ipc.Application.ParcelFlow.Desktop" xmlns:local="clr-namespace:Ipc.Application.Sportmaster.Desktop" x:Class="Ipc.Application.Sportmaster.Desktop.SupplyStationWindow" Title="{DynamicResource Startup.Product}" Width="1600" Height="900" MinWidth="640" MinHeight="420" Background="{DynamicResource Background}" UseLayoutRounding="True">
  <Window.Resources>
   <ResourceDictionary>
    <ResourceDictionary.MergedDictionaries>
@@ -67,8 +67,8 @@
   <Border x:Name="TimeHeader" DockPanel.Dock="Right" Padding="8,0,12,0" VerticalAlignment="Center">
    <Grid>
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <TextBlock x:Name="TestInstallationLabel" Text="测试版" Margin="0,0,8,0" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Warning}" VerticalAlignment="Center" Visibility="Collapsed"/>
-    <TextBlock x:Name="StationClock" Grid.Column="2" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Ink}" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.Name="本机时间"/>
+    <TextBlock x:Name="TestInstallationLabel" Text="{DynamicResource Work.TestEdition}" Margin="0,0,8,0" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Warning}" VerticalAlignment="Center" Visibility="Collapsed"/>
+    <TextBlock x:Name="StationClock" Grid.Column="2" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Ink}" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource Work.LocalClock}"/>
     <StackPanel Grid.Column="1" Orientation="Horizontal">
      <ToggleButton x:Name="MuteToggleButton" Width="44" Height="44" Margin="0" Padding="0"
                    Checked="MuteToggle_Changed" Unchecked="MuteToggle_Changed" PreviewGotKeyboardFocus="MuteToggle_PreviewGotKeyboardFocus"
@@ -95,7 +95,7 @@
       </Path>
      </ToggleButton>
      <Grid Margin="0,0,8,0">
-     <ToggleButton x:Name="PreferenceNoticeButton" Width="44" Height="44" Margin="0" Padding="0" ToolTip="本机设置通知" AutomationProperties.Name="本机设置通知">
+     <ToggleButton x:Name="PreferenceNoticeButton" Width="44" Height="44" Margin="0" Padding="0" ToolTip="{DynamicResource Work.Notice}" AutomationProperties.Name="{DynamicResource Work.Notice}">
       <Grid><Path Data="M 3,14 L 5,11 V 7 A 4,4 0 0 1 13,7 V 11 L 15,14 Z M 7,16 A 2,2 0 0 0 11,16" Stroke="{DynamicResource Ink}" StrokeThickness="1.5" StrokeLineJoin="Round" Width="18" Height="18"/>
        <Ellipse Width="7" Height="7" Fill="{DynamicResource Warning}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0">
         <Ellipse.Style><Style TargetType="Ellipse"><Setter Property="Visibility" Value="Collapsed"/>
@@ -106,15 +106,15 @@
      </ToggleButton>
      <Popup IsOpen="{Binding IsChecked,ElementName=PreferenceNoticeButton,Mode=TwoWay}" PlacementTarget="{Binding ElementName=PreferenceNoticeButton}" Placement="Bottom" HorizontalOffset="-276" StaysOpen="False" AllowsTransparency="True">
       <Border Style="{StaticResource WorkstationCard}" Width="320" Margin="6" Effect="{DynamicResource ShadowPopup}">
-       <TextBox Text="{Binding PreferenceNoticeText,Mode=OneWay,TargetNullValue=暂无本机设置通知}" Style="{DynamicResource ReadonlyValue}" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="180" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="本机设置读取通知"/>
+       <TextBox Text="{Binding PreferenceNoticeText,Mode=OneWay,TargetNullValue=暂无本机设置通知}" Style="{DynamicResource ReadonlyValue}" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="180" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="{DynamicResource Work.ReadNotice}"/>
       </Border>
      </Popup>
      </Grid>
     </StackPanel>
-    <Button x:Name="MinimizeFullScreen" Grid.Column="3" Click="MinimizeFullScreen_Click" HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="最小化到任务栏" AutomationProperties.Name="最小化到任务栏">
+    <Button x:Name="MinimizeFullScreen" Grid.Column="3" Click="MinimizeFullScreen_Click" HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="{DynamicResource Common.LayoutMinimize}" AutomationProperties.Name="{DynamicResource Common.LayoutMinimize}">
      <Path Data="M 3,10 L 17,10" Stroke="{DynamicResource Ink}" StrokeThickness="1.7" Width="20" Height="20"/>
     </Button>
-    <Button x:Name="ExitFullScreen" Grid.Column="4" Click="ExitFullScreen_Click" Margin="4,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="退出供包台" AutomationProperties.Name="退出供包台">
+    <Button x:Name="ExitFullScreen" Grid.Column="4" Click="ExitFullScreen_Click" Margin="4,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="{DynamicResource Work.Exit}" AutomationProperties.Name="{DynamicResource Work.Exit}">
      <Path Data="M 4,4 L 16,16 M 16,4 L 4,16" Stroke="{DynamicResource Ink}" StrokeThickness="1.7" Width="20" Height="20"/>
     </Button>
    </Grid>
@@ -161,7 +161,7 @@
      <Grid>
       <Grid x:Name="SupplyStatusLine" MinHeight="44">
        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-       <Button x:Name="ResumeSupply" Grid.Column="4" Content="恢复供包" Click="ResumeSupply_Click" Visibility="{Binding ResumeVisibility}" IsEnabled="{Binding CanResumeInViewport}" MinHeight="44" Margin="12,0,0,0" VerticalAlignment="Center" Style="{StaticResource StationButton}" ToolTip="核对当前供包条件后恢复；未确认的原请求仍须核对，不会重新发送。"/>
+       <Button x:Name="ResumeSupply" Grid.Column="4" Content="{DynamicResource Work.Resume}" Click="ResumeSupply_Click" Visibility="{Binding ResumeVisibility}" IsEnabled="{Binding CanResumeInViewport}" MinHeight="44" Margin="12,0,0,0" VerticalAlignment="Center" Style="{StaticResource StationButton}" ToolTip="{DynamicResource Work.ResumeHelp}"/>
        <ScrollViewer x:Name="StatusDiagnostics" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" MaxHeight="40" VerticalAlignment="Center">
         <DockPanel LastChildFill="True">
          <Ellipse x:Name="WorkStatusDot" DockPanel.Dock="Left" Width="9" Height="9" Margin="0,0,8,0" VerticalAlignment="Center">
@@ -175,7 +175,7 @@
           <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsSettingsWorkspace}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
          </TextBlock>
          <Border DockPanel.Dock="Left" Height="18" Width="1" Background="{DynamicResource Line}" Margin="0,0,12,0"/>
-         <TextBlock x:Name="ActiveBlockingReasons" Text="{Binding OperatorNotice}" ToolTip="{Binding OperatorNotice}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" AutomationProperties.Name="工作站状态说明"/>
+         <TextBlock x:Name="ActiveBlockingReasons" Text="{Binding OperatorNotice}" ToolTip="{Binding OperatorNotice}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource Work.StatusDescription}"/>
         </DockPanel>
        </ScrollViewer>
        <Button x:Name="CompactActivationAction" Grid.Column="1" Content="{Binding ConfigurationActivationCompactText}" Click="ProductRestart_Click" IsEnabled="{Binding CanOpenConfigurationActivation}" MinHeight="44" Margin="12,0,0,0" VerticalAlignment="Center" ToolTip="{Binding ConfigurationActivationOutcome}">
@@ -189,8 +189,8 @@
        <Button x:Name="RcsConnection" Grid.Column="3" VerticalAlignment="Center" Margin="8,0,0,0" MinHeight="44"
                Content="{Binding RcsButtonText}" Click="RcsConnection_Click" IsEnabled="{Binding CanCheckRcs}"
                FontSize="{x:Static type:UiTypography.Label}" Padding="10,6"
-               AutomationProperties.Name="检查 RCS 心跳" AutomationProperties.ItemStatus="{Binding RcsButtonText}"
-               ToolTip="点击发送一次 RCS 心跳。每件包裹以本件返回的格口为准。">
+               AutomationProperties.Name="{DynamicResource Work.CheckRcs}" AutomationProperties.ItemStatus="{Binding RcsButtonText}"
+               ToolTip="{DynamicResource Work.CheckRcsHelp}">
         <Button.Style>
          <Style TargetType="Button" BasedOn="{StaticResource StationButton}">
           <Setter Property="Background" Value="{DynamicResource WarningBackground}"/>
@@ -229,17 +229,17 @@
     <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <Grid.Style><Style TargetType="Grid"><Setter Property="Margin" Value="8,12,8,8"/><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Margin" Value="4,8,4,4"/></DataTrigger></Style.Triggers></Style></Grid.Style>
     <StackPanel>
-     <Button Tag="M 3,6 L 12,2 21,6 21,18 12,22 3,18 Z M 3,6 L 12,10 21,6 M 12,10 L 12,22 M 7.5,4 L 16.5,8 16.5,12" Content="作业" Click="Workstation_Click" Margin="0,0,0,8" ToolTip="作业" AutomationProperties.Name="作业">
+     <Button Tag="M 3,6 L 12,2 21,6 21,18 12,22 3,18 Z M 3,6 L 12,10 21,6 M 12,10 L 12,22 M 7.5,4 L 16.5,8 16.5,12" Content="{DynamicResource Work.NavWork}" Click="Workstation_Click" Margin="0,0,0,8" ToolTip="{DynamicResource Work.NavWork}" AutomationProperties.Name="{DynamicResource Work.NavWork}">
       <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="workstation"><Setter Property="Selector.IsSelected" Value="True"/><Setter Property="Background" Value="{DynamicResource AccentBackground}"/><Setter Property="Foreground" Value="{DynamicResource Accent}"/><Setter Property="BorderBrush" Value="{DynamicResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style>
      </Button>
-     <Button Tag="M 8,4 L 4,4 4,22 20,22 20,4 16,4 M 8,2 L 16,2 16,6 8,6 Z M 8,11 L 9,11 M 12,11 L 17,11 M 8,16 L 9,16 M 12,16 L 17,16" Content="记录" Click="History_Click" Margin="0,0,0,8" ToolTip="记录" AutomationProperties.Name="记录">
+     <Button Tag="M 8,4 L 4,4 4,22 20,22 20,4 16,4 M 8,2 L 16,2 16,6 8,6 Z M 8,11 L 9,11 M 12,11 L 17,11 M 8,16 L 9,16 M 12,16 L 17,16" Content="{DynamicResource Work.NavRecords}" Click="History_Click" Margin="0,0,0,8" ToolTip="{DynamicResource Work.NavRecords}" AutomationProperties.Name="{DynamicResource Work.NavRecords}">
       <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="history"><Setter Property="Selector.IsSelected" Value="True"/><Setter Property="Background" Value="{DynamicResource AccentBackground}"/><Setter Property="Foreground" Value="{DynamicResource Accent}"/><Setter Property="BorderBrush" Value="{DynamicResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style>
      </Button>
     </StackPanel>
-     <Button x:Name="StationSettingsEntry" Grid.Row="1" Content="设置" Click="StationSettings_Click" Style="{StaticResource StationIconNavigation}" Tag="M 3,6 L 21,6 M 3,12 L 21,12 M 3,18 L 21,18 M 8,3 L 8,9 M 16,9 L 16,15 M 10,15 L 10,21" ToolTip="设置（查看不暂停，修改需验证密码）" AutomationProperties.Name="设置，查看不暂停，修改需验证密码"/>
+     <Button x:Name="StationSettingsEntry" Grid.Row="1" Content="{DynamicResource Common.Settings}" Click="StationSettings_Click" Style="{StaticResource StationIconNavigation}" Tag="M 3,6 L 21,6 M 3,12 L 21,12 M 3,18 L 21,18 M 8,3 L 8,9 M 16,9 L 16,15 M 10,15 L 10,21" ToolTip="{DynamicResource Work.SettingsHelp}" AutomationProperties.Name="{DynamicResource Work.SettingsAccessible}"/>
    </Grid>
   </Border>
-  <Button x:Name="NavigationToggle" Grid.RowSpan="4" Panel.ZIndex="10" Click="NavigationToggle_Click" Content="收起菜单" ToolTip="收起菜单" AutomationProperties.Name="收起菜单" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-12,0" Width="44" Height="44" MinWidth="44" MinHeight="44" FocusVisualStyle="{x:Null}" Cursor="Hand">
+  <Button x:Name="NavigationToggle" Grid.RowSpan="4" Panel.ZIndex="10" Click="NavigationToggle_Click" Content="{DynamicResource Work.CollapseMenu}" ToolTip="{DynamicResource Work.CollapseMenu}" AutomationProperties.Name="{DynamicResource Work.CollapseMenu}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-12,0" Width="44" Height="44" MinWidth="44" MinHeight="44" FocusVisualStyle="{x:Null}" Cursor="Hand">
    <Button.Template>
     <ControlTemplate TargetType="Button">
      <Grid Background="Transparent">
@@ -285,8 +285,8 @@
       </Style>
      </Border.Style>
      <DockPanel>
-      <Button Content="关闭提示" Click="DismissGlobalFeedback_Click" DockPanel.Dock="Right" MinHeight="44" Padding="8,4" FontSize="{x:Static type:UiTypography.Body}" Margin="8,0,0,0"/>
-      <TextBox x:Name="GlobalOperationFeedback" MinHeight="0" Padding="0" VerticalAlignment="Center" Text="{Binding GlobalOperationFeedback,Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="{DynamicResource Ink}" TextWrapping="Wrap" MaxHeight="44" VerticalScrollBarVisibility="Auto" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="最近一次操作结果，可选择复制" AutomationProperties.LiveSetting="Assertive"/>
+      <Button Content="{DynamicResource Work.DismissNotice}" Click="DismissGlobalFeedback_Click" DockPanel.Dock="Right" MinHeight="44" Padding="8,4" FontSize="{x:Static type:UiTypography.Body}" Margin="8,0,0,0"/>
+      <TextBox x:Name="GlobalOperationFeedback" MinHeight="0" Padding="0" VerticalAlignment="Center" Text="{Binding GlobalOperationFeedback,Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="{DynamicResource Ink}" TextWrapping="Wrap" MaxHeight="44" VerticalScrollBarVisibility="Auto" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="{DynamicResource Work.LastResult}" AutomationProperties.LiveSetting="Assertive"/>
      </DockPanel>
     </Border>
       <Border x:Name="OperationalFeedbackBar" Padding="16,3" Background="{Binding WorkspaceStatusBackground}">
@@ -331,12 +331,12 @@
    <ScrollViewer VerticalScrollBarVisibility="Auto">
     <StackPanel>
      <TextBlock Text="{Binding ViewportStatus}" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"/>
-     <TextBlock Text="窗口太小，无法完整显示作业信息（至少需要 800 × 420）。请最大化窗口；相机和当前任务不受影响。" FontSize="{x:Static type:UiTypography.Body}" Margin="0,16"/>
+     <TextBlock Text="{DynamicResource Work.WindowTooSmall}" FontSize="{x:Static type:UiTypography.Body}" Margin="0,16"/>
      <TextBlock Text="{Binding Status}"/>
      <TextBlock Text="{Binding Message}"/>
      <TextBlock Text="{Binding ReadStatus}" Margin="0,12"/>
      <WrapPanel Margin="0,16">
-      <Button Content="最大化窗口" Click="Maximize_Click" Style="{StaticResource StationButton}"/>
+      <Button Content="{DynamicResource Common.Maximize}" Click="Maximize_Click" Style="{StaticResource StationButton}"/>
      </WrapPanel>
     </StackPanel>
    </ScrollViewer>

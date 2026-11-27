@@ -51,8 +51,8 @@ public partial class ParcelViewModel
             await SaveSmPreferencesAsync(); return;
         }
         var saveWindow = HasUnsavedWindowPreference;
-        var saveTheme = smPreferences?.ThemeChanged == true;
-        if (!saveWindow && !saveTheme) return;
+        var saveDisplay = smPreferences is { } preferences && (preferences.ThemeChanged || preferences.LanguageChanged);
+        if (!saveWindow && !saveDisplay) return;
         var mode = windowModeDraft;
         var application = windowPreferenceApplication!;
         await RequireManagementModeAsync();
@@ -68,7 +68,7 @@ public partial class ParcelViewModel
             WindowPreferenceStatus = "打开方式未保存；输入已保留，请检查本机设置文件与访问权限后重试。";
             Message = WindowPreferenceStatus;
         }
-        if (saveTheme)
+        if (saveDisplay)
         {
             SmPreferences.Save();
             WindowPreferenceStatus = (saveWindow ? WindowPreferenceStatus + " " : "") + SmPreferences.SaveSummary;

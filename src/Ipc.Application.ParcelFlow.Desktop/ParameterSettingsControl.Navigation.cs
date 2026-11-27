@@ -13,7 +13,7 @@ public sealed partial class ParameterSettingsControl
     ObjectPage[] OrderedPages() => (FirstConfiguration ? pages.OrderBy(p => p.Order) : BusinessDesktopCatalog.For(Model?.ApplicationId).UsesWorkstationSettingsFlow ? pages.OrderBy(p => p.TaskOrder) : pages.AsEnumerable()).Where(p => p.Available).ToArray();
     IReadOnlyList<int> FirstCategories => BusinessDesktopCatalog.For(Model?.ApplicationId).SetupCategories;
     public string CurrentPageTitle => currentPage?.Title ?? "";
-    public string PageProgress => FirstConfiguration && currentPage is not null ? $"第 {Array.IndexOf(FirstCategories.ToArray(), currentPage.Category) + 1} / {FirstCategories.Count} 步" : currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
+    public string PageProgress => FirstConfiguration && currentPage is not null ? UiText.Format("Param.FirstStep", Array.IndexOf(FirstCategories.ToArray(), currentPage.Category) + 1, FirstCategories.Count) : currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
     public bool IsReviewPage => currentPage?.Category == 4;
     public bool HasPreviousPage => currentPage is not null && Array.IndexOf(OrderedPages(), currentPage) > 0;
     public string? NextPageTitle
@@ -43,19 +43,20 @@ public sealed partial class ParameterSettingsControl
             button.Visibility = Visibility.Visible;
             var category = FirstCategories[index];
             System.Windows.Automation.AutomationProperties.SetAutomationId(button, "FirstSetup.Category." + category);
-            button.Tag = BusinessDesktopCatalog.For(Model?.ApplicationId).SetupStepLabels[index];
-            System.Windows.Automation.AutomationProperties.SetName(button, "首次配置第" + (index + 1) + "步：" + button.Tag);
+            var stepLabel = BusinessDesktopCatalog.For(Model?.ApplicationId).SetupStepLabels[index];
+            button.Tag = UiText.Authored(stepLabel);
+            System.Windows.Automation.AutomationProperties.SetName(button, "首次配置第" + (index + 1) + "步：" + stepLabel);
             var categoryPages = OrderedPages().Where(p => p.Category == category).ToArray();
             var complete = categoryPages.Length > 0 && categoryPages.All(checkedPages.Contains);
             var current = currentPage?.Category == category;
             System.Windows.Automation.AutomationProperties.SetItemStatus(button, current ? "当前步骤" : complete ? "已检查" : "未检查");
-            button.ToolTip = currentPage?.Category == category ? "当前步骤" : "前进时检查前置页面，返回保留输入";
+            button.ToolTip = currentPage?.Category == category ? "当前步骤" : UiText.Get("Param.Steps");
         }
         var currentIndex = currentPage is null ? -1 : Array.IndexOf(FirstCategories.ToArray(), currentPage.Category);
         foreach (var line in firstStepBar.Children.OfType<Border>())
             line.SetResourceReference(Border.BackgroundProperty, Grid.GetColumn(line) < currentIndex * 2 ? "Accent" : "Line");
         var issues = Model?.Issues ?? [];
-        remainingSteps.Text = issues.Count == 0 ? "尚未发现字段错误。请逐步检查；相机和 RCS 可留待以后配置。" : "当前发现 " + issues.Count + " 项需要修改：\n" + string.Join("\n", issues.Take(6).Select(issue =>
+        remainingSteps.Text = issues.Count == 0 ? UiText.Get("Param.CheckReady") : "当前发现 " + issues.Count + " 项需要修改：\n" + string.Join("\n", issues.Take(6).Select(issue =>
         {
             locations.TryGetValue(issue.Path, out var location);
             var context = issue.Category + (location is null ? "" : " / " + location.Label.TrimEnd(' ', '*'));

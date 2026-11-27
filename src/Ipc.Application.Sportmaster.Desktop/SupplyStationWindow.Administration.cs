@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.Windows;
 using Ipc.Application.ParcelFlow.Desktop;
 
@@ -14,7 +15,7 @@ public partial class SupplyStationWindow
     void ApplyNavigation()
     {
         IsNavigationCollapsed = navigationCollapsed ?? ViewModel.IsCompact;
-        NavigationToggle.Content = IsNavigationCollapsed ? "展开菜单" : "收起菜单";
+        NavigationToggle.Content = IsNavigationCollapsed ? UiText.Get("Work.ExpandMenu") : UiText.Get("Work.CollapseMenu");
         NavigationToggle.ToolTip = NavigationToggle.Content;
         System.Windows.Automation.AutomationProperties.SetName(NavigationToggle, (string)NavigationToggle.Content);
     }

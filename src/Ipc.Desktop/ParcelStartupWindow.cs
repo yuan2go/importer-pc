@@ -7,8 +7,8 @@ namespace Ipc.Desktop;
 // describe completed calls, never guessed device health or simulated percentages.
 sealed class ParcelStartupWindow : Window
 {
-    readonly TextBlock title = new() { FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis, Text = "正在启动供包台" };
-    readonly TextBlock detail = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 12, 0, 12), Text = "正在准备启动，请稍候。" };
+    readonly TextBlock title = new() { FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis, Text = UiText.Get("Startup.Starting") };
+    readonly TextBlock detail = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 12, 0, 12), Text = UiText.Get("Startup.Preparing") };
     readonly TextBox diagnostic = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 120 };
     readonly TextBox buildIdentity = new() { Name = "StartupBuildIdentity", IsReadOnly = true, FontSize = UiTypography.Label, Margin = new Thickness(0, 0, 0, 12) };
     readonly WrapPanel actions = new() { HorizontalAlignment = HorizontalAlignment.Right };
@@ -19,16 +19,16 @@ sealed class ParcelStartupWindow : Window
     public ParcelStartupWindow()
     {
         Ipc.Application.ParcelFlow.Desktop.ProductBrand.Apply(this); UiTypography.Apply(this);
-        Title = "菜鸟供包台"; Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
+        Title = UiText.Get("Startup.Product"); Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
         Ipc.Application.ParcelFlow.Desktop.StartupAppearance.FitToWorkArea(this);
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
         // Read the running binary, including the frozen SourceRevisionId used by packaging;
         // deployment machines do not need Git or a source checkout.
         var identity = Ipc.Platform.WindowsDeploymentSetup.RunningBuild(typeof(ParcelStartupWindow).Assembly);
-        buildIdentity.Text = $"版本 {identity.BusinessVersion} · Git {identity.SourceCommit}";
+        buildIdentity.Text = UiText.Format("Startup.BuildLabel", identity.BusinessVersion, identity.SourceCommit);
         buildIdentity.SetResourceReference(StyleProperty, "ReadonlyValue");
         buildIdentity.SetResourceReference(ForegroundProperty, "Muted");
-        System.Windows.Automation.AutomationProperties.SetName(buildIdentity, "软件版本和 Git 提交");
+        System.Windows.Automation.AutomationProperties.SetName(buildIdentity, UiText.Get("Startup.BuildIdentity"));
         var layout = new DockPanel { Margin = new Thickness(24) };
         DockPanel.SetDock(actions, Dock.Bottom); layout.Children.Add(actions);
         var body = new StackPanel(); body.Children.Add(title); body.Children.Add(detail); body.Children.Add(buildIdentity);
@@ -48,7 +48,7 @@ sealed class ParcelStartupWindow : Window
         if (AllowClose || closing || !actions.IsEnabled || closeAction is null) return;
         closing = true; actions.IsEnabled = false;
         try { await closeAction(); }
-        catch (Exception error) { diagnostic.Text += "\n\n停止未完成：" + error; }
+        catch (Exception error) { diagnostic.Text += UiText.Get("Startup.StopIncomplete") + error; }
         finally { closing = false; actions.IsEnabled = true; }
     }
     public void Phase(string heading, string description, string? completedCall = null)
@@ -63,10 +63,10 @@ sealed class ParcelStartupWindow : Window
     public void AfterMaintenance(Func<Task> close, Func<Task> start)
     {
         closeAction = close;
-        title.Text = "维护已结束 · 供包台未启动";
-        detail.Text = "点击“启动供包台”后连接相机和 RCS；也可以直接退出。";
+        title.Text = UiText.Get("Startup.MaintenanceDone");
+        detail.Text = UiText.Get("Startup.StartOrExit");
         diagnostic.Visibility = Visibility.Collapsed; actions.Children.Clear(); Height = 280; MinHeight = 260;
-        foreach (var (label, run, primary) in new[] { ("退出", close, false), ("启动供包台", start, true) })
+        foreach (var (label, run, primary) in new[] { ("退出", close, false), (UiText.Get("Startup.Launch"), start, true) })
         {
             var button = new Button { Content = label, IsDefault = primary, MinHeight = 44, Margin = new(0, 8, 12, 0) };
             if (primary) button.SetResourceReference(StyleProperty, "Primary");
@@ -77,7 +77,7 @@ sealed class ParcelStartupWindow : Window
                 catch (Exception error)
                 {
                     diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
-                    detail.Text = "操作没有完成，请查看下方诊断后重试。"; diagnostic.Text = error.ToString();
+                    detail.Text = UiText.Get("Startup.ActionFailed"); diagnostic.Text = error.ToString();
                 }
                 finally { actions.IsEnabled = true; }
             };
@@ -87,19 +87,19 @@ sealed class ParcelStartupWindow : Window
     public void UninstallFailed(string reason, Func<Task> close, Func<Task> retry)
     {
         closeAction = close; actions.Children.Clear(); diagnostic.Visibility = Visibility.Visible;
-        title.Text = "卸载入口未打开"; detail.Text = "尚未删除程序或数据。请关闭原供包台窗口后重试；维护缓存无法核验时，使用完整安装包修复。";
+        title.Text = UiText.Get("Startup.UninstallNotOpened"); detail.Text = UiText.Get("Startup.UninstallRetry");
         diagnostic.Text = reason;
-        var exit = new Button { Content = "关闭", MinHeight = 44, IsCancel = true };
+        var exit = new Button { Content = UiText.Get("Common.Close"), MinHeight = 44, IsCancel = true };
         System.Windows.Automation.AutomationProperties.SetAutomationId(exit, "UninstallHost.Close");
         exit.Click += async (_, _) => await RequestCloseAsync(); actions.Children.Add(exit);
-        var again = new Button { Content = "重试打开卸载", MinHeight = 44, IsDefault = true };
+        var again = new Button { Content = UiText.Get("Startup.RetryUninstaller"), MinHeight = 44, IsDefault = true };
         System.Windows.Automation.AutomationProperties.SetAutomationId(again, "UninstallHost.Retry");
         again.SetResourceReference(StyleProperty, "Primary");
         again.Click += async (_, _) =>
         {
             actions.IsEnabled = false;
             try { await retry(); }
-            catch (Exception error) { diagnostic.Text += "\n\n卸载入口未打开：" + error; }
+            catch (Exception error) { diagnostic.Text += UiText.Get("Startup.UninstallOpenFailure") + error; }
             finally { actions.IsEnabled = true; }
         };
         actions.Children.Add(again);
@@ -108,11 +108,11 @@ sealed class ParcelStartupWindow : Window
     {
         closeAction = close;
         actions.Children.Clear(); diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
-        title.Text = "供包台没有启动成功"; detail.Text = "原因见下方。可以重试启动，或修改参数、进入离线维护；需要支持时复制诊断交给维护人员。尚未开始作业。";
+        title.Text = UiText.Get("Startup.Failed"); detail.Text = UiText.Get("Startup.FailureActions");
         diagnostic.Text = string.Join("\n", completed) + "\n\n" + reason;
-        var copy = new Button { Content = "复制诊断", MinHeight = 44 };
-        copy.Click += (_, _) => { try { Clipboard.SetText(buildIdentity.Text + "\n\n" + diagnostic.Text); } catch (Exception error) { detail.Text = "复制失败，可选择诊断文本复制：" + error.Message; } };
-        var exit = new Button { Content = "停止并退出", MinHeight = 44 };
+        var copy = new Button { Content = UiText.Get("Startup.CopyDiagnostics"), MinHeight = 44 };
+        copy.Click += (_, _) => { try { Clipboard.SetText(buildIdentity.Text + "\n\n" + diagnostic.Text); } catch (Exception error) { detail.Text = UiText.Get("Startup.CopyFailed") + error.Message; } };
+        var exit = new Button { Content = UiText.Get("Startup.StopExit"), MinHeight = 44 };
         exit.Click += async (_, _) => await RequestCloseAsync();
         actions.Children.Add(copy);
         void Add(string label, Func<Task> action, bool primary = false)
@@ -123,11 +123,11 @@ sealed class ParcelStartupWindow : Window
             {
                 actions.IsEnabled = false;
                 try { await action(); }
-                catch (Exception error) { diagnostic.Text += "\n\n操作未完成：" + error; }
+                catch (Exception error) { diagnostic.Text += UiText.Get("Startup.ActionIncomplete") + error; }
                 finally { actions.IsEnabled = true; }
             };
             actions.Children.Add(button);
         }
-        Add("重试启动", retry, primary: true); Add("修改参数 / 离线维护", repair); Add("安装 / 修复", setup); actions.Children.Add(exit);
+        Add(UiText.Get("Startup.Retry"), retry, primary: true); Add(UiText.Get("Startup.RepairSettings"), repair); Add("安装 / 修复", setup); actions.Children.Add(exit);
     }
 }

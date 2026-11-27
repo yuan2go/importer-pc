@@ -270,4 +270,713 @@ Check the original receipt and current state before retrying. A failure does not
     <sys:String x:Key="Setup.PrepareFiles">Preparing installation files</sys:String>
     <sys:String x:Key="Setup.RecheckFiles">Rechecking installation files</sys:String>
     <sys:String x:Key="Setup.FilesReady">Installation files are ready</sys:String>
+  <sys:String x:Key="Common.LanguageWatchUnavailable" xml:space="preserve">Could not watch this user's language settings for changes.</sys:String>
+  <sys:String x:Key="Common.LanguageInvalid" xml:space="preserve">Select a supported display language.</sys:String>
+  <sys:String x:Key="Common.LayoutMinimize" xml:space="preserve">Minimize to the taskbar</sys:String>
+  <sys:String x:Key="Common.Maximize" xml:space="preserve">Maximize window</sys:String>
+  <sys:String x:Key="Common.Copy" xml:space="preserve">Copy</sys:String>
+  <sys:String x:Key="Common.Cut" xml:space="preserve">Cut</sys:String>
+  <sys:String x:Key="Common.Paste" xml:space="preserve">Paste</sys:String>
+  <sys:String x:Key="Common.SelectAll" xml:space="preserve">Select all</sys:String>
+  <sys:String x:Key="Common.Query" xml:space="preserve">Search</sys:String>
+  <sys:String x:Key="Common.CancelQuery" xml:space="preserve">Cancel search</sys:String>
+  <sys:String x:Key="Common.Previous" xml:space="preserve">Previous page</sys:String>
+  <sys:String x:Key="Common.NextPage" xml:space="preserve">Next page</sys:String>
+  <sys:String x:Key="Common.Pending" xml:space="preserve">Pending</sys:String>
+  <sys:String x:Key="Common.SetupDisplay" xml:space="preserve">Display and sounds</sys:String>
+  <sys:String x:Key="Common.CamerasLeft" xml:space="preserve">Left camera</sys:String>
+  <sys:String x:Key="Common.CamerasRight" xml:space="preserve">Right camera</sys:String>
+  <sys:String x:Key="Common.StationRcs" xml:space="preserve">Station and RCS</sys:String>
+  <sys:String x:Key="Common.Offline" xml:space="preserve">Offline</sys:String>
+  <sys:String x:Key="Common.Connect" xml:space="preserve">Connect</sys:String>
+  <sys:String x:Key="Common.DateToday" xml:space="preserve">Today</sys:String>
+  <sys:String x:Key="Common.LastDay" xml:space="preserve">Last 24 hours</sys:String>
+  <sys:String x:Key="Common.Error" xml:space="preserve">Error</sys:String>
+  <sys:String x:Key="Common.Warning" xml:space="preserve">Warning</sys:String>
+  <sys:String x:Key="Common.Info" xml:space="preserve">Info</sys:String>
+  <sys:String x:Key="Common.All" xml:space="preserve">All</sys:String>
+  <sys:String x:Key="Common.Time" xml:space="preserve">Time</sys:String>
+  <sys:String x:Key="Common.Level" xml:space="preserve">Level</sys:String>
+  <sys:String x:Key="Common.Source" xml:space="preserve">Source</sys:String>
+  <sys:String x:Key="Common.Status" xml:space="preserve">Status</sys:String>
+  <sys:String x:Key="Common.ViewDetails" xml:space="preserve">View details</sys:String>
+  <sys:String x:Key="Common.Original" xml:space="preserve">Original text</sys:String>
+  <sys:String x:Key="Work.TestEdition" xml:space="preserve">Test build</sys:String>
+  <sys:String x:Key="Work.LocalClock" xml:space="preserve">Local time</sys:String>
+  <sys:String x:Key="Work.Notice" xml:space="preserve">Local settings notifications</sys:String>
+  <sys:String x:Key="Work.ReadNotice" xml:space="preserve">Local settings read notice</sys:String>
+  <sys:String x:Key="Work.NoNotice" xml:space="preserve">No local settings notifications</sys:String>
+  <sys:String x:Key="Work.Exit" xml:space="preserve">Exit workstation</sys:String>
+  <sys:String x:Key="Work.Resume" xml:space="preserve">Resume induction</sys:String>
+  <sys:String x:Key="Work.ResumeHelp" xml:space="preserve">Check the workstation before resuming. Unconfirmed requests still need review and are not resent.</sys:String>
+  <sys:String x:Key="Work.StatusDescription" xml:space="preserve">Workstation status details</sys:String>
+  <sys:String x:Key="Work.CheckRcs" xml:space="preserve">Check RCS heartbeat</sys:String>
+  <sys:String x:Key="Work.CheckRcsHelp" xml:space="preserve">Send one RCS heartbeat. Use the chute assigned to the current parcel.</sys:String>
+  <sys:String x:Key="Work.NavWork" xml:space="preserve">Work</sys:String>
+  <sys:String x:Key="Work.NavRecords" xml:space="preserve">Records</sys:String>
+  <sys:String x:Key="Work.SettingsHelp" xml:space="preserve">View settings without pausing. Editing requires a password.</sys:String>
+  <sys:String x:Key="Work.SettingsAccessible" xml:space="preserve">Settings. Viewing does not pause work. Editing requires a password.</sys:String>
+  <sys:String x:Key="Work.CollapseMenu" xml:space="preserve">Collapse menu</sys:String>
+  <sys:String x:Key="Work.ExpandMenu" xml:space="preserve">Expand menu</sys:String>
+  <sys:String x:Key="Work.DismissNotice" xml:space="preserve">Dismiss</sys:String>
+  <sys:String x:Key="Work.LastResult" xml:space="preserve">Latest operation result. Select to copy.</sys:String>
+  <sys:String x:Key="Work.WindowTooSmall" xml:space="preserve">The work view needs at least 800 × 420. Maximize the window. Cameras and active work are unchanged.</sys:String>
+  <sys:String x:Key="Work.Lane" xml:space="preserve">Induction lane</sys:String>
+  <sys:String x:Key="Work.Enable" xml:space="preserve">Enable</sys:String>
+  <sys:String x:Key="Work.Disable" xml:space="preserve">Disable</sys:String>
+  <sys:String x:Key="Work.DisablePending" xml:space="preserve">Disabling</sys:String>
+  <sys:String x:Key="Work.EnableLane" xml:space="preserve">Enable this lane</sys:String>
+  <sys:String x:Key="Work.DisableLane" xml:space="preserve">Disable this lane</sys:String>
+  <sys:String x:Key="Work.BarcodeInput" xml:space="preserve">Current barcode. Enter to submit.</sys:String>
+  <sys:String x:Key="Work.BarcodeHelp" xml:space="preserve">Select this lane and enter the full barcode, including leading zeros. Typing replaces the displayed code. Press Enter or select Submit.</sys:String>
+  <sys:String x:Key="Work.ClearInput" xml:space="preserve">Clear input</sys:String>
+  <sys:String x:Key="Work.Image" xml:space="preserve">Image</sys:String>
+  <sys:String x:Key="Work.ViewCurrentImage" xml:space="preserve">View current parcel image</sys:String>
+  <sys:String x:Key="Work.StatusSymbol" xml:space="preserve">Lane status symbol</sys:String>
+  <sys:String x:Key="Work.LaneReason" xml:space="preserve">Lane status reason. Select to copy.</sys:String>
+  <sys:String x:Key="Work.PreviousCode" xml:space="preserve">Previous barcode, view only</sys:String>
+  <sys:String x:Key="Work.ResultNeedsReview" xml:space="preserve">Chute result needs review</sys:String>
+  <sys:String x:Key="Work.CurrentCode" xml:space="preserve">Current barcode</sys:String>
+  <sys:String x:Key="Work.CurrentCodeCopy" xml:space="preserve">Current barcode. Select to copy.</sys:String>
+  <sys:String x:Key="Work.UnknownStep1" xml:space="preserve">1. Remove the parcel and put it in the exception bin.</sys:String>
+  <sys:String x:Key="Work.UnknownStep3" xml:space="preserve">3. Ask a supervisor or technician to check. Do not load the parcel again.</sys:String>
+  <sys:String x:Key="Work.RawRcsResponse" xml:space="preserve">Original RCS response. Select to copy.</sys:String>
+  <sys:String x:Key="Work.Removed" xml:space="preserve">Parcel removed</sys:String>
+  <sys:String x:Key="Work.Wave" xml:space="preserve">Wave</sys:String>
+  <sys:String x:Key="Work.WaveAccessible" xml:space="preserve">Wave for this task</sys:String>
+  <sys:String x:Key="Work.Task" xml:space="preserve">Task ID</sys:String>
+  <sys:String x:Key="Work.TaskAccessible" xml:space="preserve">Dispatch task ID</sys:String>
+  <sys:String x:Key="Work.Sku" xml:space="preserve">Item code</sys:String>
+  <sys:String x:Key="Work.SkuAccessible" xml:space="preserve">Item code for this task</sys:String>
+  <sys:String x:Key="Work.ReturnQuantity" xml:space="preserve">Quantity</sys:String>
+  <sys:String x:Key="Work.ReturnQuantityAccessible" xml:space="preserve">Quantity returned for this task</sys:String>
+  <sys:String x:Key="Work.Submit" xml:space="preserve">Submit</sys:String>
+  <sys:String x:Key="Work.ConfirmParcel" xml:space="preserve">Confirm parcel</sys:String>
+  <sys:String x:Key="Work.ConfirmParcelHelp" xml:space="preserve">The lane state changed. Make sure this parcel belongs to the lane before submitting.</sys:String>
+  <sys:String x:Key="Work.RemoveAndConfirm" xml:space="preserve">Remove and confirm this parcel before loading the next.</sys:String>
+  <sys:String x:Key="Work.RemovalWithPending" xml:space="preserve">Confirm removal. The original request still needs review. Do not load another parcel on this lane yet.</sys:String>
+  <sys:String x:Key="Work.CameraState" xml:space="preserve">Camera connection status</sys:String>
+  <sys:String x:Key="Work.ExitPrompt" xml:space="preserve">Exit the workstation?</sys:String>
+  <sys:String x:Key="Work.CancelExit" xml:space="preserve">Cancel exit</sys:String>
+  <sys:String x:Key="Work.ExitScope" xml:space="preserve">This stops induction and closes the related windows.</sys:String>
+  <sys:String x:Key="Work.ExitVisible" xml:space="preserve">Visible tasks: {0}</sys:String>
+  <sys:String x:Key="Work.ExitUnknown" xml:space="preserve">Unconfirmed stages: {0}</sys:String>
+  <sys:String x:Key="Work.ExitSnapshot" xml:space="preserve">Status read: {0}</sys:String>
+  <sys:String x:Key="Work.ExitPending" xml:space="preserve">Pending settings: {0}</sys:String>
+  <sys:String x:Key="Work.ExitRequests" xml:space="preserve">Sent requests and unconfirmed results are kept. Continue checking the original records.</sys:String>
+  <sys:String x:Key="Work.ExitWithDrafts" xml:space="preserve">Unsaved settings are handled window by window. If stopping fails, this window stays open.</sys:String>
+  <sys:String x:Key="Work.EmergencyNotice" xml:space="preserve">Software pause is not an emergency stop. Use the physical emergency stop button when necessary.</sys:String>
+  <sys:String x:Key="Work.ContinueExit" xml:space="preserve">Continue exit</sys:String>
+  <sys:String x:Key="Settings.StationTitle" xml:space="preserve">Workstation settings</sys:String>
+  <sys:String x:Key="Settings.UnlockEdit" xml:space="preserve">Verify password to edit</sys:String>
+  <sys:String x:Key="Settings.ReadOnly" xml:space="preserve">Read only</sys:String>
+  <sys:String x:Key="Settings.VersionStatus" xml:space="preserve">Configuration revision and status</sys:String>
+  <sys:String x:Key="Settings.ReturnWork" xml:space="preserve">Back to work</sys:String>
+  <sys:String x:Key="Settings.HideHelp" xml:space="preserve">Hide settings. The draft and current editing access are kept.</sys:String>
+  <sys:String x:Key="Settings.CloseHelp" xml:space="preserve">Close this window and end editing access.</sys:String>
+  <sys:String x:Key="History.Selected" xml:space="preserve">Selected</sys:String>
+  <sys:String x:Key="History.Title" xml:space="preserve">Work records</sys:String>
+  <sys:String x:Key="History.Clear" xml:space="preserve">Clear filters</sys:String>
+  <sys:String x:Key="History.FirstPage" xml:space="preserve">First page</sys:String>
+  <sys:String x:Key="History.More" xml:space="preserve">Load more</sys:String>
+  <sys:String x:Key="History.Export" xml:space="preserve">Export table</sys:String>
+  <sys:String x:Key="History.ExportHelp" xml:space="preserve">Run a search before exporting the results.</sys:String>
+  <sys:String x:Key="History.CancelExport" xml:space="preserve">Cancel export</sys:String>
+  <sys:String x:Key="History.Filters" xml:space="preserve">Filters · Barcode, lane, status and time</sys:String>
+  <sys:String x:Key="History.Barcode" xml:space="preserve">Full barcode</sys:String>
+  <sys:String x:Key="History.BarcodeAccessible" xml:space="preserve">Full historical barcode</sys:String>
+  <sys:String x:Key="History.BarcodeHelp" xml:space="preserve">Enter the full barcode with leading zeros.</sys:String>
+  <sys:String x:Key="History.LaneAccessible" xml:space="preserve">Historical lane</sys:String>
+  <sys:String x:Key="History.LaneHelp" xml:space="preserve">Filter by lane. For a disabled lane, enter its ID under More filters.</sys:String>
+  <sys:String x:Key="History.BusinessState" xml:space="preserve">Work status</sys:String>
+  <sys:String x:Key="History.StateAccessible" xml:space="preserve">Historical work status</sys:String>
+  <sys:String x:Key="History.TimeRange" xml:space="preserve">Time range</sys:String>
+  <sys:String x:Key="History.LastWeek" xml:space="preserve">Last 7 days</sys:String>
+  <sys:String x:Key="History.AnyTime" xml:space="preserve">Any time</sys:String>
+  <sys:String x:Key="History.Start" xml:space="preserve">Start time</sys:String>
+  <sys:String x:Key="History.StartAccessible" xml:space="preserve">Start time with time zone</sys:String>
+  <sys:String x:Key="History.End" xml:space="preserve">End time</sys:String>
+  <sys:String x:Key="History.EndAccessible" xml:space="preserve">End time with time zone</sys:String>
+  <sys:String x:Key="History.RangeHelp" xml:space="preserve">Uses local time. The start is included and the end excluded. Leave either field blank for no limit.</sys:String>
+  <sys:String x:Key="History.MoreFilters" xml:space="preserve">More filters and search details</sys:String>
+  <sys:String x:Key="History.Request" xml:space="preserve">Request ID</sys:String>
+  <sys:String x:Key="History.OriginalRequest" xml:space="preserve">Original request ID</sys:String>
+  <sys:String x:Key="History.ExactLane" xml:space="preserve">Historical lane ID</sys:String>
+  <sys:String x:Key="History.ExactLaneAccessible" xml:space="preserve">Exact historical lane ID</sys:String>
+  <sys:String x:Key="History.ScannedAt" xml:space="preserve">Scan time</sys:String>
+  <sys:String x:Key="History.Chute" xml:space="preserve">Chute</sys:String>
+  <sys:String x:Key="History.BarcodeImage" xml:space="preserve">Barcode / image</sys:String>
+  <sys:String x:Key="History.OpenPicture" xml:space="preserve">View this task's parcel image</sys:String>
+  <sys:String x:Key="History.OpenRecordPicture" xml:space="preserve">View parcel image for this record</sys:String>
+  <sys:String x:Key="History.InputSource" xml:space="preserve">Input source</sys:String>
+  <sys:String x:Key="History.OpenTask" xml:space="preserve">View task details for this record</sys:String>
+  <sys:String x:Key="History.ViewTask" xml:space="preserve">View task details</sys:String>
+  <sys:String x:Key="History.TaskLog" xml:space="preserve">View task log</sys:String>
+  <sys:String x:Key="History.QuerySelected" xml:space="preserve">Check the selected task result</sys:String>
+  <sys:String x:Key="History.ContinueSelected" xml:space="preserve">Continue the selected task</sys:String>
+  <sys:String x:Key="History.CopyData" xml:space="preserve">Copy full record</sys:String>
+  <sys:String x:Key="History.TaskDetails" xml:space="preserve">Task details</sys:String>
+  <sys:String x:Key="History.OpenParcelImage" xml:space="preserve">View this parcel image</sys:String>
+  <sys:String x:Key="History.ViewPicture" xml:space="preserve">View image</sys:String>
+  <sys:String x:Key="History.Inspection" xml:space="preserve">Parcel inspection notes</sys:String>
+  <sys:String x:Key="History.Safety" xml:space="preserve">Does not replace site safety approval.</sys:String>
+  <sys:String x:Key="History.Technical" xml:space="preserve">Technical details for maintenance</sys:String>
+  <sys:String x:Key="Ops.Title" xml:space="preserve">Induction Operations</sys:String>
+  <sys:String x:Key="Ops.Vehicle" xml:space="preserve">Vehicle status</sys:String>
+  <sys:String x:Key="Ops.Round" xml:space="preserve">Current round</sys:String>
+  <sys:String x:Key="Ops.Task" xml:space="preserve">Current task</sys:String>
+  <sys:String x:Key="Ops.Manual" xml:space="preserve">Manual input</sys:String>
+  <sys:String x:Key="Ops.SupplyNotice" xml:space="preserve">Induction guidance</sys:String>
+  <sys:String x:Key="Ops.SupplyNoticeCopy" xml:space="preserve">Lane guidance. Select to copy.</sys:String>
+  <sys:String x:Key="Ops.VerifyStation" xml:space="preserve">Station pending verification</sys:String>
+  <sys:String x:Key="Ops.CheckConnection" xml:space="preserve">Checking connection</sys:String>
+  <sys:String x:Key="Ops.Environment" xml:space="preserve">Environment</sys:String>
+  <sys:String x:Key="Ops.EnvironmentAccessible" xml:space="preserve">Version, full source and local paths</sys:String>
+  <sys:String x:Key="Ops.ReadOnlySafety" xml:space="preserve">Viewing leaves induction running · Software pause is not an emergency stop</sys:String>
+  <sys:String x:Key="Ops.Overview" xml:space="preserve">Overview</sys:String>
+  <sys:String x:Key="Ops.WorkstationStatus" xml:space="preserve">Workstation status</sys:String>
+  <sys:String x:Key="Ops.VisibleTasks" xml:space="preserve">Visible tasks</sys:String>
+  <sys:String x:Key="Ops.Custody" xml:space="preserve">Review / Retained</sys:String>
+  <sys:String x:Key="Ops.PendingSettings" xml:space="preserve">Pending settings</sys:String>
+  <sys:String x:Key="Ops.DevicesStorage" xml:space="preserve">Devices and storage</sys:String>
+  <sys:String x:Key="Ops.Technical" xml:space="preserve">Technical notes</sys:String>
+  <sys:String x:Key="Ops.LogCenter" xml:space="preserve">Logs</sys:String>
+  <sys:String x:Key="Ops.LogSource" xml:space="preserve">Log source</sys:String>
+  <sys:String x:Key="Ops.OfflineLog" xml:space="preserve">Offline runtime logs · Read only</sys:String>
+  <sys:String x:Key="Ops.OfflineLogHelp" xml:space="preserve">Reads only the runtime log stored on disk.</sys:String>
+  <sys:String x:Key="Ops.CompleteLog" xml:space="preserve">Full online logs · Authorized access</sys:String>
+  <sys:String x:Key="Ops.CompleteLogHelp" xml:space="preserve">Use the authorized workstation connection to query complete logs.</sys:String>
+  <sys:String x:Key="Ops.LogArea" xml:space="preserve">Log scope</sys:String>
+  <sys:String x:Key="Ops.TimeAccessible" xml:space="preserve">Log time range</sys:String>
+  <sys:String x:Key="Ops.LastHour" xml:space="preserve">Last hour</sys:String>
+  <sys:String x:Key="Ops.LevelAccessible" xml:space="preserve">Log level</sys:String>
+  <sys:String x:Key="Ops.Keyword" xml:space="preserve">Keyword</sys:String>
+  <sys:String x:Key="Ops.KeywordAccessible" xml:space="preserve">Log keyword</sys:String>
+  <sys:String x:Key="Ops.KeyEvents" xml:space="preserve">Key events</sys:String>
+  <sys:String x:Key="Ops.PickScope" xml:space="preserve">Select a log scope before searching.</sys:String>
+  <sys:String x:Key="Ops.QueryLog" xml:space="preserve">Search logs</sys:String>
+  <sys:String x:Key="Ops.TimeLocal" xml:space="preserve">Local time</sys:String>
+  <sys:String x:Key="Ops.Event" xml:space="preserve">Event</sys:String>
+  <sys:String x:Key="Ops.RawLog" xml:space="preserve">Original text of selected log entry</sys:String>
+  <sys:String x:Key="Ops.CopyLog" xml:space="preserve">Copy selected text</sys:String>
+  <sys:String x:Key="Ops.LogScopeHelp" xml:space="preserve">Log scope and technical notes</sys:String>
+  <sys:String x:Key="Ops.OfflineBoundary" xml:space="preserve">Offline search reads runtime logs only.</sys:String>
+  <sys:String x:Key="Ops.Debug" xml:space="preserve">Diagnostics</sys:String>
+  <sys:String x:Key="Ops.Parameters" xml:space="preserve">Technical settings</sys:String>
+  <sys:String x:Key="Ops.Maintenance" xml:space="preserve">Maintenance</sys:String>
+  <sys:String x:Key="Debug.Scan" xml:space="preserve">Scan diagnostics</sys:String>
+  <sys:String x:Key="Debug.TriggerScan" xml:space="preserve">Start scan</sys:String>
+  <sys:String x:Key="Debug.StopScan" xml:space="preserve">Stop scan</sys:String>
+  <sys:String x:Key="Debug.NotStarted" xml:space="preserve">Scan has not started.</sys:String>
+  <sys:String x:Key="Debug.WaitScan" xml:space="preserve">Waiting for a scan</sys:String>
+  <sys:String x:Key="Debug.Preview" xml:space="preserve">Camera preview and captured frame</sys:String>
+  <sys:String x:Key="Debug.Live" xml:space="preserve">Live image</sys:String>
+  <sys:String x:Key="Debug.MonoFrame" xml:space="preserve">Current Mono8 frame</sys:String>
+  <sys:String x:Key="Debug.FrameAccessible" xml:space="preserve">Scan image. Green rectangles show barcode positions.</sys:String>
+  <sys:String x:Key="Debug.WaitImage" xml:space="preserve">Waiting for the scan image</sys:String>
+  <sys:String x:Key="Debug.Fit" xml:space="preserve">Fit to window</sys:String>
+  <sys:String x:Key="Debug.ZoomIn" xml:space="preserve">Zoom in</sys:String>
+  <sys:String x:Key="Debug.ZoomOut" xml:space="preserve">Zoom out</sys:String>
+  <sys:String x:Key="Debug.Overlay" xml:space="preserve">Barcode outlines</sys:String>
+  <sys:String x:Key="Debug.Capture" xml:space="preserve">Current scan image</sys:String>
+  <sys:String x:Key="Debug.Calibration" xml:space="preserve">Empty tray calibration</sys:String>
+  <sys:String x:Key="Debug.ConfirmTray" xml:space="preserve">Confirm empty tray and calibrate</sys:String>
+  <sys:String x:Key="Debug.FullBarcode" xml:space="preserve">Full barcode, selectable for copying</sys:String>
+  <sys:String x:Key="Debug.SampleScan" xml:space="preserve">Continuous test scan</sys:String>
+  <sys:String x:Key="Debug.RcsTest" xml:space="preserve">RCS request test</sys:String>
+  <sys:String x:Key="Debug.Prepare" xml:space="preserve">Prepare request</sys:String>
+  <sys:String x:Key="Debug.Send" xml:space="preserve">Send request</sys:String>
+  <sys:String x:Key="Debug.SendHelp" xml:space="preserve">Sending claims the current arrival of the selected vehicle. Check the request before sending.</sys:String>
+  <sys:String x:Key="Debug.RequestBarcode" xml:space="preserve">Request barcode</sys:String>
+  <sys:String x:Key="Debug.InputHelp" xml:space="preserve">Scan or type the barcode.</sys:String>
+  <sys:String x:Key="Debug.RequestPayload" xml:space="preserve">Request message</sys:String>
+  <sys:String x:Key="Debug.CurrentPayload" xml:space="preserve">Current request message</sys:String>
+  <sys:String x:Key="Debug.RcsReply" xml:space="preserve">RCS response</sys:String>
+  <sys:String x:Key="Debug.CopyRaw" xml:space="preserve">Copy original text</sys:String>
+  <sys:String x:Key="Debug.NotSent" xml:space="preserve">No request sent.</sys:String>
+  <sys:String x:Key="Debug.RawResponse" xml:space="preserve">Current response body</sys:String>
+  <sys:String x:Key="Debug.Records" xml:space="preserve">Diagnostic records</sys:String>
+  <sys:String x:Key="Work.WaitingConfiguration" xml:space="preserve">Waiting for workstation setup</sys:String>
+  <sys:String x:Key="Work.RcsOnlineDetail" xml:space="preserve">RCS service: Online</sys:String>
+  <sys:String x:Key="Work.RcsOfflineDetail" xml:space="preserve">RCS service: Offline</sys:String>
+  <sys:String x:Key="Work.RcsSimulationDetail" xml:space="preserve">RCS service: Simulation</sys:String>
+  <sys:String x:Key="Work.RcsNotConfiguredDetail" xml:space="preserve">RCS service: Not configured</sys:String>
+  <sys:String x:Key="Work.RcsConfirmDetail" xml:space="preserve">RCS service: Checking connection</sys:String>
+  <sys:String x:Key="Work.RcsUnknownDetail" xml:space="preserve">RCS service: Unknown status</sys:String>
+  <sys:String x:Key="Work.RcsOnline" xml:space="preserve">RCS: Online</sys:String>
+  <sys:String x:Key="Work.RcsOffline" xml:space="preserve">RCS: Offline</sys:String>
+  <sys:String x:Key="Work.RcsSimulated" xml:space="preserve">RCS: Simulation</sys:String>
+  <sys:String x:Key="Work.RcsNotConfigured" xml:space="preserve">RCS: Not set</sys:String>
+  <sys:String x:Key="Work.RcsPending" xml:space="preserve">RCS: Pending</sys:String>
+  <sys:String x:Key="Work.RcsChecking" xml:space="preserve">RCS: Checking</sys:String>
+  <sys:String x:Key="Work.RcsReplyReceived" xml:space="preserve">RCS heartbeat received.</sys:String>
+  <sys:String x:Key="Work.RcsReplyMissing" xml:space="preserve">No valid RCS heartbeat response. Check the connection and retry.</sys:String>
+  <sys:String x:Key="Work.RcsMissingCameraCode" xml:space="preserve">No camera code is available for the heartbeat. Check camera codes in RCS settings.</sys:String>
+  <sys:String x:Key="Work.RcsCheckWaiting" xml:space="preserve">Checking the RCS heartbeat. Please wait.</sys:String>
+  <sys:String x:Key="Work.RcsCheckUnavailable" xml:space="preserve">RCS heartbeat check is unavailable. Try again later.</sys:String>
+  <sys:String x:Key="Work.RcsCheckIncomplete" xml:space="preserve">RCS heartbeat check did not complete. Try again later.</sys:String>
+  <sys:String x:Key="Work.Simulation" xml:space="preserve">Simulation</sys:String>
+  <sys:String x:Key="Work.Production" xml:space="preserve">Production</sys:String>
+  <sys:String x:Key="Work.ModeUnknown" xml:space="preserve">Mode unconfirmed</sys:String>
+  <sys:String x:Key="Work.SafetySuffix" xml:space="preserve"> · Software pause is not an emergency stop</sys:String>
+  <sys:String x:Key="Work.NotInstalledPage" xml:space="preserve">Page not installed</sys:String>
+  <sys:String x:Key="Work.Stats" xml:space="preserve">Statistics and shifts</sys:String>
+  <sys:String x:Key="Work.Exceptions" xml:space="preserve">Exception handling</sys:String>
+  <sys:String x:Key="Work.DeviceDiagnostics" xml:space="preserve">Devices and diagnostics</sys:String>
+  <sys:String x:Key="Work.Debug" xml:space="preserve">Diagnostics</sys:String>
+  <sys:String x:Key="Work.Log" xml:space="preserve">Logs</sys:String>
+  <sys:String x:Key="Work.Station" xml:space="preserve">Induction workstation</sys:String>
+  <sys:String x:Key="Work.Flow" xml:space="preserve">Scan → assigned chute</sys:String>
+  <sys:String x:Key="Work.LaneNotReady" xml:space="preserve">This lane is not ready.</sys:String>
+  <sys:String x:Key="Work.QueryLane" xml:space="preserve">Check this lane's result</sys:String>
+  <sys:String x:Key="Work.CannotContinue" xml:space="preserve">This task cannot continue.</sys:String>
+  <sys:String x:Key="Work.ContinueLane" xml:space="preserve">Continue this lane's unattempted stage</sys:String>
+  <sys:String x:Key="Debug.CalibrationRejected" xml:space="preserve">Calibration did not start. Check the lane and camera connection and retry.</sys:String>
+  <sys:String x:Key="Work.ReadDetailFailed" xml:space="preserve">Could not read task details: </sys:String>
+  <sys:String x:Key="Work.ReferenceRejected" xml:space="preserve">This lane cannot accept simulated input.</sys:String>
+  <sys:String x:Key="Work.ReferenceAccepted" xml:space="preserve">Simulated barcode submitted. Waiting for the result.</sys:String>
+  <sys:String x:Key="Work.ReferenceNotAccepted" xml:space="preserve">Simulated scan was not accepted. Check the lane notice.</sys:String>
+  <sys:String x:Key="Work.SimulateRead" xml:space="preserve">Simulate lane scan</sys:String>
+  <sys:String x:Key="Work.LeftLane" xml:space="preserve">Left lane</sys:String>
+  <sys:String x:Key="Work.RightLane" xml:space="preserve">Right lane</sys:String>
+  <sys:String x:Key="Work.Vehicle" xml:space="preserve">Vehicle</sys:String>
+  <sys:String x:Key="Work.VehiclePending" xml:space="preserve">Vehicle: Pending</sys:String>
+  <sys:String x:Key="Work.CanLoad" xml:space="preserve">Ready to load</sys:String>
+  <sys:String x:Key="Work.VehicleNotReady" xml:space="preserve">Not ready</sys:String>
+  <sys:String x:Key="Work.VehicleBusy" xml:space="preserve">Busy</sys:String>
+  <sys:String x:Key="Common.NotConfigured" xml:space="preserve">Not configured</sys:String>
+  <sys:String x:Key="Common.ConfigurePending" xml:space="preserve">Not set</sys:String>
+  <sys:String x:Key="Work.AddressMissing" xml:space="preserve">Address not configured</sys:String>
+  <sys:String x:Key="Work.CameraNeedsTray" xml:space="preserve">Camera: Online · Tray needs calibration</sys:String>
+  <sys:String x:Key="Work.CalibrationAfterReconnect" xml:space="preserve">Maintenance must calibrate the empty tray after a restart or reconnect. Until then, select Parcel removed after removing a problem parcel.</sys:String>
+  <sys:String x:Key="Work.OldChuteInvalid" xml:space="preserve">Previous chute has expired</sys:String>
+  <sys:String x:Key="Work.NotReceived" xml:space="preserve">Not received</sys:String>
+  <sys:String x:Key="Work.StaleChute" xml:space="preserve">Status updates stopped. The previous chute is no longer valid.</sys:String>
+  <sys:String x:Key="Work.WaitSnapshot" xml:space="preserve">Waiting for workstation status.</sys:String>
+  <sys:String x:Key="Work.CameraDisabledManual" xml:space="preserve">Camera disabled. You can enter a barcode manually.</sys:String>
+  <sys:String x:Key="Work.RcsContact" xml:space="preserve">RCS is not configured. Contact maintenance.</sys:String>
+  <sys:String x:Key="Work.UnavailableContact" xml:space="preserve">Induction is unavailable on this lane. Contact maintenance.</sys:String>
+  <sys:String x:Key="Common.Expired" xml:space="preserve">Expired</sys:String>
+  <sys:String x:Key="Work.NoObservation" xml:space="preserve">No camera observation yet</sys:String>
+  <sys:String x:Key="Work.NoBarcodeDetected" xml:space="preserve">No barcode detected</sys:String>
+  <sys:String x:Key="Work.ValidBarcodeSuffix" xml:space="preserve"> · Valid barcodes: </sys:String>
+  <sys:String x:Key="Work.WaitCameraInput" xml:space="preserve">Waiting for camera input</sys:String>
+  <sys:String x:Key="Work.OldBarcodePolicy" xml:space="preserve">Previous single-code rule · </sys:String>
+  <sys:String x:Key="Work.NotSelected" xml:space="preserve">Not selected</sys:String>
+  <sys:String x:Key="Work.ScanOrType" xml:space="preserve">Waiting for a scan or barcode entry</sys:String>
+  <sys:String x:Key="Work.PdaInput" xml:space="preserve">PDA input </sys:String>
+  <sys:String x:Key="Work.KeyboardInput" xml:space="preserve">Keyboard input </sys:String>
+  <sys:String x:Key="Work.CameraReadPrefix" xml:space="preserve">Camera scan </sys:String>
+  <sys:String x:Key="Work.BarcodeCount" xml:space="preserve"> · Barcodes: </sys:String>
+  <sys:String x:Key="Work.CountItems" xml:space="preserve"> items</sys:String>
+  <sys:String x:Key="Work.CameraSession" xml:space="preserve">Connection session </sys:String>
+  <sys:String x:Key="Work.Sequence" xml:space="preserve"> · Sequence in this session: </sys:String>
+  <sys:String x:Key="Work.RcsNotDelivered" xml:space="preserve">RCS was unavailable and the request was not delivered. After reconnecting, remove the parcel and then load it again.</sys:String>
+  <sys:String x:Key="Work.ManualDecision" xml:space="preserve">Remove the parcel for manual handling. Disable the lane, wait for RCS to confirm vehicle removal, then enable it and wait for a new vehicle.</sys:String>
+  <sys:String x:Key="Work.UnpackNoReload" xml:space="preserve">Do not reload this parcel. Check it using the unpacking details before continuing.</sys:String>
+  <sys:String x:Key="Work.UnpackReview" xml:space="preserve">Inspect the parcel, enter your notes and then select Continue.</sys:String>
+  <sys:String x:Key="Common.Initializing" xml:space="preserve">Initializing</sys:String>
+  <sys:String x:Key="Work.StatusInterrupted" xml:space="preserve">Status interrupted</sys:String>
+  <sys:String x:Key="Work.DuplicateScan" xml:space="preserve">Duplicate scan</sys:String>
+  <sys:String x:Key="Work.ChuteConflict" xml:space="preserve">Conflicting chute result</sys:String>
+  <sys:String x:Key="Work.Destination" xml:space="preserve">Destination chute</sys:String>
+  <sys:String x:Key="Work.GettingChute" xml:space="preserve">Getting a chute</sys:String>
+  <sys:String x:Key="Work.NotDelivered" xml:space="preserve">RCS offline · Request not delivered</sys:String>
+  <sys:String x:Key="Work.ChuteTimeout" xml:space="preserve">Chute request timed out</sys:String>
+  <sys:String x:Key="Work.ChutePending" xml:space="preserve">Chute unconfirmed</sys:String>
+  <sys:String x:Key="Work.ChuteNotAssigned" xml:space="preserve">No chute assigned</sys:String>
+  <sys:String x:Key="Work.SupplyUnavailable" xml:space="preserve">Induction unavailable</sys:String>
+  <sys:String x:Key="Work.WaitScanOrType" xml:space="preserve">Waiting for scan or entry</sys:String>
+  <sys:String x:Key="Work.RelatedTask" xml:space="preserve">Related original task </sys:String>
+  <sys:String x:Key="Work.NoDeviceStatus" xml:space="preserve">Device status unavailable</sys:String>
+  <sys:String x:Key="Work.CameraPendingStatus" xml:space="preserve">Camera: Status unconfirmed</sys:String>
+  <sys:String x:Key="Work.UseReturnedChute" xml:space="preserve">Use the assigned chute. The next scan updates the display.</sys:String>
+  <sys:String x:Key="Work.RcsNoChuteSetAside" xml:space="preserve">RCS returned no chute. Set the parcel aside and contact maintenance.</sys:String>
+  <sys:String x:Key="Work.DoNotRescan" xml:space="preserve">Wait for the chute. Do not scan again.</sys:String>
+  <sys:String x:Key="Work.NotifyMaintenance" xml:space="preserve">Induction is unavailable. Contact maintenance.</sys:String>
+  <sys:String x:Key="Work.LoadOrEnter" xml:space="preserve">Load the parcel to scan it, or enter its full barcode and press Enter.</sys:String>
+  <sys:String x:Key="Work.WaitStatus" xml:space="preserve">Waiting for an update</sys:String>
+  <sys:String x:Key="Work.NotCreated" xml:space="preserve">Not created</sys:String>
+  <sys:String x:Key="Work.TaskScanPrefix" xml:space="preserve">Scan: </sys:String>
+  <sys:String x:Key="Work.NoTask" xml:space="preserve">No task yet</sys:String>
+  <sys:String x:Key="Work.OriginalTime" xml:space="preserve">
+Original result time: </sys:String>
+  <sys:String x:Key="Work.NoResponse" xml:space="preserve">No response yet</sys:String>
+  <sys:String x:Key="Work.AcquisitionPrefix" xml:space="preserve">Capture </sys:String>
+  <sys:String x:Key="Work.UploadSuffix" xml:space="preserve"> · Upload </sys:String>
+  <sys:String x:Key="Work.NoCapture" xml:space="preserve">Capture not used</sys:String>
+  <sys:String x:Key="Work.CameraAddress" xml:space="preserve">Camera address: </sys:String>
+  <sys:String x:Key="Work.CameraInterrupted" xml:space="preserve">Camera: Status interrupted</sys:String>
+  <sys:String x:Key="Work.CameraNotConfigured" xml:space="preserve">Camera: Not set</sys:String>
+  <sys:String x:Key="Work.CameraDisconnectLane" xml:space="preserve">Camera: Disconnected (lane disabled)</sys:String>
+  <sys:String x:Key="Work.CameraConnecting" xml:space="preserve">Camera: Connecting</sys:String>
+  <sys:String x:Key="Work.CameraRestoring" xml:space="preserve">Camera: Offline or reconnecting</sys:String>
+  <sys:String x:Key="Work.CameraChecking" xml:space="preserve">Camera: Pending</sys:String>
+  <sys:String x:Key="Work.CameraSimulation" xml:space="preserve">Camera: Simulation</sys:String>
+  <sys:String x:Key="Work.CameraOnline" xml:space="preserve">Camera: Online</sys:String>
+  <sys:String x:Key="Work.CameraOffline" xml:space="preserve">Camera: Offline</sys:String>
+  <sys:String x:Key="Work.CameraLastConfirmed" xml:space="preserve"> · Last confirmed: </sys:String>
+  <sys:String x:Key="Work.StatusWaitingRecovery" xml:space="preserve">Status unavailable. Waiting for recovery.</sys:String>
+  <sys:String x:Key="Work.ViewportTooSmall" xml:space="preserve">Maximize the window.</sys:String>
+  <sys:String x:Key="Work.LaneDisabled" xml:space="preserve">This lane is disabled.</sys:String>
+  <sys:String x:Key="Work.LaneStatusReading" xml:space="preserve">Reading lane status</sys:String>
+  <sys:String x:Key="Work.TaskConflictPrefix" xml:space="preserve">Conflicting task information. New work paused while checking task </sys:String>
+  <sys:String x:Key="Work.NotEnabled" xml:space="preserve">Not enabled</sys:String>
+  <sys:String x:Key="Work.TaskConflictRereading" xml:space="preserve">Conflicting task information · Rechecking</sys:String>
+  <sys:String x:Key="Work.ChuteReceived" xml:space="preserve">Chute assigned</sys:String>
+  <sys:String x:Key="Work.ChuteNoReload" xml:space="preserve">Chute unconfirmed · Do not reload</sys:String>
+  <sys:String x:Key="Work.UnpackRequired" xml:space="preserve">Unpack for inspection</sys:String>
+  <sys:String x:Key="Work.Pending" xml:space="preserve">Waiting</sys:String>
+  <sys:String x:Key="Work.Blocked" xml:space="preserve">Blocked</sys:String>
+  <sys:String x:Key="Work.WaitWeight" xml:space="preserve">Waiting for a valid weight</sys:String>
+  <sys:String x:Key="Work.WeightTimeout" xml:space="preserve">Weighing timed out</sys:String>
+  <sys:String x:Key="Work.UploadUnconfirmed" xml:space="preserve">Image upload unconfirmed</sys:String>
+  <sys:String x:Key="Work.ImageRejected" xml:space="preserve">Image stage rejected</sys:String>
+  <sys:String x:Key="Work.ImageInProgress" xml:space="preserve">Capturing parcel image</sys:String>
+  <sys:String x:Key="Work.UploadingOriginal" xml:space="preserve">Uploading the original image</sys:String>
+  <sys:String x:Key="Work.CancelledUnsent" xml:space="preserve">Not sent · Cancelled</sys:String>
+  <sys:String x:Key="Work.StagePrefix" xml:space="preserve">Stage: </sys:String>
+  <sys:String x:Key="Work.UnknownLocked" xml:space="preserve">Result unconfirmed · Lane locked</sys:String>
+  <sys:String x:Key="Work.ConflictLocked" xml:space="preserve">Conflicting chute result · Lane locked</sys:String>
+  <sys:String x:Key="Work.ConflictDoNotUse" xml:space="preserve">The result conflicts with the original request. Do not use the chute.</sys:String>
+  <sys:String x:Key="Work.TimeoutNoResend" xml:space="preserve">The chute response timed out. The request will not be resent. Do not scan again.</sys:String>
+  <sys:String x:Key="Work.UnknownNoResend" xml:space="preserve">The chute result is unconfirmed. The request will not be resent. Do not scan again.</sys:String>
+  <sys:String x:Key="Work.FullBarcodePrefix" xml:space="preserve">Full barcode: </sys:String>
+  <sys:String x:Key="Work.LastFourPrefix" xml:space="preserve">Last 4 digits: </sys:String>
+  <sys:String x:Key="Work.UnknownStepKeep" xml:space="preserve">2. Keep the parcel and its paperwork.</sys:String>
+  <sys:String x:Key="Work.UnknownStepFull" xml:space="preserve">2. Note the full barcode.</sys:String>
+  <sys:String x:Key="Work.UnknownStepFour" xml:space="preserve">2. Note the last 4 digits of the barcode.</sys:String>
+  <sys:String x:Key="Work.ChuteRequestNotDelivered" xml:space="preserve">Chute request not delivered</sys:String>
+  <sys:String x:Key="Work.ChuteResultConflict" xml:space="preserve">Conflicting chute result</sys:String>
+  <sys:String x:Key="Work.ChuteResultUnconfirmed" xml:space="preserve">Chute result unconfirmed</sys:String>
+  <sys:String x:Key="Work.TaskResultUnconfirmed" xml:space="preserve">Task result unconfirmed</sys:String>
+  <sys:String x:Key="Work.CheckingTray" xml:space="preserve">Checking that the tray is empty</sys:String>
+  <sys:String x:Key="Work.ScanUnsent" xml:space="preserve">This scan did not send a request</sys:String>
+  <sys:String x:Key="Work.ChuteResponseTimeout" xml:space="preserve">Timed out waiting for a chute</sys:String>
+  <sys:String x:Key="Work.NoChuteAvailable" xml:space="preserve">No chute available for this parcel</sys:String>
+  <sys:String x:Key="Work.TakeOffThenConfirm" xml:space="preserve">Remove the parcel, then confirm.</sys:String>
+  <sys:String x:Key="Work.RemoveUntilResume" xml:space="preserve">Remove the parcel. Load it again once induction resumes.</sys:String>
+  <sys:String x:Key="Work.RemoveUntilRcs" xml:space="preserve">Remove the parcel. Load it again after RCS reconnects.</sys:String>
+  <sys:String x:Key="Work.RemoveUntilLane" xml:space="preserve">
+Contact maintenance if this recurs.</sys:String>
+  <sys:String x:Key="Work.StaleRead" xml:space="preserve">This scan has expired</sys:String>
+  <sys:String x:Key="Work.RemoveTrayPaused" xml:space="preserve">Induction paused. Remove the parcel from the tray.</sys:String>
+  <sys:String x:Key="Work.DisablingNoInput" xml:space="preserve">Lane disabling. No new barcodes accepted.</sys:String>
+  <sys:String x:Key="Work.RemoveUntilRcsShort" xml:space="preserve">Remove the parcel until RCS recovers.</sys:String>
+  <sys:String x:Key="Work.RescanWithoutDelivery" xml:space="preserve">Do not induct this parcel yet. Scan it again.</sys:String>
+  <sys:String x:Key="Work.RemoveReload" xml:space="preserve">Remove the parcel and load it again.</sys:String>
+  <sys:String x:Key="Work.ReviewImageReload" xml:space="preserve">Check the barcode in the image. Remove and reload the parcel.</sys:String>
+  <sys:String x:Key="Work.ReviewBarcodeReload" xml:space="preserve">Check the barcode. Remove and reload the parcel.</sys:String>
+  <sys:String x:Key="Work.RemoveAndClick" xml:space="preserve">Remove the parcel and select Parcel removed below.</sys:String>
+  <sys:String x:Key="Work.Remove" xml:space="preserve">Remove the parcel.</sys:String>
+  <sys:String x:Key="Work.ManualDestination" xml:space="preserve">
+Decide where to route the parcel manually.</sys:String>
+  <sys:String x:Key="Work.DisableNoInputSuffix" xml:space="preserve">
+Lane disabling. No new barcodes accepted.</sys:String>
+  <sys:String x:Key="Work.StillPaused" xml:space="preserve">Induction is still paused</sys:String>
+  <sys:String x:Key="Work.RcsNotRecovered" xml:space="preserve">RCS has not reconnected</sys:String>
+  <sys:String x:Key="Work.MemberReview" xml:space="preserve">Lane heartbeat membership still needs review</sys:String>
+  <sys:String x:Key="Work.ProcessThenLoad" xml:space="preserve">. Finish handling this parcel before loading another.</sys:String>
+  <sys:String x:Key="Work.ConfirmThenNext" xml:space="preserve">
+After confirming, you can handle the next parcel.</sys:String>
+  <sys:String x:Key="Work.RecoveryUnavailable" xml:space="preserve">Previous runtime data cannot be restored automatically</sys:String>
+  <sys:String x:Key="Work.RcsStillUnavailable" xml:space="preserve">RCS connection not restored</sys:String>
+  <sys:String x:Key="Work.ScannedNotRequested" xml:space="preserve">Barcode read. No chute requested yet.</sys:String>
+  <sys:String x:Key="Work.NewParcelHeld" xml:space="preserve">New parcels cannot be accepted yet</sys:String>
+  <sys:String x:Key="Work.MaintenanceDataInstruction" xml:space="preserve">Contact maintenance to check the runtime data. Operators do not need to open the maintenance tool.</sys:String>
+  <sys:String x:Key="Work.ResumeInstruction" xml:space="preserve">Check the station, then select Resume induction above.</sys:String>
+  <sys:String x:Key="Work.CheckEquipmentBeforeReload" xml:space="preserve">Ask maintenance to check the equipment. Resume loading after recovery.</sys:String>
+  <sys:String x:Key="Work.InFlightFull" xml:space="preserve">This lane has reached its in-flight limit</sys:String>
+  <sys:String x:Key="Work.ContinueReading" xml:space="preserve">Reading continues</sys:String>
+  <sys:String x:Key="Work.ReadIssueManual" xml:space="preserve">Scan issue. Manual entry available.</sys:String>
+  <sys:String x:Key="Work.Reading" xml:space="preserve">Reading</sys:String>
+  <sys:String x:Key="Work.StatusReadInterrupted" xml:space="preserve">Status read interrupted</sys:String>
+  <sys:String x:Key="Work.NoChuteFromRcs" xml:space="preserve">RCS did not assign a chute</sys:String>
+  <sys:String x:Key="Work.NoValidChute" xml:space="preserve">No valid chute received</sys:String>
+  <sys:String x:Key="Work.NeedsUnpacking" xml:space="preserve">Unpacking inspection required</sys:String>
+  <sys:String x:Key="Work.CannotHandleParcel" xml:space="preserve">This parcel cannot be processed yet</sys:String>
+  <sys:String x:Key="Work.Disabled" xml:space="preserve">Disabled</sys:String>
+  <sys:String x:Key="Work.LaneNotConfigured" xml:space="preserve">Lane not configured</sys:String>
+  <sys:String x:Key="Work.RequestReview" xml:space="preserve">Request needs review</sys:String>
+  <sys:String x:Key="Work.InductionPaused" xml:space="preserve">Induction paused</sys:String>
+  <sys:String x:Key="Work.LoadUnavailable" xml:space="preserve">Loading unavailable</sys:String>
+  <sys:String x:Key="Work.WaitVehicle" xml:space="preserve">Waiting for vehicle confirmation</sys:String>
+  <sys:String x:Key="Work.WaitRemovalConfirmation" xml:space="preserve">Waiting for removal confirmation</sys:String>
+  <sys:String x:Key="Work.OriginalClosing" xml:space="preserve">Completing the original request</sys:String>
+  <sys:String x:Key="Work.WaitRemoval" xml:space="preserve">Awaiting removal</sys:String>
+  <sys:String x:Key="Work.CameraManualAvailable" xml:space="preserve">Camera unavailable. Manual scanning is available.</sys:String>
+  <sys:String x:Key="Work.WaitingToLoad" xml:space="preserve">Waiting for a parcel</sys:String>
+  <sys:String x:Key="Work.ReadByPlacing" xml:space="preserve">Load a parcel to scan automatically.</sys:String>
+  <sys:String x:Key="Work.TypeFullCode" xml:space="preserve">You can enter the full barcode.</sys:String>
+  <sys:String x:Key="Work.ScanGunOrKeyboard" xml:space="preserve">Or scan or type the barcode.</sys:String>
+  <sys:String x:Key="Work.Disabling" xml:space="preserve">Disabling. No new barcodes accepted.</sys:String>
+  <sys:String x:Key="Work.DisabledNoInput" xml:space="preserve">This lane is disabled and does not accept barcodes.</sys:String>
+  <sys:String x:Key="Work.CameraOfflineCanEnter" xml:space="preserve">Camera offline. Scan or type the barcode.</sys:String>
+  <sys:String x:Key="Work.CameraOfflinePlain" xml:space="preserve">Camera offline</sys:String>
+  <sys:String x:Key="Work.MultipleViewImage" xml:space="preserve">Multiple barcodes read. Check the image.</sys:String>
+  <sys:String x:Key="Work.RetryOrPda" xml:space="preserve">Reading continues for this parcel. PDA entry is available.</sys:String>
+  <sys:String x:Key="Work.TimeoutPda" xml:space="preserve">Reading timed out. You can use the PDA on this lane.</sys:String>
+  <sys:String x:Key="Work.ReadingAdjust" xml:space="preserve">Reading. Adjust the label or use the PDA.</sys:String>
+  <sys:String x:Key="Work.RoundCode" xml:space="preserve">Current round barcode</sys:String>
+  <sys:String x:Key="Work.ProcessingDots" xml:space="preserve">Processing…</sys:String>
+  <sys:String x:Key="Work.PreviousChute" xml:space="preserve">Previous parcel chute</sys:String>
+  <sys:String x:Key="Work.ScanPaused" xml:space="preserve">Barcode read. Induction is paused.</sys:String>
+  <sys:String x:Key="Work.WaitInput" xml:space="preserve">Waiting for barcode entry</sys:String>
+  <sys:String x:Key="Work.WaitForAdmission" xml:space="preserve">Waiting for induction readiness</sys:String>
+  <sys:String x:Key="Work.WaitRescan" xml:space="preserve">Waiting for a new scan</sys:String>
+  <sys:String x:Key="Work.Processing" xml:space="preserve">Processing</sys:String>
+  <sys:String x:Key="Work.NoChute" xml:space="preserve">No chute received</sys:String>
+  <sys:String x:Key="Work.PreviousChuteReadOnly" xml:space="preserve">Previous chute, view only</sys:String>
+  <sys:String x:Key="Work.ChuteNotYetAvailable" xml:space="preserve">Processing. A valid chute has not arrived yet.</sys:String>
+  <sys:String x:Key="Work.CurrentChuteCopy" xml:space="preserve">Current valid chute. Select to copy.</sys:String>
+  <sys:String x:Key="Work.PreviousChuteStatus" xml:space="preserve">Previous parcel: Chute assigned · View only</sys:String>
+  <sys:String x:Key="Work.StateExpired" xml:space="preserve">Status expired</sys:String>
+  <sys:String x:Key="Work.NoNewCode" xml:space="preserve">Barcodes cannot be accepted yet</sys:String>
+  <sys:String x:Key="Work.ProcessingCurrent" xml:space="preserve">Current parcel processing</sys:String>
+  <sys:String x:Key="Work.NotSentViewImage" xml:space="preserve">This scan did not send a request. You can view its image.</sys:String>
+  <sys:String x:Key="Work.EnterBarcodeManually" xml:space="preserve">Scan or type the full barcode.</sys:String>
+  <sys:String x:Key="Work.ReconnectedScanning" xml:space="preserve">Camera reconnected. Scanning again.</sys:String>
+  <sys:String x:Key="Work.ReadNotConfirmed" xml:space="preserve">Barcode read. Saving it now; acceptance is unconfirmed.</sys:String>
+  <sys:String x:Key="Work.NowCanScanLoad" xml:space="preserve">Now: Ready to scan and load</sys:String>
+  <sys:String x:Key="Work.NowCanManual" xml:space="preserve">Now: Manual scan available</sys:String>
+  <sys:String x:Key="Work.NowPrefix" xml:space="preserve">Now: </sys:String>
+  <sys:String x:Key="Work.PausedPrefix" xml:space="preserve">Induction paused. </sys:String>
+  <sys:String x:Key="Work.CheckImageBeforeNext" xml:space="preserve">Check the barcode in the image. Remove the parcel from the tray before loading the next one.</sys:String>
+  <sys:String x:Key="Work.SubmitFullBarcode" xml:space="preserve">Enter the full barcode and press Enter or select Submit.</sys:String>
+  <sys:String x:Key="Work.RescanPendingResult" xml:space="preserve">Do not load this parcel yet. Scan again and wait for a valid chute. Unconfirmed original requests still need review.</sys:String>
+  <sys:String x:Key="Work.NoPreviousDelivery" xml:space="preserve">Wait for this parcel's chute. Do not use the previous chute.</sys:String>
+  <sys:String x:Key="Work.SkippedRemoveReload" xml:space="preserve">This parcel was skipped. Remove and reload it.</sys:String>
+  <sys:String x:Key="Work.NoChuteCheckImage" xml:space="preserve">No chute was assigned. Check the barcode in the image. Remove the parcel before loading the next one.</sys:String>
+  <sys:String x:Key="Work.ReadWaitingResult" xml:space="preserve">Barcode read. Waiting for the result.</sys:String>
+  <sys:String x:Key="Work.PreviousBarcodeTask" xml:space="preserve">Previous barcode: {0}   Task: {1}</sys:String>
+  <sys:String x:Key="Settings.Theme" xml:space="preserve">Color theme</sys:String>
+  <sys:String x:Key="Settings.ThemeHelp" xml:space="preserve">Changes the colors for this Windows user. Select Save settings to apply immediately while induction continues.</sys:String>
+  <sys:String x:Key="Settings.Language" xml:space="preserve">Display language</sys:String>
+  <sys:String x:Key="Settings.LanguageHelp" xml:space="preserve">Sets the display language for this Windows user. Select Save settings to apply immediately.</sys:String>
+  <sys:String x:Key="Settings.Light" xml:space="preserve">Industrial light (default)</sys:String>
+  <sys:String x:Key="Settings.Dark" xml:space="preserve">Industrial dark (high contrast)</sys:String>
+  <sys:String x:Key="Settings.DisplayTitle" xml:space="preserve">Display preferences</sys:String>
+  <sys:String x:Key="Settings.DisplayGuide" xml:space="preserve">Set how the workstation window opens and is arranged.</sys:String>
+  <sys:String x:Key="Settings.Pace" xml:space="preserve">Show work rate</sys:String>
+  <sys:String x:Key="Settings.PaceToggle" xml:space="preserve">Show chute assignments this shift and the last ten minutes' rate</sys:String>
+  <sys:String x:Key="Settings.PaceHelp" xml:space="preserve">Applies to this Windows user. Use Save settings to save it along with window mode and sounds.</sys:String>
+  <sys:String x:Key="Settings.WindowMode" xml:space="preserve">Default window mode</sys:String>
+  <sys:String x:Key="Settings.Windowed" xml:space="preserve">Windowed</sys:String>
+  <sys:String x:Key="Settings.FullScreen" xml:space="preserve">Full screen</sys:String>
+  <sys:String x:Key="Settings.AutoStart" xml:space="preserve">Start workstation at sign-in</sys:String>
+  <sys:String x:Key="Settings.AutoStartToggle" xml:space="preserve">Start automatically at sign-in</sys:String>
+  <sys:String x:Key="Settings.AutoStartHelp" xml:space="preserve">Starts only when this Windows user signs in. Use Save settings to apply.</sys:String>
+  <sys:String x:Key="Settings.AudioVolume" xml:space="preserve">Cue volume</sys:String>
+  <sys:String x:Key="Settings.AudioVolumeHelp" xml:space="preserve">Default 80%. 0 is muted and 100 is maximum. Applies to cues in this app and this Windows user. Previewing saves nothing.</sys:String>
+  <sys:String x:Key="Settings.CueRead" xml:space="preserve">Preview scan</sys:String>
+  <sys:String x:Key="Settings.CueSuccess" xml:space="preserve">Preview success</sys:String>
+  <sys:String x:Key="Settings.CueRejected" xml:space="preserve">Preview rejection</sys:String>
+  <sys:String x:Key="Settings.Immediate" xml:space="preserve">Applies immediately</sys:String>
+  <sys:String x:Key="Settings.Reconnect" xml:space="preserve">Applies on reconnect</sys:String>
+  <sys:String x:Key="Settings.Restart" xml:space="preserve">Restart required</sys:String>
+  <sys:String x:Key="Settings.DisplayWork" xml:space="preserve">Return to work</sys:String>
+  <sys:String x:Key="Settings.Advanced" xml:space="preserve">Advanced settings</sys:String>
+  <sys:String x:Key="Settings.StationRcs" xml:space="preserve">Station and RCS</sys:String>
+  <sys:String x:Key="Settings.Cameras" xml:space="preserve">Cameras</sys:String>
+  <sys:String x:Key="Settings.Sorting" xml:space="preserve">Sorting rules</sys:String>
+  <sys:String x:Key="Settings.Scan" xml:space="preserve">Reading rules</sys:String>
+  <sys:String x:Key="Settings.Maintenance" xml:space="preserve">System maintenance</sys:String>
+  <sys:String x:Key="Settings.Review" xml:space="preserve">Review and finish</sys:String>
+  <sys:String x:Key="Settings.Site" xml:space="preserve">Station connection</sys:String>
+  <sys:String x:Key="Settings.Camera" xml:space="preserve">Camera</sys:String>
+  <sys:String x:Key="Settings.Unsaved" xml:space="preserve">Unsaved changes</sys:String>
+  <sys:String x:Key="Settings.NoChanges" xml:space="preserve">No unsaved changes</sys:String>
+  <sys:String x:Key="Settings.CloseEdit" xml:space="preserve">End editing</sys:String>
+  <sys:String x:Key="Settings.ReviewChanges" xml:space="preserve">Review changes</sys:String>
+  <sys:String x:Key="Ops.Connected" xml:space="preserve">Workstation connected</sys:String>
+  <sys:String x:Key="Ops.VerifiedTime" xml:space="preserve">Local read-only connection verified · Status time {0}</sys:String>
+  <sys:String x:Key="Ops.StationName" xml:space="preserve">Station {0}</sys:String>
+  <sys:String x:Key="Ops.PendingYes" xml:space="preserve">Settings pending</sys:String>
+  <sys:String x:Key="Ops.PendingNo" xml:space="preserve">No pending settings</sys:String>
+  <sys:String x:Key="Ops.Executing" xml:space="preserve">Requests in progress: {0}</sys:String>
+  <sys:String x:Key="Ops.RuntimeInfo" xml:space="preserve">Runtime instance: {0}
+Snapshot revision: {1}</sys:String>
+  <sys:String x:Key="Ops.LeftPosition" xml:space="preserve">Left lane</sys:String>
+  <sys:String x:Key="Ops.RightPosition" xml:space="preserve">Right lane</sys:String>
+  <sys:String x:Key="Ops.NoPosition" xml:space="preserve">The workstation has not reported this lane's status.</sys:String>
+  <sys:String x:Key="Ops.CanInduct" xml:space="preserve">Ready for induction</sys:String>
+  <sys:String x:Key="Ops.CannotInduct" xml:space="preserve">Induction unavailable</sys:String>
+  <sys:String x:Key="Ops.ManualAllowed" xml:space="preserve">Allowed</sys:String>
+  <sys:String x:Key="Ops.ManualLimited" xml:space="preserve">Restricted</sys:String>
+  <sys:String x:Key="Ops.NoDetection" xml:space="preserve">No check recorded yet</sys:String>
+  <sys:String x:Key="Ops.Online" xml:space="preserve">Online</sys:String>
+  <sys:String x:Key="Ops.LastChecked" xml:space="preserve">Last checked: {0}</sys:String>
+  <sys:String x:Key="Ops.WaitStorage" xml:space="preserve">Free space not checked yet</sys:String>
+  <sys:String x:Key="Ops.StorageOnDisk" xml:space="preserve">Free: {0:F1} GiB</sys:String>
+  <sys:String x:Key="Ops.StorageFloor" xml:space="preserve">Warning threshold: {0:F1} GiB</sys:String>
+  <sys:String x:Key="Ops.PrepareBoth" xml:space="preserve">Automatic and manual scanning available</sys:String>
+  <sys:String x:Key="Ops.PrepareAutomatic" xml:space="preserve">Automatic scanning available</sys:String>
+  <sys:String x:Key="Ops.CheckLane" xml:space="preserve">Check the lane guidance on the workstation.</sys:String>
+  <sys:String x:Key="Work.RemoveWhileOffline" xml:space="preserve">Remove the parcel and wait until this lane is ready before reloading.
+If this repeats, contact maintenance.</sys:String>
+  <sys:String x:Key="Startup.Starting" xml:space="preserve">Starting workstation</sys:String>
+  <sys:String x:Key="Startup.Preparing" xml:space="preserve">Preparing to start. Please wait.</sys:String>
+  <sys:String x:Key="Startup.MaintenanceDone" xml:space="preserve">Maintenance is complete · Workstation stopped</sys:String>
+  <sys:String x:Key="Startup.StartOrExit" xml:space="preserve">Select Start workstation to connect the cameras and RCS. You can also exit.</sys:String>
+  <sys:String x:Key="Startup.Launch" xml:space="preserve">Start workstation</sys:String>
+  <sys:String x:Key="Startup.ActionFailed" xml:space="preserve">The action did not finish. Read the diagnostics below and try again.</sys:String>
+  <sys:String x:Key="Startup.UninstallNotOpened" xml:space="preserve">Could not open uninstaller</sys:String>
+  <sys:String x:Key="Startup.UninstallRetry" xml:space="preserve">The program and its data are intact. Close the workstation and try again. Use the full installer to repair an unverifiable maintenance cache.</sys:String>
+  <sys:String x:Key="Startup.RetryUninstaller" xml:space="preserve">Retry opening uninstaller</sys:String>
+  <sys:String x:Key="Startup.Failed" xml:space="preserve">Workstation did not start</sys:String>
+  <sys:String x:Key="Startup.FailureActions" xml:space="preserve">See the reason below. Retry startup, edit settings, or open offline maintenance. Copy the diagnostics for support if needed. Induction has not started.</sys:String>
+  <sys:String x:Key="Startup.CopyDiagnostics" xml:space="preserve">Copy diagnostics</sys:String>
+  <sys:String x:Key="Startup.CopyFailed" xml:space="preserve">Copy failed. You can select and copy the diagnostic text: </sys:String>
+  <sys:String x:Key="Startup.StopExit" xml:space="preserve">Stop and exit</sys:String>
+  <sys:String x:Key="Startup.Retry" xml:space="preserve">Retry startup</sys:String>
+  <sys:String x:Key="Startup.RepairSettings" xml:space="preserve">Edit settings / Offline maintenance</sys:String>
+  <sys:String x:Key="Startup.BuildIdentity" xml:space="preserve">Software version and Git commit</sys:String>
+  <sys:String x:Key="Startup.BuildLabel" xml:space="preserve">Version {0} · Git {1}</sys:String>
+  <sys:String x:Key="Startup.StopIncomplete" xml:space="preserve">
+
+Could not stop: </sys:String>
+  <sys:String x:Key="Startup.UninstallOpenFailure" xml:space="preserve">
+
+Could not open uninstaller: </sys:String>
+  <sys:String x:Key="Startup.ActionIncomplete" xml:space="preserve">
+
+Action incomplete: </sys:String>
+  <sys:String x:Key="First.NotSaved" xml:space="preserve">Unsaved</sys:String>
+  <sys:String x:Key="First.Admin" xml:space="preserve">Enter administration…</sys:String>
+  <sys:String x:Key="First.Exit" xml:space="preserve">Exit setup</sys:String>
+  <sys:String x:Key="First.SaveDraft" xml:space="preserve">Save draft</sys:String>
+  <sys:String x:Key="First.SaveDraftHelp" xml:space="preserve">Save your entries and exit. Resume setup next time.</sys:String>
+  <sys:String x:Key="First.ExitHelp" xml:space="preserve">Exit first-time setup. You will be prompted about unsaved entries.</sys:String>
+  <sys:String x:Key="First.Import" xml:space="preserve">Import configuration</sys:String>
+  <sys:String x:Key="First.ImportPreview" xml:space="preserve">Configuration import preview</sys:String>
+  <sys:String x:Key="First.ApplyDraft" xml:space="preserve">Apply to the current draft</sys:String>
+  <sys:String x:Key="First.AdvancedLinks" xml:space="preserve">Backup, diagnostics and repair</sys:String>
+  <sys:String x:Key="First.FullDiagnostics" xml:space="preserve">View full diagnostics…</sys:String>
+  <sys:String x:Key="First.Diagnostics" xml:space="preserve">Startup diagnostics</sys:String>
+  <sys:String x:Key="First.ConfigInfo" xml:space="preserve">Configuration information</sys:String>
+  <sys:String x:Key="First.CannotReadConfiguration" xml:space="preserve">Could not read the configuration. Review diagnostics and use startup repair. The original file is kept.</sys:String>
+  <sys:String x:Key="First.ReviewChanges" xml:space="preserve">Changes and configuration details</sys:String>
+  <sys:String x:Key="First.CheckDetails" xml:space="preserve">Configuration check details</sys:String>
+  <sys:String x:Key="First.EditRequired" xml:space="preserve">Some settings need correction. Follow the check results for each field.</sys:String>
+  <sys:String x:Key="Debug.ScanStopped" xml:space="preserve">This scan stopped. You can start another scan.</sys:String>
+  <sys:String x:Key="Debug.NotSentPrefix" xml:space="preserve">Request not sent: </sys:String>
+  <sys:String x:Key="Debug.WaitStopped" xml:space="preserve">Waiting stopped. The request may have been sent. Diagnostics state is unchanged. Check this round's result.</sys:String>
+  <sys:String x:Key="Debug.AnotherRound" xml:space="preserve">Another window started a new round. This window retains the original image and request. Scan again to start a new round here.</sys:String>
+  <sys:String x:Key="Debug.ReadFailure" xml:space="preserve">Could not read diagnostics status. The status and requests are unchanged.</sys:String>
+  <sys:String x:Key="Debug.PhotoOverwritten" xml:space="preserve">This round's image has been overwritten. Look for it in history.</sys:String>
+  <sys:String x:Key="Debug.CopiedResponse" xml:space="preserve">Original RCS response copied.</sys:String>
+  <sys:String x:Key="Debug.Clipboard" xml:space="preserve">The clipboard is unavailable. Try again shortly.</sys:String>
+  <sys:String x:Key="Debug.CopyNeedsAuthorization" xml:space="preserve">Administration authorization expired. Reauthorize before copying.</sys:String>
+  <sys:String x:Key="Debug.NotSentYet" xml:space="preserve">No request sent</sys:String>
+  <sys:String x:Key="Debug.WaitPhoto" xml:space="preserve">Waiting for this round's scan image…</sys:String>
+  <sys:String x:Key="Debug.WaitPhotoHint" xml:space="preserve">Waiting for the scan image.
+Select Scan to start.</sys:String>
+  <sys:String x:Key="Debug.ManualRequest" xml:space="preserve">This request uses manual input.</sys:String>
+  <sys:String x:Key="Debug.ReconcileFirst" xml:space="preserve">Check this lane's previous diagnostics command before changing cameras.</sys:String>
+  <sys:String x:Key="Ops.EnterDebug" xml:space="preserve">Start diagnostics (pause all induction)</sys:String>
+  <sys:String x:Key="Ops.LeaveDebug" xml:space="preserve">End diagnostics and resume</sys:String>
+  <sys:String x:Key="Ops.DebugRecords" xml:space="preserve">Diagnostics records</sys:String>
+  <sys:String x:Key="Ops.ConnectionDiagnostics" xml:space="preserve">Connection diagnostics</sys:String>
+  <sys:String x:Key="Ops.BrowseDiagnostics" xml:space="preserve">Browse connection diagnostics</sys:String>
+  <sys:String x:Key="Ops.CancelExport" xml:space="preserve">Cancel export</sys:String>
+  <sys:String x:Key="Ops.BackupPlan" xml:space="preserve">Backup schedule and status</sys:String>
+  <sys:String x:Key="Ops.OfflineMaintenanceNotice" xml:space="preserve">Close the workstation completely before offline maintenance. Selecting this action closes this tool and opens the offline maintenance program.</sys:String>
+  <sys:String x:Key="Ops.ViewBackupResult" xml:space="preserve">View backup result</sys:String>
+  <sys:String x:Key="Ops.CreateBackup" xml:space="preserve">Create full backup…</sys:String>
+  <sys:String x:Key="Ops.TechnicalDetails" xml:space="preserve">Technical details</sys:String>
+  <sys:String x:Key="Ops.CalibrateEmpty" xml:space="preserve">Confirm an empty tray and calibrate</sys:String>
+  <sys:String x:Key="Ops.WaitRead" xml:space="preserve">Waiting for a reading</sys:String>
+  <sys:String x:Key="Ops.StorageSettings" xml:space="preserve">Data and record settings</sys:String>
+  <sys:String x:Key="Ops.LogNotConfirmed" xml:space="preserve">Detailed logging status unconfirmed</sys:String>
+  <sys:String x:Key="Ops.EnableVerbose" xml:space="preserve">Enable detailed logs for 30 minutes</sys:String>
+  <sys:String x:Key="Ops.RetryingDetails" xml:space="preserve">Detail read interrupted. Previous readings expired. Retrying automatically.</sys:String>
+  <sys:String x:Key="Settings.FullScreenHelp" xml:space="preserve">Applies immediately and is used next time. Full screen hides the title bar. You can minimize to the taskbar and restore in full screen. Esc and F11 leave it in full screen.</sys:String>
+  <sys:String x:Key="Settings.WindowedHelp" xml:space="preserve">Applies immediately and is remembered. Use F11 to switch temporarily and Esc to return to windowed mode.</sys:String>
+  <sys:String x:Key="Settings.Show" xml:space="preserve">Show</sys:String>
+  <sys:String x:Key="Settings.Hide" xml:space="preserve">Hide</sys:String>
+  <sys:String x:Key="Settings.Mute" xml:space="preserve">Muted</sys:String>
+  <sys:String x:Key="Settings.GrantUntil" xml:space="preserve">Edit access until {0}</sys:String>
+  <sys:String x:Key="Settings.GrantPending" xml:space="preserve">Authorization pending · Draft kept</sys:String>
+  <sys:String x:Key="Settings.AwaitEffective" xml:space="preserve">Waiting for active settings from the workstation.</sys:String>
+  <sys:String x:Key="Settings.PendingRevision" xml:space="preserve">Settings revision #{0} · Changes pending</sys:String>
+  <sys:String x:Key="Settings.EffectiveRevision" xml:space="preserve">Active revision #{0} · No pending changes</sys:String>
+  <sys:String x:Key="Settings.ZoneLabel" xml:space="preserve">Warehouse ID</sys:String>
+  <sys:String x:Key="Settings.LineLabel" xml:space="preserve">Line ID</sys:String>
+  <sys:String x:Key="Settings.StationLabel" xml:space="preserve">Station</sys:String>
+  <sys:String x:Key="Settings.StationCode" xml:space="preserve">Workstation code</sys:String>
+  <sys:String x:Key="Settings.RcsHost" xml:space="preserve">RCS host</sys:String>
+  <sys:String x:Key="Settings.CameraSerial" xml:space="preserve">Device serial number</sys:String>
+  <sys:String x:Key="Settings.CameraCode" xml:space="preserve">RCS camera code</sys:String>
+  <sys:String x:Key="Settings.NotSavedSeparately" xml:space="preserve">Not set separately</sys:String>
+  <sys:String x:Key="Settings.LaneDisabled" xml:space="preserve">Lane disabled</sys:String>
+  <sys:String x:Key="Param.HeadingStation" xml:space="preserve">1. Station and RCS</sys:String>
+  <sys:String x:Key="Param.HeadingCameras" xml:space="preserve">2. Cameras</sys:String>
+  <sys:String x:Key="Param.HeadingDisplay" xml:space="preserve">3. Display and sounds</sys:String>
+  <sys:String x:Key="Param.StationIdentity" xml:space="preserve">Station identity</sys:String>
+  <sys:String x:Key="Param.StationHeader" xml:space="preserve">Workstation identity</sys:String>
+  <sys:String x:Key="Param.StationHint" xml:space="preserve">Enter the warehouse, line and workstation codes assigned by RCS.</sys:String>
+  <sys:String x:Key="Param.StationCode" xml:space="preserve">Workstation code *</sys:String>
+  <sys:String x:Key="Param.StationCodeHint" xml:space="preserve">RCS code for this whole workstation, shared by both lanes for chute requests and heartbeats.</sys:String>
+  <sys:String x:Key="Param.RcsService" xml:space="preserve">RCS service</sys:String>
+  <sys:String x:Key="Param.RcsProtocol" xml:space="preserve">Protocol and heartbeat</sys:String>
+  <sys:String x:Key="Param.RcsBoth" xml:space="preserve">Both lanes use this RCS address. Follow the prompts to reconnect or restart after saving.</sys:String>
+  <sys:String x:Key="Param.TargetRequired" xml:space="preserve">Service address *</sys:String>
+  <sys:String x:Key="Param.Target" xml:space="preserve">Service address</sys:String>
+  <sys:String x:Key="Param.AddressHelp" xml:space="preserve">HTTP(S) address with the path /rcs/sorter/api.</sys:String>
+  <sys:String x:Key="Param.Warehouse" xml:space="preserve">Warehouse ID</sys:String>
+  <sys:String x:Key="Param.WarehouseHint" xml:space="preserve">Warehouse ID assigned by RCS.</sys:String>
+  <sys:String x:Key="Param.Line" xml:space="preserve">Line ID</sys:String>
+  <sys:String x:Key="Param.LineHint" xml:space="preserve">Line ID assigned by RCS.</sys:String>
+  <sys:String x:Key="Param.CameraLeftCode" xml:space="preserve">Left camera code</sys:String>
+  <sys:String x:Key="Param.CameraRightCode" xml:space="preserve">Right camera code</sys:String>
+  <sys:String x:Key="Param.Heartbeat" xml:space="preserve">Heartbeat interval</sys:String>
+  <sys:String x:Key="Param.RequestTimeout" xml:space="preserve">Chute request timeout</sys:String>
+  <sys:String x:Key="Param.MissingChute" xml:space="preserve">When no chute is available</sys:String>
+  <sys:String x:Key="Param.CameraIp" xml:space="preserve">Camera IP address</sys:String>
+  <sys:String x:Key="Param.CameraIpHelp" xml:space="preserve">IP address of the camera. This does not change the camera's settings.</sys:String>
+  <sys:String x:Key="Param.CameraSerial" xml:space="preserve">Camera serial number</sys:String>
+  <sys:String x:Key="Param.CameraSerialHelp" xml:space="preserve">The serial number is read by IP and saved with settings. The existing device identity is retained. After replacing a camera at the same IP, select Read again.</sys:String>
+  <sys:String x:Key="Param.CameraChoice" xml:space="preserve">Reading method</sys:String>
+  <sys:String x:Key="Param.CameraIpLabel" xml:space="preserve">IP address</sys:String>
+  <sys:String x:Key="Param.CameraConnection" xml:space="preserve">Camera connection</sys:String>
+  <sys:String x:Key="Param.CameraPrompt" xml:space="preserve">Enter the camera IP</sys:String>
+  <sys:String x:Key="Param.CameraChoose" xml:space="preserve">Configure the cameras in use</sys:String>
+  <sys:String x:Key="Param.CameraAutoRead" xml:space="preserve">Enter the IP. The serial number is read when saving. Clear the IP for unused cameras.</sys:String>
+  <sys:String x:Key="Param.CameraFeed" xml:space="preserve">Live preview</sys:String>
+  <sys:String x:Key="Param.BarcodeFilter" xml:space="preserve">Barcode filter</sys:String>
+  <sys:String x:Key="Param.BarcodeRules" xml:space="preserve">Barcode filter rule</sys:String>
+  <sys:String x:Key="Param.BarcodeExclude" xml:space="preserve">Barcode exclusion rule</sys:String>
+  <sys:String x:Key="Param.BarcodeMatch" xml:space="preserve">Match rule (optional)</sys:String>
+  <sys:String x:Key="Param.BarcodeExcludeOptional" xml:space="preserve">Exclusion rule (optional)</sys:String>
+  <sys:String x:Key="Param.BarcodeMatchHelp" xml:space="preserve">The whole barcode must match this regular expression. Leave blank to accept all.</sys:String>
+  <sys:String x:Key="Param.MultipleCodes" xml:space="preserve">Reject multiple valid barcodes</sys:String>
+  <sys:String x:Key="Param.MultiCodeSeparator" xml:space="preserve">Barcode separator</sys:String>
+  <sys:String x:Key="Param.ReadTimeout" xml:space="preserve">Automatic reading time limit</sys:String>
+  <sys:String x:Key="Param.DataRecords" xml:space="preserve">Data and records</sys:String>
+  <sys:String x:Key="Param.ArchiveLimit" xml:space="preserve">Runtime record archive threshold</sys:String>
+  <sys:String x:Key="Param.StorageReserve" xml:space="preserve">Reserved disk space</sys:String>
+  <sys:String x:Key="Param.LogDays" xml:space="preserve">Maximum log retention</sys:String>
+  <sys:String x:Key="Param.CleanupDays" xml:space="preserve">Closed record retention</sys:String>
+  <sys:String x:Key="Param.ConfigurationDir" xml:space="preserve">Configuration directory</sys:String>
+  <sys:String x:Key="Param.StorageLocation" xml:space="preserve">Storage location</sys:String>
+  <sys:String x:Key="Param.AutoBackup" xml:space="preserve">Automatic backup</sys:String>
+  <sys:String x:Key="Param.EnableBackup" xml:space="preserve">Enable automatic backups</sys:String>
+  <sys:String x:Key="Param.BackupPlan" xml:space="preserve">Backup schedule</sys:String>
+  <sys:String x:Key="Param.BackupDirectory" xml:space="preserve">Backup directory</sys:String>
+  <sys:String x:Key="Param.BackupInterval" xml:space="preserve">Backup interval</sys:String>
+  <sys:String x:Key="Param.BackupLimit" xml:space="preserve">Scheduled backup limit</sys:String>
+  <sys:String x:Key="Param.FullBackup" xml:space="preserve">Manual backup</sys:String>
+  <sys:String x:Key="Param.CleanupZone" xml:space="preserve">Cleanup time zone</sys:String>
+  <sys:String x:Key="Param.CleanupTime" xml:space="preserve">Cleanup time</sys:String>
+  <sys:String x:Key="Param.Advanced" xml:space="preserve">Advanced</sys:String>
+  <sys:String x:Key="Param.ExpandMaintenance" xml:space="preserve">Maintenance and display (defaults available)</sys:String>
+  <sys:String x:Key="Param.ConnectOnStart" xml:space="preserve">Connect on startup</sys:String>
+  <sys:String x:Key="Param.AutoReconnect" xml:space="preserve">Reconnects after changes</sys:String>
+  <sys:String x:Key="Param.FirstStep" xml:space="preserve">Step {0} of {1}</sys:String>
+  <sys:String x:Key="Param.NoPage" xml:space="preserve">Select a settings page</sys:String>
+  <sys:String x:Key="Param.Steps" xml:space="preserve">Continuing checks earlier pages. Going back keeps your entries.</sys:String>
+  <sys:String x:Key="Param.CheckReady" xml:space="preserve">No field errors found yet. Go through the checks. Cameras and RCS can be configured later.</sys:String>
+  <sys:String x:Key="Param.ValidateFailure" xml:space="preserve">Some settings are missing or invalid. Correct the marked fields.</sys:String>
+  <sys:String x:Key="Param.PatternFailure" xml:space="preserve">The barcode rule is invalid. Check brackets, symbols and escapes.</sys:String>
+  <sys:String x:Key="Param.ValidationFallback" xml:space="preserve">The settings check failed. See diagnostics and correct your entries.</sys:String>
 </ResourceDictionary>

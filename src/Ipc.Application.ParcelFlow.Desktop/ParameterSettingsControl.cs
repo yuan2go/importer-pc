@@ -47,7 +47,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public int Category { get; } = category;
-        public string Title { get => title; set { if (title == value) return; title = value; PropertyChanged?.Invoke(this, new(nameof(Title))); } }
+        public string Title { get => title; set { if (title == value) return; title = value; PropertyChanged?.Invoke(this, new(nameof(Title))); RefreshLanguage(); } }
         public StackPanel Body { get; } = body;
         public ScrollViewer Scroll { get; } = scroll;
         public StackPanel Technical { get; } = technical;
@@ -61,7 +61,13 @@ public sealed partial class ParameterSettingsControl : UserControl
         public int TaskOrder => TaskGroup switch { "本站接入" => 0, "相机" => 1, "分拣规则" => 2, "系统维护" => 3, _ => 4 };
         int issueCount;
         public string? NavigationTitle { get; set; }
-        public string DisplayTitle => (NavigationTitle ?? Title) + (issueCount == 0 ? "" : "（" + issueCount + "）");
+        public string PageHeading => UiText.Authored(Title);
+        public void RefreshLanguage(object? sender = null, PropertyChangedEventArgs? args = null)
+        {
+            PropertyChanged?.Invoke(this, new(nameof(PageHeading)));
+            PropertyChanged?.Invoke(this, new(nameof(DisplayTitle)));
+        }
+        public string DisplayTitle => UiText.Authored(NavigationTitle ?? Title) + (issueCount == 0 ? "" : "（" + issueCount + "）");
         public void SetIssueCount(int count) { if (issueCount == count) return; issueCount = count; PropertyChanged?.Invoke(this, new(nameof(DisplayTitle))); }
         public override string ToString() => Title;
     }
@@ -108,6 +114,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         railBorder.SetResourceReference(Border.BackgroundProperty, "Surface"); railBorder.SetResourceReference(Border.BorderBrushProperty, "Line");
         Grid.SetColumn(pageHost, 1); root.Children.Add(pageHost);
         directory.ItemTemplate = (DataTemplate)Resources["ParameterObjectTemplate"];
+        PropertyChangedEventManager.AddHandler(UiText.Current, RefreshStepLanguage, "Item[]");
         directory.GroupStyle.Add((GroupStyle)Resources["ParameterDirectoryGroup"]);
         ScrollViewer.SetHorizontalScrollBarVisibility(directory, ScrollBarVisibility.Disabled);
         AutomationProperties.SetName(directory, "设置目录");
@@ -226,34 +233,39 @@ public sealed partial class ParameterSettingsControl : UserControl
         card.SetResourceReference(Border.BackgroundProperty, "Surface"); card.SetResourceReference(Border.BorderBrushProperty, "Line");
         return card;
     }
+    void RefreshStepLanguage(object? sender, PropertyChangedEventArgs e) => RefreshStepBar();
+
     ObjectPage Page(int category, string title, string guidance)
     {
         var body = new StackPanel { Margin = new(32, 24, 32, 32), MaxWidth = 960, HorizontalAlignment = HorizontalAlignment.Left };
         TextElement.SetFontWeight(body, FontWeights.Normal);
         var heading = Text(title, true); heading.FontSize = UiTypography.PageTitle; heading.Margin = new(0, 0, 0, 4); body.Children.Add(heading);
-        if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 8); body.Children.Add(note); }
+        if (guidance.Length > 0) { var note = Text(""); WorkstationLocalizationManager.BindAuthored(note, TextBlock.TextProperty, guidance); note.Margin = new(0, 0, 0, 8); body.Children.Add(note); }
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalContentAlignment = HorizontalAlignment.Left, Focusable = false };
         scroll.SizeChanged += (_, _) => body.Width = Math.Min(960, Math.Max(0, scroll.ActualWidth - 76));
         var page = new ObjectPage(category, title, body, scroll, new StackPanel());
         AutomationProperties.SetLiveSetting(page.Summary, AutomationLiveSetting.Polite);
         body.Children.Add(page.Summary);
-        heading.SetBinding(TextBlock.TextProperty, new Binding(nameof(ObjectPage.Title)) { Source = page });
+        heading.SetBinding(TextBlock.TextProperty, new Binding(nameof(ObjectPage.PageHeading)) { Source = page });
+        PropertyChangedEventManager.AddHandler(UiText.Current, page.RefreshLanguage, "Item[]");
         pages.Add(page); return page;
     }
     ParameterFormPanel Form(ObjectPage page, string? title = null)
     {
-        if (title is not null) { var heading = Text(title, true); if (page.Body.Children.Count <= 3) heading.Margin = new(0, 16, 0, 8); page.Body.Children.Add(heading); }
+        if (title is not null) { var heading = Text(title, true); WorkstationLocalizationManager.BindAuthored(heading, TextBlock.TextProperty, title); if (page.Body.Children.Count <= 3) heading.Margin = new(0, 16, 0, 8); page.Body.Children.Add(heading); }
         var form = new ParameterFormPanel { TwoColumns = SectionLayout && page.Category != 2 }; page.Body.Children.Add(form); return form;
     }
     (TextBlock Heading, ParameterFormPanel Form) Section(ObjectPage page, string title)
     {
-        var heading = Text(title, true); page.Body.Children.Add(heading);
+        var heading = Text(title, true); WorkstationLocalizationManager.BindAuthored(heading, TextBlock.TextProperty, title); page.Body.Children.Add(heading);
         var form = new ParameterFormPanel { TwoColumns = SectionLayout && page.Category != 2 }; page.Body.Children.Add(form); return (heading, form);
     }
     ParameterFormPanel AdvancedForm(ObjectPage page, string title = "高级设置")
     {
         var form = new ParameterFormPanel { TwoColumns = SectionLayout && page.Category != 2 };
-        page.Body.Children.Add(new Expander { Header = title, Content = form, Margin = new(0, 24, 0, 4), Padding = new(0, 4, 0, 0) }); return form;
+        var expander = new Expander { Content = form, Margin = new(0, 24, 0, 4), Padding = new(0, 4, 0, 0) };
+        WorkstationLocalizationManager.BindAuthored(expander, HeaderedContentControl.HeaderProperty, title);
+        page.Body.Children.Add(expander); return form;
     }
     // One card per setting: its name and explanation on the left, the control on the right.
     // Wide values (addresses, patterns, lists) and narrow windows put the control under the text.
@@ -266,6 +278,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         field.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); field.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
         for (var row = 0; row < 3; row++) field.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var caption = Themed(new TextBlock { Text = label, TextWrapping = TextWrapping.Wrap, FontSize = SectionLayout ? UiTypography.Label : UiTypography.Body, FontWeight = SectionLayout ? UiTypography.Emphasis : UiTypography.Regular }, TextBlock.ForegroundProperty, "Ink");
+        WorkstationLocalizationManager.BindAuthored(caption, TextBlock.TextProperty, label);
         var describe = new StackPanel { VerticalAlignment = VerticalAlignment.Center }; describe.Children.Add(caption); field.Children.Add(describe);
         var fieldKey = path.Split('/').Last();
         var draft = Model?.Readers.Concat(Model.Components).FirstOrDefault(d => path.StartsWith(d.InstanceId + "/", StringComparison.Ordinal));
@@ -293,7 +306,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (routine) control.ToolTip = help;
         else if (!string.IsNullOrEmpty(help))
         {
-            var hint = Text(help); hint.Margin = new(0, 2, 0, 0);
+            var hint = Text(help); WorkstationLocalizationManager.BindAuthored(hint, TextBlock.TextProperty, help); hint.Margin = new(0, 2, 0, 0);
             if (SectionLayout)
             {
                 hint.FontSize = UiTypography.Label;
@@ -306,7 +319,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         form.Children.Add(card); locations[path] = new(page, control, error, label, help ?? "", Row: card);
         if (draft is not null && path != draft.InstanceId + "/ConfigureLater")
         {
-            void RefreshRequirement() => caption.Text = draft.ConfigureLater ? label.TrimEnd(' ', '*') : label;
+            void RefreshRequirement() => WorkstationLocalizationManager.BindAuthored(caption, TextBlock.TextProperty, draft.ConfigureLater ? label.TrimEnd(' ', '*') : label);
             PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName is nameof(CapabilityDraft.ConfigureLater) or nameof(CapabilityDraft.Bound)) RefreshRequirement(); };
             draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed); RefreshRequirement();
         }
@@ -320,7 +333,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             }
             if (control is not TextBox { IsReadOnly: true })
             {
-                var activation = fieldKey is "WindowOpeningMode" or "ShowPace" or "CueVolume" or "AutoStart" or nameof(SmDisplayPreferenceDraft.ThemeId) or "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator"
+                var activation = fieldKey is "WindowOpeningMode" or "ShowPace" or "CueVolume" or "AutoStart" or nameof(SmDisplayPreferenceDraft.ThemeId) or nameof(SmDisplayPreferenceDraft.Language) or "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator"
                     ? "立即生效" : draft?.Kind == "observation" || draft is not null && ParameterOwnership.IsRcs(draft) || fieldKey == "StationCode" ? "重连生效" : "需重启生效";
                 var badge = ActivationBadge(activation, activation == "需重启生效" ? "Soft" : "AccentBackground");
                 Grid.SetColumn(badge, 1); field.Children.Add(badge);
@@ -423,7 +436,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (m.DesktopProfile.UsesWorkstationSettingsFlow) ArrangeSportmasterPages();
         if (!FirstConfiguration && m.DesktopProfile.UsesWorkstationSettingsFlow && Audience != SmParameterAudience.Complete)
         {
-            bool ShowField(string path) => path is "AutoStart" or nameof(SmDisplayPreferenceDraft.ThemeId) ? Audience == SmParameterAudience.Field : SmParameterOwnership.Show(Audience, path);
+            bool ShowField(string path) => path is "AutoStart" or nameof(SmDisplayPreferenceDraft.ThemeId) or nameof(SmDisplayPreferenceDraft.Language) ? Audience == SmParameterAudience.Field : SmParameterOwnership.Show(Audience, path);
             foreach (var pair in locations.ToArray())
                 if (!ShowField(pair.Key))
                 {

@@ -9,11 +9,15 @@ public sealed partial class ParameterSettingsControl
 {
     public Func<string, FrameworkElement>? CameraPreviewFactory { get; set; }
 
-    static Border ActivationBadge(string label, string background) => Themed(new Border
+    static Border ActivationBadge(string label, string background)
     {
-        Child = Themed(new TextBlock { Text = label, FontSize = UiTypography.Diagnostic }, TextBlock.ForegroundProperty, "Muted"),
-        Padding = new(6, 2, 6, 2), CornerRadius = new(8), Margin = new(6, 0, 0, 4), VerticalAlignment = VerticalAlignment.Center
-    }, Border.BackgroundProperty, background);
+        var text = Themed(new TextBlock { FontSize = UiTypography.Diagnostic, TextWrapping = TextWrapping.Wrap }, TextBlock.ForegroundProperty, "Muted");
+        WorkstationLocalizationManager.BindAuthored(text, TextBlock.TextProperty, label);
+        return Themed(new Border
+        {
+            Child = text, Padding = new(6, 2, 6, 2), CornerRadius = new(8), Margin = new(6, 0, 0, 4), VerticalAlignment = VerticalAlignment.Center
+        }, Border.BackgroundProperty, background);
+    }
 
     DockPanel ReconnectHeading(TextBlock heading, ParameterFormPanel[] forms)
     {
@@ -26,6 +30,8 @@ public sealed partial class ParameterSettingsControl
         header.Children.Add(badge);
         heading.Margin = new(0);
         heading.VerticalAlignment = VerticalAlignment.Center;
+        if (heading.ReadLocalValue(TextBlock.TextProperty) is string label)
+            WorkstationLocalizationManager.BindAuthored(heading, TextBlock.TextProperty, label);
         header.Children.Add(heading);
         // Ownership filtering and reparenting finish before the heading summarizes these fields.
         groupActivationLabels.Add(() =>
@@ -132,7 +138,9 @@ public sealed partial class ParameterSettingsControl
                 foreach (var pair in locations.Where(x => ReferenceEquals(x.Value.Page, source)).ToArray())
                     locations[pair.Key] = pair.Value with { Page = reviewPage! };
             }
-            reviewPage!.Body.Children.Insert(2, new Expander { Header = "维护与显示（使用默认值，按需展开）", Content = optional, Margin = new(0, 16, 0, 8) });
+            var maintenance = new Expander { Content = optional, Margin = new(0, 16, 0, 8) };
+            WorkstationLocalizationManager.Bind(maintenance, HeaderedContentControl.HeaderProperty, "Param.ExpandMaintenance");
+            reviewPage!.Body.Children.Insert(2, maintenance);
         }
         if (StationSettingsOnly)
         {

@@ -17,6 +17,7 @@ public partial class App : System.Windows.Application
     ParcelStartupWindow startup = null!;
     DesktopLaunchOptions? selected;
     bool recoveryChild;
+    string? languageNotice;
     CancellationTokenSource? fatalObservationStop;
     Task? fatalObservation;
 #if SPORTMASTER
@@ -97,6 +98,10 @@ public partial class App : System.Windows.Application
             return;
         }
         base.OnStartup(e); ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        var installerLanguage = PresentationPreferences.ResolveInitialLanguage(null, null);
+        var languageBinding = new WorkstationLanguageBinding(ApplicationId, Resources, Dispatcher,
+            message => { languageNotice = message; System.Diagnostics.Trace.TraceWarning(message); });
+        Exit += (_, _) => languageBinding.Dispose();
         var theme = new WorkstationThemeBinding(ApplicationId, Resources, Dispatcher, message => System.Diagnostics.Trace.TraceWarning(message));
         Exit += (_, _) => theme.Dispose();
         startup = new ParcelStartupWindow(); MainWindow = startup;
@@ -125,7 +130,7 @@ public partial class App : System.Windows.Application
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
             if (mode == "--setup" || mode is null && published && DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is null)
             {
-                if (InstallerLanguageWindow.Choose(Resources) is { } language)
+                if (InstallerLanguageWindow.Choose(Resources, installerLanguage) is { } language)
                 {
                     var setup = new StartupSetupWindow(selected.Business, initialLanguage: language);
                     MainWindow = setup; setup.ShowDialog();
@@ -258,7 +263,11 @@ public partial class App : System.Windows.Application
 #endif
             if (window is Ipc.Application.ParcelFlow.Desktop.ShellWindow shell) { shell.ReopenOwnerAsync = ReopenStopped; shell.OpenRetentionOwnerAsync = OpenRetentionStopped; }
 #if SPORTMASTER
-            if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station) station.ReopenOwnerAsync = ReopenStopped;
+            if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station)
+            {
+                station.ReopenOwnerAsync = ReopenStopped;
+                if (languageNotice is not null) station.ViewModel.SetLanguagePreferenceNotice(languageNotice);
+            }
 #endif
             if (InstallationIdentity.IsTest) window.Title = InstallationIdentity.DisplayName;
             MainWindow = window; window.Show(); startup.AllowClose = true; startup.Close(); ShutdownMode = ShutdownMode.OnMainWindowClose;

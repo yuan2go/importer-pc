@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -76,7 +77,7 @@ internal sealed partial class StationDebugControl : UserControl
         {
             if (ownedScanSession is not { } session || ownedScanRound is not { } round) return;
             await CloseScanScopeAsync(session, round);
-            feedback.Text = "本轮扫码已停止，可再次扫码。";
+            feedback.Text = UiText.Get("Debug.ScanStopped");
         });
         adapt.Click += (_, _) => { fit = true; ApplyZoom(); }; actual.Click += (_, _) => { fit = false; zoom = 1 / VisualTreeHelper.GetDpi(viewport).DpiScaleX; ApplyZoom(); };
         more.Click += (_, _) => Scale(1.25); less.Click += (_, _) => Scale(.8); overlay.Checked += (_, _) => DrawMarks(); overlay.Unchecked += (_, _) => DrawMarks();
@@ -196,7 +197,7 @@ internal sealed partial class StationDebugControl : UserControl
         if (returned.SendAttempts == 0)
         {
             sendCommand = null;
-            feedback.Text = "请求尚未发出：" + (returned.SendBlockedReason ?? "尚未发送 HTTP 请求，请查看请求状态。");
+            feedback.Text = UiText.Get("Debug.NotSentPrefix") + (returned.SendBlockedReason ?? "尚未发送 HTTP 请求，请查看请求状态。");
             return;
         }
         if (returned.ManualRequest) { ownedManualRound = null; ownedManualRuntime = null; }
@@ -210,7 +211,7 @@ internal sealed partial class StationDebugControl : UserControl
         var completion = actionFinished = new(TaskCreationOptions.RunContinuationsAsynchronously); Buttons();
         var actionGeneration = generation;
         try { await vm.RequireManagementModeAsync(); if (!active || token.IsCancellationRequested || actionGeneration != generation || !vm.IsManagementMode) return; await action(token); }
-        catch (OperationCanceledException) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = "已停止等待。请求可能已发出，调试状态未变；请查看本轮结果。"; } }
+        catch (OperationCanceledException) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = UiText.Get("Debug.WaitStopped"); } }
         catch (Exception error) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, DebugFailure); } }
         finally { busy = false; completion.TrySetResult(); if (active) { Buttons(); await PollAsync(); } }
     }
@@ -225,11 +226,11 @@ internal sealed partial class StationDebugControl : UserControl
             if (!active || busy || version != generation || !vm.IsManagementMode) return;
             scope = collection; observed = value; authoritative = true;
             if (current?.Frame is not null && current.Id is not null && value.Id != current.Id)
-            { state.Text = "其他窗口已开始另一轮；本窗保留原轮次照片和请求。点击再次扫码明确开始本窗新一轮。"; Buttons(); return; }
+            { state.Text = UiText.Get("Debug.AnotherRound"); Buttons(); return; }
             current = value; await PublishRoundAsync(value, token);
         }
         catch (OperationCanceledException) { if (active && version == generation) authoritative = false; }
-        catch (Exception error) { if (active && version == generation) { authoritative = false; state.Text = "调试状态读取失败；调试状态和请求保持不变。"; feedback.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, DebugFailure); send.IsEnabled = false; } }
+        catch (Exception error) { if (active && version == generation) { authoritative = false; state.Text = UiText.Get("Debug.ReadFailure"); feedback.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, DebugFailure); send.IsEnabled = false; } }
         finally { polling = false; if (active && version == generation) Buttons(); }
     }
     async Task PublishRoundAsync(CameraReadRound value, CancellationToken token)
@@ -251,7 +252,7 @@ internal sealed partial class StationDebugControl : UserControl
         {
             var version = generation; var raw = await vm.ServiceAsync(() => Inspection.ReadCameraOriginalAsync(frame.Id, token));
             if (!active || version != generation || token.IsCancellationRequested || current?.Id != value.Id || !vm.IsManagementMode) return;
-            if (raw is null) { ClearPhoto(); photoCaption.Text = "本轮图片已被覆盖，不会用其他图片替代；可在历史记录中查看。"; return; }
+            if (raw is null) { ClearPhoto(); photoCaption.Text = UiText.Get("Debug.PhotoOverwritten"); return; }
             if (raw.Metadata.Id != frame.Id || raw.Metadata.ObservationId != frame.ObservationId || raw.Gray8.LongLength != (long)frame.Width * frame.Height)
                 throw new InvalidDataException("原图与本轮身份不一致，拒绝显示。");
             displayedFrame = raw.Metadata; loadedFrame = frame.Id;
@@ -307,14 +308,14 @@ internal sealed partial class StationDebugControl : UserControl
             await vm.RequireManagementModeAsync();
             if (!active || version != generation || originalResponseText != text || displayedResponse?.Complete != true) return;
             Clipboard.SetText(text);
-            feedback.Text = "已复制 RCS 原始回包。";
+            feedback.Text = UiText.Get("Debug.CopiedResponse");
         }
-        catch (System.Runtime.InteropServices.ExternalException) { feedback.Text = "剪贴板暂不可用，请稍后重试。"; }
-        catch (UnauthorizedAccessException) { feedback.Text = "管理授权已失效，请重新授权后复制。"; }
+        catch (System.Runtime.InteropServices.ExternalException) { feedback.Text = UiText.Get("Debug.Clipboard"); }
+        catch (UnauthorizedAccessException) { feedback.Text = UiText.Get("Debug.CopyNeedsAuthorization"); }
         Buttons();
     }
     void ClearPhoto() { photo.Source = null; imageHint.Visibility = Visibility.Visible; marks.Children.Clear(); displayedFrame = null; loadedFrame = ""; imageLayer.Width = imageLayer.Height = 0; }
-    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); updatingRequest = true; try { SetText(requestBarcode, manualDrafts.GetValueOrDefault(position, "")); } finally { updatingRequest = false; } requestDirty = manualDrafts.ContainsKey(position); requestBody.Clear(); responseBody.Clear(); displayedResponse = null; originalResponseText = null; copyResponse.IsEnabled = false; send.ToolTip = state.ToolTip = null; result.Text = "尚未发送请求"; result.Visibility = Visibility.Visible; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
+    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); updatingRequest = true; try { SetText(requestBarcode, manualDrafts.GetValueOrDefault(position, "")); } finally { updatingRequest = false; } requestDirty = manualDrafts.ContainsKey(position); requestBody.Clear(); responseBody.Clear(); displayedResponse = null; originalResponseText = null; copyResponse.IsEnabled = false; send.ToolTip = state.ToolTip = null; result.Text = UiText.Get("Debug.NotSent"); result.Visibility = Visibility.Visible; photoCaption.Text = UiText.Get("Debug.WaitPhoto"); imageHint.Text = UiText.Get("Debug.WaitPhotoHint"); }
     void Buttons()
     {
         UpdateBatchButtons();
@@ -331,7 +332,7 @@ internal sealed partial class StationDebugControl : UserControl
             current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.ManualRequest == true ? "人工请求" : current?.State switch
         { "Reading" or "Preparing" or "Sealing" => "正在读取", "Locked" => "读码已锁定", "Sending" => "正在发送", "Faulted" => "读取异常", _ => "尚未开始扫码" };
         photoState.Text = current?.ManualRequest == true ? "人工请求，无扫码照片" : noCode ? "无条码" : displayedFrame is null ? "等待扫码" : "结果已锁定";
-        if (current?.ManualRequest == true) photoCaption.Text = "本次为手工输入请求。";
+        if (current?.ManualRequest == true) photoCaption.Text = UiText.Get("Debug.ManualRequest");
         fillStatus.Text = requestDirty ? "输入已更改，请准备当前条码的请求。" : current?.DeviceId == Position.ReaderId && current.RequestBody is not null ?
             (current.ManualRequest ? "手工输入" : "相机读码") + " · " + Position.Heading : "";
         feedback.Visibility = string.IsNullOrWhiteSpace(feedback.Text) ? Visibility.Collapsed : Visibility.Visible;
@@ -420,7 +421,7 @@ internal sealed partial class StationDebugControl : UserControl
     {
         value = value == "right" ? "right" : "left";
         if (value != position && (busy || prepareCommand is not null || armCommand is not null || sendCommand is not null))
-        { feedback.Text = "请先在本位核对原调试命令结果，再切换相机。"; return; }
+        { feedback.Text = UiText.Get("Debug.ReconcileFirst"); return; }
         position = value; generation++; authoritative = false; ClearRoundDisplay(); livePreview.SelectDevice(Position.ReaderId); camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus; evidence.SelectPosition(position); Buttons();
     }
     public void Revoke() { Deactivate(); ClearRoundDisplay(); evidence.Revoke(); Buttons(); }

@@ -50,14 +50,14 @@
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
       <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-       <TextBlock Text="{Binding Heading}" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
+       <TextBlock Text="{Binding Heading}" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="{DynamicResource Work.Lane}"/>
        <Border Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}" BorderThickness="1" CornerRadius="{DynamicResource RadiusControl}" Margin="10,0,0,0">
         <Border.Style><Style TargetType="Border"><Style.Triggers>
          <DataTrigger Binding="{Binding SupplyConfigured}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
         </Style.Triggers></Style></Border.Style>
         <StackPanel Orientation="Horizontal">
-         <Button x:Name="EnableSupply" Content="启用" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" type:PaletteBrush.BackgroundKey="{Binding EnableBackgroundKey}" type:PaletteBrush.ForegroundKey="{Binding EnableForegroundKey}" AutomationProperties.Name="启用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
-         <Button x:Name="DisableSupply" Content="{Binding DisableLabel}" Click="DisableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" type:PaletteBrush.BackgroundKey="{Binding DisableBackgroundKey}" type:PaletteBrush.ForegroundKey="{Binding DisableForegroundKey}" AutomationProperties.Name="停用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
+         <Button x:Name="EnableSupply" Content="{DynamicResource Work.Enable}" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" type:PaletteBrush.BackgroundKey="{Binding EnableBackgroundKey}" type:PaletteBrush.ForegroundKey="{Binding EnableForegroundKey}" AutomationProperties.Name="{DynamicResource Work.EnableLane}" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
+         <Button x:Name="DisableSupply" Content="{Binding DisableLabel}" Click="DisableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" type:PaletteBrush.BackgroundKey="{Binding DisableBackgroundKey}" type:PaletteBrush.ForegroundKey="{Binding DisableForegroundKey}" AutomationProperties.Name="{DynamicResource Work.DisableLane}" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
         </StackPanel>
        </Border>
       </StackPanel>
@@ -90,18 +90,18 @@
       <ColumnDefinition Width="*"/>
       <ColumnDefinition Width="Auto"/>
      </Grid.ColumnDefinitions>
-     <TextBox x:Name="BarcodeEntry" MinHeight="48" Padding="10,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。完整条码输入后按回车或点击提交。">
+     <TextBox x:Name="BarcodeEntry" MinHeight="48" Padding="10,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="{DynamicResource Work.BarcodeInput}" ToolTip="{DynamicResource Work.BarcodeHelp}">
       <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
        <Setter Property="MaxHeight" Value="80"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="48"/></DataTrigger></Style.Triggers>
       </Style></TextBox.Style>
       <TextBox.ContextMenu>
        <ContextMenu>
-        <MenuItem Header="剪切" Command="ApplicationCommands.Cut"/>
-        <MenuItem Header="复制" Command="ApplicationCommands.Copy"/>
-        <MenuItem Header="粘贴" Command="ApplicationCommands.Paste"/>
-        <MenuItem Header="全选" Command="ApplicationCommands.SelectAll"/>
+        <MenuItem Header="{DynamicResource Common.Cut}" Command="ApplicationCommands.Cut"/>
+        <MenuItem Header="{DynamicResource Common.Copy}" Command="ApplicationCommands.Copy"/>
+        <MenuItem Header="{DynamicResource Common.Paste}" Command="ApplicationCommands.Paste"/>
+        <MenuItem Header="{DynamicResource Common.SelectAll}" Command="ApplicationCommands.SelectAll"/>
         <Separator/>
-        <MenuItem Header="清空输入" Click="ClearInput_Click"/>
+        <MenuItem Header="{DynamicResource Work.ClearInput}" Click="ClearInput_Click"/>
        </ContextMenu>
       </TextBox.ContextMenu>
      </TextBox>
@@ -115,7 +115,7 @@
        </Style>
       </TextBlock.Style>
      </TextBlock>
-     <Button x:Name="CurrentBarcode" Grid.Column="1" Content="图片" Click="Picture_Click" IsEnabled="{Binding CanViewCurrentPicture}" Margin="8,0,0,0" AutomationProperties.Name="查看当前包裹图片">
+     <Button x:Name="CurrentBarcode" Grid.Column="1" Content="{DynamicResource Work.Image}" Click="Picture_Click" IsEnabled="{Binding CanViewCurrentPicture}" Margin="8,0,0,0" AutomationProperties.Name="{DynamicResource Work.ViewCurrentImage}">
       <Button.Style>
        <Style TargetType="Button" BasedOn="{StaticResource StationButton}">
         <Setter Property="MinWidth" Value="76"/>
@@ -154,7 +154,7 @@
       </Grid.RowDefinitions>
       <DockPanel x:Name="DetailedStatus" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,2,0,4">
        <DockPanel.Style><Style TargetType="DockPanel"><Style.Triggers><DataTrigger Binding="{Binding ShowCenteredState}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></DockPanel.Style>
-       <TextBlock Text="{Binding DisplayPresentation.Icon}" Style="{StaticResource StationResultHeading}" FontSize="{x:Static type:UiTypography.Exception}" Margin="0,0,8,0" AutomationProperties.Name="本位状态符号"/>
+       <TextBlock Text="{Binding DisplayPresentation.Icon}" Style="{StaticResource StationResultHeading}" FontSize="{x:Static type:UiTypography.Exception}" Margin="0,0,8,0" AutomationProperties.Name="{DynamicResource Work.StatusSymbol}"/>
        <TextBlock Text="{Binding DisplayStatus}" Style="{StaticResource StationResultHeading}" FontSize="{x:Static type:UiTypography.Status}" FontWeight="{x:Static type:UiTypography.Emphasis}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
       </DockPanel>
       <Grid Grid.Row="1" x:Name="SlotViewport">
@@ -194,7 +194,7 @@
         </Style>
        </ScrollViewer.Style>
        <StackPanel>
-        <TextBox x:Name="AttentionReason" Text="{Binding DisplayAttentionReason,Mode=OneWay}" Foreground="{DynamicResource Ink}" Style="{StaticResource StationValue}" Margin="0" AutomationProperties.Name="本位原因，可选择复制"/>
+        <TextBox x:Name="AttentionReason" Text="{Binding DisplayAttentionReason,Mode=OneWay}" Foreground="{DynamicResource Ink}" Style="{StaticResource StationValue}" Margin="0" AutomationProperties.Name="{DynamicResource Work.LaneReason}"/>
        </StackPanel>
       </ScrollViewer>
       <TextBlock x:Name="NextStep" Text="{Binding DisplayNextStep}" Foreground="{DynamicResource Ink}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite">
@@ -216,13 +216,13 @@
                Background="Transparent" BorderThickness="0" Padding="0" IsReadOnly="True"
                FontSize="{x:Static type:UiTypography.Body}"
                TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Center"
-               AutomationProperties.Name="上一件条码，仅供查看">
+               AutomationProperties.Name="{DynamicResource Work.PreviousCode}">
        <TextBox.Style><Style TargetType="TextBox"><Setter Property="FocusVisualStyle" Value="{DynamicResource FocusRing}"/><Setter Property="Visibility" Value="Collapsed"/>
         <Style.Triggers><DataTrigger Binding="{Binding ShowRecentChute}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
        </Style></TextBox.Style>
       </TextBox>
       <ScrollViewer x:Name="RcsGuidancePanel" Grid.Row="1" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
-                    AutomationProperties.Name="取格口结果待核对">
+                    AutomationProperties.Name="{DynamicResource Work.ResultNeedsReview}">
        <ScrollViewer.Style><Style TargetType="ScrollViewer">
         <Setter Property="Visibility" Value="Collapsed"/>
         <Style.Triggers><DataTrigger Binding="{Binding ShowRcsGuidance}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
@@ -238,9 +238,9 @@
           <Style.Triggers><DataTrigger Binding="{Binding RcsGuidanceBarcode}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers>
          </Style></Border.Style>
          <StackPanel>
-          <TextBlock Text="当前条码" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}"/>
+          <TextBlock Text="{DynamicResource Work.CurrentCode}" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}"/>
           <TextBox Text="{Binding RcsGuidanceBarcode,Mode=OneWay}" Style="{DynamicResource ReadonlyValue}"
-                   IsTabStop="True" AutomationProperties.Name="当前条码，可选择复制"/>
+                   IsTabStop="True" AutomationProperties.Name="{DynamicResource Work.CurrentCodeCopy}"/>
           <TextBlock Text="{Binding RcsGuidanceBarcodeSuffix}" FontSize="{x:Static type:UiTypography.Body}" TextWrapping="Wrap"
                      Foreground="{DynamicResource Warning}" FontWeight="{x:Static type:UiTypography.Emphasis}"/>
          </StackPanel>
@@ -248,9 +248,9 @@
         <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource WarningBorder}" BorderThickness="1"
                 CornerRadius="{DynamicResource RadiusControl}" Padding="10,5">
          <StackPanel TextBlock.FontSize="{x:Static type:UiTypography.Body}">
-          <TextBlock Text="1. 取下包裹，放到异常暂存篮" TextWrapping="Wrap"/>
+          <TextBlock Text="{DynamicResource Work.UnknownStep1}" TextWrapping="Wrap"/>
           <TextBlock Text="{Binding RcsGuidanceSecondStep}" TextWrapping="Wrap" Margin="0,2"/>
-          <TextBlock Text="3. 呼叫班长或运维核对，请勿再次上件" TextWrapping="Wrap"/>
+          <TextBlock Text="{DynamicResource Work.UnknownStep3}" TextWrapping="Wrap"/>
          </StackPanel>
         </Border>
        </StackPanel>
@@ -280,7 +280,7 @@
                Data="M 2,8 L 14,2 26,8 26,22 14,28 2,22 Z M 2,8 L 14,14 26,8 M 14,14 L 14,28">
           <Path.Style><Style TargetType="Path"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers>
            <MultiDataTrigger><MultiDataTrigger.Conditions>
-            <Condition Binding="{Binding CenteredStateTitle}" Value="等待投包"/>
+            <Condition Binding="{Binding ShowsWaitingToLoad}" Value="True"/>
             <Condition Binding="{Binding IsTight}" Value="False"/>
            </MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger>
           </Style.Triggers></Style></Path.Style>
@@ -291,7 +291,7 @@
         </StackPanel>
         <local:RejectionMessageBox x:Name="CenteredRcsMessage" Text="{Binding CenteredStateTitle,Mode=OneWay}" type:PaletteBrush.ForegroundKey="{Binding CenteredStateForegroundKey}"
                  TextAlignment="Center" TextWrapping="Wrap" VerticalContentAlignment="Stretch" FontWeight="{x:Static type:UiTypography.Emphasis}" IsTabStop="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
-                 AutomationProperties.Name="RCS 返回消息，可选择复制" AutomationProperties.LiveSetting="Polite">
+                 AutomationProperties.Name="{DynamicResource Work.RawRcsResponse}" AutomationProperties.LiveSetting="Polite">
          <TextBox.Style>
           <Style TargetType="TextBox" BasedOn="{StaticResource OperatorCopyableNotice}">
            <!-- Keep the RCS original selectable without changing its centered result appearance. -->
@@ -354,7 +354,7 @@
           </Style.Triggers>
          </Style></Button.Style>
         </Button>
-        <Button x:Name="ConfirmPlacementRemoval" Grid.Row="3" Content="已取下包裹" Click="ConfirmPlacementRemoval_Click" MinHeight="44">
+        <Button x:Name="ConfirmPlacementRemoval" Grid.Row="3" Content="{DynamicResource Work.Removed}" Click="ConfirmPlacementRemoval_Click" MinHeight="44">
          <Button.Style>
           <Style TargetType="Button" BasedOn="{StaticResource StationButton}">
            <Setter Property="Margin" Value="0,8,0,0"/>
@@ -405,20 +405,20 @@
      <Border Grid.RowSpan="2" Grid.ColumnSpan="2" Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}"
              BorderThickness="1" CornerRadius="{DynamicResource RadiusControl}" IsHitTestVisible="False"/>
      <DockPanel Grid.Row="0" Grid.Column="0" Margin="8,2,6,0">
-      <TextBlock Text="波次号" Style="{StaticResource LaneTaskLabel}"/>
-      <TextBox x:Name="WaveValue" Tag="{Binding WaveNo}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务波次号"/>
+      <TextBlock Text="{DynamicResource Work.Wave}" Style="{StaticResource LaneTaskLabel}"/>
+      <TextBox x:Name="WaveValue" Tag="{Binding WaveNo}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="{DynamicResource Work.WaveAccessible}"/>
      </DockPanel>
      <DockPanel Grid.Row="0" Grid.Column="1" Margin="8,2,6,0">
-      <TextBlock Text="任务号" Style="{StaticResource LaneTaskLabel}"/>
-      <TextBox x:Name="TaskValue" Tag="{Binding TaskId}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次调度任务号"/>
+      <TextBlock Text="{DynamicResource Work.Task}" Style="{StaticResource LaneTaskLabel}"/>
+      <TextBox x:Name="TaskValue" Tag="{Binding TaskId}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="{DynamicResource Work.TaskAccessible}"/>
      </DockPanel>
      <DockPanel Grid.Row="1" Grid.Column="0" Margin="8,0,6,2">
-      <TextBlock Text="商品编码" Style="{StaticResource LaneTaskLabel}"/>
-      <TextBox x:Name="SkuValue" Tag="{Binding SkuId}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务商品编码"/>
+      <TextBlock Text="{DynamicResource Work.Sku}" Style="{StaticResource LaneTaskLabel}"/>
+      <TextBox x:Name="SkuValue" Tag="{Binding SkuId}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="{DynamicResource Work.SkuAccessible}"/>
      </DockPanel>
      <DockPanel Grid.Row="1" Grid.Column="1" Margin="8,0,6,2">
-      <TextBlock Text="返回数量" Style="{StaticResource LaneTaskLabel}"/>
-      <TextBox x:Name="QuantityValue" Tag="{Binding ResponseQuantity}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" FontFamily="{x:Static type:UiTypography.Interface}" AutomationProperties.Name="本次调度返回数量"/>
+      <TextBlock Text="{DynamicResource Work.ReturnQuantity}" Style="{StaticResource LaneTaskLabel}"/>
+      <TextBox x:Name="QuantityValue" Tag="{Binding ResponseQuantity}" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationTaskValue}" FontFamily="{x:Static type:UiTypography.Interface}" AutomationProperties.Name="{DynamicResource Work.ReturnQuantityAccessible}"/>
      </DockPanel>
     </Grid>
     <StackPanel Grid.Row="4" x:Name="FixedActions" Style="{StaticResource StationPositionActions}">
@@ -437,7 +437,7 @@
        <ColumnDefinition Width="*"/>
        <ColumnDefinition Width="Auto"/>
       </Grid.ColumnDefinitions>
-      <Button x:Name="SubmitBarcode" Height="44" Content="提交" Click="SubmitBarcode_Click" MinWidth="80" Margin="0">
+      <Button x:Name="SubmitBarcode" Height="44" Content="{DynamicResource Work.Submit}" Click="SubmitBarcode_Click" MinWidth="80" Margin="0">
        <Button.Style>
         <Style TargetType="Button" BasedOn="{StaticResource Primary}">
          <Style.Triggers>
@@ -448,9 +448,9 @@
         </Style>
        </Button.Style>
       </Button>
-      <Button x:Name="RebaseInput" Height="44" MinHeight="44" Content="确认本位包裹" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationTouch}"
-              ToolTip="本位状态已变化。请确认手上的包裹属于本位后再提交。"/>
-      <Button x:Name="ConfirmManualPlacementRemoval" Height="44" MinHeight="44" Grid.Column="2" Content="已取下包裹" Click="ConfirmPlacementRemoval_Click">
+      <Button x:Name="RebaseInput" Height="44" MinHeight="44" Content="{DynamicResource Work.ConfirmParcel}" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationTouch}"
+              ToolTip="{DynamicResource Work.ConfirmParcelHelp}"/>
+      <Button x:Name="ConfirmManualPlacementRemoval" Height="44" MinHeight="44" Grid.Column="2" Content="{DynamicResource Work.Removed}" Click="ConfirmPlacementRemoval_Click">
        <Button.Style>
         <Style TargetType="Button" BasedOn="{StaticResource StationTouch}">
          <Setter Property="Background" Value="{DynamicResource WarningBackground}"/>
@@ -458,17 +458,17 @@
          <Setter Property="BorderBrush" Value="{DynamicResource Warning}"/>
          <Setter Property="Margin" Value="0,0,8,0"/>
          <Setter Property="Visibility" Value="Collapsed"/>
-         <Setter Property="ToolTip" Value="取下本件后确认，准备接收下一件"/>
+         <Setter Property="ToolTip" Value="{DynamicResource Work.RemoveAndConfirm}"/>
          <Style.Triggers>
           <DataTrigger Binding="{Binding ShowRcsGuidance}" Value="True">
-           <Setter Property="ToolTip" Value="确认包裹已取下。原请求仍需核对，本位暂不能再次上件。"/>
+           <Setter Property="ToolTip" Value="{DynamicResource Work.RemovalWithPending}"/>
           </DataTrigger>
           <DataTrigger Binding="{Binding ShowConfirmedPlacementRemoval}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
          </Style.Triggers>
         </Style>
        </Button.Style>
       </Button>
-      <Button x:Name="WorkDetails" Height="44" MinHeight="44" Grid.Column="4" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanViewWorkDetails}" Style="{StaticResource StationTouch}"/>
+      <Button x:Name="WorkDetails" Height="44" MinHeight="44" Grid.Column="4" Content="{DynamicResource Common.ViewDetails}" Click="Details_Click" IsEnabled="{Binding CanViewWorkDetails}" Style="{StaticResource StationTouch}"/>
      </Grid>
      <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Line}" Margin="0,3,0,0" IsHitTestVisible="False">
       <Border.Style><Style TargetType="Border"><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Border.Style>
@@ -476,7 +476,7 @@
      <Grid Grid.Row="2" x:Name="PositionDeviceFooter">
       <Grid.Style><Style TargetType="Grid"><Setter Property="Margin" Value="0,7,0,0"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0"/></DataTrigger></Style.Triggers></Style></Grid.Style>
       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-      <TextBlock x:Name="CameraConnection" VerticalAlignment="Center" Text="{Binding CameraFooterText}" ToolTip="{Binding CameraFooterHint}" TextWrapping="Wrap" type:PaletteBrush.ForegroundKey="{Binding CameraFooterForegroundKey}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="相机连接状态" AutomationProperties.LiveSetting="Polite"/>
+      <TextBlock x:Name="CameraConnection" VerticalAlignment="Center" Text="{Binding CameraFooterText}" ToolTip="{Binding CameraFooterHint}" TextWrapping="Wrap" type:PaletteBrush.ForegroundKey="{Binding CameraFooterForegroundKey}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="{DynamicResource Work.CameraState}" AutomationProperties.LiveSetting="Polite"/>
       <TextBlock Grid.Column="1" FontSize="{x:Static type:UiTypography.Label}" HorizontalAlignment="Right"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="{Binding DataContext.PaceVisibility,RelativeSource={RelativeSource AncestorType=Window}}"/><Setter Property="Text" Value="{Binding DataContext.LeftPaceText,RelativeSource={RelativeSource AncestorType=Window}}"/><Style.Triggers><DataTrigger Binding="{Binding PositionId}" Value="right"><Setter Property="Text" Value="{Binding DataContext.RightPaceText,RelativeSource={RelativeSource AncestorType=Window}}"/></DataTrigger><DataTrigger Binding="{Binding DataContext.IsCompact,RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
      </Grid>
      </Grid>

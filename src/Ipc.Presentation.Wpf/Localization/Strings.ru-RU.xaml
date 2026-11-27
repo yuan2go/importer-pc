@@ -270,4 +270,713 @@
     <sys:String x:Key="Setup.PrepareFiles">Подготавливаем файлы установки</sys:String>
     <sys:String x:Key="Setup.RecheckFiles">Повторно проверяем файлы установки</sys:String>
     <sys:String x:Key="Setup.FilesReady">Файлы установки готовы</sys:String>
+  <sys:String x:Key="Common.LanguageWatchUnavailable" xml:space="preserve">Не удалось включить отслеживание языка для этого пользователя.</sys:String>
+  <sys:String x:Key="Common.LanguageInvalid" xml:space="preserve">Выберите доступный язык интерфейса.</sys:String>
+  <sys:String x:Key="Common.LayoutMinimize" xml:space="preserve">Свернуть в панель задач</sys:String>
+  <sys:String x:Key="Common.Maximize" xml:space="preserve">Развернуть окно</sys:String>
+  <sys:String x:Key="Common.Copy" xml:space="preserve">Копировать</sys:String>
+  <sys:String x:Key="Common.Cut" xml:space="preserve">Вырезать</sys:String>
+  <sys:String x:Key="Common.Paste" xml:space="preserve">Вставить</sys:String>
+  <sys:String x:Key="Common.SelectAll" xml:space="preserve">Выделить всё</sys:String>
+  <sys:String x:Key="Common.Query" xml:space="preserve">Найти</sys:String>
+  <sys:String x:Key="Common.CancelQuery" xml:space="preserve">Отменить поиск</sys:String>
+  <sys:String x:Key="Common.Previous" xml:space="preserve">Предыдущая</sys:String>
+  <sys:String x:Key="Common.NextPage" xml:space="preserve">Следующая</sys:String>
+  <sys:String x:Key="Common.Pending" xml:space="preserve">Ожидается ответ</sys:String>
+  <sys:String x:Key="Common.SetupDisplay" xml:space="preserve">Экран и звуки</sys:String>
+  <sys:String x:Key="Common.CamerasLeft" xml:space="preserve">Левая камера</sys:String>
+  <sys:String x:Key="Common.CamerasRight" xml:space="preserve">Правая камера</sys:String>
+  <sys:String x:Key="Common.StationRcs" xml:space="preserve">Станция и RCS</sys:String>
+  <sys:String x:Key="Common.Offline" xml:space="preserve">Не в сети</sys:String>
+  <sys:String x:Key="Common.Connect" xml:space="preserve">Подключиться</sys:String>
+  <sys:String x:Key="Common.DateToday" xml:space="preserve">Сегодня</sys:String>
+  <sys:String x:Key="Common.LastDay" xml:space="preserve">За 24 часа</sys:String>
+  <sys:String x:Key="Common.Error" xml:space="preserve">Ошибка</sys:String>
+  <sys:String x:Key="Common.Warning" xml:space="preserve">Предупреждение</sys:String>
+  <sys:String x:Key="Common.Info" xml:space="preserve">Информация</sys:String>
+  <sys:String x:Key="Common.All" xml:space="preserve">Все</sys:String>
+  <sys:String x:Key="Common.Time" xml:space="preserve">Время</sys:String>
+  <sys:String x:Key="Common.Level" xml:space="preserve">Уровень</sys:String>
+  <sys:String x:Key="Common.Source" xml:space="preserve">Источник</sys:String>
+  <sys:String x:Key="Common.Status" xml:space="preserve">Статус</sys:String>
+  <sys:String x:Key="Common.ViewDetails" xml:space="preserve">Подробнее</sys:String>
+  <sys:String x:Key="Common.Original" xml:space="preserve">Исходный текст</sys:String>
+  <sys:String x:Key="Work.TestEdition" xml:space="preserve">Тестовая версия</sys:String>
+  <sys:String x:Key="Work.LocalClock" xml:space="preserve">Местное время</sys:String>
+  <sys:String x:Key="Work.Notice" xml:space="preserve">Уведомления о настройках</sys:String>
+  <sys:String x:Key="Work.ReadNotice" xml:space="preserve">Уведомление о чтении настроек</sys:String>
+  <sys:String x:Key="Work.NoNotice" xml:space="preserve">Уведомлений о настройках нет</sys:String>
+  <sys:String x:Key="Work.Exit" xml:space="preserve">Выйти со станции</sys:String>
+  <sys:String x:Key="Work.Resume" xml:space="preserve">Возобновить подачу</sys:String>
+  <sys:String x:Key="Work.ResumeHelp" xml:space="preserve">Проверьте станцию перед возобновлением. Неподтверждённые запросы нужно проверить: они не отправляются повторно.</sys:String>
+  <sys:String x:Key="Work.StatusDescription" xml:space="preserve">Сведения о состоянии станции</sys:String>
+  <sys:String x:Key="Work.CheckRcs" xml:space="preserve">Проверить связь с RCS</sys:String>
+  <sys:String x:Key="Work.CheckRcsHelp" xml:space="preserve">Отправить один запрос связи с RCS. Используйте ячейку, назначенную текущей посылке.</sys:String>
+  <sys:String x:Key="Work.NavWork" xml:space="preserve">Подача</sys:String>
+  <sys:String x:Key="Work.NavRecords" xml:space="preserve">Записи</sys:String>
+  <sys:String x:Key="Work.SettingsHelp" xml:space="preserve">Просмотр настроек без паузы. Для изменений нужен пароль.</sys:String>
+  <sys:String x:Key="Work.SettingsAccessible" xml:space="preserve">Настройки. Просмотр без паузы. Для изменений нужен пароль.</sys:String>
+  <sys:String x:Key="Work.CollapseMenu" xml:space="preserve">Свернуть меню</sys:String>
+  <sys:String x:Key="Work.ExpandMenu" xml:space="preserve">Развернуть меню</sys:String>
+  <sys:String x:Key="Work.DismissNotice" xml:space="preserve">Закрыть сообщение</sys:String>
+  <sys:String x:Key="Work.LastResult" xml:space="preserve">Последний результат. Можно выделить и скопировать.</sys:String>
+  <sys:String x:Key="Work.WindowTooSmall" xml:space="preserve">Для рабочего экрана нужно не менее 800 × 420. Разверните окно. Камеры и текущая задача продолжают работу.</sys:String>
+  <sys:String x:Key="Work.Lane" xml:space="preserve">Пост подачи</sys:String>
+  <sys:String x:Key="Work.Enable" xml:space="preserve">Вкл.</sys:String>
+  <sys:String x:Key="Work.Disable" xml:space="preserve">Выкл.</sys:String>
+  <sys:String x:Key="Work.DisablePending" xml:space="preserve">Отключение</sys:String>
+  <sys:String x:Key="Work.EnableLane" xml:space="preserve">Включить этот пост</sys:String>
+  <sys:String x:Key="Work.DisableLane" xml:space="preserve">Отключить этот пост</sys:String>
+  <sys:String x:Key="Work.BarcodeInput" xml:space="preserve">Текущий штрихкод. Enter — отправить.</sys:String>
+  <sys:String x:Key="Work.BarcodeHelp" xml:space="preserve">Выберите пост и введите полный штрихкод с начальными нулями. Ввод заменит прежний код. Нажмите Enter или «Отправить».</sys:String>
+  <sys:String x:Key="Work.ClearInput" xml:space="preserve">Очистить ввод</sys:String>
+  <sys:String x:Key="Work.Image" xml:space="preserve">Снимок</sys:String>
+  <sys:String x:Key="Work.ViewCurrentImage" xml:space="preserve">Снимок текущей посылки</sys:String>
+  <sys:String x:Key="Work.StatusSymbol" xml:space="preserve">Символ состояния поста</sys:String>
+  <sys:String x:Key="Work.LaneReason" xml:space="preserve">Причина состояния поста. Можно скопировать.</sys:String>
+  <sys:String x:Key="Work.PreviousCode" xml:space="preserve">Предыдущий штрихкод, только просмотр</sys:String>
+  <sys:String x:Key="Work.ResultNeedsReview" xml:space="preserve">Нужно проверить назначение ячейки</sys:String>
+  <sys:String x:Key="Work.CurrentCode" xml:space="preserve">Текущий штрихкод</sys:String>
+  <sys:String x:Key="Work.CurrentCodeCopy" xml:space="preserve">Текущий штрихкод. Можно скопировать.</sys:String>
+  <sys:String x:Key="Work.UnknownStep1" xml:space="preserve">1. Снимите посылку и отложите её в контейнер для исключений.</sys:String>
+  <sys:String x:Key="Work.UnknownStep3" xml:space="preserve">3. Передайте на проверку старшему смены или технику. Не подавайте посылку повторно.</sys:String>
+  <sys:String x:Key="Work.RawRcsResponse" xml:space="preserve">Исходный ответ RCS. Можно скопировать.</sys:String>
+  <sys:String x:Key="Work.Removed" xml:space="preserve">Посылка снята</sys:String>
+  <sys:String x:Key="Work.Wave" xml:space="preserve">Волна</sys:String>
+  <sys:String x:Key="Work.WaveAccessible" xml:space="preserve">Волна текущего задания</sys:String>
+  <sys:String x:Key="Work.Task" xml:space="preserve">Задание</sys:String>
+  <sys:String x:Key="Work.TaskAccessible" xml:space="preserve">Номер задания на подачу</sys:String>
+  <sys:String x:Key="Work.Sku" xml:space="preserve">Код товара</sys:String>
+  <sys:String x:Key="Work.SkuAccessible" xml:space="preserve">Код товара текущего задания</sys:String>
+  <sys:String x:Key="Work.ReturnQuantity" xml:space="preserve">Количество</sys:String>
+  <sys:String x:Key="Work.ReturnQuantityAccessible" xml:space="preserve">Количество по текущему заданию</sys:String>
+  <sys:String x:Key="Work.Submit" xml:space="preserve">Отправить</sys:String>
+  <sys:String x:Key="Work.ConfirmParcel" xml:space="preserve">Подтвердить посылку</sys:String>
+  <sys:String x:Key="Work.ConfirmParcelHelp" xml:space="preserve">Состояние поста изменилось. Перед отправкой убедитесь, что посылка относится к этому посту.</sys:String>
+  <sys:String x:Key="Work.RemoveAndConfirm" xml:space="preserve">Снимите и подтвердите посылку перед подачей следующей.</sys:String>
+  <sys:String x:Key="Work.RemovalWithPending" xml:space="preserve">Подтвердите снятие. Исходный запрос ещё нужно проверить. Пока не подавайте новую посылку на этот пост.</sys:String>
+  <sys:String x:Key="Work.CameraState" xml:space="preserve">Состояние подключения камеры</sys:String>
+  <sys:String x:Key="Work.ExitPrompt" xml:space="preserve">Выйти со станции?</sys:String>
+  <sys:String x:Key="Work.CancelExit" xml:space="preserve">Отменить выход</sys:String>
+  <sys:String x:Key="Work.ExitScope" xml:space="preserve">Подача будет остановлена, связанные окна закроются.</sys:String>
+  <sys:String x:Key="Work.ExitVisible" xml:space="preserve">Видимые задания: {0}</sys:String>
+  <sys:String x:Key="Work.ExitUnknown" xml:space="preserve">Этапы без подтверждения: {0}</sys:String>
+  <sys:String x:Key="Work.ExitSnapshot" xml:space="preserve">Получение состояния: {0}</sys:String>
+  <sys:String x:Key="Work.ExitPending" xml:space="preserve">Ожидающие настройки: {0}</sys:String>
+  <sys:String x:Key="Work.ExitRequests" xml:space="preserve">Отправленные запросы и неподтверждённые результаты сохраняются. Продолжайте проверку исходных записей.</sys:String>
+  <sys:String x:Key="Work.ExitWithDrafts" xml:space="preserve">Несохранённые настройки проверяются для каждого окна. При сбое остановки это окно останется открытым.</sys:String>
+  <sys:String x:Key="Work.EmergencyNotice" xml:space="preserve">Пауза в программе не заменяет аварийную остановку. При необходимости нажмите аварийную кнопку на месте.</sys:String>
+  <sys:String x:Key="Work.ContinueExit" xml:space="preserve">Выйти</sys:String>
+  <sys:String x:Key="Settings.StationTitle" xml:space="preserve">Настройки станции</sys:String>
+  <sys:String x:Key="Settings.UnlockEdit" xml:space="preserve">Ввести пароль для правки</sys:String>
+  <sys:String x:Key="Settings.ReadOnly" xml:space="preserve">Только просмотр</sys:String>
+  <sys:String x:Key="Settings.VersionStatus" xml:space="preserve">Версия и состояние настроек</sys:String>
+  <sys:String x:Key="Settings.ReturnWork" xml:space="preserve">К подаче</sys:String>
+  <sys:String x:Key="Settings.HideHelp" xml:space="preserve">Скрыть настройки. Черновик и действующий доступ сохраняются.</sys:String>
+  <sys:String x:Key="Settings.CloseHelp" xml:space="preserve">Закрыть окно и завершить доступ к правке.</sys:String>
+  <sys:String x:Key="History.Selected" xml:space="preserve">Выбрано</sys:String>
+  <sys:String x:Key="History.Title" xml:space="preserve">Рабочие записи</sys:String>
+  <sys:String x:Key="History.Clear" xml:space="preserve">Сбросить фильтры</sys:String>
+  <sys:String x:Key="History.FirstPage" xml:space="preserve">Первая</sys:String>
+  <sys:String x:Key="History.More" xml:space="preserve">Загрузить ещё</sys:String>
+  <sys:String x:Key="History.Export" xml:space="preserve">Экспорт таблицы</sys:String>
+  <sys:String x:Key="History.ExportHelp" xml:space="preserve">Сначала выполните поиск, затем экспортируйте результаты.</sys:String>
+  <sys:String x:Key="History.CancelExport" xml:space="preserve">Отменить экспорт</sys:String>
+  <sys:String x:Key="History.Filters" xml:space="preserve">Фильтры · Штрихкод, пост, статус и время</sys:String>
+  <sys:String x:Key="History.Barcode" xml:space="preserve">Полный штрихкод</sys:String>
+  <sys:String x:Key="History.BarcodeAccessible" xml:space="preserve">Полный штрихкод из журнала</sys:String>
+  <sys:String x:Key="History.BarcodeHelp" xml:space="preserve">Введите полный штрихкод с начальными нулями.</sys:String>
+  <sys:String x:Key="History.LaneAccessible" xml:space="preserve">Пост в журнале</sys:String>
+  <sys:String x:Key="History.LaneHelp" xml:space="preserve">Фильтр по посту. Отключённый пост можно найти по номеру в дополнительных фильтрах.</sys:String>
+  <sys:String x:Key="History.BusinessState" xml:space="preserve">Статус операции</sys:String>
+  <sys:String x:Key="History.StateAccessible" xml:space="preserve">Статус операции в журнале</sys:String>
+  <sys:String x:Key="History.TimeRange" xml:space="preserve">Период</sys:String>
+  <sys:String x:Key="History.LastWeek" xml:space="preserve">За 7 дней</sys:String>
+  <sys:String x:Key="History.AnyTime" xml:space="preserve">За всё время</sys:String>
+  <sys:String x:Key="History.Start" xml:space="preserve">Начало</sys:String>
+  <sys:String x:Key="History.StartAccessible" xml:space="preserve">Начало с часовым поясом</sys:String>
+  <sys:String x:Key="History.End" xml:space="preserve">Окончание</sys:String>
+  <sys:String x:Key="History.EndAccessible" xml:space="preserve">Окончание с часовым поясом</sys:String>
+  <sys:String x:Key="History.RangeHelp" xml:space="preserve">Используется местное время. Начало включено, конец исключён. Пустое поле снимает ограничение.</sys:String>
+  <sys:String x:Key="History.MoreFilters" xml:space="preserve">Дополнительные фильтры и сведения</sys:String>
+  <sys:String x:Key="History.Request" xml:space="preserve">Номер запроса</sys:String>
+  <sys:String x:Key="History.OriginalRequest" xml:space="preserve">Номер исходного запроса</sys:String>
+  <sys:String x:Key="History.ExactLane" xml:space="preserve">Номер поста в журнале</sys:String>
+  <sys:String x:Key="History.ExactLaneAccessible" xml:space="preserve">Точный идентификатор поста</sys:String>
+  <sys:String x:Key="History.ScannedAt" xml:space="preserve">Время сканирования</sys:String>
+  <sys:String x:Key="History.Chute" xml:space="preserve">Ячейка</sys:String>
+  <sys:String x:Key="History.BarcodeImage" xml:space="preserve">Штрихкод / снимок</sys:String>
+  <sys:String x:Key="History.OpenPicture" xml:space="preserve">Снимок посылки по заданию</sys:String>
+  <sys:String x:Key="History.OpenRecordPicture" xml:space="preserve">Снимок посылки в записи</sys:String>
+  <sys:String x:Key="History.InputSource" xml:space="preserve">Источник ввода</sys:String>
+  <sys:String x:Key="History.OpenTask" xml:space="preserve">Подробности задания в записи</sys:String>
+  <sys:String x:Key="History.ViewTask" xml:space="preserve">Подробности задания</sys:String>
+  <sys:String x:Key="History.TaskLog" xml:space="preserve">Журнал задания</sys:String>
+  <sys:String x:Key="History.QuerySelected" xml:space="preserve">Проверить выбранное задание</sys:String>
+  <sys:String x:Key="History.ContinueSelected" xml:space="preserve">Продолжить выбранное задание</sys:String>
+  <sys:String x:Key="History.CopyData" xml:space="preserve">Копировать всю запись</sys:String>
+  <sys:String x:Key="History.TaskDetails" xml:space="preserve">Подробности задания</sys:String>
+  <sys:String x:Key="History.OpenParcelImage" xml:space="preserve">Снимок этой посылки</sys:String>
+  <sys:String x:Key="History.ViewPicture" xml:space="preserve">Открыть снимок</sys:String>
+  <sys:String x:Key="History.Inspection" xml:space="preserve">Примечания к осмотру</sys:String>
+  <sys:String x:Key="History.Safety" xml:space="preserve">Требования безопасности площадки сохраняются.</sys:String>
+  <sys:String x:Key="History.Technical" xml:space="preserve">Сведения для обслуживания</sys:String>
+  <sys:String x:Key="Ops.Title" xml:space="preserve">Обслуживание станции</sys:String>
+  <sys:String x:Key="Ops.Vehicle" xml:space="preserve">Состояние тележки</sys:String>
+  <sys:String x:Key="Ops.Round" xml:space="preserve">Текущий цикл</sys:String>
+  <sys:String x:Key="Ops.Task" xml:space="preserve">Текущее задание</sys:String>
+  <sys:String x:Key="Ops.Manual" xml:space="preserve">Ручной ввод</sys:String>
+  <sys:String x:Key="Ops.SupplyNotice" xml:space="preserve">Указания по подаче</sys:String>
+  <sys:String x:Key="Ops.SupplyNoticeCopy" xml:space="preserve">Указания для поста. Можно скопировать.</sys:String>
+  <sys:String x:Key="Ops.VerifyStation" xml:space="preserve">Станция проверяется</sys:String>
+  <sys:String x:Key="Ops.CheckConnection" xml:space="preserve">Проверка подключения</sys:String>
+  <sys:String x:Key="Ops.Environment" xml:space="preserve">Среда работы</sys:String>
+  <sys:String x:Key="Ops.EnvironmentAccessible" xml:space="preserve">Версия, источник и локальные пути</sys:String>
+  <sys:String x:Key="Ops.ReadOnlySafety" xml:space="preserve">Просмотр не прерывает подачу · Пауза не заменяет аварийную остановку</sys:String>
+  <sys:String x:Key="Ops.Overview" xml:space="preserve">Обзор</sys:String>
+  <sys:String x:Key="Ops.WorkstationStatus" xml:space="preserve">Состояние станции</sys:String>
+  <sys:String x:Key="Ops.VisibleTasks" xml:space="preserve">Видимые задания</sys:String>
+  <sys:String x:Key="Ops.Custody" xml:space="preserve">Проверка / Архив</sys:String>
+  <sys:String x:Key="Ops.PendingSettings" xml:space="preserve">Ожидающие настройки</sys:String>
+  <sys:String x:Key="Ops.DevicesStorage" xml:space="preserve">Устройства и хранилище</sys:String>
+  <sys:String x:Key="Ops.Technical" xml:space="preserve">Технические сведения</sys:String>
+  <sys:String x:Key="Ops.LogCenter" xml:space="preserve">Журналы</sys:String>
+  <sys:String x:Key="Ops.LogSource" xml:space="preserve">Источник журнала</sys:String>
+  <sys:String x:Key="Ops.OfflineLog" xml:space="preserve">Локальный журнал · Чтение</sys:String>
+  <sys:String x:Key="Ops.OfflineLogHelp" xml:space="preserve">Чтение журнала работы с диска.</sys:String>
+  <sys:String x:Key="Ops.CompleteLog" xml:space="preserve">Полный журнал · Требуется доступ</sys:String>
+  <sys:String x:Key="Ops.CompleteLogHelp" xml:space="preserve">Поиск в полном журнале по авторизованному соединению со станцией.</sys:String>
+  <sys:String x:Key="Ops.LogArea" xml:space="preserve">Область журнала</sys:String>
+  <sys:String x:Key="Ops.TimeAccessible" xml:space="preserve">Период журнала</sys:String>
+  <sys:String x:Key="Ops.LastHour" xml:space="preserve">За час</sys:String>
+  <sys:String x:Key="Ops.LevelAccessible" xml:space="preserve">Уровень журнала</sys:String>
+  <sys:String x:Key="Ops.Keyword" xml:space="preserve">Ключевое слово</sys:String>
+  <sys:String x:Key="Ops.KeywordAccessible" xml:space="preserve">Слово для поиска в журнале</sys:String>
+  <sys:String x:Key="Ops.KeyEvents" xml:space="preserve">Важные события</sys:String>
+  <sys:String x:Key="Ops.PickScope" xml:space="preserve">Выберите область журнала перед поиском.</sys:String>
+  <sys:String x:Key="Ops.QueryLog" xml:space="preserve">Поиск по журналу</sys:String>
+  <sys:String x:Key="Ops.TimeLocal" xml:space="preserve">Местное время</sys:String>
+  <sys:String x:Key="Ops.Event" xml:space="preserve">Событие</sys:String>
+  <sys:String x:Key="Ops.RawLog" xml:space="preserve">Исходный текст выбранной записи</sys:String>
+  <sys:String x:Key="Ops.CopyLog" xml:space="preserve">Копировать выбранный текст</sys:String>
+  <sys:String x:Key="Ops.LogScopeHelp" xml:space="preserve">Область поиска и технические сведения</sys:String>
+  <sys:String x:Key="Ops.OfflineBoundary" xml:space="preserve">В автономном режиме поиск идёт только по журналу работы.</sys:String>
+  <sys:String x:Key="Ops.Debug" xml:space="preserve">Диагностика</sys:String>
+  <sys:String x:Key="Ops.Parameters" xml:space="preserve">Параметры</sys:String>
+  <sys:String x:Key="Ops.Maintenance" xml:space="preserve">Обслуживание</sys:String>
+  <sys:String x:Key="Debug.Scan" xml:space="preserve">Проверка сканирования</sys:String>
+  <sys:String x:Key="Debug.TriggerScan" xml:space="preserve">Начать сканирование</sys:String>
+  <sys:String x:Key="Debug.StopScan" xml:space="preserve">Остановить сканирование</sys:String>
+  <sys:String x:Key="Debug.NotStarted" xml:space="preserve">Сканирование ещё не начато.</sys:String>
+  <sys:String x:Key="Debug.WaitScan" xml:space="preserve">Ожидается сканирование</sys:String>
+  <sys:String x:Key="Debug.Preview" xml:space="preserve">Предпросмотр камеры и сохранённый кадр</sys:String>
+  <sys:String x:Key="Debug.Live" xml:space="preserve">Видео</sys:String>
+  <sys:String x:Key="Debug.MonoFrame" xml:space="preserve">Текущий кадр Mono8</sys:String>
+  <sys:String x:Key="Debug.FrameAccessible" xml:space="preserve">Снимок сканирования. Зелёные рамки показывают штрихкоды.</sys:String>
+  <sys:String x:Key="Debug.WaitImage" xml:space="preserve">Ожидается снимок</sys:String>
+  <sys:String x:Key="Debug.Fit" xml:space="preserve">По размеру окна</sys:String>
+  <sys:String x:Key="Debug.ZoomIn" xml:space="preserve">Увеличить</sys:String>
+  <sys:String x:Key="Debug.ZoomOut" xml:space="preserve">Уменьшить</sys:String>
+  <sys:String x:Key="Debug.Overlay" xml:space="preserve">Рамки штрихкодов</sys:String>
+  <sys:String x:Key="Debug.Capture" xml:space="preserve">Текущий снимок</sys:String>
+  <sys:String x:Key="Debug.Calibration" xml:space="preserve">Калибровка пустого лотка</sys:String>
+  <sys:String x:Key="Debug.ConfirmTray" xml:space="preserve">Подтвердить пустой лоток и откалибровать</sys:String>
+  <sys:String x:Key="Debug.FullBarcode" xml:space="preserve">Полный штрихкод, можно скопировать</sys:String>
+  <sys:String x:Key="Debug.SampleScan" xml:space="preserve">Непрерывное сканирование</sys:String>
+  <sys:String x:Key="Debug.RcsTest" xml:space="preserve">Проверка запроса RCS</sys:String>
+  <sys:String x:Key="Debug.Prepare" xml:space="preserve">Подготовить запрос</sys:String>
+  <sys:String x:Key="Debug.Send" xml:space="preserve">Отправить запрос</sys:String>
+  <sys:String x:Key="Debug.SendHelp" xml:space="preserve">Отправка займёт текущее прибытие выбранной тележки. Сначала проверьте запрос.</sys:String>
+  <sys:String x:Key="Debug.RequestBarcode" xml:space="preserve">Штрихкод запроса</sys:String>
+  <sys:String x:Key="Debug.InputHelp" xml:space="preserve">Отсканируйте или введите штрихкод.</sys:String>
+  <sys:String x:Key="Debug.RequestPayload" xml:space="preserve">Сообщение запроса</sys:String>
+  <sys:String x:Key="Debug.CurrentPayload" xml:space="preserve">Текущий запрос</sys:String>
+  <sys:String x:Key="Debug.RcsReply" xml:space="preserve">Ответ RCS</sys:String>
+  <sys:String x:Key="Debug.CopyRaw" xml:space="preserve">Копировать исходный текст</sys:String>
+  <sys:String x:Key="Debug.NotSent" xml:space="preserve">Запрос ещё не отправлен.</sys:String>
+  <sys:String x:Key="Debug.RawResponse" xml:space="preserve">Тело текущего ответа</sys:String>
+  <sys:String x:Key="Debug.Records" xml:space="preserve">Записи диагностики</sys:String>
+  <sys:String x:Key="Work.WaitingConfiguration" xml:space="preserve">Ожидается настройка станции</sys:String>
+  <sys:String x:Key="Work.RcsOnlineDetail" xml:space="preserve">Служба RCS: в сети</sys:String>
+  <sys:String x:Key="Work.RcsOfflineDetail" xml:space="preserve">Служба RCS: не в сети</sys:String>
+  <sys:String x:Key="Work.RcsSimulationDetail" xml:space="preserve">Служба RCS: имитация</sys:String>
+  <sys:String x:Key="Work.RcsNotConfiguredDetail" xml:space="preserve">Служба RCS: не настроена</sys:String>
+  <sys:String x:Key="Work.RcsConfirmDetail" xml:space="preserve">Служба RCS: проверка связи</sys:String>
+  <sys:String x:Key="Work.RcsUnknownDetail" xml:space="preserve">Служба RCS: состояние неизвестно</sys:String>
+  <sys:String x:Key="Work.RcsOnline" xml:space="preserve">RCS: в сети</sys:String>
+  <sys:String x:Key="Work.RcsOffline" xml:space="preserve">RCS: не в сети</sys:String>
+  <sys:String x:Key="Work.RcsSimulated" xml:space="preserve">RCS: имитация</sys:String>
+  <sys:String x:Key="Work.RcsNotConfigured" xml:space="preserve">RCS: не настроена</sys:String>
+  <sys:String x:Key="Work.RcsPending" xml:space="preserve">RCS: проверка</sys:String>
+  <sys:String x:Key="Work.RcsChecking" xml:space="preserve">RCS: проверка</sys:String>
+  <sys:String x:Key="Work.RcsReplyReceived" xml:space="preserve">Ответ RCS получен.</sys:String>
+  <sys:String x:Key="Work.RcsReplyMissing" xml:space="preserve">Нет действительного ответа RCS. Проверьте подключение и повторите попытку.</sys:String>
+  <sys:String x:Key="Work.RcsMissingCameraCode" xml:space="preserve">Нет кода камеры для проверки связи. Проверьте коды камер в настройках RCS.</sys:String>
+  <sys:String x:Key="Work.RcsCheckWaiting" xml:space="preserve">Проверяем связь с RCS. Подождите.</sys:String>
+  <sys:String x:Key="Work.RcsCheckUnavailable" xml:space="preserve">Проверка связи с RCS недоступна. Повторите позже.</sys:String>
+  <sys:String x:Key="Work.RcsCheckIncomplete" xml:space="preserve">Проверка связи с RCS не завершена. Повторите позже.</sys:String>
+  <sys:String x:Key="Work.Simulation" xml:space="preserve">Имитация</sys:String>
+  <sys:String x:Key="Work.Production" xml:space="preserve">Рабочий режим</sys:String>
+  <sys:String x:Key="Work.ModeUnknown" xml:space="preserve">Режим не подтверждён</sys:String>
+  <sys:String x:Key="Work.SafetySuffix" xml:space="preserve"> · Пауза не заменяет аварийную остановку</sys:String>
+  <sys:String x:Key="Work.NotInstalledPage" xml:space="preserve">Экран не установлен</sys:String>
+  <sys:String x:Key="Work.Stats" xml:space="preserve">Статистика и смены</sys:String>
+  <sys:String x:Key="Work.Exceptions" xml:space="preserve">Исключения</sys:String>
+  <sys:String x:Key="Work.DeviceDiagnostics" xml:space="preserve">Устройства и диагностика</sys:String>
+  <sys:String x:Key="Work.Debug" xml:space="preserve">Диагностика</sys:String>
+  <sys:String x:Key="Work.Log" xml:space="preserve">Журнал</sys:String>
+  <sys:String x:Key="Work.Station" xml:space="preserve">Станция подачи</sys:String>
+  <sys:String x:Key="Work.Flow" xml:space="preserve">Сканирование → ячейка</sys:String>
+  <sys:String x:Key="Work.LaneNotReady" xml:space="preserve">Пост ещё не готов.</sys:String>
+  <sys:String x:Key="Work.QueryLane" xml:space="preserve">Проверить результат поста</sys:String>
+  <sys:String x:Key="Work.CannotContinue" xml:space="preserve">Продолжение задания невозможно.</sys:String>
+  <sys:String x:Key="Work.ContinueLane" xml:space="preserve">Продолжить невыполненный этап поста</sys:String>
+  <sys:String x:Key="Debug.CalibrationRejected" xml:space="preserve">Калибровка не начата. Проверьте пост и подключение камеры, затем повторите попытку.</sys:String>
+  <sys:String x:Key="Work.ReadDetailFailed" xml:space="preserve">Не удалось прочитать сведения о задании: </sys:String>
+  <sys:String x:Key="Work.ReferenceRejected" xml:space="preserve">Пост не принимает имитированный ввод.</sys:String>
+  <sys:String x:Key="Work.ReferenceAccepted" xml:space="preserve">Имитация сканирования отправлена. Ожидается результат.</sys:String>
+  <sys:String x:Key="Work.ReferenceNotAccepted" xml:space="preserve">Имитация сканирования не принята. Проверьте сообщение поста.</sys:String>
+  <sys:String x:Key="Work.SimulateRead" xml:space="preserve">Имитировать сканирование на посту</sys:String>
+  <sys:String x:Key="Work.LeftLane" xml:space="preserve">Левый пост</sys:String>
+  <sys:String x:Key="Work.RightLane" xml:space="preserve">Правый пост</sys:String>
+  <sys:String x:Key="Work.Vehicle" xml:space="preserve">Тележка</sys:String>
+  <sys:String x:Key="Work.VehiclePending" xml:space="preserve">Тележка: проверка</sys:String>
+  <sys:String x:Key="Work.CanLoad" xml:space="preserve">Можно подавать</sys:String>
+  <sys:String x:Key="Work.VehicleNotReady" xml:space="preserve">Не готова</sys:String>
+  <sys:String x:Key="Work.VehicleBusy" xml:space="preserve">Занята</sys:String>
+  <sys:String x:Key="Common.NotConfigured" xml:space="preserve">Не настроено</sys:String>
+  <sys:String x:Key="Common.ConfigurePending" xml:space="preserve">Не настроено</sys:String>
+  <sys:String x:Key="Work.AddressMissing" xml:space="preserve">Адрес не задан</sys:String>
+  <sys:String x:Key="Work.CameraNeedsTray" xml:space="preserve">Камера: в сети · нужна калибровка</sys:String>
+  <sys:String x:Key="Work.CalibrationAfterReconnect" xml:space="preserve">После перезапуска или переподключения техник должен откалибровать пустой лоток. До калибровки снимите проблемную посылку и нажмите «Посылка снята».</sys:String>
+  <sys:String x:Key="Work.OldChuteInvalid" xml:space="preserve">Прежняя ячейка недействительна</sys:String>
+  <sys:String x:Key="Work.NotReceived" xml:space="preserve">Не получено</sys:String>
+  <sys:String x:Key="Work.StaleChute" xml:space="preserve">Данные не обновляются. Прежняя ячейка недействительна.</sys:String>
+  <sys:String x:Key="Work.WaitSnapshot" xml:space="preserve">Ожидается состояние станции.</sys:String>
+  <sys:String x:Key="Work.CameraDisabledManual" xml:space="preserve">Камера отключена. Штрихкод можно ввести вручную.</sys:String>
+  <sys:String x:Key="Work.RcsContact" xml:space="preserve">RCS не настроена. Обратитесь к технику.</sys:String>
+  <sys:String x:Key="Work.UnavailableContact" xml:space="preserve">Подача на этом посту недоступна. Обратитесь к технику.</sys:String>
+  <sys:String x:Key="Common.Expired" xml:space="preserve">Недействительно</sys:String>
+  <sys:String x:Key="Work.NoObservation" xml:space="preserve">Данных камеры пока нет</sys:String>
+  <sys:String x:Key="Work.NoBarcodeDetected" xml:space="preserve">Штрихкод не распознан</sys:String>
+  <sys:String x:Key="Work.ValidBarcodeSuffix" xml:space="preserve"> · Действительных штрихкодов: </sys:String>
+  <sys:String x:Key="Work.WaitCameraInput" xml:space="preserve">Ожидаются данные камеры</sys:String>
+  <sys:String x:Key="Work.OldBarcodePolicy" xml:space="preserve">Прежнее правило одного кода · </sys:String>
+  <sys:String x:Key="Work.NotSelected" xml:space="preserve">Не выбрано</sys:String>
+  <sys:String x:Key="Work.ScanOrType" xml:space="preserve">Ожидается сканирование или ввод</sys:String>
+  <sys:String x:Key="Work.PdaInput" xml:space="preserve">Ввод с ТСД </sys:String>
+  <sys:String x:Key="Work.KeyboardInput" xml:space="preserve">Ввод с клавиатуры </sys:String>
+  <sys:String x:Key="Work.CameraReadPrefix" xml:space="preserve">Сканирование камерой </sys:String>
+  <sys:String x:Key="Work.BarcodeCount" xml:space="preserve"> · Штрихкодов: </sys:String>
+  <sys:String x:Key="Work.CountItems" xml:space="preserve"> шт.</sys:String>
+  <sys:String x:Key="Work.CameraSession" xml:space="preserve">Сеанс подключения </sys:String>
+  <sys:String x:Key="Work.Sequence" xml:space="preserve"> · Номер в сеансе: </sys:String>
+  <sys:String x:Key="Work.RcsNotDelivered" xml:space="preserve">RCS недоступна, запрос не доставлен. После восстановления связи снимите посылку и подайте её заново.</sys:String>
+  <sys:String x:Key="Work.ManualDecision" xml:space="preserve">Снимите посылку для ручной обработки. Отключите пост, дождитесь подтверждения отвода тележки от RCS, затем включите его и дождитесь новой тележки.</sys:String>
+  <sys:String x:Key="Work.UnpackNoReload" xml:space="preserve">Не подавайте посылку повторно. Проверьте её по сведениям о распаковке, затем продолжайте.</sys:String>
+  <sys:String x:Key="Work.UnpackReview" xml:space="preserve">Осмотрите посылку, заполните примечание и нажмите «Продолжить».</sys:String>
+  <sys:String x:Key="Common.Initializing" xml:space="preserve">Инициализация</sys:String>
+  <sys:String x:Key="Work.StatusInterrupted" xml:space="preserve">Нет обновлений состояния</sys:String>
+  <sys:String x:Key="Work.DuplicateScan" xml:space="preserve">Повторное сканирование</sys:String>
+  <sys:String x:Key="Work.ChuteConflict" xml:space="preserve">Противоречивое назначение ячейки</sys:String>
+  <sys:String x:Key="Work.Destination" xml:space="preserve">Ячейка назначения</sys:String>
+  <sys:String x:Key="Work.GettingChute" xml:space="preserve">Назначается ячейка</sys:String>
+  <sys:String x:Key="Work.NotDelivered" xml:space="preserve">RCS не в сети · Запрос не доставлен</sys:String>
+  <sys:String x:Key="Work.ChuteTimeout" xml:space="preserve">Истекло время запроса ячейки</sys:String>
+  <sys:String x:Key="Work.ChutePending" xml:space="preserve">Ячейка не подтверждена</sys:String>
+  <sys:String x:Key="Work.ChuteNotAssigned" xml:space="preserve">Ячейка не назначена</sys:String>
+  <sys:String x:Key="Work.SupplyUnavailable" xml:space="preserve">Подача недоступна</sys:String>
+  <sys:String x:Key="Work.WaitScanOrType" xml:space="preserve">Ожидается сканирование или ввод</sys:String>
+  <sys:String x:Key="Work.RelatedTask" xml:space="preserve">Связанное исходное задание </sys:String>
+  <sys:String x:Key="Work.NoDeviceStatus" xml:space="preserve">Состояние устройства недоступно</sys:String>
+  <sys:String x:Key="Work.CameraPendingStatus" xml:space="preserve">Камера: состояние уточняется</sys:String>
+  <sys:String x:Key="Work.UseReturnedChute" xml:space="preserve">Поместите посылку в назначенную ячейку. Следующее сканирование обновит экран.</sys:String>
+  <sys:String x:Key="Work.RcsNoChuteSetAside" xml:space="preserve">RCS не назначила ячейку. Отложите посылку и сообщите технику.</sys:String>
+  <sys:String x:Key="Work.DoNotRescan" xml:space="preserve">Дождитесь ячейки. Не сканируйте повторно.</sys:String>
+  <sys:String x:Key="Work.NotifyMaintenance" xml:space="preserve">Подача недоступна. Сообщите технику.</sys:String>
+  <sys:String x:Key="Work.LoadOrEnter" xml:space="preserve">Подайте посылку для сканирования или введите полный штрихкод и нажмите Enter.</sys:String>
+  <sys:String x:Key="Work.WaitStatus" xml:space="preserve">Ожидается обновление</sys:String>
+  <sys:String x:Key="Work.NotCreated" xml:space="preserve">Не создано</sys:String>
+  <sys:String x:Key="Work.TaskScanPrefix" xml:space="preserve">Сканирование: </sys:String>
+  <sys:String x:Key="Work.NoTask" xml:space="preserve">Заданий пока нет</sys:String>
+  <sys:String x:Key="Work.OriginalTime" xml:space="preserve">
+Время исходного результата: </sys:String>
+  <sys:String x:Key="Work.NoResponse" xml:space="preserve">Ответа пока нет</sys:String>
+  <sys:String x:Key="Work.AcquisitionPrefix" xml:space="preserve">Захват </sys:String>
+  <sys:String x:Key="Work.UploadSuffix" xml:space="preserve"> · Загрузка </sys:String>
+  <sys:String x:Key="Work.NoCapture" xml:space="preserve">Снимок не запрашивался</sys:String>
+  <sys:String x:Key="Work.CameraAddress" xml:space="preserve">Адрес камеры: </sys:String>
+  <sys:String x:Key="Work.CameraInterrupted" xml:space="preserve">Камера: нет обновлений</sys:String>
+  <sys:String x:Key="Work.CameraNotConfigured" xml:space="preserve">Камера: не настроена</sys:String>
+  <sys:String x:Key="Work.CameraDisconnectLane" xml:space="preserve">Камера: отключена (пост выключен)</sys:String>
+  <sys:String x:Key="Work.CameraConnecting" xml:space="preserve">Камера: подключение</sys:String>
+  <sys:String x:Key="Work.CameraRestoring" xml:space="preserve">Камера: не в сети или переподключается</sys:String>
+  <sys:String x:Key="Work.CameraChecking" xml:space="preserve">Камера: проверка</sys:String>
+  <sys:String x:Key="Work.CameraSimulation" xml:space="preserve">Камера: имитация</sys:String>
+  <sys:String x:Key="Work.CameraOnline" xml:space="preserve">Камера: в сети</sys:String>
+  <sys:String x:Key="Work.CameraOffline" xml:space="preserve">Камера: не в сети</sys:String>
+  <sys:String x:Key="Work.CameraLastConfirmed" xml:space="preserve"> · Подтверждено: </sys:String>
+  <sys:String x:Key="Work.StatusWaitingRecovery" xml:space="preserve">Состояние недоступно. Ожидается восстановление.</sys:String>
+  <sys:String x:Key="Work.ViewportTooSmall" xml:space="preserve">Разверните окно.</sys:String>
+  <sys:String x:Key="Work.LaneDisabled" xml:space="preserve">Пост отключён.</sys:String>
+  <sys:String x:Key="Work.LaneStatusReading" xml:space="preserve">Читаем состояние поста</sys:String>
+  <sys:String x:Key="Work.TaskConflictPrefix" xml:space="preserve">Сведения о задании противоречивы. Подача приостановлена для перепроверки задания </sys:String>
+  <sys:String x:Key="Work.NotEnabled" xml:space="preserve">Не включено</sys:String>
+  <sys:String x:Key="Work.TaskConflictRereading" xml:space="preserve">Сведения о задании противоречивы · Перепроверка</sys:String>
+  <sys:String x:Key="Work.ChuteReceived" xml:space="preserve">Ячейка назначена</sys:String>
+  <sys:String x:Key="Work.ChuteNoReload" xml:space="preserve">Ячейка не подтверждена · Не подавать повторно</sys:String>
+  <sys:String x:Key="Work.UnpackRequired" xml:space="preserve">Требуется осмотр с распаковкой</sys:String>
+  <sys:String x:Key="Work.Pending" xml:space="preserve">Ожидает обработки</sys:String>
+  <sys:String x:Key="Work.Blocked" xml:space="preserve">Заблокировано</sys:String>
+  <sys:String x:Key="Work.WaitWeight" xml:space="preserve">Ожидается достоверный вес</sys:String>
+  <sys:String x:Key="Work.WeightTimeout" xml:space="preserve">Истекло время взвешивания</sys:String>
+  <sys:String x:Key="Work.UploadUnconfirmed" xml:space="preserve">Загрузка снимка не подтверждена</sys:String>
+  <sys:String x:Key="Work.ImageRejected" xml:space="preserve">Этап съёмки отклонён</sys:String>
+  <sys:String x:Key="Work.ImageInProgress" xml:space="preserve">Создаётся снимок посылки</sys:String>
+  <sys:String x:Key="Work.UploadingOriginal" xml:space="preserve">Загружается исходный снимок</sys:String>
+  <sys:String x:Key="Work.CancelledUnsent" xml:space="preserve">Не отправлено · Отменено</sys:String>
+  <sys:String x:Key="Work.StagePrefix" xml:space="preserve">Этап: </sys:String>
+  <sys:String x:Key="Work.UnknownLocked" xml:space="preserve">Результат не подтверждён · Пост заблокирован</sys:String>
+  <sys:String x:Key="Work.ConflictLocked" xml:space="preserve">Противоречивый результат · Пост заблокирован</sys:String>
+  <sys:String x:Key="Work.ConflictDoNotUse" xml:space="preserve">Результат противоречит исходному запросу. Не используйте ячейку.</sys:String>
+  <sys:String x:Key="Work.TimeoutNoResend" xml:space="preserve">Истекло время ожидания ячейки. Запрос не будет отправлен повторно. Не сканируйте снова.</sys:String>
+  <sys:String x:Key="Work.UnknownNoResend" xml:space="preserve">Ячейка не подтверждена. Запрос не будет отправлен повторно. Не сканируйте снова.</sys:String>
+  <sys:String x:Key="Work.FullBarcodePrefix" xml:space="preserve">Полный штрихкод: </sys:String>
+  <sys:String x:Key="Work.LastFourPrefix" xml:space="preserve">Последние 4 знака: </sys:String>
+  <sys:String x:Key="Work.UnknownStepKeep" xml:space="preserve">2. Сохраните посылку и документы.</sys:String>
+  <sys:String x:Key="Work.UnknownStepFull" xml:space="preserve">2. Запишите полный штрихкод.</sys:String>
+  <sys:String x:Key="Work.UnknownStepFour" xml:space="preserve">2. Запишите последние 4 знака штрихкода.</sys:String>
+  <sys:String x:Key="Work.ChuteRequestNotDelivered" xml:space="preserve">Запрос ячейки не доставлен</sys:String>
+  <sys:String x:Key="Work.ChuteResultConflict" xml:space="preserve">Противоречивое назначение ячейки</sys:String>
+  <sys:String x:Key="Work.ChuteResultUnconfirmed" xml:space="preserve">Назначение ячейки не подтверждено</sys:String>
+  <sys:String x:Key="Work.TaskResultUnconfirmed" xml:space="preserve">Результат задания не подтверждён</sys:String>
+  <sys:String x:Key="Work.CheckingTray" xml:space="preserve">Проверяем, пуст ли лоток</sys:String>
+  <sys:String x:Key="Work.ScanUnsent" xml:space="preserve">Этот скан не отправил запрос</sys:String>
+  <sys:String x:Key="Work.ChuteResponseTimeout" xml:space="preserve">Истекло время ожидания ячейки</sys:String>
+  <sys:String x:Key="Work.NoChuteAvailable" xml:space="preserve">Для посылки нет доступной ячейки</sys:String>
+  <sys:String x:Key="Work.TakeOffThenConfirm" xml:space="preserve">Снимите посылку, затем подтвердите.</sys:String>
+  <sys:String x:Key="Work.RemoveUntilResume" xml:space="preserve">Снимите посылку. Подайте её после возобновления.</sys:String>
+  <sys:String x:Key="Work.RemoveUntilRcs" xml:space="preserve">Снимите посылку. Подайте её после восстановления связи с RCS.</sys:String>
+  <sys:String x:Key="Work.RemoveUntilLane" xml:space="preserve">
+При повторении сообщите технику.</sys:String>
+  <sys:String x:Key="Work.StaleRead" xml:space="preserve">Сканирование недействительно</sys:String>
+  <sys:String x:Key="Work.RemoveTrayPaused" xml:space="preserve">Подача приостановлена. Снимите посылку с лотка.</sys:String>
+  <sys:String x:Key="Work.DisablingNoInput" xml:space="preserve">Пост отключается. Новые штрихкоды не принимаются.</sys:String>
+  <sys:String x:Key="Work.RemoveUntilRcsShort" xml:space="preserve">Снимите посылку до восстановления связи с RCS.</sys:String>
+  <sys:String x:Key="Work.RescanWithoutDelivery" xml:space="preserve">Пока не подавайте посылку. Отсканируйте её заново.</sys:String>
+  <sys:String x:Key="Work.RemoveReload" xml:space="preserve">Снимите посылку и подайте её заново.</sys:String>
+  <sys:String x:Key="Work.ReviewImageReload" xml:space="preserve">Проверьте штрихкод на снимке. Снимите посылку и подайте её заново.</sys:String>
+  <sys:String x:Key="Work.ReviewBarcodeReload" xml:space="preserve">Проверьте штрихкод. Снимите посылку и подайте её заново.</sys:String>
+  <sys:String x:Key="Work.RemoveAndClick" xml:space="preserve">Снимите посылку и нажмите «Посылка снята» ниже.</sys:String>
+  <sys:String x:Key="Work.Remove" xml:space="preserve">Снимите посылку.</sys:String>
+  <sys:String x:Key="Work.ManualDestination" xml:space="preserve">
+Вручную определите, куда направить посылку.</sys:String>
+  <sys:String x:Key="Work.DisableNoInputSuffix" xml:space="preserve">
+Пост отключается. Новые штрихкоды не принимаются.</sys:String>
+  <sys:String x:Key="Work.StillPaused" xml:space="preserve">Подача ещё приостановлена</sys:String>
+  <sys:String x:Key="Work.RcsNotRecovered" xml:space="preserve">Связь с RCS не восстановлена</sys:String>
+  <sys:String x:Key="Work.MemberReview" xml:space="preserve">Участие поста в проверке связи ещё нужно проверить</sys:String>
+  <sys:String x:Key="Work.ProcessThenLoad" xml:space="preserve">. Завершите обработку перед следующей подачей.</sys:String>
+  <sys:String x:Key="Work.ConfirmThenNext" xml:space="preserve">
+После подтверждения можно принять следующую посылку.</sys:String>
+  <sys:String x:Key="Work.RecoveryUnavailable" xml:space="preserve">Данные прошлого сеанса нельзя восстановить автоматически</sys:String>
+  <sys:String x:Key="Work.RcsStillUnavailable" xml:space="preserve">Связь с RCS ещё не восстановлена</sys:String>
+  <sys:String x:Key="Work.ScannedNotRequested" xml:space="preserve">Штрихкод прочитан. Ячейка ещё не запрошена.</sys:String>
+  <sys:String x:Key="Work.NewParcelHeld" xml:space="preserve">Новые посылки пока не принимаются</sys:String>
+  <sys:String x:Key="Work.MaintenanceDataInstruction" xml:space="preserve">Попросите техника проверить рабочие данные. Оператору не нужно открывать средство обслуживания.</sys:String>
+  <sys:String x:Key="Work.ResumeInstruction" xml:space="preserve">Проверьте станцию и нажмите «Возобновить подачу».</sys:String>
+  <sys:String x:Key="Work.CheckEquipmentBeforeReload" xml:space="preserve">Попросите техника проверить оборудование. Возобновите подачу после восстановления.</sys:String>
+  <sys:String x:Key="Work.InFlightFull" xml:space="preserve">Достигнут предел операций для поста</sys:String>
+  <sys:String x:Key="Work.ContinueReading" xml:space="preserve">Распознавание продолжается</sys:String>
+  <sys:String x:Key="Work.ReadIssueManual" xml:space="preserve">Сбой распознавания. Возможен ручной ввод.</sys:String>
+  <sys:String x:Key="Work.Reading" xml:space="preserve">Распознавание</sys:String>
+  <sys:String x:Key="Work.StatusReadInterrupted" xml:space="preserve">Чтение состояния прервано</sys:String>
+  <sys:String x:Key="Work.NoChuteFromRcs" xml:space="preserve">RCS не назначила ячейку</sys:String>
+  <sys:String x:Key="Work.NoValidChute" xml:space="preserve">Действительная ячейка не получена</sys:String>
+  <sys:String x:Key="Work.NeedsUnpacking" xml:space="preserve">Нужен осмотр с распаковкой</sys:String>
+  <sys:String x:Key="Work.CannotHandleParcel" xml:space="preserve">Посылку пока нельзя обработать</sys:String>
+  <sys:String x:Key="Work.Disabled" xml:space="preserve">Отключён</sys:String>
+  <sys:String x:Key="Work.LaneNotConfigured" xml:space="preserve">Пост не настроен</sys:String>
+  <sys:String x:Key="Work.RequestReview" xml:space="preserve">Запрос нужно проверить</sys:String>
+  <sys:String x:Key="Work.InductionPaused" xml:space="preserve">Подача приостановлена</sys:String>
+  <sys:String x:Key="Work.LoadUnavailable" xml:space="preserve">Подача недоступна</sys:String>
+  <sys:String x:Key="Work.WaitVehicle" xml:space="preserve">Ожидается подтверждение тележки</sys:String>
+  <sys:String x:Key="Work.WaitRemovalConfirmation" xml:space="preserve">Ожидается подтверждение снятия</sys:String>
+  <sys:String x:Key="Work.OriginalClosing" xml:space="preserve">Завершается исходный запрос</sys:String>
+  <sys:String x:Key="Work.WaitRemoval" xml:space="preserve">Ожидается снятие</sys:String>
+  <sys:String x:Key="Work.CameraManualAvailable" xml:space="preserve">Камера недоступна. Можно сканировать вручную.</sys:String>
+  <sys:String x:Key="Work.WaitingToLoad" xml:space="preserve">Ожидается посылка</sys:String>
+  <sys:String x:Key="Work.ReadByPlacing" xml:space="preserve">Подайте посылку для автоматического сканирования.</sys:String>
+  <sys:String x:Key="Work.TypeFullCode" xml:space="preserve">Можно ввести полный штрихкод.</sys:String>
+  <sys:String x:Key="Work.ScanGunOrKeyboard" xml:space="preserve">Или отсканируйте либо введите штрихкод.</sys:String>
+  <sys:String x:Key="Work.Disabling" xml:space="preserve">Пост отключается. Новые штрихкоды не принимаются.</sys:String>
+  <sys:String x:Key="Work.DisabledNoInput" xml:space="preserve">Пост отключён и не принимает штрихкоды.</sys:String>
+  <sys:String x:Key="Work.CameraOfflineCanEnter" xml:space="preserve">Камера не в сети. Отсканируйте или введите штрихкод.</sys:String>
+  <sys:String x:Key="Work.CameraOfflinePlain" xml:space="preserve">Камера не в сети</sys:String>
+  <sys:String x:Key="Work.MultipleViewImage" xml:space="preserve">Считано несколько штрихкодов. Проверьте снимок.</sys:String>
+  <sys:String x:Key="Work.RetryOrPda" xml:space="preserve">Распознавание этой посылки продолжается. Возможен ввод с ТСД.</sys:String>
+  <sys:String x:Key="Work.TimeoutPda" xml:space="preserve">Истекло время распознавания. Можно ввести код с ТСД на этом посту.</sys:String>
+  <sys:String x:Key="Work.ReadingAdjust" xml:space="preserve">Идёт распознавание. Поправьте этикетку или введите код с ТСД.</sys:String>
+  <sys:String x:Key="Work.RoundCode" xml:space="preserve">Штрихкод текущего цикла</sys:String>
+  <sys:String x:Key="Work.ProcessingDots" xml:space="preserve">Обработка…</sys:String>
+  <sys:String x:Key="Work.PreviousChute" xml:space="preserve">Ячейка предыдущей посылки</sys:String>
+  <sys:String x:Key="Work.ScanPaused" xml:space="preserve">Штрихкод считан. Подача приостановлена.</sys:String>
+  <sys:String x:Key="Work.WaitInput" xml:space="preserve">Ожидается ввод штрихкода</sys:String>
+  <sys:String x:Key="Work.WaitForAdmission" xml:space="preserve">Ожидается готовность к подаче</sys:String>
+  <sys:String x:Key="Work.WaitRescan" xml:space="preserve">Ожидается повторное сканирование</sys:String>
+  <sys:String x:Key="Work.Processing" xml:space="preserve">Обработка</sys:String>
+  <sys:String x:Key="Work.NoChute" xml:space="preserve">Ячейка не получена</sys:String>
+  <sys:String x:Key="Work.PreviousChuteReadOnly" xml:space="preserve">Предыдущая ячейка, только просмотр</sys:String>
+  <sys:String x:Key="Work.ChuteNotYetAvailable" xml:space="preserve">Идёт обработка. Действительная ячейка ещё не получена.</sys:String>
+  <sys:String x:Key="Work.CurrentChuteCopy" xml:space="preserve">Текущая ячейка. Можно скопировать.</sys:String>
+  <sys:String x:Key="Work.PreviousChuteStatus" xml:space="preserve">Предыдущая посылка: ячейка назначена · Только просмотр</sys:String>
+  <sys:String x:Key="Work.StateExpired" xml:space="preserve">Состояние устарело</sys:String>
+  <sys:String x:Key="Work.NoNewCode" xml:space="preserve">Штрихкоды пока не принимаются</sys:String>
+  <sys:String x:Key="Work.ProcessingCurrent" xml:space="preserve">Обработка текущей посылки</sys:String>
+  <sys:String x:Key="Work.NotSentViewImage" xml:space="preserve">Этот скан не отправил запрос. Можно открыть снимок.</sys:String>
+  <sys:String x:Key="Work.EnterBarcodeManually" xml:space="preserve">Отсканируйте или введите полный штрихкод.</sys:String>
+  <sys:String x:Key="Work.ReconnectedScanning" xml:space="preserve">Камера подключена заново. Идёт повторное сканирование.</sys:String>
+  <sys:String x:Key="Work.ReadNotConfirmed" xml:space="preserve">Штрихкод считан и сохраняется. Приём ещё не подтверждён.</sys:String>
+  <sys:String x:Key="Work.NowCanScanLoad" xml:space="preserve">Сейчас: можно сканировать и подавать</sys:String>
+  <sys:String x:Key="Work.NowCanManual" xml:space="preserve">Сейчас: доступно ручное сканирование</sys:String>
+  <sys:String x:Key="Work.NowPrefix" xml:space="preserve">Сейчас: </sys:String>
+  <sys:String x:Key="Work.PausedPrefix" xml:space="preserve">Подача приостановлена. </sys:String>
+  <sys:String x:Key="Work.CheckImageBeforeNext" xml:space="preserve">Проверьте штрихкод на снимке. Снимите посылку с лотка перед следующей подачей.</sys:String>
+  <sys:String x:Key="Work.SubmitFullBarcode" xml:space="preserve">Введите полный штрихкод и нажмите Enter или «Отправить».</sys:String>
+  <sys:String x:Key="Work.RescanPendingResult" xml:space="preserve">Пока не подавайте посылку. Отсканируйте повторно и дождитесь действительной ячейки. Исходные неподтверждённые запросы нужно проверить.</sys:String>
+  <sys:String x:Key="Work.NoPreviousDelivery" xml:space="preserve">Дождитесь ячейки этой посылки. Не используйте предыдущую.</sys:String>
+  <sys:String x:Key="Work.SkippedRemoveReload" xml:space="preserve">Посылка пропущена. Снимите и подайте её заново.</sys:String>
+  <sys:String x:Key="Work.NoChuteCheckImage" xml:space="preserve">Ячейка не назначена. Проверьте штрихкод на снимке. Снимите посылку перед подачей следующей.</sys:String>
+  <sys:String x:Key="Work.ReadWaitingResult" xml:space="preserve">Штрихкод считан. Ожидается результат.</sys:String>
+  <sys:String x:Key="Work.PreviousBarcodeTask" xml:space="preserve">Предыдущий штрихкод: {0}   Задание: {1}</sys:String>
+  <sys:String x:Key="Settings.Theme" xml:space="preserve">Цветовая тема</sys:String>
+  <sys:String x:Key="Settings.ThemeHelp" xml:space="preserve">Цвета меняются для текущего пользователя Windows. Нажмите «Сохранить настройки», чтобы применить их без остановки подачи.</sys:String>
+  <sys:String x:Key="Settings.Language" xml:space="preserve">Язык интерфейса</sys:String>
+  <sys:String x:Key="Settings.LanguageHelp" xml:space="preserve">Язык меняется для текущего пользователя Windows. Нажмите «Сохранить настройки», чтобы применить его сразу.</sys:String>
+  <sys:String x:Key="Settings.Light" xml:space="preserve">Светлая (по умолчанию)</sys:String>
+  <sys:String x:Key="Settings.Dark" xml:space="preserve">Тёмная (высокая контрастность)</sys:String>
+  <sys:String x:Key="Settings.DisplayTitle" xml:space="preserve">Настройки экрана</sys:String>
+  <sys:String x:Key="Settings.DisplayGuide" xml:space="preserve">Настройте режим открытия и расположение элементов окна.</sys:String>
+  <sys:String x:Key="Settings.Pace" xml:space="preserve">Показ темпа работы</sys:String>
+  <sys:String x:Key="Settings.PaceToggle" xml:space="preserve">Показывать число назначений за смену и темп за последние 10 минут</sys:String>
+  <sys:String x:Key="Settings.PaceHelp" xml:space="preserve">Применяется для текущего пользователя Windows. Сохраните вместе с режимом окна и звуками.</sys:String>
+  <sys:String x:Key="Settings.WindowMode" xml:space="preserve">Режим открытия окна</sys:String>
+  <sys:String x:Key="Settings.Windowed" xml:space="preserve">В окне</sys:String>
+  <sys:String x:Key="Settings.FullScreen" xml:space="preserve">Во весь экран</sys:String>
+  <sys:String x:Key="Settings.AutoStart" xml:space="preserve">Запуск станции при входе</sys:String>
+  <sys:String x:Key="Settings.AutoStartToggle" xml:space="preserve">Запускать при входе</sys:String>
+  <sys:String x:Key="Settings.AutoStartHelp" xml:space="preserve">Запускается при входе текущего пользователя Windows. Нажмите «Сохранить настройки».</sys:String>
+  <sys:String x:Key="Settings.AudioVolume" xml:space="preserve">Громкость сигналов</sys:String>
+  <sys:String x:Key="Settings.AudioVolumeHelp" xml:space="preserve">По умолчанию 80%. 0 — без звука, 100 — максимум. Настройка сигналов действует для текущего пользователя Windows. Прослушивание её не сохраняет.</sys:String>
+  <sys:String x:Key="Settings.CueRead" xml:space="preserve">Звук сканирования</sys:String>
+  <sys:String x:Key="Settings.CueSuccess" xml:space="preserve">Звук успеха</sys:String>
+  <sys:String x:Key="Settings.CueRejected" xml:space="preserve">Звук отказа</sys:String>
+  <sys:String x:Key="Settings.Immediate" xml:space="preserve">Сразу</sys:String>
+  <sys:String x:Key="Settings.Reconnect" xml:space="preserve">После переподключения</sys:String>
+  <sys:String x:Key="Settings.Restart" xml:space="preserve">Нужен перезапуск</sys:String>
+  <sys:String x:Key="Settings.DisplayWork" xml:space="preserve">Вернуться к работе</sys:String>
+  <sys:String x:Key="Settings.Advanced" xml:space="preserve">Дополнительные настройки</sys:String>
+  <sys:String x:Key="Settings.StationRcs" xml:space="preserve">Станция и RCS</sys:String>
+  <sys:String x:Key="Settings.Cameras" xml:space="preserve">Камеры</sys:String>
+  <sys:String x:Key="Settings.Sorting" xml:space="preserve">Правила сортировки</sys:String>
+  <sys:String x:Key="Settings.Scan" xml:space="preserve">Правила считывания</sys:String>
+  <sys:String x:Key="Settings.Maintenance" xml:space="preserve">Обслуживание системы</sys:String>
+  <sys:String x:Key="Settings.Review" xml:space="preserve">Проверка и завершение</sys:String>
+  <sys:String x:Key="Settings.Site" xml:space="preserve">Подключение станции</sys:String>
+  <sys:String x:Key="Settings.Camera" xml:space="preserve">Камера</sys:String>
+  <sys:String x:Key="Settings.Unsaved" xml:space="preserve">Есть несохранённые изменения</sys:String>
+  <sys:String x:Key="Settings.NoChanges" xml:space="preserve">Нет несохранённых изменений</sys:String>
+  <sys:String x:Key="Settings.CloseEdit" xml:space="preserve">Завершить редактирование</sys:String>
+  <sys:String x:Key="Settings.ReviewChanges" xml:space="preserve">Посмотреть изменения</sys:String>
+  <sys:String x:Key="Ops.Connected" xml:space="preserve">Станция подключена</sys:String>
+  <sys:String x:Key="Ops.VerifiedTime" xml:space="preserve">Локальное подключение для чтения проверено · Состояние на {0}</sys:String>
+  <sys:String x:Key="Ops.StationName" xml:space="preserve">Станция {0}</sys:String>
+  <sys:String x:Key="Ops.PendingYes" xml:space="preserve">Есть ожидающие настройки</sys:String>
+  <sys:String x:Key="Ops.PendingNo" xml:space="preserve">Нет ожидающих настроек</sys:String>
+  <sys:String x:Key="Ops.Executing" xml:space="preserve">Запросы в работе: {0}</sys:String>
+  <sys:String x:Key="Ops.RuntimeInfo" xml:space="preserve">Экземпляр: {0}
+Ревизия снимка: {1}</sys:String>
+  <sys:String x:Key="Ops.LeftPosition" xml:space="preserve">Левый пост</sys:String>
+  <sys:String x:Key="Ops.RightPosition" xml:space="preserve">Правый пост</sys:String>
+  <sys:String x:Key="Ops.NoPosition" xml:space="preserve">Станция ещё не передала состояние этого поста.</sys:String>
+  <sys:String x:Key="Ops.CanInduct" xml:space="preserve">Готов к подаче</sys:String>
+  <sys:String x:Key="Ops.CannotInduct" xml:space="preserve">Подача недоступна</sys:String>
+  <sys:String x:Key="Ops.ManualAllowed" xml:space="preserve">Разрешён</sys:String>
+  <sys:String x:Key="Ops.ManualLimited" xml:space="preserve">Ограничен</sys:String>
+  <sys:String x:Key="Ops.NoDetection" xml:space="preserve">Проверка ещё не зарегистрирована</sys:String>
+  <sys:String x:Key="Ops.Online" xml:space="preserve">На связи</sys:String>
+  <sys:String x:Key="Ops.LastChecked" xml:space="preserve">Последняя проверка: {0}</sys:String>
+  <sys:String x:Key="Ops.WaitStorage" xml:space="preserve">Свободное место ещё не проверено</sys:String>
+  <sys:String x:Key="Ops.StorageOnDisk" xml:space="preserve">Свободно: {0:F1} ГиБ</sys:String>
+  <sys:String x:Key="Ops.StorageFloor" xml:space="preserve">Порог предупреждения: {0:F1} ГиБ</sys:String>
+  <sys:String x:Key="Ops.PrepareBoth" xml:space="preserve">Доступно автоматическое и ручное сканирование</sys:String>
+  <sys:String x:Key="Ops.PrepareAutomatic" xml:space="preserve">Доступно автоматическое сканирование</sys:String>
+  <sys:String x:Key="Ops.CheckLane" xml:space="preserve">Проверьте указания для поста на станции.</sys:String>
+  <sys:String x:Key="Work.RemoveWhileOffline" xml:space="preserve">Снимите посылку и дождитесь готовности поста.
+Если это повторяется, сообщите в службу обслуживания.</sys:String>
+  <sys:String x:Key="Startup.Starting" xml:space="preserve">Запуск станции</sys:String>
+  <sys:String x:Key="Startup.Preparing" xml:space="preserve">Подготовка к запуску. Подождите.</sys:String>
+  <sys:String x:Key="Startup.MaintenanceDone" xml:space="preserve">Обслуживание завершено · Станция остановлена</sys:String>
+  <sys:String x:Key="Startup.StartOrExit" xml:space="preserve">Нажмите «Запустить станцию», чтобы подключить камеры и RCS. Можно также выйти.</sys:String>
+  <sys:String x:Key="Startup.Launch" xml:space="preserve">Запустить станцию</sys:String>
+  <sys:String x:Key="Startup.ActionFailed" xml:space="preserve">Действие не завершено. Проверьте диагностику ниже и повторите.</sys:String>
+  <sys:String x:Key="Startup.UninstallNotOpened" xml:space="preserve">Не удалось открыть удаление</sys:String>
+  <sys:String x:Key="Startup.UninstallRetry" xml:space="preserve">Программа и данные сохранены. Закройте станцию и повторите. Если не удаётся проверить кэш обслуживания, используйте полный установщик для восстановления.</sys:String>
+  <sys:String x:Key="Startup.RetryUninstaller" xml:space="preserve">Снова открыть удаление</sys:String>
+  <sys:String x:Key="Startup.Failed" xml:space="preserve">Станция не запустилась</sys:String>
+  <sys:String x:Key="Startup.FailureActions" xml:space="preserve">Причина указана ниже. Повторите запуск, измените настройки или откройте автономное обслуживание. При необходимости передайте диагностику специалисту. Подача ещё не началась.</sys:String>
+  <sys:String x:Key="Startup.CopyDiagnostics" xml:space="preserve">Копировать диагностику</sys:String>
+  <sys:String x:Key="Startup.CopyFailed" xml:space="preserve">Не удалось скопировать. Можно выделить и скопировать текст диагностики: </sys:String>
+  <sys:String x:Key="Startup.StopExit" xml:space="preserve">Остановить и выйти</sys:String>
+  <sys:String x:Key="Startup.Retry" xml:space="preserve">Повторить запуск</sys:String>
+  <sys:String x:Key="Startup.RepairSettings" xml:space="preserve">Настройки / Автономное обслуживание</sys:String>
+  <sys:String x:Key="Startup.BuildIdentity" xml:space="preserve">Версия ПО и коммит Git</sys:String>
+  <sys:String x:Key="Startup.BuildLabel" xml:space="preserve">Версия {0} · Git {1}</sys:String>
+  <sys:String x:Key="Startup.StopIncomplete" xml:space="preserve">
+
+Не удалось остановить: </sys:String>
+  <sys:String x:Key="Startup.UninstallOpenFailure" xml:space="preserve">
+
+Не удалось открыть удаление: </sys:String>
+  <sys:String x:Key="Startup.ActionIncomplete" xml:space="preserve">
+
+Действие не завершено: </sys:String>
+  <sys:String x:Key="First.NotSaved" xml:space="preserve">Не сохранено</sys:String>
+  <sys:String x:Key="First.Admin" xml:space="preserve">Открыть режим управления…</sys:String>
+  <sys:String x:Key="First.Exit" xml:space="preserve">Выйти из настройки</sys:String>
+  <sys:String x:Key="First.SaveDraft" xml:space="preserve">Сохранить черновик</sys:String>
+  <sys:String x:Key="First.SaveDraftHelp" xml:space="preserve">Сохраните введённые данные и выйдите. Настройку можно продолжить позже.</sys:String>
+  <sys:String x:Key="First.ExitHelp" xml:space="preserve">Выход из первоначальной настройки. Перед выходом появится запрос о несохранённых данных.</sys:String>
+  <sys:String x:Key="First.Import" xml:space="preserve">Импорт конфигурации</sys:String>
+  <sys:String x:Key="First.ImportPreview" xml:space="preserve">Предпросмотр импорта конфигурации</sys:String>
+  <sys:String x:Key="First.ApplyDraft" xml:space="preserve">Применить к текущему черновику</sys:String>
+  <sys:String x:Key="First.AdvancedLinks" xml:space="preserve">Копии, диагностика и восстановление</sys:String>
+  <sys:String x:Key="First.FullDiagnostics" xml:space="preserve">Открыть полную диагностику…</sys:String>
+  <sys:String x:Key="First.Diagnostics" xml:space="preserve">Диагностика запуска</sys:String>
+  <sys:String x:Key="First.ConfigInfo" xml:space="preserve">Сведения о конфигурации</sys:String>
+  <sys:String x:Key="First.CannotReadConfiguration" xml:space="preserve">Не удалось прочитать конфигурацию. Проверьте диагностику и запустите восстановление. Исходный файл сохранён.</sys:String>
+  <sys:String x:Key="First.ReviewChanges" xml:space="preserve">Изменения и сведения о конфигурации</sys:String>
+  <sys:String x:Key="First.CheckDetails" xml:space="preserve">Подробности проверки конфигурации</sys:String>
+  <sys:String x:Key="First.EditRequired" xml:space="preserve">Исправьте настройки по результатам проверки каждого поля.</sys:String>
+  <sys:String x:Key="Debug.ScanStopped" xml:space="preserve">Сканирование остановлено. Его можно запустить снова.</sys:String>
+  <sys:String x:Key="Debug.NotSentPrefix" xml:space="preserve">Запрос не отправлен: </sys:String>
+  <sys:String x:Key="Debug.WaitStopped" xml:space="preserve">Ожидание прервано. Запрос мог быть отправлен. Состояние диагностики не изменено. Проверьте результат этого цикла.</sys:String>
+  <sys:String x:Key="Debug.AnotherRound" xml:space="preserve">В другом окне начат новый цикл. Здесь сохранены исходный снимок и запрос. Запустите сканирование, чтобы начать новый цикл в этом окне.</sys:String>
+  <sys:String x:Key="Debug.ReadFailure" xml:space="preserve">Не удалось прочитать состояние диагностики. Состояние и запросы не изменены.</sys:String>
+  <sys:String x:Key="Debug.PhotoOverwritten" xml:space="preserve">Снимок этого цикла перезаписан. Проверьте журнал.</sys:String>
+  <sys:String x:Key="Debug.CopiedResponse" xml:space="preserve">Исходный ответ RCS скопирован.</sys:String>
+  <sys:String x:Key="Debug.Clipboard" xml:space="preserve">Буфер обмена недоступен. Повторите попытку чуть позже.</sys:String>
+  <sys:String x:Key="Debug.CopyNeedsAuthorization" xml:space="preserve">Срок доступа к управлению истёк. Подтвердите доступ перед копированием.</sys:String>
+  <sys:String x:Key="Debug.NotSentYet" xml:space="preserve">Запрос не отправлен</sys:String>
+  <sys:String x:Key="Debug.WaitPhoto" xml:space="preserve">Ожидание снимка этого цикла…</sys:String>
+  <sys:String x:Key="Debug.WaitPhotoHint" xml:space="preserve">Ожидание снимка.
+Нажмите «Сканировать».</sys:String>
+  <sys:String x:Key="Debug.ManualRequest" xml:space="preserve">Этот запрос введён вручную.</sys:String>
+  <sys:String x:Key="Debug.ReconcileFirst" xml:space="preserve">Перед сменой камеры проверьте результат предыдущей команды для этого поста.</sys:String>
+  <sys:String x:Key="Ops.EnterDebug" xml:space="preserve">Начать диагностику (пауза подачи)</sys:String>
+  <sys:String x:Key="Ops.LeaveDebug" xml:space="preserve">Завершить диагностику и возобновить</sys:String>
+  <sys:String x:Key="Ops.DebugRecords" xml:space="preserve">Записи диагностики</sys:String>
+  <sys:String x:Key="Ops.ConnectionDiagnostics" xml:space="preserve">Диагностика связи</sys:String>
+  <sys:String x:Key="Ops.BrowseDiagnostics" xml:space="preserve">Просмотр диагностики связи</sys:String>
+  <sys:String x:Key="Ops.CancelExport" xml:space="preserve">Отменить экспорт</sys:String>
+  <sys:String x:Key="Ops.BackupPlan" xml:space="preserve">Расписание и состояние копирования</sys:String>
+  <sys:String x:Key="Ops.OfflineMaintenanceNotice" xml:space="preserve">Полностью закройте станцию перед автономным обслуживанием. Эта команда закроет текущую программу и откроет средство обслуживания.</sys:String>
+  <sys:String x:Key="Ops.ViewBackupResult" xml:space="preserve">Результат копирования</sys:String>
+  <sys:String x:Key="Ops.CreateBackup" xml:space="preserve">Создать полную копию…</sys:String>
+  <sys:String x:Key="Ops.TechnicalDetails" xml:space="preserve">Технические подробности</sys:String>
+  <sys:String x:Key="Ops.CalibrateEmpty" xml:space="preserve">Подтвердить пустой лоток и откалибровать</sys:String>
+  <sys:String x:Key="Ops.WaitRead" xml:space="preserve">Ожидание данных</sys:String>
+  <sys:String x:Key="Ops.StorageSettings" xml:space="preserve">Настройки данных и записей</sys:String>
+  <sys:String x:Key="Ops.LogNotConfirmed" xml:space="preserve">Состояние подробного журнала не подтверждено</sys:String>
+  <sys:String x:Key="Ops.EnableVerbose" xml:space="preserve">Подробный журнал на 30 минут</sys:String>
+  <sys:String x:Key="Ops.RetryingDetails" xml:space="preserve">Чтение подробностей прервано. Прежние данные устарели. Выполняется повторная попытка.</sys:String>
+  <sys:String x:Key="Settings.FullScreenHelp" xml:space="preserve">Применяется сразу и при следующем открытии. В полноэкранном режиме заголовок скрыт. Окно можно свернуть и восстановить в том же режиме. Esc и F11 его не отключают.</sys:String>
+  <sys:String x:Key="Settings.WindowedHelp" xml:space="preserve">Применяется сразу и запоминается. F11 временно меняет режим, Esc возвращает в окно.</sys:String>
+  <sys:String x:Key="Settings.Show" xml:space="preserve">Показывать</sys:String>
+  <sys:String x:Key="Settings.Hide" xml:space="preserve">Скрывать</sys:String>
+  <sys:String x:Key="Settings.Mute" xml:space="preserve">Без звука</sys:String>
+  <sys:String x:Key="Settings.GrantUntil" xml:space="preserve">Редактирование до {0}</sys:String>
+  <sys:String x:Key="Settings.GrantPending" xml:space="preserve">Доступ проверяется · Черновик сохранён</sys:String>
+  <sys:String x:Key="Settings.AwaitEffective" xml:space="preserve">Ожидаются действующие настройки станции.</sys:String>
+  <sys:String x:Key="Settings.PendingRevision" xml:space="preserve">Версия настроек #{0} · Изменения ожидают применения</sys:String>
+  <sys:String x:Key="Settings.EffectiveRevision" xml:space="preserve">Действующая версия #{0} · Ожидающих изменений нет</sys:String>
+  <sys:String x:Key="Settings.ZoneLabel" xml:space="preserve">ID склада</sys:String>
+  <sys:String x:Key="Settings.LineLabel" xml:space="preserve">ID линии</sys:String>
+  <sys:String x:Key="Settings.StationLabel" xml:space="preserve">Станция</sys:String>
+  <sys:String x:Key="Settings.StationCode" xml:space="preserve">Код станции</sys:String>
+  <sys:String x:Key="Settings.RcsHost" xml:space="preserve">Сервер RCS</sys:String>
+  <sys:String x:Key="Settings.CameraSerial" xml:space="preserve">Серийный номер устройства</sys:String>
+  <sys:String x:Key="Settings.CameraCode" xml:space="preserve">Код камеры в RCS</sys:String>
+  <sys:String x:Key="Settings.NotSavedSeparately" xml:space="preserve">Отдельно не задано</sys:String>
+  <sys:String x:Key="Settings.LaneDisabled" xml:space="preserve">Пост отключён</sys:String>
+  <sys:String x:Key="Param.HeadingStation" xml:space="preserve">1. Станция и RCS</sys:String>
+  <sys:String x:Key="Param.HeadingCameras" xml:space="preserve">2. Камеры</sys:String>
+  <sys:String x:Key="Param.HeadingDisplay" xml:space="preserve">3. Экран и звуки</sys:String>
+  <sys:String x:Key="Param.StationIdentity" xml:space="preserve">Идентификация станции</sys:String>
+  <sys:String x:Key="Param.StationHeader" xml:space="preserve">Идентификация станции</sys:String>
+  <sys:String x:Key="Param.StationHint" xml:space="preserve">Укажите коды склада, линии и станции, назначенные в RCS.</sys:String>
+  <sys:String x:Key="Param.StationCode" xml:space="preserve">Код станции *</sys:String>
+  <sys:String x:Key="Param.StationCodeHint" xml:space="preserve">Код всей станции в RCS. Оба поста используют его для запросов ячеек и проверки связи.</sys:String>
+  <sys:String x:Key="Param.RcsService" xml:space="preserve">Служба RCS</sys:String>
+  <sys:String x:Key="Param.RcsProtocol" xml:space="preserve">Протокол и проверка связи</sys:String>
+  <sys:String x:Key="Param.RcsBoth" xml:space="preserve">Оба поста используют этот адрес RCS. После сохранения следуйте указаниям о переподключении или перезапуске.</sys:String>
+  <sys:String x:Key="Param.TargetRequired" xml:space="preserve">Адрес службы *</sys:String>
+  <sys:String x:Key="Param.Target" xml:space="preserve">Адрес службы</sys:String>
+  <sys:String x:Key="Param.AddressHelp" xml:space="preserve">Адрес HTTP(S) с путём /rcs/sorter/api.</sys:String>
+  <sys:String x:Key="Param.Warehouse" xml:space="preserve">ID склада</sys:String>
+  <sys:String x:Key="Param.WarehouseHint" xml:space="preserve">ID склада, назначенный в RCS.</sys:String>
+  <sys:String x:Key="Param.Line" xml:space="preserve">ID линии</sys:String>
+  <sys:String x:Key="Param.LineHint" xml:space="preserve">ID линии, назначенный в RCS.</sys:String>
+  <sys:String x:Key="Param.CameraLeftCode" xml:space="preserve">Код левой камеры</sys:String>
+  <sys:String x:Key="Param.CameraRightCode" xml:space="preserve">Код правой камеры</sys:String>
+  <sys:String x:Key="Param.Heartbeat" xml:space="preserve">Интервал проверки связи</sys:String>
+  <sys:String x:Key="Param.RequestTimeout" xml:space="preserve">Тайм-аут запроса ячейки</sys:String>
+  <sys:String x:Key="Param.MissingChute" xml:space="preserve">Если нет доступной ячейки</sys:String>
+  <sys:String x:Key="Param.CameraIp" xml:space="preserve">IP-адрес камеры</sys:String>
+  <sys:String x:Key="Param.CameraIpHelp" xml:space="preserve">IP-адрес камеры. Настройки камеры не изменяются.</sys:String>
+  <sys:String x:Key="Param.CameraSerial" xml:space="preserve">Серийный номер камеры</sys:String>
+  <sys:String x:Key="Param.CameraSerialHelp" xml:space="preserve">Номер считывается по IP и сохраняется с настройками. Существующий идентификатор сохраняется. После замены камеры с тем же IP выберите «Считать снова».</sys:String>
+  <sys:String x:Key="Param.CameraChoice" xml:space="preserve">Способ считывания</sys:String>
+  <sys:String x:Key="Param.CameraIpLabel" xml:space="preserve">IP-адрес</sys:String>
+  <sys:String x:Key="Param.CameraConnection" xml:space="preserve">Подключение камеры</sys:String>
+  <sys:String x:Key="Param.CameraPrompt" xml:space="preserve">Введите IP камеры</sys:String>
+  <sys:String x:Key="Param.CameraChoose" xml:space="preserve">Настройте используемые камеры</sys:String>
+  <sys:String x:Key="Param.CameraAutoRead" xml:space="preserve">Введите IP. Серийный номер считывается при сохранении. Удалите IP для неиспользуемых камер.</sys:String>
+  <sys:String x:Key="Param.CameraFeed" xml:space="preserve">Просмотр в реальном времени</sys:String>
+  <sys:String x:Key="Param.BarcodeFilter" xml:space="preserve">Фильтр штрихкодов</sys:String>
+  <sys:String x:Key="Param.BarcodeRules" xml:space="preserve">Правило фильтрации</sys:String>
+  <sys:String x:Key="Param.BarcodeExclude" xml:space="preserve">Правило исключения</sys:String>
+  <sys:String x:Key="Param.BarcodeMatch" xml:space="preserve">Правило совпадения (необязательно)</sys:String>
+  <sys:String x:Key="Param.BarcodeExcludeOptional" xml:space="preserve">Правило исключения (необязательно)</sys:String>
+  <sys:String x:Key="Param.BarcodeMatchHelp" xml:space="preserve">Весь штрихкод должен соответствовать регулярному выражению. Пустое поле отключает фильтр.</sys:String>
+  <sys:String x:Key="Param.MultipleCodes" xml:space="preserve">Отклонять несколько допустимых кодов</sys:String>
+  <sys:String x:Key="Param.MultiCodeSeparator" xml:space="preserve">Разделитель штрихкодов</sys:String>
+  <sys:String x:Key="Param.ReadTimeout" xml:space="preserve">Лимит времени считывания</sys:String>
+  <sys:String x:Key="Param.DataRecords" xml:space="preserve">Данные и записи</sys:String>
+  <sys:String x:Key="Param.ArchiveLimit" xml:space="preserve">Порог архивации записей</sys:String>
+  <sys:String x:Key="Param.StorageReserve" xml:space="preserve">Резерв диска</sys:String>
+  <sys:String x:Key="Param.LogDays" xml:space="preserve">Максимальный срок журнала</sys:String>
+  <sys:String x:Key="Param.CleanupDays" xml:space="preserve">Срок хранения закрытых записей</sys:String>
+  <sys:String x:Key="Param.ConfigurationDir" xml:space="preserve">Папка конфигурации</sys:String>
+  <sys:String x:Key="Param.StorageLocation" xml:space="preserve">Расположение хранилища</sys:String>
+  <sys:String x:Key="Param.AutoBackup" xml:space="preserve">Автокопирование</sys:String>
+  <sys:String x:Key="Param.EnableBackup" xml:space="preserve">Включить автокопирование</sys:String>
+  <sys:String x:Key="Param.BackupPlan" xml:space="preserve">Расписание копирования</sys:String>
+  <sys:String x:Key="Param.BackupDirectory" xml:space="preserve">Папка резервных копий</sys:String>
+  <sys:String x:Key="Param.BackupInterval" xml:space="preserve">Интервал копирования</sys:String>
+  <sys:String x:Key="Param.BackupLimit" xml:space="preserve">Лимит плановых копий</sys:String>
+  <sys:String x:Key="Param.FullBackup" xml:space="preserve">Ручное копирование</sys:String>
+  <sys:String x:Key="Param.CleanupZone" xml:space="preserve">Часовой пояс очистки</sys:String>
+  <sys:String x:Key="Param.CleanupTime" xml:space="preserve">Время очистки</sys:String>
+  <sys:String x:Key="Param.Advanced" xml:space="preserve">Дополнительно</sys:String>
+  <sys:String x:Key="Param.ExpandMaintenance" xml:space="preserve">Обслуживание и экран (есть значения по умолчанию)</sys:String>
+  <sys:String x:Key="Param.ConnectOnStart" xml:space="preserve">Подключение при запуске</sys:String>
+  <sys:String x:Key="Param.AutoReconnect" xml:space="preserve">Переподключение после изменения</sys:String>
+  <sys:String x:Key="Param.FirstStep" xml:space="preserve">Шаг {0} из {1}</sys:String>
+  <sys:String x:Key="Param.NoPage" xml:space="preserve">Выберите страницу настроек</sys:String>
+  <sys:String x:Key="Param.Steps" xml:space="preserve">При переходе вперёд проверяются предыдущие страницы. При возврате введённые данные сохраняются.</sys:String>
+  <sys:String x:Key="Param.CheckReady" xml:space="preserve">Ошибок в полях пока нет. Выполните проверку по шагам. Камеры и RCS можно настроить позже.</sys:String>
+  <sys:String x:Key="Param.ValidateFailure" xml:space="preserve">Некоторые параметры отсутствуют или неверны. Исправьте отмеченные поля.</sys:String>
+  <sys:String x:Key="Param.PatternFailure" xml:space="preserve">Неверное правило штрихкода. Проверьте скобки, символы и экранирование.</sys:String>
+  <sys:String x:Key="Param.ValidationFallback" xml:space="preserve">Настройки не прошли проверку. Изучите диагностику и исправьте данные.</sys:String>
 </ResourceDictionary>

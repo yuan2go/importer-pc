@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.ComponentModel;
 using System.Windows;
 using Ipc.Application.Contracts;
@@ -22,10 +23,11 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public bool IsTight { get => isTight; set { if (isTight == value) return; isTight = value; Changed(); } }
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
-    public string Station => Snapshot?.Configuration.Effective.StationId ?? "等待供包台配置";
+    public string Station => Snapshot?.Configuration.Effective.StationId ?? UiText.Get("Work.WaitingConfiguration");
     readonly Dictionary<string, string> preferenceNotices = [];
     public string PreferenceNoticeText => string.Join("\n\n", preferenceNotices.Values);
     public bool HasPreferenceNotices => preferenceNotices.Count != 0;
+    public void SetLanguagePreferenceNotice(string? message) => SetPreferenceNotice("language", message);
     internal void SetPreferenceNotice(string key, string? message)
     {
         if (string.IsNullOrEmpty(message))
@@ -56,23 +58,23 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     }
     public string RcsServiceStatus => RcsState switch
     {
-        RcsConnectionState.Online => "RCS 服务：在线",
-        RcsConnectionState.Offline => "RCS 服务：离线",
-        RcsConnectionState.Simulation => "RCS 服务：模拟",
-        RcsConnectionState.Deferred => "RCS 服务：待配置",
-        RcsConnectionState.AwaitingConfirmation => "RCS 服务：等待连接确认",
-        _ => "RCS 服务：状态未知"
+        RcsConnectionState.Online => UiText.Get("Work.RcsOnlineDetail"),
+        RcsConnectionState.Offline => UiText.Get("Work.RcsOfflineDetail"),
+        RcsConnectionState.Simulation => UiText.Get("Work.RcsSimulationDetail"),
+        RcsConnectionState.Deferred => UiText.Get("Work.RcsNotConfiguredDetail"),
+        RcsConnectionState.AwaitingConfirmation => UiText.Get("Work.RcsConfirmDetail"),
+        _ => UiText.Get("Work.RcsUnknownDetail")
     };
     public ParcelStatusPresentation RcsPresentation => RcsState switch
     {
-        RcsConnectionState.Online => ParcelPresentation.Accepted("RCS：在线"),
-        RcsConnectionState.Offline => ParcelPresentation.Rejected("RCS：离线"),
-        RcsConnectionState.Simulation => ParcelPresentation.Neutral("RCS：模拟连接"),
-        RcsConnectionState.Deferred => ParcelPresentation.Unknown("RCS：待配置"),
-        _ => ParcelPresentation.Unknown("RCS：待确认")
+        RcsConnectionState.Online => ParcelPresentation.Accepted(UiText.Get("Work.RcsOnline")),
+        RcsConnectionState.Offline => ParcelPresentation.Rejected(UiText.Get("Work.RcsOffline")),
+        RcsConnectionState.Simulation => ParcelPresentation.Neutral(UiText.Get("Work.RcsSimulated")),
+        RcsConnectionState.Deferred => ParcelPresentation.Unknown(UiText.Get("Work.RcsNotConfigured")),
+        _ => ParcelPresentation.Unknown(UiText.Get("Work.RcsPending"))
     };
     bool checkingRcs;
-    public string RcsButtonText => checkingRcs ? "RCS：检查中" : RcsPresentation.Text;
+    public string RcsButtonText => checkingRcs ? UiText.Get("Work.RcsChecking") : RcsPresentation.Text;
     public bool CanCheckRcs => !checkingRcs && Fresh && Application is IStationRcsHeartbeat &&
         RcsState is not (RcsConnectionState.Deferred or RcsConnectionState.Simulation);
     internal async Task CheckRcsAsync()
@@ -85,14 +87,14 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
             var result = await ServiceAsync(() => heartbeat.CheckRcsHeartbeatAsync(CancellationToken.None));
             Message = result switch
             {
-                RcsHeartbeatResult.Received => "已收到 RCS 心跳响应。",
-                RcsHeartbeatResult.Failed => "未收到有效的 RCS 心跳响应，请检查 RCS 连接后重试。",
-                RcsHeartbeatResult.NoPositions => "没有可发送心跳的相机编码，请检查 RCS 相机编码配置。",
-                RcsHeartbeatResult.Busy => "正在检查 RCS 心跳，请稍候。",
-                _ => "当前无法检查 RCS 心跳，请稍后重试。"
+                RcsHeartbeatResult.Received => UiText.Get("Work.RcsReplyReceived"),
+                RcsHeartbeatResult.Failed => UiText.Get("Work.RcsReplyMissing"),
+                RcsHeartbeatResult.NoPositions => UiText.Get("Work.RcsMissingCameraCode"),
+                RcsHeartbeatResult.Busy => UiText.Get("Work.RcsCheckWaiting"),
+                _ => UiText.Get("Work.RcsCheckUnavailable")
             };
         }
-        catch (Exception) { Message = "RCS 心跳检查未完成，请稍后重试。"; }
+        catch (Exception) { Message = UiText.Get("Work.RcsCheckIncomplete"); }
         finally { checkingRcs = false; Changed(nameof(CanCheckRcs)); Changed(nameof(RcsButtonText)); }
     }
     // Display copy only: never infer availability or remove the original blocking facts.
@@ -101,7 +103,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public bool IsSettingsNavigation => SelectedPage == "maintenance";
     public bool IsSettingsWorkspace => SelectedPage is "maintenance" or "logs";
     public string SettingsRunMode => (Snapshot?.Configuration.Effective.Mode switch
-    { RunMode.Simulation => "模拟模式", RunMode.Production => "生产模式", _ => "模式未确认" }) + " · 软件暂停不是安全急停";
+    { RunMode.Simulation => UiText.Get("Work.Simulation"), RunMode.Production => UiText.Get("Work.Production"), _ => UiText.Get("Work.ModeUnknown") }) + UiText.Get("Work.SafetySuffix");
     public string WorkspaceStatusBackground => OperatorTokens.Neutral;
     internal void ReportBarcodeFeedback(ParcelBarcodeReceipt receipt, string value) => SetPresentationMessage(value, receipt.Status == "Admitted" ? PresentationFeedbackKind.ResultMirrored : PresentationFeedbackKind.General);
     public string WorkFeedback => SelectedPage == "maintenance" ? ChineseInterfaceText.ParameterMessage(TaskFeedback) : TaskFeedback;
@@ -111,10 +113,10 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string SelectedPage
     {
         get => selectedPage;
-        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug" or "statistics" or "exceptions")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(WorkspaceStatusBackground)); }
+        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug" or "statistics" or "exceptions")) throw new ArgumentException(UiText.Get("Work.NotInstalledPage")); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(WorkspaceStatusBackground)); }
     }
-    public string PageTitle => SelectedPage switch { "statistics" => "统计与班次", "exceptions" => "异常处理", "history" => "记录", "maintenance" => "设置", "diagnostics" => "设备与诊断", "debug" => "调试", "logs" => "日志", _ => "作业" };
-    public SupplyStationViewModel(IParcelApplication application) : base(application, "供包工作台", "扫码 → 上游格口")
+    public string PageTitle => SelectedPage switch { "statistics" => UiText.Get("Work.Stats"), "exceptions" => UiText.Get("Work.Exceptions"), "history" => UiText.Get("Work.NavRecords"), "maintenance" => UiText.Get("Common.Settings"), "diagnostics" => UiText.Get("Work.DeviceDiagnostics"), "debug" => UiText.Get("Work.Debug"), "logs" => UiText.Get("Work.Log"), _ => UiText.Get("Work.NavWork") };
+    public SupplyStationViewModel(IParcelApplication application) : base(application, UiText.Get("Work.Station"), UiText.Get("Work.Flow"))
     {
         Left = new(this, "left"); Right = new(this, "right");
         PropertyChanged += (_, e) =>
@@ -126,6 +128,13 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
             if (e.PropertyName is nameof(Busy) or nameof(IsManagementMode)) NotifyOperatorWorkspace();
         };
     }
+    internal void RefreshLanguage()
+    {
+        Changed(null);
+        Left.RefreshLanguage();
+        Right.RefreshLanguage();
+    }
+
     protected override void SnapshotValidityChanged(DateTimeOffset now)
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
@@ -136,20 +145,20 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)
     {
         var op = position.Operation;
-        if (!CanStartOperation || !CanUseWorkspace || op is null) { Message = "本位状态未就绪"; return; }
+        if (!CanStartOperation || !CanUseWorkspace || op is null) { Message = UiText.Get("Work.LaneNotReady"); return; }
         Selected = op;
-        await RunAsync(async () => { var result = await ServiceAsync(() => Application.ReconcileAsync(op.Id)); Message = result.Status + " · " + result.Reason; }, "查询本位作业结果");
+        await RunAsync(async () => { var result = await ServiceAsync(() => Application.ReconcileAsync(op.Id)); Message = result.Status + " · " + result.Reason; }, UiText.Get("Work.QueryLane"));
     }
     public async Task ContinuePositionAsync(SupplyStationPositionViewModel position)
     {
         var op = position.Operation;
-        if (!CanUseWorkspace || op is null || !position.CanContinue || Snapshot is not { } displayed) { Message = "当前作业不能继续"; return; }
+        if (!CanUseWorkspace || op is null || !position.CanContinue || Snapshot is not { } displayed) { Message = UiText.Get("Work.CannotContinue"); return; }
         var inspection = position.InspectionReason;
         await RunAsync(async () =>
         {
             var result = await ServiceAsync(() => Application.CommandAsync(new(Wire.Id(), displayed.Revision, "ContinuePrepared", op.Id, inspection)));
             Message = result.Status + " · " + result.Reason;
-        }, "继续本位未尝试阶段");
+        }, UiText.Get("Work.ContinueLane"));
     }
     internal async Task CalibrateEmptyTrayAsync(SupplyStationPositionViewModel position, bool stationDebug)
     {
@@ -160,7 +169,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
             stationDebug ? "StationDebug" : "DisabledLane");
         var result = await ServiceAsync(() => Application.CommandAsync(command));
         if (result.Status != "Persisted")
-            Message = "校准未开始。请核对本位状态和相机连接后再试。";
+            Message = UiText.Get("Debug.CalibrationRejected");
         await RefreshAsync();
     }
     long historyOpenGeneration;
@@ -179,18 +188,18 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
             var detail = await ServiceAsync(() => Application.OperationAsync(operationId));
             if (generation != Volatile.Read(ref historyOpenGeneration) || Snapshot?.RuntimeId != runtime || selection != SelectionGeneration) return;
             Selected = detail;
-            if (Selected is null) Message = "作业详情读取失败：" + operationId;
+            if (Selected is null) Message = UiText.Get("Work.ReadDetailFailed") + operationId;
         }
     }
     public async Task EmitPositionAsync(SupplyStationPositionViewModel position)
     {
-        if (!CanUseWorkspace || !position.CanAdmit) { Message = "当前位不可接纳参考输入"; return; }
+        if (!CanUseWorkspace || !position.CanAdmit) { Message = UiText.Get("Work.ReferenceRejected"); return; }
         await RunAsync(() =>
         {
             var queued = Application.EmitReferenceAt(position.PositionId, position.AdmissionId, position.ParcelCode, Wire.Id());
-            SetPresentationMessage(queued ? "模拟扫描已提交，等待处理结果。" : "模拟扫描未受理，请查看本位受阻原因。", queued ? PresentationFeedbackKind.ObservationQueued : PresentationFeedbackKind.General);
+            SetPresentationMessage(queued ? UiText.Get("Work.ReferenceAccepted") : UiText.Get("Work.ReferenceNotAccepted"), queued ? PresentationFeedbackKind.ObservationQueued : PresentationFeedbackKind.General);
             return Task.CompletedTask;
-        }, "模拟本位读码");
+        }, UiText.Get("Work.SimulateRead"));
     }
 }
 
@@ -201,19 +210,20 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     readonly SupplyStationViewModel owner;
     public event PropertyChangedEventHandler? PropertyChanged;
     public string PositionId { get; private set; }
-    public string Heading => requestedPosition == "left" ? "左投递位" : "右投递位";
+    public string Heading => requestedPosition == "left" ? UiText.Get("Work.LeftLane") : UiText.Get("Work.RightLane");
     StationVehicleState? vehicle;
-    public string VehicleNumberText => vehicle?.VehicleNo ?? "小车";
-    public string VehicleStatusText => vehicle is null ? "小车：待确认" : VehicleNumberText + " · " + (vehicle.Status switch
-    { "IDLE" => CanAdmit || CanSubmitBarcode ? "可投包" : "待就绪", "TASKING" => "作业中", _ => "待确认" });
-    public string CompactVehicleStatusText => vehicle?.Status switch { "IDLE" => CanAdmit || CanSubmitBarcode ? "可投包" : "待就绪", "TASKING" => "作业中", _ => "待确认" };
+    public string VehicleNumberText => vehicle?.VehicleNo ?? UiText.Get("Work.Vehicle");
+    public string VehicleStatusText => vehicle is null ? UiText.Get("Work.VehiclePending") : VehicleNumberText + " · " + (vehicle.Status switch
+    { "IDLE" => CanAdmit || CanSubmitBarcode ? UiText.Get("Work.CanLoad") : UiText.Get("Work.VehicleNotReady"), "TASKING" => UiText.Get("Work.VehicleBusy"), _ => UiText.Get("Common.Pending") });
+    public string CompactVehicleStatusText => vehicle?.Status switch { "IDLE" => CanAdmit || CanSubmitBarcode ? UiText.Get("Work.CanLoad") : UiText.Get("Work.VehicleNotReady"), "TASKING" => UiText.Get("Work.VehicleBusy"), _ => UiText.Get("Common.Pending") };
     public string VehicleStatusForegroundKey => vehicle?.Status switch { "IDLE" when CanAdmit || CanSubmitBarcode => "OperatorSuccess", "TASKING" => "OperatorDanger", _ => "Muted" };
     public bool InputTargetActive => owner.InputTargetPosition == PositionId;
     internal void SetInputFocused(bool focused) { if (focused && !SupplyEnabled) return; if (focused || InputTargetActive) owner.SetInputTarget(focused ? PositionId : ""); }
+    internal void RefreshLanguage() => PropertyChanged?.Invoke(this, new(null));
     internal void NotifyInputTarget() { PropertyChanged?.Invoke(this, new(nameof(InputTargetActive))); }
-    public string ReaderId { get; private set; } = "未配置";
-    public string ReaderIdentity { get; private set; } = "未配置";
-    public string CameraAddress { get; private set; } = "尚未配置地址";
+    public string ReaderId { get; private set; } = UiText.Get("Common.NotConfigured");
+    public string ReaderIdentity { get; private set; } = UiText.Get("Common.NotConfigured");
+    public string CameraAddress { get; private set; } = UiText.Get("Work.AddressMissing");
     public ParcelOperation? Operation { get; private set; }
     public ParcelInputSnapshot? Input { get; private set; }
     public bool InputUnadmitted => ParcelPresentation.IsUnadmitted(Input);
@@ -222,7 +232,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public TrayPresenceModelSnapshot? TrayPresence => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.TrayPresence;
     public bool ShowUncalibratedHint => SupplyConfigured && TrayPresence is { Calibrated: false } &&
         DevicePresentation.Tone == ParcelPresentationTone.Accepted;
-    public string CameraFooterText => ShowUncalibratedHint ? "相机：在线 · 未校空盘" : DevicePresentation.Text;
+    public string CameraFooterText => ShowUncalibratedHint ? UiText.Get("Work.CameraNeedsTray") : DevicePresentation.Text;
     public string CameraFooterForegroundKey => ShowUncalibratedHint ? "OperatorWarning" : DeviceForegroundKey;
     public string DeviceForegroundKey => DevicePresentation.Tone switch
     {
@@ -232,7 +242,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         _ => "Muted"
     };
     public string? CameraFooterHint => ShowUncalibratedHint
-        ? "重启或重连后需由运维校准空托盘。未校准期间，取下异常包裹后请按“已取下包裹”。" : null;
+        ? UiText.Get("Work.CalibrationAfterReconnect") : null;
     public SmArrivalSnapshot? Arrival => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.Arrival;
     public SmParcelRound? CurrentRound => owner.Snapshot?.Rounds.SingleOrDefault(r => r.Id == owner.Snapshot.Positions?.SingleOrDefault(p => p.Id == PositionId)?.CurrentRoundId);
     public bool HasCurrentInput => CurrentRound is not null;
@@ -242,94 +252,94 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string Barcode => ObservedBarcode;
     public bool CurrentTaskAvailable => owner.Fresh && CurrentRound is { } round && Operation?.RoundId == round.Id &&
         Operation.Wcs?.State == StageState.Accepted && round.SuccessAt is not null;
-    public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? string.IsNullOrWhiteSpace(Operation!.Slot) ? OperatorCopy.NotReturned : Operation.Slot : "未取得";
-    public string AttentionReason => !owner.Fresh ? "状态中断，旧格口已失效。" :
+    public string Slot => !owner.Fresh ? UiText.Get("Work.OldChuteInvalid") : CurrentTaskAvailable ? string.IsNullOrWhiteSpace(Operation!.Slot) ? OperatorCopy.NotReturned : Operation.Slot : UiText.Get("Work.NotReceived");
+    public string AttentionReason => !owner.Fresh ? UiText.Get("Work.StaleChute") :
         ParcelPresentation.RcsTimedOut(Operation) ? OperatorCopy.TimeoutUnconfirmed :
         CenteredRcsRejection ? CenteredStateTitle :
         CenteredAttention ? CenteredStateReason :
         InputUnadmitted ? ParcelPresentation.InputReason(Input!) :
         Operation is null ? IdleReason : "";
-    string IdleReason => owner.Snapshot is not { } s ? "等待状态读取。" :
+    string IdleReason => owner.Snapshot is not { } s ? UiText.Get("Work.WaitSnapshot") :
         s.Positions?.SingleOrDefault(p => p.Id == PositionId) is { Admit: true } ? "" :
-        ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, ReaderId) ? "相机未启用，可手动输入条码。" :
-        s.Configuration.Effective.Wcs is { } w && ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, w.InstanceId) ? "RCS 未配置，请联系维护人员。" :
+        ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, ReaderId) ? UiText.Get("Work.CameraDisabledManual") :
+        s.Configuration.Effective.Wcs is { } w && ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, w.InstanceId) ? UiText.Get("Work.RcsContact") :
         s.Paused ? OperatorCopy.Paused : s.Positions?.SingleOrDefault(p => p.Id == PositionId)?.Admit == true ? "" :
-        "本位暂不能供包，请联系维护人员。";
+        UiText.Get("Work.UnavailableContact");
     public bool SlotAvailable => CurrentTaskAvailable && !string.IsNullOrWhiteSpace(Operation!.Slot);
     WcsDestinationResult? CurrentDestination => CurrentTaskAvailable
         ? Operation!.Wcs!.Replies.LastOrDefault(r => r.BusinessAccepted == true && r.RequestId == Operation.Wcs.Request.Id &&
             r.PayloadHash == Operation.Wcs.Request.PayloadHash)?.Destination : null;
-    string TaskValue(string? value) => !owner.Fresh ? "已失效" : !CurrentTaskAvailable ? "—" : string.IsNullOrWhiteSpace(value) ? OperatorCopy.NotReturned : value;
+    string TaskValue(string? value) => !owner.Fresh ? UiText.Get("Common.Expired") : !CurrentTaskAvailable ? "—" : string.IsNullOrWhiteSpace(value) ? OperatorCopy.NotReturned : value;
     public string WaveNo => TaskValue(CurrentDestination?.WaveNo);
     public string TaskId => TaskValue(CurrentDestination?.TaskId);
     public string SkuId => TaskValue(CurrentDestination?.SkuId);
     public string ResponseQuantity => TaskValue(CurrentDestination?.Quantity);
-    public string RawCandidates => Input is null ? "尚无观察" : Input.Observation.Codes.Length == 0 ? "未识别到条码" : string.Join("\n", Input.Observation.Codes);
+    public string RawCandidates => Input is null ? UiText.Get("Work.NoObservation") : Input.Observation.Codes.Length == 0 ? UiText.Get("Work.NoBarcodeDetected") : string.Join("\n", Input.Observation.Codes);
     public string SelectionSummary => Input?.BarcodeSelection is { } selection
-        ? selection.Detail + " · 有效条码 " + selection.Matches
-        : Input is null ? "等待相机输入" : "旧单码规则 · " + ParcelPresentation.InputText(Input);
+        ? selection.Detail + UiText.Get("Work.ValidBarcodeSuffix") + selection.Matches
+        : Input is null ? UiText.Get("Work.WaitCameraInput") : UiText.Get("Work.OldBarcodePolicy") + ParcelPresentation.InputText(Input);
     public string SelectedCode => Input?.BarcodeSelection?.SelectedCode ??
-        (Input is { Outcome: ParcelInputOutcome.Admitted } && Operation is { } op && Input.OperationId == op.Id ? op.ParcelCode : "未选中");
-    public string ScanTime => Input?.Observation.ObservedAt.ToLocalTime().ToString("HH:mm:ss.fff") ?? "尚无观察";
-    public string ScanSummary => Input is null ? "等待相机扫码或输入条码" : (Input.Observation.OperatorInput is { } entry ? (entry.Kind == "PdaKeyboard" ? "PDA键盘输入 " : "手动键盘输入 ") : "相机读取 ") + ScanTime + " · 条码 " + Input.Observation.Codes.Length + " 项";
-    public string ObservationIdentity => Input is null ? "尚无观察" : "连接周期 " + Input.Observation.Epoch + " · 本周期序号 " + Input.Observation.SourceEventId;
+        (Input is { Outcome: ParcelInputOutcome.Admitted } && Operation is { } op && Input.OperationId == op.Id ? op.ParcelCode : UiText.Get("Work.NotSelected"));
+    public string ScanTime => Input?.Observation.ObservedAt.ToLocalTime().ToString("HH:mm:ss.fff") ?? UiText.Get("Work.NoObservation");
+    public string ScanSummary => Input is null ? UiText.Get("Work.ScanOrType") : (Input.Observation.OperatorInput is { } entry ? (entry.Kind == "PdaKeyboard" ? UiText.Get("Work.PdaInput") : UiText.Get("Work.KeyboardInput")) : UiText.Get("Work.CameraReadPrefix")) + ScanTime + UiText.Get("Work.BarcodeCount") + Input.Observation.Codes.Length + UiText.Get("Work.CountItems");
+    public string ObservationIdentity => Input is null ? UiText.Get("Work.NoObservation") : UiText.Get("Work.CameraSession") + Input.Observation.Epoch + UiText.Get("Work.Sequence") + Input.Observation.SourceEventId;
     public double SlotFontSize => !SlotAvailable ? UiTypography.Placeholder : UiTypography.ResponsiveSlotSize(Operation!.Slot!, owner.ChuteScale);
     public bool NeedsAttention => !owner.Fresh || CurrentRound?.AutoExpired == true || HasUncertainOriginal || !RoundReadActive && (InputUnadmitted || Presentation.NeedsAttention);
     public string OperatorInstruction => !owner.Fresh ? OperatorCopy.StaleStep :
         InputUnadmitted ? ParcelPresentation.InputReason(Input!) :
         Operation?.State switch
         {
-            ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => "RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。",
+            ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => UiText.Get("Work.RcsNotDelivered"),
             ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => OperatorCopy.TimeoutUnconfirmed,
             ParcelState.WcsUnknown => OperatorCopy.UnconfirmedStep,
-            ParcelState.WcsRejected when ParcelPresentation.RcsManualHandling(Operation) => "请取下包裹后人工判断，停用本位，等RCS撤车确认后再启用并等待新车。",
+            ParcelState.WcsRejected when ParcelPresentation.RcsManualHandling(Operation) => UiText.Get("Work.ManualDecision"),
             ParcelState.WcsRejected => ParcelPresentation.RcsException(Operation) ?? OperatorCopy.RejectedStep,
-            ParcelState.UnpackRequired => "勿重复上件：按拆包明细检查包裹，处理完再继续。",
+            ParcelState.UnpackRequired => UiText.Get("Work.UnpackNoReload"),
             ParcelState.ResolvingWcs or ParcelState.SlotResolved => "",
-            _ => BlockingReasons.Length > 0 ? BlockingReasons : CanContinue ? "检查包裹后填写检查说明，再点“继续处理”。" : ""
+            _ => BlockingReasons.Length > 0 ? BlockingReasons : CanContinue ? UiText.Get("Work.UnpackReview") : ""
         };
-    public ParcelStatusPresentation Presentation { get; private set; } = ParcelPresentation.Pending("正在初始化");
-    public string Status => !owner.Fresh ? "状态中断" : InputUnadmitted ? Input!.Outcome switch
+    public ParcelStatusPresentation Presentation { get; private set; } = ParcelPresentation.Pending(UiText.Get("Common.Initializing"));
+    public string Status => !owner.Fresh ? UiText.Get("Work.StatusInterrupted") : InputUnadmitted ? Input!.Outcome switch
     {
         ParcelInputOutcome.Rejected => ParcelPresentation.InputText(Input),
         ParcelInputOutcome.Blocked => AdmissionMessage(Input).Title,
-        ParcelInputOutcome.Duplicate => "重复扫描",
+        ParcelInputOutcome.Duplicate => UiText.Get("Work.DuplicateScan"),
         _ => Presentation.Text
-    } : Operation?.Wcs?.State == StageState.Conflict ? "格口结果矛盾" : Operation?.State switch
+    } : Operation?.Wcs?.State == StageState.Conflict ? UiText.Get("Work.ChuteConflict") : Operation?.State switch
     {
-        ParcelState.SlotResolved => "投递格口",
-        ParcelState.ResolvingWcs => "正在获取格口",
-        ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => "RCS未连接 · 本次未送达",
-        ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => "取格口超时",
-        ParcelState.WcsUnknown => "格口未确认",
-        ParcelState.WcsRejected => "未分配格口",
-        _ => Operation is null ? IdleReason.Length > 0 ? "暂不能供包" : "等待扫码或输入条码" : Presentation.Text
+        ParcelState.SlotResolved => UiText.Get("Work.Destination"),
+        ParcelState.ResolvingWcs => UiText.Get("Work.GettingChute"),
+        ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => UiText.Get("Work.NotDelivered"),
+        ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => UiText.Get("Work.ChuteTimeout"),
+        ParcelState.WcsUnknown => UiText.Get("Work.ChutePending"),
+        ParcelState.WcsRejected => UiText.Get("Work.ChuteNotAssigned"),
+        _ => Operation is null ? IdleReason.Length > 0 ? UiText.Get("Work.SupplyUnavailable") : UiText.Get("Work.WaitScanOrType") : Presentation.Text
     };
     public string OriginalResponsibility => InputUnadmitted && Operation is { } op ?
-        "关联原作业 " + op.Id + " · " + op.ParcelCode + " · " + ParcelPresentation.Operation(op, owner.Fresh).Text : "";
-    public string DeviceStatus { get; private set; } = "设备状态未取得";
-    public ParcelStatusPresentation DevicePresentation { get; private set; } = ParcelPresentation.Unknown("相机：状态待确认");
+        UiText.Get("Work.RelatedTask") + op.Id + " · " + op.ParcelCode + " · " + ParcelPresentation.Operation(op, owner.Fresh).Text : "";
+    public string DeviceStatus { get; private set; } = UiText.Get("Work.NoDeviceStatus");
+    public ParcelStatusPresentation DevicePresentation { get; private set; } = ParcelPresentation.Unknown(UiText.Get("Work.CameraPendingStatus"));
     public string RcsServiceStatus => owner.RcsServiceStatus;
     public string DeviceLabel => DeviceStatus.Split(" · ", 2)[0];
     public string NextStep => !owner.Fresh ? OperatorCopy.StaleStep : InputUnadmitted ?
         OperatorCopy.RescanStep :
-        SlotAvailable ? "按格口投递；扫描下一件后自动更新。" :
-        CurrentTaskAvailable ? "RCS 未返回格口：包裹暂放一旁，通知维护人员。" :
-        Operation?.State == ParcelState.ResolvingWcs ? "等待格口返回，勿重复扫描。" :
-        ParcelPresentation.RcsNotDelivered(Operation) ? "RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。" :
+        SlotAvailable ? UiText.Get("Work.UseReturnedChute") :
+        CurrentTaskAvailable ? UiText.Get("Work.RcsNoChuteSetAside") :
+        Operation?.State == ParcelState.ResolvingWcs ? UiText.Get("Work.DoNotRescan") :
+        ParcelPresentation.RcsNotDelivered(Operation) ? UiText.Get("Work.RcsNotDelivered") :
         ParcelPresentation.RcsTimedOut(Operation) ? OperatorCopy.TimeoutUnconfirmed :
         HasUncertainOriginal ? OperatorCopy.UnconfirmedStep :
-        ParcelPresentation.RcsManualHandling(Operation) ? "请取下包裹后人工判断，停用本位，等RCS撤车确认后再启用并等待新车。" :
+        ParcelPresentation.RcsManualHandling(Operation) ? UiText.Get("Work.ManualDecision") :
         Operation?.State == ParcelState.WcsRejected ? OperatorCopy.RejectedStep :
-        BlockingReasons.Length > 0 ? "暂不能供包，请通知维护人员。" : "放上包裹由相机扫码，或输入完整条码后按回车。";
-    public string BlockingReasons { get; private set; } = "等待状态更新";
-    public string OperationId => Operation?.Id ?? "未取得";
-    public string Admission => InputUnadmitted ? Input!.Observation.AdmissionId : Operation?.AdmissionId ?? "未取得";
-    public string RequestId => Operation?.Wcs?.Request.Id ?? "未创建";
+        BlockingReasons.Length > 0 ? UiText.Get("Work.NotifyMaintenance") : UiText.Get("Work.LoadOrEnter");
+    public string BlockingReasons { get; private set; } = UiText.Get("Work.WaitStatus");
+    public string OperationId => Operation?.Id ?? UiText.Get("Work.NotReceived");
+    public string Admission => InputUnadmitted ? Input!.Observation.AdmissionId : Operation?.AdmissionId ?? UiText.Get("Work.NotReceived");
+    public string RequestId => Operation?.Wcs?.Request.Id ?? UiText.Get("Work.NotCreated");
     public string ResultReason => InputUnadmitted ? Input!.Reason : Operation is { } op
         ? string.Join("\n", new[] { op.Wcs?.Failure ?? op.Reason, ParcelViewModel.DestinationSummary(op) }.Where(s => !string.IsNullOrEmpty(s))) : "";
-    public string ObservedAt => "作业扫描：" + (Operation?.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") ?? "尚无作业") + "\n原结果时间：" + (Operation?.Wcs?.Replies.LastOrDefault()?.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") ?? "尚无返回");
-    public string ImageStatus => Operation?.Capture is { } c ? "采集 " + c.State + (Operation.Upload is { } u ? " · 上传 " + u.State : "") : "未参与采集";
+    public string ObservedAt => UiText.Get("Work.TaskScanPrefix") + (Operation?.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") ?? UiText.Get("Work.NoTask")) + UiText.Get("Work.OriginalTime") + (Operation?.Wcs?.Replies.LastOrDefault()?.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") ?? UiText.Get("Work.NoResponse"));
+    public string ImageStatus => Operation?.Capture is { } c ? UiText.Get("Work.AcquisitionPrefix") + c.State + (Operation.Upload is { } u ? UiText.Get("Work.UploadSuffix") + u.State : "") : UiText.Get("Work.NoCapture");
     public bool CanAdmit { get; private set; }
     public bool CanSubmitBarcode => SupplyEnabled && owner.CanUseWorkspace && owner.CanStartOperation && owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual == true;
     public bool CanReconcile { get; private set; }
@@ -352,12 +362,12 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         PositionId = requestedPosition;
         var position = snapshot?.Positions?.SingleOrDefault(x => x.Id == PositionId);
         var binding = snapshot is null ? null : ParcelBindings.Positions(snapshot.Configuration.Effective).SingleOrDefault(x => x.Id == PositionId);
-        ReaderId = binding?.ReaderDeviceId ?? "未配置";
+        ReaderId = binding?.ReaderDeviceId ?? UiText.Get("Common.NotConfigured");
         var reader = snapshot is null ? null : ParcelBindings.Readers(snapshot.Configuration.Effective).SingleOrDefault(r => r.DeviceId == ReaderId);
         var extension = snapshot?.Configuration.Effective.Extensions?.Instances.SingleOrDefault(x => reader?.Driver == "extension:" + x.Id);
         var address = extension?.Parameters.GetValueOrDefault("device.ip");
         if (reader?.Driver == "tcp-line") address = reader.Parameters?.GetValueOrDefault("device.ip");
-        CameraAddress = string.IsNullOrWhiteSpace(address) ? "尚未配置地址" : "相机地址：" + address;
+        CameraAddress = string.IsNullOrWhiteSpace(address) ? UiText.Get("Work.AddressMissing") : UiText.Get("Work.CameraAddress") + address;
         ReaderIdentity = string.IsNullOrWhiteSpace(address) ? ReaderId : address + " · " + ReaderId;
         var recent = snapshot?.Operations.Where(x => (x.PositionId ?? "main") == PositionId)
             .OrderByDescending(x => x.ObservedAt).ThenByDescending(x => x.Id, StringComparer.Ordinal).ToArray() ?? [];
@@ -370,26 +380,26 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         if (!recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)).SequenceEqual(Recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)))) Recent = recent;
         if (Operation?.Id != previousOperation) { InspectionReason = ""; PropertyChanged?.Invoke(this, new(nameof(InspectionReason))); }
         var device = snapshot?.Devices?.SingleOrDefault(x => x.DeviceId == ReaderId);
-        DevicePresentation = !fresh ? ParcelPresentation.Unknown("相机：状态中断") :
-            snapshot is not null && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, ReaderId) ? ParcelPresentation.Unknown("相机：待配置") : position?.CameraConnectionSuspended == true ?
-            SupplyDisabled ? ParcelPresentation.Neutral("相机：已断开（本位停用）") : ParcelPresentation.Unknown("相机：等待连接") :
-            FastReaderBlocked ? ParcelPresentation.Rejected("相机：离线或恢复中") :
-            device is null ? ParcelPresentation.Unknown("相机：待确认") :
+        DevicePresentation = !fresh ? ParcelPresentation.Unknown(UiText.Get("Work.CameraInterrupted")) :
+            snapshot is not null && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, ReaderId) ? ParcelPresentation.Unknown(UiText.Get("Work.CameraNotConfigured")) : position?.CameraConnectionSuspended == true ?
+            SupplyDisabled ? ParcelPresentation.Neutral(UiText.Get("Work.CameraDisconnectLane")) : ParcelPresentation.Unknown(UiText.Get("Work.CameraConnecting")) :
+            FastReaderBlocked ? ParcelPresentation.Rejected(UiText.Get("Work.CameraRestoring")) :
+            device is null ? ParcelPresentation.Unknown(UiText.Get("Work.CameraChecking")) :
             device.IsValid(now) ? snapshot?.Configuration.Effective.Mode == RunMode.Simulation
-                ? ParcelPresentation.Neutral("相机：模拟连接") : ParcelPresentation.Accepted("相机：在线") :
+                ? ParcelPresentation.Neutral(UiText.Get("Work.CameraSimulation")) : ParcelPresentation.Accepted(UiText.Get("Work.CameraOnline")) :
             device.Health is DeviceHealth.Disconnected or DeviceHealth.Faulted or DeviceHealth.Stopped or DeviceHealth.Stopping
-                ? ParcelPresentation.Rejected("相机：离线") : ParcelPresentation.Unknown("相机：待确认");
-        DeviceStatus = DevicePresentation.Text + (device?.ConfirmedAt is { } confirmed ? " · 最后确认 " + confirmed.ToLocalTime().ToString("HH:mm:ss") : "");
+                ? ParcelPresentation.Rejected(UiText.Get("Work.CameraOffline")) : ParcelPresentation.Unknown(UiText.Get("Work.CameraChecking"));
+        DeviceStatus = DevicePresentation.Text + (device?.ConfirmedAt is { } confirmed ? UiText.Get("Work.CameraLastConfirmed") + confirmed.ToLocalTime().ToString("HH:mm:ss") : "");
         vehicle = fresh && position?.Vehicle is { } status && status.ReceivedAt <= now && status.ValidUntil > now ? status : null;
         var identityMissing = position?.CurrentOperation is not null && Operation is null;
         CanAdmit = !FastReaderBlocked && !owner.Busy && fresh && viewportReady && binding is not null && !identityMissing && position?.Admit == true;
         CanReconcile = !owner.Busy && fresh && viewportReady && Operation is not null;
         CanContinue = !owner.Busy && fresh && viewportReady && Operation is { } op && snapshot?.Availability?.ContinuePrepared.Contains(op.Id) == true;
-        BlockingReasons = !fresh ? "状态读取中断，等待恢复" : !viewportReady ? "窗口过小，请最大化窗口" : binding is null ? "本投递位未启用" :
-            position is null ? "正在读取投递位状态" : identityMissing ? "本位作业信息不一致，已停止新操作并重新读取（作业 " + position.CurrentOperation + "）。\n" + OperatorCopy.JoinReasons(position.BlockingReasons.Select(ChineseInterfaceText.Notice), "\n") : OperatorCopy.JoinReasons(position.BlockingReasons.Select(ChineseInterfaceText.Notice), "\n");
-        Presentation = !fresh ? ParcelPresentation.Stale() : binding is null ? ParcelPresentation.Neutral("未启用") :
+        BlockingReasons = !fresh ? UiText.Get("Work.StatusWaitingRecovery") : !viewportReady ? UiText.Get("Work.ViewportTooSmall") : binding is null ? UiText.Get("Work.LaneDisabled") :
+            position is null ? UiText.Get("Work.LaneStatusReading") : identityMissing ? UiText.Get("Work.TaskConflictPrefix") + position.CurrentOperation + "）。\n" + OperatorCopy.JoinReasons(position.BlockingReasons.Select(ChineseInterfaceText.Notice), "\n") : OperatorCopy.JoinReasons(position.BlockingReasons.Select(ChineseInterfaceText.Notice), "\n");
+        Presentation = !fresh ? ParcelPresentation.Stale() : binding is null ? ParcelPresentation.Neutral(UiText.Get("Work.NotEnabled")) :
             InputUnadmitted ? ParcelPresentation.InputPresentation(Input!) :
-            position?.CurrentOperation is not null && Operation is null ? ParcelPresentation.Unknown("作业信息不一致 · 正在重新读取") : ParcelPresentation.Operation(Operation, true);
+            position?.CurrentOperation is not null && Operation is null ? ParcelPresentation.Unknown(UiText.Get("Work.TaskConflictRereading")) : ParcelPresentation.Operation(Operation, true);
         UpdateSlotMemory(snapshot, now, fresh, viewportReady);
         NotifySlotDisplay();
         // A wildcard invalidation reassigns every TextBox/ItemsSource on every poll,
@@ -419,20 +429,20 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     readonly Dictionary<string, object?> published = [];
     public static string StageText(ParcelState state) => state switch
     {
-        ParcelState.SlotResolved => "格口已取得",
-        ParcelState.WcsUnknown => "格口未确认 · 勿重复上件",
-        ParcelState.WcsRejected => "未分配格口",
-        ParcelState.UnpackRequired => "需拆包检查",
-        ParcelState.ResolvingWcs => "正在获取格口",
-        ParcelState.Prepared => "待处理",
-        ParcelState.Blocked => "已受阻",
-        ParcelState.WaitingWeight => "等待本件有效重量",
-        ParcelState.WeightTimedOut => "本件称重超时",
-        ParcelState.ImageUnknown => "图片上传未确认",
-        ParcelState.ImageRejected => "图像阶段拒绝",
-        ParcelState.CapturingImage => "正在采集本件图像",
-        ParcelState.UploadingImage => "正在上传原图",
-        ParcelState.Abandoned => "未发送 · 已撤销",
-        _ => "阶段：" + state
+        ParcelState.SlotResolved => UiText.Get("Work.ChuteReceived"),
+        ParcelState.WcsUnknown => UiText.Get("Work.ChuteNoReload"),
+        ParcelState.WcsRejected => UiText.Get("Work.ChuteNotAssigned"),
+        ParcelState.UnpackRequired => UiText.Get("Work.UnpackRequired"),
+        ParcelState.ResolvingWcs => UiText.Get("Work.GettingChute"),
+        ParcelState.Prepared => UiText.Get("Work.Pending"),
+        ParcelState.Blocked => UiText.Get("Work.Blocked"),
+        ParcelState.WaitingWeight => UiText.Get("Work.WaitWeight"),
+        ParcelState.WeightTimedOut => UiText.Get("Work.WeightTimeout"),
+        ParcelState.ImageUnknown => UiText.Get("Work.UploadUnconfirmed"),
+        ParcelState.ImageRejected => UiText.Get("Work.ImageRejected"),
+        ParcelState.CapturingImage => UiText.Get("Work.ImageInProgress"),
+        ParcelState.UploadingImage => UiText.Get("Work.UploadingOriginal"),
+        ParcelState.Abandoned => UiText.Get("Work.CancelledUnsent"),
+        _ => UiText.Get("Work.StagePrefix") + state
     };
 }

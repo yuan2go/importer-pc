@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using Ipc.Application.ParcelFlow.Desktop;
 using System.Diagnostics;
 using Ipc.Application.Contracts;
@@ -33,8 +34,8 @@ public sealed partial class SupplyStationPositionViewModel
     string ObservedBarcode => CurrentRound?.SelectedCode ?? (CurrentRound is { } round ? string.Join(";", round.FormalCodes.Select(SingleDisplayCode)) : "");
     // Manual input remains available when the camera is offline, subject to the position's admission guards.
     bool ManualInputAvailable => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual == true;
-    public string BarcodePlaceholder => !SupplyEnabled ? SupplyDisabling ? "停用中，不再接收新条码" : "本位已停用，不接收条码" : ReaderUnavailableForDisplay ? ManualInputAvailable ? "相机离线，可扫码枪或键盘输入条码" : "相机离线" : (CurrentRound?.FormalCodes.Length ?? 0) > 1
-        ? "本次读到多个条码，请查看图片" : RoundReadActive ? CurrentRound!.AutoExpired ? CurrentRound.SafeContinuation ? "同件继续识读，可PDA补录" : "识读超时，可原位PDA补录" : "正在识读，可调整标签或PDA补录" : HasCurrentInput ? "本轮条码" : "等待相机扫码或输入条码";
+    public string BarcodePlaceholder => !SupplyEnabled ? SupplyDisabling ? UiText.Get("Work.Disabling") : UiText.Get("Work.DisabledNoInput") : ReaderUnavailableForDisplay ? ManualInputAvailable ? UiText.Get("Work.CameraOfflineCanEnter") : UiText.Get("Work.CameraOfflinePlain") : (CurrentRound?.FormalCodes.Length ?? 0) > 1
+        ? UiText.Get("Work.MultipleViewImage") : RoundReadActive ? CurrentRound!.AutoExpired ? CurrentRound.SafeContinuation ? UiText.Get("Work.RetryOrPda") : UiText.Get("Work.TimeoutPda") : UiText.Get("Work.ReadingAdjust") : HasCurrentInput ? UiText.Get("Work.RoundCode") : UiText.Get("Work.ScanOrType");
     public ParcelPictureQuery? CurrentPictureQuery => !owner.Fresh || CameraNoCode || CameraObservationUnmatched || unreadFeedback || IsProcessing ? null :
         Input is { Outcome: ParcelInputOutcome.Rejected or ParcelInputOutcome.Blocked, Observation.OperatorInput: null } unadmitted ? new(ObservationId: unadmitted.Observation.Id) : InputUnadmitted ? null :
         Input is { } resting && Operation is { } placed && ParcelInputReasons.IsSamePlacement(resting) && resting.OperationId == placed.Id ? new(OperationId: placed.Id) :
@@ -73,31 +74,31 @@ public sealed partial class SupplyStationPositionViewModel
     public bool ShowRecentChute => recentResult is { } recent && owner.Fresh && owner.ViewportReady &&
         !SupplyDisabled && !DisplayPaused && !RcsUnavailableForDisplay && Arrival?.RecoveryReason is null &&
         CurrentRound is null && Operation is null && Stopwatch.GetElapsedTime(recent.ShownTicks) < TimeSpan.FromSeconds(3);
-    public string RecentChuteBarcode => ShowRecentChute ? $"上一件条码：{recentResult!.Barcode}　任务号：{recentResult.Task}" : "";
+    public string RecentChuteBarcode => ShowRecentChute ? UiText.Format("Work.PreviousBarcodeTask", recentResult!.Barcode, recentResult.Task) : "";
     public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Operation?.Id}/{Operation?.Wcs?.Request.Id}" : null;
     public bool DisplaySlotVisible => !ShowRcsGuidance && (ShowConfirmedTask || IsProcessing || ShowRecentChute);
-    public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : ShowRecentChute ? recentResult!.Slot : "";
-    public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : ShowRecentChute ? ParcelPresentation.Neutral("上一件格口") : CenteredAttention
+    public string DisplaySlot => IsProcessing ? UiText.Get("Work.ProcessingDots") : ShowConfirmedTask ? Slot : ShowRecentChute ? recentResult!.Slot : "";
+    public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : ShowRecentChute ? ParcelPresentation.Neutral(UiText.Get("Work.PreviousChute")) : CenteredAttention
         ? CenteredAttentionTone == ParcelPresentationTone.Unknown ? ParcelPresentation.Unknown(CenteredStateTitle) : ParcelPresentation.Rejected(CenteredStateTitle) :
-        ShowCenteredState ? ParcelPresentation.Neutral(CenteredStateTitle) : DisplayPaused && !PausedAttention ? ParcelPresentation.Neutral(PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停") : HasUncertainOriginal ? Presentation : OfflineCameraSurface ? ParcelPresentation.Neutral(ManualInputAvailable ? "等待输入条码" : "等待供包条件就绪") :
-        CameraAwaitingRead && !HasUncertainOriginal ? ParcelPresentation.Neutral("等待重新扫码") : invalidReadFeedback ? ParcelPresentation.Unknown("本次读码已失效") : IsProcessing ? ParcelPresentation.Pending("处理中") : CurrentTaskAvailable && !SlotAvailable ? ParcelPresentation.Unknown("未取得格口") : Presentation;
-    public string DisplaySlotLabel => ShowRecentChute ? "上一件格口，仅供查看" : IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";
+        ShowCenteredState ? ParcelPresentation.Neutral(CenteredStateTitle) : DisplayPaused && !PausedAttention ? ParcelPresentation.Neutral(PausedReadBlocked ? UiText.Get("Work.ScanPaused") : UiText.Get("Work.InductionPaused")) : HasUncertainOriginal ? Presentation : OfflineCameraSurface ? ParcelPresentation.Neutral(ManualInputAvailable ? UiText.Get("Work.WaitInput") : UiText.Get("Work.WaitForAdmission")) :
+        CameraAwaitingRead && !HasUncertainOriginal ? ParcelPresentation.Neutral(UiText.Get("Work.WaitRescan")) : invalidReadFeedback ? ParcelPresentation.Unknown(UiText.Get("Work.StaleRead")) : IsProcessing ? ParcelPresentation.Pending(UiText.Get("Work.Processing")) : CurrentTaskAvailable && !SlotAvailable ? ParcelPresentation.Unknown(UiText.Get("Work.NoChute")) : Presentation;
+    public string DisplaySlotLabel => ShowRecentChute ? UiText.Get("Work.PreviousChuteReadOnly") : IsProcessing ? UiText.Get("Work.ChuteNotYetAvailable") : UiText.Get("Work.CurrentChuteCopy");
     public string ContinuityNotice => "";
-    public string DisplayStatus => SupplyDisabled ? "已停用" : ShowRecentChute ? "上一件：格口已取得 · 仅供查看" : ShowConfirmedTask ? "格口已取得" : !owner.Fresh ? "状态已失效" : DisplayPaused && !PausedAttention ? PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停" : OfflineCameraSurface ? ManualInputAvailable ? "等待输入条码" : "暂不能接收条码" : HasUncertainOriginal ? Operation?.State == ParcelState.WcsUnknown ? "格口结果未确认" : Status :
-        CameraAwaitingRead ? "等待重新扫码" : CameraNoCode ? CenteredStateTitle : invalidReadFeedback ? "本次读码已失效" : IsProcessing ? "本次处理中" : Operation?.State == ParcelState.WcsRejected ? "未取得格口" : Status;
+    public string DisplayStatus => SupplyDisabled ? UiText.Get("Work.Disabled") : ShowRecentChute ? UiText.Get("Work.PreviousChuteStatus") : ShowConfirmedTask ? UiText.Get("Work.ChuteReceived") : !owner.Fresh ? UiText.Get("Work.StateExpired") : DisplayPaused && !PausedAttention ? PausedReadBlocked ? UiText.Get("Work.ScanPaused") : UiText.Get("Work.InductionPaused") : OfflineCameraSurface ? ManualInputAvailable ? UiText.Get("Work.WaitInput") : UiText.Get("Work.NoNewCode") : HasUncertainOriginal ? Operation?.State == ParcelState.WcsUnknown ? UiText.Get("Work.ChuteResultUnconfirmed") : Status :
+        CameraAwaitingRead ? UiText.Get("Work.WaitRescan") : CameraNoCode ? CenteredStateTitle : invalidReadFeedback ? UiText.Get("Work.StaleRead") : IsProcessing ? UiText.Get("Work.ProcessingCurrent") : Operation?.State == ParcelState.WcsRejected ? UiText.Get("Work.NoChute") : Status;
     public string DisplayAttentionReason => CenteredAttention && !CenteredRcsRejection ? CenteredStateReason :
-        SupplyDisabled || DisplayPaused && !PausedAttention ? PausedReadBlocked ? "本次扫码未发送请求，可查看本次图片。" : "" : OfflineCameraSurface ? ManualInputAvailable ? "可用扫码枪或键盘输入完整条码。" : AttentionReason :
-        CameraAwaitingRead ? "相机已重连，正在重新扫码。" :
-        unreadFeedback ? "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
-    public string DisplayNextStep => ShowRecentChute ? CanAdmit ? "当前：可以扫码投包" : CanSubmitBarcode ? "当前：可人工扫码" : "当前：" + CenteredStateTitle : CenteredAttention ? CenteredStateInstruction : SupplyDisabled ? "" : DisplayPaused ? PausedAttention
-        ? "供包已暂停；" + (HasUncertainOriginal ? NextStep : Input?.Outcome == ParcelInputOutcome.Rejected ? "查看图片核对条码；将包裹移出托盘后，再放下一件。" : NextStep)
-        : PauseInstruction : ShowConfirmedTask ? "" : OfflineCameraSurface ? ManualInputAvailable ? "输入完整条码后按回车或点击提交。" : NextStep :
-        invalidReadFeedback ? "本件暂勿投递；请重新扫描并等待有效格口，未确认的原请求仍需核对。" : !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" :
-        !HasUncertainOriginal && Input?.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) == true ? "本件已跳过，请取下包裹后重新上件。" :
-        !HasUncertainOriginal && Input is { Outcome: ParcelInputOutcome.Rejected, BarcodeSelection.SelectedCode: null } ? "本件未取得格口，请查看图片核对条码；将包裹移出托盘后，再放下一件。" : NextStep;
+        SupplyDisabled || DisplayPaused && !PausedAttention ? PausedReadBlocked ? UiText.Get("Work.NotSentViewImage") : "" : OfflineCameraSurface ? ManualInputAvailable ? UiText.Get("Work.EnterBarcodeManually") : AttentionReason :
+        CameraAwaitingRead ? UiText.Get("Work.ReconnectedScanning") :
+        unreadFeedback ? UiText.Get("Work.ReadNotConfirmed") : AttentionReason;
+    public string DisplayNextStep => ShowRecentChute ? CanAdmit ? UiText.Get("Work.NowCanScanLoad") : CanSubmitBarcode ? UiText.Get("Work.NowCanManual") : UiText.Get("Work.NowPrefix") + CenteredStateTitle : CenteredAttention ? CenteredStateInstruction : SupplyDisabled ? "" : DisplayPaused ? PausedAttention
+        ? UiText.Get("Work.PausedPrefix") + (HasUncertainOriginal ? NextStep : Input?.Outcome == ParcelInputOutcome.Rejected ? UiText.Get("Work.CheckImageBeforeNext") : NextStep)
+        : PauseInstruction : ShowConfirmedTask ? "" : OfflineCameraSurface ? ManualInputAvailable ? UiText.Get("Work.SubmitFullBarcode") : NextStep :
+        invalidReadFeedback ? UiText.Get("Work.RescanPendingResult") : !HasUncertainOriginal && IsProcessing ? UiText.Get("Work.NoPreviousDelivery") :
+        !HasUncertainOriginal && Input?.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) == true ? UiText.Get("Work.SkippedRemoveReload") :
+        !HasUncertainOriginal && Input is { Outcome: ParcelInputOutcome.Rejected, BarcodeSelection.SelectedCode: null } ? UiText.Get("Work.NoChuteCheckImage") : NextStep;
     public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : ShowRecentChute ? UiTypography.ResponsiveSlotSize(recentResult!.Slot, owner.ChuteScale) : SlotFontSize;
     public string CameraReadFeedback => readFeedback is { } read && CurrentRound?.Observation?.Id == read.ObservationId && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)
-        ? "已读到条码，等待处理结果。" : "";
+        ? UiText.Get("Work.ReadWaitingResult") : "";
     public string? ReadFeedbackIdentity => CurrentRound?.Observation?.Id == readFeedback?.ObservationId ? readFeedback?.ObservationId : null;
     public string? ReadFeedbackKey => ReadFeedbackIdentity is not null && readFeedback is { } read ? $"{read.RuntimeId}/{read.DeviceId}/{read.Epoch}/{read.ObservationId}" : null;
     public string? RejectionIdentity => !OfflineCameraSurface && (!CameraNoCode || HasUncertainOriginal) && !unreadFeedback && (InputFailed || Operation?.State is ParcelState.WcsRejected or ParcelState.WcsUnknown or ParcelState.UnpackRequired || Operation?.Wcs?.State == StageState.Conflict)
@@ -158,7 +159,7 @@ public sealed partial class SupplyStationPositionViewModel
             (nameof(IsProcessing), IsProcessing), (nameof(SlotProvisional), SlotProvisional), (nameof(DisplaySlotVisible), DisplaySlotVisible), (nameof(DisplaySlot), DisplaySlot),
             (nameof(ShowRecentChute), ShowRecentChute), (nameof(RecentChuteBarcode), RecentChuteBarcode),
             (nameof(DisplayPresentation), DisplayPresentation), (nameof(SuccessIdentity), SuccessIdentity), (nameof(DisplaySlotLabel), DisplaySlotLabel), (nameof(ContinuityNotice), ContinuityNotice),
-            (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredAttention), CenteredAttention), (nameof(CenteredRcsRejection), CenteredRcsRejection), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(CenteredStateForegroundKey), CenteredStateForegroundKey),
+            (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredAttention), CenteredAttention), (nameof(CenteredRcsRejection), CenteredRcsRejection), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(ShowsWaitingToLoad), ShowsWaitingToLoad), (nameof(CenteredStateForegroundKey), CenteredStateForegroundKey),
             (nameof(ShowRcsGuidance), ShowRcsGuidance), (nameof(RcsGuidanceTitle), RcsGuidanceTitle), (nameof(RcsGuidanceSummary), RcsGuidanceSummary),
             (nameof(RcsGuidanceBarcode), RcsGuidanceBarcode), (nameof(RcsGuidanceBarcodeSuffix), RcsGuidanceBarcodeSuffix), (nameof(RcsGuidanceSecondStep), RcsGuidanceSecondStep),
             (nameof(CenteredStateReason), CenteredStateReason), (nameof(CenteredStateInstruction), CenteredStateInstruction), (nameof(CenteredStateFullInstruction), CenteredStateFullInstruction),

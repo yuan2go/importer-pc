@@ -40,5 +40,11 @@ public sealed class WorkstationLocalizationManager
     public static void Bind(DependencyObject element, DependencyProperty property, string key) =>
         BindingOperations.SetBinding(element, property, new Binding("[" + key + "]") { Source = UiText.Current, Mode = BindingMode.OneWay });
 
+    public static void BindAuthored(DependencyObject element, DependencyProperty property, string label)
+    {
+        if (UiText.AuthoredKey(label) is { } key) Bind(element, property, key);
+        else element.SetValue(property, label);
+    }
+
     sealed class LanguageSlot : ResourceDictionary { }
 }

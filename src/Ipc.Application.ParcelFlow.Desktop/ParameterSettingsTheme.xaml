@@ -19,9 +19,11 @@
   <Setter Property="Margin" Value="0"/><Setter Property="MinHeight" Value="40"/>
  </Style>
 
+ <DataTemplate x:Key="ThemeNameTemplate"><TextBlock Text="{type:LocalizedLabel DisplayName}"/></DataTemplate>
+ <DataTemplate x:Key="WindowModeTemplate"><TextBlock Text="{type:LocalizedLabel Label}"/></DataTemplate>
  <DataTemplate x:Key="ParameterObjectTemplate"><TextBlock Text="{Binding DisplayTitle}" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Body}"/></DataTemplate>
  <DataTemplate x:Key="ParameterSearchTemplate"><StackPanel><TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Body}"/><TextBlock Text="{Binding Context}" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}" Margin="0,2,0,0"/></StackPanel></DataTemplate>
- <GroupStyle x:Key="ParameterDirectoryGroup"><GroupStyle.HeaderTemplate><DataTemplate><TextBlock Text="{Binding Name}" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}" FontWeight="{x:Static type:UiTypography.Emphasis}" Margin="12,20,8,6"/></DataTemplate></GroupStyle.HeaderTemplate></GroupStyle>
+ <GroupStyle x:Key="ParameterDirectoryGroup"><GroupStyle.HeaderTemplate><DataTemplate><TextBlock Text="{type:LocalizedLabel Name}" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}" FontWeight="{x:Static type:UiTypography.Emphasis}" Margin="12,20,8,6"/></DataTemplate></GroupStyle.HeaderTemplate></GroupStyle>
  <Style TargetType="ListBoxItem">
   <Setter Property="FocusVisualStyle" Value="{DynamicResource FocusRing}"/>
   <Setter Property="MinHeight" Value="40"/><Setter Property="Margin" Value="0,0,0,2"/><Setter Property="Padding" Value="12,8"/><Setter Property="FontWeight" Value="Normal"/><Setter Property="Foreground" Value="{DynamicResource Ink}"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Cursor" Value="Hand"/>

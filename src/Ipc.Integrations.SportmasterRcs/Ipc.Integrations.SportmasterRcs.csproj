@@ -7,4 +7,7 @@
     <Reference Include="Ipc.Platform"><HintPath>$(IpcContractDirectory)/Ipc.Platform.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="Ipc.Application.Contracts"><HintPath>$(IpcContractDirectory)/Ipc.Application.Contracts.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="parameters.json" LogicalName="Ipc.BuiltInRcs.Parameters.json" />
+  </ItemGroup>
 </Project>

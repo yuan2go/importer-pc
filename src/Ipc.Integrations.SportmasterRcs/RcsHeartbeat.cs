@@ -104,7 +104,7 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
         {
             ObjectDisposedException.ThrowIf(disposed, this);
             if (running || active != 0 || heartbeatTask is { IsCompleted: false }) throw new InvalidOperationException("Configure RCS only while stopped");
-            if (configuration.ApplicationId != "sportmaster" || configuration.Wcs is null ||
+            if (configuration.Wcs is null ||
                 Wire.Encode(configuration.Wcs) != Wire.Encode(options.Binding) ||
                 ParcelConnectionSetup.Validate(configuration).Length != 0 || ParcelConnectionSetup.IsDeferred(configuration, InstanceId))
                 throw new InvalidDataException("RCS runtime context must match its effective binding");

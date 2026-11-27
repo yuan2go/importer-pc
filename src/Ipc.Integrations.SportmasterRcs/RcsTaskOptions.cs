@@ -47,9 +47,9 @@ internal sealed class RcsTaskOptions
             ? value : throw new InvalidDataException("Invalid RCS numeric parameter: " + key);
     internal void ValidateOriginal(FrozenRequest request)
     {
-        if (request.ApplicationId != "sportmaster" || request.Stage != "wcs-slot" || Wire.Encode(request.Binding) != Wire.Encode(Binding) ||
+        if (string.IsNullOrWhiteSpace(request.ApplicationId) || request.Stage != "wcs-slot" || Wire.Encode(request.Binding) != Wire.Encode(Binding) ||
             Wire.Hash(request.Payload) != request.PayloadHash)
-            throw new InvalidDataException("RCS request must retain its original Sportmaster binding and payload");
+            throw new InvalidDataException("RCS request must retain its original RCS binding and payload");
     }
     internal (string Station, string Bcr) Position(ParcelPayload payload)
     {

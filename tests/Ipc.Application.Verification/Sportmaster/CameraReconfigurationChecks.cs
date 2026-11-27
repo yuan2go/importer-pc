@@ -16,13 +16,21 @@ internal static class CameraReconfigurationChecks
 
     internal static async Task Run(string workspace, string root)
     {
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "live-devices-30")) { PlacementReleaseMs = 5000 };
+        // The fixture requests real loopback heartbeats at its checkpoints. Freeze only
+        // periodic scheduling so a background tick cannot reserve membership just before Save.
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "live-devices-30"))
+        {
+            PlacementReleaseMs = 5000,
+            ConfigureFactory = factory => factory.RcsHeartbeatSchedule = new SportmasterRcs.RequestClock()
+        };
         await using var secondRcs = new CameraRoundHarness.RoundPeer();
-        await h.StartAsync();
+        await h.StartAsync(waitForRcs: false);
         uint frame = 0;
         long Processed(string position) => h.App.WorkerProgress().Single(p => p.Position == position).Processed;
         async Task Read(string device, string position, string code, bool present = false)
         {
+            if (await SmRoundFixture.CompletedHeartbeatAsync(h.App) != RcsHeartbeatResult.Received)
+                throw new InvalidOperationException("Fixture read requires a confirmed vehicle heartbeat.");
             await CameraRoundHarness.Until(async () =>
             {
                 var state = await h.App.SnapshotAsync();
@@ -54,7 +62,8 @@ internal static class CameraReconfigurationChecks
             var snapshot = await h.App.SnapshotAsync();
             foreach (var round in snapshot.Rounds)
                 await SmRoundFixture.NextVehicleAsync(h.App, round.PositionId);
-            snapshot = await h.App.SnapshotAsync(); var candidate = change(snapshot.Configuration.Effective);
+            snapshot = await h.WaitForLiveConfigurationWindowAsync();
+            var candidate = change(snapshot.Configuration.Effective);
             h.Factory.Expect(candidate);
             return await h.App.StageConfigurationAsync(snapshot.Configuration.Revision, candidate, "LIVE30 synthetic change");
         }
@@ -183,7 +192,7 @@ internal static class CameraReconfigurationChecks
         await replacement.StartAsync();
         var window = Wire.Id();
         await replacement.App.SetManagementWorkspaceAsync(window, true, default);
-        var beforeReplacement = await replacement.App.SnapshotAsync();
+        var beforeReplacement = await replacement.WaitForLiveConfigurationWindowAsync();
         var left = replacement.Api(replacement.Left);
         var next = WithReader(beforeReplacement.Configuration.Effective, replacement.Right, "device.serial", "SYNTH-NEW-RIGHT");
         replacement.Factory.Expect(next);

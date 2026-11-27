@@ -15,7 +15,7 @@ internal static class CameraReplacementGuards
         {
             await using var h = new CameraRoundHarness(workspace, Path.Combine(root, phase));
             await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
-            var before = await h.App.SnapshotAsync();
+            var before = await h.WaitForLiveConfigurationWindowAsync();
             var originalPorts = Field<ParcelPorts>(h.App, "ports");
             var originalDecoder = h.Factory.Decoders[h.Left];
             var originalRight = h.Factory.Sources[h.Right];

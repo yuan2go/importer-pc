@@ -1,6 +1,6 @@
 # 多业务架构解耦摸底报告
 
-目前可以直接复用的是编译期装配、Parcel 的业务流程契约、设备端口和受保护部署机制。主要的拆分工作在两个共享工程：`ParcelFlow` 决定 SM 的到位、提交与原请求收口，`ParcelFlow.Desktop` 决定 SM 能编辑、保存和看见哪些字段。建议先拆界面和装配选择，最后处理发送围栏所在的事务。PR 1 已完成部署与基座声明收敛。[架构基线](framework.md) · [连续供包契约](sm-continuous-induction-closure-01.md)
+PR 1 已完成部署与基座声明，PR 2 已完成内置驱动和组件注册。剩余拆分集中在两个共享工程。`ParcelFlow` 决定 SM 的到位、提交与原请求收口，`ParcelFlow.Desktop` 决定 SM 能编辑、保存和看见哪些字段。[架构基线](framework.md) · [连续供包契约](sm-continuous-induction-closure-01.md)
 
 ## 统计口径
 
@@ -28,7 +28,19 @@ PR 1 在主线基线 `aa1789872c0afe892612cc93074ba79f085f137e` 上完成。本�
 | Ipc.Assembly | 16 | 4 | `ParcelAssembly` 编译期选择 1 处，`ParcelCapabilityFactory` 3 处留给 PR 2 |
 | 合计 | 112 | 6 | 部署与启动服务中的字面量特判为 0 |
 
-字面量之外还有三类依赖需要沿调用链核对。`#if SPORTMASTER` 和 MSBuild 的 `BusinessModule` 决定交付哪些程序集。`UsesBuiltInSportmaster` 等谓词放大一个比较的影响。`ISmHeartbeatControl`、`sportmaster-rcs` 和持久化角色名直接表达协议或存量数据身份。这些没有重复计入字面量。将构建标识、独立偏好分区、原作业身份或 DB14 的业务标识改名，会产生可见的兼容性问题。[桌面项目](../../src/Ipc.Desktop/Ipc.Desktop.csproj) · [装配工厂](../../src/Ipc.Assembly/ParcelCapabilityFactory.cs) · [DB14 格式校验](../../src/Ipc.Application.ParcelFlow/ParcelStorageFormat.cs)
+PR 2 以 PR 1 合并提交 `1255586fc8e44d0e20e0f9968b14948d6ea66515` 为基线。
+
+| 核查项 | 基线 | PR 2 完成后 |
+| --- | ---: | ---: |
+| `Ipc.Assembly` 中 `"sportmaster"` 字面量 | 4 | 1 |
+| `ParcelCapabilityFactory.cs` 中 `"sportmaster"` 字面量 | 3 | 0 |
+| `ParcelCapabilityFactory.cs` 中 `#if SPORTMASTER` | 14 | 0 |
+| `ParcelCapabilityFactory.cs` 中 `#if !DIRECTPLC` | 4 | 0 |
+| `ParcelCapabilityFactory.cs` 中 `#if DIRECTPLC` | 1 | 0 |
+| `Ipc.Integrations.SportmasterRcs` 中 `"sportmaster"` 业务 ID 比较 | 2 | 0 |
+| WcsToPlc 装配链接的 RCS 源文件 | 7 | 0 |
+
+编译期产品选择保留在装配根。`ISmHeartbeatControl`、`sportmaster-rcs` 和持久化角色名继续表达协议与存量数据身份。注册和扩展能力仍按现有精确标识、资格、租约和程序集指纹核验。RCS 组件按实际绑定和有效冻结报文核验，不再依赖宿主的业务 ID。发送资源按工位轮转，保留七个目的调用并发、每位 128 个等待上限和现有左右等待数。新增相机或协议组件时实现对应 Provider，在装配根注册并用组件开关声明项目引用。[能力注册契约](../../src/Ipc.Assembly/CapabilityRegistry.cs) · [装配根](../../src/Ipc.Assembly/ParcelAssembly.cs) · [DB14 格式校验](../../src/Ipc.Application.ParcelFlow/ParcelStorageFormat.cs)
 
 ## 七个候选边界
 
@@ -53,7 +65,7 @@ PR 1 在主线基线 `aa1789872c0afe892612cc93074ba79f085f137e` 上完成。本�
 | 模块 | C# 文件 / 行 | XAML 文件 / 行 | 实际接入与建议 |
 | --- | ---: | ---: | --- |
 | DirectPlc | 3 / 60 | 1 / 8 | 单一 PLC 阶段，应用 34 行，界面 C# 26 行。继承 `FlowDefinition`，复用 `ParcelRuntime` 和 `ShellWindow`。按 PLC 物理完成或业务拒绝结案。适合作为最小 Parcel 流程样板。当前作业台含模拟输入，不能据此推断现场 PLC 已验收。[应用](../../src/Ipc.Application.DirectPlc/Application.cs) · [桌面壳](../../src/Ipc.Application.DirectPlc.Desktop/Presentation.cs) |
-| WcsToPlc | 3 / 79 | 1 / 8 | 应用 53 行，界面 C# 26 行。先取得 WCS 的有效格口，再准备 PLC。可从持久回执重建主状态。适合作为多阶段依赖、拒绝和恢复样板。其装配与 SM 一起链接内置 RCS 源文件，须先核对哪些绑定实际选择该适配器，再拆构建依赖。[应用](../../src/Ipc.Application.WcsToPlc/Application.cs) · [装配条件](../../src/Ipc.Assembly/Ipc.Assembly.csproj) |
+| WcsToPlc | 3 / 79 | 1 / 8 | 应用 53 行，界面 C# 26 行。先取得 WCS 的有效格口，再准备 PLC。可从持久回执重建主状态。适合作为多阶段依赖、拒绝和恢复样板。默认及可选配置的现行兼容集合使用 `reference-integration`，所以 WcsToPlc 关闭 `IncludeSportmasterRcs`，产物中没有 RCS 源码或组件程序集。SM 通过项目引用交付独立 RCS 程序集，由组件嵌入参数描述。[应用](../../src/Ipc.Application.WcsToPlc/Application.cs) · [兼容声明](../../config/compatibility/wcs-to-plc.json) · [装配条件](../../src/Ipc.Assembly/Ipc.Assembly.csproj) |
 | Supply | 46 / 4,848 | 3 / 168 | 有自己的 `ProductRuntime`、`StationApplication`、`SupplyStore`、配置与桌面。应用、契约、桌面分别有 13、11、22 个 C# 文件。平台端口有复用，业务账和命令处理独立于 ParcelFlow。暂保留整套参考实现。未来可提取能力消费者检查，单独评审 UI 或账本重构。Parcel 装配仍借用它读取已登记扩展包的消费者，直接归档会破坏现有调用。[供包宿主](../../src/Ipc.Assembly/SupplyAssembly.cs) · [业务账](../../src/Ipc.Application.Supply/Store.cs) · [两种消费者格式](../../src/Ipc.Assembly/ExtensionConsumerReaders.cs) |
 | Inspection | 2 / 98 | 0 / 0 | 直接实现 `IBusinessRuntime` 和 `IBusinessApplication`，仅接受 Simulation，使用 schema1 配置和 `inspection.json` 账本。Assembly 可选，桌面构建选项未接入。适合作为平台契约的独立验证对象，保留暂停开发状态。只有明确现场产品需求后才评估生产存储与 UI。[运行时](../../src/Ipc.Application.Inspection/InspectionRuntime.cs) · [装配](../../src/Ipc.Assembly/InspectionAssembly.cs) |
 
@@ -62,7 +74,7 @@ PR 1 在主线基线 `aa1789872c0afe892612cc93074ba79f085f137e` 上完成。本�
 各步均保留编译期选择并单独合并。每个 PR 都运行锁定依赖的 SM Desktop 构建、完整 Core 回归和文档门禁。触及的业务装配单独构建。下面列出每步最能揭示行为变化的附加对照。
 
 1. **部署与基座声明，已完成。** 平台集中声明产品部署能力，启动、安装和独立运维核验同一产品 ID。保留原登记键、受保护路径、快捷方式、恢复凭据和正式／测试实例的权限边界。对照 `--shortcut-lifecycle`、`--installation-resource-boundary`、离线部署回归及 Operations.Verification。[产品部署声明](../../src/Ipc.Platform/ProductDeploymentProfile.cs)
-2. **集中装配与能力选择。** 由现有装配选择拓扑和能力工厂。分别编译 DirectPlc、WcsToPlc 和 Sportmaster，保持 SM 内置 MVID/MVS 和 RCS 的依赖闭包。对照 `--sm-built-in-only` 和驱动回归。
+2. **集中装配与能力选择，已完成。** 装配根按产品注册读头、相机发现、协议和可选硬件提供者。三套业务分别编译，保持 SM 内置 MVID/MVS 和 RCS 的依赖闭包。对照注册表用例、`--sm-built-in-only`、`--sm-camera-reconfiguration`、`--version-compatibility` 和驱动回归。
 3. **迁移字段与页面选择。** 从共享设置页和偏好草稿移出 SM 字段归属，由已选业务向工作站和运维视图传入声明。对照旧配置、完整候选和冻结请求的序列化结果、并发保存与偏好部分保存失败后的重试。运行 `--sm-configuration-preferences`、`--sm-parameters` 及 WPF 字体门禁。
 4. **抽出轮次与协议决策。** 将基于原状态和证据的判断迁到 SM 模块，保留原调用点的提交事务、锁顺序、I/O 和回执持久化。对照同车下一件、A→B→A、左右位并行、取件后迟到回包、原生预览及单工位校准。重开应用仍须核对原请求、Unknown 和原编号。
 
@@ -156,11 +168,10 @@ PR 1 在主线基线 `aa1789872c0afe892612cc93074ba79f085f137e` 上完成。本�
 | [WindowOpeningPreference.cs](../../src/Ipc.Application.ParcelFlow.Desktop/WindowOpeningPreference.cs) | 3 | `Attach`、`PreferenceChanged` | 工作区 / 参数 · 全屏窗口恢复与偏好变更 |
 | [WindowPreferenceDraft.cs](../../src/Ipc.Application.ParcelFlow.Desktop/WindowPreferenceDraft.cs) | 7 | `HasUnsavedWindowPreference`、`WindowModeDraft` | 参数 · 个人窗口方式的装载、草稿与保存 |
 
-### PR 1 剩余字面量
+### PR 2 后的装配与平台字面量
 
 | 源文件 | 次数 | 入口举例 | 边界与职责 |
 | --- | ---: | --- | --- |
 | [ProductDeploymentProfile.cs](../../src/Ipc.Platform/ProductDeploymentProfile.cs) | 1 | `ProductDeploymentCatalog` | 已声明产品 ID 和部署能力 |
 | [ParcelApp.xaml.cs](../../src/Ipc.Desktop/ParcelApp.xaml.cs) | 1 | `ApplicationId` | 编译期工作站业务标识及窗口装配 |
 | [ParcelAssembly.cs](../../src/Ipc.Assembly/ParcelAssembly.cs) | 1 | `InstalledBusiness.Create` | 编译期将产品标识绑定到实际 Flow 和运行时工厂 |
-| [ParcelCapabilityFactory.cs](../../src/Ipc.Assembly/ParcelCapabilityFactory.cs) | 3 | `UsesBuiltInSportmaster`、`Resolve` | PR 2 的内置相机、RCS、扩展校验及热替换选择 |

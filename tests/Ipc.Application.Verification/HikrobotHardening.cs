@@ -34,12 +34,12 @@ internal static class HikrobotHardening
         };
         void Reject(ParcelConfiguration config, string field)
         {
-            try { ParcelCapabilityFactory.ValidateHikrobotIdentities(config); }
+            try { HikrobotReaderBindings.Validate(config); }
             catch (InvalidDataException ex) when (ex.Message.Contains(field, StringComparison.Ordinal))
             { Check(true, "identity candidate rejected at " + field); return; }
             throw new InvalidOperationException("Unsafe identity candidate accepted or wrong field reported");
         }
-        ParcelCapabilityFactory.ValidateHikrobotIdentities(production);
+        HikrobotReaderBindings.Validate(production);
         Check(true, "distinct physical serials and addresses pass the pure identity stage; qualification is still separate");
         Reject(Change(0, "device.serial", ""), "identity-0/device.serial");
         Reject(Change(1, "device.serial", " "), "identity-1/device.serial");
@@ -47,9 +47,9 @@ internal static class HikrobotHardening
         Reject(Change(1, "device.serial", "SYNTHETIC-0"), "device.serial");
         Reject(Change(1, "device.ip", "192.0.2.1"), "device.ip");
         var optional = Change(0, "device.serial", "");
-        ParcelCapabilityFactory.ValidateHikrobotIdentities(optional with { Mode = RunMode.Simulation });
+        HikrobotReaderBindings.Validate(optional with { Mode = RunMode.Simulation });
         Check(true, "Simulation may omit expected serial; driver lifetime pin is checked independently");
-        ParcelCapabilityFactory.ValidateHikrobotIdentities(optional with { DeferredConnections = [readers[0].DeviceId] });
+        HikrobotReaderBindings.Validate(optional with { DeferredConnections = [readers[0].DeviceId] });
         Check(true, "explicitly deferred Production source can remain unconfigured without becoming business Ready");
 
         var directory = Path.Combine(root, "barcode-diagnostics"); Directory.CreateDirectory(directory);

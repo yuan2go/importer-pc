@@ -10,7 +10,7 @@ static class LiveDeviceCleanup
         {
             await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "cleanup-" + candidateFailure));
             await h.StartAsync();
-            var before = await h.App.SnapshotAsync();
+            var before = await h.WaitForLiveConfigurationWindowAsync();
             var decoder = h.Factory.Decoders[h.Left];
             if (candidateFailure) { h.Factory.RejectLiveReaders = true; h.Factory.FailCandidateRelease = true; }
             else decoder.FailReleaseAt = decoder.ReleaseCalls + 2; // Stop succeeds; Dispose's second cleanup fails.

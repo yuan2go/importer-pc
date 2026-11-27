@@ -139,7 +139,8 @@ internal static class MvsStopReconnect
         var retained = new Api { FailEnumeration = true, FailShutdown = true }; var builds = 0;
         var owned = new CameraIdentityLookup(_ => { builds++; return retained; });
         var launch = new BusinessLaunch(Path.Combine(Path.GetTempPath(), "identity-config-" + Wire.Id()), Path.Combine(Path.GetTempPath(), "identity-data-" + Wire.Id()), null, null);
-        var factory = new ParcelCapabilityFactory(launch) { CameraIdentity = owned };
+        var factory = new ParcelCapabilityFactory(launch, new([new BuiltInHikrobotReaderProvider(owned)]),
+            ParcelAssembly.CreateCapabilityPolicy());
         var factoryCalls = 0;
         var maintenance = new ParcelStartupMaintenance(launch, new SportmasterFlow(), () => { factoryCalls++; return factory; }, () => { });
         try { await maintenance.ReadCameraSerialAsync(Api.Ip, "zxing-cpp"); throw new Exception("lookup failure was hidden"); }

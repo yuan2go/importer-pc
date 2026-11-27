@@ -12,6 +12,47 @@ public static class ParcelAssembly
 #else
         new Ipc.Application.WcsToPlc.WcsToPlcFlow();
 #endif
+
+    public static ProductCapabilityPolicy CreateCapabilityPolicy() => CreateCapabilityPolicy(Definition().Id);
+
+    public static ProductCapabilityPolicy CreateCapabilityPolicy(string applicationId)
+    {
+        if (!string.Equals(applicationId, Definition().Id, StringComparison.Ordinal))
+            throw new ArgumentException("Capability policy belongs to another Application", nameof(applicationId));
+#if SPORTMASTER
+        return new(applicationId, builtInOnly: true, supportsExternalExtensions: false, supportsLiveReload: true,
+            allowedSimulationReaderDrivers: ["manual", "tcp-line"], excludedReferenceCatalogProviders: ["tcp-line"])
+        {
+#if CAPABILITY_VERIFICATION
+            AllowsMixedVerificationProducts = true
+#endif
+        };
+#else
+        return new(applicationId, builtInOnly: false, supportsExternalExtensions: true, supportsLiveReload: false);
+#endif
+    }
+
+    public static BuiltInCapabilityRegistry CreateCapabilityRegistry()
+    {
+#if DIRECTPLC
+        var providers = BuiltInReferenceProviders.Create(null).ToList();
+#else
+        var providers = BuiltInReferenceProviders.Create(b => new Ipc.Integrations.ReferenceWcs(b, BuiltInReferenceProviders.PeerDirectory(b))).ToList();
+#endif
+#if INCLUDE_HIKROBOT_MVS
+        providers.Add(new BuiltInHikrobotReaderProvider());
+#endif
+#if INCLUDE_SPORTMASTER_RCS
+        providers.Add(new BuiltInSportmasterRcsProvider());
+#endif
+#if INCLUDE_HIKROBOT_MVS
+        return new(providers);
+#else
+        return new(providers, HikrobotReaderBindings.Validate);
+#endif
+    }
+
+#if !CAPABILITY_VERIFICATION
     public static IBusinessRuntime Create(BusinessLaunch launch)
     {
         ParcelRuntimeSetup.Prepare();
@@ -44,7 +85,9 @@ public static class ParcelAssembly
         ApplicationReleaseValidation.ValidateIfPublished(AppContext.BaseDirectory, runtime.Id, runtime.Presentation, businessAssembly);
         return runtime;
     }
+#endif
 }
+#if !CAPABILITY_VERIFICATION
 static class InstalledBusiness
 {
     public static BusinessAssembly Create() => new(
@@ -57,3 +100,4 @@ static class InstalledBusiness
 #endif
         ParcelAssembly.Create);
 }
+#endif

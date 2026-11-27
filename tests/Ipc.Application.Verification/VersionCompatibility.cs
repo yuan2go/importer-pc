@@ -89,15 +89,24 @@ static class VersionCompatibility
             var isolatedReaders = originalReaders.Select((r, i) => r with { DeviceId = "vc." + Wire.Id() + "." + i }).ToArray();
             config = config with { Reader = isolatedReaders[0], Topology = config.Topology is null ? null : config.Topology with { Readers = isolatedReaders, Positions = config.Topology.Positions.Select(p => p with { ReaderDeviceId = isolatedReaders[Array.FindIndex(originalReaders, r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() } };
             ExtensionStore.AtomicWrite(Path.Combine(configDirectory, "business.json"), config);
-            await using var runtime = new ParcelRuntime(launch, flow, new ParcelCapabilityFactory(launch, policy));
+            // Startup still establishes real port health. Park periodic probes
+            // outside the application gate so the non-SM maintenance CAS does
+            // not race a reference port health check between snapshot and save.
+            await using var runtime = new ParcelRuntime(launch, flow, new ParcelCapabilityFactory(launch, policy))
+            {
+                BeforeMonitorProbe = (_, stop) => Task.Delay(Timeout.Infinite, stop)
+            };
             await runtime.StartAsync(CancellationToken.None);
             var before = await runtime.SnapshotAsync();
             for (var pauseAttempt = 0; pauseAttempt < 100 && !before.Paused; pauseAttempt++)
             { await runtime.CommandAsync(new(Wire.Id(), before.Revision, "Pause")); await Task.Delay(10); before = await runtime.SnapshotAsync(); }
             Pass(before.Paused, "explicit pause is persisted before configuration validation");
             await ManagementModeFixture.Authorize(runtime);
-            before = await runtime.SnapshotAsync();
-            for (var settle = 0; settle < 100 && before.Availability?.Configure != true; settle++) { await Task.Delay(10); before = await runtime.SnapshotAsync(); }
+            await CameraRoundHarness.Until(async () =>
+            {
+                before = await runtime.SnapshotAsync();
+                return before.Availability?.Configure == true;
+            });
             var rejected = await runtime.StageConfigurationAsync(before.Configuration.Revision, Replace(capability with { Version = "9.0.0" }), "Verify incompatible provider version rejection");
             Console.WriteLine("VC01 stage=" + Wire.Encode(rejected));
             Pass(rejected.Status == "Rejected" && rejected.Reason.Contains("not declared compatible", StringComparison.Ordinal) && Wire.Encode((await runtime.SnapshotAsync()).Configuration) == Wire.Encode(before.Configuration), "actual maintenance reaches compatibility rejection without replacing Effective/Pending");

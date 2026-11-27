@@ -168,6 +168,22 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         (await App.SnapshotAsync()).Positions! is { Length: > 0 } positions &&
         positions.Any(p => device is null || p.ReaderDeviceId == device) &&
         positions.Where(p => device is null || p.ReaderDeviceId == device).All(p => p.BarcodeInput?.Camera == true));
+    internal async Task<ParcelSnapshot> WaitForLiveConfigurationWindowAsync()
+    {
+        var started = DateTimeOffset.UtcNow;
+        if (await SmRoundFixture.CompletedHeartbeatAsync(App) != RcsHeartbeatResult.Received)
+            throw new InvalidOperationException("Fixture requires a confirmed heartbeat before trying a live configuration change.");
+        ParcelSnapshot? snapshot = null;
+        await Until(async () =>
+        {
+            snapshot = await App.SnapshotAsync();
+            var now = DateTimeOffset.UtcNow;
+            return snapshot.Availability?.Configure == true && snapshot.Capacity?.ManagedExecutions == 0 &&
+                snapshot.Health.Any(health => health is { Ready: true, RemoteConfirmation: RemoteConnectionConfirmation.ResponseReceived } &&
+                    health.RemoteConfirmedAt >= started && health.RemoteConfirmedAt <= now && health.RemoteValidUntil > now && health.ValidUntil > now);
+        });
+        return snapshot!;
+    }
     public async Task<CameraInspectionStatus> BeginAsync()
     {
         var snapshot = await App.SnapshotAsync();
@@ -309,6 +325,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             Sources[binding.DeviceId] = source; return source;
         }
         public TimeProvider? RcsRequestClock { get; set; }
+        public TimeProvider? RcsHeartbeatSchedule { get; set; }
         public string RcsImplementationFingerprint { get; set; } = "synthetic-round-rcs-implementation";
         public ParcelPorts Create(ParcelConfiguration c)
         {
@@ -326,6 +343,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             }
             var wcs = new SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
             if (RcsRequestClock is { } clock) wcs.RequestTimeForVerification = clock;
+            if (RcsHeartbeatSchedule is { } schedule) wcs.HeartbeatScheduleForVerification = schedule;
             return new(readers[c.Reader.DeviceId], null, wcs, null, new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint }, Readers: readers);
         }
         public ParcelLiveDevices? CreateLive(ParcelConfiguration c, IReadOnlyCollection<string> readerIds, bool integration)
@@ -339,7 +357,11 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 if (FailCandidateRelease) Decoders[id].FailReleaseAt = 1;
             }
             SportmasterRcsTaskService? wcs = null;
-            if (integration) { wcs = new(c.Wcs!); wcs.ConfigureRuntime(c); WcsBuilds++; }
+            if (integration)
+            {
+                wcs = new(c.Wcs!); wcs.ConfigureRuntime(c); WcsBuilds++;
+                if (RcsHeartbeatSchedule is { } schedule) wcs.HeartbeatScheduleForVerification = schedule;
+            }
             return new(RejectLiveReaders ? readers.ToDictionary(r => "unexpected-" + r.Key, r => r.Value) : readers, wcs, wcs is null ? new Dictionary<string, string>() : new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint });
         }
         public ValueTask DisposeAsync() => validator.DisposeAsync();

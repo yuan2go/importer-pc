@@ -331,6 +331,11 @@
           "SQLitePCLRaw.core": "2.1.14"
         }
       },
+      "ZXingCpp": {
+        "type": "Transitive",
+        "resolved": "0.5.3",
+        "contentHash": "9/OpxmBgi0d1HRFYrhQ115Szyd/oAhcsG0p21Fp877sH2S+Fjnlrw3yhyCWhjd/uNQTaMnWkPUKfpaCuWXem7g=="
+      },
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
@@ -341,6 +346,7 @@
         "type": "Project",
         "dependencies": {
           "Ipc.Application.Contracts": "[1.0.0, )",
+          "Ipc.Diagnostics": "[1.0.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
@@ -371,6 +377,7 @@
           "Ipc.Drivers": "[1.0.0, )",
           "Ipc.Drivers.Hikrobot.Mvs": "[1.0.0, )",
           "Ipc.Integrations": "[1.0.0, )",
+          "Ipc.Integrations.SportmasterRcs": "[1.0.0, )",
           "Ipc.Platform": "[1.0.0, )",
           "Ipc.Supply": "[1.0.0, )"
         }
@@ -386,7 +393,14 @@
         "dependencies": {
           "Ipc.Application.Sportmaster.Desktop": "[1.0.0, )",
           "Ipc.Assembly": "[1.0.0, )",
+          "Ipc.Operations.Desktop": "[1.0.0, )",
           "Ipc.Presentation.Wpf": "[1.0.0, )"
+        }
+      },
+      "ipc.diagnostics": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
         }
       },
       "ipc.drivers": {
@@ -398,7 +412,8 @@
       "ipc.drivers.hikrobot.mvs": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[1.0.0, )"
+          "Ipc.Platform": "[1.0.0, )",
+          "ZXingCpp": "[0.5.3, )"
         }
       },
       "ipc.integrations": {
@@ -406,6 +421,26 @@
         "dependencies": {
           "Ipc.Reference.Protocol": "[1.0.0, )",
           "Ipc.Supply.Contracts": "[1.0.0, )"
+        }
+      },
+      "ipc.integrations.sportmasterrcs": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
+        }
+      },
+      "ipc.operations": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Diagnostics": "[1.0.0, )"
+        }
+      },
+      "ipc.operations.desktop": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Sportmaster.Desktop": "[1.0.0, )",
+          "Ipc.Operations": "[1.0.0, )",
+          "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },
       "ipc.platform": {
@@ -450,6 +485,11 @@
         "type": "Transitive",
         "resolved": "2.1.14",
         "contentHash": "h32f78UhMGzr3l2kO8t1+qp7ItqfbmyAFTLjBHqL13/kNeKOR6K6FhOQe/gOzlHnUSFAYNUt3JoVPAEjFRIB9g=="
+      },
+      "ZXingCpp": {
+        "type": "Transitive",
+        "resolved": "0.5.3",
+        "contentHash": "9/OpxmBgi0d1HRFYrhQ115Szyd/oAhcsG0p21Fp877sH2S+Fjnlrw3yhyCWhjd/uNQTaMnWkPUKfpaCuWXem7g=="
       }
     }
   }

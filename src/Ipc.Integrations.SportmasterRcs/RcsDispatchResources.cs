@@ -62,38 +62,61 @@ public sealed partial class SportmasterRcsTaskService : IWcsDispatchResources
             if (Interlocked.CompareExchange(ref state, 3, 0) == 0) { slot.Dispose(); owner.DispatchReleased(); }
         }
     }
-    sealed class RcsSendSlots
+    internal sealed class RcsSendSlots
     {
+        const int MaximumWaitingPerPosition = 128;
         readonly object sync = new();
-        readonly LinkedList<Waiter> left = new(), right = new();
+        readonly Dictionary<string, LinkedListNode<PositionQueue>> queues = new(StringComparer.Ordinal);
+        readonly LinkedList<PositionQueue> rotation = new();
         int occupied, sending;
-        bool rightNext;
-        sealed class Waiter(string position)
+        string lastGranted = "right"; // On the existing two-position station, prefer left before the first grant.
+
+        sealed class PositionQueue(string position)
         {
-            public readonly string Position = position;
+            public string Position { get; } = position;
+            public LinkedList<Waiter> Waiters { get; } = new();
+        }
+
+        sealed class Waiter
+        {
             public readonly TaskCompletionSource<IDisposable> Ready = new(TaskCreationOptions.RunContinuationsAsynchronously);
             public LinkedListNode<Waiter>? Node;
         }
+
         public WcsDispatchProgress Snapshot()
-        { lock (sync) return new(MaximumDestinationSends, occupied, sending, left.Count, right.Count); }
+        {
+            lock (sync) return new(MaximumDestinationSends, occupied, sending,
+                queues.GetValueOrDefault("left")?.Value.Waiters.Count ?? 0,
+                queues.GetValueOrDefault("right")?.Value.Waiters.Count ?? 0);
+        }
+
         public void BeginSend() { lock (sync) sending++; }
         public void EndSend() { lock (sync) sending--; }
         public async Task<IDisposable> AcquireAsync(string position, CancellationToken token)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(position);
             token.ThrowIfCancellationRequested();
-            var waiter = new Waiter(position);
+            var waiter = new Waiter();
+            LinkedListNode<PositionQueue> queue;
             lock (sync)
             {
-                var queue = position == "left" ? left : right;
-                if (queue.Count >= 128) throw new IOException("RCS send resource waiting capacity is exhausted");
-                waiter.Node = queue.AddLast(waiter); Grant();
+                if (!queues.TryGetValue(position, out var pending))
+                {
+                    pending = rotation.AddLast(new PositionQueue(position));
+                    queues.Add(position, pending);
+                }
+                queue = pending;
+                if (queue.Value.Waiters.Count >= MaximumWaitingPerPosition)
+                    throw new IOException("RCS send resource waiting capacity is exhausted");
+                waiter.Node = queue.Value.Waiters.AddLast(waiter);
+                Grant();
             }
             using var cancelled = token.Register(() =>
             {
                 lock (sync)
                 {
-                    if (waiter.Node is not { } node) return;
-                    (waiter.Position == "left" ? left : right).Remove(node); waiter.Node = null;
+                    if (waiter.Node is null) return;
+                    RemoveWaiter(queue, waiter);
                     waiter.Ready.TrySetCanceled(token);
                 }
             });
@@ -101,13 +124,31 @@ public sealed partial class SportmasterRcsTaskService : IWcsDispatchResources
             if (token.IsCancellationRequested) { slot.Dispose(); token.ThrowIfCancellationRequested(); }
             return slot;
         }
+
+        void RemoveWaiter(LinkedListNode<PositionQueue> queue, Waiter waiter)
+        {
+            queue.Value.Waiters.Remove(waiter.Node!);
+            waiter.Node = null;
+            if (queue.Value.Waiters.Count != 0) return;
+            rotation.Remove(queue);
+            queues.Remove(queue.Value.Position);
+        }
+
         void Grant()
         {
-            while (occupied < MaximumDestinationSends && (left.Count != 0 || right.Count != 0))
+            while (occupied < MaximumDestinationSends && rotation.First is { } first)
             {
-                var queue = rightNext && right.Count != 0 || left.Count == 0 ? right : left;
-                var waiter = queue.First!.Value; queue.RemoveFirst(); waiter.Node = null;
-                rightNext = waiter.Position == "left"; occupied++;
+                // The last served position may have rejoined an empty rotation before its peer.
+                var queue = first.Value.Position == lastGranted && first.Next is { } next ? next : first;
+                var waiter = queue.Value.Waiters.First!.Value;
+                RemoveWaiter(queue, waiter);
+                if (queue.List is not null)
+                {
+                    rotation.Remove(queue);
+                    rotation.AddLast(queue);
+                }
+                lastGranted = queue.Value.Position;
+                occupied++;
                 waiter.Ready.SetResult(new Slot(this));
             }
         }

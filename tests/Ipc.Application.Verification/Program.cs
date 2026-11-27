@@ -145,6 +145,11 @@ if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run
 if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); return; }
 if (args.Contains("--lifecycle-restore")) { await LifecycleRestore.Run(workspace, root); return; }
 if (args.Contains("--sm-runtime-responsibility")) { await SmRuntimeResponsibility.Run(workspace, root); return; }
+if (args.Contains("--capability-registry-routing")) { await CapabilityRegistryChecks.Routing(workspace, root); return; }
+if (args.Contains("--capability-registry-discovery")) { await CapabilityRegistryChecks.Discovery(root); return; }
+if (args.Contains("--capability-registry-live")) { await CapabilityRegistryChecks.Live(workspace, root); return; }
+if (args.Contains("--rcs-component-binding")) { await SportmasterRcs.ComponentBindingChecks(workspace); return; }
+if (args.Contains("--rcs-component-dispatch")) { await SportmasterRcs.ComponentDispatchChecks(); return; }
 if (args.Contains("--sm-camera-reconfiguration"))
 {
     await LiveDeviceCleanup.Run(workspace, Path.Combine(root, "reconfiguration"));

@@ -7,10 +7,7 @@ public sealed record ConfigurationFieldIssue(string Field, string Message)
     public override string ToString() => Field + "：" + Message;
 }
 
-// Locate errors with the same read-only validator as Preview. Each probe changes one
-// field from the effective basis; no policy/range is reimplemented in the UI. Only
-// errors present in the actual candidate and absent from the basis get a field label.
-// Cross-field-only errors remain in the full summary instead of inventing a location.
+// Compare validation errors one field at a time. Report cross-field errors in the summary.
 public static class ConfigurationValidationPresentation
 {
     public static ConfigurationFieldIssue[] Locate(StationConfig effective, StationConfig candidate,

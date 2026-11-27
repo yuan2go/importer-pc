@@ -6,7 +6,7 @@
 
 | 用途 | 文件 |
 | --- | --- |
-| 架构与构建 | [架构基线与模块边界](design/framework.md) · [运行入门](runtime/getting-started.md) · [D 盘开发与新站存储](runtime/d-drive-storage-20261021.md) |
+| 架构与构建 | [架构基线与模块边界](design/framework.md) · [多业务解耦地图](design/multi-business-extraction-audit.md) · [运行入门](runtime/getting-started.md) · [D 盘开发与新站存储](runtime/d-drive-storage-20261021.md) |
 | 当前格式与回归 | [代码与验证边界](runtime/current-contract-cleanup-01.md) · [配置及存储版本](runtime/version-compatibility-01.md) · [Parcel14 数据操作](runtime/parcel12-operations-26.md)（随包名 PARCEL14-OPERATIONS.md） |
 | 安装与账户安全 | [部署生命周期](design/industrial-lifecycle-01.md) · [管理密码与机器维护权限](design/industrial-security-recovery-01.md) · [D 盘预检](runtime/d-drive-install-01.md) · [首次管理密码](runtime/management-password-startup-01.md) |
 | Windows 交付 | [企业分发方式](design/enterprise-packaging-07.md) · [代码签名接入](design/code-signing-onboarding-06.md) · [Windows x64 兼容范围](runtime/windows-client-compatibility-01.md) · [Unicode 快捷方式](runtime/unicode-shortcut-compatibility-01.md) |

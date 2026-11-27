@@ -171,9 +171,7 @@ internal sealed class HikrobotReader : IControlledObservationSource
                 triggers[frame.Channel] = frame.Trigger;
             }
             var source = $"c{frame.Channel}.f{frame.Frame}.e{frame.Event}.t{frame.Trigger}.s{frame.TimestampHigh:x8}{frame.TimestampLow:x8}";
-            // User-approved read-result policy sends each distinct SDK result to RCS,
-            // including repeated codes. It identifies a read request, not a physical parcel.
-            // Exact redelivery of the same SDK frame keeps the original request identity.
+            // Each SDK read or trigger has an admission key. Redelivery of the same frame reuses it.
             var admission = "hik." + Wire.Hash(DeviceId + ":" + Epoch + ":" + (entityMode == "read-result" ? "read:" + source : "trigger:" + frame.Channel + ":" + frame.Trigger))[..40].ToLowerInvariant();
             var observation = new Observation(Wire.Id(), DeviceId, Epoch, source, ++sequence, admission,
                 entityMode is "trigger" or "read-result" ? frame.Kind : "UncorrelatedRead", frame.Codes, null, DateTimeOffset.UtcNow);

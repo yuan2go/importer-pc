@@ -68,9 +68,7 @@ public sealed partial class ParcelRuntime
         return interruptedPositions.IsEmpty && ingressLanes.Values.All(l => l.Waiting.IsEmpty) && identityConflicts.Count == 0 &&
             operations.Values.All(op => IsSettled(op) || repository!.CustodyOnly(op, Id)) && repository!.PendingReceipts().All(x => repository.HasReceiptOutcomeBasis(x.Id));
     }
-    // The same responsibility test applies before a live swap and before any
-    // pending configuration can take over on startup. The active-call and raw
-    // receipt checks come before placement/history classification.
+    // Check active calls and pending receipts before classifying placement on live activation or restart.
     ParcelInputBlockReason? SmConfigurationBlock()
     {
         if (fatalStorage.Task.IsCompleted) return ParcelInputBlockReason.StorageUnavailable;

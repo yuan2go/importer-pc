@@ -90,9 +90,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             catch (Exception ex) { Latch("ProjectionMaintenanceFailure", ex.GetType().Name); }
         });
     }
-    // The memory decision lock is never held across SQLite or marker I/O. Device overload
-    // retains H04's durable-before-return marker; product UI source injection is dispatched
-    // off the UI thread. Ordinary command rejection shares one bounded evidence writer/task.
+    // Device overload records its marker before returning. SQLite and marker I/O run outside the decision lock.
     public void Latch(string code, string reason)
     {
         if (code != SupplyReasonCodes.Overload) { runtimeFaults[code] = reason; return; }

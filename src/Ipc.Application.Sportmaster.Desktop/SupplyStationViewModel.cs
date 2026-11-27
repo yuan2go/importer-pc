@@ -6,7 +6,6 @@ using Ipc.Platform;
 
 namespace Ipc.Application.Sportmaster.Desktop;
 
-// Presentation only. Every fact/permission comes from the existing application contract.
 public sealed partial class SupplyStationViewModel : ParcelViewModel
 {
     string selectedPage = "workstation";

@@ -49,7 +49,7 @@ public sealed class ConfigurationDraft : INotifyPropertyChanged
     }
     public void Replace(StationConfig config)
     {
-        var copy = Wire.Decode<StationConfig>(Wire.Encode(config)); // prepare before replacing anything
+        var copy = Wire.Decode<StationConfig>(Wire.Encode(config));
         basis = copy; extensions = copy.Extensions;
         this["StationId"] = copy.StationId; this["Version"] = copy.Version; SetTarget(copy.Integration);
         this["Timeout"] = copy.TimeoutMs.ToString(CultureInfo.InvariantCulture);

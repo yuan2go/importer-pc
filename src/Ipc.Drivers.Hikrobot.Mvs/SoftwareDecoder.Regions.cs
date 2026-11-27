@@ -101,11 +101,8 @@ internal sealed partial class SoftwareDecoder
         }
         return result;
     }
-    // A region is explained once every barcode-like tile in it lies on a printed code already recognised.
-    // Its remaining deskewed passes could only find that same code again, so they are skipped. A tile that no
-    // recognised code explains - a second or still unread code - keeps the full search, so a real second code is
-    // still found and the frame is still rejected as multiple codes.
-    // Only a box that the original pixels show to be one continuous printed band can explain tiles.
+    // Skip further deskew passes only when verified continuous barcode bands explain every dense tile.
+    // Uncovered tiles may belong to a second label and still need the full search.
     bool Explained(SearchRegion region, List<RecognitionSymbol> symbols, byte[] original, int width, int height)
     {
         if (symbols.Count == 0) return false;

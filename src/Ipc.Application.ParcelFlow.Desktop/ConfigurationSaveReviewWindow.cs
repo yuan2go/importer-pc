@@ -8,8 +8,7 @@ using System.Windows.Media;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-// Protected review of the existing editor. A modal does not hold the VM busy;
-// only actual async operations take its ordinary lane. Pause stays independent.
+// Keep the command lane available while the review window is open so that pause can still run independently.
 public sealed class ConfigurationSaveReviewWindow : Window
 {
     readonly ParcelViewModel vm;

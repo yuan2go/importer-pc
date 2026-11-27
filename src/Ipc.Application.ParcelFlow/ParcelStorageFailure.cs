@@ -30,7 +30,6 @@ public sealed partial class ParcelRuntime : IRuntimeFatalSource
             AtomicStorageWrite.IsUnrecoverable(error) ? StorageFailureKind.Unrecoverable : StorageFailureKind.DurableOutcomeUncertain;
         var fatalState = "Fatal storage failure: " + phase + "; " + kind + "; " + error.GetType().Name;
         if (error is StorageWriteFailure budget) fatalState += "; attempts=" + budget.Attempts + "; elapsedMs=" + budget.ElapsedMs.ToString("F0", System.Globalization.CultureInfo.InvariantCulture);
-        // Keep existing worker/operator diagnostics and guards intact.
         Interlocked.CompareExchange(ref failure, fatalState, null);
         fatalStorage.TrySetResult(new("Storage." + phase + "." + kind, kind == StorageFailureKind.Unrecoverable,
             error, runtimeId.ToString(), string.Join(",", readers.Select(x => x.Key + ":" + x.Value.Epoch).Concat(scaleEpochs.Select(x => x.Key + ":" + x.Value))), fatalState + "; original=" + failure));

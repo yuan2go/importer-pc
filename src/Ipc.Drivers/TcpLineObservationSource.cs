@@ -6,7 +6,7 @@ using Ipc.Platform;
 
 namespace Ipc.Drivers;
 
-// Explicit client/LF framing requested by the user. No commands or reconnect replay.
+// The client reads LF-delimited observations. Reconnecting starts a new stream.
 public sealed class TcpLineObservationSource : IControlledObservationSource
 {
     public static CapabilityDescriptor Descriptor => new("observation", "tcp-line", "1.0.0", "TCP-LINE-OBSERVATION-v1",

@@ -83,10 +83,8 @@ public sealed class ModuleCatalog(IEnumerable<IRuntimeModule> modules) : IAsyncD
     }
 }
 
-// FileShare.None covers the same canonical root across processes/login sessions. The file
-// is retained by default; scoped session locks use OS DeleteOnClose. Manually removing
-// a held lock pathname could create a second lock identity. This mechanism
-// does not prove or replace the device vendor's control-ownership protocol.
+// FileShare.None locks the canonical root across sessions. Unlinking the file could create a second lock.
+// Scoped locks use DeleteOnClose. Device control ownership is checked separately.
 public sealed class ResourceLease : IDisposable
 {
     readonly List<FileStream> locks = [];

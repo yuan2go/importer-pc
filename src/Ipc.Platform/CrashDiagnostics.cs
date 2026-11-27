@@ -67,7 +67,7 @@ public sealed class CrashDiagnostics : IDisposable
                 Exception = Clip(error.ToString(), 16384),
                 Policy = "Diagnostics only; no replay or in-process recovery"
             });
-            LastWriteFailure = null; return true; // AppendMetadata performs Flush(true).
+            LastWriteFailure = null; return true;
         }
         catch (Exception ex) { LastWriteFailure = ex.GetType().Name; return false; }
     }
@@ -109,7 +109,7 @@ public sealed class CrashDiagnostics : IDisposable
         var memory = Marshal.AllocHGlobal(Marshal.SizeOf<ExceptionRecord>());
         Marshal.StructureToPtr(record, memory, false);
         RaiseFailFastException(memory, IntPtr.Zero, 1); // Explicit code; WER gets the native crash.
-        Environment.Exit(FatalExitCode); // Defensive only: the API never returns.
+        Environment.Exit(FatalExitCode);
         throw new InvalidOperationException("Fail-fast unexpectedly returned");
     }
     [StructLayout(LayoutKind.Sequential)]

@@ -4,13 +4,8 @@ namespace Ipc.Drivers.Hikrobot.Mvs;
 
 internal enum StillnessDecision { Still, Moving, Fallback }
 
-// Recognise only a settled scene. The operator places the parcel on a stationary cart; frames
-// taken while the hand or parcel is moving are blurred or half covered, and a partial read would
-// start a placement with the wrong code. Each frame is reduced to a coarse grid of samples and
-// compared with the frame where the scene last changed (not with the previous frame, so a slow
-// slide still counts as movement). A frame is decodable once that reference has held for the
-// still time. If the scene never settles (vibration, a hand resting on the parcel), one frame
-// is decoded every fallback interval so the station never stops reading.
+// Compare samples with the last changed scene so that a slow slide still counts as movement.
+// The fallback interval allows occasional recognition during persistent vibration.
 internal sealed class MvsStillness(int stillMs, int fallbackMs)
 {
     // About 200 x 130 samples on a 3072 x 2048 frame: cheap next to the full copy for decoding.

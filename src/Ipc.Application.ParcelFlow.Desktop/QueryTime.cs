@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-// Shared presentation helpers; no query state or platform settings are changed.
 public static class QueryTime
 {
     public static bool TryRead(string text, out DateTimeOffset value)

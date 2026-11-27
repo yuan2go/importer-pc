@@ -36,10 +36,8 @@ public partial class ParcelViewModel
             try { await Task.WhenAll(outstanding); }
             catch (OperationCanceledException) when (outstanding.All(t => t.IsCompletedSuccessfully || t.IsCanceled))
             {
-                // Revoking a window cancels its owned reads. Their original
-                // awaiters own the result; a settled cancellation is not a
-                // resource-release failure. Faulted or still-running calls
-                // must not pass this completion barrier.
+                // Revoking a window cancels its reads. Canceled reads have drained. Faulted or running calls
+                // need handling.
             }
         }
     }

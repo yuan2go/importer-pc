@@ -1,6 +1,5 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:pf="clr-namespace:Ipc.Application.ParcelFlow.Desktop;assembly=Ipc.Application.ParcelFlow.Desktop">
  <pf:ParcelStateTextConverter x:Key="ParcelStateText"/>
- <!-- Native UI derived under explicit user authorization. Typography uses the shared offline OFL resources. -->
  <Style x:Key="StationCard" TargetType="Border" BasedOn="{StaticResource WorkstationCard}"/>
  <Style x:Key="StationLabel" TargetType="TextBlock">
   <Setter Property="Foreground" Value="{StaticResource Muted}"/>
@@ -39,7 +38,6 @@
     <Setter Property="IsTabStop" Value="True"/>
    </DataTrigger>
    <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="34"/></DataTrigger>
-   <!-- A field RCS did not return, or no task yet, reads as secondary rather than as a value. -->
    <Trigger Property="Text" Value="未返回"><Setter Property="Foreground" Value="{StaticResource Muted}"/></Trigger>
    <Trigger Property="Text" Value="—"><Setter Property="Foreground" Value="{StaticResource Muted}"/></Trigger>
   </Style.Triggers>

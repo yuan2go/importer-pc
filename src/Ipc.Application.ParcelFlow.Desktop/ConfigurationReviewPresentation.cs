@@ -10,8 +10,7 @@ public sealed record ConfigurationChangeItem(string Category, string Object, str
     public string Activation { get; init; } = "重启后生效";
 }
 
-// A review projection only. It neither persists a second draft nor replaces
-// Stage/Inspect, the original revision, runtime identity or submission guards.
+// Review reads the existing draft and revision. The submission path checks them again at save time.
 public partial class ParcelViewModel
 {
     string? reviewedConfigurationSignature;

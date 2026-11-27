@@ -8,7 +8,6 @@
  <Style x:Key="ParameterQuietAction" TargetType="Button" BasedOn="{StaticResource ParameterAction}"><Setter Property="Background" Value="Transparent"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="Foreground" Value="{DynamicResource Accent}"/><Setter Property="Padding" Value="12,6"/></Style>
  <Style x:Key="ParameterResultAction" TargetType="Button" BasedOn="{StaticResource ParameterAction}"><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Padding" Value="12,8"/></Style>
 
- <!-- Settings keep their own field density with the shared templates. -->
  <Style TargetType="TextBox" BasedOn="{StaticResource WorkstationTextBox}">
   <Setter Property="Margin" Value="0"/><Setter Property="MinHeight" Value="40"/><Setter Property="Padding" Value="10,7"/>
   <Style.Triggers><Trigger Property="IsReadOnly" Value="True"><Setter Property="Background" Value="{DynamicResource Soft}"/></Trigger></Style.Triggers>
@@ -23,7 +22,6 @@
  <DataTemplate x:Key="ParameterObjectTemplate"><TextBlock Text="{Binding DisplayTitle}" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Body}"/></DataTemplate>
  <DataTemplate x:Key="ParameterSearchTemplate"><StackPanel><TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Body}"/><TextBlock Text="{Binding Context}" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}" Margin="0,2,0,0"/></StackPanel></DataTemplate>
  <GroupStyle x:Key="ParameterDirectoryGroup"><GroupStyle.HeaderTemplate><DataTemplate><TextBlock Text="{Binding Name}" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}" FontWeight="{x:Static type:UiTypography.Emphasis}" Margin="12,20,8,6"/></DataTemplate></GroupStyle.HeaderTemplate></GroupStyle>
- <!-- Directory entry: soft accent fill and a short accent bar on the selected page. -->
  <Style TargetType="ListBoxItem">
   <Setter Property="FocusVisualStyle" Value="{DynamicResource FocusRing}"/>
   <Setter Property="MinHeight" Value="40"/><Setter Property="Margin" Value="0,0,0,2"/><Setter Property="Padding" Value="12,8"/><Setter Property="FontWeight" Value="Normal"/><Setter Property="Foreground" Value="{DynamicResource Ink}"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Cursor" Value="Hand"/>

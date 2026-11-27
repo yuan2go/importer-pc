@@ -2,7 +2,7 @@ using System.Text.Json;
 
 namespace Ipc.Presentation.Wpf;
 
-// One versioned source for native operator resources and presentation mappings.
+// Reads the Sportmaster operator section of the embedded token resource.
 public static class OperatorTokens
 {
     static readonly JsonElement values = Load();

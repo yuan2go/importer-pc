@@ -520,7 +520,7 @@ public static partial class ParcelStartupServices
             }
             catch (MaintenanceCancelledException) { throw; }
             catch (InstallationOutcomeUnknownException) { throw; }
-            catch (IOException) when (responseRead.IsCompletedSuccessfully) { throw; } // An explicit Failed terminal is known.
+            catch (IOException) when (responseRead.IsCompletedSuccessfully) { throw; }
             catch (Exception error) when (error is IOException or InvalidDataException or System.Text.Json.JsonException or KeyNotFoundException or InvalidOperationException or OperationCanceledException or UnauthorizedAccessException or FormatException or OverflowException or ArgumentException)
             { throw new InstallationOutcomeUnknownException("未取得可信维护终态。安装可能已提交，请核对安装记录后再继续。", error); }
         }

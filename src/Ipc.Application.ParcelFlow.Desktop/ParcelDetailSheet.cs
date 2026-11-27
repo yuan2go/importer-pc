@@ -10,7 +10,6 @@ public sealed record DetailRow(string Label, string Value, bool Attention = fals
 public sealed record DetailSection(string Title, DetailRow[] Rows, string? Note = null, bool ShowsPicture = false);
 public sealed record ParcelDetailSheet(string Headline, ParcelPresentationTone Tone, string Explanation, DetailSection[] Sections)
 {
-    // Plain-text form for copying and for the screen reader.
     public string ToText() => Headline + "\n" + Explanation + string.Concat(Sections.Select(s =>
         "\n\n" + s.Title + string.Concat(s.Rows.Select(r => "\n" + r.Label + "：" + r.Value)) + (s.Note is { } note ? "\n" + note : "")));
 }

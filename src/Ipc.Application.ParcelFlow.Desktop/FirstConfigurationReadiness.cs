@@ -36,7 +36,6 @@ public static class FirstConfigurationReadiness
         return [.. lines];
     }
 
-    // One sentence for the top of the completion step; it names the next action, never readiness to work.
     public static string Summary(IReadOnlyCollection<ReadinessLine> lines)
     {
         var parts = lines.Where(l => l.Source != "人工输入").Select(l => l.Source + (l.NeedsAttention ? "待处理" : l.State.StartsWith("已填写", StringComparison.Ordinal) ? "已填写" : l.Source == "RCS" ? "可稍后配置" : "不使用"));

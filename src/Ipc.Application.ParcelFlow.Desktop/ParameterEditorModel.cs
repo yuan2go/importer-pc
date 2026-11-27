@@ -198,9 +198,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
                 if (isRcs && key is RcsRequestPolicy.DestinationChuteCode or RcsRequestPolicy.DestinationMode) continue;
                 Issue(ParameterOwnership.CategoryName(ParameterOwnership.Category(draft, key)), draft.InstanceId + "/" + key, draft.Role + " · " + error);
             }
-            // Mirror the installed Hikrobot driver's existing address-format rule
-            // before review. This is local feedback, not a connection probe or a
-            // replacement for Application/driver validation at the real boundary.
+            // The editor checks address syntax. Saving the configuration also checks device identity.
             if (draft.Provider.Implementation is "extension:hikrobot.idmvs-reader/idmvs-reader" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" or "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" or "tcp-line" && values.TryGetValue("device.ip", out var ip))
             {
                 if (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip)

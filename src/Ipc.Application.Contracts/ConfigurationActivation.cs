@@ -14,10 +14,7 @@ public static class ConfigurationActivation
         => application == "sportmaster" && pending is null &&
            Wire.Encode(candidate with { BarcodeFilter = effective.BarcodeFilter }) == Wire.Encode(effective);
 
-    // SM only. A change applies live when, apart from the barcode rules, it touches only
-    // the parameters of configured cameras and/or the configured RCS connection. Identities,
-    // drivers and the configured/unconfigured state of each device must stay the same:
-    // enabling or disabling a device, or any other setting, still needs a controlled restart.
+    // A live swap preserves logical device IDs, roles and drivers. A configured camera may change IP or serial.
     public static LiveDeviceChange? LiveDevices(string application, ParcelConfiguration effective, ParcelConfiguration? pending, ParcelConfiguration candidate)
     {
         if (application != "sportmaster" || pending is not null || effective.Topology is not { } before || candidate.Topology is not { } after ||

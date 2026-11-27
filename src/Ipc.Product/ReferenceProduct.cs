@@ -6,8 +6,7 @@ namespace Ipc.Product;
 
 public static class ReferenceProduct
 {
-    // This is the one installed reference business; tests may register other controlled
-    // compositions without introducing a second customer implementation.
+    // The Supply reference composition uses its own contracts and storage modules.
     public static ProductDefinition Definition { get; } = new("ipc-reference", "net10.0", "supply", [RunMode.Simulation, RunMode.Production],
         [new("platform", "platform", "1.0.0", 1, [], "Ipc.Platform.dll"),
          new("supply-contracts", "contracts", "1.0.0", 1, ["platform"], "Ipc.Supply.Contracts.dll"),

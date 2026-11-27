@@ -5,8 +5,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime : IParcelConfigurationDraftApplication
 {
-    // Reuse the independent editor's CAS/encryption store; this accessor never
-    // constructs a second runtime or a port. It does not submit a candidate.
+    // The editor shares the configuration ledger, CAS revision and encryption with the runtime.
     ParcelStartupMaintenance EditorAccess(bool saving = false) => new(launch, definition,
         () => throw new InvalidOperationException("Editor storage must not construct capabilities"),
         () =>

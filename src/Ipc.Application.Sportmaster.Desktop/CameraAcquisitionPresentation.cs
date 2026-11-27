@@ -52,7 +52,7 @@ internal static class CameraAcquisitionPresentation
             ? d.TrayPresenceStatus ?? "在位状态未知" : "在位状态未知";
         return $"{presence}\n{status} · 有效帧 {d.Frames} · 解码完成 {d.DecodeCompleted} · 条码候选 {d.Candidates}\n{Pace(d.DecodeMedianMs)}\n{rates}\n最近有效帧 {d.LastFrameAt?.ToLocalTime():HH:mm:ss} · {rejections}";
     }
-    // Once a parcel rests, the chute request waits for one decode; a slow decode sets the station's pace.
+    // This threshold flags slow frame decoding in camera diagnostics.
     internal const double SlowDecodeMs = 600;
     internal static string Pace(double? medianMs) => medianMs is not { } ms ? "单帧识别耗时：尚无样本" :
         $"单帧识别耗时约 {ms:F0} ms（最近中位数）" + (ms >= SlowDecodeMs

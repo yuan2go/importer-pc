@@ -18,7 +18,7 @@ public static partial class WindowsDeploymentSetup
 {
     static string PruneFile(string application, string operation)
     {
-        _ = RollbackFile(application, operation); // Same bounded identity grammar.
+        _ = RollbackFile(application, operation);
         return Path.Combine(MachineRoot, "deployments", application + ".prune-" + operation + ".json");
     }
 
@@ -115,8 +115,7 @@ public static partial class WindowsDeploymentSetup
             candidates.Select(c => (c.Location, c.Files)).ToArray(), retained.ToArray(), verifiedPredecessor);
     }
 
-    // Both the normal entry and regression tests generate the executable plan
-    // here. File/ACL/media checks above produce candidates, never allowed plans.
+    // The executable plan freezes the candidates after checking their file, ACL and media evidence.
     internal static DeploymentPrunePlan BuildVersionPruningPlan(string application, string operation, bool observed,
         DeploymentLocation current, string hash, DeploymentTransition[] history,
         (DeploymentLocation Location, DeploymentVersionFiles[] Files)[] candidates, DeploymentVersionRetention[] retained, bool verifiedPredecessor = false)

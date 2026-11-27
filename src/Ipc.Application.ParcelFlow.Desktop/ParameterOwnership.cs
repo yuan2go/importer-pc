@@ -1,8 +1,6 @@
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-// Display/edit ownership only. Storage continues to use the component's declared
-// schema. Each position has one camera code shared by requests and heartbeat.
-// Frozen requests are never projected.
+// These groups change field ownership in the editor only. The component schema still owns storage.
 public static class ParameterOwnership
 {
     public static bool IsRcs(CapabilityDraft draft) => draft.Kind == "integration" && draft.Contract == "SPORTMASTER-RCS-SORTER-v1";

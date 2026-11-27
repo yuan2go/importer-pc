@@ -464,9 +464,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync(token).ConfigureAwait(false);
         try { drain = externalDrained?.Task ?? Task.CompletedTask; } finally { gate.Release(); }
         await drain.WaitAsync(token).ConfigureAwait(false);
-        // The heartbeat owner must persist its final remote uncertainty, and an
-        // SDK stop may await capture/decode delivery. Neither can drain while
-        // this aggregate's business gate is held.
+        // Drain heartbeat and capture outside the business gate so their final writes can acquire it.
         List<Exception> portFailures = [];
         foreach (var reader in ReaderPorts())
             try { await DeviceCallAsync(reader.DeviceId, () => reader.StopAsync(token), token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }

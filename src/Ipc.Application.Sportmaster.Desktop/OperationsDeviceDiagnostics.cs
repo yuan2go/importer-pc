@@ -174,7 +174,7 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
 
         var logState = ProductText("详细日志状态未确认"); var toggle = new Button { Content = "开启详细日志 30 分钟", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, IsEnabled = false };
         var logDetails = new StackPanel(); logDetails.Children.Add(logState); logDetails.Children.Add(toggle);
-        diagnosticLogDetails = logDetails; // shown inside the page's single "技术详情" section
+        diagnosticLogDetails = logDetails;
         CancellationTokenSource? lifetime = null; long generation = 0; bool reading = false, setting = false;
         RuntimeDiagnosticSettings? current = null;
         void UpdateActions() { foreach (var action in actions) action(); }

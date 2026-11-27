@@ -5,8 +5,7 @@ using Ipc.Platform;
 
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
-// Adapter to the shared frame/placement pipeline. MVID owns image memory until the
-// next GetOneFrameTimeout; Release ends our borrowing, it is not an SDK free call.
+// MVID lends the image until the next GetOneFrameTimeout. Release ends the borrow. The SDK owns the buffer.
 internal sealed class MvidApi(string charset) : IMvsApi
 {
     static readonly object enumerationGate = new();

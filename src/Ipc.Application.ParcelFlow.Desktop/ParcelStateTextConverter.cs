@@ -38,7 +38,6 @@ public sealed class ParcelStateTextConverter : IValueConverter
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
 }
 
-// Display only: the tone of an operation, so list rows colour their status the same way as the detail sheet.
 public sealed class ParcelToneConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>

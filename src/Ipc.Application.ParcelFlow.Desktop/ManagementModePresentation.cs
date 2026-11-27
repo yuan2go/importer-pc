@@ -21,7 +21,7 @@ public partial class ParcelViewModel
     public bool HasManagementNotice => ManagementNotice.Length != 0;
     public Visibility ManagementModeVisibility => IsManagementMode ? Visibility.Visible : Visibility.Collapsed;
     public string ManagementModeActionText => IsManagementMode ? "退出管理模式" : "进入管理模式";
-    public string AccountDisplay => Snapshot?.Configuration.Effective.Login is null ? "" : // no operator login at this station: nothing to show
+    public string AccountDisplay => Snapshot?.Configuration.Effective.Login is null ? "" :
          Snapshot.CurrentOperator is { } user ? "操作员" + (user.Simulation ? "（模拟）" : "") + "：" + user.DisplayName : "操作员未登录";
     public Visibility PauseVisibility => Snapshot?.Paused == false ? Visibility.Visible : Visibility.Collapsed;
     public Visibility ResumeVisibility => Snapshot?.Paused == true ? Visibility.Visible : Visibility.Collapsed;

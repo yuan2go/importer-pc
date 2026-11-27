@@ -467,8 +467,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         }
         if (step == 2 || installing)
         {
-            // Only a trusted original-operation inspection can release Unknown.
-            // A failed system-entry repair must never offer another installation.
+            // Only inspection of the original operation can resolve an unknown installation result.
             installing = false; outcomeUnknown = outcomeUnknown || error is InstallationOutcomeUnknownException; failed = !outcomeUnknown;
             failureMessage = error.Message; Render();
         }

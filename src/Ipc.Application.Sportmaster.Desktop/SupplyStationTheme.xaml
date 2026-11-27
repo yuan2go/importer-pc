@@ -2,7 +2,7 @@
  <pf:ParcelStateTextConverter x:Key="ParcelStateText"/>
  <Style x:Key="StationCard" TargetType="Border" BasedOn="{StaticResource WorkstationCard}"/>
  <Style x:Key="StationLabel" TargetType="TextBlock">
-  <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+  <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
   <Setter Property="FontSize" Value="{x:Static type:UiTypography.Label}"/>
   <Setter Property="Margin" Value="0,0,0,6"/>
  </Style>
@@ -14,7 +14,7 @@
   <Setter Property="AutomationProperties.Name" Value="只读作业标识，可选择复制"/>
  </Style>
  <Style x:Key="StationTaskLabel" TargetType="TextBlock">
-  <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+  <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
   <Setter Property="FontSize" Value="{x:Static type:UiTypography.TaskLabel}"/>
   <Setter Property="VerticalAlignment" Value="Center"/>
   <Setter Property="Margin" Value="0,0,8,0"/>
@@ -38,14 +38,14 @@
     <Setter Property="IsTabStop" Value="True"/>
    </DataTrigger>
    <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="34"/></DataTrigger>
-   <Trigger Property="Text" Value="未返回"><Setter Property="Foreground" Value="{StaticResource Muted}"/></Trigger>
-   <Trigger Property="Text" Value="—"><Setter Property="Foreground" Value="{StaticResource Muted}"/></Trigger>
+   <Trigger Property="Text" Value="未返回"><Setter Property="Foreground" Value="{DynamicResource Muted}"/></Trigger>
+   <Trigger Property="Text" Value="—"><Setter Property="Foreground" Value="{DynamicResource Muted}"/></Trigger>
   </Style.Triggers>
  </Style>
  <Style x:Key="StationButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
   <Setter Property="FontWeight" Value="{x:Static type:UiTypography.Regular}"/>
-  <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
-  <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+  <Setter Property="BorderBrush" Value="{DynamicResource Line}"/>
+  <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
   <Setter Property="MinHeight" Value="44"/>
   <Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/>
   <Setter Property="Padding" Value="8,6"/>

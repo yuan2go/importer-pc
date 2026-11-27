@@ -42,7 +42,7 @@
   <Setter Property="Padding" Value="8,5"/>
   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
    <Border Background="{TemplateBinding Background}" BorderBrush="{DynamicResource Line}" BorderThickness="1"
-           CornerRadius="{StaticResource RadiusControl}" Padding="{TemplateBinding Padding}">
+           CornerRadius="{DynamicResource RadiusControl}" Padding="{TemplateBinding Padding}">
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
      <Border x:Name="Number" Width="28" Height="28" CornerRadius="14" Background="{DynamicResource Soft}" Margin="0,0,8,0">
       <TextBlock x:Name="NumberText" Text="{TemplateBinding Content}" HorizontalAlignment="Center"

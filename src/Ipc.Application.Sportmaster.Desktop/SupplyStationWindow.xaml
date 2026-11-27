@@ -19,14 +19,14 @@
    <Style x:Key="StationIconNavigation" TargetType="Button" BasedOn="{StaticResource StationNavigation}">
     <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
      <Grid>
-      <Border Background="{TemplateBinding Background}" CornerRadius="{StaticResource RadiusControl}" Padding="{TemplateBinding Padding}">
+      <Border Background="{TemplateBinding Background}" CornerRadius="{DynamicResource RadiusControl}" Padding="{TemplateBinding Padding}">
        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
       </Border>
       <Border x:Name="SelectionMark" Width="3" HorizontalAlignment="Left" Margin="0,6,0,6" CornerRadius="1.5"
               Background="{DynamicResource Accent}" Visibility="Collapsed"/>
      </Grid>
      <ControlTemplate.Triggers>
-      <Trigger Property="BorderBrush" Value="{StaticResource AccentBackground}">
+      <Trigger Property="Selector.IsSelected" Value="True">
        <Setter TargetName="SelectionMark" Property="Visibility" Value="Visible"/>
       </Trigger>
      </ControlTemplate.Triggers>
@@ -105,7 +105,7 @@
       </Grid>
      </ToggleButton>
      <Popup IsOpen="{Binding IsChecked,ElementName=PreferenceNoticeButton,Mode=TwoWay}" PlacementTarget="{Binding ElementName=PreferenceNoticeButton}" Placement="Bottom" HorizontalOffset="-276" StaysOpen="False" AllowsTransparency="True">
-      <Border Style="{StaticResource WorkstationCard}" Width="320" Margin="6" Effect="{StaticResource ShadowPopup}">
+      <Border Style="{StaticResource WorkstationCard}" Width="320" Margin="6" Effect="{DynamicResource ShadowPopup}">
        <TextBox Text="{Binding PreferenceNoticeText,Mode=OneWay,TargetNullValue=暂无本机设置通知}" Style="{DynamicResource ReadonlyValue}" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="180" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="本机设置读取通知"/>
       </Border>
      </Popup>
@@ -199,7 +199,7 @@
           <Setter Property="Template">
            <Setter.Value><ControlTemplate TargetType="Button">
             <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"
-                    CornerRadius="{StaticResource RadiusBadge}" Padding="{TemplateBinding Padding}">
+                    CornerRadius="{DynamicResource RadiusBadge}" Padding="{TemplateBinding Padding}">
              <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </Border>
            </ControlTemplate></Setter.Value>
@@ -230,10 +230,10 @@
     <Grid.Style><Style TargetType="Grid"><Setter Property="Margin" Value="8,12,8,8"/><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Margin" Value="4,8,4,4"/></DataTrigger></Style.Triggers></Style></Grid.Style>
     <StackPanel>
      <Button Tag="M 3,6 L 12,2 21,6 21,18 12,22 3,18 Z M 3,6 L 12,10 21,6 M 12,10 L 12,22 M 7.5,4 L 16.5,8 16.5,12" Content="作业" Click="Workstation_Click" Margin="0,0,0,8" ToolTip="作业" AutomationProperties.Name="作业">
-      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="workstation"><Setter Property="Background" Value="{StaticResource AccentBackground}"/><Setter Property="Foreground" Value="{StaticResource Accent}"/><Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style>
+      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="workstation"><Setter Property="Selector.IsSelected" Value="True"/><Setter Property="Background" Value="{DynamicResource AccentBackground}"/><Setter Property="Foreground" Value="{DynamicResource Accent}"/><Setter Property="BorderBrush" Value="{DynamicResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style>
      </Button>
      <Button Tag="M 8,4 L 4,4 4,22 20,22 20,4 16,4 M 8,2 L 16,2 16,6 8,6 Z M 8,11 L 9,11 M 12,11 L 17,11 M 8,16 L 9,16 M 12,16 L 17,16" Content="记录" Click="History_Click" Margin="0,0,0,8" ToolTip="记录" AutomationProperties.Name="记录">
-      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="history"><Setter Property="Background" Value="{StaticResource AccentBackground}"/><Setter Property="Foreground" Value="{StaticResource Accent}"/><Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style>
+      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="history"><Setter Property="Selector.IsSelected" Value="True"/><Setter Property="Background" Value="{DynamicResource AccentBackground}"/><Setter Property="Foreground" Value="{DynamicResource Accent}"/><Setter Property="BorderBrush" Value="{DynamicResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style>
      </Button>
     </StackPanel>
      <Button x:Name="StationSettingsEntry" Grid.Row="1" Content="设置" Click="StationSettings_Click" Style="{StaticResource StationIconNavigation}" Tag="M 3,6 L 21,6 M 3,12 L 21,12 M 3,18 L 21,18 M 8,3 L 8,9 M 16,9 L 16,15 M 10,15 L 10,21" ToolTip="设置（查看不暂停，修改需验证密码）" AutomationProperties.Name="设置，查看不暂停，修改需验证密码"/>
@@ -262,7 +262,7 @@
     <RowDefinition Height="Auto"/>
    </Grid.RowDefinitions>
    <StackPanel>
-      <Border x:Name="PendingConfigurationBanner" Padding="16,6" Background="{StaticResource AccentBackground}">
+      <Border x:Name="PendingConfigurationBanner" Padding="16,6" Background="{DynamicResource AccentBackground}">
      <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasConfigurationActivationNotice}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsCompact}" Value="True"/><Condition Binding="{Binding SelectedPage}" Value="workstation"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></Border.Style>
      <DockPanel><Button x:Name="ActivationOutcomeAction" Content="{Binding ConfigurationActivationActionText}" Click="ProductRestart_Click" IsEnabled="{Binding CanOpenConfigurationActivation}" DockPanel.Dock="Right" MinHeight="44"/><TextBlock Text="{Binding ConfigurationActivationBannerText}" ToolTip="{Binding ConfigurationActivationOutcome}" TextWrapping="Wrap" VerticalAlignment="Center"/></DockPanel>
     </Border>
@@ -312,7 +312,7 @@
     </ContentControl.Style>
    </ContentControl>
   </Grid>
-  <Border x:Name="WorkstationFooter" Grid.Row="3" Grid.Column="1" Padding="16,4" Background="White">
+  <Border x:Name="WorkstationFooter" Grid.Row="3" Grid.Column="1" Padding="16,4" Background="{DynamicResource Surface}">
    <Border.Style>
     <Style TargetType="Border">
      <Style.Triggers>
@@ -327,7 +327,7 @@
    </Border.Style>
    <TextBlock Text="{Binding EnvironmentStatus}" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}" TextTrimming="CharacterEllipsis"/>
   </Border>
-  <Border x:Name="ViewportWarning" Grid.RowSpan="4" Grid.ColumnSpan="2" Panel.ZIndex="20" Background="{DynamicResource Background}" BorderBrush="{StaticResource Danger}" BorderThickness="2" Padding="24" Visibility="{Binding ViewportWarningVisibility}">
+  <Border x:Name="ViewportWarning" Grid.RowSpan="4" Grid.ColumnSpan="2" Panel.ZIndex="20" Background="{DynamicResource Background}" BorderBrush="{DynamicResource Danger}" BorderThickness="2" Padding="24" Visibility="{Binding ViewportWarningVisibility}">
    <ScrollViewer VerticalScrollBarVisibility="Auto">
     <StackPanel>
      <TextBlock Text="{Binding ViewportStatus}" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"/>

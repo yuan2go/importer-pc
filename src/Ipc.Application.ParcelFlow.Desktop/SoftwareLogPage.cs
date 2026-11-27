@@ -22,8 +22,6 @@ public sealed partial class SoftwareLogControl : UserControl
         FontSize = UiTypography.Log,
         IsReadOnly = true,
         TextWrapping = TextWrapping.NoWrap,
-        Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(16, 24, 32)),
-        Foreground = System.Windows.Media.Brushes.WhiteSmoke,
         Padding = new(12),
         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
         HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -38,7 +36,7 @@ public sealed partial class SoftwareLogControl : UserControl
     string? exportedFile;
     readonly Expander detailPanel, diagnostics;
     readonly TextBox diagnosticText = new() { FontFamily = UiTypography.Code, FontSize = UiTypography.Log, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0) };
-    readonly TextBlock empty = new() { Text = "点击“查询”查看日志", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = System.Windows.Media.Brushes.SlateGray };
+    readonly TextBlock empty = new() { Text = "点击“查询”查看日志", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
     readonly LogSummaryConverter summary = new();
     CancellationTokenSource? pending, formatting;
     long detailVersion, viewVersion;
@@ -51,7 +49,11 @@ public sealed partial class SoftwareLogControl : UserControl
         this.service = service;
         Loaded += async (_, _) => { if (query is null && !busy) await Run(Search); };
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/QueryWorkspaceTheme.xaml", UriKind.Relative) });
-        Background = System.Windows.Media.Brushes.White; FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal;
+        SetResourceReference(BackgroundProperty, "Surface");
+        terminal.SetResourceReference(BackgroundProperty, "TerminalCanvas");
+        terminal.SetResourceReference(ForegroundProperty, "VideoInk");
+        empty.SetResourceReference(TextBlock.ForegroundProperty, "LogEmptyInk");
+        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal;
         var root = new DockPanel { Margin = new(20, 16, 20, 12) }; Content = root;
         var header = new DockPanel(); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         var heading = new StackPanel(); DockPanel.SetDock(heading, Dock.Top); header.Children.Add(heading);

@@ -43,7 +43,21 @@ internal sealed class StationHourlyChart : FrameworkElement
     TimeZoneInfo zone = TimeZoneInfo.Utc;
     int? target;
     public int? Target { get => target; set { target = value; InvalidateVisual(); } }
-    internal StationHourlyChart() { Height = 220; MinWidth = 180; AutomationProperties.SetName(this, "每小时取得格口图；左位蓝色，右位绿色，合计深色；目标线对应合计，完整数值见下方小时明细"); }
+    static readonly DependencyProperty InkBrushProperty = ChartBrush("InkBrush");
+    static readonly DependencyProperty LineBrushProperty = ChartBrush("LineBrush");
+    static readonly DependencyProperty LeftBrushProperty = ChartBrush("LeftBrush");
+    static readonly DependencyProperty RightBrushProperty = ChartBrush("RightBrush");
+
+    static DependencyProperty ChartBrush(string name) => DependencyProperty.Register(name, typeof(Brush), typeof(StationHourlyChart),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    internal StationHourlyChart()
+    {
+        SetResourceReference(InkBrushProperty, "Ink");
+        SetResourceReference(LineBrushProperty, "Line");
+        SetResourceReference(LeftBrushProperty, "ChartLeft");
+        SetResourceReference(RightBrushProperty, "ChartRight");
+        Height = 220; MinWidth = 180; AutomationProperties.SetName(this, "每小时取得格口图；左位蓝色，右位绿色，合计深色；目标线对应合计，完整数值见下方小时明细"); }
     internal void Set(StationMetricBucket[] buckets, TimeZoneInfo timeZone, int? perHour)
     {
         zone = timeZone; target = perHour;
@@ -52,7 +66,7 @@ internal sealed class StationHourlyChart : FrameworkElement
     protected override void OnRender(DrawingContext dc)
     {
         base.OnRender(dc); var width = ActualWidth; if (width < 100) return;
-        var ink = OperatorBrushes.Ink; var line = OperatorBrushes.Line;
+        var ink = (Brush)GetValue(InkBrushProperty); var line = (Brush)GetValue(LineBrushProperty);
         void Text(string text, double x, double y) => dc.DrawText(new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface(UiTypography.Interface, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal), 14, ink, VisualTreeHelper.GetDpi(this).PixelsPerDip), new(x, y));
         if (hours.Length == 0) { Text("当前范围暂无小时记录", 0, 40); return; }
         var max = Math.Max(1d, Math.Max(hours.Max(h => h.Left + h.Right), target ?? 0));
@@ -62,9 +76,9 @@ internal sealed class StationHourlyChart : FrameworkElement
         for (var i = 0; i < hours.Length; i++)
         {
             var h = hours[i]; var bar = Math.Clamp(unit * .24, 1, 26); var x = left + unit * i + (unit - bar * 3) / 2;
-            dc.DrawRectangle(Brushes.SteelBlue, null, new(x, baseline - h.Left / max * (baseline - top), bar, h.Left / max * (baseline - top)));
-            dc.DrawRectangle(Brushes.SeaGreen, null, new(x + bar, baseline - h.Right / max * (baseline - top), bar, h.Right / max * (baseline - top)));
-            dc.DrawRectangle(OperatorBrushes.Ink, null, new(x + bar * 2, baseline - (h.Left + h.Right) / max * (baseline - top), bar, (h.Left + h.Right) / max * (baseline - top)));
+            dc.DrawRectangle((Brush)GetValue(LeftBrushProperty), null, new(x, baseline - h.Left / max * (baseline - top), bar, h.Left / max * (baseline - top)));
+            dc.DrawRectangle((Brush)GetValue(RightBrushProperty), null, new(x + bar, baseline - h.Right / max * (baseline - top), bar, h.Right / max * (baseline - top)));
+            dc.DrawRectangle(ink, null, new(x + bar * 2, baseline - (h.Left + h.Right) / max * (baseline - top), bar, (h.Left + h.Right) / max * (baseline - top)));
             if (i % Math.Max(1, (int)Math.Ceiling(65 / unit)) == 0) Text(TimeZoneInfo.ConvertTime(h.At, zone).ToString("HH:mm"), x, baseline + 5);
         }
         if (target is { } goal) { var y = baseline - goal / max * (baseline - top); dc.DrawLine(new Pen(ink, 1) { DashStyle = DashStyles.Dash }, new(left, y), new(width, y)); Text("目标 " + goal.ToString("N0"), left, 0); }

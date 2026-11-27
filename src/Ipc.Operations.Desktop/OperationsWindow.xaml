@@ -158,7 +158,7 @@
       <TextBlock Text="供包运维工具" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"
                  Foreground="{DynamicResource Ink}" VerticalAlignment="Center"/>
       <Border Grid.Column="1" Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}" BorderThickness="1"
-              CornerRadius="{StaticResource RadiusBadge}" Padding="8,3" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+              CornerRadius="{DynamicResource RadiusBadge}" Padding="8,3" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
        <TextBlock x:Name="StationText" Text="站点待核验" TextTrimming="CharacterEllipsis"
                   Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}"/>
       </Border>
@@ -178,13 +178,13 @@
    </Border>
    <Popup x:Name="AuthorizationOptions" PlacementTarget="{Binding ElementName=AuthorizationActionHost}"
           Placement="Bottom" HorizontalOffset="-180" AllowsTransparency="True" StaysOpen="False">
-    <Border Style="{StaticResource OperationsCard}" Width="330" Margin="8" Effect="{StaticResource ShadowPopup}">
+    <Border Style="{StaticResource OperationsCard}" Width="330" Margin="8" Effect="{DynamicResource ShadowPopup}">
      <ContentControl x:Name="AuthorizationDetailsHost"/>
     </Border>
    </Popup>
    <Popup IsOpen="{Binding IsChecked,ElementName=EnvironmentToggle,Mode=TwoWay}" PlacementTarget="{Binding ElementName=EnvironmentToggle}"
           Placement="Bottom" HorizontalOffset="-360" AllowsTransparency="True" StaysOpen="False">
-    <Border x:Name="EnvironmentInfo" Style="{StaticResource OperationsCard}" Width="460" Margin="8" Effect="{StaticResource ShadowPopup}">
+    <Border x:Name="EnvironmentInfo" Style="{StaticResource OperationsCard}" Width="460" Margin="8" Effect="{DynamicResource ShadowPopup}">
     <ScrollViewer MaxHeight="260" VerticalScrollBarVisibility="Auto">
      <Grid>
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>

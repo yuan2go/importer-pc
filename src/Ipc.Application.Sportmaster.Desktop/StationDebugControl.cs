@@ -405,10 +405,10 @@ internal sealed partial class StationDebugControl : UserControl
             var polygon = new Polygon
             {
                 Points = new PointCollection(symbol.Corners.Select(p => new Point(p.X, p.Y))),
-                Stroke = Brush("#28D76F"),
                 StrokeThickness = Math.Max(2 / zoom, 1),
                 Fill = Brushes.Transparent
             };
+            polygon.SetResourceReference(Shape.StrokeProperty, "VideoMarker");
             marks.Children.Add(polygon);
             // Some 1D engines return collinear corners. Mark the measured line
             // visibly without inventing an axis-aligned bounding rectangle.
@@ -504,7 +504,6 @@ internal sealed partial class StationDebugControl : UserControl
         }
         ClearRoundDisplay();
     }
-    static SolidColorBrush Brush(string color) => new((Color)ColorConverter.ConvertFromString(color));
     static TextBlock Text(string text) => new() { Text = text, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 4, 0, 6) };
     static void SetText(TextBox box, string value) { if (box.Text != value) box.Text = value; }
     static Button Action(string text) => new() { Content = text, MinHeight = 44, Padding = new(12, 6, 12, 6), Margin = new(0, 0, 8, 6), HorizontalAlignment = HorizontalAlignment.Left };

@@ -15,7 +15,7 @@
  <Border x:Name="InputTargetOutline" BorderBrush="{Binding InputTargetBrush}" BorderThickness="2" Margin="2" CornerRadius="{DynamicResource RadiusCard}">
   <Grid>
    <Border Background="{DynamicResource Surface}" CornerRadius="{DynamicResource RadiusCard}"
-           Effect="{StaticResource ShadowCard}" IsHitTestVisible="False"/>
+           Effect="{DynamicResource ShadowCard}" IsHitTestVisible="False"/>
    <Border x:Name="PositionOutline" Style="{StaticResource StationPositionCard}">
    <Grid>
     <Grid.RowDefinitions>

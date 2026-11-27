@@ -77,7 +77,15 @@
        </TextBlock>
        <StackPanel>
         <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
-        <TextBlock Text="{Binding VehicleNumberText}" TextTrimming="CharacterEllipsis" AutomationProperties.Name="{Binding VehicleNumberText}"/>
+        <TextBlock Text="{Binding VehicleNumberText}" AutomationProperties.Name="{Binding VehicleNumberText}">
+         <TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+          <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+          <Style.Triggers><DataTrigger Binding="{Binding CompactLocalizedGuidance}" Value="True">
+           <Setter Property="TextTrimming" Value="None"/><Setter Property="TextWrapping" Value="Wrap"/>
+           <Setter Property="FontSize" Value="{x:Static type:UiTypography.Diagnostic}"/>
+          </DataTrigger></Style.Triggers>
+         </Style></TextBlock.Style>
+        </TextBlock>
         <TextBlock Text="{Binding CompactVehicleStatusText}" AutomationProperties.Name="{Binding VehicleStatusText}"/>
        </StackPanel>
       </Grid>
@@ -267,7 +275,18 @@
          </Style.Triggers>
         </Style>
        </Border.Style>
-       <Grid x:Name="CenteredSupplyContent" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+       <ScrollViewer HorizontalScrollBarVisibility="Disabled" Focusable="False" VerticalContentAlignment="Center">
+        <ScrollViewer.Style>
+         <Style TargetType="ScrollViewer">
+          <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
+          <Style.Triggers>
+           <DataTrigger Binding="{Binding CompactLocalizedGuidance}" Value="True">
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+           </DataTrigger>
+          </Style.Triggers>
+         </Style>
+        </ScrollViewer.Style>
+        <Grid x:Name="CenteredSupplyContent" VerticalAlignment="Center" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
          <RowDefinition Height="*"/>
          <RowDefinition Height="Auto"/>
@@ -371,7 +390,8 @@
           </Style>
          </Button.Style>
         </Button>
-       </Grid>
+        </Grid>
+       </ScrollViewer>
       </Border>
      </Grid>
     </Border>

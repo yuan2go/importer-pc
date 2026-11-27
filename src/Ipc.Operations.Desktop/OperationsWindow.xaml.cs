@@ -62,7 +62,6 @@ public partial class OperationsWindow : Window
         };
         var location = installation.Location;
         var source = string.IsNullOrWhiteSpace(location.SourceCommit) ? "未记录" : location.SourceCommit;
-        VersionText.Text = "业务版本 1.0.0";
         InstallationText.Text = $"{VersionText.Text}\n来源提交：{source}\n本站数据：{location.DataRoot}\n启动配置：{location.ConfigurationDirectory}";
         ConnectionDetails.Text = "正在核验本机连接…";
         ShowDeviceCards(null, DateTimeOffset.UtcNow);
@@ -100,6 +99,7 @@ public partial class OperationsWindow : Window
 
     void LanguageUpdated(object? sender, PropertyChangedEventArgs args)
     {
+        VersionText.Text = UiText.Format("Ops.Version", "1.0.0");
         if (current is { } overview) ShowOverview(overview);
         else ShowDeviceCards(null, DateTimeOffset.UtcNow);
     }
@@ -165,8 +165,8 @@ public partial class OperationsWindow : Window
                 catch (OperationCanceledException) when (lifetime.IsCancellationRequested) { return; }
                 catch (Exception error)
                 {
-                    Invalidate("未连接工作站", "实时状态不可用。可查看离线运行日志。请核对工作站是否已打开；未连接不代表已停机。");
-                    TechnicalText.Text = "本机连接诊断：\n" + DiagnosticText.Protect(error.ToString());
+                    Invalidate(UiText.Get("Ops.NotConnected"), UiText.Get("Ops.OfflineExplanation"));
+                    TechnicalText.Text = UiText.Get("Ops.LocalDiagnostic") + DiagnosticText.Protect(error.ToString());
                 }
             } while (await timer.WaitForNextTickAsync(lifetime.Token));
         }
@@ -184,11 +184,11 @@ public partial class OperationsWindow : Window
     {
         current = null;
         SetConnectionStatus(label, reason, verified: false);
-        StationText.Text = "站点待核验";
+        StationText.Text = UiText.Get("Ops.VerifyStation");
         StationText.ClearValue(ToolTipProperty);
-        OverviewStatus.Text = "实时状态不可用";
+        OverviewStatus.Text = UiText.Get("Ops.StatusUnavailable");
         OverviewStatus.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
-        VisibleOperationsText.Text = UnconfirmedOperationsText.Text = PendingOverviewText.Text = "待确认";
+        VisibleOperationsText.Text = UnconfirmedOperationsText.Text = PendingOverviewText.Text = UiText.Get("Common.Pending");
         ExecutingRequestsText.Text = "";
         PositionCards.ItemsSource = null;
         ShowDeviceCards(null, DateTimeOffset.UtcNow);
@@ -200,9 +200,9 @@ public partial class OperationsWindow : Window
         SetConnectionStatus(UiText.Get("Ops.Connected"), UiText.Format("Ops.VerifiedTime", value.CapturedAt.ToLocalTime().ToString("HH:mm:ss")), verified: true);
         StationText.Text = UiText.Format("Ops.StationName", value.Station);
         StationText.ToolTip = StationText.Text;
-        OverviewStatus.Text = value.Paused ? "软件暂停" : "运行中";
+        OverviewStatus.Text = UiText.Get(value.Paused ? "Ops.SoftwarePaused" : "Ops.Running");
         OverviewStatus.SetResourceReference(TextBlock.ForegroundProperty, value.Paused ? "Warning" : "Ink");
-        VisibleOperationsText.Text = value.VisibleOperations + " 件";
+        VisibleOperationsText.Text = UiText.Format("Ops.TaskCount", value.VisibleOperations);
         UnconfirmedOperationsText.Text = $"{value.UnconfirmedOperations} / {value.HistoricalUnknown?.ToString() ?? UiText.Get("Common.Pending")}";
         PendingOverviewText.Text = value.PendingConfiguration ? UiText.Get("Ops.PendingYes") : UiText.Get("Ops.PendingNo");
         ExecutingRequestsText.Text = UiText.Format("Ops.Executing", value.ExecutingRequests?.ToString() ?? UiText.Get("Common.Pending"));
@@ -233,7 +233,7 @@ public partial class OperationsWindow : Window
         };
         return new(title, status, position.Admit && position.Control is not ("Disabled" or "Disabling"),
             (position.Vehicle ?? UiText.Get("Common.Pending")) + " · " + VehicleStatus(position.VehicleStatus),
-            position.RoundId ?? "无", position.OperationId ?? "无", position.Manual ? UiText.Get("Ops.ManualAllowed") : UiText.Get("Ops.ManualLimited"), PositionNotice(position, overview.Devices.Any(device =>
+            position.RoundId ?? UiText.Get("Ops.NoCurrent"), position.OperationId ?? UiText.Get("Ops.NoCurrent"), position.Manual ? UiText.Get("Ops.ManualAllowed") : UiText.Get("Ops.ManualLimited"), PositionNotice(position, overview.Devices.Any(device =>
                 device.Name == (id == "left" ? "左相机" : "右相机") && HasCurrentConfirmation(device, overview.CapturedAt))));
     }
 
@@ -249,16 +249,16 @@ public partial class OperationsWindow : Window
         }
 
         var storage = overview?.FreeStorageBytes is { } free
-            ? new DeviceCard("存储", UiText.Format("Ops.StorageOnDisk", free / (1024d * 1024 * 1024)),
+            ? new DeviceCard(UiText.Get("Ops.Storage"), UiText.Format("Ops.StorageOnDisk", free / (1024d * 1024 * 1024)),
                 UiText.Format("Ops.StorageFloor", overview.MinimumFreeBytes / (1024d * 1024 * 1024)))
-            : new DeviceCard("存储", UiText.Get("Ops.WaitStorage"), "");
+            : new DeviceCard(UiText.Get("Ops.Storage"), UiText.Get("Ops.WaitStorage"), "");
         DeviceRows.ItemsSource = new[] { Connection("左相机"), Connection("右相机"), Connection("RCS"), storage };
     }
 
     static bool HasCurrentConfirmation(OperationsDevice device, DateTimeOffset now) =>
         device.Ready && device.ValidUntil > now && device.ConfirmedAt <= now;
 
-    static string VehicleStatus(string? value) => value switch { "IDLE" => "空闲", "TASKING" => "工作中", _ => "状态待确认" };
+    static string VehicleStatus(string? value) => value switch { "IDLE" => UiText.Get("Ops.VehicleIdle"), "TASKING" => UiText.Get("Ops.VehicleTasking"), _ => UiText.Get("Ops.VehiclePending") };
     static string PositionNotice(OperationsPosition position, bool cameraOnline)
     {
         var notices = position.Reasons.Select(r => Enum.TryParse<ParcelInputBlockReason>(r, out var reason) ? ParcelInputReasons.ActionableNotice(reason) : null)

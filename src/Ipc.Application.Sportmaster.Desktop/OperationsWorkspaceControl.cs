@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Ipc.Presentation.Wpf;
 using System.Windows;
 using System.IO;
@@ -87,6 +88,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         AuthorizationAction.Padding = new(16, 0, 16, 0);
         UpdateAuthorizationAction(authorized: false);
         var authorizePage = Action("验证管理密码", Authenticate);
+        WorkstationLocalizationManager.Bind(authorizePage, ContentControl.ContentProperty, "Ops.VerifyPassword");
         authorizePage.HorizontalAlignment = HorizontalAlignment.Left;
         authorizePage.Margin = new(0, 10, 0, 0);
         authorizePage.SetResourceReference(StyleProperty, "Primary");
@@ -101,6 +103,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top };
         authorizationGuide.SetResourceReference(StyleProperty, "WorkstationCard");
         AutomationProperties.SetAutomationId(AuthorizationAction, "Operations.Authorize");
+        PropertyChangedEventManager.AddHandler(UiText.Current, OnLanguageChanged, "Item[]");
 
         var details = new StackPanel();
         details.Children.Add(authorizationNotice);
@@ -159,9 +162,15 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     bool HasConfirmedGrant => grant is not null && connected() && model.IsManagementMode &&
         model.ManagementStatus.SessionId == grant;
 
+    void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        AuthorizationAction.Content = UiText.Get(HasConfirmedGrant ? "Ops.Permissions" : "Ops.VerifyPassword");
+        model.RefreshLanguage();
+    }
+
     void UpdateAuthorizationAction(bool authorized)
     {
-        AuthorizationAction.Content = authorized ? "管理授权" : "验证管理密码";
+        AuthorizationAction.Content = UiText.Get(authorized ? "Ops.Permissions" : "Ops.VerifyPassword");
         if (authorized) AuthorizationAction.ClearValue(StyleProperty);
         else
         {
@@ -172,8 +181,9 @@ public sealed partial class OperationsWorkspaceControl : UserControl
 
     void SetAuthorizationStatus(string label, string detail, string tone = "Muted")
     {
-        status.Text = label;
-        status.ToolTip = authorizationNotice.Text = detail;
+        WorkstationLocalizationManager.BindAuthored(status, TextBlock.TextProperty, label);
+        WorkstationLocalizationManager.BindAuthored(status, ToolTipProperty, detail);
+        WorkstationLocalizationManager.BindAuthored(authorizationNotice, TextBox.TextProperty, detail);
         status.SetResourceReference(TextBlock.ForegroundProperty, tone);
         statusPill.SetResourceReference(Border.BackgroundProperty, tone == "Muted" ? "Soft" : tone + "Background");
     }
@@ -255,7 +265,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             else
             {
                 var expiry = model.ManagementStatus.ExpiresAt?.ToLocalTime().ToString("HH:mm");
-                SetAuthorizationStatus(expiry is null ? "已授权" : "已授权 · " + expiry + " 到期", "浏览与编辑不暂停供包。", "Success");
+                SetAuthorizationStatus(expiry is null ? "已授权" : UiText.Format("Ops.GrantExpires", expiry), "浏览与编辑不暂停供包。", "Success");
             }
             if (ReferenceEquals(page.Content, authorizationGuide)) ShowPage(selected);
             parameters.IsEnabled = model.Fresh;

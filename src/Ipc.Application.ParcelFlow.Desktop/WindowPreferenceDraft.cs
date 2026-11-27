@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using Ipc.Platform;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
@@ -81,7 +82,7 @@ public partial class ParcelViewModel
         await RequireManagementModeAsync();
         SmPreferences.Save();
         WindowPreferenceStatus = SmPreferences.SaveSummary;
-        Message = "业务配置与本机偏好分别保存。" + WindowPreferenceStatus;
+        Message = UiText.Get("Settings.SavedSeparately") + WindowPreferenceStatus;
         WindowPreferenceChanged();
     }
     void WindowPreferenceChanged()

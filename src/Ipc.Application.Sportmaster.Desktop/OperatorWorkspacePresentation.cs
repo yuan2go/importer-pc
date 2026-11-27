@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Platform;
@@ -20,15 +21,15 @@ public sealed partial class SupplyStationViewModel
     public bool ShowSetupGuidance => Fresh && MissingConnections.Length > 0 &&
         !Left.HasCurrentInput && !Right.HasCurrentInput && Snapshot?.Positions?.Any(p => p.Admit) != true &&
         Snapshot?.Operations.Any(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) != true;
-    public string SetupHeading => $"还差 {MissingConnections.Length} 项连接配置";
+    public string SetupHeading => UiText.Format("Header.Connections", MissingConnections.Length);
     public string SetupItems => string.Join("、", MissingConnections);
-    public string SetupInstruction => "配置并启用 RCS 后，可手动输入条码取格口；不要求配置或连接相机。";
+    public string SetupInstruction => UiText.Get("Header.ConfigureRcsFirst");
     public enum StationStatusTone { Ready, Warning, Blocked }
     (StationStatusTone Tone, string Title, string Notice) operatorHeader =
         (StationStatusTone.Blocked, "状态读取中断", OperatorCopy.StaleStep);
     public StationStatusTone OperatorStatusTone => operatorHeader.Tone;
-    public string OperatorStatus => operatorHeader.Title;
-    public string OperatorNotice => operatorHeader.Notice;
+    public string OperatorStatus => UiText.Authored(operatorHeader.Title);
+    public string OperatorNotice => UiText.Authored(operatorHeader.Notice);
 
     (StationStatusTone, string, string) DescribeOperatorHeader()
     {

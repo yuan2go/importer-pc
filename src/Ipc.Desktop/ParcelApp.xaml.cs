@@ -155,7 +155,7 @@ public partial class App : System.Windows.Application
     }
     async Task OpenUninstaller(string[] arguments)
     {
-        startup.BeginAttempt(); startup.Phase("正在打开卸载程序", "正在核验维护入口并等待原窗口退出；尚未删除程序或数据。"); startup.Show();
+        startup.BeginAttempt(); startup.Phase(UiText.Get("Startup.OpenUninstaller"), UiText.Get("Startup.VerifyMaintenance")); startup.Show();
         try
         {
             var installation = WindowsDeploymentSetup.Current(ApplicationId);
@@ -191,9 +191,9 @@ public partial class App : System.Windows.Application
             { startup.AllowClose = true; Shutdown(0); return; }
             if (DeploymentProfile.RequiresBundledCameraDependencies)
             {
-                startup.Phase("检查相机依赖", "正在检查相机组件与系统运行库。缺失时从同版维护缓存恢复，系统安装可能需要 Windows 授权。", "开始核验相机启动依赖");
+                startup.Phase(UiText.Get("Startup.CheckCamera"), UiText.Get("Startup.Dependencies"), UiText.Get("Startup.CheckingCamera"));
                 if (await ParcelStartupServices.EnsureCameraDependenciesAsync(AppContext.BaseDirectory))
-                    startup.Phase("相机依赖已恢复", "正在继续启动检查，尚未连接设备。", "相机启动依赖已恢复并复查");
+                    startup.Phase(UiText.Get("Startup.CameraRecovered"), UiText.Get("Startup.ContinueChecking"), UiText.Get("Startup.CameraRechecked"));
             }
             if (!recoveryChild && OperatingSystem.IsWindows() && File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json")) &&
                 DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is { LifecycleState: "Installed", Recovery.Enabled: true } installed &&
@@ -217,7 +217,7 @@ public partial class App : System.Windows.Application
                     return;
                 }
             }
-            startup.Phase("读取配置与本地记录", "正在检查配置和上次未处理完的作业，尚未开始供包。", "启动配置入口已判定");
+            startup.Phase(UiText.Get("Startup.LoadConfiguration"), UiText.Get("Startup.CheckPending"), UiText.Get("Startup.ConfigRoute"));
             var starting = await Task.Run(() => ParcelAssembly.Create(launch)); runtime = starting;
             if (starting is IRuntimeFatalSource fatalSource)
             {
@@ -227,9 +227,9 @@ public partial class App : System.Windows.Application
                     TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
             }
             if (launch.View is not null && !starting.Presentation.Views.Contains(launch.View) || launch.Layout is not null && !starting.Presentation.Layouts.Contains(launch.Layout)) throw new InvalidDataException("页面或布局不属于本次选定业务");
-            startup.Phase("正在启动设备并恢复未完成的作业", "正在调用应用启动流程。设备、存储、身份和未决请求由 Application 判定。", "配置和页面选择已读取");
+            startup.Phase(UiText.Get("Startup.ResumeEquipment"), UiText.Get("Startup.ApplicationStart"), UiText.Get("Startup.SelectionLoaded"));
             await Task.Run(() => starting.StartAsync(CancellationToken.None));
-            startup.Phase("读取当前运行状态", "启动完成，正在读取状态。", "启动流程已返回");
+            startup.Phase(UiText.Get("Startup.ReadRunning"), UiText.Get("Startup.StartComplete"), UiText.Get("Startup.StartReturned"));
             var application = (IParcelApplication)starting.Application;
             // Setup/repair can authorize the same local authority in this process.
             // Every new runtime entry returns to ordinary mode, including a controlled reopen.
@@ -250,7 +250,7 @@ public partial class App : System.Windows.Application
 #endif
             var effective = initial.Configuration.Effective;
             crashDiagnostics.SetProgressFile(Path.Combine(launch.DataRoot, effective.Mode.ToString(), effective.StationId, effective.ApplicationId, "runtime-progress.json"));
-            startup.Phase("创建工作窗口", "应用状态：" + initial.State + "\n" + string.Join("\n", initial.BlockingReasons), "已取得运行实例 " + initial.RuntimeId);
+            startup.Phase(UiText.Get("Startup.CreateWork"), UiText.Get("Startup.AppStatus") + initial.State + "\n" + string.Join("\n", initial.BlockingReasons), UiText.Get("Startup.RuntimeObtained") + initial.RuntimeId);
 #if SPORTMASTER
             var window = Ipc.Application.Sportmaster.Desktop.Presentation.Create(application, launch.View, launch.Layout, options.Ui, StopAsync);
 #elif DIRECTPLC

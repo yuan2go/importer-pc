@@ -11,9 +11,9 @@ public partial class App : System.Windows.Application
 {
     protected override async void OnStartup(StartupEventArgs e)
     {
+        ShutdownMode = ShutdownMode.OnExplicitShutdown;
         if (InstallerCommandLine.IsQuiet(e.Args))
         {
-            ShutdownMode = ShutdownMode.OnExplicitShutdown;
             InstallerPreparation? silentPreparation = null; var result = 1603;
             try
             {

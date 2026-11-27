@@ -170,7 +170,16 @@
            <DataTrigger Binding="{Binding OperatorStatusTone}" Value="Blocked"><Setter Property="Fill" Value="{DynamicResource Danger}"/></DataTrigger>
           </Style.Triggers></Style></Ellipse.Style>
          </Ellipse>
-         <TextBlock x:Name="WorkStatus" DockPanel.Dock="Left" Text="{Binding OperatorStatus}" ToolTip="{Binding OperatorStatus}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Margin="0,0,16,0" FontSize="{x:Static type:UiTypography.Body}" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{DynamicResource Ink}" VerticalAlignment="Center"/>
+         <TextBlock x:Name="WorkStatus" DockPanel.Dock="Left" Text="{Binding OperatorStatus}" ToolTip="{Binding OperatorStatus}" Margin="0,0,16,0" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{DynamicResource Ink}" VerticalAlignment="Center">
+          <TextBlock.Style><Style TargetType="TextBlock">
+           <Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/>
+           <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+           <Style.Triggers><DataTrigger Binding="{Binding CompactLocalizedHeader}" Value="True">
+            <Setter Property="FontSize" Value="{x:Static type:UiTypography.Label}"/>
+            <Setter Property="TextTrimming" Value="None"/><Setter Property="TextWrapping" Value="Wrap"/>
+           </DataTrigger></Style.Triggers>
+          </Style></TextBlock.Style>
+         </TextBlock>
          <TextBlock x:Name="SettingsRunMode" DockPanel.Dock="Left" Text="{Binding SettingsRunMode}" FontSize="{x:Static type:UiTypography.Label}" Margin="0,0,16,0" Foreground="{DynamicResource Muted}" VerticalAlignment="Center">
           <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsSettingsWorkspace}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
          </TextBlock>

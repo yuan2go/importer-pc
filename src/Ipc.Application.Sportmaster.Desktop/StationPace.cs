@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -30,20 +31,24 @@ internal sealed class StationPace
 
 public sealed partial class SupplyStationViewModel
 {
-    string paceText = "本班格口 —", paceCompact = "本班 — · — 次/分", leftPace = "本位本班格口 —", rightPace = "本位本班格口 —";
-    bool showPace = true;
+    StationPace.Value? pace;
+    bool showPace = true, paceSampled;
     public Visibility PaceVisibility => showPace && SelectedPage == "workstation" ? Visibility.Visible : Visibility.Collapsed;
-    public string PaceText => paceText;
-    public string PaceCompact => paceCompact;
-    public string LeftPaceText => leftPace;
-    public string RightPaceText => rightPace;
+    public string PaceText => pace is { } reading
+        ? UiText.Format("Work.Pace", reading.Total, reading.PerMinute is { } rate ? UiText.Format("Work.PacePerMinute", rate) : "—")
+        : UiText.Get(paceSampled ? "Work.PaceMissing" : "Work.PaceInitial");
+    public string PaceCompact => pace is { } reading
+        ? UiText.Format("Work.PaceCompact", reading.Total, reading.PerMinute?.ToString("F1") ?? "—")
+        : UiText.Get("Work.PaceCompactMissing");
+    public string LeftPaceText => LanePace(pace?.Left);
+    public string RightPaceText => LanePace(pace?.Right);
+    static string LanePace(long? count) => count is { } assigned
+        ? UiText.Format("Work.LanePace", assigned)
+        : UiText.Get("Work.LanePaceMissing");
     internal void SetPace(StationPace.Value? value)
     {
-        var valid = Fresh && value is not null && Stopwatch.GetElapsedTime(value.At) < TimeSpan.FromSeconds(6);
-        paceText = valid ? $"本班格口 {value!.Total:N0} 次 · 近10分 {(value.PerMinute is { } speed ? speed.ToString("F1") + " 次/分" : "—")}" : "本班格口 — · 近10分 —";
-        paceCompact = valid ? $"本班 {value!.Total:N0} 次 · {(value.PerMinute is { } compactSpeed ? compactSpeed.ToString("F1") : "—")} 次/分" : "本班 — · — 次/分";
-        leftPace = valid ? $"本位本班格口 {value!.Left:N0} 次" : "本位本班格口 —";
-        rightPace = valid ? $"本位本班格口 {value!.Right:N0} 次" : "本位本班格口 —";
+        paceSampled = true;
+        pace = Fresh && value is not null && Stopwatch.GetElapsedTime(value.At) < TimeSpan.FromSeconds(6) ? value : null;
         foreach (var name in new[] { nameof(PaceVisibility), nameof(PaceText), nameof(PaceCompact), nameof(LeftPaceText), nameof(RightPaceText) }) Changed(name);
     }
     internal void NotifyPaceVisibility() => Changed(nameof(PaceVisibility));

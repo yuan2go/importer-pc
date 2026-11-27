@@ -20,7 +20,8 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     bool isTight;
     double chuteScale = 1;
     public double ChuteScale { get => chuteScale; internal set { if (Math.Abs(chuteScale - value) < .001) return; chuteScale = value; Left.NotifyLayout(); Right.NotifyLayout(); } }
-    public bool IsTight { get => isTight; set { if (isTight == value) return; isTight = value; Changed(); } }
+    public bool CompactLocalizedHeader => IsTight && UiText.Language != PresentationPreferences.DefaultLanguage;
+    public bool IsTight { get => isTight; set { if (isTight == value) return; isTight = value; Changed(); Changed(nameof(CompactLocalizedHeader)); } }
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
     public string Station => Snapshot?.Configuration.Effective.StationId ?? UiText.Get("Work.WaitingConfiguration");
@@ -214,8 +215,8 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     StationVehicleState? vehicle;
     public string VehicleNumberText => vehicle?.VehicleNo ?? UiText.Get("Work.Vehicle");
     public string VehicleStatusText => vehicle is null ? UiText.Get("Work.VehiclePending") : VehicleNumberText + " · " + (vehicle.Status switch
-    { "IDLE" => CanAdmit || CanSubmitBarcode ? UiText.Get("Work.CanLoad") : UiText.Get("Work.VehicleNotReady"), "TASKING" => UiText.Get("Work.VehicleBusy"), _ => UiText.Get("Common.Pending") });
-    public string CompactVehicleStatusText => vehicle?.Status switch { "IDLE" => CanAdmit || CanSubmitBarcode ? UiText.Get("Work.CanLoad") : UiText.Get("Work.VehicleNotReady"), "TASKING" => UiText.Get("Work.VehicleBusy"), _ => UiText.Get("Common.Pending") };
+    { "IDLE" => CanAdmit || CanSubmitBarcode ? UiText.Get("Work.CompactCanLoad") : UiText.Get("Work.VehicleNotReady"), "TASKING" => UiText.Get("Work.VehicleBusy"), _ => UiText.Get("Common.Pending") });
+    public string CompactVehicleStatusText => vehicle?.Status switch { "IDLE" => CanAdmit || CanSubmitBarcode ? UiText.Get("Work.CompactCanLoad") : UiText.Get("Work.VehicleNotReady"), "TASKING" => UiText.Get("Work.VehicleBusy"), _ => UiText.Get("Common.Pending") };
     public string VehicleStatusForegroundKey => vehicle?.Status switch { "IDLE" when CanAdmit || CanSubmitBarcode => "OperatorSuccess", "TASKING" => "OperatorDanger", _ => "Muted" };
     public bool InputTargetActive => owner.InputTargetPosition == PositionId;
     internal void SetInputFocused(bool focused) { if (focused && !SupplyEnabled) return; if (focused || InputTargetActive) owner.SetInputTarget(focused ? PositionId : ""); }
@@ -248,6 +249,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public bool HasCurrentInput => CurrentRound is not null;
     public bool IsCompact => owner.IsCompact;
     public bool IsTight => owner.IsTight;
+    public bool CompactLocalizedGuidance => IsTight && UiText.Language != PresentationPreferences.DefaultLanguage;
     public bool CanStartOperation => owner.CanStartOperation;
     public string Barcode => ObservedBarcode;
     public bool CurrentTaskAvailable => owner.Fresh && CurrentRound is { } round && Operation?.RoundId == round.Id &&
@@ -356,7 +358,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public SupplyStationPositionViewModel(SupplyStationViewModel owner, string position)
     { this.owner = owner; requestedPosition = PositionId = position; }
     public void NewParcel() { AdmissionId = "parcel-" + Wire.Id(); PropertyChanged?.Invoke(this, new(nameof(AdmissionId))); }
-    internal void NotifyLayout() { PropertyChanged?.Invoke(this, new(nameof(IsCompact))); PropertyChanged?.Invoke(this, new(nameof(IsTight))); PropertyChanged?.Invoke(this, new(nameof(SlotFontSize))); PropertyChanged?.Invoke(this, new(nameof(CanStartOperation))); PropertyChanged?.Invoke(this, new(nameof(CanSubmitBarcode))); NotifySlotDisplay(); }
+    internal void NotifyLayout() { PropertyChanged?.Invoke(this, new(nameof(IsCompact))); PropertyChanged?.Invoke(this, new(nameof(IsTight))); PropertyChanged?.Invoke(this, new(nameof(CompactLocalizedGuidance))); PropertyChanged?.Invoke(this, new(nameof(SlotFontSize))); PropertyChanged?.Invoke(this, new(nameof(CanStartOperation))); PropertyChanged?.Invoke(this, new(nameof(CanSubmitBarcode))); NotifySlotDisplay(); }
     internal void Update(ParcelSnapshot? snapshot, DateTimeOffset now, bool fresh, bool viewportReady)
     {
         PositionId = requestedPosition;

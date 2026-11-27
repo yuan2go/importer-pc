@@ -44,9 +44,9 @@ public partial class StationSettingsWindow : Window
         EditSettings.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;
         EditActions.Visibility = SettingsDraft.Visibility = granted ? Visibility.Visible : Visibility.Collapsed;
         ReturnToWorkstation.Content = granted ? UiText.Get("Settings.DisplayWork") : UiText.Get("Settings.ReturnWork");
-        ReturnToWorkstation.ToolTip = granted ? "隐藏设置窗，保留当前输入与编辑授权" : "隐藏设置窗，返回工作站";
+        ReturnToWorkstation.ToolTip = granted ? UiText.Get("Settings.HideDraft") : UiText.Get("Settings.HideAndReturn");
         CloseSettings.Content = granted ? UiText.Get("Settings.CloseEdit") : UiText.Get("Common.Close");
-        CloseSettings.ToolTip = granted ? "关闭设置窗并结束本次授权" : "关闭设置窗";
+        CloseSettings.ToolTip = granted ? UiText.Get("Settings.CloseEndGrant") : UiText.Get("Settings.CloseWindow");
         AuthorizationText.Text = granted ? UiText.Format("Settings.GrantUntil", model.ManagementStatus.ExpiresAt?.ToLocalTime().ToString("HH:mm")) :
             session is null ? UiText.Get("Settings.ReadOnly") : "授权待核对 · 草稿保留";
         EffectiveSettingsCards.Visibility = model.Fresh && model.Snapshot is not null ? Visibility.Visible : Visibility.Collapsed;
@@ -106,14 +106,14 @@ public partial class StationSettingsWindow : Window
             new(UiText.Get("Settings.AudioVolume"), Value("CueVolume", saved.CueVolume == 0 ? UiText.Get("Settings.Mute") : $"{saved.CueVolume}%"), "StationSettings.CueVolume"),
             new(UiText.Get("Settings.Theme"), saved.ReadFailure(nameof(saved.ThemeId)) is { Length: > 0 } themeError ? themeError : UiText.Get(saved.ThemeId == WorkstationThemeManager.IndustrialDarkId ? "Settings.Dark" : "Settings.Light"), "StationSettings.Theme.ReadOnly"),
             new(UiText.Get("Settings.Language"), saved.ReadFailure(nameof(saved.Language)) is { Length: > 0 } languageError ? languageError : WorkstationLocalizationManager.Languages.Single(item => item.Code == saved.Language).NativeName, "StationSettings.Language.ReadOnly"),
-            new(UiText.Get("Setup.AutoStart"), saved.CanEdit("AutoStart") ? saved.AutoStart ? UiText.Get("Common.Enabled") : UiText.Get("Common.Close") : saved.ReadFailure("AutoStart"), "StationSettings.AutoStart")
+            new(UiText.Get("Setup.AutoStart"), saved.CanEdit("AutoStart") ? saved.AutoStart ? UiText.Get("Common.Enabled") : UiText.Get("Common.DisabledSetting") : saved.ReadFailure("AutoStart"), "StationSettings.AutoStart")
         };
         string Value(string path, string value)
         {
             var key = path switch { "WindowOpeningMode" => "window", "ShowPace" => "pace", _ => "audio" };
-            var name = path switch { "WindowOpeningMode" => "窗口方式", "ShowPace" => UiText.Get("Settings.Pace"), _ => "提示音" };
-            model.SetPreferenceNotice(key, saved.CanEdit(path) ? null : name + "偏好未能读取，原文件保留；请检查本机设置文件与访问权限。");
-            return saved.CanEdit(path) ? value : "未能读取";
+            var name = path switch { "WindowOpeningMode" => UiText.Get("Settings.OpenMode"), "ShowPace" => UiText.Get("Settings.Pace"), _ => UiText.Get("Settings.Cues") };
+            model.SetPreferenceNotice(key, saved.CanEdit(path) ? null : name + UiText.Get("Settings.PrefReadFailure"));
+            return saved.CanEdit(path) ? value : UiText.Get("Settings.Unreadable");
         }
     }
     async void Edit_Click(object sender, RoutedEventArgs e)
@@ -122,7 +122,7 @@ public partial class StationSettingsWindow : Window
         authenticating = true; EditSettings.IsEnabled = false;
         try
         {
-            var password = new ManagementModeWindow(authority, "设置编辑", bindSession: true) { Owner = this };
+            var password = new ManagementModeWindow(authority, UiText.Get("Settings.Edit"), bindSession: true) { Owner = this };
             password.ShowDialog();
             // A grant may exist even when its follow-up observation failed and
             // the password window was canceled. Retain its identity for exit.
@@ -130,13 +130,13 @@ public partial class StationSettingsWindow : Window
             if (!password.Entered) return;
             await model.RefreshManagementModeAsync();
             if (!model.IsManagementMode || password.EnteredSessionId is not { Length: > 0 } id || model.ManagementStatus.SessionId != id)
-                throw new UnauthorizedAccessException("尚未确认本窗编辑授权，请重新验证。");
+                throw new UnauthorizedAccessException(UiText.Get("Settings.GrantRecheck"));
             session = id;
-            await model.RunAsync(model.EnsureMaintenanceLoadedAsync, "读取完整设置草稿");
-            if (!model.HasLoadedConfiguration) throw new InvalidOperationException("设置读取未完成，原配置保留，请核对状态后重试。");
+            await model.RunAsync(model.EnsureMaintenanceLoadedAsync, UiText.Get("Settings.LoadDraft"));
+            if (!model.HasLoadedConfiguration) throw new InvalidOperationException(UiText.Get("Settings.LoadFailed"));
             EditorHost.Content = editor; UpdateState();
         }
-        catch (Exception error) { model.Message = ChineseInterfaceText.ParameterMessage(error.Message, "设置编辑尚未打开，原配置和输入保留。"); }
+        catch (Exception error) { model.Message = ChineseInterfaceText.ParameterMessage(error.Message, UiText.Get("Settings.EditNotOpened")); }
         finally { authenticating = false; EditSettings.IsEnabled = true; }
     }
     async void ClosingSettings(object? sender, CancelEventArgs e)
@@ -149,12 +149,12 @@ public partial class StationSettingsWindow : Window
             await System.Windows.Threading.Dispatcher.Yield();
             await CloseAfterDrainAsync();
         }
-        catch (Exception error) { model.Message = "设置窗口尚未关闭，原授权和输入保留：" + ChineseInterfaceText.ParameterMessage(error.Message, "授权结束或原操作收尾未确认，请再次关闭重试。"); }
+        catch (Exception error) { model.Message = UiText.Get("Settings.CloseIncomplete") + ChineseInterfaceText.ParameterMessage(error.Message, UiText.Get("Settings.CloseRetry")); }
         finally { closing = false; IsEnabled = true; }
     }
     internal async Task CloseForOwnerStopAsync()
     {
-        if (closing || authenticating) throw new InvalidOperationException("设置窗口仍有授权或关闭操作，请等待原结果。");
+        if (closing || authenticating) throw new InvalidOperationException(UiText.Get("Settings.CloseWait"));
         closing = true; IsEnabled = false;
         try { await CloseAfterDrainAsync(); }
         finally { closing = false; IsEnabled = true; }

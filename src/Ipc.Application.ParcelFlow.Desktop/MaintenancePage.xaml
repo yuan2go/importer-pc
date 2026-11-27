@@ -3,24 +3,24 @@
  <Grid x:Name="MaintenanceScope"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
   <DockPanel Background="{DynamicResource Soft}" LastChildFill="True" Visibility="{Binding Visibility, ElementName=BackToSettings}">
 
-   <Button x:Name="BackToSettings" DockPanel.Dock="Left" Content="返回设置" Click="BackToSettings_Click" Style="{StaticResource ParameterQuietAction}" Margin="12,0,8,0" Visibility="Collapsed"/>
-   <TextBlock x:Name="ToolTitle" Text="未保存的修改会保留" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="24,0,8,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding ParameterConfigurationSummary}"/>
+   <Button x:Name="BackToSettings" DockPanel.Dock="Left" Content="{DynamicResource Settings.Back}" Click="BackToSettings_Click" Style="{StaticResource ParameterQuietAction}" Margin="12,0,8,0" Visibility="Collapsed"/>
+   <TextBlock x:Name="ToolTitle" Text="{DynamicResource Settings.RetainDraft}" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="24,0,8,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding ParameterConfigurationSummary}"/>
   </DockPanel>
   <local:ParameterSettingsControl x:Name="MainParameterEditor" RuntimeContext="{Binding}" Grid.Row="1" Model="{Binding ParameterEditor}" IsEnabled="{Binding CanEditFormConfiguration}"/>
   <Border x:Name="ConfigurationFooter" Grid.Row="2" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="24,10">
    <DockPanel LastChildFill="True">
     <StackPanel x:Name="ConfigurationActions" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
      <Menu Background="Transparent" Margin="0,0,8,0" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Body}" FontWeight="Normal">
-      <MenuItem x:Name="AdvancedToggle" Header="更多工具" MinHeight="44" Padding="12,8" Foreground="{DynamicResource Ink}" SubmenuOpened="AdvancedToggle_SubmenuOpened">
-       <MenuItem x:Name="ManagementPasswordTool" Header="管理模式与密码…" Click="ManagementMode_Click"/>
-       <MenuItem Header="导入设置模板…" Click="ImportTemplate_Click" IsEnabled="{Binding CanStartOperation}"/>
-       <MenuItem Header="导出设置模板…" Click="ExportTemplate_Click" IsEnabled="{Binding CanStartOperation}"/>
+      <MenuItem x:Name="AdvancedToggle" Header="{DynamicResource Settings.MoreTools}" MinHeight="44" Padding="12,8" Foreground="{DynamicResource Ink}" SubmenuOpened="AdvancedToggle_SubmenuOpened">
+       <MenuItem x:Name="ManagementPasswordTool" Header="{DynamicResource Settings.PasswordTools}" Click="ManagementMode_Click"/>
+       <MenuItem Header="{DynamicResource Settings.ImportTemplate}" Click="ImportTemplate_Click" IsEnabled="{Binding CanStartOperation}"/>
+       <MenuItem Header="{DynamicResource Settings.ExportTemplate}" Click="ExportTemplate_Click" IsEnabled="{Binding CanStartOperation}"/>
        <Separator/>
-       <MenuItem x:Name="StashDraftTool" Header="暂存未完成的设置" Click="SaveEditor_Click" IsEnabled="{Binding CanConfigure}"/>
-       <MenuItem x:Name="ResumeDraftTool" Header="继续编辑暂存的设置" Click="ContinueEditor_Click" IsEnabled="{Binding CanStartOperation}"/>
-       <MenuItem Header="重新读取设置…" Click="Load_Click" IsEnabled="{Binding CanStartOperation}"/>
+       <MenuItem x:Name="StashDraftTool" Header="{DynamicResource Settings.Stash}" Click="SaveEditor_Click" IsEnabled="{Binding CanConfigure}"/>
+       <MenuItem x:Name="ResumeDraftTool" Header="{DynamicResource Settings.ResumeDraft}" Click="ContinueEditor_Click" IsEnabled="{Binding CanStartOperation}"/>
+       <MenuItem Header="{DynamicResource Settings.LoadAgain}" Click="Load_Click" IsEnabled="{Binding CanStartOperation}"/>
        <Separator/>
-       <MenuItem x:Name="TechnicalToolsMenu" Header="高级工具">
+       <MenuItem x:Name="TechnicalToolsMenu" Header="{DynamicResource Settings.AdvancedTools}">
         <MenuItem x:Name="CompareTool" Header="对比当前与待生效设置…" Tag="2" Click="TechnicalTool_Click"/>
         <MenuItem x:Name="ModulesTool" Header="已安装模块描述…" Tag="3" Click="TechnicalTool_Click"/>
         <MenuItem x:Name="InventoryTool" Header="已安装组件…" Tag="4" Click="TechnicalTool_Click"/>
@@ -33,16 +33,16 @@
         <MenuItem Header="异常作业处理…" Tag="7" Click="TechnicalTool_Click"/>
        </MenuItem>
        <MenuItem x:Name="ConditionsTool" Header="管理模式与操作条件…" Click="AuthorizeTool_Click"/>
-       <MenuItem Header="查看上次保存结果" Click="InspectSave_Click" IsEnabled="{Binding HasUnconfirmedConfigurationSubmission}"/>
-       <MenuItem Header="重新连接全部设备和服务" AutomationProperties.AutomationId="ReconnectAllDevices" Click="Reconnect_Click" IsEnabled="{Binding CanStartFreshOperation}"/>
+       <MenuItem Header="{DynamicResource Settings.LastSave}" Click="InspectSave_Click" IsEnabled="{Binding HasUnconfirmedConfigurationSubmission}"/>
+       <MenuItem Header="{DynamicResource Settings.ReconnectAll}" AutomationProperties.AutomationId="ReconnectAllDevices" Click="Reconnect_Click" IsEnabled="{Binding CanStartFreshOperation}"/>
       </MenuItem>
      </Menu>
-     <Button x:Name="ViewChanges" Content="查看改动" Click="ReviewChanges_Click" Style="{StaticResource ParameterAction}" IsEnabled="{Binding CanStartOperation}" Margin="0,0,8,0"/>
-     <Button x:Name="SaveChanges" Content="{Binding ConfigurationSaveActionText}" Click="SaveChanges_Click" Style="{StaticResource ParameterPrimaryAction}" IsEnabled="{Binding CanReviewConfiguration}" ToolTip="{Binding ConfigurationDraftStatusText}" ToolTipService.ShowOnDisabled="True" MinWidth="120"/>
+     <Button x:Name="ViewChanges" Content="{DynamicResource Settings.ReviewChanges}" Click="ReviewChanges_Click" Style="{StaticResource ParameterAction}" IsEnabled="{Binding CanStartOperation}" Margin="0,0,8,0"/>
+     <Button x:Name="SaveChanges" Content="{type:LocalizedLabel ConfigurationSaveActionText}" Click="SaveChanges_Click" Style="{StaticResource ParameterPrimaryAction}" IsEnabled="{Binding CanReviewConfiguration}" ToolTip="{type:LocalizedLabel ConfigurationDraftStatusText}" ToolTipService.ShowOnDisabled="True" MinWidth="120"/>
     </StackPanel>
     <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
-     <TextBlock Text="{Binding ConfigurationDraftStatusText}" Foreground="{DynamicResource Ink}" FontWeight="{x:Static type:UiTypography.Emphasis}" TextTrimming="CharacterEllipsis"/>
-     <TextBlock Text="{Binding ConfigurationSavedStatusText}" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding ParameterConfigurationSummary}"/>
+     <TextBlock Text="{type:LocalizedLabel ConfigurationDraftStatusText}" Foreground="{DynamicResource Ink}" FontWeight="{x:Static type:UiTypography.Emphasis}" TextTrimming="CharacterEllipsis"/>
+     <TextBlock Text="{type:LocalizedLabel ConfigurationSavedStatusText}" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding ParameterConfigurationSummary}"/>
     </StackPanel>
    </DockPanel>
   </Border>
@@ -60,7 +60,7 @@
     </DataGrid.Columns></DataGrid><StackPanel x:Name="ReaderParameterForm"/>
     <TextBlock Text="全部投递位 · 空绑定沿用已显示的默认秤/相机" FontWeight="{x:Static type:UiTypography.Emphasis}" Margin="0,12,0,4"/>
     <DataGrid IsReadOnly="False" ItemsSource="{Binding PositionDrafts}" AutoGenerateColumns="False" CanUserAddRows="False" RowHeight="44" MaxHeight="240"><DataGrid.Columns>
-     <DataGridTextColumn Header="投递位" Binding="{Binding Id,Mode=OneWay}" IsReadOnly="True" Width="100"/><DataGridTextColumn Header="稳定读码来源" Binding="{Binding ReaderDeviceId,Mode=OneWay}" IsReadOnly="True" Width="*"/>
+     <DataGridTextColumn Header="{DynamicResource Work.Lane}" Binding="{Binding Id,Mode=OneWay}" IsReadOnly="True" Width="100"/><DataGridTextColumn Header="稳定读码来源" Binding="{Binding ReaderDeviceId,Mode=OneWay}" IsReadOnly="True" Width="*"/>
      <DataGridTemplateColumn Header="本位秤" Width="*"><DataGridTemplateColumn.CellTemplate><DataTemplate><ComboBox ItemsSource="{Binding Scales}" SelectedItem="{Binding Scale,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Label"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
      <DataGridTemplateColumn Header="本位相机" Width="*"><DataGridTemplateColumn.CellTemplate><DataTemplate><ComboBox ItemsSource="{Binding Cameras}" SelectedItem="{Binding Camera,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Label"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
     </DataGrid.Columns></DataGrid>
@@ -77,7 +77,7 @@
    <TabItem Header="已安装组件与参数"><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="2*"/><RowDefinition Height="*"/></Grid.RowDefinitions><WrapPanel IsEnabled="{Binding CanEditStructuredConfiguration}"><ComboBox ItemsSource="{Binding NewCapabilityKinds}" SelectedItem="{Binding NewCapabilityKind}" Width="180"/><Button Content="新增未绑定能力实例" Click="AddInstance_Click"/><Button Content="移除所选未绑定实例" Click="RemoveInstance_Click"/></WrapPanel>
     <DataGrid IsReadOnly="False" Grid.Row="1" IsEnabled="{Binding CanEditFormConfiguration}" x:Name="Instances" ItemsSource="{Binding CapabilityDrafts}" AutoGenerateColumns="False" CanUserAddRows="False" RowHeight="44" SelectionChanged="Instance_Changed"><DataGrid.Columns>
      <DataGridTextColumn Header="能力" Binding="{Binding Role,Mode=OneWay}" IsReadOnly="True" Width="110"/>
-     <DataGridCheckBoxColumn Header="启用" Binding="{Binding Enabled,UpdateSourceTrigger=PropertyChanged}"/>
+     <DataGridCheckBoxColumn Header="{DynamicResource Work.Enable}" Binding="{Binding Enabled,UpdateSourceTrigger=PropertyChanged}"/>
      <DataGridTemplateColumn Header="已安装提供者" Width="*"><DataGridTemplateColumn.CellTemplate><DataTemplate><ComboBox IsEnabled="False" ItemsSource="{Binding Providers}" SelectedItem="{Binding Provider,UpdateSourceTrigger=PropertyChanged}" ToolTip="提供者必须匹配版本、模块及安装清单校验值"><ComboBox.ItemTemplate><DataTemplate><TextBlock><Run Text="{Binding Implementation, Mode=OneWay}"/><Run Text=" @ "/><Run Text="{Binding Version, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding Module, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding Package.ManifestSha256, Mode=OneWay}"/></TextBlock></DataTemplate></ComboBox.ItemTemplate></ComboBox></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
      <DataGridTextColumn Header="实例身份" IsReadOnly="True" Binding="{Binding InstanceId,Mode=OneWay}" Width="150"/>
      <DataGridTemplateColumn Header="协议目标 / 读码身份" Width="220"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBox Text="{Binding Target,Mode=OneWay}" IsReadOnly="True" ToolTip="{Binding TargetBoundary}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
@@ -100,7 +100,7 @@
     <TextBlock Text="{Binding IngressInspectionStatus}" TextWrapping="Wrap"/>
     </StackPanel></ScrollViewer></TabItem>
    <TabItem Header="完整备份"><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel Margin="16"><TextBlock Text="备份保存位置（不会覆盖已有文件）" FontSize="{x:Static type:UiTypography.Group}"/><TextBlock Text="备份包含数据库文件和同名 .recovery 文件夹，恢复时请使用维护工具。" TextWrapping="Wrap" Margin="0,8"/><DockPanel><Button DockPanel.Dock="Right" Content="创建完整备份" Click="Backup_Click" IsEnabled="{Binding CanConfigure}"/><TextBox Text="{Binding BackupPath,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="新备份完整路径"/></DockPanel><Button Content="管理模式与操作条件…" Click="AuthorizeTool_Click" HorizontalAlignment="Left" Margin="0,12,0,0"/></StackPanel></ScrollViewer></TabItem>
-   <TabItem Header="模板与显示"><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel Margin="16"><TextBlock Text="设置模板" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"/><TextBlock Text="模板可以把设置复制到另一台供包台，不包含编号、设备地址、密码、备份路径和业务数据。" TextWrapping="Wrap" Margin="0,8"/><WrapPanel IsEnabled="{Binding CanStartOperation}"><Button Content="导出设置模板…" Click="ExportTemplate_Click"/><Button Content="导入并预览模板…" Click="ImportTemplate_Click"/></WrapPanel><TextBlock Text="本机显示偏好" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}" Margin="0,24,0,8"/><TextBlock Text="在“系统 → 显示偏好”中修改，按当前 Windows 用户保存，不影响业务设置。" TextWrapping="Wrap"/></StackPanel></ScrollViewer></TabItem>
+   <TabItem Header="模板与显示"><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel Margin="16"><TextBlock Text="设置模板" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"/><TextBlock Text="模板可以把设置复制到另一台供包台，不包含编号、设备地址、密码、备份路径和业务数据。" TextWrapping="Wrap" Margin="0,8"/><WrapPanel IsEnabled="{Binding CanStartOperation}"><Button Content="{DynamicResource Settings.ExportTemplate}" Click="ExportTemplate_Click"/><Button Content="导入并预览模板…" Click="ImportTemplate_Click"/></WrapPanel><TextBlock Text="本机显示偏好" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}" Margin="0,24,0,8"/><TextBlock Text="在“系统 → 显示偏好”中修改，按当前 Windows 用户保存，不影响业务设置。" TextWrapping="Wrap"/></StackPanel></ScrollViewer></TabItem>
   </TabControl>
  </Grid>
 </UserControl>

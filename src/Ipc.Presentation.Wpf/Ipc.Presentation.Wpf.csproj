@@ -7,7 +7,7 @@
   <ItemGroup>
     <Content Include="Sounds/ipc-*.wav" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Resource Include="Fonts/*.otf" />
-    <EmbeddedResource Include="Localization/Strings.*.xaml" LogicalName="Ipc.Ui%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Localization/Strings.*.xaml" WithCulture="false" LogicalName="Ipc.Ui%(Filename)%(Extension)" />
     <Resource Include="Fonts/OFL.txt" />
     <Resource Include="Fonts/NOTICE.json" />
     <Content Include="Fonts/OFL.txt" Link="licenses/NotoSansCJKSC-OFL.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />

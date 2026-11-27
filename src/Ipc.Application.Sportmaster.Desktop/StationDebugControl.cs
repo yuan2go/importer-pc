@@ -19,7 +19,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 // A projection of the Application's one-shot round, never a local camera/sender.
 internal sealed partial class StationDebugControl : UserControl
 {
-    const string DebugFailure = "本轮调试未完成，请查看采集诊断并核对原轮次；请求结果未确认时不要重复发送。";
+    static string DebugFailure => UiText.Get("Debug.Incomplete");
     readonly SupplyStationViewModel vm;
     readonly ICameraInspection? inspection;
     readonly ICameraReadRounds? rounds;
@@ -53,8 +53,8 @@ internal sealed partial class StationDebugControl : UserControl
     Point? pan;
     double panX, panY;
     SupplyStationPositionViewModel Position => position == "left" ? vm.Left : vm.Right;
-    ICameraInspection Inspection => inspection ?? throw new NotSupportedException("当前业务不支持相机调试。");
-    ICameraReadRounds Rounds => rounds ?? throw new NotSupportedException("当前业务不提供按轮扫码及手动请求。");
+    ICameraInspection Inspection => inspection ?? throw new NotSupportedException(UiText.Get("Debug.CameraUnsupported"));
+    ICameraReadRounds Rounds => rounds ?? throw new NotSupportedException(UiText.Get("Debug.ScanUnsupported"));
     public StationDebugControl(SupplyStationViewModel vm, Func<string, Task> settings, Func<string, Task> details)
     {
         InitializeComponent();
@@ -70,7 +70,7 @@ internal sealed partial class StationDebugControl : UserControl
         InitializeBatch(batchPanel);
         calibrate.Click += async (_, _) => await Run(_ => livePreview.HasLiveFrame
             ? vm.CalibrateEmptyTrayAsync(Position, stationDebug)
-            : throw new InvalidOperationException("请等待当前相机的实时画面，再确认空托盘。"));
+            : throw new InvalidOperationException(UiText.Get("Debug.AwaitLive")));
         previewTabs.SelectionChanged += (_, args) => { if (args.Source == previewTabs) Buttons(); };
 
         stopRead.Click += async (_, _) => await Run(async _ =>
@@ -119,9 +119,9 @@ internal sealed partial class StationDebugControl : UserControl
 
     async Task PrepareManualAsync(CancellationToken token)
     {
-        if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复当前运行状态读取。");
+        if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException(UiText.Get("Debug.RestoreStatus"));
         if (prepareCommand is { } pending && (pending.PositionId != position || pending.RuntimeId != snapshot.RuntimeId))
-            throw new InvalidOperationException("请返回原投递位核对上次准备结果；不把原命令用于当前投递位。");
+            throw new InvalidOperationException(UiText.Get("Debug.CheckOriginalLane"));
         var command = prepareCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, position, requestBarcode.Text, observed?.Id)
         { ExpectedArrivalGeneration = snapshot.Positions?.SingleOrDefault(p => p.Id == position)?.Arrival?.Generation };
         var owner = lifetime; var version = generation; var scanSession = ownedScanSession;
@@ -139,7 +139,7 @@ internal sealed partial class StationDebugControl : UserControl
             if (ReferenceEquals(prepareCommand, command)) prepareCommand = null;
             return;
         }
-        if (value.Id != command.CommandId || !value.ManualRequest) throw new InvalidOperationException("上次准备结果未确认，请先查看本轮结果；不会重复创建请求。");
+        if (value.Id != command.CommandId || !value.ManualRequest) throw new InvalidOperationException(UiText.Get("Debug.CheckPrepare"));
         requestDirty = requestBarcode.Text != command.Barcode;
         if (!requestDirty) manualDrafts.Remove(position);
         prepareCommand = null; sendCommand = null;
@@ -151,7 +151,7 @@ internal sealed partial class StationDebugControl : UserControl
     }
     async Task TriggerAsync(CancellationToken token)
     {
-        if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复当前运行状态读取。");
+        if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException(UiText.Get("Debug.RestoreStatus"));
         generation++; ClearRoundDisplay();
         if (scope is not { State: "Active", SingleReadRounds: true })
         {
@@ -168,16 +168,16 @@ internal sealed partial class StationDebugControl : UserControl
             if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
             scope = confirmed;
         }
-        if (scope?.SessionId is not { } session) throw new InvalidOperationException("未读取到当前调试会话。");
+        if (scope?.SessionId is not { } session) throw new InvalidOperationException(UiText.Get("Debug.NoSession"));
         beginCommand = null; // An authoritative active scope settles a lost begin receipt.
         armCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, session, Position.ReaderId, observed?.Id ?? current?.Id);
         if (armCommand.DeviceId != Position.ReaderId || armCommand.SessionId != session || armCommand.RuntimeId != snapshot.RuntimeId)
-            throw new InvalidOperationException("原扫码命令属于另一相机或会话，请核对原轮次。");
+            throw new InvalidOperationException(UiText.Get("Debug.WrongCamera"));
         CameraReadRound value;
         try { value = await vm.ServiceAsync(() => Rounds.ArmCameraReadAsync(armCommand, token)); }
         catch (CameraReadRoundConflictException) { armCommand = null; throw; }
         ownedScanSession = armCommand.SessionId; ownedScanRound = armCommand.CommandId;
-        if (value.Id != armCommand.CommandId) throw new CameraReadRoundConflictException("原扫码命令已结束，当前是另一轮；请查看原记录。");
+        if (value.Id != armCommand.CommandId) throw new CameraReadRoundConflictException(UiText.Get("Debug.OtherRound"));
         if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
         armCommand = null; sendCommand = null; requestDirty = false; manualDrafts.Remove(position); observed = current = value;
         ownedScanSession = value.SessionId; ownedScanRound = value.Id;
@@ -185,11 +185,11 @@ internal sealed partial class StationDebugControl : UserControl
     }
     async Task SendAsync(CancellationToken token)
     {
-        if (!authoritative || !vm.Fresh || current is not { Id: { } id, RequestHash: { } hash } value || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复轮次读取，再查看本轮请求。");
-        if (sendCommand is null && (requestDirty || !value.ManualRequest && loadedFrame != value.Frame?.Id)) throw new InvalidOperationException("请先准备当前条码的请求；扫码请求还需查看本轮图片。");
+        if (!authoritative || !vm.Fresh || current is not { Id: { } id, RequestHash: { } hash } value || vm.Snapshot is not { } snapshot) throw new InvalidOperationException(UiText.Get("Debug.RestoreRound"));
+        if (sendCommand is null && (requestDirty || !value.ManualRequest && loadedFrame != value.Frame?.Id)) throw new InvalidOperationException(UiText.Get("Debug.PrepareBarcode"));
         sendCommand ??= new(Wire.Id(), snapshot.RuntimeId, id, hash);
         if (sendCommand.RuntimeId != snapshot.RuntimeId || sendCommand.RoundId != id || sendCommand.RequestHash != hash)
-            throw new InvalidOperationException("原发送结果须按原轮次核对，不能转投当前轮次。");
+            throw new InvalidOperationException(UiText.Get("Debug.NoOtherRoundSend"));
         var returned = await vm.ServiceAsync(() => Rounds.SendCameraRoundAsync(sendCommand, token));
         if (returned.Id == id) sendCommand = null;
         if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
@@ -238,15 +238,15 @@ internal sealed partial class StationDebugControl : UserControl
         if (!active || !vm.IsManagementMode || token.IsCancellationRequested) return;
         camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus;
         var sameCamera = value.DeviceId == Position.ReaderId;
-        var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Faulted" ? "本轮扫码未完成，未发送请求。请点击“再次扫码”重读。" :
-            value.State == "Locked" && value.CanSend ? "结果已锁定，等待手动发送或再次扫码。" : Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(value.Detail, DebugFailure);
+        var detail = !sameCamera ? UiText.Get("Debug.CameraNotTriggered") : value.State == "Faulted" ? UiText.Get("Debug.ScanIncomplete") :
+            value.State == "Locked" && value.CanSend ? UiText.Get("Debug.ResultLockedWait") : Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(value.Detail, DebugFailure);
         state.ToolTip = detail;
         state.Text = value.Id is null || value.SendAttempts > 0 ? "" : detail;
         if (!sameCamera) { ClearRoundDisplay(); Buttons(); return; }
         SetText(barcode, value.Barcode ?? "");
         if (!requestDirty) { updatingRequest = true; try { SetText(requestBarcode, value.Barcode ?? ""); } finally { updatingRequest = false; } }
         SetText(requestBody, FormatJson(value.RequestBody ?? "")); ShowResponse(value);
-        send.ToolTip = value.SendBlockedReason ?? (value.Target is null ? "等待本轮请求准备完成" : "发送到当前RCS：" + value.Target);
+        send.ToolTip = value.SendBlockedReason ?? (value.Target is null ? UiText.Get("Debug.PreparingRequest") : UiText.Get("Debug.SendToRcs") + value.Target);
         ToolTipService.SetShowOnDisabled(send, true);
         if (value.Frame is { ImageAvailable: true } frame && loadedFrame != frame.Id)
         {
@@ -254,11 +254,11 @@ internal sealed partial class StationDebugControl : UserControl
             if (!active || version != generation || token.IsCancellationRequested || current?.Id != value.Id || !vm.IsManagementMode) return;
             if (raw is null) { ClearPhoto(); photoCaption.Text = UiText.Get("Debug.PhotoOverwritten"); return; }
             if (raw.Metadata.Id != frame.Id || raw.Metadata.ObservationId != frame.ObservationId || raw.Gray8.LongLength != (long)frame.Width * frame.Height)
-                throw new InvalidDataException("原图与本轮身份不一致，拒绝显示。");
+                throw new InvalidDataException(UiText.Get("Debug.ImageMismatch"));
             displayedFrame = raw.Metadata; loadedFrame = frame.Id;
             var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, raw.Gray8, frame.Width); bitmap.Freeze(); photo.Source = bitmap; imageHint.Visibility = Visibility.Collapsed;
             photo.Width = imageLayer.Width = marks.Width = frame.Width; photo.Height = imageLayer.Height = marks.Height = frame.Height;
-            lockedFrameTab.IsSelected = true; fit = true; ApplyZoom(); DrawMarks(); photoCaption.Text = "已锁定本轮照片 · 帧 " + frame.FrameNumber + " · " + frame.CapturedAt.ToLocalTime().ToString("HH:mm:ss.fff") + "\n下一件不会覆盖。";
+            lockedFrameTab.IsSelected = true; fit = true; ApplyZoom(); DrawMarks(); photoCaption.Text = UiText.Get("Debug.LockedFrame") + frame.FrameNumber + " · " + frame.CapturedAt.ToLocalTime().ToString("HH:mm:ss.fff") + UiText.Get("Debug.KeepImage");
         }
         if (value.Frame?.Id != loadedFrame || value.Frame?.ImageAvailable != true) ClearPhoto(); Buttons();
     }
@@ -279,14 +279,14 @@ internal sealed partial class StationDebugControl : UserControl
         }
         result.Text = displayedResponse switch
         {
-            { Complete: false } when string.IsNullOrEmpty(originalResponseText) => "回包接收不完整，无可显示的正文。",
-            { Complete: false } => "回包接收不完整，仅显示已收到的部分。",
-            not null when originalResponseText is null => "回包正文无法按文本读取。",
-            not null when originalResponseText?.Length == 0 => "RCS 返回了空正文。",
-            not null => "已收到回包，请核对结果（调试不自动重发）",
-            _ when value.SendBlockedReason is { } blocked => "尚未发送 · " + blocked,
-            _ when value.State == "Sending" => "正在发送，等待 RCS 回包。",
-            _ when value.SendAttempts > 0 => "未收到 RCS 回包正文，请核对本轮请求结果。",
+            { Complete: false } when string.IsNullOrEmpty(originalResponseText) => UiText.Get("Debug.NoBody"),
+            { Complete: false } => UiText.Get("Debug.PartialBody"),
+            not null when originalResponseText is null => UiText.Get("Debug.NotText"),
+            not null when originalResponseText?.Length == 0 => UiText.Get("Debug.EmptyBody"),
+            not null => UiText.Get("Debug.ReceivedResponse"),
+            _ when value.SendBlockedReason is { } blocked => UiText.Get("Debug.NotSentDetail") + blocked,
+            _ when value.State == "Sending" => UiText.Get("Debug.SendingStatus"),
+            _ when value.SendAttempts > 0 => UiText.Get("Debug.MissingBody"),
             _ => "尚未发送请求"
         };
         result.Visibility = result.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -321,32 +321,32 @@ internal sealed partial class StationDebugControl : UserControl
         UpdateBatchButtons();
         var noCode = current?.DeviceId == Position.ReaderId && current.ConsecutiveNoCodeFrames >= 3 && current.Frame is null;
         if (photo.Source is null && current?.DeviceId == Position.ReaderId)
-            imageHint.Text = current.ManualRequest ? "本次为手工输入请求，无扫码照片。" : noCode ? "无条码\n请调整包裹或条码朝向。" : current.State is "Preparing" or "Reading" or "Sealing" ? "正在读取本轮条码…\n读到单码后自动锁定照片。" :
-                current.Frame is not null ? "本轮照片不可用\n图片可能已被清理。" : "等待本轮扫码照片\n点击“触发扫码”开始读取。";
+            imageHint.Text = current.ManualRequest ? UiText.Get("Debug.ManualNoPhoto") : noCode ? UiText.Get("Debug.NoBarcodeHint") : current.State is "Preparing" or "Reading" or "Sealing" ? UiText.Get("Debug.ReadingHint") :
+                current.Frame is not null ? UiText.Get("Debug.MissingPhotoHint") : "等待本轮扫码照片\n点击“触发扫码”开始读取。";
         // Scanning needs this camera online; a keyed-in request does not.
         var cameraOnline = vm.Snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == Position.ReaderId)?.IsValid(DateTimeOffset.UtcNow) == true;
         var canCheckCamera = vm.Fresh && vm.Snapshot is { } snapshot && !Position.SupplyDisabled &&
             !ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, Position.ReaderId);
         readStatus.Text = !cameraOnline && current?.State is not ("Reading" or "Preparing" or "Sealing" or "Locked") ?
-            canCheckCamera ? "触发时检查相机连接" : "" :
-            current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.ManualRequest == true ? "人工请求" : current?.State switch
-        { "Reading" or "Preparing" or "Sealing" => "正在读取", "Locked" => "读码已锁定", "Sending" => "正在发送", "Faulted" => "读取异常", _ => "尚未开始扫码" };
-        photoState.Text = current?.ManualRequest == true ? "人工请求，无扫码照片" : noCode ? "无条码" : displayedFrame is null ? "等待扫码" : "结果已锁定";
+            canCheckCamera ? UiText.Get("Debug.CheckTrigger") : "" :
+            current?.DeviceId != Position.ReaderId ? UiText.Get("Debug.ScanNotStarted") : current?.ManualRequest == true ? UiText.Get("Debug.ManualCommand") : current?.State switch
+        { "Reading" or "Preparing" or "Sealing" => UiText.Get("Debug.Reading"), "Locked" => UiText.Get("Debug.LockedBarcode"), "Sending" => UiText.Get("Debug.Sending"), "Faulted" => UiText.Get("Debug.ReadError"), _ => UiText.Get("Debug.ScanNotStarted") };
+        photoState.Text = current?.ManualRequest == true ? UiText.Get("Debug.ManualNoImage") : noCode ? UiText.Get("Debug.NoCode") : displayedFrame is null ? UiText.Get("Debug.WaitScan") : UiText.Get("Debug.ResultLocked");
         if (current?.ManualRequest == true) photoCaption.Text = UiText.Get("Debug.ManualRequest");
-        fillStatus.Text = requestDirty ? "输入已更改，请准备当前条码的请求。" : current?.DeviceId == Position.ReaderId && current.RequestBody is not null ?
-            (current.ManualRequest ? "手工输入" : "相机读码") + " · " + Position.Heading : "";
+        fillStatus.Text = requestDirty ? UiText.Get("Debug.DraftChanged") : current?.DeviceId == Position.ReaderId && current.RequestBody is not null ?
+            (current.ManualRequest ? "手工输入" : UiText.Get("Debug.CameraRead")) + " · " + Position.Heading : "";
         feedback.Visibility = string.IsNullOrWhiteSpace(feedback.Text) ? Visibility.Collapsed : Visibility.Visible;
         var waiting = batch is not null || observed?.State is "Preparing" or "Reading" or "Sealing" or "Sending";
-        trigger.Content = armCommand is not null || beginCommand is not null ? "检查触发" : current?.State is "Preparing" or "Reading" or "Sealing" ? "扫码中…" : current?.Id is null || current.ManualRequest ? "触发扫码" : "再次扫码";
+        trigger.Content = armCommand is not null || beginCommand is not null ? UiText.Get("Debug.TriggerCheck") : current?.State is "Preparing" or "Reading" or "Sealing" ? UiText.Get("Debug.Scanning") : current?.Id is null || current.ManualRequest ? UiText.Get("Debug.Trigger") : UiText.Get("Debug.ScanAgain");
         trigger.IsEnabled = active && !busy && !waiting && vm.IsManagementMode && canCheckCamera;
         stopRead.Visibility = stationDebug && observed?.State is ("Reading" or "Sealing") ? Visibility.Visible : Visibility.Collapsed;
         stopRead.IsEnabled = active && !busy && vm.IsManagementMode && ownedScanSession == observed?.SessionId &&
             ownedScanRound is not null && ownedScanRound == observed?.Id && observed?.State is "Reading" or "Sealing";
-        trigger.ToolTip = canCheckCamera ? "触发时由供包台核对实际连接；读码不额外发送请求。" : "请先配置并启用本位相机；可在下方手工输入条码。";
+        trigger.ToolTip = canCheckCamera ? UiText.Get("Debug.ScanningNoSend") : UiText.Get("Debug.ConfigureCamera");
         ToolTipService.SetShowOnDisabled(trigger, true);
-        prepare.Content = prepareCommand is null ? "准备请求" : "查看准备结果";
+        prepare.Content = prepareCommand is null ? UiText.Get("Debug.PrepareRequest") : UiText.Get("Debug.CheckPrepared");
         prepare.IsEnabled = active && !busy && !waiting && vm.Fresh && vm.IsManagementMode && !string.IsNullOrWhiteSpace(requestBarcode.Text);
-        send.Content = sendCommand is null ? "发送请求" : "查看发送结果";
+        send.Content = sendCommand is null ? UiText.Get("Debug.SendRequest") : UiText.Get("Debug.CheckSent");
         send.IsEnabled = active && !busy && authoritative && vm.Fresh && vm.IsManagementMode && current?.Id == observed?.Id && current?.DeviceId == Position.ReaderId &&
             (sendCommand is not null || !requestDirty && current is { RequestHash: not null, SendAttempts: 0 } && (current.ManualRequest || current.Frame is { } frame && loadedFrame == frame.Id));
         copyResponse.IsEnabled = active && !busy && vm.IsManagementMode && displayedResponse?.Complete == true && originalResponseText is { Length: > 0 };
@@ -355,7 +355,7 @@ internal sealed partial class StationDebugControl : UserControl
         calibrationStatus.SetResourceReference(TextBlock.ForegroundProperty, calibration.Tone);
         calibrationBadge.SetResourceReference(BackgroundProperty, calibration.Tone == "Muted" ? "Soft" : calibration.Tone + "Background");
         calibrationBadge.SetResourceReference(Border.BorderBrushProperty, calibration.Tone == "Muted" ? "Line" : calibration.Tone + "Border");
-        calibrationHint.Text = calibration.CanStart && !livePreview.HasLiveFrame ? "请切到实时画面并等待当前相机的新画面。" : calibration.Detail;
+        calibrationHint.Text = calibration.CanStart && !livePreview.HasLiveFrame ? UiText.Get("Debug.SwitchLive") : calibration.Detail;
         calibrate.IsEnabled = active && !busy && calibration.CanStart && livePreview.HasLiveFrame;
         calibrate.Content = Position.TrayPresence?.Calibrating == true ? "校准中…" : "确认空托盘并校准";
         left.IsEnabled = right.IsEnabled = !busy && batch is null; left.SetResourceReference(BackgroundProperty, position == "left" ? "AccentBackground" : "Surface"); right.SetResourceReference(BackgroundProperty, position == "right" ? "AccentBackground" : "Surface");

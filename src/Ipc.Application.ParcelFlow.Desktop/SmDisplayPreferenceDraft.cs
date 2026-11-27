@@ -66,7 +66,7 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
     }
     static bool StorageError(Exception e) => e is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException or ArgumentException or InvalidOperationException or System.Runtime.InteropServices.COMException;
     public bool CanEdit(string path) => !readFailures.ContainsKey(path);
-    public string ReadFailure(string path) => readFailures.GetValueOrDefault(path, "");
+    public string ReadFailure(string path) => UiText.Authored(readFailures.GetValueOrDefault(path, ""));
     public PresentationPreferences.WindowOpeningMode OpeningMode { get => mode; set { if (mode == value) return; mode = value; Changed(); } }
     public bool ShowPace { get => pace; set { if (pace == value) return; pace = value; Changed(); } }
     public int CueVolume { get => volume; set { if (volume == value) return; volume = value; Changed(); } }
@@ -132,7 +132,7 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
     }
     public PreferenceSaveItem[] LastSave { get; private set; } = [];
     public bool LastSaveComplete => LastSave.All(x => x.State is "Saved" or "Unchanged");
-    public string SaveSummary => string.Join("；", LastSave.Select(x => x.Name + "：" + x.Detail));
+    public string SaveSummary => string.Join("；", LastSave.Select(x => UiText.Format("Settings.PreferenceResult", UiText.Authored(x.Name), UiText.Authored(x.Detail))));
     public string? Validate() => !PresentationPreferences.SupportedLanguages.Contains(language, StringComparer.Ordinal) ? UiText.Get("Common.LanguageInvalid") : !profile.SupportedThemes.Any(theme => theme.Id == themeId) ? "请选择可用的界面主题。" : !Enum.IsDefined(mode) ? "请选择默认打开方式。" : volume is < 0 or > 100 ? "提示音音量须为0～100。" : null;
     public ConfigurationChangeItem[] Changes()
     {

@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.Windows;
 using System.Windows.Input;
 using Ipc.Application.ParcelFlow.Desktop;
@@ -13,10 +14,10 @@ public partial class SupplyStationExitWindow : Window
         DataContext = viewModel;
         if (activation)
         {
-            Title = "重启供包台";
-            ExitHeading.Text = "确认重启供包台？";
-            ExitDescription.Text = "将停止当前供包业务，关闭相关窗口，再重新打开以应用配置。";
-            ContinueExitButton.Content = "继续重启";
+            Title = UiText.Get("Work.Restart");
+            ExitHeading.Text = UiText.Get("Work.RestartPrompt");
+            ExitDescription.Text = UiText.Get("Work.RestartScope");
+            ContinueExitButton.Content = UiText.Get("Work.ContinueRestart");
         }
         Loaded += (_, _) =>
         {

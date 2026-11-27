@@ -21,7 +21,7 @@ public sealed class InstallerLanguageWindow : Window
         StartupAppearance.Apply(this);
         SetResourceReference(ForegroundProperty, "Ink");
 
-        var panel = new StackPanel { Margin = new(24) };
+        var panel = new StackPanel();
         var heading = new TextBlock
         {
             Text = UiText.Get("Installer.LanguagePrompt"), FontSize = UiTypography.Group,
@@ -49,7 +49,10 @@ public sealed class InstallerLanguageWindow : Window
         AutomationProperties.SetAutomationId(next, "Installer.LanguageContinue");
         next.Click += (_, _) => DialogResult = true;
         buttons.Children.Add(cancel); buttons.Children.Add(next);
-        panel.Children.Add(buttons); Content = panel;
+        panel.Children.Add(buttons);
+        var surface = new Border { Padding = new(24), Child = panel };
+        surface.SetResourceReference(Border.BackgroundProperty, "Surface");
+        Content = surface;
         Loaded += (_, _) => languages.Focus();
     }
 

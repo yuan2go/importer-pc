@@ -1,5 +1,6 @@
 extern alias Fixture;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
@@ -23,6 +24,7 @@ static partial class Program
 
     static async Task SmokeScreenshots(string root, string evidence, List<string> lines)
     {
+        await CaptureInstaller(evidence, lines);
         await CaptureWorkstation(root, evidence, lines);
         await CaptureFirstConfiguration(evidence, lines);
         await CaptureUncalibrated(root, evidence, lines);
@@ -41,6 +43,89 @@ static partial class Program
         if (process.ExitCode != 0) throw new InvalidOperationException($"Operations screenshot process exited with {process.ExitCode}.");
         foreach (var png in Directory.EnumerateFiles(operationsEvidence, "operations-*.png"))
             File.Copy(png, Path.Combine(evidence, Path.GetFileName(png)));
+
+        if (File.Exists(Path.Combine(evidence, "setup-step1-ru.png")))
+        {
+            using var archive = ZipFile.Open(Path.Combine(evidence, "PR4-i18n-125dpi.zip"), ZipArchiveMode.Create);
+            foreach (var name in new[]
+            {
+                "installer-language-picker", "setup-step1-ru", "work-en-light", "work-ru-light", "work-ru-dark",
+                "work-ru-compact", "work-unknown-guidance-ru", "settings-preferences-lang-theme-ru", "operations-overview-ru"
+            })
+                archive.CreateEntryFromFile(Path.Combine(evidence, name + ".png"), name + ".png", CompressionLevel.Optimal);
+        }
+    }
+
+    static async Task CaptureInstaller(string evidence, List<string> lines)
+    {
+        var picker = new Ipc.Desktop.InstallerLanguageWindow("ru-RU");
+        picker.Show();
+        try
+        {
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            if (picker.SelectedLanguage != "ru-RU") throw new InvalidOperationException("The installer did not preselect the resolved language.");
+            var options = Visuals<ComboBox>(picker).Single(box => AutomationProperties.GetAutomationId(box) == "Installer.LanguageSelection");
+            if (options.Items.Count != 3 || options.ActualHeight < 44) throw new InvalidOperationException("The installer must show all three languages in a touch-sized selector.");
+            CaptureInternal(evidence, "installer-language-picker", (FrameworkElement)picker.Content, lines);
+        }
+        finally { picker.Close(); }
+
+        var manager = new WorkstationLocalizationManager();
+        var resources = System.Windows.Application.Current.Resources;
+        manager.Apply(resources, "ru-RU");
+        try
+        {
+            if (Environment.GetEnvironmentVariable("IPC_INSTALLER_SMOKE_MEDIA") is { Length: > 0 } media)
+            {
+                var work = Path.Combine(evidence, "isolated-installation");
+                using var wizard = new InstallerPreview(media, work);
+                wizard.Window.Show();
+                try
+                {
+                    await AwaitUi(() => Visuals<Expander>(wizard.Window).Any(panel =>
+                        AutomationProperties.GetName(panel) == UiText.Get("Setup.Advanced")));
+                }
+                catch (TimeoutException error)
+                {
+                    var text = string.Join(" | ", Visuals<TextBlock>(wizard.Window).Select(block => block.Text).Where(value => value.Length > 0));
+                    throw new InvalidOperationException("The installer did not reach the verified options page: " + text, error);
+                }
+                var shortcuts = Visuals<Expander>(wizard.Window).Single(panel => AutomationProperties.GetName(panel) == UiText.Get("Setup.Advanced"));
+                shortcuts.IsExpanded = true;
+                await AwaitUi(() => Visuals<CheckBox>(wizard.Window).Any(check => Equals(check.Content, UiText.Get("Setup.StartMenuShortcut"))));
+                await Capture(wizard.Window, 1000, 690, evidence, "setup-step1-ru", lines);
+            }
+            else
+            {
+                var work = Path.Combine(evidence, "isolated-installation");
+                var waiting = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+                var window = new Ipc.Desktop.StartupSetupWindow(new BusinessLaunch(work, work, null, null),
+                    (_, cancellation) => waiting.Task.WaitAsync(cancellation), initialLanguage: "ru-RU");
+                window.Show();
+                try { await Capture(window, 1000, 690, evidence, "setup-media-check-ru", lines); }
+                finally { waiting.TrySetCanceled(); window.Close(); }
+            }
+        }
+        finally { manager.Apply(resources, "zh-CN"); }
+    }
+
+    sealed class InstallerPreview : IDisposable
+    {
+        public Ipc.Desktop.StartupSetupWindow Window { get; }
+
+        public InstallerPreview(string media, string isolatedWork)
+        {
+            Window = new(new BusinessLaunch(isolatedWork, isolatedWork, null, null), (_, _) => Task.FromResult(media),
+                initialLanguage: "ru-RU");
+            // Retain the real media inspection and rendering. Isolate live installation and continuation probes.
+            const BindingFlags instance = BindingFlags.Instance | BindingFlags.NonPublic;
+            typeof(Ipc.Desktop.StartupSetupWindow).GetProperty("CurrentInstallation", instance)!
+                .SetValue(Window, (Func<string, DeploymentLocation?>)(_ => null));
+            typeof(Ipc.Desktop.StartupSetupWindow).GetProperty("DiscoverInstallation", instance)!
+                .SetValue(Window, (Func<string, string, InstallationContinuation?>)((_, _) => null));
+        }
+
+        public void Dispose() => Window.Close();
     }
 
     static async Task CaptureWorkstation(string root, string evidence, List<string> lines)
@@ -56,6 +141,8 @@ static partial class Program
             await fixture.App.ConfigureManagementPasswordAsync(password);
             fixture.Peer.ReplySlot = "CH-08";
             using var theme = new WorkstationThemeBinding("sportmaster", System.Windows.Application.Current.Resources, Dispatcher.CurrentDispatcher,
+                warning => throw new InvalidOperationException(warning));
+            using var language = new WorkstationLanguageBinding("sportmaster", System.Windows.Application.Current.Resources, Dispatcher.CurrentDispatcher,
                 warning => throw new InvalidOperationException(warning));
             var window = new SupplyStationWindow(fixture.App, null, "standard");
             await using var owner = new NativeWindowOwner(window);
@@ -88,8 +175,8 @@ static partial class Program
                 !Devices(themedBefore).SequenceEqual(Devices(themedAfter)))
                 throw new InvalidOperationException("Live palette replacement changed the workstation state or sent another request.");
             lines.Add("PASS THEME the same workstation retains its identity, current result, device epochs, configuration revision and supply state after live replacement");
-            static IEnumerable<(string, string)> Devices(ParcelSnapshot snapshot) =>
-                (snapshot.Devices ?? []).Select(device => (device.DeviceId, device.Epoch)).OrderBy(device => device.DeviceId, StringComparer.Ordinal);
+            await VerifyWorkstationLanguages(fixture, window, left.OperationId, evidence, lines);
+
             PresentationPreferences.SaveTheme("sportmaster", WorkstationThemeManager.IndustrialLightId);
             await AwaitUi(() => window.Background is SolidColorBrush background && background.Color == (Color)ColorConverter.ConvertFromString("#F1F4F7"));
             var mute = (ToggleButton)window.FindName("MuteToggleButton");
@@ -142,6 +229,18 @@ static partial class Program
                     run.GlyphIndices.Any(index => index == 0)))
                     throw new InvalidOperationException("The visible recovery guidance must use the shipped Noto glyphs at 400 or 500.");
                 lines.Add("PASS FONT visible RCS guidance uses only the shipped Noto Sans CJK SC glyphs");
+                try
+                {
+                    PresentationPreferences.SaveLanguage("sportmaster", "ru-RU");
+                    await Capture(window, 1366, 768, evidence, "work-unknown-guidance-ru", lines);
+                    if (!guidance.IsVisible || model.Right.RcsGuidanceBarcode != "6950123456789" || !remove.IsVisible || !details.IsEnabled)
+                        throw new InvalidOperationException("Russian recovery guidance lost the original barcode or recovery controls.");
+                }
+                finally
+                {
+                    PresentationPreferences.SaveLanguage("sportmaster", "zh-CN");
+                    await NativeClientSize.Set(window, (FrameworkElement)window.Content, 1536, 816);
+                }
 
                 var sends = fixture.Peer.Requests.Count;
                 Press(remove);
@@ -227,6 +326,11 @@ static partial class Program
 
             var beforeSave = await fixture.App.SnapshotAsync();
             var themeControl = Visuals<ComboBox>(station).Single(control => AutomationProperties.GetAutomationId(control) == "StationSettings.Theme");
+            var languageControl = Visuals<ComboBox>(station).Single(control => AutomationProperties.GetAutomationId(control) == "StationSettings.Language");
+            if (!languageControl.IsEnabled || languageControl.Items.Count != 3 || languageControl.ActualHeight < 44)
+                throw new InvalidOperationException("Display preferences must show the 44 DIP language selector with three languages.");
+            languageControl.SelectedValue = "ru-RU";
+
             themeControl.SelectedValue = WorkstationThemeManager.IndustrialDarkId;
             await AwaitUi(() => model.HasUnsavedDisplayPreferences && !model.HasUnsavedConfiguration);
             Press(Visuals<Button>(station).Single(button => button.Name == "SaveChanges"));
@@ -238,7 +342,13 @@ static partial class Program
                 PresentationPreferences.ReadTheme("sportmaster", WorkstationThemeManager.IndustrialLightId) != WorkstationThemeManager.IndustrialDarkId ||
                 !Equals(station.FindResource("Background"), window.FindResource("Background")))
                 throw new InvalidOperationException("The normal save must apply local theme to both windows without changing business configuration or pausing.");
-            lines.Add("PASS THEME normal settings save updates both open windows without advancing business configuration or pausing");
+            if (PresentationPreferences.ReadLanguage("sportmaster") != "ru-RU" ||
+                !Equals(station.FindResource("Common.SetupDisplay"), "Экран и звуки") ||
+                !Equals(window.FindResource("Common.SetupDisplay"), "Экран и звуки"))
+                throw new InvalidOperationException("The normal settings save did not apply Russian to both open windows.");
+            await Capture(station, 1220, 800, evidence, "settings-preferences-lang-theme-ru", lines);
+            lines.Add("PASS THEME AND LANGUAGE normal settings save updates both open windows without advancing business configuration or pausing");
+            PresentationPreferences.SaveLanguage("sportmaster", "zh-CN");
             PresentationPreferences.SaveTheme("sportmaster", WorkstationThemeManager.IndustrialLightId);
 
             var snapshot = await fixture.App.SnapshotAsync();
@@ -263,6 +373,51 @@ static partial class Program
         await AwaitUi(() => empty.ViewModel.Fresh);
         await Capture(empty, 1536, 816, evidence, "work-unconfigured", lines);
         AssertStatusDot(empty, SupplyStationViewModel.StationStatusTone.Blocked, "#FFB52F38");
+    }
+
+    static IEnumerable<(string, string)> Devices(ParcelSnapshot snapshot) =>
+        (snapshot.Devices ?? []).Select(device => (device.DeviceId, device.Epoch)).OrderBy(device => device.DeviceId, StringComparer.Ordinal);
+
+    static async Task VerifyWorkstationLanguages(ManualSupplyHarness fixture, SupplyStationWindow window, string operationId, string evidence, List<string> lines)
+    {
+        var before = await fixture.App.SnapshotAsync();
+        var requests = fixture.Peer.Requests.Count;
+        var model = window.ViewModel;
+        var original = await fixture.App.OperationAsync(operationId)
+            ?? throw new InvalidOperationException("The original work record is unavailable.");
+        var frozenRequest = Wire.Encode(original.Wcs!.Request);
+        PresentationPreferences.SaveTheme("sportmaster", WorkstationThemeManager.IndustrialLightId);
+        try
+        {
+            PresentationPreferences.SaveLanguage("sportmaster", "en-US");
+            await AwaitUi(() => model.Right.CenteredStateTitle == "Waiting for a parcel");
+            await Capture(window, 1366, 768, evidence, "work-en-light", lines);
+            PresentationPreferences.SaveLanguage("sportmaster", "ru-RU");
+            await AwaitUi(() => model.Right.CenteredStateTitle == "Ожидается посылка");
+            await Capture(window, 1366, 768, evidence, "work-ru-light", lines);
+            PresentationPreferences.SaveTheme("sportmaster", WorkstationThemeManager.IndustrialDarkId);
+            await AwaitUi(() => window.Background is SolidColorBrush brush && brush.Color == Color.FromRgb(15, 23, 34));
+            await Capture(window, 1280, 760, evidence, "work-ru-dark", lines);
+            await Capture(window, 800, 420, evidence, "work-ru-compact", lines);
+            foreach (var lane in Visuals<SupplyStationPosition>(window))
+                foreach (var name in new[] { "EnableSupply", "DisableSupply" })
+                    if (lane.FindName(name) is Button { IsVisible: true } button && (button.ActualHeight < 44 || button.ActualWidth < 44))
+                        throw new InvalidOperationException("Russian lane control is smaller than the required touch target.");
+
+            var after = await fixture.App.SnapshotAsync();
+            var retained = await fixture.App.OperationAsync(operationId);
+            if (before.Configuration.Revision != after.Configuration.Revision || before.RuntimeId != after.RuntimeId ||
+                before.Paused != after.Paused || !Devices(before).SequenceEqual(Devices(after)) || fixture.Peer.Requests.Count != requests ||
+                retained?.Slot != "CH-08" || retained.ParcelCode != original.ParcelCode || Wire.Encode(retained.Wcs!.Request) != frozenRequest)
+                throw new InvalidOperationException("Language replacement changed configuration, runtime, devices, or original facts.");
+            lines.Add("PASS LANGUAGE same native window switched zh-CN to en-US to ru-RU, retaining original chute, task, runtime and device state");
+        }
+        finally
+        {
+            PresentationPreferences.SaveLanguage("sportmaster", "zh-CN");
+            PresentationPreferences.SaveTheme("sportmaster", WorkstationThemeManager.IndustrialLightId);
+            await NativeClientSize.Set(window, (FrameworkElement)window.Content, 1536, 816);
+        }
     }
 
     static async Task CaptureDiscovery(Window station, ParameterSettingsControl editor, string evidence, List<string> lines)

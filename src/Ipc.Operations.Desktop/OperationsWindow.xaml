@@ -119,7 +119,7 @@
       <TextBlock Grid.Row="2" Text="{DynamicResource Ops.Task}" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
       <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Operation, Mode=OneWay}" Style="{DynamicResource ReadonlyValue}" Margin="0,4,0,0"/>
       <TextBlock Grid.Row="3" Text="{DynamicResource Ops.Manual}" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
-      <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Manual}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+      <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Manual}" TextWrapping="Wrap" Margin="6,4,0,0"/>
       <TextBlock Grid.Row="4" Text="{DynamicResource Ops.SupplyNotice}" Style="{StaticResource OperationsHint}" Margin="0,4,0,0"/>
       <TextBox Grid.Row="4" Grid.Column="1" Style="{DynamicResource ReadonlyValue}" Text="{Binding Notice,Mode=OneWay}" IsTabStop="True" Margin="0,4,0,0" AutomationProperties.Name="{DynamicResource Ops.SupplyNoticeCopy}"/>
      </Grid>

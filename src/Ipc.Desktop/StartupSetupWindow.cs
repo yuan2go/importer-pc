@@ -283,7 +283,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 Note(current?.LifecycleState == "Purged" ? UiText.Get("Setup.DataPurged")
                     : UiText.Get("Setup.ActionLabel") + installationKind + UiText.Get("Setup.KeepStation"));
                 Note(UiText.Get("Setup.RequiresWindowsAdmin"));
-                Summary(UiText.Get("Setup.AutoStartShort"), reviewed!.Shortcuts!.AutoStart ? UiText.Get("Common.Enabled") : UiText.Get("Common.Close"));
+                Summary(UiText.Get("Setup.AutoStartShort"), reviewed!.Shortcuts!.AutoStart ? UiText.Get("Common.Enabled") : UiText.Get("Common.DisabledSetting"));
                 foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note(UiText.Get("Setup.Dependencies") + string.Join("；", component.Prerequisites));
             }
             Section(UiText.Get("Setup.Location"));
@@ -321,12 +321,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                     shortcuts.Children.Add(new TextBlock { Text = issue, TextWrapping = TextWrapping.Wrap }.Themed(TextBlock.ForegroundProperty, "Warning"));
                 var advanced = new Expander
                 {
-                    Header = new Border
-                    {
-                        MinHeight = 44,
-                        Background = Brushes.Transparent,
-                        Child = new TextBlock { Text = UiText.Get("Setup.AdvancedShortcuts"), VerticalAlignment = VerticalAlignment.Center }
-                    },
+                    Header = UiText.Get("Setup.AdvancedShortcuts"),
                     IsExpanded = advancedExpanded,
                     Content = shortcuts,
                     MinHeight = 44,
@@ -376,7 +371,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Section(UiText.Get("Setup.Location")); Summary(UiText.Get("Setup.ProgramDirectory"), r.ProgramRoot!); Summary(UiText.Get("Setup.DataDirectory"), r.DataRoot);
             Section(UiText.Get("Setup.Settings"));
             Summary(UiText.Get("Setup.StartMenu"), r.Shortcuts!.StartMenu ? UiText.Get("Setup.CreateShortcut") : UiText.Get("Setup.NoShortcut")); Summary(UiText.Get("Setup.Desktop"), r.Shortcuts.Desktop ? UiText.Get("Setup.CreateShortcut") : UiText.Get("Setup.NoShortcut"));
-            if (deploymentProfile.SupportsAutoStart) Summary(UiText.Get("Setup.AutoStartShort"), r.Shortcuts.AutoStart ? UiText.Get("Common.Enabled") : UiText.Get("Common.Close"));
+            if (deploymentProfile.SupportsAutoStart) Summary(UiText.Get("Setup.AutoStartShort"), r.Shortcuts.AutoStart ? UiText.Get("Common.Enabled") : UiText.Get("Common.DisabledSetting"));
             Note(CurrentInstallation(ApplicationId)?.LifecycleState == "Purged" ? UiText.Get("Setup.PurgedData") : UiText.Get("Setup.CloseFirst"));
             foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note(UiText.Get("Setup.Dependencies") + string.Join("；", component.Prerequisites));
             Note(UiText.Get("Setup.Authority")); next.Content = UiText.Get("Setup.Install");

@@ -137,54 +137,54 @@ public sealed partial class SupplyStationPositionViewModel
     public string CenteredStateForegroundKey => CenteredAttention ? CenteredAttentionTone switch
     { ParcelPresentationTone.Stale => "Muted", ParcelPresentationTone.Unknown => "OperatorWarning", _ => "OperatorDanger" }
         : CenteredRcsPause ? "OperatorDanger" : SupplyDisabled || CenteredSoftwarePause || CenteredNoBarcodeBlocked || CenteredArrival ? "Muted" : "OperatorSuccess";
-    public string CenteredStateReason => RoundReadDisplay ? CurrentRound!.ReadOutcome == "ExecutionCapacityBlocked" ? "本轮尚未提交；本位旧调用仍在收尾" : CurrentRound.FormalCodes.Length > 1 ? "本轮有多个有效条码，尚未请求RCS" : "本轮尚未取得可提交条码，尚未请求RCS" : CenteredStale ? UiText.Get("Work.OldChuteInvalid") : CenteredOriginalAttention ? OriginalAttentionReason :
-        CenteredReadAttention ? invalidReadFeedback ? "本次没有有效格口" : UiText.Get("Work.ScanUnsent") :
-        CenteredRcsRejection ? "" : CenteredOperationAttention ? Operation?.State == ParcelState.UnpackRequired ? "本件需人工检查" : "本件暂不能分配格口" :
-        SupplyDisabled ? SupplyConfigured ? "不接收条码" : "" : Arrival?.RecoveryReason is { } recovery ? recovery : Arrival is { PlacementClosed: true } ? "本车放置已结束，未发送请求" : Arrival is { Submitted: true, SubmissionAttempted: false } && CurrentRound is null ? "本件已接纳但未发送" : CenteredSoftwarePause ? PauseReason : CenteredRcsPause ? "RCS 服务离线" : Arrival is { Confirmed: false } ? "正在核对本位小车，输入已保留" :
-        CenteredNoBarcodeBlocked ? SupplyDisabling ? "正在等待本轮请求及结果保存结束" : Operation?.State == ParcelState.ResolvingWcs ? "正在等待本件格口" : "本位暂不接收新条码" :
-        Arrival?.CaptureFailure is { } captureFailure ? captureFailure : Arrival is { CameraBoundaryReady: false } && CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "正在确认相机新画面，可人工补录" :
-        AutoSuppressedWaiting ? "本次自动识读机会已使用" : CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? UiText.Get("Work.ReadByPlacing") : UiText.Get("Work.TypeFullCode");
+    public string CenteredStateReason => RoundReadDisplay ? CurrentRound!.ReadOutcome == "ExecutionCapacityBlocked" ? UiText.Get("Lane.PriorCall") : CurrentRound.FormalCodes.Length > 1 ? UiText.Get("Lane.Multiple") : UiText.Get("Lane.NoBarcode") : CenteredStale ? UiText.Get("Work.OldChuteInvalid") : CenteredOriginalAttention ? OriginalAttentionReason :
+        CenteredReadAttention ? invalidReadFeedback ? UiText.Get("Lane.InvalidChute") : UiText.Get("Work.ScanUnsent") :
+        CenteredRcsRejection ? "" : CenteredOperationAttention ? Operation?.State == ParcelState.UnpackRequired ? UiText.Get("Lane.ManualInspection") : UiText.Get("Lane.ChuteUnavailable") :
+        SupplyDisabled ? SupplyConfigured ? UiText.Get("Lane.NoScan") : "" : Arrival?.RecoveryReason is { } recovery ? recovery : Arrival is { PlacementClosed: true } ? UiText.Get("Lane.PlacementEnded") : Arrival is { Submitted: true, SubmissionAttempted: false } && CurrentRound is null ? UiText.Get("Lane.AcceptedNotSent") : CenteredSoftwarePause ? PauseReason : CenteredRcsPause ? UiText.Get("Lane.RcsOffline") : Arrival is { Confirmed: false } ? UiText.Get("Lane.VehicleChecking") :
+        CenteredNoBarcodeBlocked ? SupplyDisabling ? UiText.Get("Lane.Finalizing") : Operation?.State == ParcelState.ResolvingWcs ? UiText.Get("Lane.WaitChute") : UiText.Get("Lane.NewCodesBlocked") :
+        Arrival?.CaptureFailure is { } captureFailure ? captureFailure : Arrival is { CameraBoundaryReady: false } && CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? UiText.Get("Lane.CameraBoundary") :
+        AutoSuppressedWaiting ? UiText.Get("Lane.AutoReadUsed") : CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? UiText.Get("Work.ReadByPlacing") : UiText.Get("Work.TypeFullCode");
     public string CenteredStateInstruction => CenteredStateFullInstruction;
-    public string CenteredStateFullInstruction => RoundReadDisplay ? CurrentRound!.ReadOutcome == "ExecutionCapacityBlocked" ? "请等待本位在途调用收尾后重新提交；另一位仍可独立供包" : CurrentRound.AutoExpired ? CurrentRound.SafeContinuation ? "原包裹持续在位，正在降频识读；也可PDA补录或取下包裹" : "可原位PDA补录或取下；可靠空盘自动结束，视觉不可靠时确认取下" : "请调整标签，或使用PDA补录；本轮识读期限不会刷新" : CenteredStale ? "请等待状态恢复，暂勿按旧格口投递" :
+    public string CenteredStateFullInstruction => RoundReadDisplay ? CurrentRound!.ReadOutcome == "ExecutionCapacityBlocked" ? UiText.Get("Lane.WaitForCall") : CurrentRound.AutoExpired ? CurrentRound.SafeContinuation ? UiText.Get("Lane.SlowerReading") : UiText.Get("Lane.PdaOrRemove") : UiText.Get("Lane.AdjustLabel") : CenteredStale ? UiText.Get("Lane.WaitForLiveStatus") :
         CenteredOriginalAttention ? OriginalAttentionInstruction : CenteredReadAttention ? ReadAttentionInstruction :
-        CenteredOperationAttention ? MissingConfirmedSlot ? "本件暂勿投递，请查看详情并通知维护人员" : Operation?.State switch
-        { ParcelState.UnpackRequired => "请查看拆包明细，处理完再继续", ParcelState.Blocked => "本件暂勿投递，请查看详情", _ => RcsRejectionInstruction() } :
-        SupplyDisabled ? !SupplyConfigured ? "请前往“设置”填写本位相机编码后再启用" : Arrival?.RecoveryReason ?? "等待RCS撤车确认；启用后须确认新车" : Arrival?.RecoveryReason is not null ? "请停用本位，联系维护核对客户RCS原请求及调度状态" : Arrival is { PlacementClosed: true } ? "请取下包裹，等待可信空盘确认" : Arrival is { Submitted: true } && CurrentRound is null ? "请取下包裹结束本件，再处理下一件" : CenteredSoftwarePause ? PauseInstruction : CenteredRcsPause ? "请检查连接，恢复后再提交" : Arrival is { Confirmed: false } ? "确认后可处理当前件；同次放置不会重复请求" :
-        CenteredNoBarcodeBlocked ? SupplyDisabling ? "本轮处理结束后自动停用，无需确认空托盘" : Operation?.State == ParcelState.ResolvingWcs ? "请等待结果后再上件" : "请核对本位状态，必要时通知维护人员" :
-        AutoSuppressedWaiting ? "等待可信物理边界和本位安全准入，勿重复请求" : CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? UiText.Get("Work.ScanGunOrKeyboard") : "";
+        CenteredOperationAttention ? MissingConfirmedSlot ? UiText.Get("Lane.CheckDetailsCall") : Operation?.State switch
+        { ParcelState.UnpackRequired => UiText.Get("Lane.Unpack"), ParcelState.Blocked => UiText.Get("Lane.CheckDetails"), _ => RcsRejectionInstruction() } :
+        SupplyDisabled ? !SupplyConfigured ? UiText.Get("Lane.SetCameraCode") : Arrival?.RecoveryReason ?? UiText.Get("Lane.WaitForVehicleRemoval") : Arrival?.RecoveryReason is not null ? UiText.Get("Lane.CheckOriginalRcs") : Arrival is { PlacementClosed: true } ? UiText.Get("Lane.WaitEmptyTray") : Arrival is { Submitted: true } && CurrentRound is null ? UiText.Get("Lane.RemoveThenContinue") : CenteredSoftwarePause ? PauseInstruction : CenteredRcsPause ? UiText.Get("Lane.ReconnectThenSubmit") : Arrival is { Confirmed: false } ? UiText.Get("Lane.VehicleThenCurrent") :
+        CenteredNoBarcodeBlocked ? SupplyDisabling ? UiText.Get("Lane.AutoDisable") : Operation?.State == ParcelState.ResolvingWcs ? UiText.Get("Lane.WaitWithNextParcel") : UiText.Get("Lane.CheckLane") :
+        AutoSuppressedWaiting ? UiText.Get("Lane.WaitForRemoval") : CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? UiText.Get("Work.ScanGunOrKeyboard") : "";
 
     static (string Title, string Instruction) AdmissionMessage(ParcelInputSnapshot input) => ParcelInputReasons.BlockReason(input) switch
     {
-        ParcelInputBlockReason.VehicleUnconfirmed => (UiText.Get("Work.WaitVehicle"), "请按本位到位或人工恢复提示处理，勿重复请求"),
-        ParcelInputBlockReason.ArrivalCapturePending => ("等待相机换车确认", "相机边界完成后自动恢复；合法人工补录仍可用"),
-        ParcelInputBlockReason.ReaderConfirmationExpired => ("相机连接未确认", "请等待相机自动恢复，再重新上件"),
-        ParcelInputBlockReason.RcsUnavailable => ("RCS 连接未就绪", "请等待 RCS 连接恢复，再重新上件"),
-        ParcelInputBlockReason.PreviousResultPending => ("本位正在获取格口", "请等待本位处理结束，再重新上件"),
-        ParcelInputBlockReason.PreviousResultUnconfirmed => ("本位有格口结果尚未确认", "请取下包裹，按本位提示处理"),
-        ParcelInputBlockReason.PreviousWorkBlocked => ("本位作业尚未结束", "请查看本位详情，处理后再上件"),
-        ParcelInputBlockReason.SoftwarePaused => (UiText.Get("Work.InductionPaused"), "确认现场后恢复供包，再重新上件"),
-        ParcelInputBlockReason.ManagementOpen => ("设备调试正在进行", "请联系运维人员结束设备调试后再上件"),
-        ParcelInputBlockReason.PositionDisabled => ("本位已停用或正在停用", "请启用本投递位后再上件"),
-        ParcelInputBlockReason.OperatorSessionExpired => ("本站配置需要核对", "SM 不使用操作员登录，请在工作站设置核对本站配置"),
-        ParcelInputBlockReason.PositionMaintenance => ("本位设备正在维护", "请等待设备恢复后再上件"),
-        ParcelInputBlockReason.StationMaintenance => ("供包台正在保存设置或备份", "请等待操作结束后再上件"),
-        ParcelInputBlockReason.StationStartingOrStopping => ("供包台尚未就绪", "请等待供包台启动完成"),
-        ParcelInputBlockReason.CameraNotConfigured => ("本位相机未配置", "请通知维护人员检查相机设置"),
-        ParcelInputBlockReason.ConnectionNotConfigured => ("业务连接尚未配置", "请通知维护人员检查连接设置"),
-        ParcelInputBlockReason.ConfigurationUnconfirmed => ("当前设置尚未确认生效", "请通知维护人员核对当前设置"),
-        ParcelInputBlockReason.RestoreUnconfirmed => ("恢复的数据尚未核对", "请通知维护人员核对恢复结果"),
-        ParcelInputBlockReason.InstallationNotReady => ("当前安装状态未就绪", "请通知维护人员检查安装状态"),
-        ParcelInputBlockReason.RuntimeFault => ("供包台运行故障", "请取下包裹并通知维护人员"),
-        ParcelInputBlockReason.CapabilityUnavailable => ("本位所需设备尚未就绪", "请等待设备恢复，持续出现时通知维护人员"),
-        ParcelInputBlockReason.StorageUnavailable => ("供包台存储不可用", "请通知维护人员检查剩余空间和存储状态"),
-        ParcelInputBlockReason.CapacityExhausted => ("当前作业已达容量上限", "请等待请求处理完成，或按本位提示确认包裹已取下"),
-        ParcelInputBlockReason.ImageCapacityUnavailable => ("图片处理容量不足", "请等待本位恢复，持续出现时通知维护人员"),
-        ParcelInputBlockReason.InputOverload => ("本位扫码积压", "请取下包裹，等待本位恢复后重新上件"),
-        ParcelInputBlockReason.InterruptedScan => ("本位有中断的扫码记录", "请通知维护人员检查中断记录"),
-        ParcelInputBlockReason.IdentityConflict => ("本次读码与原记录冲突", "请取下包裹并通知维护人员核对记录"),
-        ParcelInputBlockReason.ExpiredIdentity => ("重复读到了旧扫码记录", UiText.Get("Work.RemoveReload")),
-        ParcelInputBlockReason.CameraInspectionIsolated => ("本次读码来自相机调试", "结束调试后再重新上件"),
-        ParcelInputBlockReason.ManualConditionsChanged => ("提交期间本位条件已变化", "请核对本位状态和当前包裹后再提交"),
-        _ => ("本次扫码原因未记录", "请取下包裹，持续出现时通知维护人员查看日志")
+        ParcelInputBlockReason.VehicleUnconfirmed => (UiText.Get("Work.WaitVehicle"), UiText.Get("Lane.FollowLocalRecovery")),
+        ParcelInputBlockReason.ArrivalCapturePending => (UiText.Get("Lane.WaitCameraVehicle"), UiText.Get("Lane.CameraBoundaryRestore")),
+        ParcelInputBlockReason.ReaderConfirmationExpired => (UiText.Get("Lane.CameraUnconfirmed"), UiText.Get("Lane.WaitCamera")),
+        ParcelInputBlockReason.RcsUnavailable => (UiText.Get("Lane.RcsNotReady"), UiText.Get("Lane.WaitRcs")),
+        ParcelInputBlockReason.PreviousResultPending => (UiText.Get("Lane.LookingUpChute"), UiText.Get("Lane.WaitForLane")),
+        ParcelInputBlockReason.PreviousResultUnconfirmed => (UiText.Get("Lane.ChuteUnconfirmed"), UiText.Get("Lane.RemoveAndFollow")),
+        ParcelInputBlockReason.PreviousWorkBlocked => (UiText.Get("Lane.UnfinishedWork"), UiText.Get("Lane.ReadLaneDetails")),
+        ParcelInputBlockReason.SoftwarePaused => (UiText.Get("Work.InductionPaused"), UiText.Get("Lane.ResumeThenLoad")),
+        ParcelInputBlockReason.ManagementOpen => (UiText.Get("Lane.Diagnostics"), UiText.Get("Lane.AwaitDiagnostics")),
+        ParcelInputBlockReason.PositionDisabled => (UiText.Get("Lane.DisabledOrDisabling"), UiText.Get("Lane.EnableThenLoad")),
+        ParcelInputBlockReason.OperatorSessionExpired => (UiText.Get("Lane.VerifyStationSettings"), UiText.Get("Lane.VerifyLogin")),
+        ParcelInputBlockReason.PositionMaintenance => (UiText.Get("Lane.LocalService"), UiText.Get("Lane.WaitRecovery")),
+        ParcelInputBlockReason.StationMaintenance => (UiText.Get("Lane.WorkstationMaintenance"), UiText.Get("Lane.WaitForMaintenance")),
+        ParcelInputBlockReason.StationStartingOrStopping => (UiText.Get("Lane.WorkstationNotReady"), UiText.Get("Lane.WaitForStartup")),
+        ParcelInputBlockReason.CameraNotConfigured => (UiText.Get("Lane.CameraNotConfigured"), UiText.Get("Lane.CheckCameraSettings")),
+        ParcelInputBlockReason.ConnectionNotConfigured => (UiText.Get("Lane.ConnectionNotConfigured"), UiText.Get("Lane.CheckConnectionSettings")),
+        ParcelInputBlockReason.ConfigurationUnconfirmed => (UiText.Get("Lane.ConfigurationUnconfirmed"), UiText.Get("Lane.ConfirmConfiguration")),
+        ParcelInputBlockReason.RestoreUnconfirmed => (UiText.Get("Lane.RestoreUnconfirmed"), UiText.Get("Lane.ConfirmRecovery")),
+        ParcelInputBlockReason.InstallationNotReady => (UiText.Get("Lane.InstallationNotReady"), UiText.Get("Lane.CheckInstall")),
+        ParcelInputBlockReason.RuntimeFault => (UiText.Get("Lane.RuntimeFault"), UiText.Get("Lane.RemoveNotify")),
+        ParcelInputBlockReason.CapabilityUnavailable => (UiText.Get("Lane.CapabilityUnavailable"), UiText.Get("Lane.WaitDevice")),
+        ParcelInputBlockReason.StorageUnavailable => (UiText.Get("Lane.StorageUnavailable"), UiText.Get("Lane.CheckStorage")),
+        ParcelInputBlockReason.CapacityExhausted => (UiText.Get("Lane.CapacityReached"), UiText.Get("Lane.WaitCapacity")),
+        ParcelInputBlockReason.ImageCapacityUnavailable => (UiText.Get("Lane.ImageCapacity"), UiText.Get("Lane.ImageRecovery")),
+        ParcelInputBlockReason.InputOverload => (UiText.Get("Lane.ScanBacklog"), UiText.Get("Lane.RemoveReload")),
+        ParcelInputBlockReason.InterruptedScan => (UiText.Get("Lane.InterruptedScan"), UiText.Get("Lane.CheckInterrupted")),
+        ParcelInputBlockReason.IdentityConflict => (UiText.Get("Lane.IdentityConflict"), UiText.Get("Lane.CheckOriginal")),
+        ParcelInputBlockReason.ExpiredIdentity => (UiText.Get("Lane.RepeatedScan"), UiText.Get("Work.RemoveReload")),
+        ParcelInputBlockReason.CameraInspectionIsolated => (UiText.Get("Lane.DiagnosticScan"), UiText.Get("Lane.EndDiagnosticsThenReload")),
+        ParcelInputBlockReason.ManualConditionsChanged => (UiText.Get("Lane.ConditionsChanged"), UiText.Get("Lane.VerifyParcel")),
+        _ => (UiText.Get("Lane.NoRejectionReason"), UiText.Get("Lane.CheckLogs"))
     };
 }

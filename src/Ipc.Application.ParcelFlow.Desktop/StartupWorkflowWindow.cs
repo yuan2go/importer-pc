@@ -71,7 +71,7 @@ public abstract partial class StartupWorkflowWindow : Window
         {
             var buildIdentity = new Expander { Header = UiText.Get("Setup.CopyVersion"), Content = BuildIdentityDetails, Margin = new(0, 4, 0, 4) };
             Width = 880; Height = 560; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
-            var layout = new Grid(); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
+            var layout = new Grid().Themed(Panel.BackgroundProperty, "Surface"); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
             var rail = new StackPanel { Margin = new(16, 28, 16, 24) };
             rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 48, Height = 48, HorizontalAlignment = HorizontalAlignment.Left });
             rail.Children.Add(new TextBlock { Text = UiText.Get("Startup.Product"), FontSize = UiTypography.Body, FontWeight = UiTypography.Emphasis, Margin = new(0, 16, 0, 16) });

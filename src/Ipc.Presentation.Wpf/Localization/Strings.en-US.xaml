@@ -979,4 +979,292 @@ Select Scan to start.</sys:String>
   <sys:String x:Key="Param.ValidateFailure" xml:space="preserve">Some settings are missing or invalid. Correct the marked fields.</sys:String>
   <sys:String x:Key="Param.PatternFailure" xml:space="preserve">The barcode rule is invalid. Check brackets, symbols and escapes.</sys:String>
   <sys:String x:Key="Param.ValidationFallback" xml:space="preserve">The settings check failed. See diagnostics and correct your entries.</sys:String>
+  <sys:String x:Key="Startup.OpenUninstaller" xml:space="preserve">Opening uninstaller</sys:String>
+  <sys:String x:Key="Startup.VerifyMaintenance" xml:space="preserve">Verifying maintenance access and waiting for the previous window to close. The program and data are intact.</sys:String>
+  <sys:String x:Key="Startup.CheckCamera" xml:space="preserve">Checking camera dependencies</sys:String>
+  <sys:String x:Key="Startup.Dependencies" xml:space="preserve">Checking camera components and runtime libraries. Missing files are restored from the matching maintenance cache. Windows may ask for authorization.</sys:String>
+  <sys:String x:Key="Startup.CheckingCamera" xml:space="preserve">Started verification of camera startup dependencies</sys:String>
+  <sys:String x:Key="Startup.CameraRecovered" xml:space="preserve">Camera dependencies restored</sys:String>
+  <sys:String x:Key="Startup.ContinueChecking" xml:space="preserve">Continuing startup checks. Devices are not connected yet.</sys:String>
+  <sys:String x:Key="Startup.CameraRechecked" xml:space="preserve">Camera dependencies were restored and checked again</sys:String>
+  <sys:String x:Key="Startup.LoadConfiguration" xml:space="preserve">Loading settings and local records</sys:String>
+  <sys:String x:Key="Startup.CheckPending" xml:space="preserve">Checking settings and unfinished tasks. Induction has not begun.</sys:String>
+  <sys:String x:Key="Startup.ConfigRoute" xml:space="preserve">Startup configuration source identified</sys:String>
+  <sys:String x:Key="Startup.ResumeEquipment" xml:space="preserve">Starting devices and restoring unfinished work</sys:String>
+  <sys:String x:Key="Startup.ApplicationStart" xml:space="preserve">Starting the application. It checks devices, storage, identity and pending requests.</sys:String>
+  <sys:String x:Key="Startup.SelectionLoaded" xml:space="preserve">Configuration and page selection loaded</sys:String>
+  <sys:String x:Key="Startup.ReadRunning" xml:space="preserve">Reading current status</sys:String>
+  <sys:String x:Key="Startup.StartComplete" xml:space="preserve">Startup finished. Reading status.</sys:String>
+  <sys:String x:Key="Startup.StartReturned" xml:space="preserve">Startup process returned</sys:String>
+  <sys:String x:Key="Startup.CreateWork" xml:space="preserve">Opening workstation window</sys:String>
+  <sys:String x:Key="Startup.AppStatus" xml:space="preserve">Application status: </sys:String>
+  <sys:String x:Key="Startup.RuntimeObtained" xml:space="preserve">Runtime instance: </sys:String>
+  <sys:String x:Key="Work.Restart" xml:space="preserve">Restart workstation</sys:String>
+  <sys:String x:Key="Work.RestartPrompt" xml:space="preserve">Restart the workstation?</sys:String>
+  <sys:String x:Key="Work.RestartScope" xml:space="preserve">This stops induction, closes the related windows, and reopens the workstation with the updated settings.</sys:String>
+  <sys:String x:Key="Work.ContinueRestart" xml:space="preserve">Restart</sys:String>
+  <sys:String x:Key="Work.LocalPrefNotice" xml:space="preserve">Local preference notice</sys:String>
+  <sys:String x:Key="Work.LocalPrefDetails" xml:space="preserve">Local preference details</sys:String>
+  <sys:String x:Key="Ops.NotConnected" xml:space="preserve">Workstation disconnected</sys:String>
+  <sys:String x:Key="Ops.StatusUnavailable" xml:space="preserve">Live status unavailable</sys:String>
+  <sys:String x:Key="Ops.OfflineExplanation" xml:space="preserve">Live status is unavailable. Check offline logs and verify whether the workstation is open. A disconnected status does not confirm shutdown.</sys:String>
+  <sys:String x:Key="Ops.LocalDiagnostic" xml:space="preserve">Local connection diagnostics:
+</sys:String>
+  <sys:String x:Key="Settings.Back" xml:space="preserve">Back to settings</sys:String>
+  <sys:String x:Key="Settings.RetainDraft" xml:space="preserve">Unsaved changes are kept</sys:String>
+  <sys:String x:Key="Settings.MoreTools" xml:space="preserve">More tools</sys:String>
+  <sys:String x:Key="Settings.PasswordTools" xml:space="preserve">Administration and password…</sys:String>
+  <sys:String x:Key="Settings.ImportTemplate" xml:space="preserve">Import settings template…</sys:String>
+  <sys:String x:Key="Settings.ExportTemplate" xml:space="preserve">Export settings template…</sys:String>
+  <sys:String x:Key="Settings.Stash" xml:space="preserve">Save unfinished settings as draft</sys:String>
+  <sys:String x:Key="Settings.ResumeDraft" xml:space="preserve">Resume editing the draft</sys:String>
+  <sys:String x:Key="Settings.LoadAgain" xml:space="preserve">Reload settings…</sys:String>
+  <sys:String x:Key="Settings.AdvancedTools" xml:space="preserve">Advanced tools</sys:String>
+  <sys:String x:Key="Settings.LastSave" xml:space="preserve">Check last save result</sys:String>
+  <sys:String x:Key="Settings.ReconnectAll" xml:space="preserve">Reconnect all devices and services</sys:String>
+  <sys:String x:Key="Settings.SaveUnconfirmed" xml:space="preserve">Save result unconfirmed</sys:String>
+  <sys:String x:Key="Lane.PriorCall" xml:space="preserve">This round is not submitted. The previous call is still finishing.</sys:String>
+  <sys:String x:Key="Lane.Multiple" xml:space="preserve">Several valid barcodes were found. No request sent to RCS.</sys:String>
+  <sys:String x:Key="Lane.NoBarcode" xml:space="preserve">No valid barcode yet. No request sent to RCS.</sys:String>
+  <sys:String x:Key="Lane.InvalidChute" xml:space="preserve">No valid chute for this parcel</sys:String>
+  <sys:String x:Key="Lane.ManualInspection" xml:space="preserve">Inspect this parcel manually</sys:String>
+  <sys:String x:Key="Lane.ChuteUnavailable" xml:space="preserve">Cannot assign a chute yet</sys:String>
+  <sys:String x:Key="Lane.NoScan" xml:space="preserve">Not accepting barcodes</sys:String>
+  <sys:String x:Key="Lane.PlacementEnded" xml:space="preserve">Placement on this vehicle ended. No request was sent.</sys:String>
+  <sys:String x:Key="Lane.AcceptedNotSent" xml:space="preserve">Parcel accepted. Request not sent.</sys:String>
+  <sys:String x:Key="Lane.RcsOffline" xml:space="preserve">RCS service offline</sys:String>
+  <sys:String x:Key="Lane.VehicleChecking" xml:space="preserve">Checking this lane's vehicle. Input is kept.</sys:String>
+  <sys:String x:Key="Lane.Finalizing" xml:space="preserve">Waiting for the request to finish and the result to be saved.</sys:String>
+  <sys:String x:Key="Lane.WaitChute" xml:space="preserve">Waiting for this parcel's chute</sys:String>
+  <sys:String x:Key="Lane.NewCodesBlocked" xml:space="preserve">This lane cannot accept new barcodes yet.</sys:String>
+  <sys:String x:Key="Lane.CameraBoundary" xml:space="preserve">Checking the new camera image. Manual entry is available.</sys:String>
+  <sys:String x:Key="Lane.AutoReadUsed" xml:space="preserve">The automatic read was already used for this placement.</sys:String>
+  <sys:String x:Key="Lane.WaitForCall" xml:space="preserve">Wait for this lane's earlier call to finish, then submit again. The other lane can continue.</sys:String>
+  <sys:String x:Key="Lane.SlowerReading" xml:space="preserve">The same parcel remains in place. Scanning continues at a lower rate. You can use a handheld scanner or remove the parcel.</sys:String>
+  <sys:String x:Key="Lane.PdaOrRemove" xml:space="preserve">Scan with a handheld device or remove the parcel. A reliably empty tray ends the round. Confirm removal if the camera cannot verify it.</sys:String>
+  <sys:String x:Key="Lane.AdjustLabel" xml:space="preserve">Adjust the label or scan with a handheld device. The time limit for this round is unchanged.</sys:String>
+  <sys:String x:Key="Lane.WaitForLiveStatus" xml:space="preserve">Wait for live status. Do not use the previous chute.</sys:String>
+  <sys:String x:Key="Lane.CheckDetailsCall" xml:space="preserve">Hold this parcel. Check details and contact maintenance.</sys:String>
+  <sys:String x:Key="Lane.Unpack" xml:space="preserve">Check the unpacking details before continuing.</sys:String>
+  <sys:String x:Key="Lane.CheckDetails" xml:space="preserve">Hold this parcel and check details.</sys:String>
+  <sys:String x:Key="Lane.SetCameraCode" xml:space="preserve">Enter this lane's camera code in Settings before enabling it.</sys:String>
+  <sys:String x:Key="Lane.WaitForVehicleRemoval" xml:space="preserve">Awaiting RCS confirmation that the old vehicle left. Confirm the new vehicle after enabling the lane.</sys:String>
+  <sys:String x:Key="Lane.CheckOriginalRcs" xml:space="preserve">Disable this lane and ask maintenance to check the original request and dispatch status in RCS.</sys:String>
+  <sys:String x:Key="Lane.WaitEmptyTray" xml:space="preserve">Remove the parcel and wait for the tray to be confirmed empty.</sys:String>
+  <sys:String x:Key="Lane.RemoveThenContinue" xml:space="preserve">Remove this parcel to end the round, then handle the next one.</sys:String>
+  <sys:String x:Key="Lane.ReconnectThenSubmit" xml:space="preserve">Check the connection and submit after it is restored.</sys:String>
+  <sys:String x:Key="Lane.VehicleThenCurrent" xml:space="preserve">Process this parcel after confirmation. This placement will not submit twice.</sys:String>
+  <sys:String x:Key="Lane.AutoDisable" xml:space="preserve">This lane disables automatically when the round finishes. No empty tray confirmation is needed.</sys:String>
+  <sys:String x:Key="Lane.WaitWithNextParcel" xml:space="preserve">Wait for the result before loading the next parcel.</sys:String>
+  <sys:String x:Key="Lane.CheckLane" xml:space="preserve">Check the lane status and contact maintenance if needed.</sys:String>
+  <sys:String x:Key="Lane.WaitForRemoval" xml:space="preserve">Wait for confirmed removal or vehicle change and lane readiness. Do not repeat the request.</sys:String>
+  <sys:String x:Key="Lane.FollowLocalRecovery" xml:space="preserve">Follow the lane's vehicle or manual recovery guidance. Do not repeat the request.</sys:String>
+  <sys:String x:Key="Lane.WaitCameraVehicle" xml:space="preserve">Waiting for the camera to verify the vehicle change</sys:String>
+  <sys:String x:Key="Lane.CameraBoundaryRestore" xml:space="preserve">Scanning resumes when the camera verifies the change. Manual entry is still available.</sys:String>
+  <sys:String x:Key="Lane.CameraUnconfirmed" xml:space="preserve">Camera connection unconfirmed</sys:String>
+  <sys:String x:Key="Lane.WaitCamera" xml:space="preserve">Wait for the camera to reconnect before reloading.</sys:String>
+  <sys:String x:Key="Lane.RcsNotReady" xml:space="preserve">RCS connection not ready</sys:String>
+  <sys:String x:Key="Lane.WaitRcs" xml:space="preserve">Wait for RCS to reconnect before reloading.</sys:String>
+  <sys:String x:Key="Lane.LookingUpChute" xml:space="preserve">This lane is requesting a chute</sys:String>
+  <sys:String x:Key="Lane.WaitForLane" xml:space="preserve">Wait for this lane to finish before reloading.</sys:String>
+  <sys:String x:Key="Lane.ChuteUnconfirmed" xml:space="preserve">This lane has an unconfirmed chute result</sys:String>
+  <sys:String x:Key="Lane.RemoveAndFollow" xml:space="preserve">Remove the parcel and follow the lane guidance.</sys:String>
+  <sys:String x:Key="Lane.UnfinishedWork" xml:space="preserve">This lane still has work in progress</sys:String>
+  <sys:String x:Key="Lane.ReadLaneDetails" xml:space="preserve">Check the lane details and resolve the issue before reloading.</sys:String>
+  <sys:String x:Key="Lane.ResumeThenLoad" xml:space="preserve">Check the work area, resume induction, then reload.</sys:String>
+  <sys:String x:Key="Lane.Diagnostics" xml:space="preserve">Device diagnostics in progress</sys:String>
+  <sys:String x:Key="Lane.AwaitDiagnostics" xml:space="preserve">Ask maintenance to end diagnostics before loading.</sys:String>
+  <sys:String x:Key="Lane.DisabledOrDisabling" xml:space="preserve">This lane is disabled or is being disabled</sys:String>
+  <sys:String x:Key="Lane.EnableThenLoad" xml:space="preserve">Enable this lane before loading.</sys:String>
+  <sys:String x:Key="Lane.VerifyStationSettings" xml:space="preserve">Verify station settings</sys:String>
+  <sys:String x:Key="Lane.VerifyLogin" xml:space="preserve">SM does not use operator sign-in. Check the station configuration under Settings.</sys:String>
+  <sys:String x:Key="Lane.LocalService" xml:space="preserve">Lane devices under maintenance</sys:String>
+  <sys:String x:Key="Lane.WaitRecovery" xml:space="preserve">Wait for the device to recover before loading.</sys:String>
+  <sys:String x:Key="Lane.WorkstationMaintenance" xml:space="preserve">Workstation is saving settings or creating a backup</sys:String>
+  <sys:String x:Key="Lane.WaitForMaintenance" xml:space="preserve">Wait for the action to finish before loading.</sys:String>
+  <sys:String x:Key="Lane.WorkstationNotReady" xml:space="preserve">Workstation not ready</sys:String>
+  <sys:String x:Key="Lane.WaitForStartup" xml:space="preserve">Wait for workstation startup to finish.</sys:String>
+  <sys:String x:Key="Lane.CameraNotConfigured" xml:space="preserve">Lane camera not configured</sys:String>
+  <sys:String x:Key="Lane.CheckCameraSettings" xml:space="preserve">Ask maintenance to check the camera settings.</sys:String>
+  <sys:String x:Key="Lane.ConnectionNotConfigured" xml:space="preserve">Service connection not configured</sys:String>
+  <sys:String x:Key="Lane.CheckConnectionSettings" xml:space="preserve">Ask maintenance to check the connection settings.</sys:String>
+  <sys:String x:Key="Lane.ConfigurationUnconfirmed" xml:space="preserve">Active settings are not confirmed</sys:String>
+  <sys:String x:Key="Lane.ConfirmConfiguration" xml:space="preserve">Ask maintenance to verify the current settings.</sys:String>
+  <sys:String x:Key="Lane.RestoreUnconfirmed" xml:space="preserve">Restored data not verified</sys:String>
+  <sys:String x:Key="Lane.ConfirmRecovery" xml:space="preserve">Ask maintenance to verify the restore result.</sys:String>
+  <sys:String x:Key="Lane.InstallationNotReady" xml:space="preserve">Installation not ready</sys:String>
+  <sys:String x:Key="Lane.CheckInstall" xml:space="preserve">Ask maintenance to check the installation status.</sys:String>
+  <sys:String x:Key="Lane.RuntimeFault" xml:space="preserve">Workstation fault</sys:String>
+  <sys:String x:Key="Lane.RemoveNotify" xml:space="preserve">Remove the parcel and contact maintenance.</sys:String>
+  <sys:String x:Key="Lane.CapabilityUnavailable" xml:space="preserve">Lane devices not ready</sys:String>
+  <sys:String x:Key="Lane.WaitDevice" xml:space="preserve">Wait for the device to recover. Contact maintenance if the problem persists.</sys:String>
+  <sys:String x:Key="Lane.StorageUnavailable" xml:space="preserve">Workstation storage unavailable</sys:String>
+  <sys:String x:Key="Lane.CheckStorage" xml:space="preserve">Ask maintenance to check storage health and free space.</sys:String>
+  <sys:String x:Key="Lane.CapacityReached" xml:space="preserve">Work capacity reached</sys:String>
+  <sys:String x:Key="Lane.WaitCapacity" xml:space="preserve">Wait for processing to finish, or follow the lane instructions to confirm removal.</sys:String>
+  <sys:String x:Key="Lane.ImageCapacity" xml:space="preserve">Image processing capacity unavailable</sys:String>
+  <sys:String x:Key="Lane.ImageRecovery" xml:space="preserve">Wait for this lane to recover. Contact maintenance if the issue persists.</sys:String>
+  <sys:String x:Key="Lane.ScanBacklog" xml:space="preserve">Lane has a scan backlog</sys:String>
+  <sys:String x:Key="Lane.RemoveReload" xml:space="preserve">Remove the parcel. Reload after the lane is ready.</sys:String>
+  <sys:String x:Key="Lane.InterruptedScan" xml:space="preserve">This lane has an interrupted scan record</sys:String>
+  <sys:String x:Key="Lane.CheckInterrupted" xml:space="preserve">Ask maintenance to review the interrupted record.</sys:String>
+  <sys:String x:Key="Lane.IdentityConflict" xml:space="preserve">This scan conflicts with the original record</sys:String>
+  <sys:String x:Key="Lane.CheckOriginal" xml:space="preserve">Remove the parcel and ask maintenance to review the records.</sys:String>
+  <sys:String x:Key="Lane.RepeatedScan" xml:space="preserve">An earlier scan was read again</sys:String>
+  <sys:String x:Key="Lane.DiagnosticScan" xml:space="preserve">This barcode came from camera diagnostics</sys:String>
+  <sys:String x:Key="Lane.EndDiagnosticsThenReload" xml:space="preserve">End diagnostics before reloading.</sys:String>
+  <sys:String x:Key="Lane.ConditionsChanged" xml:space="preserve">Lane conditions changed while submitting</sys:String>
+  <sys:String x:Key="Lane.VerifyParcel" xml:space="preserve">Check the lane status and current parcel before submitting again.</sys:String>
+  <sys:String x:Key="Lane.NoRejectionReason" xml:space="preserve">No reason was recorded for this scan</sys:String>
+  <sys:String x:Key="Lane.CheckLogs" xml:space="preserve">Remove the parcel. If it repeats, ask maintenance to check the log.</sys:String>
+  <sys:String x:Key="Settings.HideDraft" xml:space="preserve">Hide settings and keep the draft and edit access.</sys:String>
+  <sys:String x:Key="Settings.HideAndReturn" xml:space="preserve">Hide settings and return to the workstation.</sys:String>
+  <sys:String x:Key="Settings.CloseEndGrant" xml:space="preserve">Close settings and end this authorization.</sys:String>
+  <sys:String x:Key="Settings.CloseWindow" xml:space="preserve">Close settings</sys:String>
+  <sys:String x:Key="Settings.OpenMode" xml:space="preserve">Window mode</sys:String>
+  <sys:String x:Key="Settings.Cues" xml:space="preserve">Sound cues</sys:String>
+  <sys:String x:Key="Settings.PrefReadFailure" xml:space="preserve"> preference could not be read. The original file is kept. Check the local settings file and permissions.</sys:String>
+  <sys:String x:Key="Settings.Unreadable" xml:space="preserve">Could not read</sys:String>
+  <sys:String x:Key="Settings.Edit" xml:space="preserve">Edit settings</sys:String>
+  <sys:String x:Key="Settings.GrantRecheck" xml:space="preserve">Edit access for this window is unconfirmed. Verify again.</sys:String>
+  <sys:String x:Key="Settings.LoadDraft" xml:space="preserve">Load the complete settings draft</sys:String>
+  <sys:String x:Key="Settings.LoadFailed" xml:space="preserve">Settings did not finish loading. The original is kept. Check the status and try again.</sys:String>
+  <sys:String x:Key="Settings.EditNotOpened" xml:space="preserve">Editing did not open. The original settings and your inputs are kept.</sys:String>
+  <sys:String x:Key="Settings.CloseIncomplete" xml:space="preserve">Settings are still open. Authorization and input are kept: </sys:String>
+  <sys:String x:Key="Settings.CloseRetry" xml:space="preserve">The end of authorization or the original action is unconfirmed. Try closing again.</sys:String>
+  <sys:String x:Key="Settings.CloseWait" xml:space="preserve">The settings window has an active authorization or is still closing. Wait for the result.</sys:String>
+  <sys:String x:Key="Settings.CheckSave" xml:space="preserve">Check save result…</sys:String>
+  <sys:String x:Key="Common.DisabledSetting" xml:space="preserve">Off</sys:String>
+  <sys:String x:Key="History.SearchBarcode" xml:space="preserve">Search full barcode</sys:String>
+  <sys:String x:Key="History.CopiedComplete" xml:space="preserve">Copied full task, request and RCS response data.</sys:String>
+  <sys:String x:Key="History.LastFifty" xml:space="preserve">Read latest 50 records</sys:String>
+  <sys:String x:Key="History.FirstPageSameScope" xml:space="preserve">First page in current scope</sys:String>
+  <sys:String x:Key="History.ExportFiltered" xml:space="preserve">Export filtered results</sys:String>
+  <sys:String x:Key="Debug.Incomplete" xml:space="preserve">Diagnostics did not finish. Check capture diagnostics and review the original round. Do not resend while the result is unconfirmed.</sys:String>
+  <sys:String x:Key="Debug.CameraUnsupported" xml:space="preserve">Camera diagnostics are unavailable for this application.</sys:String>
+  <sys:String x:Key="Debug.ScanUnsupported" xml:space="preserve">This application does not support round-based scanning or manual requests.</sys:String>
+  <sys:String x:Key="Debug.AwaitLive" xml:space="preserve">Wait for the live camera image before confirming an empty tray.</sys:String>
+  <sys:String x:Key="Debug.RestoreStatus" xml:space="preserve">Restore live status first.</sys:String>
+  <sys:String x:Key="Debug.CheckOriginalLane" xml:space="preserve">Return to the original lane to verify the preparation result. Do not use that command on this lane.</sys:String>
+  <sys:String x:Key="Debug.CheckPrepare" xml:space="preserve">Preparation is unconfirmed. Check the result for this round. No duplicate request will be created.</sys:String>
+  <sys:String x:Key="Debug.SingleScan" xml:space="preserve">Single-scan diagnostics</sys:String>
+  <sys:String x:Key="Debug.NoSession" xml:space="preserve">The current diagnostics session is unavailable.</sys:String>
+  <sys:String x:Key="Debug.WrongCamera" xml:space="preserve">The original scan command belongs to another camera or session. Check the original round.</sys:String>
+  <sys:String x:Key="Debug.OtherRound" xml:space="preserve">The original scan command ended. Review its record for the result.</sys:String>
+  <sys:String x:Key="Debug.RestoreRound" xml:space="preserve">Restore round status before checking its request.</sys:String>
+  <sys:String x:Key="Debug.PrepareBarcode" xml:space="preserve">Prepare the request for the current barcode. For a scanned code, review this round's image as well.</sys:String>
+  <sys:String x:Key="Debug.NoOtherRoundSend" xml:space="preserve">Check the send result in its original round.</sys:String>
+  <sys:String x:Key="Debug.CameraNotTriggered" xml:space="preserve">The selected camera has not scanned yet.</sys:String>
+  <sys:String x:Key="Debug.ScanIncomplete" xml:space="preserve">This scan did not finish. No request was sent. Select Scan again to retry.</sys:String>
+  <sys:String x:Key="Debug.ResultLockedWait" xml:space="preserve">Result locked. Send manually or scan again.</sys:String>
+  <sys:String x:Key="Debug.PreparingRequest" xml:space="preserve">Waiting for this request to be prepared</sys:String>
+  <sys:String x:Key="Debug.SendToRcs" xml:space="preserve">Send to the active RCS: </sys:String>
+  <sys:String x:Key="Debug.ImageMismatch" xml:space="preserve">The original image does not match this round and cannot be shown.</sys:String>
+  <sys:String x:Key="Debug.LockedFrame" xml:space="preserve">Image for this round locked · Frame </sys:String>
+  <sys:String x:Key="Debug.KeepImage" xml:space="preserve">
+The next parcel will not overwrite it.</sys:String>
+  <sys:String x:Key="Debug.NoBody" xml:space="preserve">The response is incomplete. No body is available to display.</sys:String>
+  <sys:String x:Key="Debug.PartialBody" xml:space="preserve">The response is incomplete. Only the received portion is shown.</sys:String>
+  <sys:String x:Key="Debug.NotText" xml:space="preserve">The response body cannot be displayed as text.</sys:String>
+  <sys:String x:Key="Debug.EmptyBody" xml:space="preserve">RCS returned an empty body.</sys:String>
+  <sys:String x:Key="Debug.ReceivedResponse" xml:space="preserve">Response received. Review the result. Diagnostics do not retry automatically.</sys:String>
+  <sys:String x:Key="Debug.NotSentDetail" xml:space="preserve">Not sent · </sys:String>
+  <sys:String x:Key="Debug.SendingStatus" xml:space="preserve">Sending. Waiting for RCS response.</sys:String>
+  <sys:String x:Key="Debug.MissingBody" xml:space="preserve">No RCS body received. Verify the result of this request.</sys:String>
+  <sys:String x:Key="Debug.ManualNoPhoto" xml:space="preserve">Manual request. No scan image.</sys:String>
+  <sys:String x:Key="Debug.NoBarcodeHint" xml:space="preserve">No barcode.
+Adjust the parcel or turn the label toward the camera.</sys:String>
+  <sys:String x:Key="Debug.ReadingHint" xml:space="preserve">Reading the barcode…
+The image is locked when one valid code is found.</sys:String>
+  <sys:String x:Key="Debug.MissingPhotoHint" xml:space="preserve">Image unavailable.
+It may have been removed during cleanup.</sys:String>
+  <sys:String x:Key="Debug.CheckTrigger" xml:space="preserve">Camera connection checked on scan</sys:String>
+  <sys:String x:Key="Debug.ScanNotStarted" xml:space="preserve">Scan not started</sys:String>
+  <sys:String x:Key="Debug.ManualCommand" xml:space="preserve">Manual request</sys:String>
+  <sys:String x:Key="Debug.Reading" xml:space="preserve">Reading</sys:String>
+  <sys:String x:Key="Debug.LockedBarcode" xml:space="preserve">Barcode locked</sys:String>
+  <sys:String x:Key="Debug.Sending" xml:space="preserve">Sending</sys:String>
+  <sys:String x:Key="Debug.ReadError" xml:space="preserve">Read error</sys:String>
+  <sys:String x:Key="Debug.ManualNoImage" xml:space="preserve">Manual request · No scan image</sys:String>
+  <sys:String x:Key="Debug.NoCode" xml:space="preserve">No barcode</sys:String>
+  <sys:String x:Key="Debug.ResultLocked" xml:space="preserve">Result locked</sys:String>
+  <sys:String x:Key="Debug.DraftChanged" xml:space="preserve">The input changed. Prepare a request for the current barcode.</sys:String>
+  <sys:String x:Key="Debug.CameraRead" xml:space="preserve">Camera scan</sys:String>
+  <sys:String x:Key="Debug.TriggerCheck" xml:space="preserve">Check scan</sys:String>
+  <sys:String x:Key="Debug.Scanning" xml:space="preserve">Scanning…</sys:String>
+  <sys:String x:Key="Debug.Trigger" xml:space="preserve">Scan</sys:String>
+  <sys:String x:Key="Debug.ScanAgain" xml:space="preserve">Scan again</sys:String>
+  <sys:String x:Key="Debug.ScanningNoSend" xml:space="preserve">The workstation checks the connection on scan. Scanning does not send an additional request.</sys:String>
+  <sys:String x:Key="Debug.ConfigureCamera" xml:space="preserve">Configure and enable this lane's camera. You can also enter a barcode below.</sys:String>
+  <sys:String x:Key="Debug.PrepareRequest" xml:space="preserve">Prepare request</sys:String>
+  <sys:String x:Key="Debug.CheckPrepared" xml:space="preserve">Check preparation result</sys:String>
+  <sys:String x:Key="Debug.SendRequest" xml:space="preserve">Send request</sys:String>
+  <sys:String x:Key="Debug.CheckSent" xml:space="preserve">Check send result</sys:String>
+  <sys:String x:Key="Debug.SwitchLive" xml:space="preserve">Switch to live view and wait for a new image from this camera.</sys:String>
+  <sys:String x:Key="Header.StatusInterrupted" xml:space="preserve">Status unavailable</sys:String>
+  <sys:String x:Key="Header.Ready" xml:space="preserve">Ready to load</sys:String>
+  <sys:String x:Key="Header.Hold" xml:space="preserve">Cannot load yet</sys:String>
+  <sys:String x:Key="Header.RcsOffline" xml:space="preserve">RCS offline. Induction resumes after reconnection.</sys:String>
+  <sys:String x:Key="Header.ResumeInstruction" xml:space="preserve">Check the work area and select Resume.</sys:String>
+  <sys:String x:Key="Header.DebugActive" xml:space="preserve">Device diagnostics in progress. Please wait.</sys:String>
+  <sys:String x:Key="Header.WaitCalls" xml:space="preserve">No new parcels. Waiting for current requests to finish.</sys:String>
+  <sys:String x:Key="Header.BothDisabled" xml:space="preserve">Both lanes are disabled. Configure or enable a lane.</sys:String>
+  <sys:String x:Key="Header.ConfigureRcs" xml:space="preserve">Enter the RCS address in Settings.</sys:String>
+  <sys:String x:Key="Header.AwaitRcs" xml:space="preserve">Waiting for RCS heartbeat</sys:String>
+  <sys:String x:Key="Header.Stopping" xml:space="preserve">Workstation is stopping</sys:String>
+  <sys:String x:Key="Header.RightUnavailable" xml:space="preserve">Right lane unavailable</sys:String>
+  <sys:String x:Key="Header.LeftUnavailable" xml:space="preserve">Left lane unavailable</sys:String>
+  <sys:String x:Key="Header.LeftContinues" xml:space="preserve">The left lane can continue. Follow the guidance on the right.</sys:String>
+  <sys:String x:Key="Header.RightContinues" xml:space="preserve">The right lane can continue. Follow the guidance on the left.</sys:String>
+  <sys:String x:Key="Header.CheckLanes" xml:space="preserve">Follow the guidance shown on each lane.</sys:String>
+  <sys:String x:Key="Header.Connections" xml:space="preserve">Connections to configure: {0}</sys:String>
+  <sys:String x:Key="Header.ConfigureRcsFirst" xml:space="preserve">Once RCS is enabled, enter a barcode manually to request a chute. A camera is optional.</sys:String>
+  <sys:String x:Key="Work.SimSafety" xml:space="preserve">Simulation · Software pause is not an emergency stop · No physical equipment is operated</sys:String>
+  <sys:String x:Key="Work.ProductionSafety" xml:space="preserve">Production · Software pause is not an emergency stop. Use the physical emergency stop in an emergency.</sys:String>
+  <sys:String x:Key="Work.Safety" xml:space="preserve">Software pause is not an emergency stop. Use the physical emergency stop in an emergency.</sys:String>
+  <sys:String x:Key="Work.PaceInitial" xml:space="preserve">Shift assigned: —</sys:String>
+  <sys:String x:Key="Work.PaceMissing" xml:space="preserve">Shift assigned: — · Last 10 min: —</sys:String>
+  <sys:String x:Key="Work.Pace" xml:space="preserve">Shift: {0:N0} assigned · Last 10 min: {1}</sys:String>
+  <sys:String x:Key="Work.PaceCompactMissing" xml:space="preserve">Shift — · —/min</sys:String>
+  <sys:String x:Key="Work.PaceCompact" xml:space="preserve">Shift {0:N0} · {1}/min</sys:String>
+  <sys:String x:Key="Work.PacePerMinute" xml:space="preserve">{0:F1}/min</sys:String>
+  <sys:String x:Key="Work.LanePaceMissing" xml:space="preserve">Lane assigned: —</sys:String>
+  <sys:String x:Key="Work.LanePace" xml:space="preserve">Lane assigned: {0:N0}</sys:String>
+  <sys:String x:Key="Work.DisablingShort" xml:space="preserve">Stopping…</sys:String>
+  <sys:String x:Key="Work.CurrentLaneEnabled" xml:space="preserve">This lane is enabled</sys:String>
+  <sys:String x:Key="Work.CurrentLaneDisabling" xml:space="preserve">This lane is being disabled</sys:String>
+  <sys:String x:Key="Work.CurrentLaneDisabled" xml:space="preserve">This lane is disabled</sys:String>
+  <sys:String x:Key="Work.EnablePosition" xml:space="preserve">Enable {0}</sys:String>
+  <sys:String x:Key="Work.DisablingExplain" xml:space="preserve">Disabling. New barcodes are blocked. The lane stops when this request and result save finish. Select Enable to cancel.</sys:String>
+  <sys:String x:Key="Work.DisabledExplain" xml:space="preserve">This lane is disabled and does not accept barcodes.</sys:String>
+  <sys:String x:Key="Work.NoCameraCode" xml:space="preserve">This lane is disabled until a camera code is entered in Settings.</sys:String>
+  <sys:String x:Key="Work.CompactScanHint" xml:space="preserve">Scan or enter barcode</sys:String>
+  <sys:String x:Key="Work.CompactCanLoad" xml:space="preserve">Ready</sys:String>
+  <sys:String x:Key="Ops.Permissions" xml:space="preserve">Access</sys:String>
+  <sys:String x:Key="Ops.VerifyPassword" xml:space="preserve">Verify admin password</sys:String>
+  <sys:String x:Key="Settings.InstalledOnly" xml:space="preserve">Open settings from the installed workstation.</sys:String>
+  <sys:String x:Key="Settings.PreferenceApplied" xml:space="preserve">Saved and applied</sys:String>
+  <sys:String x:Key="Settings.SavedSeparately" xml:space="preserve">Workstation settings and personal preferences are saved separately. </sys:String>
+  <sys:String x:Key="Settings.PreferenceResult" xml:space="preserve">{0}: {1}</sys:String>
+  <sys:String x:Key="Ops.Version" xml:space="preserve">Business version {0}</sys:String>
+  <sys:String x:Key="Ops.ReadOnly" xml:space="preserve">Read-only</sys:String>
+  <sys:String x:Key="Ops.VerifyForActions" xml:space="preserve">Verify the station password to perform maintenance.</sys:String>
+  <sys:String x:Key="Ops.Running" xml:space="preserve">Running</sys:String>
+  <sys:String x:Key="Ops.SoftwarePaused" xml:space="preserve">Software pause</sys:String>
+  <sys:String x:Key="Ops.TaskCount" xml:space="preserve">{0}</sys:String>
+  <sys:String x:Key="Ops.NoCurrent" xml:space="preserve">None</sys:String>
+  <sys:String x:Key="Ops.Storage" xml:space="preserve">Storage</sys:String>
+  <sys:String x:Key="Ops.VehicleIdle" xml:space="preserve">Idle</sys:String>
+  <sys:String x:Key="Ops.VehicleTasking" xml:space="preserve">Busy</sys:String>
+  <sys:String x:Key="Ops.VehiclePending" xml:space="preserve">Status unknown</sys:String>
+  <sys:String x:Key="Ops.LostControl" xml:space="preserve">Control connection lost</sys:String>
+  <sys:String x:Key="Ops.CheckControl" xml:space="preserve">The control connection is down. Restore it and check the original result.</sys:String>
+  <sys:String x:Key="Ops.AuthorizationPending" xml:space="preserve">Access unconfirmed</sys:String>
+  <sys:String x:Key="Ops.EndedAuthorization" xml:space="preserve">Access for this window ended or is unconfirmed. Verify the password. Your edits are kept.</sys:String>
+  <sys:String x:Key="Ops.DebugPaused" xml:space="preserve">Diagnostics · Induction paused</sys:String>
+  <sys:String x:Key="Ops.ConfirmDebugEnd" xml:space="preserve">Diagnostics paused induction and manual submission. End the original session and verify that operation resumes.</sys:String>
+  <sys:String x:Key="Ops.Authorized" xml:space="preserve">Access granted</sys:String>
+  <sys:String x:Key="Ops.GrantExpires" xml:space="preserve">Access until {0}</sys:String>
+  <sys:String x:Key="Ops.ViewEdit" xml:space="preserve">Viewing and editing leave induction running.</sys:String>
+  <sys:String x:Key="Ops.GrantReview" xml:space="preserve">Verify access</sys:String>
 </ResourceDictionary>

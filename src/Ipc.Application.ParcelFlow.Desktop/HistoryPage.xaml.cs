@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.ComponentModel;
 using System.Windows.Automation;
 using System.Windows;
@@ -49,7 +50,7 @@ public partial class HistoryPage : UserControl
     public event EventHandler<string>? LogsRequested;
     void Logs_Click(object sender, RoutedEventArgs e) { if (DataContext is ParcelViewModel { IsManagementMode: true, Selected: { } op }) LogsRequested?.Invoke(this, op.Id); }
     async void BarcodeQuery_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-    { if (e.Key == System.Windows.Input.Key.Enter && DataContext is ParcelViewModel vm && !vm.Busy) { e.Handled = true; await vm.RunAsync(() => vm.LoadHistoryAsync(), "查询完整条码"); } }
+    { if (e.Key == System.Windows.Input.Key.Enter && DataContext is ParcelViewModel vm && !vm.Busy) { e.Handled = true; await vm.RunAsync(() => vm.LoadHistoryAsync(), UiText.Get("History.SearchBarcode")); } }
     public HistoryPage()
     {
         InitializeComponent();
@@ -157,18 +158,18 @@ public partial class HistoryPage : UserControl
     async void Copy_Click(object s, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm) return;
-        try { await vm.RequireManagementModeAsync(); Clipboard.SetText(await vm.FullDetailsAsync()); vm.Message = "已复制作业、请求与 RCS 返回的完整数据。"; }
+        try { await vm.RequireManagementModeAsync(); Clipboard.SetText(await vm.FullDetailsAsync()); vm.Message = UiText.Get("History.CopiedComplete"); }
         catch (Exception error) { vm.Message = "复制失败，可选择详情文本复制：" + error.Message; }
     }
-    async void Refresh_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.LoadHistoryAsync(), "读取最新50条"); }
-    async void First_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.FirstHistoryAsync, "同一范围首屏"); }
+    async void Refresh_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.LoadHistoryAsync(), UiText.Get("History.LastFifty")); }
+    async void First_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.FirstHistoryAsync, UiText.Get("History.FirstPageSameScope")); }
     async void Previous_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.PreviousHistoryAsync, "上一页"); }
     async void Next_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.LoadHistoryAsync(true), "下一页"); }
     async void Export_Click(object s, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm) return;
         var picker = new Microsoft.Win32.SaveFileDialog { FileName = "operation-history.csv", Filter = "CSV 表格|*.csv" };
-        if (picker.ShowDialog(Window.GetWindow(this)) == true) await vm.RunAsync(() => vm.ExportHistoryAsync(picker.FileName), "导出当前筛选");
+        if (picker.ShowDialog(Window.GetWindow(this)) == true) await vm.RunAsync(() => vm.ExportHistoryAsync(picker.FileName), UiText.Get("History.ExportFiltered"));
     }
     void CancelExport_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.CancelHistoryExport(); }
     void CancelQuery_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.CancelHistoryRead(); }

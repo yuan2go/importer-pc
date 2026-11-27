@@ -68,7 +68,7 @@
  </Style>
  <DataTemplate x:Key="PreferenceNoticeBell">
   <Grid>
-   <ToggleButton x:Name="Bell" MinWidth="44" MinHeight="44" Padding="8,0" FocusVisualStyle="{StaticResource FocusRing}" ToolTip="本机偏好通知" AutomationProperties.Name="本机偏好通知">
+   <ToggleButton x:Name="Bell" MinWidth="44" MinHeight="44" Padding="8,0" FocusVisualStyle="{StaticResource FocusRing}" ToolTip="{DynamicResource Work.LocalPrefNotice}" AutomationProperties.Name="{DynamicResource Work.LocalPrefNotice}">
     <Grid Width="22" Height="22">
      <Path Data="M 3,16 L 5,13 L 5,9 A 5,5 0 0 1 15,9 L 15,13 L 17,16 Z M 8,19 Q 10,22 12,19" Stroke="{DynamicResource Ink}" StrokeThickness="1.5"/>
      <Ellipse Width="7" Height="7" Fill="{DynamicResource Warning}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
@@ -77,8 +77,8 @@
    <Popup IsOpen="{Binding IsChecked, ElementName=Bell, Mode=TwoWay}" PlacementTarget="{Binding ElementName=Bell}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True" VerticalOffset="4">
     <Border Width="350" Style="{StaticResource StationCard}">
      <StackPanel>
-      <TextBlock Text="本机偏好通知" FontWeight="{x:Static type:UiTypography.Emphasis}"/>
-      <TextBox Text="{Binding PreferenceNoticeText, Mode=OneWay}" Style="{StaticResource OperatorCopyableNotice}" TextWrapping="Wrap" MaxHeight="240" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="本机偏好通知详情"/>
+      <TextBlock Text="{DynamicResource Work.LocalPrefNotice}" FontWeight="{x:Static type:UiTypography.Emphasis}"/>
+      <TextBox Text="{Binding PreferenceNoticeText, Mode=OneWay}" Style="{StaticResource OperatorCopyableNotice}" TextWrapping="Wrap" MaxHeight="240" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="{DynamicResource Work.LocalPrefDetails}"/>
      </StackPanel>
     </Border>
    </Popup>

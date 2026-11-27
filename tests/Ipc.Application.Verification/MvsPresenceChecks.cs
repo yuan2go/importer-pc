@@ -107,8 +107,10 @@ internal static class MvsPresenceChecks
         foreach (var native in new[] { false, true })
         {
             var camera = new Camera(native); MvsAcquisition? source = null;
+            var clock = new TimeStorageFaultChecks.ManualTime();
             await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "presence-" + native), false, mode: RunMode.Simulation)
             {
+                StationClock = clock,
                 CameraSource = binding => binding.DeviceId.EndsWith("left", StringComparison.OrdinalIgnoreCase)
                     ? CreateSource(binding)
                     : new ManualSupplyHarness.SilentCamera(binding.DeviceId)
@@ -150,27 +152,47 @@ internal static class MvsPresenceChecks
             await h.App.ExitManagementModeAsync();
             await h.App.CheckRcsHeartbeatAsync(default);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").BarcodeInput!.Camera);
+            // Once calibration and admission are ready, the test owns the exposure
+            // sequence. Do not allow the camera to enqueue old tray pictures faster
+            // than SQLite can publish their presence to the station.
+            camera.Stepped = true;
+            async Task UntilFrame(Func<Task<bool>> done)
+            {
+                await CameraRoundHarness.Until(async () =>
+                {
+                    var number = await camera.NextFrameAsync();
+                    await CameraRoundHarness.Until(() => Task.FromResult(acquisition.Timings.Snapshot().RecentFrames.Any(f => f.Number == number)));
+                    await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(w => w.Position == "left") is
+                        { QueueDepth: 0, State: "Waiting" } lane && lane.Received == lane.Processed));
+                    return await done();
+                });
+            }
             camera.Parcel = true;
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.Any(r => r.OperationId is not null));
+            await UntilFrame(async () => (await h.App.SnapshotAsync()).Rounds.Any(r => r.OperationId is not null));
             var first = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
-            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(first.OperationId!))?.State == ParcelState.SlotResolved);
-            await Task.Delay(3200);
-            Check((await h.App.SnapshotAsync()).Rounds.Any(r => r.Id == first.Id) && h.Peer.Requests.Count == 1,
-                "reliable still-present parcel survives 3sec and never resubmits");
+            await UntilFrame(async () => (await h.App.OperationAsync(first.OperationId!))?.State == ParcelState.SlotResolved);
             camera.Parcel = false;
-            await CameraRoundHarness.Until(() => Task.FromResult(acquisition.TrayPresenceStatus == "空托盘已确认"));
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CurrentRoundId: null, Arrival.Submitted: false });
+            await UntilFrame(() => Task.FromResult(acquisition.TrayPresenceStatus == "空托盘已确认"));
+            await UntilFrame(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CurrentRoundId: null, Arrival.Submitted: false });
             var afterAbsence = await h.App.SnapshotAsync();
             Check(afterAbsence.Positions!.Single(p => p.Id == "left").Arrival?.Submitted == false && h.Peer.Requests.Count == 1, "qualified visual absence releases the completed parcel without sending another request");
 
             Check((await h.App.RoundHistoryAsync(search: first.Id)).Items.Single().EndReason == "TrustedRemoval",
                 "qualified empty tray closes its original round and releases its accepted claim on the same vehicle");
             camera.Parcel = true;
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
+            await UntilFrame(() => Task.FromResult(h.Peer.Requests.Count == 2));
             var second = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
             Check(second.Id != first.Id,
                 "same code on a new physical placement automatically starts one independent request");
-            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(second.OperationId!))?.State == ParcelState.SlotResolved);
+            await UntilFrame(async () => (await h.App.OperationAsync(second.OperationId!))?.State == ParcelState.SlotResolved);
+            // Exercise the display deadline on the second parcel. The first
+            // experiment isolates the physical removal boundary from display time.
+            await UntilFrame(async () => acquisition.ReadTrayPresenceModel() is { Presence: TrayPresence.Present } &&
+                (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CurrentRoundId: { } current, PlacementRemovalOperation: null } && current == second.Id);
+            camera.Stepped = false;
+            clock.Elapse(TimeSpan.FromMilliseconds(3200));
+            Check((await h.App.SnapshotAsync()).Rounds.Any(r => r.Id == second.Id) && h.Peer.Requests.Count == 2,
+                "reliable still-present second parcel survives the display deadline without resubmission");
             async Task Switch(string position, bool enabled)
             {
                 var snapshot = await h.App.SnapshotAsync();
@@ -178,9 +200,9 @@ internal static class MvsPresenceChecks
                 var result = await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, position, control.Revision, enabled), default);
                 if (result.Status != "Accepted") throw new InvalidOperationException(result.Reason);
             }
-            await Switch("right", false); await Switch("left", false);
+            await Switch("left", false); await Switch("right", false);
             Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabled &&
-                await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received,
+                await SmRoundFixture.CompletedHeartbeatAsync(h.App) == RcsHeartbeatResult.Received,
                 "operator disable completes immediately with an occupied calibrated tray and keeps RCS heartbeat online");
             camera.Parcel = false;
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
@@ -242,7 +264,18 @@ internal static class MvsPresenceChecks
     sealed class Camera(bool native) : IMvsApi
     {
         public volatile bool Parcel;
+        public volatile bool Stepped;
+        TaskCompletionSource<uint>? requested;
+
+        public Task<uint> NextFrameAsync()
+        {
+            var signal = new TaskCompletionSource<uint>(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (Interlocked.CompareExchange(ref requested, signal, null) is not null)
+                throw new InvalidOperationException("A synthetic exposure is already queued");
+            return signal.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        }
         nint data; uint number;
+        PeriodicTimer? frames;
         public bool HasFrame => data != 0;
         public bool ReturnsDecodedFrames => native;
         public void Initialize() { }
@@ -253,16 +286,23 @@ internal static class MvsPresenceChecks
         public long PayloadSize() => W * H;
         public void ConfigureBuffers(uint nodes, uint strategy = 0) { }
         public void ClearBuffers() { }
-        public void Start() { }
+        public void Start() => frames = new PeriodicTimer(TimeSpan.FromMilliseconds(80));
         public MvsFrame? Acquire()
         {
-            Thread.Sleep(25); var parcel = Parcel; var p = Pixels(parcel); data = Marshal.AllocHGlobal(p.Length); Marshal.Copy(p, 0, data, p.Length);
-            return new(data, W, H, MvsNative.Mono8, (ulong)p.Length, ++number, 0, 0)
+            // This fixture exercises physical evidence and removal at a bounded frame rate.
+            // Saturating the SQLite handoff would measure ingress load instead.
+            if (frames?.WaitForNextTickAsync().AsTask().GetAwaiter().GetResult() != true) return null;
+            var exposure = Interlocked.Exchange(ref requested, null);
+            if (Stepped && exposure is null) return null;
+            var parcel = Parcel; var p = Pixels(parcel); data = Marshal.AllocHGlobal(p.Length); Marshal.Copy(p, 0, data, p.Length);
+            number++;
+            exposure?.TrySetResult(number);
+            return new(data, W, H, MvsNative.Mono8, (ulong)p.Length, number, 0, 0)
             { NativeSymbols = parcel ? [new("PRESENCE-123456", "Code128", [], 0)] : [] };
         }
         public void Release() { Marshal.FreeHGlobal(data); data = 0; }
         public bool Connected() => true;
-        public void Stop() { }
+        public void Stop() { frames?.Dispose(); frames = null; }
         public void Close() { }
         public void Destroy() { }
         public void Shutdown() { }

@@ -1,7 +1,5 @@
 > 本文保留形成时的设计及验证背景。当前 SM 实施及验收见[文档索引](../INDEX.md)与[实施手册](../operator/implementation-guide.md)。
 
-当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见收口前归档，不用于当前操作。
-
 # Application架构22 · 当前运行指南
 
 [现行设计](../design/application-architecture-22.md) · [工作包](../archive/work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md)。22原阶段开工main ea881293c888a824f26c9f9fa07352a22786206b及PR20/21属于形成时身份；本页操作已随PR26复核修复更新，当前源码与证据见[交付记录](../archive/runtime/architecture-quality-audit-02-results.md)。参考装配为独立F-02工程，不是旧现场迁移。Windows实际NOT_RUN；真实SDK/认证/WCS/PLC/采集关联/离场复位及现场BLOCKED。软件暂停不等于安全急停。
@@ -50,7 +48,7 @@ StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保
 
 ## 当前格式与原件
 
-从空数据目录一次创建Parcel 10基线。启动、只读检查、扩展消费者、备份及恢复只接受当前格式和基线哈希；缺失回包身份索引拒绝，不补写历史。当前配置schema3必须包含完整拓扑；发布登记仅schema2并核对实际业务程序集，源码开发入口不冒充正式发布。
+Parcel 新站从空目录建立当前 DB14 基线。启动、只读检查、扩展消费者、备份及恢复只接受当前格式和基线哈希；缺失回包身份索引拒绝，不补写历史。当前配置schema3必须包含完整拓扑；发布登记仅schema2并核对实际业务程序集，源码开发入口不冒充正式发布。
 
 当前格式的备份经应用BackupAsync取得完整配置、一致SQLite快照、原回执、尚存原图及完成清单。恢复到全新隔离目录并暂停，保留机器来源、退役围栏和防双活。Unknown保持原报文、原目标、原实现及独立责任，不自动重发。WAL、synchronous=FULL和完整性校验保持。
 

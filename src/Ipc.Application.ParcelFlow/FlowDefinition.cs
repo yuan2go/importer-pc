@@ -41,9 +41,8 @@ public interface IParcelCapabilityFactory : IAsyncDisposable
     void Validate(ParcelConfiguration configuration);
     void ValidateStructure(ParcelConfiguration configuration) => Validate(configuration);
     ParcelPorts Create(ParcelConfiguration configuration);
-    // Replacements for some already-constructed readers and/or the integration, built from a
-    // validated candidate whose identities are unchanged. Null: this factory cannot rebuild them
-    // live, and the caller stages a controlled restart instead. The caller owns what is returned.
+    // Live replacements keep the configured logical device IDs. The caller owns any returned ports.
+    // A null result leaves the change for controlled restart.
     ParcelLiveDevices? CreateLive(ParcelConfiguration candidate, IReadOnlyCollection<string> readers, bool integration) => null;
 }
 public sealed record ParcelLiveDevices(IReadOnlyDictionary<string, IControlledObservationSource> Readers, IWcsPort? Wcs, IReadOnlyDictionary<string, string> ImplementationHashes);
@@ -64,8 +63,7 @@ public static class WeightRules
     }
 }
 
-// A narrow transaction/port facade, not a workflow engine. Each Application explicitly
-// chooses its steps and interprets its business replies and completion boundary.
+// The application chooses the steps and interprets replies. This facade provides access to storage and ports.
 public interface IParcelExecution
 {
     ParcelOperation Current(string id);

@@ -30,9 +30,10 @@ internal static class SmArrivalChecks
         async Task SetEnabled(bool enabled, string position = "left")
         {
             var s = await h.App.SnapshotAsync();
-            var receipt = await h.App.SetPositionEnabledAsync(new(Wire.Id(), s.RuntimeId, position, Lane(s, position).SupplyControl!.Revision, enabled), default);
-            Check(receipt.Status == "Accepted", "position switch accepted with current control identity");
-            await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
+            var receipt = enabled ? await SmRoundFixture.EnableAsync(h.App, position) :
+                await h.App.SetPositionEnabledAsync(new(Wire.Id(), s.RuntimeId, position, Lane(s, position).SupplyControl!.Revision, false), default);
+            Check(receipt.Status == "Accepted", "position switch accepted with current control identity: " + receipt.Reason);
+            await SmRoundFixture.CompletedHeartbeatAsync(h.App);
         }
         async Task Resolved(string operation) => await CameraRoundHarness.Until(async () =>
             (await h.App.OperationAsync(operation))?.Wcs?.State is StageState.Accepted or StageState.Rejected or StageState.Unknown);

@@ -100,8 +100,7 @@ public sealed partial class ParcelRepository : IDisposable
         var existing = File.Exists(database);
         if (existing)
         {
-            // A refused format must not checkpoint its WAL, change
-            // journal settings, or strand configuration behind a new reader marker.
+            // Opening a writer can checkpoint the original WAL. Check the format first.
             db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
             try
             {
@@ -413,7 +412,7 @@ public sealed partial class ParcelRepository : IDisposable
             using var c = db.CreateCommand(); c.CommandText = "SELECT raw_hash FROM parcel_receipts WHERE id=$id"; c.Parameters.AddWithValue("$id", id);
             using var r = c.ExecuteReader(); if (!r.Read()) throw new InvalidDataException("Unknown original receipt file");
             if (ArchivedReceiptExpectedHash(id) is { } archivedHash)
-                RequireArchivedReceipt(id, archivedHash); // Optional redundant spool is checked by cleanup below.
+                RequireArchivedReceipt(id, archivedHash);
             else if (!r.IsDBNull(0) && Wire.FileHash(file, maintenanceCancellation) != r.GetString(0)) throw new InvalidDataException("Original raw receipt hash differs");
         }
         using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT id,raw_hash FROM parcel_receipts WHERE state IN ('Committed','RawDurable')";

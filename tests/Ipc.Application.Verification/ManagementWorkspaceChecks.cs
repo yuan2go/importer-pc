@@ -27,13 +27,25 @@ static class ManagementWorkspaceChecks
         var snapshot = await h.App.SnapshotAsync();
         var scope = await h.App.BeginCameraInspectionAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision,
             CameraInspectionMode.ObserveProduction, "Synthetic explicit management read", new()) { SingleReadRounds = true }, default);
-        var round = await h.App.ArmCameraReadAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, scope.SessionId!, h.Left, null), default);
-        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DEBUG"), 2);
-        await CameraRoundHarness.Until(async () => (await h.App.ReadCameraReadRoundAsync(default)).State == "Locked");
-        Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Count(o => o.DebugRequest is null) == 1, "explicit debug reads never create an automatic production request");
+        var armed = await h.App.ArmCameraReadAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, scope.SessionId!, h.Left, null), default);
+        var debugBarcode = CameraRoundHarness.Barcode("SYNTH-DEBUG");
+        var api = h.Api(h.Left);
+        var (round, nextFrame) = await h.FeedArmedReadAsync(armed, 2, async number =>
+        {
+            api.Enqueue(debugBarcode, number);
+            await CameraRoundHarness.Until(() => Task.FromResult(api.LastReturnedFrame == number && api.Acquires == api.Releases));
+        });
+        Check(round.Barcode == "SYNTH-DEBUG" && h.Peer.Requests.Count == 1 &&
+            (await h.App.SnapshotAsync()).Operations.Count(o => o.DebugRequest is null) == 1, "explicit debug reads never create an automatic production request");
         var afterDebug = await h.App.SnapshotAsync();
-        Check(afterDebug.Inputs!.Single(p => p.PositionId == "left").Observation.Codes.SequenceEqual(new[] { "SYNTH-BEFORE-MANAGEMENT" }),
-            "explicit management reads preserve the original production parcel card and input evidence");
+        var production = before.Operations.Single(o => o.PositionId == "left");
+        var history = await h.App.ReadCameraBusinessAsync(h.Left, 0, null, 10, default);
+        var originalInput = history.Rows.Single(row => row.OperationId == production.Id);
+        var shownInputs = afterDebug.Inputs!.Where(input => input.PositionId == "left");
+        Check(afterDebug.Operations.Any(o => o.Id == production.Id) &&
+            originalInput.Candidates.SequenceEqual(new[] { "SYNTH-BEFORE-MANAGEMENT" }) &&
+            shownInputs.All(input => input.Observation.Id == originalInput.ObservationId),
+            "the debug read preserves the original production input and cannot replace it on the parcel card");
         // Force expiry cleanup to queue behind the window close, without timing
         // sleeps: close owns inspectionControl while waiting for the runtime gate.
         var fields = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
@@ -66,7 +78,7 @@ static class ManagementWorkspaceChecks
         await h.WaitForCameraAdmissionAsync();
         Check((await h.App.SnapshotAsync()).Paused == before.Paused, "original window can restore production even after password authorization expires");
         await h.TrayAsync(h.Left, TrayPresence.Absent);
-        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-CLOSE"), 3);
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-CLOSE"), nextFrame);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
         Check(h.Peer.Requests.Count == 2, "closing management resumes automatic decoding and one production request");
         await h.TrayAsync(h.Left, TrayPresence.Present);

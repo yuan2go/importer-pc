@@ -9,8 +9,7 @@ using System.Windows.Documents;
 using Ipc.Application.Contracts;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-// One directory over one complete draft, shared by startup and daily settings.
-// Snapshot refreshes change bindings only; page switches retain every editor.
+// Startup and daily settings share a complete draft. Switching pages preserves edits in other sections.
 public sealed partial class ParameterSettingsControl : UserControl
 {
     SmParameterAudience audience;
@@ -78,7 +77,6 @@ public sealed partial class ParameterSettingsControl : UserControl
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         FocusVisualStyle = null;
         FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; SetResourceReference(ForegroundProperty, "Ink");
-        // Settings content sits on the theme's page background; each setting is a white card on it.
         var root = Themed(new Grid(), Panel.BackgroundProperty, "Background");
         settingsRoot = root;
         root.ColumnDefinitions.Add(new() { Width = new(240) }); root.ColumnDefinitions.Add(new());
@@ -220,8 +218,6 @@ public sealed partial class ParameterSettingsControl : UserControl
         FontWeight = heading ? UiTypography.Emphasis : FontWeights.Normal,
         Margin = new(0, heading ? 24 : 4, 0, 8)
     }, TextBlock.ForegroundProperty, heading ? "Ink" : "Muted");
-    // Colours come from the application theme (Ipc.Desktop/Themes/Workstation.xaml): Ink, Muted, Line,
-    // Surface, Background, Soft, Accent*, Success, Warning, Danger.
     static T Themed<T>(T element, DependencyProperty property, string key) where T : FrameworkElement
     { element.SetResourceReference(property, key); return element; }
     static Border Card(UIElement? child = null)
@@ -244,7 +240,6 @@ public sealed partial class ParameterSettingsControl : UserControl
         heading.SetBinding(TextBlock.TextProperty, new Binding(nameof(ObjectPage.Title)) { Source = page });
         pages.Add(page); return page;
     }
-    // A section: an optional heading, then its settings as cards.
     ParameterFormPanel Form(ObjectPage page, string? title = null)
     {
         if (title is not null) { var heading = Text(title, true); if (page.Body.Children.Count <= 3) heading.Margin = new(0, 16, 0, 8); page.Body.Children.Add(heading); }

@@ -1,11 +1,6 @@
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-// Operator-facing vocabulary for the supply station (OPERATOR-COPY-01).
-// Status: a short noun phrase. Next step: an imperative that says what to do with
-// the parcel in hand. Reason: one sentence a maintainer can act on. Contract terms
-// (admission, original request, receipt, snapshot, responsibility) stay in details.
-// Presentation only: never write these strings into contracts, audit or drafts, and
-// never branch business logic on them.
+// Operator-facing labels. Diagnostic details retain the original contract terms.
 public static class OperatorCopy
 {
     public const string TimeoutUnconfirmed = "格口结果尚未确认。本件暂勿投递，请取下包裹暂放一旁，查看本次记录并通知维护人员核对；不要反复上件。";

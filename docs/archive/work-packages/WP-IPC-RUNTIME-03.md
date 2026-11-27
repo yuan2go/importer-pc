@@ -8,7 +8,7 @@
 
 本包不是客户供包软件已完成的承诺，也不是一个简单Mock成功演示。运行核心、SQLite事务、请求执行器、UI绑定、配置/日志/报警及恢复是真实实现；仅设备事件、外部协议与尚未确认的业务参数使用清晰标识的工程夹具。生产模式缺资料时拒绝准入，不静默回退。
 
-必读：[项目指令](../../../AGENTS.md)、[索引](../../INDEX.md)、[框架主设计](../../design/framework.md)、[框架决策](../../design/framework-decisions.md)、[D决策包](../../readiness/decision-pack.md)、[修订验证交接](../../readiness/revision-and-verification.md)、[历史问题表](../../reviews/issues.json)、[公开范围](../../baseline/PUBLICATION.md)。不依赖本聊天或受限下载链接。
+必读：[项目指令](../../../AGENTS.md)、[索引](../../INDEX.md)、[框架主设计](../../design/framework.md)、[框架决策](../design/framework-decisions.md)、[D决策包](../../readiness/decision-pack.md)、[修订验证交接](../../readiness/revision-and-verification.md)、[历史问题表](../../reviews/issues.json)、[公开范围](../../baseline/PUBLICATION.md)。不依赖本聊天或受限下载链接。
 
 ## 2. 本轮开始前的事实与差距
 

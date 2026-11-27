@@ -212,8 +212,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     public CapabilityBinding BuildReader(string applicationId)
     {
         var binding = Build();
-        // The confirmed Sportmaster flow is one camera scan per parcel. Generic
-        // observation providers retain their own diagnostic/association policies.
+        // SM assigns a separate admission identity to each line from this TCP reader.
         return applicationId == "sportmaster" && binding.Implementation == "tcp-line"
             ? binding with { Parameters = new(binding.Parameters) { ["entity.mode"] = "line" } } : binding;
     }

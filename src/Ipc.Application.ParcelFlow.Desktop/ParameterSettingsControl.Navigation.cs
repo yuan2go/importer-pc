@@ -71,9 +71,7 @@ public sealed partial class ParameterSettingsControl
     }
     void RefreshAvailablePages()
     {
-        // Role reassignment can expose a formerly maintenance-only component.
-        // Keep its editor and drafts, while excluding it from every navigation
-        // path again when its last actual business role is removed.
+        // Retain edits across role changes, including the interval when the component has no business role.
         var priorSelecting = selectingPage; selectingPage = true;
         try { directoryView?.Refresh(); if (currentPage?.Available == true) directory.SelectedItem = currentPage; }
         finally { selectingPage = priorSelecting; }

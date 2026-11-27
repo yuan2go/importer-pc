@@ -4,8 +4,7 @@ using Ipc.Platform;
 
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
-// A taught background model, independent of recognition and stillness gating.
-// No unsupervised background adaptation: a stationary parcel must never become empty.
+// Only explicit teaching updates the empty-tray reference, so a stationary parcel cannot become the baseline.
 internal sealed class MvsTrayPresence
 {
     internal const int DefaultEmptyConfirmMs = 300, MinimumEmptyConfirmMs = 150, MaximumEmptyConfirmMs = 2000;

@@ -129,10 +129,8 @@ public sealed partial class ParcelRepository
     });
     internal static SqliteConnection OpenHandoffSnapshot(string database)
     {
-        // Callers hold a stable private maintenance DB/WAL copy, or a verified
-        // standalone backup. Immutable omits committed WAL facts, so use normal
-        // read-only recovery when a WAL exists. Any SHM belongs only to the copy;
-        // a standalone backup must not acquire side files during inspection.
+        // Committed facts can reside only in the WAL. Read the private copy with WAL recovery.
+        // Inspect standalone backups as immutable files to avoid creating sidecars.
         database = Path.GetFullPath(database);
         var source = File.Exists(database + "-wal") ? database : new Uri(database).AbsoluteUri + "?immutable=1";
         var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = source, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());

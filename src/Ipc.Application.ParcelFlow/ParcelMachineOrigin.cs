@@ -3,8 +3,7 @@ using Ipc.Platform;
 
 namespace Ipc.Application.ParcelFlow;
 
-// Recovery custody only: this cannot choose a configuration, deployment or device.
-// Never issue a fresh machine claim for a pre-existing ledger/database.
+// A pre-existing ledger or database needs its original machine claim to establish recovery custody.
 internal static class ParcelMachineOrigin
 {
     internal const string FileName = "machine-origin.bin";

@@ -39,7 +39,7 @@ public static class ParcelOfflineReceiptRecovery
                 throw new InvalidDataException("Only an original missing Awaiting Attached upload with committed main raw is supported");
             var restored = definition.RestoreMainProjection(op) with { RecoveryRequired = false };
             if (!definition.MainSettled(restored)) throw new InvalidDataException("Original main result is not proven complete");
-            repository.ValidateRawInventory(); // Before any external query or state writes.
+            repository.ValidateRawInventory();
             await BackupAsync(repository, directory, backup, envelope, registerBackup, token).ConfigureAwait(false);
             string? basis = repository.ReceiptById(occurrence)!.QueryOccurrence;
             // A previous maintenance process may have flushed Query raw and died before

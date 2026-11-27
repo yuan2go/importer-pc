@@ -14,8 +14,7 @@ public sealed class MvsAcquisitionModule : IObservationExtension
     public IControlledObservationSource Create(ExtensionContext context) => new MvsAcquisition(context, new MvsApi());
 }
 
-// One acquisition/resource owner. Legacy acquisition has no decoder; the current
-// reader injects an actual in-process decoder and emits only decoded candidates.
+// One capture session supplies preview frames and, when enabled, software or native barcode candidates.
 internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSource, IOriginalFrameSource, IObservationPreviewSource, IObservationPreviewLeaseSource
 #if !MVS_ACQUISITION_EXTENSION
     , ITrayPresenceSource
@@ -103,7 +102,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
         nodes = int.Parse(context.Parameters.GetValueOrDefault("image.nodes", "3"), System.Globalization.CultureInfo.InvariantCulture);
         maximumPayload = int.Parse(context.Parameters.GetValueOrDefault("image.maximum-payload-bytes", "8388608"), System.Globalization.CultureInfo.InvariantCulture);
         if (nodes is < 1 or > 4 || maximumPayload is < 1048576 or > 33554432) throw new InvalidDataException("Image nodes must be 1..4 and payload budget 1..32 MiB");
-        // Recognise only settled frames (decoder path only); 0 decodes every frame as before.
+        // The stillness gate controls both software decoding and native decoded-frame acquisition.
         stillMs = !Recognizes ? 0 : int.Parse(context.Parameters.GetValueOrDefault("motion.still-ms", "150"), System.Globalization.CultureInfo.InvariantCulture);
         if (stillMs is < 0 or > 2000) throw new InvalidDataException("motion.still-ms must be 0..2000");
         emptyConfirmMs = MvsTrayPresence.DefaultEmptyConfirmMs;
@@ -185,9 +184,8 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                     token.ThrowIfCancellationRequested(); PhaseTo("configure-sdk-buffers"); api.ConfigureBuffers((uint)nodes, !Recognizes ? 0u : 1u);
                     token.ThrowIfCancellationRequested(); PhaseTo("start-grabbing"); grabbing = true; api.Start(); token.ThrowIfCancellationRequested();
                     cancel = new(); PhaseTo(!Recognizes ? "acquiring-decoder-unavailable" : "reading"); Publish(!Recognizes ? DeviceHealth.Unknown : DeviceHealth.Ready);
-                    // GetImageBuffer and decoding form a synchronous, lifetime-long
-                    // loop. Keep it off the shared pool used by Application/UI
-                    // preview reads, continuations and shutdown coordination.
+                    // Run blocking acquisition on a dedicated thread to keep the shared pool available for
+                    // preview and shutdown.
                     var captureToken = cancel.Token;
                     StartDecodePipeline(captureToken);
                     worker = Task.Factory.StartNew(() => Capture(captureToken), CancellationToken.None,
@@ -465,10 +463,8 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
         // errors still retain the original owner and stop at the failed step.
         Report(DeviceHealth.Stopping);
         if (api.HasFrame) { Phase("retry-free-original-buffer"); await Task.Run(api.Release).ConfigureAwait(false); }
-        // StopGrabbing and CloseDevice are transitions, not releases. After GigE packet loss
-        // they can fail (e.g. 0x80000214 UDP receive, 0x80000003 call order) on a stream that
-        // is already broken; retrying them only repeats the error. Record the error and go on:
-        // ownership is released only when DestroyHandle and Finalize actually succeed below.
+        // A broken GigE stream can reject StopGrabbing or CloseDevice (0x80000214 or 0x80000003).
+        // Record the errors and continue teardown. Ownership ends after DestroyHandle and Finalize succeed.
         List<string> transitions = [];
         async Task Transition(string stage, Action call)
         {

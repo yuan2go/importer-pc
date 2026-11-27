@@ -115,7 +115,6 @@ static class SoftwareLogText
         catch (Exception error) when (error is JsonException or InvalidOperationException or KeyNotFoundException) { }
         return OneLine(text);
     }
-    // Camera device ids read as the station's own names.
     static string Device(string text) => System.Text.RegularExpressions.Regex.Replace(text, @"\b[\w-]+\.reader\.(left|right)\b", m => m.Groups[1].Value == "left" ? "左相机" : "右相机");
     // Log sources written with internal names are shown in station words; filtering still uses the original.
     public static string SourceName(string source) => source switch { "StorageCapacity" => "存储容量", "StorageWal" => "存储日志文件", _ => source };

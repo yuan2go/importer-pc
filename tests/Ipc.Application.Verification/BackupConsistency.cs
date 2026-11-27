@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Text.Json;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
@@ -37,6 +36,14 @@ internal static class BackupConsistency
         await CustodySourceFailure(workspace, Path.Combine(root, "custody-source"));
         CopySourceFailure(Path.Combine(root, "copy-source"));
     }
+    internal static async Task AwaitBoundary(Task entered, Task<BusinessReceipt> backup)
+    {
+        // The backup can fail admission before invoking the callback.
+        await Task.WhenAny(entered, backup).WaitAsync(TimeSpan.FromSeconds(15));
+        if (!entered.IsCompleted)
+            throw new InvalidOperationException("Backup ended before the requested boundary: " + Wire.Encode(await backup));
+        await entered;
+    }
     static async Task Interleaving(string workspace, string root, bool cancel, bool fail)
     {
         // This fixture controls the backup boundary. A new periodic probe can
@@ -53,39 +60,29 @@ internal static class BackupConsistency
         var directory = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, h.Config.ApplicationId);
         var files = Directory.GetFiles(Path.Combine(directory, "receipts"), "*.json").ToDictionary(p => p, p => Wire.FileHash(p));
         Check(files.Count > 0, "real SQLite request has original receipt files before backup");
-        using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim(); using var cancellation = new CancellationTokenSource();
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); using var release = new ManualResetEventSlim(); using var cancellation = new CancellationTokenSource();
         h.App.BackupBoundary = phase =>
         {
             if (phase != (cancel || fail ? "DatabaseCopied" : "Inventory")) return;
-            entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Backup interleaving not released");
+            entered.TrySetResult(); if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Backup interleaving not released");
         };
         var backup = Path.Combine(root, "external.db"); Task<BusinessReceipt> work = null!;
         try
         {
             await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
             {
-                work = h.App.BackupAsync(backup, cancellation.Token);
-                try { Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(10))), "backup entered custody boundary after real monitor reservation drained"); }
-                catch
-                {
-                    release.Set();
-                    await work;
-                    throw;
-                }
+                work = Task.Run(() => h.App.BackupAsync(backup, cancellation.Token));
+                await AwaitBoundary(entered.Task, work);
                 return true;
             });
-            Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(10))), "backup reached deterministic " + (cancel || fail ? "snapshot" : "inventory") + " boundary");
-            // Real driver/decoder empty-frame completion, not decode-start counts.
-            var first = Stopwatch.GetTimestamp();
+            // These are driver-completed frames. The tray port supplies a separate
+            // qualified absence; the pixel model owns the 300 ms threshold tests.
             for (uint frame = 2; frame <= 4; frame++)
             {
                 h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, frame);
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == frame)));
-                if (frame < 4) await Task.Delay(CameraRoundHarness.SyntheticBlankSpanMs / (CameraRoundHarness.SyntheticBlankFrames - 1));
             }
-            Check(h.Factory.Trays[h.Left].Observe(TrayPresence.Absent), "qualified observation retires normally at the backup ingress fence");
-            Check(Stopwatch.GetElapsedTime(first) >= TimeSpan.FromMilliseconds(CameraRoundHarness.SyntheticBlankSpanMs),
-                "three delivered no-code frames are followed by an independent qualified removal fact");
+            Check(h.Factory.Trays[h.Left].Observe(TrayPresence.Absent), "qualified removal following three completed frames retires at the backup ingress fence");
             var before = Progress(h.App);
             await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > before));
             Check(await h.App.OperationAsync(original!.Id) is not null && files.All(f => File.Exists(f.Key) && Wire.FileHash(f.Key) == f.Value),
@@ -286,14 +283,14 @@ internal static class BackupConsistency
         Check(success.Outcome == "BackupCreated" && success.LastSuccessfulBackup is not null, "scheduled success updates only the real complete recovery set");
         var due = success.NextDue!.Value.AddMinutes(1);
         // A concurrent actual backup owns the fence when the schedule tries to run.
-        using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
-        h.App.BackupBoundary = phase => { if (phase == "Inventory") { entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException(); } };
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); using var release = new ManualResetEventSlim();
+        h.App.BackupBoundary = phase => { if (phase == "Inventory") { entered.TrySetResult(); if (!release.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException(); } };
         await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
         {
-            var manual = h.App.BackupAsync(Path.Combine(root, "manual.db"));
+            var manual = Task.Run(() => h.App.BackupAsync(Path.Combine(root, "manual.db")));
             try
             {
-                Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(5))), "manual backup holds custody fence while schedule is due");
+                await AwaitBoundary(entered.Task, manual);
                 await h.App.CheckScheduledBackupAsync(due);
             }
             finally { release.Set(); try { await manual; } finally { h.App.BackupBoundary = null; } }

@@ -94,7 +94,7 @@ internal static class MvidReader
         await DebugFlow(workspace, root);
         await RcsOfflineCameraReads.Run(workspace, Path.Combine(root, "rcs-native"), nativeResults: true);
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "mvid-reader"), stillMs: "50", nativeResults: true)
-            { StationClock = new TimeStorageFaultChecks.ManualTime() };
+        { StationClock = new TimeStorageFaultChecks.ManualTime() };
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         await h.TrayAsync(h.Left, TrayPresence.Present);
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
@@ -132,6 +132,7 @@ internal static class MvidReader
         Check(h.Peer.Requests.Count == 2, "the other native camera supplies independently");
         var epoch = h.Factory.Sources[h.Left].Epoch;
         await h.App.ReconnectDeviceAsync(h.Left);
+        Check(await SmRoundFixture.CompletedHeartbeatAsync(h.App) == RcsHeartbeatResult.Received, "reconnected camera has a current vehicle confirmation");
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Epoch != epoch));
         await Show(h.Left, parcel, []); await vm.RefreshAsync();
@@ -160,7 +161,7 @@ internal static class MvidReader
     {
         var exclusion = new BarcodeFilterPolicy("(?:SYNTH-PACKAGE-[0-9]+|SYNTH-VEHICLE)", "SYNTH-VEHICLE");
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "native-rejected-placement"), nativeResults: true, barcodeFilter: exclusion)
-            { StationClock = new TimeStorageFaultChecks.ManualTime() };
+        { StationClock = new TimeStorageFaultChecks.ManualTime() };
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
         var parcel = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)95, 640 * 240).ToArray(), 640, 240);
@@ -220,7 +221,7 @@ internal static class MvidReader
         var state = basis.Positions!.Single(p => p.Id == "left").SupplyControl!;
         await h.App.SetPositionEnabledAsync(new(Wire.Id(), basis.RuntimeId, "left", state.Revision, false), default);
         Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
-            { SupplyControl.Mode: StationPositionMode.Disabled, CurrentRoundId: null },
+        { SupplyControl.Mode: StationPositionMode.Disabled, CurrentRoundId: null },
             "native unread multi-code round disables immediately without removal evidence");
         Check(h.Peer.Requests.Count == 2, "operator disable never sends the rejected native round");
     }
@@ -254,7 +255,7 @@ internal static class MvidReader
     static async Task ManualCorrection(string workspace, string root)
     {
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "native-manual-correction"), nativeResults: true)
-            { StationClock = new TimeStorageFaultChecks.ManualTime() };
+        { StationClock = new TimeStorageFaultChecks.ManualTime() };
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var parcel = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)90, 640 * 240).ToArray(), 640, 240);
         async Task Frame(uint number, params RecognitionSymbol[] symbols)
@@ -267,7 +268,8 @@ internal static class MvidReader
         var basis = await h.App.SnapshotAsync(); var id = basis.Rounds.Single().Id;
         await Frame(2, Symbol("SYNTH-CAMERA-ORIGINAL"), Symbol("SYNTH-OTHER-LABEL", 120));
         var receipt = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-MANUAL-CORRECTION", ParcelBarcodeInputKind.Keyboard,
-            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, null) { ExpectedRoundId = id, ExpectedArrivalGeneration = basis.Positions!.Single(p => p.Id == "left").Arrival!.Generation, ExpectedPlacementBoundary = basis.Positions!.Single(p => p.Id == "left").Arrival!.PlacementBoundary }, default);
+            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, null)
+        { ExpectedRoundId = id, ExpectedArrivalGeneration = basis.Positions!.Single(p => p.Id == "left").Arrival!.Generation, ExpectedPlacementBoundary = basis.Positions!.Single(p => p.Id == "left").Arrival!.PlacementBoundary }, default);
         Check(receipt.Status == "Admitted", "native unresolved multi-code round permits manual correction using its round identity");
         await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
         await Frame(3, Symbol("SYNTH-CAMERA-ORIGINAL"));

@@ -30,7 +30,6 @@ public sealed class ManagementModeMenu : Button
         content.Children.Add(new System.Windows.Shapes.Path { Data = Geometry.Parse("M3,7 V4 A4,4 0 0 1 11,4 V7 M1,7 H13 V17 H1 Z M7,10 V14"), Width = 14, Height = 17, StrokeThickness = 1.3, Stretch = Stretch.Uniform, Margin = new(0, 0, 7, 0) });
         content.Children.Add(label);
         content.Children.Add(new System.Windows.Shapes.Path { Data = Geometry.Parse("M0,0 L4,4 L8,0"), Width = 8, Height = 4, StrokeThickness = 1.3, Stretch = Stretch.Uniform, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center });
-        // Icons follow the themed foreground.
         foreach (var icon in content.Children.OfType<System.Windows.Shapes.Path>())
             icon.SetBinding(System.Windows.Shapes.Shape.StrokeProperty, new System.Windows.Data.Binding(nameof(Foreground)) { Source = this });
         Content = content;

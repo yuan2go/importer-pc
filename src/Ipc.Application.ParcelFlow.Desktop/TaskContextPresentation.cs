@@ -47,13 +47,11 @@ public partial class ParcelViewModel
     }
     public void DismissGlobalOperationFeedback() { SetGlobalFeedback(""); }
     public bool HasCurrentOperation => Current is not null;
-    // Presentation only. All availability and command decisions remain application-owned.
     public bool HasOperationalAttention => !Fresh || Snapshot?.Paused == true || Snapshot?.BlockingReasons.Length > 0 ||
         Snapshot?.Operations.Any(o => new[] { o.Wcs, o.Plc, o.Capture, o.Upload }.OfType<StageFact>()
             .Any(s => s.State is StageState.Unknown or StageState.Conflict)) == true;
 
-    // These idle/read-success descriptions duplicate the workstation and parameter save bar.
-    // Keep the original Feedback in diagnostics; never suppress a rejection or pending result.
+    // Hide routine feedback already visible on the workstation. Rejections and pending results remain visible.
     public string TaskFeedback => (Busy ? runningFeedbackScope : messageScope) != feedbackScope ? "" :
         !Busy && messageRevision == globalMessageRevision ? "" : !Busy && MessageKind is (PresentationFeedbackKind.Idle or PresentationFeedbackKind.ConfigurationRead or PresentationFeedbackKind.ReadCompleted or PresentationFeedbackKind.ObservationQueued or PresentationFeedbackKind.ResultMirrored) ? "" : OperatorFeedback;
 }

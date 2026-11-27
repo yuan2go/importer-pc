@@ -43,7 +43,7 @@ static class CommercialQuality
         var s = await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "second-entity" && o.State == ParcelState.WcsUnknown));
         var current = s.Operations.Single(o => o.AdmissionId == "second-entity");
         Check(current.ObservedAt < first.ObservedAt && s.Operations.First().Id == first.Id, "real runtime counterexample retains historical timestamp order");
-        var probe = new SportmasterUi.SnapshotProbe(app); var vm = new ParcelViewModel(probe, "classic", "sportmaster"); var second = new ParcelViewModel(probe, "auxiliary", "sportmaster");
+        var probe = new SnapshotReadFixture.SnapshotProbe(app); var vm = new ParcelViewModel(probe, "classic", "sportmaster"); var second = new ParcelViewModel(probe, "auxiliary", "sportmaster");
         var alternate = new SupplyStationViewModel(probe);
         await vm.RefreshAsync(); await second.RefreshAsync(); await alternate.RefreshDisplayAsync(); vm.SelectedPositionId = second.SelectedPositionId = "left";
         Check(vm.Current?.Id == current.Id && vm.CurrentSlot == "未取得" && vm.PositionRows.Single(p => p.Id == "left").Code == "SECOND" && vm.CurrentCommandTarget.Contains(current.Id), "classic current identity and empty slot match authoritative position despite reversed timestamps");
@@ -66,7 +66,7 @@ static class CommercialQuality
     {
         await using var app = await Open(config, Path.Combine(root, "freshness"));
         await Wait(app, s => s.Availability?.Admit == true);
-        var probe = new SportmasterUi.SnapshotProbe(app); var vm = new ParcelViewModel(probe, "classic", "sportmaster");
+        var probe = new SnapshotReadFixture.SnapshotProbe(app); var vm = new ParcelViewModel(probe, "classic", "sportmaster");
         await vm.RefreshAsync(); Check(vm.CanAdmit && vm.Snapshot!.State == "Ready" && vm.Status == "作业就绪", "real initial snapshot ready");
         probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("synthetic read failure"));
         await vm.RunAsync(vm.RefreshAsync);

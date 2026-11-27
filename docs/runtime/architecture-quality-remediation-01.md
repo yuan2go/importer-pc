@@ -1,8 +1,4 @@
-当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见收口前归档，不用于当前操作。
-
-# AQA01 架构质量整改 · 当前实现与验证入口
-
-用户授权在独立分支整改 AQA01-F01～F06，基线 main `0c5d7d25e572e80f23522c9ff7b562db920628a3`（PR91）。原只读报告及失败记录保持原身份；本包不合并、不发布安装包、不操作生产设备。范围与验收见[工作包](../archive/work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。
+# 输入、持久命令与配置读取
 
 ## 输入与显示（F01）
 
@@ -36,22 +32,4 @@
 
 `OperatorSnapshot`对Inputs.ReaderBinding应用与配置/作业/历史相同的参数遮蔽。进入管理模式才能读取原参数及请求；退出、到期或改密码后的普通读取仍保留操作所需条码/实体/阶段事实。持久原件不修改；参数读取边界不是操作员登录。
 
-## 验证及入口维护（F05、F06）
-
-`ApplicationArchitecture`使用真实管理模式接口，普通取消夹具遵守token；仅所有权超时场景模拟有界的不配合外部调用，所有出口finally释放。`ResourceRisks`在新场景前释放重启实例，保留Stop超时/机级设备租约断言。配置调用只重试明确的调用前守卫拒绝；不吞异常、不重试未知发送。
-
-真实CLI在stdin提供`ConfigureManagementPassword`、`EnterManagementMode`、`ExitManagementMode`，转发同一`IWorkstationAdministration`及既有批准政策，无默认密码、无命令行口令。`smoke-application.py`仅在全新隔离根随机设密，重启重新授权后核原报文/Query；口令不进入证据、argv或产品配置，受保护现场仍须原批准服务。可选恢复夹具明确选择既有AtAssociation策略；新增UntilDispatch过期重量阻止发送验证，生产守卫不改变。
-
-当前操作入口统一为从零安装工作包、运行入门及版本规则。历史整改与原Windows/现场记录见原字节归档，不转记本轮身份。
-
-业务版本Sportmaster **1.11.2**、DirectPlc/WcsToPlc **1.5.1**，对应项目与compositions同步。公共扩展ABI仍为Contracts **1.16.0**，DB **8**；本轮没有新公共DTO。产物仍以SourceCommit与文件SHA识别，不混用整套发布程序集或覆盖旧不可变扩展包。
-
-定向验证入口：
-
-```powershell
-. ./scripts/project-environment.ps1
-dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
-dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --architecture-quality-remediation
-```
-
-其他必要验证、命令、退出码及边界见[本轮验证记录](../archive/runtime/validation/architecture-quality-remediation-01.md)。运行证据为本机Windows上的合成数据、真实SQLite/loopback及解包进程；界面投影测试不是原生窗口人工验收，参考端点不是真实WCS/PLC验收。Windows目标构建、实际进程、安装/UAC/受保护Store、厂商SDK及现场分别计证。
+格式、版本和验证选择见[当前格式](version-compatibility-01.md)和[回归边界](current-contract-cleanup-01.md)。

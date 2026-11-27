@@ -38,7 +38,7 @@ public sealed class WcsToPlcFlow : FlowDefinition
                 Slot = reply.BusinessAccepted == true ? reply.Slot : op.Slot,
                 State = reply.BusinessAccepted == true ? ParcelState.SlotResolved : ParcelState.WcsRejected
             };
-            // Returned aggregate is saved by the shared receipt T3 in ONE transaction.
+            // Receipt persistence commits the WCS outcome and any prepared PLC action together.
             if (reply.BusinessAccepted == true && op.Plc is null) op = e.PreparePlc(op);
             if (op.Plc is not null) op = op with { State = FlowResults.PlcState(op.Plc) };
             return op;

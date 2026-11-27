@@ -6,7 +6,7 @@
 
 状态：代码与本机专项验证已实施，固定Release记录独立保存，待现场资格；尚未取得24h/72h或真实设备资格。开工 main `c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b`，独立D盘工作树 `D:/projects/importer-pc-stability`。2026-10-24核对PR97开放，head `a43ecb86efdc78ddc48e7082dcb6f96848138a8b`；PR98字体排版开放，head `2fb04fec970443539c73ced4482032c263ee32c7`。不代合并、不覆盖它们的有效格口、跨页回执或意图/导航代次保护。原工作区四个未跟踪附件保持本地。
 
-依据：[原审查及原始ZIP](../../reviews/win11-24x7-stability-audit-01/README.md)、[框架](../../design/framework.md)、[决定](../../design/framework-decisions.md)、[当前实施设计](../design/win11-24x7-stability-remediation-01.md)。原审查固定c91559f6及其Linux探针，不改写为本轮Windows结果。REQ/BR/CAPI、D/RV及SQL1～8校验和保持。
+依据：[原审查及原始ZIP](../../reviews/win11-24x7-stability-audit-01/README.md)、[框架](../../design/framework.md)、[决定](../design/framework-decisions.md)、[当前实施设计](../design/win11-24x7-stability-remediation-01.md)。原审查固定c91559f6及其Linux探针，不改写为本轮Windows结果。REQ/BR/CAPI、D/RV及SQL1～8校验和保持。
 
 以下为开工时的风险—证据—缺口矩阵；实施结果在后列验证记录，不将开工缺口误作当前结论。
 

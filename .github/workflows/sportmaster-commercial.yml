@@ -147,7 +147,7 @@ jobs:
           # Linux can exercise both link refusal and ordinary-runtime startup in one process.
           if ! dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll . 2>&1 | tee .artifacts/current-contract-ci/supply-default.log; then failed=1; fi
           # parameter-refactor also runs parameter-inheritance; do not repeat it.
-          for case in storage-baseline parcel-recovery-p2 backup-health-recovery review-closure application-architecture capability-closure architecture-quality commercial-quality commercial-productization audit03-rcs history-session-contract version-compatibility configuration-confirmation parameter-refactor management-mode station-single-camera sm-built-in-only mvid-reader; do
+          for case in storage-baseline parcel-recovery-p2 backup-health-recovery review-closure application-architecture capability-closure architecture-quality commercial-quality commercial-productization sm-rcs-request-order history-session-contract version-compatibility configuration-confirmation parameter-refactor management-mode station-single-camera sm-built-in-only mvid-reader; do
             if ! dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/$case.log"; then failed=1; fi
           done
           # The default above includes data, conformance, operation/receipt closure,
@@ -210,7 +210,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for case in stability-audit-fixes lifecycle-ux latency-projection-checks latency-details-checks latency-capacity-checks latency-storage-checks audit03-snapshots ux-commercial-presentation time-storage-fault-checks time-storage-atomic-checks time-storage-supervisor-checks time-storage-process-checks; do
+          for case in stability-audit-fixes lifecycle-ux latency-projection-checks latency-details-checks latency-capacity-checks latency-storage-checks sm-snapshot-ordering ux-commercial-presentation time-storage-fault-checks time-storage-atomic-checks time-storage-supervisor-checks time-storage-process-checks; do
             dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --$case 2>&1 | tee $case.log
           done
       - name: Retain the actual boundary result including failures
@@ -235,7 +235,7 @@ jobs:
             stability-audit-fixes.log
             lifecycle-ux.log
             latency-*-checks.log
-            audit03-snapshots.log
+            sm-snapshot-ordering.log
             ux-commercial-presentation.log
           if-no-files-found: warn
           retention-days: 30

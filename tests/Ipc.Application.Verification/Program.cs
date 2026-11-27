@@ -36,31 +36,59 @@ var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
 var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (Environment.GetEnvironmentVariable("IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME") == "1")
     WindowsStoragePaths.UserRootForVerification = () => Path.Combine(root, "synthetic-windows-user");
-if (args.Contains("--cr-report-boundaries")) { await CrReportBoundaryChecks.Run(workspace, root); return; }
-if (args.Contains("--cr-report-cameras")) { await CrReportCameraChecks.Run(workspace, root); return; }
-if (args.Contains("--cr-sm-removal")) { await CrVerifiedSmChecks.Removal(workspace, root); return; }
-if (args.Contains("--cr-sm-dispatch")) { await CrVerifiedSmChecks.Dispatch(workspace, root); return; }
-if (args.Contains("--cr-sm-live-devices")) { await CrVerifiedSmChecks.LiveDevices(workspace, root); return; }
-if (args.Contains("--cr-sm-backup-ownership")) { await CrVerifiedSmChecks.BackupOwnership(workspace, root); return; }
-if (args.Contains("--cr-sm-backup-fences")) { await CrVerifiedSmChecks.BackupFences(workspace, root); return; }
-if (args.Contains("--cr-sm-templates")) { await CrVerifiedSmChecks.Templates(workspace, root); return; }
-if (args.Contains("--cr-sm-preferences")) { await CrVerifiedSmChecks.Preferences(workspace, root); return; }
+if (args.Contains("--platform-custody-isolation"))
+{
+    await CustodyAndIsolationChecks.Run(workspace, root);
+    return;
+}
+if (args.Contains("--camera-acquisition-boundaries"))
+{
+    await AcquisitionBoundaryChecks.Run(workspace, root);
+    return;
+}
 if (args.Contains("--mvs-presence")) { await MvsPresenceChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-single-station")) { await SmSingleStationChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-field-p1")) { await SmFieldReadiness.Run(workspace, root); return; }
-if (args.Contains("--sm-arrival-cameras")) { await Ipc.Verification.SmArrivalCameraChecks.Run(workspace, root); return; }
-if (args.Contains("--sm-arrivals")) { await Ipc.Verification.SmArrivalChecks.Run(workspace, root); return; }
-if (args.Contains("--sm-round-lifecycle")) { await Ipc.Verification.SmRoundLifecycle.Run(workspace, root); return; }
-if (args.Contains("--sm-dispatch-resources")) { await SmDispatchResources.Run(workspace, root); return; }
+if (args.Contains("--sm-arrival-cameras-software")) { await Ipc.Verification.SmArrivalCameraChecks.Run(workspace, root, native: false); return; }
+if (args.Contains("--sm-arrival-cameras-native")) { await Ipc.Verification.SmArrivalCameraChecks.Run(workspace, root, native: true); return; }
+if (args.Contains("--sm-arrivals"))
+{
+    await Ipc.Verification.SmArrivalChecks.Run(workspace, root);
+    await RcsArrivalContinuityChecks.Run(workspace, Path.Combine(root, "camera-confirmation"));
+    return;
+}
+if (args.Contains("--sm-round-lifecycle"))
+{
+    await Ipc.Verification.SmRoundLifecycle.Run(workspace, Path.Combine(root, "sm-round-lifecycle"));
+    await SmInductionGuards.Removal(workspace, Path.Combine(root, "removal"));
+    await RepeatedPlacementChecks.Run(workspace, Path.Combine(root, "same-placement"));
+    return;
+}
+if (args.Contains("--sm-dispatch-resources"))
+{
+    await SmDispatchResources.Run(workspace, Path.Combine(root, "sm-dispatch-resources"));
+    await SmInductionGuards.Dispatch(workspace, Path.Combine(root, "dispatch"));
+    return;
+}
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 if (args.Contains("--startup-camera-dependencies")) { StartupCameraDependencies.Run(root); return; }
-if (args.Contains("--backup-set-delivery")) { await BackupSetDeliveryChecks.Run(workspace, root); return; }
+if (args.Contains("--backup-set-delivery"))
+{
+    await BackupSetDeliveryChecks.Run(workspace, Path.Combine(root, "backup-set-delivery"));
+    await BackupOwnershipChecks.BackupOwnership(workspace, Path.Combine(root, "backup-ownership"));
+    await BackupOwnershipChecks.BackupFences(workspace, Path.Combine(root, "backup-fences"));
+    return;
+}
 if (args.Contains("--installation-resource-boundary")) { await SportmasterRcs.InstallationBoundaryChecks(workspace, root); return; }
 if (args.Contains("--backup-consistency")) { await BackupConsistency.Run(workspace, root); return; }
 if (args.Contains("--stability-analysis")) { await StabilityAnalysis.Run(workspace, root); return; }
-if (args.Contains("--debug-no-isolation-31")) { await DebugNoIsolation31.Run(workspace, root); return; }
+if (args.Contains("--sm-debug-requests"))
+{
+    await DebugRequestChecks.Run(workspace, root);
+    return;
+}
 if (args.Contains("--installer-storage-checks")) { InstallerStorageChecks.Run(root); return; }
 if (args.Contains("--installer-storage-matrix"))
 {
@@ -89,21 +117,26 @@ if (args.Contains("--interrupted-scan-skip")) { await InterruptedScanSkipChecks.
 if (args.Contains("--management-workspace")) { await ManagementWorkspaceChecks.Run(workspace, root); return; }
 if (args.Contains("--station-position-control")) { await StationPositionControlChecks.Run(workspace, root); return; }
 if (args.Contains("--manual-supply")) { await ManualSupplyChecks.Run(workspace, root); return; }
-if (args.Contains("--manual-rcs-debug-lifecycle")) { await ManualRcsDebugChecks.Lifecycle(workspace, root); return; }
 if (args.Contains("--manual-rcs-debug")) { await ManualRcsDebugChecks.Run(workspace, root); return; }
 if (args.Contains("--camera-rounds")) { await CameraRoundChecks.Run(workspace, root); return; }
-if (args.Contains("--camera-single-frame-recovery")) { await CameraSingleFrameRecovery.Run(workspace, root); return; }
 if (args.Contains("--camera-chain-reliability")) { await CameraChainReliability.Run(workspace, root); return; }
 if (args.Contains("--camera-chain-closure")) { await CameraChainClosure.Run(workspace, root); return; }
-if (args.Contains("--reader-feedback-22")) { await ReaderFeedback22.Run(workspace, root); return; }
-if (args.Contains("--unread-package-27")) { await UnreadPackage27.Run(workspace, root); return; }
-if (args.Contains("--reader-robustness-28")) { await ReaderRobustness28.Run(workspace, root); return; }
+if (args.Contains("--camera-acquisition"))
+{
+    await ReaderFeedbackChecks.Run(workspace, Path.Combine(root, "reader-feedback"));
+    await ReaderRobustnessChecks.Run(workspace, Path.Combine(root, "reader-robustness"));
+    return;
+}
 if (args.Contains("--sm-automatic-rcs")) { await SportmasterRcs.AutomaticRcs(workspace, root); return; }
 if (args.Contains("--installation-configuration")) { InstallationConfigurationChecks.Run(root); return; }
 if (args.Contains("--industrial-lifecycle")) { IndustrialLifecycle.Run(root); return; }
 if (args.Contains("--industrial-rollback")) { await IndustrialRollback.Run(workspace, root); return; }
 if (args.Contains("--industrial-version-pruning")) { await IndustrialVersionPruning.Run(workspace, root); return; }
-if (args.Contains("--permanent-deletion-02")) { await PermanentDeletion02.Run(workspace, root); return; }
+if (args.Contains("--permanent-data-deletion"))
+{
+    await PermanentDeletionChecks.Run(workspace, root);
+    return;
+}
 if (args.Contains("--uninstall-data-boundary")) { await UninstallDataBoundary.Run(root); return; }
 if (args.Contains("--uninstall-assets")) { await UninstallAssetsChecks.Run(root); return; }
 if (args.Contains("--industrial-opaque-removal")) { await IndustrialOpaqueRemoval.Run(workspace, root); return; }
@@ -111,23 +144,36 @@ if (args.Contains("--industrial-quiet-deployment")) { IndustrialQuietDeployment.
 if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run(workspace, root); return; }
 if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); return; }
 if (args.Contains("--lifecycle-restore")) { await LifecycleRestore.Run(workspace, root); return; }
-if (args.Contains("--operator-corrections-29")) { await OperatorCorrections29.Run(workspace, root); return; }
-if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
-if (args.Contains("--live-device-cleanup")) { await LiveDeviceCleanup.Run(workspace, root); return; }
 if (args.Contains("--sm-runtime-responsibility")) { await SmRuntimeResponsibility.Run(workspace, root); return; }
-if (args.Contains("--live-devices-30")) { await LiveDeviceCleanup.Run(workspace, root); await LiveDevices30.Run(workspace, root); return; }
+if (args.Contains("--sm-camera-reconfiguration"))
+{
+    await LiveDeviceCleanup.Run(workspace, Path.Combine(root, "reconfiguration"));
+    await CameraReconfigurationChecks.Run(workspace, Path.Combine(root, "reconfiguration"));
+    await CameraReplacementGuards.LiveDevices(workspace, Path.Combine(root, "live-devices"));
+    return;
+}
 if (args.Contains("--mvs-stop-reconnect")) { await MvsStopReconnect.Run(); return; }
 if (args.Contains("--mvs-still-frames")) { await MvsStillFrames.Run(); return; }
 if (args.Contains("--log-readable")) { LogReadable.Run(); return; }
 if (args.Contains("--work-card-current")) { await WorkCardCurrent.Run(workspace, root); return; }
 if (args.Contains("--history-detail-sheet")) { HistoryDetailSheet.Run(workspace); return; }
-if (args.Contains("--installation-receipts-04")) { InstallationReceipts04.Run(root); return; }
-if (args.Contains("--first-configuration-03")) { await FirstConfiguration03.Run(); return; }
+if (args.Contains("--installation-receipts"))
+{
+    InstallationReceiptChecks.Run(root);
+    return;
+}
+if (args.Contains("--sm-configuration-preferences"))
+{
+    await FirstConfigurationChecks.Run();
+    await ConfigurationAndPreferences.EditorIdentity(workspace, Path.Combine(root, "editor"));
+    await ConfigurationAndPreferences.Templates(workspace, Path.Combine(root, "templates"));
+    await ConfigurationAndPreferences.Preferences(workspace, Path.Combine(root, "preferences"));
+    return;
+}
 if (args.Contains("--dual-camera-performance")) { await DualCameraPerformance.Run(workspace, root); return; }
 if (args.Contains("--reader-ingress-terminal-22")) { await ReaderIngressTerminal22.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }
 if (args.Contains("--shutdown-resources")) { await SportmasterRcs.ShutdownResources(workspace, root); return; }
-if (args.Contains("--mvs-contrast-checks")) { SportmasterRcs.MvsContrastChecks(); return; }
 if (args.Contains("--mvs-latency")) { SportmasterRcs.MvsLatency(args); return; }
 if (args.Contains("--decode-format-benchmark")) { SportmasterRcs.DecodeFormatBenchmark(args); return; }
 if (args.Contains("--decode-tilt-benchmark")) { DecodeTiltBenchmark.Run(args); return; }
@@ -140,7 +186,12 @@ if (args.Contains("--mvs-network-reconnect")) { await MvsNetworkReconnect.Run(wo
 if (args.Contains("--sm-built-in-only")) { await SportmasterRcs.BuiltInOnly(workspace, root, args); return; }
 if (args.Contains("--station-single-camera")) { await SportmasterRcs.SingleCamera(workspace, root); return; }
 if (args.Contains("--hikrobot-sdk-editing")) { HikrobotSdkEditing.Run(workspace, root); return; }
-if (args.Contains("--hikrobot-hardening")) { await HikrobotHardening.Run(workspace, root); return; }
+if (args.Contains("--hikrobot-sdk-contracts"))
+{
+    SportmasterRcs.MvsContrastChecks();
+    await HikrobotHardening.Run(workspace, root);
+    return;
+}
 if (args.Contains("--storage-baseline") || args.Contains("--storage-schema-only")) { await StorageBaseline.Run(workspace, root, args.Contains("--storage-baseline")); return; }
 if (args.Contains("--supervisor-continuity-child")) { await SupervisorContinuity.Child(workspace, args[^1]); return; }
 if (args.Contains("--time-storage-exit-child")) { await Task.Delay(400); Environment.Exit(int.Parse(args[Array.IndexOf(args, "--time-storage-exit-child") + 1])); return; }
@@ -153,10 +204,7 @@ if (args.Contains("--time-storage-atomic-checks")) { Console.WriteLine("Evidence
 if (args.Contains("--time-storage-fault-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageFaultChecks.Run(workspace, root); await StartupStorageBoundaries.Run(workspace, Path.Combine(root, "startup-storage")); return; }
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--stability-audit-fixes")) { await StabilityAuditFixes.Run(workspace, root); return; }
-if (args.Contains("--stability-audit-history")) { StabilityAuditFixes.History(workspace, root); return; }
-if (args.Contains("--stability-audit-maintenance")) { await StabilityAuditFixes.Maintenance(root); return; }
 if (args.Contains("--lifecycle-ux")) { await LifecycleOptimization.Run(workspace, root); await MaintenanceProgressChecks.Run(workspace, Path.Combine(root, "maintenance-progress")); return; }
-if (args.Contains("--maintenance-progress-checks")) { await MaintenanceProgressChecks.Run(workspace, root); return; }
 if (args.Contains("--latency-capacity-checks")) { await LatencyCapacityChecks.Run(workspace, root); return; }
 if (args.Contains("--latency-projection-checks")) { await LatencyProjectionChecks.Run(workspace, root); return; }
 if (args.Contains("--latency-details-checks")) { await LatencyDetailsChecks.Run(workspace, root); return; }
@@ -197,20 +245,12 @@ if (args.Contains("--installer-options")) { if (args.Contains("--expected-acp"))
 if (args.Contains("--shortcut-lifecycle")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); if (args.Contains("--expected-acp")) InstallerOptions.RequireCodePage(args[Array.IndexOf(args, "--expected-acp") + 1]); ShortcutLifecycle.Run(root); return; }
 if (args.Contains("--installer-change-guards")) { await InstallerChangeGuards.Run(workspace, root); return; }
 if (args.Contains("--windows-client-compatibility")) { WindowsClientCompatibilityChecks.Run(); return; }
-if (args.Contains("--commercial-components")) { var i = Array.IndexOf(args, "--commercial-components"); CommercialComponentReview.Run(root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--commercial-productization")) { await CommercialProductization.Run(workspace, root); return; }
-if (args.Contains("--startup-deployment")) { await StartupDeployment.Run(workspace, root); return; }
 if (args.Contains("--ux-commercial-presentation")) { await UxCommercialPresentation.Run(workspace, root); return; }
 if (args.Contains("--ux-commercial-configuration")) { await ArchitectureQuality.UxCommercialConfigurationChecks(workspace, root); return; }
-if (args.Contains("--ux-commercial-inputs")) { await UxCommercialInputs.Run(workspace, root); return; }
-if (args.Contains("--resource-risks")) { await ResourceRisks.Run(workspace, root); return; }
-if (args.Contains("--audit03-maintenance")) { await Audit03.Maintenance(workspace, root); return; }
-if (args.Contains("--audit03-snapshots")) { await Audit03.Snapshots(workspace, root); return; }
+if (args.Contains("--sm-snapshot-ordering")) { await SnapshotOrderingChecks.Run(workspace, root); return; }
 if (args.Contains("--commercial-quality")) { await CommercialQuality.Run(workspace, root, args); return; }
-if (args.Contains("--audit03-rcs")) { await SportmasterRcs.Audit03Checks(workspace, root); return; }
-if (args.Contains("--audit03-input")) { await Audit03.Inputs(workspace, root); return; }
-if (args.Contains("--sportmaster-window-lifecycle")) { await SportmasterWindowLifetime.Run(); return; }
-if (args.Contains("--sportmaster-ui")) { await SportmasterUi.Run(workspace, root); return; }
+if (args.Contains("--sm-rcs-request-order")) { await SportmasterRcs.RequestOrderChecks(workspace, root); return; }
 if (args.Contains("--storage-format-guards")) { await ArchitectureQuality.StorageFormatChecks(workspace, root); return; }
 
 if (args.Contains("--rcs-heartbeat")) { await SportmasterRcs.HeartbeatChecks(workspace); return; }
@@ -218,7 +258,6 @@ if (args.Contains("--rcs-timeout-errors")) { await SportmasterRcs.TimeoutErrorCh
 if (args.Contains("--sportmaster-rcs")) { await SportmasterRcs.Run(workspace, root); return; }
 
 if (args.Contains("--version-compatibility")) { await VersionCompatibility.Run(workspace, root); return; }
-if (args.Contains("--signed-business-compatibility")) { var i = Array.IndexOf(args, "--signed-business-compatibility"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2]), declaredCompatibility: true); return; }
 if (args.Contains("--configuration-confirmation")) { await ArchitectureQuality.ConfigurationConfirmationChecks(workspace, root); return; }
 if (args.Contains("--configuration-confirmation-crash-child")) { var i = Array.IndexOf(args, "--configuration-confirmation-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], "BeforeCreate"); return; }
 if (args.Contains("--raw-custody-child")) { var i = Array.IndexOf(args, "--raw-custody-child"); await ArchitectureQuality.RawCustodyChild(workspace, args[i + 1]); return; }
@@ -228,19 +267,13 @@ if (args.Contains("--current-offline-recovery-child")) { var i = Array.IndexOf(a
 if (args.Contains("--receipt-custody")) { await ArchitectureQuality.CustodyChecks(workspace, root); return; }
 if (args.Contains("--upload-crash-child")) { var i = Array.IndexOf(args, "--upload-crash-child"); await ArchitectureQuality.UploadCrashChild(workspace, args[i + 1]); return; }
 if (args.Contains("--configuration-crash-child")) { var i = Array.IndexOf(args, "--configuration-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], args[i + 2]); return; }
-if (args.Contains("--quality-extensions")) { var i = Array.IndexOf(args, "--quality-extensions"); await ArchitectureQuality.ExtensionChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
-if (args.Contains("--inventory-closure")) { await ArchitectureQuality.InventoryClosureChecks(workspace, root); return; }
 if (args.Contains("--review-closure")) { await ArchitectureQuality.ReviewClosureChecks(workspace, root); return; }
 if (args.Contains("--architecture-quality")) { await ArchitectureQuality.Run(workspace, root); return; }
 if (args.Contains("--acquisition-lifecycle")) { await AcquisitionLifecycle.Run(workspace, root); return; }
 if (args.Contains("--application-architecture")) { await ApplicationArchitecture.Run(workspace, root); return; }
-if (args.Contains("--qualified-capabilities")) { var i = Array.IndexOf(args, "--qualified-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2]), true); return; }
-if (args.Contains("--signed-capabilities")) { var i = Array.IndexOf(args, "--signed-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--review-regressions")) { ReviewRegressions.Run(root); return; }
-if (args.Contains("--reliability-closure")) { await ReliabilityClosure.Run(workspace, root); return; }
 if (args.Contains("--backup-health-recovery")) { await BackupHealthRecovery.Run(workspace, root); return; }
 if (args.Contains("--capability-closure")) { await CapabilityClosure.Run(workspace, root); return; }
-if (args.Contains("--site-capabilities")) { await OptionalCapabilities.Run(workspace, root); return; }
 // A misspelled or retired selector must never pass by running the default suite.
 if (args.FirstOrDefault(a => a.StartsWith("--", StringComparison.Ordinal)) is { } unsupported)
 {

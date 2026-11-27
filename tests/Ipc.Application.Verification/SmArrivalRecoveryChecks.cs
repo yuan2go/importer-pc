@@ -38,10 +38,10 @@ internal static class SmArrivalRecoveryChecks
         clock.Elapse(TimeSpan.FromMilliseconds(1001));
         Check((await h.App.SnapshotAsync()).Rounds.Single().AutoExpired, "original placement read window expires without being renewed by heartbeats");
         h.Peer.HeartbeatTransform = _ => "{\"invalid\":true}";
-        Check(await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Failed, "HTTP 200 with malformed protocol is not an acknowledgement");
+        Check(await SmRoundFixture.CompletedHeartbeatAsync(h.App) == RcsHeartbeatResult.Failed, "HTTP 200 with malformed protocol is not an acknowledgement");
         Check(!Lane(await h.App.SnapshotAsync()).Arrival!.Confirmed, "invalid protocol immediately withdraws valid vehicle confirmation");
         h.Peer.HeartbeatTransform = null;
-        Check(await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received, "same vehicle can regain actual confirmation");
+        Check(await SmRoundFixture.CompletedHeartbeatAsync(h.App) == RcsHeartbeatResult.Received, "same vehicle can regain actual confirmation");
         Check(Lane(await h.App.SnapshotAsync()).Arrival!.Generation == generation && (await h.App.SnapshotAsync()).Rounds.Single().Id == round,
             "same unsubmitted vehicle recovery retains arrival and parcel identity");
         await Observe(["CAMERA-LATE-001"]);
@@ -95,7 +95,7 @@ internal static class SmArrivalRecoveryChecks
             s = await h.App.SnapshotAsync();
             var unsafeEnable = await h.App.SetPositionEnabledAsync(new(Wire.Id(), s.RuntimeId, "left", Lane(s).SupplyControl!.Revision, true), default);
             Check(unsafeEnable.Status == "Rejected", "a physically late old membership update cannot be mistaken for safe re-enable");
-            Check(await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received && !h.Peer.RemoteMembers.Contains("MANUAL-LEFT"),
+            Check(await SmRoundFixture.CompletedHeartbeatAsync(h.App) == RcsHeartbeatResult.Received && !h.Peer.RemoteMembers.Contains("MANUAL-LEFT"),
                 "fresh removal is sent, but cannot prove that old remote work was cancelled");
             // A valid response settles membership before the capability monitor
             // necessarily replaces its cached timeout health. Wait for the same
@@ -115,30 +115,47 @@ internal static class SmArrivalRecoveryChecks
         foreach (var source in h.Factory.Cameras.Values) source.ConfirmConnected();
         await CameraRoundHarness.Until(async () => Lane(await h.App.SnapshotAsync()).Arrival?.CameraBoundaryReady == true);
         await ManagementModeFixture.Authorize(h.App);
-        var s = await h.App.SnapshotAsync();
-        await h.App.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
-        using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
-        h.App.BackupBoundary = phase => { if (phase == "Inventory") { entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException(); } };
-        Task<BusinessReceipt> backup = null!;
-        var path = Path.Combine(root, "heartbeat-consistent.db");
-        await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
+        await CameraRoundHarness.Until(async () =>
         {
-            backup = h.App.BackupAsync(path, default);
-            Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(8))), "backup freezes the heartbeat membership lease before its source snapshot");
+            var snapshot = await h.App.SnapshotAsync();
+            var result = await h.App.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause"));
+            if (result.Status == "Conflict") return false;
+            Check(result.Status == "Persisted", "pause accepted before backup: " + result.Reason);
             return true;
         });
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var release = new ManualResetEventSlim();
+        h.App.BackupBoundary = phase =>
+        {
+            if (phase != "Inventory") return;
+            entered.TrySetResult();
+            if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Heartbeat backup fence was not released");
+        };
+        Task<BusinessReceipt>? backup = null;
+        var path = Path.Combine(root, "heartbeat-consistent.db");
         try
         {
+            await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
+            {
+                backup = Task.Run(() => h.App.BackupAsync(path, default));
+                await BackupConsistency.AwaitBoundary(entered.Task, backup);
+                return true;
+            });
             var revision = (await h.App.SnapshotAsync()).Revision;
             var source = h.Factory.Cameras[h.Config.Topology!.Readers[0].DeviceId];
             Check(source.Read([], new(TrayPresence.Present, "backup-preview-only")), "physical preview during backup retires normally without a durable camera write");
             for (var i = 0; i < 2; i++)
-                Check(await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received,
+                Check(await SmRoundFixture.CompletedHeartbeatAsync(h.App) == RcsHeartbeatResult.Received,
                     "actual heartbeat continues during frozen backup without changing the business snapshot");
             Check((await h.App.SnapshotAsync()).Revision == revision, "heartbeat lease avoids concurrent business writes during backup");
         }
-        finally { release.Set(); h.App.BackupBoundary = null; }
-        Check((await backup).Status == "BackupCreated" && ParcelRecovery.InspectAnalysisBackup(path, new Ipc.Application.Sportmaster.SportmasterFlow()).DatabaseVersion == ParcelRepository.CurrentStorageVersion,
+        finally
+        {
+            release.Set();
+            try { if (backup is not null) await backup; }
+            finally { h.App.BackupBoundary = null; }
+        }
+        Check((await backup!).Status == "BackupCreated" && ParcelRecovery.InspectAnalysisBackup(path, new Ipc.Application.Sportmaster.SportmasterFlow()).DatabaseVersion == ParcelRepository.CurrentStorageVersion,
             "current-format complete backup retains heartbeat uncertainty and original recovery boundaries");
         await h.App.DisposeAsync();
         var sourceDatabase = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster", "sportmaster.db");

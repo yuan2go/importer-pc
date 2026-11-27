@@ -19,7 +19,7 @@
 5. 更新唯一当前入口、缺失/公开范围、manifest与变更记录；不复制新问题表或批准新规则。
 6. 再核对远端，审查实际暂存差异，普通提交入main；重新读取远端完整路径、逐文件字节及关键正文。回读收据单独保存，不能用本地提交或推送返回代替。
 
-工具实际命令与边界见[tools/README.md](../../../tools/README.md)。旧[artifact-checks.json](../../baseline/artifact-checks.json)仅为输入继承的历史检查，不是续作重新执行。
+工具实际命令与边界见[tools/README.md](../../../tools/README.md)。旧[artifact-checks.json](../baseline/artifact-checks.json)仅为输入继承的历史检查，不是续作重新执行。
 
 ## 关闭标准与后续
 

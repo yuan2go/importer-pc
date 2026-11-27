@@ -565,6 +565,7 @@ static partial class SportmasterRcs
             try { while (!stop.IsCancellationRequested) { var context = await listener.GetContextAsync().WaitAsync(stop.Token); pending.Add(Handle(context)); } }
             catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
             catch (HttpListenerException) when (stop.IsCancellationRequested) { }
+            catch (ObjectDisposedException) when (stop.IsCancellationRequested) { }
         }
         async Task Handle(HttpListenerContext context)
         {

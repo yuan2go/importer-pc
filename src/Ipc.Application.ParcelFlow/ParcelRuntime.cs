@@ -382,8 +382,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             lane.Dispositions.AddOrUpdate("OldArrivalGeneration", 1, (_, count) => count + 1);
             return true; // Normal retirement of an old generation, not source failure.
         }
-        // One position owns this synchronous durable handoff. No shared callback lock,
-        // business gate or native callback is held while SQLite commits.
+        // Each position commits its own durable handoff outside the callback and business locks.
         lock (lane.Sync)
         {
             var laneWaitMs = Stopwatch.GetElapsedTime(enteredTicks).TotalMilliseconds;

@@ -16,6 +16,7 @@ static class ParameterRefactor
     }
     public static async Task Run(string workspace, string root)
     {
+        ConfigurationOwnership(root);
         SportmasterRcs.ParameterStaticChecks(workspace);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var oldReaders = ParcelBindings.Readers(c); var fixtureReaders = oldReaders.Select((r, i) => r with { DeviceId = "parameter." + Wire.Id() + "." + i }).ToArray();
@@ -64,7 +65,7 @@ static class ParameterRefactor
         Check(defaults.Policy.StationCode == c.StationId && defaults.Build().StationCode == c.StationId && defaults.Policy.BackupIntervalMinutes == "60" && defaults.Policy.BackupMaximumSets == "10" && !defaults.Policy.BackupEnabled, "mandatory system values have explicit defaults; optional scheduled backup remains off");
         var path = Path.Combine(root, "parameters"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c with { BarcodeFilter = new("OK[0-9]+") });
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
-        var factory = new UxCommercialInputs.InputFactory(new P0SimulationFactory(launch));
+        var factory = new ReferenceInputFixture.InputFactory(new P0SimulationFactory(launch));
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
         await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         var reader = c.Topology!.Readers[0].DeviceId;
@@ -149,8 +150,11 @@ static class ParameterRefactor
         var heldProxy = DispatchProxy.Create<IManagementParcelFixture, SaveProbe>(); var heldProbe = (SaveProbe)(object)heldProxy; heldProbe.Inner = app; heldProbe.FailInspection = true;
         var heldVm = new ParcelViewModel(heldProxy, "校验期间编辑", "合成验证"); await heldVm.RefreshAsync(); await heldVm.LoadCapabilitiesAsync(); heldVm.ConfigurationReason = "Synthetic validation race";
         heldVm.StructuredPolicy!.ResidentHistory = "2000"; heldProbe.HoldValidation = true; var heldSave = heldVm.SaveStructuredConfigurationAsync();
-        try { await heldProbe.ValidationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        heldVm.StructuredPolicy.ResidentHistory = "2100"; heldProbe.ValidationRelease.TrySetResult(); await heldSave; }
+        try
+        {
+            await heldProbe.ValidationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            heldVm.StructuredPolicy.ResidentHistory = "2100"; heldProbe.ValidationRelease.TrySetResult(); await heldSave;
+        }
         finally { heldProbe.ValidationRelease.TrySetResult(); await heldSave.WaitAsync(TimeSpan.FromSeconds(5)); }
         heldProbe.FailInspection = false; await heldVm.InspectLastSaveAsync();
         Check(heldVm.HasUnsavedConfiguration && heldVm.StructuredPolicy.ResidentHistory == "2100" && (await app.SnapshotAsync()).Configuration.Pending!.Retention!.ResidentHistory == 2000, "late authority inspection accepts only the pre-validation submission while newer input remains unsaved");
@@ -176,6 +180,39 @@ static class ParameterRefactor
             if (method.Name == nameof(IParcelApplication.ValidateConfigurationAsync)) return Validate((ParcelConfiguration)args![0]!);
             if (method.Name == nameof(IParcelApplication.StageConfigurationAsync)) StageCalls++;
             try { return method.Invoke(Inner, args); } catch (TargetInvocationException ex) { System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException!).Throw(); throw; }
+        }
+    }
+
+    sealed record MutableConfiguration(Dictionary<string, string> Values);
+    internal static void ConfigurationOwnership(string root)
+    {
+        var seed = new MutableConfiguration(new() { ["original"] = "seed" });
+        var revisions = new ConfigurationRevisions<MutableConfiguration>(Path.Combine(root, "configuration.json"), seed, _ => []);
+        seed.Values["original"] = "changed";
+        Check(revisions.Current.Effective.Values["original"] == "seed", "configuration seed is a defensive snapshot");
+        var candidate = new MutableConfiguration(new() { ["candidate"] = "saved" });
+        var staged = revisions.Stage(revisions.Current.Revision, candidate);
+        candidate.Values["candidate"] = "caller"; staged.Pending!.Values["candidate"] = "returned";
+        var exposed = revisions.Current; exposed.Pending!.Values["candidate"] = "snapshot";
+        Check(revisions.Current.Pending!.Values["candidate"] == "saved", "caller, returned receipt and public snapshots cannot mutate the configuration ledger");
+        _ = revisions.BeginActivation(_ => true, value => value.Values["candidate"] = "preflight");
+        var attempt = revisions.Current.Activation!.Id;
+        try { revisions.Stage(revisions.Current.Revision, candidate); throw new Exception("staging during activation was accepted"); }
+        catch (InvalidOperationException) { }
+        try { revisions.FailActivation(Wire.Id(), seed, candidate, new IOException("wrong attempt")); throw new Exception("wrong activation failure was accepted"); }
+        catch (InvalidOperationException) { }
+        Check(revisions.Current.Activation!.Id == attempt && revisions.Current.Pending!.Values["candidate"] == "saved", "activation callback, staging and foreign failure cannot replace the active candidate");
+        revisions.ConfirmActivation(attempt);
+        Check(revisions.Current.Effective.Values["candidate"] == "saved", "activation confirms the exact frozen candidate");
+        revisions.Stage(revisions.Current.Revision, seed); var revision = revisions.Current.Revision;
+        if (OperatingSystem.IsWindows())
+        {
+            using var blocked = new FileStream(Path.Combine(root, "configuration.json"), FileMode.Open, FileAccess.Read, FileShare.Read);
+            var failed = false;
+            try { revisions.BeginActivation(_ => true, _ => { }); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException) { failed = true; }
+            Check(failed && revisions.Current.Revision == revision && revisions.Current.Status == "PendingRestart",
+                "failed activation publication does not rewrite an uncommitted transition as activation failure");
         }
     }
 }

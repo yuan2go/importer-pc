@@ -55,9 +55,10 @@ internal static class HikrobotHardening
         var directory = Path.Combine(root, "barcode-diagnostics"); Directory.CreateDirectory(directory);
         var now = DateTimeOffset.UtcNow; const string legacyCode = "SYNTHETIC-LEGACY-BARCODE", currentCode = "SYNTHETIC-CURRENT-BARCODE";
         // The actual journal format is one JSON object per physical line.
-        var legacy = System.Text.Json.JsonSerializer.Serialize(new { At = now, ParcelCode = legacyCode, Level = "信息", Event = "legacy" });
+        const string oldProof = "legacy-sensitive-fixture", newProof = "current-sensitive-fixture";
+        var legacy = System.Text.Json.JsonSerializer.Serialize(new { At = now, ParcelCode = legacyCode, Password = oldProof, Level = "信息", Event = "legacy" });
         File.WriteAllText(Path.Combine(directory, "runtime.jsonl"), legacy + "\n");
-        var current = new { At = now, ParcelCode = currentCode, Event = "current", StatusCode = 200 };
+        var current = new { At = now, ParcelCode = currentCode, Password = newProof, Event = "current", StatusCode = 200 };
         var originalHash = Wire.Hash(Wire.Encode(current));
         await using (var journal = new RuntimeJournal(directory, _ => { }))
         {
@@ -67,7 +68,7 @@ internal static class HikrobotHardening
                 At = now,
                 Event = "debug",
                 Candidates = new[] { currentCode },
-                Body = Wire.Encode(new { loadCode = currentCode, skuId = "KEPT-SKU" })
+                Body = Wire.Encode(new { loadCode = currentCode, skuId = "KEPT-SKU", token = newProof })
             });
             using var budget = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             while (true)
@@ -77,26 +78,26 @@ internal static class HikrobotHardening
                 await Task.Delay(10, budget.Token);
             }
             var tail = Wire.Encode(journal.ReadTail(null, null));
-            Check(!tail.Contains(currentCode) && tail.Contains("KEPT-SKU"), "live diagnostic tail has masked barcode but useful response metadata");
+            Check(!tail.Contains(newProof) && tail.Contains(currentCode) && tail.Contains("KEPT-SKU"), "live diagnostics retain actual barcode and SKU and redact credentials");
         }
         var written = File.ReadAllText(Path.Combine(directory, "runtime.jsonl"));
-        Check(!written.Contains(currentCode) && written.Contains(legacyCode) && Wire.Hash(Wire.Encode(current)) == originalHash,
-            "new records are masked at write while original business object and historical file are not rewritten");
+        Check(!written.Contains(newProof) && written.Contains(oldProof) && written.Contains(currentCode) && written.Contains(legacyCode) && Wire.Hash(Wire.Encode(current)) == originalHash,
+            "new credentials are redacted at write while original business object and historical file are not rewritten");
         var authority = new LocalManagementMode(Path.Combine(root, "log-authority"));
         authority.ConfigurePassword("SYNTHETIC-TEST-PASSWORD"); authority.Enter("SYNTHETIC-TEST-PASSWORD");
         using var reader = new SoftwareLogReader(directory, authority);
         var page = await reader.QueryAsync(new(now.AddMinutes(-1), now.AddMinutes(1)), null, 0, default);
-        Check(page.Entries.Length == 3 && !Wire.Encode(page).Contains(legacyCode) && !Wire.Encode(page).Contains(currentCode),
-            "historical query masks legacy raw barcode without dropping records");
+        Check(page.Entries.Length == 3 && Wire.Encode(page).Contains(legacyCode) && Wire.Encode(page).Contains(currentCode) && !Wire.Encode(page).Contains(oldProof) && !Wire.Encode(page).Contains(newProof),
+            "historical query keeps business barcodes and redacts legacy and new credentials");
         var context = await reader.ContextAsync(page.Selection, page.Entries[0].Location, 0, 2, default);
-        Check(context.Entries.Length == 3 && !Wire.Encode(context).Contains(legacyCode), "context retains original adjacency without exposing legacy barcode");
+        Check(context.Entries.Length == 3 && Wire.Encode(context).Contains(legacyCode) && !Wire.Encode(context).Contains(oldProof) && !Wire.Encode(context).Contains(newProof), "context retains original adjacency without exposing credentials");
         var forbidden = Path.Combine(root, "protected-log-export.jsonl"); bool blocked = false;
         try { await reader.ExportAsync(page.Selection, forbidden, false, 0, default); }
         catch (IOException ex) when (ex.Message.Contains("业务数据目录之外")) { blocked = true; }
         Check(blocked && !File.Exists(forbidden), "export still refuses the protected business-data tree");
         var target = Path.GetFullPath(Path.Combine(root, "..", "protected-log-export-" + Wire.Id() + ".jsonl"));
-        Check(await reader.ExportAsync(page.Selection, target, false, 0, default) == 3 && !File.ReadAllText(target).Contains(legacyCode) &&
-            !File.ReadAllText(target).Contains(currentCode), "export revalidates originals and masks both historical and new barcode fields");
+        Check(await reader.ExportAsync(page.Selection, target, false, 0, default) == 3 && File.ReadAllText(target).Contains(legacyCode) && File.ReadAllText(target).Contains(currentCode) &&
+            !File.ReadAllText(target).Contains(oldProof) && !File.ReadAllText(target).Contains(newProof), "export revalidates originals and protects credentials while retaining the actual barcode");
         Console.WriteLine("SDK_HARDENING_PASS checks=" + checks + "; pure identity and actual diagnostic storage/query/export; SDK/Production qualification NOT_RUN");
     }
 }

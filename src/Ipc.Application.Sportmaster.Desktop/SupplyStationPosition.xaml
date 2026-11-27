@@ -370,10 +370,7 @@
      </Grid>
     </Border>
     </Grid>
-    <!-- Site requirement: wave, task, SKU and returned quantity stay on the work surface with the confirmed chute.
-         They belong to the same confirmed identity, so they follow ShowConfirmedTask and never outlive the slot.
-         Shared rows align the two cards; hidden retains measured space during processing.
-         Two rows keep labels and values readable; values are selectable and wrap without ellipsis. -->
+    <!-- The two positions share the task row height so that their cards stay aligned. -->
     <Grid Grid.Row="3" x:Name="TaskFields">
      <Grid.Resources>
       <Style x:Key="LaneTaskLabel" TargetType="TextBlock" BasedOn="{StaticResource StationTaskLabel}">

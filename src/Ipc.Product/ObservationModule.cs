@@ -100,8 +100,7 @@ sealed class ObservationModule(StationApplication application, IControlledObserv
             missed++; Interlocked.Increment(ref pendingOverloadMarkers);
             rejection = $"Observation not admitted: device={observation.DeviceId}; epoch={observation.Epoch}; source={observation.SourceEventId}; unadmitted={missed}";
         }
-        // H04 still requires the overload marker before returning rejection. A slow/failing
-        // marker must not hold the common ingress gate and block other sources' shutdown.
+        // Persist the overload marker before rejecting input. Other sources can stop during this write.
         try { application.Latch("Overload", rejection); return false; }
         finally { Interlocked.Decrement(ref pendingOverloadMarkers); }
     }

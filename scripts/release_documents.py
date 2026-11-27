@@ -33,7 +33,7 @@ GUIDES = {
     'docs/runtime/supply-getting-started.md': 'GETTING-STARTED.md',
     'docs/runtime/operations.md': 'OPERATIONS.md',
     'docs/extensions/supply-guide.md': 'EXTENSIONS.md',
-    'docs/runtime/validation/ui-maintainability-16-windows.md': 'WINDOWS-VALIDATION.md',
+    'docs/archive/runtime/validation/ui-maintainability-16-windows.md': 'WINDOWS-VALIDATION.md',
 }
 # Current operation guides and real interface prerequisites only. Historical UI,
 # old account and support-page evidence remains in Git with its original identity.

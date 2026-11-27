@@ -147,8 +147,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
             if (bootstrapErrors.Length != 0) throw new InvalidDataException(string.Join("; ", bootstrapErrors));
             await using var bootstrapFactory = factory(); candidate = bootstrapFactory.Normalize(candidate);
             bootstrapFactory.ValidateStructure(candidate);
-            // Saving initial parameters is allowed without a live SDK/connection; real
-            // deployment qualification still gates normal runtime startup.
+            // First configuration validates the candidate structure before any live device session is opened.
             var bootstrapOperation = Path.Combine(Path.GetFullPath(launch.ConfigurationDirectory), "startup-maintenance", Wire.Id());
             Directory.CreateDirectory(bootstrapOperation);
             if (File.Exists(Seed)) File.Copy(Seed, Path.Combine(bootstrapOperation, "original-business.json"), false);
@@ -190,9 +189,8 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
     }
     int ReadVersionFromCopy(string database, bool displayOnly = false)
     {
-        // SQLite read-only WAL connections may create SHM/WAL sidecars. Inspect a private
-        // DB+WAL snapshot instead; ordinary previews reject a changing pair and
-        // mutating maintenance also holds application-owner. Never open the original DB.
+        // Read-only SQLite can create sidecars. Check that the original DB/WAL pair stayed stable during
+        // copying.
         var sources = new[] { database, database + "-wal" }.Where(File.Exists).ToArray();
         foreach (var source in sources) RecoveryFiles.RequireOrdinaryAncestors(source);
         var originalHashes = sources.ToDictionary(p => p, Wire.FileHash);

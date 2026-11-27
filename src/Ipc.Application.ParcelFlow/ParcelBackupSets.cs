@@ -93,7 +93,7 @@ public static partial class ParcelRecovery
         void Copy(string from, string to, string hash)
         {
             authority(); execution.Checkpoint(); Directory.CreateDirectory(Path.GetDirectoryName(to)!);
-            if (File.Exists(to)) return; // Every existing byte was verified above.
+            if (File.Exists(to)) return;
             RecoveryFiles.CopyVerified(from, to, hash, execution.Token, count => { copied += count; execution.Report(MaintenanceStage.CopyingCustody, copied, total); });
         }
         Copy(backup, target, manifest.DatabaseHash);

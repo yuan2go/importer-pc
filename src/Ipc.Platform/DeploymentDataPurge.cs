@@ -76,7 +76,7 @@ public static partial class WindowsDeploymentSetup
 
     static string PurgeFile(string application, string operation)
     {
-        _ = RollbackFile(application, operation); // Same bounded identity grammar.
+        _ = RollbackFile(application, operation);
         return Path.Combine(MachineRoot, "deployments", application + ".purge-" + operation + ".json");
     }
 

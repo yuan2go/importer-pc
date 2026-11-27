@@ -1,6 +1,6 @@
 # 双相机读码性能测量
 
-2026-11-03。开发开始基线 main `38cb7dc0`，交付整合 main `90d6fdc9`（含调试、设置和当前文档规则）。本页原测量针对内置 MVS 采图、进程内软件解码、内置 RCS；当前新站默认 MVID 原生识码，两种路线计时边界分别解释；沿用 [28 识别规则](../runtime/sm-reader-robustness-28.md) 和[连续供包契约](sm-continuous-induction-closure-01.md)。本方案不改变读码搜索、相机参数、放置判定、请求、权限或生产配置；只用合成数据回归，D/RV及历史验收保持原身份。
+2026-11-03。开发开始基线 main `38cb7dc0`，交付整合 main `90d6fdc9`（含调试、设置和当前文档规则）。本页原测量针对内置 MVS 采图、进程内软件解码、内置 RCS；当前新站默认 MVID 原生识码，两种路线计时边界分别解释；沿用 [28 识别规则](../archive/runtime/sm-reader-robustness-28.md) 和[连续供包契约](sm-continuous-induction-closure-01.md)。本方案不改变读码搜索、相机参数、放置判定、请求、权限或生产配置；只用合成数据回归，D/RV及历史验收保持原身份。
 
 ## 执行前
 

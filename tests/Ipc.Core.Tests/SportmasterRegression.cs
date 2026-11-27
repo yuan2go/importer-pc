@@ -1,0 +1,38 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+[TestClass]
+public sealed class SportmasterRegression : CoreRegression
+{
+    [TestMethod]
+    [TestCategory("Core")]
+    [TestCategory("Sportmaster")]
+    [DataRow("--sm-parameters")]
+    [DataRow("--sm-round-lifecycle")]
+    [DataRow("--sm-dispatch-resources")]
+    [DataRow("--sm-camera-reconfiguration")]
+    [DataRow("--sm-configuration-preferences")]
+    [DataRow("--sm-single-station")]
+    [DataRow("--rcs-timeout-errors")]
+    [DataRow("--parameter-guidance-startup")]
+    [DataRow("--station-single-camera")]
+    [DataRow("--sm-built-in-only")]
+    [DataRow("--sm-runtime-responsibility")]
+    [DataRow("--sm-arrival-cameras-software")]
+    [DataRow("--sm-arrival-cameras-native")]
+    [DataRow("--sm-arrivals")]
+    [DataRow("--sm-original-frame")]
+    [DataRow("--rcs-heartbeat")]
+    [DataRow("--station-position-control")]
+    [DataRow("--management-workspace")]
+    [DataRow("--sm-automatic-rcs")]
+    [DataRow("--sm-field-p1")]
+    [DataRow("--read-cadence")]
+    [DataRow("--interrupted-scan-skip")]
+    [DataRow("--camera-rounds")]
+    [DataRow("--manual-rcs-debug")]
+    [DataRow("--work-card-current")]
+    [DataRow("--history-detail-sheet")]
+    [DataRow("--dual-camera-performance")]
+    [DataRow("--sm-debug-requests")]
+    public Task Contracts(string selector) => RunSuite(selector);
+}

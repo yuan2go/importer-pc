@@ -71,7 +71,7 @@ public static class DeploymentBatch
             { Result(new { Status = "PreflightPassed", PlanSha256 = plan.PlanSha256, request.OperationId, request.ApplicationId, request.SourceCommit, Components = components, DeviceOrBusinessStarted = false }); code = 0; }
             else
             {
-                MachineRuntimePolicy.RequireExtensionInstallerAuthority(); // No hidden elevation or bypass in unattended execution.
+                MachineRuntimePolicy.RequireExtensionInstallerAuthority();
                 ParcelStartupServices.ExecuteBatchInstall(request).GetAwaiter().GetResult();
                 var installed = WindowsDeploymentSetup.Current(request.ApplicationId) ?? throw new IOException("缺少安装提交回执");
                 if (installed.DeploymentPlanIdentity != plan.PlanSha256 || installed.LifecycleState != "Installed") throw new IOException("安装提交身份与计划不匹配");

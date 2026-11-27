@@ -2,10 +2,7 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
-// SM: a saved camera or RCS change reconnects only those devices. The other camera keeps
-// reading and its position keeps supplying; the configuration ledger records one live
-// revision. Anything the runtime cannot swap safely returns null and the caller stages the
-// usual controlled restart, so this never weakens the restart path's guards.
+// Reconnect only the changed SM devices. Returning null leaves the candidate for controlled restart.
 public sealed partial class ParcelRuntime
 {
     // Candidates never installed in ports still own cleanup after a failed Dispose.
@@ -57,7 +54,7 @@ public sealed partial class ParcelRuntime
             }
             repository.Commit(null, "LiveDeviceApplyStarted", Wire.Encode(new { Devices = resources, Actor = ManagementEvidence, CandidateHash = audit.CandidateHash }));
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, Management.Require()); budget.CancelAfter(Effective.TimeoutMs);
-            // A new RCS range is registered before any request can use it; an overlap rejects the save untouched.
+            // Register any ranges declared by the replacement adapter before it can allocate request IDs.
             if (built.Wcs is IWcsRequestPreparer preparer)
                 repository.RegisterIntegrationRequestRanges(preparer, [Effective, candidate],
                     File.Exists(Path.Combine(directory!, "RESTORED-ISOLATED.json")) ? Wire.FileHash(Path.Combine(directory!, "RESTORED-ISOLATED.json")) : null);
@@ -163,7 +160,6 @@ public sealed partial class ParcelRuntime
                 var recovery = Task.Run(() => ReconnectReaderAutomaticallyAsync(session), CancellationToken.None);
                 backgroundTasks["reader-reconnect:" + id] = recovery; auxiliary.Add(recovery);
             }
-            // Camera preview reads the current sessions.
             Volatile.Write(ref previewReaders, readers.ToDictionary(r => r.Key, r => new PreviewReader(r.Value, ParcelConnectionSetup.IsDeferred(Effective, r.Key))));
             audit = audit with { AfterRevision = configuration.Current.Revision, Status = "Effective", Result = "Live device settings applied: " + string.Join(",", resources) + (faults.Count == 0 ? "" : "; start faults: " + string.Join(",", faults)) };
             repository.Commit(null, "ConfigurationLiveDevicesApplied", Wire.Encode(audit), configurationAudit: audit);

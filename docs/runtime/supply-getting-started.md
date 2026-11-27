@@ -1,6 +1,6 @@
-当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见收口前归档，不用于当前操作。
-
 # Supply：首次运行与首条参考作业
+
+本指南供保留的相应装配使用。SM 采用内置设备和 RCS，外置扩展及 Supply 不在当前开发范围内。
 
 Windows先由维护安装既有机器策略，日常使用指定未提权账户（允许UAC deny-only组身份）。当前源码的ProductRuntime在任何配置或持久资源初始化前复用统一身份门禁，直接运行Product/Assembly/WPF也适用；离线维护保留原授权，见[门禁补齐与验证边界](../archive/runtime/runtime-identity-preflight-02.md)。非Windows命令仅作开发模拟，不能证明Windows身份/ACL通过；旧媒介保持原固定源码。
 

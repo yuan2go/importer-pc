@@ -13,8 +13,7 @@ public sealed partial class RuntimeJournal
     const int TailCharacterBudget = 1_048_576, TailEntryBudget = 512;
     void PublishTail(string line, DateTimeOffset writtenAt)
     {
-        // This is only a bounded view of successfully appended diagnostics.
-        // The file remains the export/history authority, never this cache.
+        // The cache contains recent successful appends. Exports read the journal file.
         if (line.Length > 65536)
         {
             var length = 65000;

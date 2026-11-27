@@ -73,6 +73,6 @@
 | 左位旧请求、右位新件 | 两位独立；公共离线和实际资源限制仍准确执行 |
 | 停用／启用但包裹未取下 | 不伪造物理边界或自动重发 |
 
-验证入口沿用 --sm-arrivals（含 SmPlacementIndependenceChecks）、--sm-round-lifecycle、--sm-arrival-cameras、--station-position-control、--sm-dispatch-resources、--camera-chain-reliability 与原生 WPF 的 --home-centered-states、--paused-workstation、--rcs-no-destination-ui。
+验证入口沿用 --sm-arrivals（含 SmPlacementIndependenceChecks）、--sm-round-lifecycle、--sm-arrival-cameras-software、--sm-arrival-cameras-native、--station-position-control、--sm-dispatch-resources、--camera-chain-reliability 与原生 WPF 的 --home-centered-states、--paused-workstation、--rcs-no-destination-ui。
 
 本机可控相机、隔离 SQLite、回环 HTTP 验证不能替代客户 RCS、真实相机和现场节拍验收。真实 SDK、物理取件误判率、现场网络、断电与 24h／72h 长稳需现场验证；不得用合成短测签发现场资格。

@@ -143,11 +143,15 @@ static class InstalledLifecycleWindows
         var seed = Path.Combine(seedRoot, "business.json"); File.WriteAllText(seed, "{\"SyntheticLifecycle\":true}");
         var menu = Path.Combine(privateRoot, "开始菜单"); var desktop = Path.Combine(privateRoot, "桌面");
         var mediaA = Medium("a", new string('a', 40)); var mediaB = Medium("b", new string('b', 40));
+        // Keep the protected lifecycle registration unique. Project the declared
+        // classic shortcut layout only into this fixture's private folders.
+        static DeploymentLocation ShortcutLocation(DeploymentLocation location) =>
+            location with { ApplicationId = "direct-plc", PreviousDeployment = null };
         DeploymentLocation? prior = null;
         void Project(DeploymentLocation location)
         {
-            DeploymentShortcuts.Create(location, menu, desktop, prior);
-            if (prior is not null && prior.ReleaseRoot != location.ReleaseRoot) DeploymentShortcuts.Remove(prior, menu, desktop);
+            DeploymentShortcuts.Create(ShortcutLocation(location), menu, desktop, prior is null ? null : ShortcutLocation(prior));
+            if (prior is not null && prior.ReleaseRoot != location.ReleaseRoot) DeploymentShortcuts.Remove(ShortcutLocation(prior), menu, desktop);
         }
         WindowsDeploymentRequest Request(DeploymentMedia media) => new(media.Root, appId, media.SourceCommit, sid.Value, dataRoot, seedRoot,
             RunMode.Simulation, null, null, [], ConfigurationHashes: new() { ["business.json"] = Wire.FileHash(seed) }, ProgramRoot: programRoot,
@@ -225,16 +229,16 @@ static class InstalledLifecycleWindows
         catch (IOException) { Check(Wire.FileHash(failedJournal) == failedHash && WindowsDeploymentSetup.InspectInstallation(unknown).Status == "CommittedNeedsSystemRepair", "failed projection repair preserves the fixed original operation and permits inspection, not a fresh installation"); }
         WindowsDeploymentSetup.RepairCommittedInstallation(unknown, committedHash, (location, previous) =>
         {
-            DeploymentShortcuts.Create(location, menu, desktop, previous);
-            if (previous is not null) DeploymentShortcuts.Remove(previous, menu, desktop);
+            DeploymentShortcuts.Create(ShortcutLocation(location), menu, desktop, previous is null ? null : ShortcutLocation(previous));
+            if (previous is not null) DeploymentShortcuts.Remove(ShortcutLocation(previous), menu, desktop);
         });
         using (var repaired = System.Text.Json.JsonDocument.Parse(File.ReadAllText(failedJournal)))
             Check(WindowsDeploymentSetup.InspectInstallation(unknown).Status == "Completed" &&
                 Wire.FileHash(repaired.RootElement.GetProperty("SystemRepairArchive").GetString()!) == failedHash &&
-                DeploymentShortcuts.Plan(repair, menu, desktop).Where(p => p.Arguments != "" || Path.GetFileName(p.Path) != "菜鸟供包台.lnk").All(p => !File.Exists(p.Path)),
+                DeploymentShortcuts.Plan(ShortcutLocation(repair), menu, desktop).Where(p => p.Arguments != "" || Path.GetFileName(p.Path) != "菜鸟供包台.lnk").All(p => !File.Exists(p.Path)),
                 "successful repair completes the original receipt, preserves failed bytes and removes the exact previous Start Menu projections");
         var repairedHash = Wire.FileHash(failedJournal);
-        WindowsDeploymentSetup.RepairCommittedInstallation(unknown, committedHash, (location, previous) => DeploymentShortcuts.Create(location, menu, desktop, previous));
+        WindowsDeploymentSetup.RepairCommittedInstallation(unknown, committedHash, (location, previous) => DeploymentShortcuts.Create(ShortcutLocation(location), menu, desktop, previous is null ? null : ShortcutLocation(previous)));
         Check(Wire.FileHash(failedJournal) == repairedHash && Wire.FileHash(data) == dataHash, "repeated completed projection repair does not rewrite the original receipt or business data");
         VerifyShortcuts(updated); VerifyOrdinary(updated, "update-repaired"); prior = updated;
         var displaced = Request(mediaA) with { DataRoot = Path.Combine(dataParent, appId + "-different") };
@@ -244,7 +248,7 @@ static class InstalledLifecycleWindows
         catch (InvalidOperationException) { Check(Wire.FileHash(WindowsDeploymentSetup.Registration(appId)) == committedHash && File.Exists(Path.Combine(updated.ReleaseRoot, "app", "Ipc.Platform.dll")), "responsibility rejection occurs before detach or program deletion"); }
         var foreign = Path.Combine(updated.ReleaseRoot, "foreign-evidence.txt"); File.WriteAllText(foreign, "retain outside inventory");
         var backups = 0;
-        var removed = WindowsDeploymentSetup.Remove(appId, committedHash, _ => { File.Copy(data, Path.Combine(dataRoot, "full-backup.txt")); backups++; }, d => DeploymentShortcuts.Remove(d, menu, desktop));
+        var removed = WindowsDeploymentSetup.Remove(appId, committedHash, _ => { File.Copy(data, Path.Combine(dataRoot, "full-backup.txt")); backups++; }, d => DeploymentShortcuts.Remove(ShortcutLocation(d), menu, desktop));
         Check(backups == 1 && removed.Status == "RemovedWithRetainedFiles" && File.ReadAllText(foreign) == "retain outside inventory" && Wire.FileHash(data) == dataHash &&
             !File.Exists(Path.Combine(desktop, "菜鸟供包台.lnk")), "authorized uninstall preserves data/backup and unlisted evidence while removing only its own shortcuts and inventoried program");
         using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
@@ -265,7 +269,7 @@ static class InstalledLifecycleWindows
         Check(!Directory.Exists(supervisionRoot), "disabled reinstall after real retirement preserves missing supervision instead of fabricating a new budget");
         VerifyShortcuts(reinstall); VerifyOrdinary(reinstall, "reinstall-after-remove");
         Check(reinstall.ConfigurationDirectory == first.ConfigurationDirectory && Wire.FileHash(data) == dataHash && File.Exists(foreign), "uninstall then reinstall retains original seed/data/evidence and starts with ordinary privileges again");
-        _ = WindowsDeploymentSetup.Remove(appId, Wire.FileHash(WindowsDeploymentSetup.Registration(appId)), _ => { }, d => DeploymentShortcuts.Remove(d, menu, desktop));
+        _ = WindowsDeploymentSetup.Remove(appId, Wire.FileHash(WindowsDeploymentSetup.Registration(appId)), _ => { }, d => DeploymentShortcuts.Remove(ShortcutLocation(d), menu, desktop));
         VerifyProtectedPruningAndSupersession(privateRoot, dataParent, programRoot, sid);
         Check(Wire.FileHash(policyFile) == originalPolicy && (File.Exists(productionFile) ? Wire.FileHash(productionFile) : null) == originalProduction && Wire.FileHash(rootsFile) == rootsHash,
             "complete lifecycle leaves the real sportmaster deployment, machine runtime policy and trusted-root bytes unchanged");
@@ -307,7 +311,7 @@ static class InstalledLifecycleWindows
         }
         void VerifyShortcuts(DeploymentLocation location)
         {
-            foreach (var item in DeploymentShortcuts.Plan(location, menu, desktop))
+            foreach (var item in DeploymentShortcuts.Plan(ShortcutLocation(location), menu, desktop))
             {
                 using var link = new ShellLinkFile(item.Path);
                 Check(link.TargetPath == item.Target && link.Arguments == item.Arguments && link.WorkingDirectory == item.WorkingDirectory, "real Unicode shortcut follows the current authoritative release: " + Path.GetFileName(item.Path));

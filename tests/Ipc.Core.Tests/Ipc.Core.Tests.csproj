@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/Ipc.Platform/Ipc.Platform.csproj" />
+    <ProjectReference Include="../../src/Ipc.Operations/Ipc.Operations.csproj" />
     <Compile Include="../Ipc.Verification/CommercialRemovalVerification.cs" Link="CommercialRemovalVerification.cs" />
 
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />

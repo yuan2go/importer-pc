@@ -173,7 +173,7 @@ public static partial class WindowsDeploymentSetup
             var value = document.RootElement;
             if (value.TryGetProperty("ApplicationId", out _) && value.TryGetProperty("ReleaseRoot", out _) && value.TryGetProperty("RuntimeAccountSid", out _))
                 references.Add(Wire.Decode<DeploymentLocation>(value.GetRawText()));
-            else if (Path.GetFileName(file).StartsWith("sportmaster.restore-", StringComparison.Ordinal))
+            else if (ProductDeploymentCatalog.RestoreHandoffProducts.Any(id => Path.GetFileName(file).StartsWith(id + ".restore-", StringComparison.Ordinal)))
             {
                 var intent = Wire.Decode<DeploymentRestoreIntent>(value.GetRawText()); ValidateRestoreIntent(intent);
                 if (file != RestoreIntentFile(intent.ApplicationId, intent.OperationId)) throw new InvalidDataException("恢复引用不属于原操作。");
@@ -204,7 +204,7 @@ public static partial class WindowsDeploymentSetup
         using var identity = WindowsIdentity.GetCurrent();
         var record = new DeploymentPruneRecord(1, DateTimeOffset.UtcNow, actual, "Prepared", [], identity.User!.Value);
         var current = Current(actual.ApplicationId)!;
-        using var rootOwnership = actual.ApplicationId == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(actual.ApplicationId, current.DataRoot) : null;
+        using var rootOwnership = ProductDeploymentCatalog.Find(actual.ApplicationId)?.UsesStrictWindowsStorage == true ? ApplicationRootOwnership.AcquireMaintenance(actual.ApplicationId, current.DataRoot) : null;
         RequirePruneExcludesCurrent(actual, current);
         using var programUse = DeploymentProgramUse.MaintainRoots(actual.Delete.Select(a => a.Root));
         RequirePruneNotExecuting(actual.Delete.Select(a => a.Root));
@@ -380,7 +380,7 @@ public static partial class WindowsDeploymentSetup
         if (resume && record.Status is "Prepared" or "Partial")
         {
             var current = Current(application) ?? throw new InvalidDataException("原登记缺失，不能扩大清理范围。");
-            using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, current.DataRoot) : null;
+            using var rootOwnership = ProductDeploymentCatalog.Find(application)?.UsesStrictWindowsStorage == true ? ApplicationRootOwnership.AcquireMaintenance(application, current.DataRoot) : null;
             using var otherLeases = AcquireOtherPurgeDeployments(application, MachineRoot);
             RequirePruneExcludesCurrent(record.Plan, current);
             foreach (var reference in ReadVersionReferences(Path.Combine(MachineRoot, "deployments"))) RequirePruneExcludesCurrent(record.Plan, reference);

@@ -251,7 +251,7 @@ public static partial class WindowsDeploymentSetup
         using var otherDeployments = AcquireOtherPurgeDeployments(reviewed.ApplicationId, MachineRoot);
         var path = PurgeFile(reviewed.ApplicationId, reviewed.OperationId);
         var current = Current(reviewed.ApplicationId) ?? throw new InvalidDataException("缺少唯一部署登记。");
-        using var rootOwnership = reviewed.ApplicationId == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(reviewed.ApplicationId, current.DataRoot) : null;
+        using var rootOwnership = ProductDeploymentCatalog.Find(reviewed.ApplicationId)?.UsesStrictWindowsStorage == true ? ApplicationRootOwnership.AcquireMaintenance(reviewed.ApplicationId, current.DataRoot) : null;
         if (File.Exists(path))
         {
             var original = ReadPurgeRecord(path);
@@ -288,7 +288,7 @@ public static partial class WindowsDeploymentSetup
             throw new InvalidOperationException("没有可继续的原永久删除。");
         var observed = ProjectDataPurge(record, path, current, MachineRoot);
         if (observed.Status == "Purged") return observed;
-        using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, current.DataRoot) : null;
+        using var rootOwnership = ProductDeploymentCatalog.Find(application)?.UsesStrictWindowsStorage == true ? ApplicationRootOwnership.AcquireMaintenance(application, current.DataRoot) : null;
         RequirePurgeScope(current, MachineRoot);
         var sid = new SecurityIdentifier(current.RuntimeAccountSid);
         return ApplyDataPurge(observed.Status == "NotStarted" ? record : record with { Status = "Purging" }, path, () => Wire.FileHash(Registration(application)),

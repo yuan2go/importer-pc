@@ -86,9 +86,9 @@ public static partial class WindowsDeploymentSetup
 
     static string[] InstalledInventory(DeploymentLocation location)
     {
-        if (location.ApplicationId == "sportmaster" && location.LifecycleState != "Installed" && !File.Exists(location.InventoryFile) && ExtensionSchema.IsHash(location.InventorySha256 ?? ""))
+        if (ProductDeploymentCatalog.Find(location.ApplicationId)?.SupportsOpaqueRemoval == true && location.LifecycleState != "Installed" && !File.Exists(location.InventoryFile) && ExtensionSchema.IsHash(location.InventorySha256 ?? ""))
         {
-            var archive = AssetInventoryArchive(location.InventorySha256!);
+            var archive = AssetInventoryArchive(location.ApplicationId, location.InventorySha256!);
             MachineRuntimePolicy.RequireProtectedEvidence(archive);
             if (new FileInfo(archive).Length > 4 * 1024 * 1024 || Wire.FileHash(archive) != location.InventorySha256)
                 throw new InvalidDataException("原卸载的安全库存回执无法核验。");

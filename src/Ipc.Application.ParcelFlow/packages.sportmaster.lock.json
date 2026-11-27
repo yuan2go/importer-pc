@@ -337,6 +337,12 @@
           "Ipc.Platform": "[1.0.0, )"
         }
       },
+      "ipc.diagnostics": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
+        }
+      },
       "ipc.platform": {
         "type": "Project",
         "dependencies": {

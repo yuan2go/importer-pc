@@ -107,7 +107,7 @@ public static partial class WindowsDeploymentSetup
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         var file = Registration(source.ApplicationId);
-        var stopped = source.ApplicationId == "sportmaster" ? new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), source.ApplicationId, source.DataRoot, default) : null;
+        var stopped = ProductDeploymentCatalog.Find(source.ApplicationId)?.UsesStrictWindowsStorage == true ? new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), source.ApplicationId, source.DataRoot, default) : null;
         FileStream? owner = null;
         try
         {
@@ -115,7 +115,7 @@ public static partial class WindowsDeploymentSetup
             if (Wire.FileHash(file) != expectedRegistrationHash || Wire.Encode(Current(source.ApplicationId)) != Wire.Encode(source))
                 throw new InvalidOperationException("Reviewed deployment changed before migration; no business fence written");
             if (source.LifecycleState != "Installed") throw new InvalidOperationException("Only an installed deployment can begin data-root migration; no business fence written");
-            if (source.ApplicationId == "sportmaster")
+            if (ProductDeploymentCatalog.Find(source.ApplicationId)?.RequiresRestoreHandoff == true)
             {
                 var original = ReadRestoreIntents(source.ApplicationId).Single(i => i.OperationId == restoreOperation && i.TargetRoot == Path.GetFullPath(targetRoot));
                 RequireNoUnresolvedRestore(source.ApplicationId, original.OperationId);

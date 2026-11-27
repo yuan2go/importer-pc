@@ -140,7 +140,7 @@ public static partial class DesktopRecoverySupervisor
     {
         if (args.FirstOrDefault() != "--supervise-desktop") return false;
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-        if (args.Length < 2 || args[1] is not ("sportmaster" or "direct-plc" or "wcs-to-plc")) throw new ArgumentException("Unknown supervised application");
+        if (args.Length < 2 || ProductDeploymentCatalog.Find(args[1])?.UsesRecoveryEntry != true) throw new ArgumentException("Unknown supervised application");
         var presentation = args[2..]; ValidatePresentationArguments(presentation);
         MachineRuntimePolicy.RequireRuntimeIdentity();
         var location = WindowsDeploymentSetup.Current(args[1]) ?? throw new InvalidDataException("No installed recovery owner");

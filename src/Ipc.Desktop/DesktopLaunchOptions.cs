@@ -29,8 +29,9 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
                 throw new ArgumentException("启动参数缺值：" + key);
             if (!options.TryAdd(key, args[i + 1])) throw new ArgumentException("启动参数重复：" + key);
         }
-        var ui = options.GetValueOrDefault("--ui", DefaultUi(applicationId));
-        if (ui != DefaultUi(applicationId))
+        var defaultUi = DefaultUi(applicationId);
+        var ui = options.GetValueOrDefault("--ui", defaultUi);
+        if (ui != defaultUi)
             throw new ArgumentException("此业务不支持指定UI：" + ui);
         // Selecting a maintenance root is not permission to start. Keep the
         // authoritative root available when an original lifecycle is unfinished;
@@ -42,5 +43,5 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
             options.GetValueOrDefault("--view"), options.GetValueOrDefault("--layout"))
         { RequireRecoveryReview = recoveryChild }, ui);
     }
-    public static string DefaultUi(string applicationId) => applicationId == "sportmaster" ? "supply-station" : "classic";
+    public static string DefaultUi(string applicationId) => ProductDeploymentCatalog.Require(applicationId).DefaultDesktopUi;
 }

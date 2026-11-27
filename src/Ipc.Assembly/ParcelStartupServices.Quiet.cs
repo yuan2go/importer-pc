@@ -25,7 +25,7 @@ public static partial class ParcelStartupServices
             if (!Path.GetPathRoot(log)!.Equals(@"D:\", StringComparison.OrdinalIgnoreCase)) throw new ArgumentException("部署日志须使用D盘。");
             DeploymentPaths.RequireOrdinaryAncestors(log);
             var media = command.Action == "Uninstall" ? null : DeploymentMedia.Inspect(mediaRoot ?? throw new ArgumentException("安装或修复须使用完整安装包。"), ApplicationId);
-            if (ApplicationId == "sportmaster")
+            if (DeploymentProfile.UsesQuietOperationJournal)
             {
                 operation = WindowsDeploymentSetup.BeginQuietOperation(new(ApplicationId, command.OperationId, command.Action,
                     command.DataRoot is null ? null : Path.GetFullPath(command.DataRoot).ToUpperInvariant(), log.ToUpperInvariant(), media?.SourceCommit,
@@ -39,7 +39,7 @@ public static partial class ParcelStartupServices
             else
             {
                 if (File.Exists(log) || Directory.Exists(log)) throw new ArgumentException("不会覆盖已有部署日志，请使用新文件。");
-                if (ApplicationId == "sportmaster") output = operation!.CreateOutput();
+                if (DeploymentProfile.UsesQuietOperationJournal) output = operation!.CreateOutput();
                 else
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(log)!);
@@ -119,7 +119,7 @@ public static partial class ParcelStartupServices
             if (command.DataRoot is not null) throw new ArgumentException("卸载不接受dataRoot覆盖。");
             var hash = Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId));
             WindowsRemovalReceipt? receipt = null;
-            if (ApplicationId == "sportmaster")
+            if (DeploymentProfile.SupportsOpaqueRemoval)
             {
                 if (original.LifecycleState == "Purged")
                 {
@@ -162,10 +162,10 @@ public static partial class ParcelStartupServices
         var data = installed?.DataRoot ?? command.DataRoot ?? InstallationIdentity.DefaultDataRoot;
         if (installed is not null && command.DataRoot is not null && !Path.GetFullPath(command.DataRoot).Equals(Path.GetFullPath(data), StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("更新保留原数据根，不能静默迁移。");
-        if (ApplicationId == "sportmaster") ApplicationRootOwnership.RequireWindowsStorage(data,
+        if (DeploymentProfile.UsesStrictWindowsStorage) ApplicationRootOwnership.RequireWindowsStorage(data,
             installed is null ? InstallationIdentity.DefaultProgramRoot : Path.GetDirectoryName(Path.GetDirectoryName(installed.ReleaseRoot))!);
         var seed = installed?.ConfigurationDirectory;
-        if (ApplicationId == "sportmaster")
+        if (DeploymentProfile.PreservesInstallationConfiguration)
             seed = PrepareInstallationConfiguration(installed, Path.Combine(Path.GetDirectoryName(log)!, "quiet-seed-" + command.OperationId), data);
         else if (seed is null)
         {

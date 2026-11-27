@@ -21,17 +21,28 @@ public sealed class OperationsInstallation
         Identity = Wire.Hash(Wire.Encode(location)); this.verifyCurrent = verifyCurrent; AcquireProgramUse = acquireProgramUse;
     }
 
-    public static OperationsInstallation Load(string directory)
+    public static OperationsInstallation Load(string directory) => Load(directory, expectedApplicationId: null);
+
+    public static OperationsInstallation Load(string directory, string? expectedApplicationId)
     {
-        var current = DeploymentMedia.ReadInstalled(directory, "sportmaster", requireReady: false)
+        if (expectedApplicationId is not null && ProductDeploymentCatalog.Find(expectedApplicationId)?.SupportsStandaloneOperationsTool != true)
+            throw new UnauthorizedAccessException("此产品未声明独立运维入口。");
+        var requestedDesktop = Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar);
+        var candidate = ProductDeploymentCatalog.OperationsEnabledProducts.Select(WindowsDeploymentSetup.Current)
+            .SingleOrDefault(location => location is not null && requestedDesktop.Equals(
+                Path.Combine(location.ReleaseRoot, "desktop"), StringComparison.OrdinalIgnoreCase));
+        if (candidate is null || expectedApplicationId is not null && candidate.ApplicationId != expectedApplicationId)
+            throw new UnauthorizedAccessException("未找到当前受保护安装登记，请从已安装的供包运维工具打开。");
+        var applicationId = candidate.ApplicationId;
+        var current = DeploymentMedia.ReadInstalled(directory, applicationId, requireReady: false)
             ?? throw new UnauthorizedAccessException("未找到当前受保护安装登记，请从已安装的供包运维工具打开。");
         var desktop = Path.Combine(current.ReleaseRoot, "desktop");
-        if (!Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar).Equals(desktop, StringComparison.OrdinalIgnoreCase))
+        if (!requestedDesktop.Equals(desktop, StringComparison.OrdinalIgnoreCase))
             throw new UnauthorizedAccessException("运维入口不属于当前安装。");
         var installation = new OperationsInstallation(current, Path.Combine(desktop, InstallationIdentity.DesktopExecutable),
             () =>
             {
-                var registered = WindowsDeploymentSetup.Current("sportmaster");
+                var registered = WindowsDeploymentSetup.Current(applicationId);
                 if (registered is null || registered.LifecycleState != "Installed" || Wire.Encode(registered) != Wire.Encode(current))
                     throw new UnauthorizedAccessException("安装登记已变化，请关闭并从当前安装重新打开。");
             }, () => DeploymentProgramUse.Observe(current.ReleaseRoot));
@@ -43,7 +54,7 @@ public sealed class OperationsInstallation
         if (new FileInfo(inventory).Length > 4 * 1024 * 1024 || Wire.FileHash(inventory) != current.InventorySha256)
             throw new InvalidDataException("安装库存身份不符。");
         using var document = JsonDocument.Parse(File.ReadAllText(inventory));
-        if (document.RootElement.GetProperty("ApplicationId").GetString() != "sportmaster" ||
+        if (document.RootElement.GetProperty("ApplicationId").GetString() != applicationId ||
             document.RootElement.GetProperty("SourceCommit").GetString() != current.SourceCommit ||
             document.RootElement.GetProperty("ReleaseRoot").GetString() != current.ReleaseRoot)
             throw new InvalidDataException("安装库存归属不符。");
@@ -91,7 +102,7 @@ public sealed class OperationsInstallation
             foreach (var station in Directory.EnumerateDirectories(area))
             {
                 if (++count > 1024) throw new InvalidDataException("本站目录超过查看预算，请检查安装数据目录。");
-                var path = Path.Combine(station, "sportmaster", "diagnostics"); DeploymentPaths.RequireOrdinaryAncestors(path);
+                var path = Path.Combine(station, Location.ApplicationId, "diagnostics"); DeploymentPaths.RequireOrdinaryAncestors(path);
                 if (Directory.Exists(path)) result.Add(path);
             }
         }

@@ -39,6 +39,16 @@ static class StateJournalChecks
     static JsonElement State(JsonElement entry) => Detail(entry).GetProperty("State");
     static JsonElement Position(JsonElement state, string position) => state.GetProperty("Positions").EnumerateArray().Single(p => p.GetProperty("PositionId").GetString() == position);
 
+    static async Task<BusinessReceipt> RetryConflictAsync(CameraRoundHarness h, Func<ParcelSnapshot, Task<BusinessReceipt>> submit)
+    {
+        const int maxAttempts = 10;
+        for (var attempt = 1; ; attempt++)
+        {
+            var receipt = await submit(await h.App.SnapshotAsync());
+            if (receipt.Status != "Conflict" || attempt == maxAttempts) return receipt;
+        }
+    }
+
     public static async Task Run(string workspace, string root)
     {
         VerifyDurablePause(Path.Combine(root, "pause-evidence"));
@@ -81,8 +91,9 @@ static class StateJournalChecks
             "HTTP success with invalid identity/protocol retains the exact body and protocol failure independently of connectivity");
         h.Peer.HeartbeatTransform = null;
         await h.WaitForCameraAdmissionAsync();
-        var snapshot = await h.App.SnapshotAsync(); var pauseId = Wire.Id();
-        Check((await h.App.CommandAsync(new(pauseId, snapshot.Revision, "Pause", Value: "SYNTH-WINDOW-PROTECTION"))).Status == "Persisted", "pause command is durably committed");
+        var pauseId = Wire.Id();
+        Check((await RetryConflictAsync(h, s => h.App.CommandAsync(new(pauseId, s.Revision, "Pause", Value: "SYNTH-WINDOW-PROTECTION")))).Status == "Persisted",
+            "pause command is durably committed");
         logs = await WaitLog(h, all => all.Any(e => Event(e) == "软件暂停状态已记录"));
         var pause = Detail(logs.Last(e => Event(e) == "软件暂停状态已记录")).GetProperty("Evidence");
         Check(pause.GetProperty("CommandId").GetString() == pauseId && pause.GetProperty("After").GetBoolean() && !pause.GetProperty("Before").GetBoolean() &&
@@ -90,14 +101,37 @@ static class StateJournalChecks
             "pause record identifies its command and both actual states");
         var raw = CameraRoundHarness.Barcode("SYNTH-STATE-BLOCKED");
         RecognitionSymbol Symbol(string code, int x = 20) => new(code, "Code128", [new(x, 20), new(x + 100, 20), new(x + 100, 60), new(x, 60)], 0);
-        async Task Feed(string code, uint frame)
+        uint nextFrame = 1;
+        async Task Feed(string code)
         {
-            var before = h.App.WorkerProgress().Single(p => p.Position == "left");
-            h.Api(h.Left).EnqueueNative(raw, frame, [Symbol(code)]);
-            await CameraRoundHarness.Until(() => { var after = h.App.WorkerProgress().Single(p => p.Position == "left"); return Task.FromResult(after.Processed + after.ObservedOnly > before.Processed + before.ObservedOnly); });
+            const int maxAttempts = 10;
+            for (var attempt = 0; attempt < maxAttempts; attempt++)
+            {
+                // Software pause deliberately blocks business admission while still allowing recognition.
+                await CameraRoundHarness.Until(async () =>
+                {
+                    var current = await h.App.SnapshotAsync();
+                    var now = DateTimeOffset.UtcNow;
+                    var lane = current.Positions!.Single(p => p.Id == "left");
+                    return lane.Arrival?.CameraBoundaryReady == true &&
+                        current.Devices!.Any(d => d.DeviceId == h.Left && d.IsValid(now)) &&
+                        current.Health.Any(health => health is { Ready: true, RemoteConfirmation: RemoteConnectionConfirmation.ResponseReceived } &&
+                            health.ConfirmedAt <= now && health.ValidUntil > now && health.RemoteConfirmedAt <= now && health.RemoteValidUntil > now);
+                });
+                var frame = nextFrame++;
+                var before = h.Handled(h.Left);
+                h.Api(h.Left).EnqueueNative(raw, frame, [Symbol(code)]);
+                await h.WaitFrameAsync(h.Left, frame, before);
+                var completed = h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Single(f => f.Number == frame);
+                if (completed.Delivered) return;
+                // The native acquisition may already have entered a preview call when readiness returned.
+                if (completed.DecodeAttempted || completed.RejectedFrame)
+                    throw new InvalidOperationException($"Frame {frame} for {code} was decoded or rejected without delivery");
+            }
+            throw new TimeoutException($"No decoded frame delivered for {code}");
         }
-        for (uint i = 1; i <= 12; i++) await Feed("SYNTH-STATE-BLOCKED", i);
-        await Feed("SYNTH-STATE-CHANGED", 13);
+        for (var i = 0; i < 12; i++) await Feed("SYNTH-STATE-BLOCKED");
+        await Feed("SYNTH-STATE-CHANGED");
         // The changed input's timing event is emitted after the prior observation window is flushed.
         logs = await WaitLog(h, all => all.Any(e => Event(e) == "扫码阶段耗时与队列汇总" &&
             Detail(e).GetProperty("First").GetProperty("Candidates").EnumerateArray().Any(c => c.GetString() == "SYNTH-STATE-CHANGED")));
@@ -119,19 +153,24 @@ static class StateJournalChecks
         var closed = logs.Last(e => Event(e) is "供包台状态变化" or "供包台状态快照" && Detail(e).GetProperty("Trigger").GetString() == "ManagementClosed");
         Check(State(closed).GetProperty("SoftwarePaused").GetBoolean() && State(closed).GetProperty("ManagementWindowId").ValueKind == JsonValueKind.Null,
             "management close proves the workspace fence ended while the independent software pause remained");
-        snapshot = await h.App.SnapshotAsync();
-        var control = snapshot.Positions!.Single(p => p.Id == "right").SupplyControl!;
-        var disableId = Wire.Id(); await h.App.SetPositionEnabledAsync(new(disableId, snapshot.RuntimeId, "right", control.Revision, false), default);
+        var disableId = Wire.Id();
+        Check((await RetryConflictAsync(h, s =>
+        {
+            var control = s.Positions!.Single(p => p.Id == "right").SupplyControl!;
+            return h.App.SetPositionEnabledAsync(new(disableId, s.RuntimeId, "right", control.Revision, false), default);
+        })).Status == "Accepted", "right position disable command is accepted");
         logs = await WaitLog(h, all => all.Any(e => Event(e) == "投递位启停已记录"));
         Check(logs.Any(e => Event(e) == "投递位启停已记录" && Detail(e).GetProperty("CommandId").GetString() == disableId), "position switch logs retain their own command and original/current modes");
-        snapshot = await h.App.SnapshotAsync(); var conflictId = Wire.Id();
+        var snapshot = await h.App.SnapshotAsync(); var conflictId = Wire.Id();
         var conflict = await h.App.CommandAsync(new(conflictId, snapshot.Revision - 1, "Resume"));
         Check(conflict.Status == "Conflict" && (await h.App.SnapshotAsync()).Paused, "rejected stale resume never changes software pause");
         logs = await WaitLog(h, all => all.Any(e => Event(e) == "供包命令结果" && Detail(e).GetProperty("CommandId").GetString() == conflictId));
         Check(logs.Any(e => Event(e) == "供包命令结果" && Detail(e).GetProperty("Status").GetString() == "Conflict"), "command-result logs distinguish CAS conflict from a successful resume");
-        snapshot = await h.App.SnapshotAsync();
-        await h.App.CommandAsync(new(Wire.Id(), snapshot.Revision, "Resume"));
-        await Feed("SYNTH-STATE-CHANGED", 14);
+        var resumeId = Wire.Id();
+        Check((await RetryConflictAsync(h, s => h.App.CommandAsync(new(resumeId, s.Revision, "Resume")))).Status == "Persisted",
+            "resume command is durably committed");
+        await h.WaitForCameraAdmissionAsync(h.Left);
+        await Feed("SYNTH-STATE-CHANGED");
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.SlotResolved));
         var operation = (await h.App.SnapshotAsync()).Operations.Single();
         logs = await WaitLog(h, all => all.Any(e => Event(e) == "取格口结果"));
@@ -167,7 +206,8 @@ static class StateJournalChecks
         Check(DestinationRequests() == 1, "RCS recovery records automatic decode restoration without a new parcel request");
         h.Peer.ReplySlot = "";
         await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
-        await Feed("SYNTH-STATE-UNKNOWN", 15);
+        await h.WaitForCameraAdmissionAsync(h.Left);
+        await Feed("SYNTH-STATE-UNKNOWN");
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Unknown));
         var unknown = (await h.App.SnapshotAsync()).Operations.Single(o => o.Wcs?.State == StageState.Unknown);
         logs = await WaitLog(h, all => all.Any(e => Event(e) is "供包台状态变化" or "供包台状态快照" &&

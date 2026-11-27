@@ -113,7 +113,7 @@ public static partial class WindowsDeploymentSetup
     }
 
     internal static bool RollbackVersionAllowed(string application, ApplicationRelease current, ApplicationRelease target) =>
-        application == "sportmaster" && current.BusinessVersion == "1.0.0" && target.BusinessVersion == "1.0.0"
+        ProductDeploymentCatalog.Find(application)?.AllowsSameVersionRollback(current.BusinessVersion!, target.BusinessVersion!) == true
             ? current.SourceCommit != target.SourceCommit
             : ReleaseVersionPolicy.Compare(target.BusinessVersion!, current.BusinessVersion!) < 0;
 
@@ -130,8 +130,8 @@ public static partial class WindowsDeploymentSetup
         if (File.Exists(file)) throw new InstallationOutcomeUnknownException("原回退记录已存在，请核对该次结果，不重复提交。");
         var actual = PlanRollbackCore(application, reviewed.OperationId);
         if (!actual.Allowed || actual.Identity != reviewed.Identity) throw new InvalidOperationException("回退计划已变化或不再兼容，请重新核对。");
-        using var programUse = application == "sportmaster" ? DeploymentProgramUse.Maintain(actual.Current) : null;
-        using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, actual.Current.DataRoot) : null;
+        using var programUse = ProductDeploymentCatalog.Find(application)?.UsesProgramUseLock == true ? DeploymentProgramUse.Maintain(actual.Current) : null;
+        using var rootOwnership = ProductDeploymentCatalog.Find(application)?.UsesStrictWindowsStorage == true ? ApplicationRootOwnership.AcquireMaintenance(application, actual.Current.DataRoot) : null;
         var after = actual.Target! with
         {
             ConfigurationDirectory = actual.Current.ConfigurationDirectory,
@@ -205,7 +205,7 @@ public static partial class WindowsDeploymentSetup
     {
         _ = DeploymentMedia.Inspect(target.ReleaseRoot, target.ApplicationId);
         RecoverySecurityPolicy.RequireRelease(Path.Combine(target.ReleaseRoot, "app"));
-        if (target.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.Install(target.DataRoot, Path.Combine(target.ReleaseRoot, "app"));
+        if (ProductDeploymentCatalog.Find(target.ApplicationId)?.UsesManagementModeBroker == true) ManagementModeBroker.Install(target.DataRoot, Path.Combine(target.ReleaseRoot, "app"));
         var sid = new SecurityIdentifier(target.RuntimeAccountSid);
         void Project()
         {
@@ -231,7 +231,7 @@ public static partial class WindowsDeploymentSetup
     public static void RequireInstalledReady(DeploymentLocation location)
     {
         RequireNoUnresolvedRemoval(location.ApplicationId);
-        if (location.ApplicationId == "sportmaster") { RequireNoUnresolvedRestore(location.ApplicationId); RequireRestoreReady(location); }
+        if (ProductDeploymentCatalog.Find(location.ApplicationId)?.RequiresRestoreHandoff == true) { RequireNoUnresolvedRestore(location.ApplicationId); RequireRestoreReady(location); }
         if (location.LifecycleOperation is null) return;
         var name = Path.GetFileNameWithoutExtension(location.LifecycleOperation);
         var prefix = location.ApplicationId + ".rollback-";
@@ -249,7 +249,7 @@ public static partial class WindowsDeploymentSetup
 
     static void RequireNoUnresolvedLifecycle(string application)
     {
-        if (application == "sportmaster") RequireNoUnresolvedRestore(application);
+        if (ProductDeploymentCatalog.Find(application)?.RequiresRestoreHandoff == true) RequireNoUnresolvedRestore(application);
         RequireNoUnresolvedRemoval(application);
         RequireNoUnresolvedPruning(application);
         var removed = RemovedRollbackOperations(application);

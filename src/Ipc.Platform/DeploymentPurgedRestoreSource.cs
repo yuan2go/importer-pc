@@ -12,9 +12,10 @@ public static partial class WindowsDeploymentSetup
     public static DeploymentPurgedRestoreSource RequirePurgedRestoreSource(DeploymentLocation current, string sourceDirectory,
         string configurationHash, string originHash)
     {
-        if (current.ApplicationId != "sportmaster" || current.LifecycleState != "Installed") throw new InvalidOperationException("先完成 SM 安装，再核对清理后的恢复来源。");
+        if (ProductDeploymentCatalog.Find(current.ApplicationId)?.RequiresRestoreHandoff != true || current.LifecycleState != "Installed") throw new InvalidOperationException("先完成 SM 安装，再核对清理后的恢复来源。");
         var directory = Path.Combine(MachineRoot, "deployments");
-        var files = Directory.EnumerateFiles(directory, "sportmaster.setup-*.json").Take(1025).ToArray();
+        var prefix = current.ApplicationId + ".setup-";
+        var files = Directory.EnumerateFiles(directory, prefix + "*.json").Take(1025).ToArray();
         if (files.Length > 1024) throw new InvalidDataException("安装来源记录超过核对预算。");
         var originals = new List<(WindowsDeploymentRequest Request, string Json)>(); long bytes = 0;
         foreach (var file in files)
@@ -25,8 +26,8 @@ public static partial class WindowsDeploymentSetup
             if (size > 4 * 1024 * 1024 || bytes > 64 * 1024 * 1024) throw new InvalidDataException("安装来源记录超过读取预算。");
             var json = File.ReadAllText(file); using var doc = JsonDocument.Parse(json);
             if (!doc.RootElement.TryGetProperty("Request", out _) || doc.RootElement.GetProperty("Status").GetString() is not ("Completed" or "CommittedNeedsSystemRepair")) continue;
-            var operation = Path.GetFileName(file)["sportmaster.setup-".Length..^5];
-            var request = ReadInstallationRequest("sportmaster", operation, json);
+            var operation = Path.GetFileName(file)[prefix.Length..^5];
+            var request = ReadInstallationRequest(current.ApplicationId, operation, json);
             var changePlan = doc.RootElement.TryGetProperty("ChangePlanIdentity", out var plan) ? plan.GetString() : null;
             originals.Add((request with { ChangePlanIdentity = changePlan }, json));
         }
@@ -50,7 +51,7 @@ public static partial class WindowsDeploymentSetup
                 var station = Directory.GetParent(sourceDirectory) ?? throw new InvalidDataException("恢复站点路径缺失。");
                 var mode = station.Parent ?? throw new InvalidDataException("恢复模式路径缺失。");
                 if (!Enum.TryParse<RunMode>(mode.Name, out _) || !ExtensionSchema.IsId(station.Name)) throw new InvalidDataException("恢复站点路径不合法。");
-                var retiredSource = Path.Combine(retired.DataRoot, mode.Name, station.Name, "sportmaster");
+                var retiredSource = Path.Combine(retired.DataRoot, mode.Name, station.Name, current.ApplicationId);
                 return ProjectPurgedRestoreSource(retired, file, File.ReadAllText(file), Wire.FileHash(file), retiredSource, configurationHash, originHash);
             }
             if (retired.LifecycleState != "Installed") break;
@@ -63,21 +64,21 @@ public static partial class WindowsDeploymentSetup
         string sourceDirectory, string configurationHash, string originHash, string? machineRoot = null)
     {
         var record = Wire.Decode<DeploymentPurgeRecord>(json);
-        if (retired.ApplicationId != "sportmaster" || retired.LifecycleState != "Purged" || record.Status != "Purged" || record.Remaining.Length != 0 ||
+        if (ProductDeploymentCatalog.Find(retired.ApplicationId)?.RequiresRestoreHandoff != true || retired.LifecycleState != "Purged" || record.Status != "Purged" || record.Remaining.Length != 0 ||
             record.Plan.Identity != Wire.Hash(Wire.Encode(new { record.Plan.ApplicationId, operation = record.Plan.OperationId, registrationHash = record.Plan.ExpectedRegistrationHash, delete = record.Plan.Delete })) ||
             path != PurgeFile(retired.ApplicationId, record.Plan.OperationId) || !ExtensionSchema.IsHash(receiptHash))
             throw new InvalidDataException("来源数据删除没有明确终态，不能代替原机退役证据。");
         _ = ProjectDataPurge(record, path, retired, machineRoot ?? MachineRoot);
         sourceDirectory = Path.GetFullPath(sourceDirectory);
-        if (!TrustedProgramRoots.Contains(retired.DataRoot, sourceDirectory) || sourceDirectory == Path.GetFullPath(retired.DataRoot) || Path.GetFileName(sourceDirectory) != "sportmaster")
+        if (!TrustedProgramRoots.Contains(retired.DataRoot, sourceDirectory) || sourceDirectory == Path.GetFullPath(retired.DataRoot) || Path.GetFileName(sourceDirectory) != retired.ApplicationId)
             throw new InvalidDataException("备份来源不属于原数据清理范围。");
         var area = record.Plan.Delete.Single(a => Path.GetFullPath(a.Root) == Path.GetFullPath(retired.DataRoot));
         var prefix = Path.GetRelativePath(retired.DataRoot, sourceDirectory).Replace(Path.DirectorySeparatorChar, '/') + "/";
         if (!area.Files.TryGetValue(prefix + "configuration.json", out var config) || config != configurationHash ||
             !area.Files.TryGetValue(prefix + "machine-origin.bin", out var origin) || origin != originHash ||
-            !area.Files.TryGetValue(prefix + "sportmaster.db", out var database) || !ExtensionSchema.IsHash(database))
+            !area.Files.TryGetValue(prefix + retired.ApplicationId + ".db", out var database) || !ExtensionSchema.IsHash(database))
             throw new InvalidDataException("备份配置或原机器身份与受保护清理库存不一致，保持隔离。");
-        area.Files.TryGetValue(prefix + "sportmaster.db-wal", out var wal);
+        area.Files.TryGetValue(prefix + retired.ApplicationId + ".db-wal", out var wal);
         return new(retired, path, receiptHash, sourceDirectory, configurationHash, originHash, database, wal);
     }
 

@@ -29,7 +29,7 @@ public static partial class ManagementModeBroker
         var anchor = Path.Combine(ProtectedRoot(root), "AUTHORITY.json");
         if (File.Exists(anchor)) { MachineRuntimePolicy.RequireProtectedEvidence(anchor); return true; }
         // A missing service after an installed deployment must never fall back to a mutable store.
-        return new[] { "sportmaster", "direct-plc", "wcs-to-plc" }.Select(WindowsDeploymentSetup.Current)
+        return ProductDeploymentCatalog.KnownManagedIds.Select(WindowsDeploymentSetup.Current)
             .Any(d => d is not null && CanonicalRoot(d.DataRoot).Equals(CanonicalRoot(root), StringComparison.OrdinalIgnoreCase));
     }
     public static void RequireProduction(string root)

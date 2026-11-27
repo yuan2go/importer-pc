@@ -32,7 +32,7 @@ public static partial class ParcelStartupServices
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        if (ApplicationId != "sportmaster") throw new NotSupportedException("此卸载方式仅用于当前SM。");
+        if (!DeploymentProfile.SupportsOpaqueRemoval) throw new NotSupportedException("此卸载方式仅用于当前SM。");
         var current = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("未找到安装信息。");
         if (Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) != request.ExpectedHash)
             throw new InvalidOperationException("安装信息已变化，请重新打开卸载程序。");

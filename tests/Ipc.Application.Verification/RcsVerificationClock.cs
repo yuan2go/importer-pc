@@ -7,6 +7,19 @@ static partial class SportmasterRcs
         readonly List<RequestTimer> timers = [];
         long ticks;
         internal int PendingTimers { get { lock (sync) return timers.Count(t => !t.Disposed && t.Due != long.MaxValue); } }
+        internal double? NextTimerMs
+        {
+            get
+            {
+                lock (sync)
+                {
+                    var due = timers.Where(t => !t.Disposed && t.Due != long.MaxValue).Min(t => (long?)t.Due);
+                    return due is { } timestamp ? TimeSpan.FromTicks(timestamp - ticks).TotalMilliseconds : null;
+                }
+            }
+        }
+        public override long TimestampFrequency => TimeSpan.TicksPerSecond;
+        public override long GetTimestamp() { lock (sync) return ticks; }
         public override DateTimeOffset GetUtcNow() { lock (sync) return DateTimeOffset.UnixEpoch.AddTicks(ticks); }
         public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
         { lock (sync) { var timer = new RequestTimer(this, callback, state); timers.Add(timer); timer.Change(dueTime, period); return timer; } }

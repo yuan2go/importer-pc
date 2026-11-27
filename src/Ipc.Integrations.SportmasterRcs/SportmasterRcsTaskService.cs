@@ -159,6 +159,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
                 try
                 {
                     var (accepted, slot, destination) = RcsDestinationProtocol.Parse(bytes, frozen);
+                    if (accepted) StartFastProbe(request);
                     return new(Wire.Id(), request.Id, request.PayloadHash, true, true, accepted, null, slot,
                         accepted ? "RCS destination assigned; physical completion is unconfirmed" : "RCS " + destination.Code + ": " + destination.Message,
                         ReceiptTimeForVerification.GetUtcNow(), Destination: destination, HttpResponse: original);
@@ -210,7 +211,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     {
         Task wait; lock (lifecycle)
         {
-            running = false; stationVehicles = []; heartbeatStop?.Cancel();
+            running = false; stationVehicles = []; ClearFastProbes(); heartbeatStop?.Cancel();
             wait = Task.WhenAll(heartbeatTask ?? Task.CompletedTask, active == 0 ? Task.CompletedTask : drained!.Task);
         }
         await wait.WaitAsync(token).ConfigureAwait(false);

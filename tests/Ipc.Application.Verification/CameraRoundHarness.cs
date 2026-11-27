@@ -20,7 +20,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     static readonly string Password = "Fixture-" + Guid.NewGuid().ToString("N");
     static bool nativeLoaded;
     static readonly object nativeInitialization = new();
-    public const int SyntheticBlankFrames = 3, SyntheticBlankSpanMs = 800;
+    public const int SyntheticBlankFrames = 3, SyntheticBlankSpanMs = MvsTrayPresence.DefaultEmptyConfirmMs;
     public readonly RoundPeer Peer;
     public readonly BusinessLaunch Launch;
     public readonly ParcelConfiguration Config;
@@ -57,7 +57,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             var decoded = Factory.Decoders[device].Count;
             Api(device).Enqueue(EmptyTray, next++);
             await Until(() => Task.FromResult(Factory.Decoders[device].Count > decoded));
-            await Task.Delay(CameraRoundHarness.SyntheticBlankSpanMs / 2);
+            if (i + 1 < SyntheticBlankFrames) await Task.Delay(SyntheticBlankSpanMs / (SyntheticBlankFrames - 1));
         }
         await TrayAsync(device, TrayPresence.Absent);
         await SmRoundFixture.NextVehicleAsync(App, Config.Topology!.Positions.Single(p => p.ReaderDeviceId == device).Id);
@@ -346,7 +346,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public volatile bool Discovered = true;
         nint buffer; uint trigger = 1, acquisition;
         uint borrowedFrame;
-        public uint LastReturnedFrame;
+        public uint LastReturnedFrame, LastRawFrame;
         sealed class FrameLoan(uint number) { internal readonly uint Number = number; internal bool Returned; }
         FrameLoan? borrowedLoan;
         readonly System.Runtime.CompilerServices.ConditionalWeakTable<byte[], FrameLoan> copiedLoans = new();
@@ -379,13 +379,19 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public Action? BeforeStart { get; set; }
         public void Start() { BeforeStart?.Invoke(); Interlocked.Increment(ref Starts); }
         public int RecognitionAcquires, PreviewAcquires;
-        public MvsFrame? Acquire() { Interlocked.Increment(ref RecognitionAcquires); return AcquireFrame(); }
+        public MvsFrame? Acquire()
+        {
+            Interlocked.Increment(ref RecognitionAcquires);
+            var frame = AcquireFrame();
+            if (!ReturnsDecodedFrames && frame is not null) LastRawFrame = frame.Number;
+            return frame;
+        }
         public Action? BeforePreviewReturn = null;
         public Action? BeforeAcquireReturn { get; set; }
         public MvsFrame? AcquirePreview()
         {
             Interlocked.Increment(ref PreviewAcquires); var frame = AcquireFrame();
-            if (frame is not null) BeforePreviewReturn?.Invoke();
+            if (frame is not null) { LastRawFrame = frame.Number; BeforePreviewReturn?.Invoke(); }
             return frame;
         }
         MvsFrame? AcquireFrame()

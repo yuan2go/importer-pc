@@ -18,9 +18,8 @@ internal sealed class MvsStillness(int stillMs, int fallbackMs)
     // A sample "changed" when it differs by more than this many grey levels after removing a
     // global brightness shift (auto exposure). Sensor noise stays well below it.
     const int ChangedLevel = 24;
-    // The scene moved when more than this share of samples changed (0.3%: a hand edge or a
-    // parcel edge moving a few pixels).
-    const double MovingShare = 0.003;
+    // Ignore slight tray vibration while keeping hand and parcel movement visible.
+    const double MovingShare = 0.006;
 
     byte[]? reference, current, row;
     int width, height;
@@ -33,7 +32,10 @@ internal sealed class MvsStillness(int stillMs, int fallbackMs)
     // process because it is a Stopwatch timestamp; null while the gate is off or before the first frame.
     public long? Scene => Enabled && reference is not null ? referenceTicks : null;
 
-    public StillnessDecision Observe(nint data, int frameWidth, int frameHeight, long ticks)
+    public bool IsReadyForNativeDecode(long nowTicks) => !Enabled || reference is not null &&
+        (Milliseconds(referenceTicks, nowTicks) >= stillMs || Milliseconds(lastDecodableTicks, nowTicks) >= fallbackMs);
+
+    public StillnessDecision Observe(nint data, int frameWidth, int frameHeight, long ticks, bool canDecode = true)
     {
         if (!Enabled) return StillnessDecision.Still;
         if (frameWidth != width || frameHeight != height || reference is null)
@@ -45,8 +47,16 @@ internal sealed class MvsStillness(int stillMs, int fallbackMs)
         }
         Sample(data, current!);
         if (Moved(reference, current!)) { (reference, current) = (current!, reference); referenceTicks = ticks; }
-        if (Milliseconds(referenceTicks, ticks) >= stillMs) { lastDecodableTicks = ticks; return StillnessDecision.Still; }
-        if (Milliseconds(lastDecodableTicks, ticks) >= fallbackMs) { lastDecodableTicks = ticks; return StillnessDecision.Fallback; }
+        if (Milliseconds(referenceTicks, ticks) >= stillMs)
+        {
+            if (canDecode) lastDecodableTicks = ticks;
+            return StillnessDecision.Still;
+        }
+        if (Milliseconds(lastDecodableTicks, ticks) >= fallbackMs)
+        {
+            if (canDecode) lastDecodableTicks = ticks;
+            return StillnessDecision.Fallback;
+        }
         return StillnessDecision.Moving;
     }
 

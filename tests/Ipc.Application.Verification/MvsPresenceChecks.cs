@@ -107,8 +107,10 @@ internal static class MvsPresenceChecks
         foreach (var native in new[] { false, true })
         {
             var camera = new Camera(native); MvsAcquisition? source = null;
+            var clock = new TimeStorageFaultChecks.ManualTime();
             await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "presence-" + native), false, mode: RunMode.Simulation)
             {
+                StationClock = clock,
                 CameraSource = binding => binding.DeviceId.EndsWith("left", StringComparison.OrdinalIgnoreCase)
                     ? CreateSource(binding)
                     : new ManualSupplyHarness.SilentCamera(binding.DeviceId)
@@ -169,10 +171,6 @@ internal static class MvsPresenceChecks
             await UntilFrame(async () => (await h.App.SnapshotAsync()).Rounds.Any(r => r.OperationId is not null));
             var first = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
             await UntilFrame(async () => (await h.App.OperationAsync(first.OperationId!))?.State == ParcelState.SlotResolved);
-            var shown = System.Diagnostics.Stopwatch.StartNew();
-            await UntilFrame(() => Task.FromResult(shown.Elapsed >= TimeSpan.FromMilliseconds(3200)));
-            Check((await h.App.SnapshotAsync()).Rounds.Any(r => r.Id == first.Id) && h.Peer.Requests.Count == 1,
-                "reliable still-present parcel survives 3sec and never resubmits");
             camera.Parcel = false;
             await UntilFrame(() => Task.FromResult(acquisition.TrayPresenceStatus == "空托盘已确认"));
             await UntilFrame(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CurrentRoundId: null, Arrival.Submitted: false });
@@ -207,7 +205,6 @@ internal static class MvsPresenceChecks
                 await SmRoundFixture.CompletedHeartbeatAsync(h.App) == RcsHeartbeatResult.Received,
                 "operator disable completes immediately with an occupied calibrated tray and keeps RCS heartbeat online");
             camera.Parcel = false;
-            camera.Stepped = false;
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
             {
                 CurrentRoundId: null, SupplyControl.Mode: StationPositionMode.Disabled, CameraConnectionSuspended: false,

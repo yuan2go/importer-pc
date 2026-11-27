@@ -138,16 +138,25 @@ static class RcsOfflineCameraReads
         Check(h.Api(h.Left).LastRawFrame == 1 && h.Factory.Decoders[h.Left].Count == 0 && Requests() == 0 &&
             (await h.App.SnapshotAsync()).Operations.Length == 0, "enabling the disabled replacement retains the RCS read guard before its first frame");
         var window = Wire.Id(); await h.App.SetManagementWorkspaceAsync(window, true, default);
-        await h.BeginAsync(); await h.ArmAsync(h.Left);
-        await Frame(2, "SYNTH-OFFLINE-DEBUG");
-        var round = await h.LockedAsync();
+        await h.BeginAsync();
+        var armed = await h.ArmAsync(h.Left);
+        uint nextFrame = 2;
+        CameraReadRound round = armed;
+        await CameraRoundHarness.Until(async () =>
+        {
+            await Frame(nextFrame++, "SYNTH-OFFLINE-DEBUG");
+            round = await h.App.ReadCameraReadRoundAsync(default);
+            if (round.Id != armed.Id || round.State is not ("Reading" or "Sealing" or "Locked"))
+                throw new InvalidOperationException("Unexpected offline debug read: " + round.Detail);
+            return round.State == "Locked";
+        });
         Check(round.Barcode == "SYNTH-OFFLINE-DEBUG" && Requests() == 0, "management can explicitly read a real frame while RCS is offline without sending a request");
         await h.App.SetManagementWorkspaceAsync(window, false, default);
-        await Frame(3, "SYNTH-CLOSED-OFFLINE");
+        await Frame(nextFrame++, "SYNTH-CLOSED-OFFLINE");
         Check(Requests() == 0 && (await h.App.SnapshotAsync()).Operations.All(o => o.DebugRequest is not null), "closing management while RCS remains offline keeps automatic reads paused");
         h.Peer.HeartbeatUnavailable = false;
         await CameraRoundHarness.Until(RcsReady); await h.WaitForCameraAdmissionAsync();
-        await Frame(4, "SYNTH-RESTORED");
+        await Frame(nextFrame++, "SYNTH-RESTORED");
         await CameraRoundHarness.Until(() => Task.FromResult(Requests() == 1));
         var original = (await h.App.SnapshotAsync()).Operations.Single(o => o.DebugRequest is null);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == original.Id).Wcs?.State == StageState.Accepted);
@@ -155,7 +164,7 @@ static class RcsOfflineCameraReads
         Check(Requests() == 1, "a fresh RCS confirmation automatically resumes exactly one new request");
         h.Peer.HeartbeatUnavailable = true;
         await CameraRoundHarness.Until(async () => !await RcsReady());
-        await Frame(5, "SYNTH-RESTORED");
+        await Frame(nextFrame, "SYNTH-RESTORED");
         var retained = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == original.Id);
         Check(Wire.Encode(retained.Wcs) == Wire.Encode(original.Wcs) && Requests() == 1, "a later outage preserves the original request and its confirmed result");
     }

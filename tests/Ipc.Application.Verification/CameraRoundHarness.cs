@@ -79,10 +79,12 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     // Returns the next frame number for the caller's own sequence.
     public async Task<uint> ReplaceParcelAsync(string device, uint next)
     {
+        var api = Api(device);
         for (var i = 0; i < CameraRoundHarness.SyntheticBlankFrames; i++)
         {
             var handled = Handled(device);
-            Api(device).Enqueue(EmptyTray, next);
+            if (api.ReturnsDecodedFrames) api.EnqueueNative(EmptyTray, next, []);
+            else api.Enqueue(EmptyTray, next);
             await WaitFrameAsync(device, next++, handled);
         }
         await TrayAsync(device, TrayPresence.Absent);

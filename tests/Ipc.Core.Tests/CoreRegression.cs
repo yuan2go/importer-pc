@@ -2,7 +2,8 @@ using System.Diagnostics;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-[assembly: Parallelize(Workers = 3, Scope = ExecutionScope.MethodLevel)]
+// Keep timed Windows device and loopback protocol fixtures from contending for the same runner.
+[assembly: DoNotParallelize]
 
 public abstract class CoreRegression
 {

@@ -19,7 +19,7 @@ public sealed class BackupSetsWindow : StartupWorkflowWindow
     (string Backup, string Identity, string Target)? pendingExport;
     internal Func<StartupBackupItem, bool> ConfirmDeletion { get; set; }
     public string? SelectedBackup { get; private set; }
-    public BackupSetsWindow(ICompleteBackupSetMaintenance maintenance, string initialDirectory, bool selectForRestore = false, string applicationId = "sportmaster") : base("完整备份 · 核验与保管", applicationId: applicationId)
+    public BackupSetsWindow(ICompleteBackupSetMaintenance maintenance, string initialDirectory, bool selectForRestore = false, string? applicationId = null) : base("完整备份 · 核验与保管", applicationId: applicationId)
     {
         this.maintenance = maintenance; Width = 880; Height = 690;
         ConfirmDeletion = item => MessageBox.Show(this, "仅删除这份备份的数据库和原配套清单，不可撤销；活动恢复引用、未知内容和占用余项保留。\n" + item.Path,

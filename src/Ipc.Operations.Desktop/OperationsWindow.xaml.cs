@@ -8,6 +8,7 @@ using Ipc.Diagnostics;
 using Ipc.Platform;
 using Ipc.Presentation.Wpf;
 using Ipc.Application.Sportmaster.Desktop;
+using Ipc.Application.ParcelFlow.Desktop;
 
 namespace Ipc.Operations.Desktop;
 
@@ -83,7 +84,9 @@ public partial class OperationsWindow : Window
             discovery = DiscoverLogs();
         };
         Closing += ClosingWindow;
-        Closed += (_, _) => lifetime.Dispose();
+        var theme = new WorkstationThemeBinding(installation.Location.ApplicationId, Resources, Dispatcher,
+            message => Trace.TraceWarning(message));
+        Closed += (_, _) => { theme.Dispose(); lifetime.Dispose(); };
     }
 
     void AttachWorkspace(ContentControl host, string page)

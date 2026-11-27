@@ -52,8 +52,10 @@ public sealed partial class WorkstationThemeManager
         slot.MergedDictionaries.Add(palette);
         var dictionaries = hostResources.MergedDictionaries;
         var current = dictionaries.OfType<PaletteSlot>().SingleOrDefault();
-        if (current is null) dictionaries.Add(slot);
-        else dictionaries[dictionaries.IndexOf(current)] = slot;
+        // WPF invalidates DynamicResource references on Add/Remove. A collection
+        // Replace can update lookups without refreshing values already in use.
+        dictionaries.Add(slot);
+        if (current is not null) dictionaries.Remove(current);
         CurrentThemeId = theme.Id;
         ThemeApplied?.Invoke(theme.Id);
     }

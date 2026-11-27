@@ -44,13 +44,23 @@
  <SolidColorBrush x:Key="VideoCanvas" Color="#18212D"/>
  <SolidColorBrush x:Key="VideoInk" Color="#F5F5F5"/>
  <SolidColorBrush x:Key="VideoMarker" Color="#28D76F"/>
+ <SolidColorBrush x:Key="DebugVideoCanvas" Color="#192736"/>
+ <SolidColorBrush x:Key="DebugVideoInk" Color="#FFFFFF"/>
  <SolidColorBrush x:Key="TerminalCanvas" Color="#101820"/>
  <SolidColorBrush x:Key="LogEmptyInk" Color="#708090"/>
+ <SolidColorBrush x:Key="ChartLine" Color="#CDD6DF"/>
  <SolidColorBrush x:Key="ChartLeft" Color="#4682B4"/>
  <SolidColorBrush x:Key="ChartRight" Color="#2E8B57"/>
  <SolidColorBrush x:Key="EvidenceSelected" Color="#FFFF00"/>
  <SolidColorBrush x:Key="EvidenceMarker" Color="#00FFFF"/>
  <SolidColorBrush x:Key="EvidenceInk" Color="#000000"/>
+ <SolidColorBrush x:Key="PlainText" Color="#000000"/>
+ <SolidColorBrush x:Key="OperatorSuccess" Color="#12633F"/>
+ <SolidColorBrush x:Key="OperatorDanger" Color="#A62530"/>
+ <SolidColorBrush x:Key="OperatorWarning" Color="#7E4C00"/>
+ <SolidColorBrush x:Key="OperatorInactive" Color="#465564"/>
+ <SolidColorBrush x:Key="OperatorOnWarning" Color="#FFFFFF"/>
+ <SolidColorBrush x:Key="InkOnInactive" Color="#FFFFFF"/>
  <CornerRadius x:Key="RadiusControl">6</CornerRadius>
  <CornerRadius x:Key="RadiusCard">12</CornerRadius>
  <CornerRadius x:Key="RadiusBadge">12</CornerRadius>

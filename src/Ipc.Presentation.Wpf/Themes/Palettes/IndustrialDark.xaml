@@ -26,7 +26,7 @@
  <SolidColorBrush x:Key="SurfacePressed" Color="#2A3D57"/>
  <SolidColorBrush x:Key="DangerHover" Color="#EF4444"/>
  <SolidColorBrush x:Key="DangerPressed" Color="#DC2626"/>
- <SolidColorBrush x:Key="OnAccent" Color="#09111C"/>
+ <SolidColorBrush x:Key="OnAccent" Color="#02060B"/>
  <SolidColorBrush x:Key="OnDanger" Color="#160608"/>
  <SolidColorBrush x:Key="OnDangerPressed" Color="#FFFFFF"/>
  <SolidColorBrush x:Key="ShellHeaderLine" Color="#2D3F56"/>
@@ -44,13 +44,23 @@
  <SolidColorBrush x:Key="VideoCanvas" Color="#0B111A"/>
  <SolidColorBrush x:Key="VideoInk" Color="#F1F5F9"/>
  <SolidColorBrush x:Key="VideoMarker" Color="#34D399"/>
+ <SolidColorBrush x:Key="DebugVideoCanvas" Color="#0B111A"/>
+ <SolidColorBrush x:Key="DebugVideoInk" Color="#F1F5F9"/>
  <SolidColorBrush x:Key="TerminalCanvas" Color="#090F17"/>
  <SolidColorBrush x:Key="LogEmptyInk" Color="#9FB0C4"/>
+ <SolidColorBrush x:Key="ChartLine" Color="#445A76"/>
  <SolidColorBrush x:Key="ChartLeft" Color="#4C8DFF"/>
  <SolidColorBrush x:Key="ChartRight" Color="#34D399"/>
  <SolidColorBrush x:Key="EvidenceSelected" Color="#FBBF24"/>
  <SolidColorBrush x:Key="EvidenceMarker" Color="#67E8F9"/>
  <SolidColorBrush x:Key="EvidenceInk" Color="#0B111A"/>
+ <SolidColorBrush x:Key="PlainText" Color="#F1F5F9"/>
+ <SolidColorBrush x:Key="OperatorSuccess" Color="#34D399"/>
+ <SolidColorBrush x:Key="OperatorDanger" Color="#F87171"/>
+ <SolidColorBrush x:Key="OperatorWarning" Color="#FBBF24"/>
+ <SolidColorBrush x:Key="OperatorInactive" Color="#445A76"/>
+ <SolidColorBrush x:Key="OperatorOnWarning" Color="#02060B"/>
+ <SolidColorBrush x:Key="InkOnInactive" Color="#F1F5F9"/>
  <CornerRadius x:Key="RadiusControl">6</CornerRadius>
  <CornerRadius x:Key="RadiusCard">12</CornerRadius>
  <CornerRadius x:Key="RadiusBadge">12</CornerRadius>

@@ -182,7 +182,7 @@
         <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationButton}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding HasConfigurationActivationNotice}" Value="True"/><Condition Binding="{Binding IsCompact}" Value="True"/><Condition Binding="{Binding SelectedPage}" Value="workstation"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger></Style.Triggers></Style></Button.Style>
        </Button>
        <Border x:Name="PaceSummary" Grid.Column="2" Style="{StaticResource OperatorStatusBadge}" Background="{DynamicResource Soft}" BorderBrush="{DynamicResource Line}" Visibility="{Binding PaceVisibility}" Margin="12,0,0,0" VerticalAlignment="Center" Focusable="False">
-        <TextBlock x:Name="PaceBadge" AutomationProperties.Name="{Binding PaceText}" FontSize="{x:Static type:UiTypography.Label}" TextWrapping="NoWrap" ToolTip="{Binding PaceText}">
+        <TextBlock x:Name="PaceBadge" Foreground="{DynamicResource PlainText}" AutomationProperties.Name="{Binding PaceText}" FontSize="{x:Static type:UiTypography.Label}" TextWrapping="NoWrap" ToolTip="{Binding PaceText}">
          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="{Binding PaceText}"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Text" Value="{Binding PaceCompact}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
         </TextBlock>
        </Border>

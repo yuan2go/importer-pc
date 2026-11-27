@@ -54,7 +54,7 @@ internal sealed class StationHourlyChart : FrameworkElement
     internal StationHourlyChart()
     {
         SetResourceReference(InkBrushProperty, "Ink");
-        SetResourceReference(LineBrushProperty, "Line");
+        SetResourceReference(LineBrushProperty, "ChartLine");
         SetResourceReference(LeftBrushProperty, "ChartLeft");
         SetResourceReference(RightBrushProperty, "ChartRight");
         Height = 220; MinWidth = 180; AutomationProperties.SetName(this, "每小时取得格口图；左位蓝色，右位绿色，合计深色；目标线对应合计，完整数值见下方小时明细"); }

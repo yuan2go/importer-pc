@@ -11,9 +11,12 @@ public sealed record BusinessDesktopProfile(string ApplicationId, string Busines
     public bool SupportsFirstConfigurationBarcodeTest { get; init; }
 
     public string DefaultThemeId { get; init; } = WorkstationThemeManager.IndustrialLightId;
+    public bool SupportsThemePreference => ApplicationId.Length != 0;
     public IReadOnlyList<UiThemeDescriptor> SupportedThemes { get; init; } = WorkstationThemeManager.BuiltInThemes;
 
     public bool UsesWorkstationSettingsFlow { get; init; }
+    public IReadOnlyList<int> SetupCategories { get; init; } = Array.AsReadOnly(new[] { 0, 1, 2, 3, 4 });
+    public IReadOnlyList<string> SetupStepLabels { get; init; } = Array.AsReadOnly(new[] { "本站信息", "业务规则", "左右相机", "RCS 连接", "检查与完成" });
     public bool UsesFirstReadinessStep { get; init; }
     public bool SupportsBackupSetsDialog { get; init; }
     public bool UsesFullScreenOpeningPreference { get; init; }
@@ -40,6 +43,8 @@ public static class BusinessDesktopCatalog
         UsesStationDisplayPreferences = true,
         SupportsFirstConfigurationBarcodeTest = true,
         UsesWorkstationSettingsFlow = true,
+        SetupCategories = Array.AsReadOnly(new[] { 0, 2, 1, 4 }),
+        SetupStepLabels = Array.AsReadOnly(new[] { "本站与 RCS", "左右相机", "识读规则", "检查与完成" }),
         UsesFirstReadinessStep = true,
         SupportsBackupSetsDialog = true,
         UsesFullScreenOpeningPreference = true,

@@ -97,6 +97,8 @@ public partial class App : System.Windows.Application
             return;
         }
         base.OnStartup(e); ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        var theme = new WorkstationThemeBinding(ApplicationId, Resources, Dispatcher, message => System.Diagnostics.Trace.TraceWarning(message));
+        Exit += (_, _) => theme.Dispose();
         startup = new ParcelStartupWindow(); MainWindow = startup;
         try
         {

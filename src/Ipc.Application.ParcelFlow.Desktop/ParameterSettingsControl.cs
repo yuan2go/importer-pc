@@ -18,7 +18,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     public ParameterEditorModel? Model { get => (ParameterEditorModel?)GetValue(ModelProperty); set => SetValue(ModelProperty, value); }
     public bool FirstConfiguration { get; set; }
     bool StationSettingsOnly { get; set; }
-    bool SectionLayout => Model?.ApplicationId == "sportmaster";
+    bool SectionLayout => BusinessDesktopCatalog.For(Model?.ApplicationId).UsesWorkstationSettingsFlow;
     public void SetStationSettingsLayout(bool value)
     {
         if (StationSettingsOnly == value) return;
@@ -182,7 +182,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     public bool ShowPage(int category, string title)
     {
         var page = pages.FirstOrDefault(p => p.Available && p.Category == category && p.Title == title);
-        if (page is null && Model?.ApplicationId == "sportmaster")
+        if (page is null && BusinessDesktopCatalog.For(Model?.ApplicationId).UsesWorkstationSettingsFlow)
             page = pages.FirstOrDefault(p => p.Available && (title is "左相机" or "右相机" && p.Title == "左右相机" || title is "供包台标识" or "RCS 服务" && p.Title == "本站与 RCS"));
         if (page is null) return false;
         search.Clear();
@@ -320,7 +320,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             }
             if (control is not TextBox { IsReadOnly: true })
             {
-                var activation = fieldKey is "WindowOpeningMode" or "ShowPace" or "CueVolume" or "AutoStart" or "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator"
+                var activation = fieldKey is "WindowOpeningMode" or "ShowPace" or "CueVolume" or "AutoStart" or nameof(SmDisplayPreferenceDraft.ThemeId) or "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator"
                     ? "立即生效" : draft?.Kind == "observation" || draft is not null && ParameterOwnership.IsRcs(draft) || fieldKey == "StationCode" ? "重连生效" : "需重启生效";
                 var badge = ActivationBadge(activation, activation == "需重启生效" ? "Soft" : "AccentBackground");
                 Grid.SetColumn(badge, 1); field.Children.Add(badge);
@@ -417,13 +417,13 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (Model is not { } m) { pageHost.Content = Text("正在读取设置…"); return; }
         firstStepBar.Visibility = FirstConfiguration ? Visibility.Visible : Visibility.Collapsed;
         for (var column = 0; column < firstStepBar.ColumnDefinitions.Count; column++)
-            firstStepBar.ColumnDefinitions[column].Width = column >= FirstCategories.Length * 2 - 1 ? new(0) : column % 2 == 0 ? new(1, GridUnitType.Star) : new(16);
+            firstStepBar.ColumnDefinitions[column].Width = column >= FirstCategories.Count * 2 - 1 ? new(0) : column % 2 == 0 ? new(1, GridUnitType.Star) : new(16);
         remainingSteps.Visibility = FirstConfiguration ? Visibility.Visible : Visibility.Collapsed;
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);
-        if (m.ApplicationId == "sportmaster") ArrangeSportmasterPages();
-        if (!FirstConfiguration && m.ApplicationId == "sportmaster" && Audience != SmParameterAudience.Complete)
+        if (m.DesktopProfile.UsesWorkstationSettingsFlow) ArrangeSportmasterPages();
+        if (!FirstConfiguration && m.DesktopProfile.UsesWorkstationSettingsFlow && Audience != SmParameterAudience.Complete)
         {
-            bool ShowField(string path) => path == "AutoStart" ? Audience == SmParameterAudience.Field : SmParameterOwnership.Show(Audience, path);
+            bool ShowField(string path) => path is "AutoStart" or nameof(SmDisplayPreferenceDraft.ThemeId) ? Audience == SmParameterAudience.Field : SmParameterOwnership.Show(Audience, path);
             foreach (var pair in locations.ToArray())
                 if (!ShowField(pair.Key))
                 {
@@ -474,7 +474,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (FirstConfiguration || m.Issues.Count > 0 || reviewContent is not null) { EnsureReviewPage(); if (reviewContent is not null) reviewPage!.Body.Children.Add(reviewContent); }
         directoryView = new ListCollectionView(pages);
         if (FirstConfiguration) directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.Order), ListSortDirection.Ascending));
-        else if (m.ApplicationId == "sportmaster") directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.TaskOrder), ListSortDirection.Ascending));
+        else if (m.DesktopProfile.UsesWorkstationSettingsFlow) directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.TaskOrder), ListSortDirection.Ascending));
         searchBar.Visibility = StationSettingsOnly ? Visibility.Collapsed : Visibility.Visible;
         if (StationSettingsOnly) search.Clear();
         else directoryView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ObjectPage.GroupTitle)));

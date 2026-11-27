@@ -16,8 +16,9 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public bool HasValidStationCode => Policy.StationCode.Length <= 256 && !Policy.StationCode.Any(char.IsControl) && !string.IsNullOrWhiteSpace(Policy.StationCode);
     public ParcelConfigurationLocations? Locations { get; } = locations;
     public SmDisplayPreferenceDraft? DisplayPreferences { get; set; }
-    public CapabilityDraft[] Readers { get; } = readers.Select(r => { if (applicationId == "sportmaster") r.UseSimpleCameraConfiguration(); return r; }).ToArray();
-    public CapabilityDraft[] Components { get; } = components.Select(c => { if (applicationId == "sportmaster") c.UseRcsOnly(); return c; }).ToArray();
+    public BusinessDesktopProfile DesktopProfile => BusinessDesktopCatalog.For(ApplicationId);
+    public CapabilityDraft[] Readers { get; } = readers.Select(r => { if (BusinessDesktopCatalog.For(applicationId).UsesStationCameraConfiguration) r.UseSimpleCameraConfiguration(); return r; }).ToArray();
+    public CapabilityDraft[] Components { get; } = components.Select(c => { if (BusinessDesktopCatalog.For(applicationId).UsesRcsOnlyConfiguration) c.UseRcsOnly(); return c; }).ToArray();
     // Daily schema-3 roles and startup bindings already own their respective candidate.
     // This is a read-only projection; never copy role state into the component inventory.
     public CapabilityRoleDraft? OperatorLoginRole { get; } = operatorLoginRole;
@@ -136,16 +137,16 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         void Issue(string category, string key, string message) => Issues.Add(new(category, key, message));
         void Number(string name, string value, int min, int max)
         { try { _ = ConfigurationPolicyDraft.Integer(value, name, min, max); } catch (InvalidOperationException ex) { Issue(name is "ReadTimeoutMs" or "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "SessionLifetimeMs" ? "业务模块" : "系统", name, ex.Message); } }
-        if (ApplicationId != "sportmaster") { Number(nameof(Policy.QueueCapacity), Policy.QueueCapacity, 1, 4096); Number(nameof(Policy.TimeoutMs), Policy.TimeoutMs, 100, 30000); }
-        if (ApplicationId != "sportmaster") Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000);
+        if (BusinessDesktopCatalog.For(ApplicationId).UsesLegacyWeightAndQueueFields) { Number(nameof(Policy.QueueCapacity), Policy.QueueCapacity, 1, 4096); Number(nameof(Policy.TimeoutMs), Policy.TimeoutMs, 100, 30000); }
+        if (BusinessDesktopCatalog.For(ApplicationId).UsesLegacyWeightAndQueueFields) Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000);
         Number(nameof(Policy.ResidentHistory), Policy.ResidentHistory, 1, 10000);
-        if (ApplicationId == "sportmaster") Number(nameof(Policy.ReadTimeoutMs), Policy.ReadTimeoutMs, SystemParameterDefaults.MinimumReadTimeoutMs, SystemParameterDefaults.MaximumReadTimeoutMs);
-        if (ApplicationId == "sportmaster" && DisplayPreferences?.Validate() is { } preferenceError)
+        if (BusinessDesktopCatalog.For(ApplicationId).UsesScanAndBarcodePolicy) Number(nameof(Policy.ReadTimeoutMs), Policy.ReadTimeoutMs, SystemParameterDefaults.MinimumReadTimeoutMs, SystemParameterDefaults.MaximumReadTimeoutMs);
+        if (BusinessDesktopCatalog.For(ApplicationId).UsesStationDisplayPreferences && DisplayPreferences?.Validate() is { } preferenceError)
             Issue("系统", Enum.IsDefined(DisplayPreferences.OpeningMode) ? "CueVolume" : "WindowOpeningMode", preferenceError);
-        if (ApplicationId != "sportmaster" && HasOperatorLogin) Number(nameof(Policy.SessionLifetimeMs), Policy.SessionLifetimeMs, 100, 86400000);
+        if (BusinessDesktopCatalog.For(ApplicationId).UsesLegacyWeightAndQueueFields && HasOperatorLogin) Number(nameof(Policy.SessionLifetimeMs), Policy.SessionLifetimeMs, 100, 86400000);
         if (Policy.DiagnosticLogDays.Length > 0) Number(nameof(Policy.DiagnosticLogDays), Policy.DiagnosticLogDays, 1, 3650);
         if (Policy.HistoryDays.Length > 0) Number(nameof(Policy.HistoryDays), Policy.HistoryDays, 7, 30);
-        if (ApplicationId == "sportmaster")
+        if (BusinessDesktopCatalog.For(ApplicationId).UsesScanAndBarcodePolicy)
         {
             Number(nameof(Policy.CleanupHour), Policy.CleanupHour, 0, 23);
             Number(nameof(Policy.CleanupMaximumBackupSets), Policy.CleanupMaximumBackupSets, 1, 100);
@@ -153,7 +154,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             try { _ = TimeZoneInfo.FindSystemTimeZoneById(Policy.CleanupTimeZoneId); }
             catch (Exception error) when (error is ArgumentException or TimeZoneNotFoundException or InvalidTimeZoneException) { Issue("系统", "CleanupTimeZoneId", "请选择有效的清理时区。"); }
         }
-        if (ApplicationId != "sportmaster" && Policy.WeightRangeEnabled)
+        if (BusinessDesktopCatalog.For(ApplicationId).UsesLegacyWeightAndQueueFields && Policy.WeightRangeEnabled)
             try { _ = Policy.BuildWeightRange(); } catch (InvalidOperationException ex) { Issue("业务模块", WeightRangeField(ex.Message), ex.Message); }
         if (!decimal.TryParse(Policy.MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB（二进制兆字节）");

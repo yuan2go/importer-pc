@@ -51,7 +51,7 @@
          <DockPanel Margin="0,0,0,8">
           <Border DockPanel.Dock="Right" Style="{StaticResource OperatorStatusBadge}" Background="{Binding Left.DevicePresentation.Background}"
                   BorderBrush="{Binding Left.DevicePresentation.Border}">
-           <TextBlock Text="{Binding Left.DevicePresentation.Text}" Foreground="{Binding Left.DevicePresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}"/>
+           <TextBlock Text="{Binding Left.DevicePresentation.Text}" type:PaletteBrush.ForegroundKey="{Binding Left.DeviceForegroundKey}" FontSize="{x:Static type:UiTypography.Label}"/>
           </Border>
           <TextBlock Text="左相机" Style="{StaticResource SettingsCardHeading}" Margin="0"/>
          </DockPanel>
@@ -63,7 +63,7 @@
          <DockPanel Margin="0,0,0,8">
           <Border DockPanel.Dock="Right" Style="{StaticResource OperatorStatusBadge}" Background="{Binding Right.DevicePresentation.Background}"
                   BorderBrush="{Binding Right.DevicePresentation.Border}">
-           <TextBlock Text="{Binding Right.DevicePresentation.Text}" Foreground="{Binding Right.DevicePresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}"/>
+           <TextBlock Text="{Binding Right.DevicePresentation.Text}" type:PaletteBrush.ForegroundKey="{Binding Right.DeviceForegroundKey}" FontSize="{x:Static type:UiTypography.Label}"/>
           </Border>
           <TextBlock Text="右相机" Style="{StaticResource SettingsCardHeading}" Margin="0"/>
          </DockPanel>

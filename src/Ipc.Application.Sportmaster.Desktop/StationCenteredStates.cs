@@ -132,9 +132,9 @@ public sealed partial class SupplyStationPositionViewModel
         { ParcelState.UnpackRequired => "需要拆包检查", ParcelState.Blocked => "本件暂不能处理", _ => "未分配格口" } :
         SupplyDisabled ? SupplyConfigured ? "已停用" : "本位未配置" : Arrival?.RecoveryReason is not null ? "请求待核对" : CenteredSoftwarePause ? "供包已暂停" : CenteredRcsPause ? "暂不能投包" : Arrival is { Confirmed: false } ? "等待小车确认" : Arrival is { PlacementClosed: true } ? "等待取件确认" : Arrival is { Submitted: true, SubmissionAttempted: false } && CurrentRound is null ? "原请求正在收尾" : Arrival is { Submitted: true } && CurrentRound is null ? "等待取件" :
         CenteredNoBarcodeBlocked ? SupplyDisabling ? "停用中" : "暂不能投包" : CenteredWaiting && CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) != true ? "相机不可用，可人工扫码" : "等待投包";
-    public string CenteredStateForeground => CenteredAttention ? CenteredAttentionTone switch
-    { ParcelPresentationTone.Stale => OperatorTokens.Muted, ParcelPresentationTone.Unknown => OperatorTokens.Warning, _ => OperatorTokens.Danger }
-        : CenteredRcsPause ? OperatorTokens.Danger : SupplyDisabled || CenteredSoftwarePause || CenteredNoBarcodeBlocked || CenteredArrival ? OperatorTokens.Muted : OperatorTokens.Success;
+    public string CenteredStateForegroundKey => CenteredAttention ? CenteredAttentionTone switch
+    { ParcelPresentationTone.Stale => "Muted", ParcelPresentationTone.Unknown => "OperatorWarning", _ => "OperatorDanger" }
+        : CenteredRcsPause ? "OperatorDanger" : SupplyDisabled || CenteredSoftwarePause || CenteredNoBarcodeBlocked || CenteredArrival ? "Muted" : "OperatorSuccess";
     public string CenteredStateReason => RoundReadDisplay ? CurrentRound!.ReadOutcome == "ExecutionCapacityBlocked" ? "本轮尚未提交；本位旧调用仍在收尾" : CurrentRound.FormalCodes.Length > 1 ? "本轮有多个有效条码，尚未请求RCS" : "本轮尚未取得可提交条码，尚未请求RCS" : CenteredStale ? "旧格口已失效" : CenteredOriginalAttention ? OriginalAttentionReason :
         CenteredReadAttention ? invalidReadFeedback ? "本次没有有效格口" : "本次扫码未发送请求" :
         CenteredRcsRejection ? "" : CenteredOperationAttention ? Operation?.State == ParcelState.UnpackRequired ? "本件需人工检查" : "本件暂不能分配格口" :

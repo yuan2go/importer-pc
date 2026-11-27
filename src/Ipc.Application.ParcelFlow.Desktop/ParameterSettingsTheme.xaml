@@ -55,7 +55,7 @@
    <ControlTemplate.Triggers>
     <Trigger Property="AutomationProperties.ItemStatus" Value="当前步骤">
      <Setter TargetName="Number" Property="Background" Value="{DynamicResource Accent}"/>
-     <Setter TargetName="NumberText" Property="Foreground" Value="{DynamicResource Surface}"/>
+     <Setter TargetName="NumberText" Property="Foreground" Value="{DynamicResource OnAccent}"/>
      <Setter TargetName="Caption" Property="Foreground" Value="{DynamicResource Accent}"/>
      <Setter TargetName="Caption" Property="FontWeight" Value="{x:Static type:UiTypography.Emphasis}"/>
     </Trigger>

@@ -51,8 +51,9 @@ public abstract partial class StartupWorkflowWindow : Window
     protected bool Busy;
     protected bool UnknownOutcome;
     protected bool CloseAfterCancellation;
-    protected StartupWorkflowWindow(string title, bool installation = false, string applicationId = "sportmaster")
+    protected StartupWorkflowWindow(string title, bool installation = false, string? applicationId = null)
     {
+        applicationId ??= BusinessDesktopCatalog.Station.ApplicationId;
         Form = Body;
         ProductBrand.Apply(this); UiTypography.Apply(this);
         VersionLabel.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
@@ -74,7 +75,7 @@ public abstract partial class StartupWorkflowWindow : Window
             var rail = new StackPanel { Margin = new(16, 28, 16, 24) };
             rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 48, Height = 48, HorizontalAlignment = HorizontalAlignment.Left });
             rail.Children.Add(new TextBlock { Text = "菜鸟供包台", FontSize = UiTypography.Body, FontWeight = UiTypography.Emphasis, Margin = new(0, 16, 0, 16) });
-            var stepLabels = applicationId == "sportmaster"
+            var stepLabels = BusinessDesktopCatalog.For(applicationId).UsesWorkstationSettingsFlow
                 ? new[] { ("1  欢迎与位置", 0), ("2  安装", 1), ("3  安装完成", 2) }
                 : new[] { ("1  安装选项", 0), ("2  确认并安装", 1), ("3  安装完成", 2) };
             foreach (var (label, index) in stepLabels)

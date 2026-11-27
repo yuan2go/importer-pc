@@ -91,7 +91,7 @@ public partial class HistoryPage : UserControl
         HistoryLayout.Margin = shortPage ? new(12, 2, 12, 2) : new(20, 16, 20, 12);
         HistoryQueryActions.Margin = shortPage ? new(0, 2, 0, 0) : new(0, 6, 0, 0);
         HistoryHeading.FontSize = UiTypography.Body;
-        HistoryHeading.Visibility = DataContext is ParcelViewModel { Snapshot.ApplicationId: "sportmaster" } || shortPage ? Visibility.Collapsed : Visibility.Visible;
+        HistoryHeading.Visibility = DataContext is ParcelViewModel { DesktopProfile.UsesCompactHistoryLayout: true } || shortPage ? Visibility.Collapsed : Visibility.Visible;
         PlaceHistoryTimePresets(shortPage);
         var header = double.IsFinite(HistoryRows.ColumnHeaderHeight) ? HistoryRows.ColumnHeaderHeight : 36;
         var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 44;

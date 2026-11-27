@@ -1,6 +1,7 @@
 using System.IO;
 using Ipc.Platform;
 using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow.Desktop;
 
 namespace Ipc.Desktop;
 
@@ -43,5 +44,5 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
             options.GetValueOrDefault("--view"), options.GetValueOrDefault("--layout"))
         { RequireRecoveryReview = recoveryChild }, ui);
     }
-    public static string DefaultUi(string applicationId) => ProductDeploymentCatalog.Require(applicationId).DefaultDesktopUi;
+    public static string DefaultUi(string applicationId) => BusinessDesktopCatalog.For(applicationId).DefaultDesktopUi;
 }

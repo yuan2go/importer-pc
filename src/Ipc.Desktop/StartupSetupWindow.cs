@@ -72,7 +72,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             var result = await ParcelStartupServices.ContinueInstallationAsync(media ?? throw new InvalidOperationException("请先核验完整介质。"), request, true, progress, token);
             if (result.Status != "Completed") throw new InstallationOutcomeUnknownException(result.Detail);
         };
-        if (businessVersion is not null) { VersionLabel.Text = "版本: " + deploymentProfile.InstallerVersionPrefix + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
+        if (businessVersion is not null) { VersionLabel.Text = "版本: " + BusinessDesktopCatalog.For(ApplicationId).InstallerVersionPrefix + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
         back = Action("上一步", () =>
         {
             CaptureInputs();
@@ -371,7 +371,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             Height = Math.Min(optionsHeight, MaxHeight);
             if (needsFirstConfiguration == true)
-            { Section("首次使用"); Note(deploymentProfile.FirstUseGuidance); }
+            { Section("首次使用"); Note(BusinessDesktopCatalog.For(ApplicationId).FirstUseGuidance); }
             else Note(needsFirstConfiguration == false ? "已有配置已识别。打开后自动检查并启动；条件不满足时会显示具体原因。" : configurationMessage.Length > 0 ? configurationMessage : "打开后自动检查配置；首次配置保存后自动启动，条件不满足时会显示具体原因。安装完成不代表设备已可运行。");
             var canRun = ParcelStartupServices.IsRuntimeAccount(installed!);
             runAfter = new CheckBox { Content = "完成后打开供包台", IsChecked = canRun && !reopenedInstallation, IsEnabled = canRun, VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 16, 12, 0) };
@@ -513,7 +513,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 try { root = await prepareMedia(progress, cancellation.Token); } finally { preparing = null; Actions.IsEnabled = false; cancel.IsEnabled = true; }
             }
             media = await Task.Run(() => DeploymentMedia.Inspect(root, ApplicationId));
-            VersionLabel.Text = "版本: " + deploymentProfile.InstallerVersionPrefix + "V" + Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "desktop", "application-release.json"))).BusinessVersion + " Windows 64位";
+            VersionLabel.Text = "版本: " + BusinessDesktopCatalog.For(ApplicationId).InstallerVersionPrefix + "V" + Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "desktop", "application-release.json"))).BusinessVersion + " Windows 64位";
             VersionLabel.Visibility = Visibility.Visible; newStation = SystemParameterDefaults.InitialStationId; step = 1;
             if (deploymentProfile.UsesInstallationContinuation)
             {

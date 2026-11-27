@@ -43,6 +43,9 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     public bool CanCleanPreparation => !installing && !outcomeUnknown;
     TextBox data = null!, program = null!;
     CheckBox startMenu = null!, desktopIcon = null!, runAfter = null!;
+    CheckBox? autoStart;
+    bool autoStartInitialized;
+    string? autoStartReadIssue;
     bool installing, failed, outcomeUnknown;
     bool? needsFirstConfiguration;
     string configurationMessage = "", failureMessage = "", preflightError = "";
@@ -51,7 +54,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     string? installationRecordDirectory;
     string? preparedConfigurationDirectory;
     readonly TextBlock recordFeedback = new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 10, 0, 0) }.Themed(TextBlock.ForegroundProperty, "Danger");
-    bool selectedStartMenu = true, selectedDesktop = true, advancedExpanded;
+    bool selectedStartMenu = true, selectedDesktop = true, selectedAutoStart, advancedExpanded;
     int step;
     string installationKind = "安装";
     double optionsHeight = 560;
@@ -177,6 +180,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (step != 1 || data is null) return;
         enteredData = data.Text; selectedProgram = program.Text;
         selectedStartMenu = startMenu.IsChecked == true; selectedDesktop = desktopIcon.IsChecked == true;
+        selectedAutoStart = autoStart?.IsChecked == true;
     }
     void Render()
     {
@@ -263,6 +267,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 Note(current?.LifecycleState == "Purged" ? "原本站数据和管理密码已删除。本次沿用原登记位置重新配置，不恢复已删除的业务记录；机器部署和审计证据保留。"
                     : "本次操作：" + installationKind + "。保留现有账户、数据与配置；请先关闭供包台。安装会核验程序已退出并释放资源，不要求清空作业或暂停供包。");
                 Note("安装需要 Windows 管理员授权，与软件管理密码无关。");
+                Summary("开机自启", reviewed!.Shortcuts!.AutoStart ? "开启" : "关闭");
                 foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
             }
             Section("安装位置");
@@ -276,8 +281,28 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             var shortcuts = new StackPanel(); shortcuts.Children.Add(startMenu); shortcuts.Children.Add(desktopIcon);
             if (ApplicationId == "sportmaster")
             {
+                if (!autoStartInitialized)
+                {
+                    autoStartInitialized = true;
+                    if (current?.LifecycleState == "Installed")
+                    {
+                        try { selectedAutoStart = DeploymentShortcuts.ReadAutoStart(current, DeploymentShortcuts.CurrentUserStartupDirectory()); }
+                        catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or System.Runtime.InteropServices.COMException)
+                        {
+                            selectedAutoStart = current.Shortcuts?.AutoStart == true;
+                            autoStartReadIssue = "未能核对本账户的启动快捷方式，请检查 Windows 启动目录。";
+                            System.Diagnostics.Trace.TraceWarning("Cannot read startup shortcut: {0}", error);
+                        }
+                    }
+                }
                 startMenu.IsEnabled = desktopIcon.IsEnabled = !InlineReviewReady;
                 startMenu.MinHeight = desktopIcon.MinHeight = 44;
+                autoStart = new CheckBox { Content = "开机自动启动供包台", IsChecked = selectedAutoStart, MinHeight = 44,
+                    IsEnabled = !InlineReviewReady, ToolTip = "当前 Windows 用户登录后自动启动供包台。" };
+                AutomationProperties.SetAutomationId(autoStart, "Install.AutoStart");
+                shortcuts.Children.Add(autoStart);
+                if (autoStartReadIssue is { } issue)
+                    shortcuts.Children.Add(new TextBlock { Text = issue, TextWrapping = TextWrapping.Wrap }.Themed(TextBlock.ForegroundProperty, "Warning"));
                 var advanced = new Expander
                 {
                     Header = new Border
@@ -335,6 +360,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Section("安装位置"); Summary("程序目录", r.ProgramRoot!); Summary("数据目录", r.DataRoot);
             Section("安装设置");
             Summary("开始菜单", r.Shortcuts!.StartMenu ? "创建快捷方式" : "不创建快捷方式"); Summary("桌面", r.Shortcuts.Desktop ? "创建快捷方式" : "不创建快捷方式");
+            if (ApplicationId == "sportmaster") Summary("开机自启", r.Shortcuts.AutoStart ? "开启" : "关闭");
             Note(CurrentInstallation(ApplicationId)?.LifecycleState == "Purged" ? "原本站数据已删除；本次沿用原登记位置重新配置，不恢复原记录。" : "请先关闭供包台；安装保留现有账户、数据与配置。");
             foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
             Note("安装需要 Windows 管理员授权（与软件管理密码无关）。"); next.Content = "安装";
@@ -514,7 +540,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 try
                 {
                     progress.Report(new(MaintenanceStage.Verifying, null, null, true));
-                    var candidate = Review(media!, selectedAccount, enteredData!, configPath, null, selected, false, selectedProgram, token) with { Shortcuts = new(selectedStartMenu, selectedDesktop) };
+                    var candidate = Review(media!, selectedAccount, enteredData!, configPath, null, selected, false, selectedProgram, token) with { Shortcuts = new(selectedStartMenu, selectedDesktop, selectedAutoStart) };
                     var review = DeploymentComponentReviewing.Inspect(candidate, token); token.ThrowIfCancellationRequested(); return Task.FromResult((candidate, review));
                 }
                 catch (OperationCanceledException) when (token.IsCancellationRequested) { throw new MaintenanceCancelledException("已停止检查，电脑上未做任何更改。"); }

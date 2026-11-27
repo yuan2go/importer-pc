@@ -100,7 +100,8 @@ public partial class StationSettingsWindow : Window
         {
             new("默认打开方式", Value("WindowOpeningMode", saved.OpeningMode == PresentationPreferences.WindowOpeningMode.FullScreen ? "最大化（全屏）" : "窗口"), "StationSettings.WindowMode"),
             new("效率显示", Value("ShowPace", saved.ShowPace ? "显示" : "隐藏"), "StationSettings.Pace"),
-            new("提示音音量", Value("CueVolume", saved.CueVolume == 0 ? "静音" : $"{saved.CueVolume}%"), "StationSettings.CueVolume")
+            new("提示音音量", Value("CueVolume", saved.CueVolume == 0 ? "静音" : $"{saved.CueVolume}%"), "StationSettings.CueVolume"),
+            new("开机自动启动供包台", saved.CanEdit("AutoStart") ? saved.AutoStart ? "开启" : "关闭" : saved.ReadFailure("AutoStart"), "StationSettings.AutoStart")
         };
         string Value(string path, string value)
         {

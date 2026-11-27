@@ -160,13 +160,17 @@ public sealed partial class ParcelRuntime
                     return new("ReceiptResponsibilities", Wire.Encode(repository.ReceiptResponsibilities(command.Owner)), repository.Revision);
                 case "ReconcileReceipt": return await ReconcileReceiptAsync(command).ConfigureAwait(false);
                 case "ConfirmPlacementRemoval" when ConfirmPlacementRemoval(command): break;
-                case "CalibrateEmptyTray" when Id == "sportmaster" && MaintenanceAuthorized && ManagementWorkspaceOpen &&
+                case "CalibrateEmptyTray" when Id == "sportmaster" && MaintenanceAuthorized &&
                     command.Owner is { } camera && readers.TryGetValue(camera, out var calibratedReader) &&
                     calibratedReader.Health?.IsValid(DateTimeOffset.UtcNow) == true &&
                     positions.Values.SingleOrDefault(p => p.ReaderDeviceId == camera) is { } calibratedPosition &&
-                    CurrentRound(calibratedPosition.Id) is null && calibratedReader.Source is ITrayPresenceSource presenceSource:
+                    (PositionControl(calibratedPosition.Id).Mode == StationPositionMode.Disabled || ManagementWorkspaceOpen && command.Value != "DisabledLane") &&
+                    CurrentRound(calibratedPosition.Id) is null && calibratedReader.Source is ITrayPresenceSource presenceSource &&
+                    presenceSource.ReadTrayPresenceModel()?.Calibrating != true:
+                    var calibrationScope = ManagementWorkspaceOpen && command.Value != "DisabledLane" ? "StationDebug" : "DisabledLane";
                     presenceSource.CalibrateEmptyTray();
-                    repository.Commit(null, "EmptyTrayCalibrationRequested", Wire.Encode(new { Camera = camera, calibratedReader.Epoch, Actor = ManagementEvidence }), command: command);
+                    repository.Commit(null, "EmptyTrayCalibrationRequested", Wire.Encode(new
+                    { Camera = camera, calibratedReader.Epoch, Scope = calibrationScope, Actor = ManagementEvidence }), command: command);
                     break;
                 case "Pause": repository.Commit(null, "AdmissionPaused", command.Value ?? "Software pause only; caller did not supply a trigger", paused: true, command: command); resumePriorPause = false; break;
                 case "Resume" when CanResume():

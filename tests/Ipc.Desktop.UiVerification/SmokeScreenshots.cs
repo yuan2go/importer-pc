@@ -11,6 +11,7 @@ using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster.Desktop;
 using Ipc.Platform;
 using ManualSupplyHarness = Fixture::ManualSupplyHarness;
+using P1PreviewCamera = Fixture::P1PreviewCamera;
 using ManagementModeFixture = Fixture::ManagementModeFixture;
 
 static partial class Program
@@ -22,6 +23,7 @@ static partial class Program
     {
         await CaptureWorkstation(root, evidence, lines);
         await CaptureFirstConfiguration(evidence, lines);
+        await CaptureUncalibrated(root, evidence, lines);
 
         var build = typeof(Program).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()!.Configuration;
         var operations = Path.Combine(root, "tests", "Ipc.Operations.Verification", "bin", build,
@@ -174,6 +176,14 @@ static partial class Program
                 if (!editor.NavigateToParameter(reader.InstanceId + "/device.ip"))
                     throw new InvalidOperationException("The left camera settings could not be opened from station settings.");
                 await Capture(station, 1220, 800, evidence, "settings-edit-cameras", lines);
+                var cameraEditor = Visuals<ParameterSettingsControl>(station).Single(editor => editor.Model is not null);
+                await CaptureDiscovery(station, cameraEditor, evidence, lines);
+                if (!editor.NavigateToParameter("AutoStart"))
+                    throw new InvalidOperationException("AutoStart was not exposed in the field preferences page.");
+                await Capture(station, 1220, 800, evidence, "settings-edit-preferences", lines);
+                var autoStart = Visuals<CheckBox>(station).Single(control => AutomationProperties.GetAutomationId(control) == "StationSettings.AutoStart");
+                if (autoStart.IsEnabled)
+                    throw new InvalidOperationException("A source checkout must not be able to write the current Windows Startup folder.");
                 if ((await fixture.App.SnapshotAsync()).Paused)
                     throw new InvalidOperationException("Camera settings paused the workstation.");
             }
@@ -201,6 +211,45 @@ static partial class Program
         await AwaitUi(() => empty.ViewModel.Fresh);
         await Capture(empty, 1536, 816, evidence, "work-unconfigured", lines);
         AssertStatusDot(empty, SupplyStationViewModel.StationStatusTone.Blocked, "#FFB52F38");
+    }
+
+    static async Task CaptureDiscovery(Window station, ParameterSettingsControl editor, string evidence, List<string> lines)
+    {
+        var model = editor.Model!;
+        var original = model.CameraDiscoverer;
+        model.CameraDiscoverer = _ => Task.FromResult<DiscoveredCamera[]>([
+            new("192.0.2.21", "SYNTH-OFFLINE-0", "MV-ID Series", "1.1", false),
+            new("192.0.2.22", "SYNTH-OFFLINE-1", "MV-ID Series", "1.1", false),
+            new("192.0.2.23", "SYNTH-CONFLICT", "MV-ID Series", "1.1", true)
+        ]);
+        try
+        {
+            Press(Visuals<Button>(station).Single(button => AutomationProperties.GetAutomationId(button) == "CameraDiscovery.Open"));
+            Window? picker = null;
+            await AwaitUi(() => (picker = station.OwnedWindows.OfType<Window>().SingleOrDefault(window =>
+                window.IsVisible && window.Title == "扫描局域网相机")) is not null && Visuals<TextBlock>(picker).Any(text =>
+                    text.Text == "地址冲突，请先修改相机 IP"));
+            await using var pickerOwner = new NativeWindowOwner(picker!);
+            var choices = Visuals<Button>(picker!).Where(button => Equals(button.Content, "设为左相机") || Equals(button.Content, "设为右相机")).ToArray();
+            if (choices.Length != 6 || choices.Count(choice => choice.IsEnabled) != 2)
+                throw new InvalidOperationException("Conflict rows and bindings owned by the opposite side must disable their actions.");
+            await Capture(picker!, 900, 480, evidence, "camera-discovery-dialog", lines);
+        }
+        finally { model.CameraDiscoverer = original; }
+    }
+
+    static async Task CaptureUncalibrated(string root, string evidence, List<string> lines)
+    {
+        var folder = Path.Combine(evidence, "uncalibrated");
+        await using var fixture = new ManualSupplyHarness(root, folder, deferred: false)
+        { CameraSource = binding => P1PreviewCamera.Create(binding, folder) };
+        fixture.Peer.HeartbeatTransform = body => body.Replace("\"TASKING\"", "\"IDLE\"", StringComparison.Ordinal);
+        await fixture.StartAsync();
+        var window = new SupplyStationWindow(fixture.App, null, "standard");
+        await using var owner = new NativeWindowOwner(window);
+        window.Show();
+        await AwaitUi(() => window.ViewModel.Left.ShowUncalibratedHint && window.ViewModel.Left.CanSubmitBarcode);
+        await Capture(window, 1536, 816, evidence, "work-uncalibrated-hint", lines);
     }
 
     static void AssertStatusDot(SupplyStationWindow window, SupplyStationViewModel.StationStatusTone expected, string color)
@@ -239,7 +288,13 @@ static partial class Program
             if (visible[^1] != primary)
                 throw new InvalidOperationException($"Wizard primary action is not last: {label}");
             ++step;
-            if (step is 2 or 3) await Capture(wizard, 1080, 700, evidence, $"setup-step-{step}", lines);
+            if (step == 2)
+            {
+                if (!Visuals<Button>(wizard).Any(button => button.IsVisible && AutomationProperties.GetAutomationId(button) == "CameraDiscovery.Open"))
+                    throw new InvalidOperationException("First setup cameras page did not expose discovery.");
+                await Capture(wizard, 1080, 700, evidence, "setup-step-2-cameras", lines);
+            }
+            if (step == 3) await Capture(wizard, 1080, 700, evidence, "setup-step-3", lines);
             if (label != "保存并进入") Press(primary);
         }
         await Capture(wizard, 1080, 700, evidence, "setup-step-4", lines);

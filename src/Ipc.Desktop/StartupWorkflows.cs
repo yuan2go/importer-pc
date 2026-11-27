@@ -713,6 +713,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 try { return await maintenance.ReadCameraSerialAsync(ip, engine); }
                 catch (Exception error) { diagnosticDetails += "\n相机身份读取：" + Ipc.Platform.DiagnosticText.Protect(error.ToString()); throw; }
             };
+            parameterEditor.CameraDiscoverer = async engine =>
+            {
+                try { return await maintenance.DiscoverCamerasAsync(engine); }
+                catch (Exception error) { diagnosticDetails += "\n扫描局域网相机：" + Ipc.Platform.DiagnosticText.Protect(error.ToString()); throw; }
+            };
             sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, OpeningModeDraft = openingMode, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430 };
             Body.Children.Add(sharedEditor);
             reviewStart = Body.Children.Count;

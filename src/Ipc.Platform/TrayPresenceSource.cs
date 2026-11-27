@@ -5,5 +5,7 @@ namespace Ipc.Platform;
 public interface ITrayPresenceSource
 {
     string TrayPresenceStatus { get; }
+    TrayPresenceModelSnapshot? ReadTrayPresenceModel() => null;
+    void CancelEmptyTrayCalibration() { }
     void CalibrateEmptyTray();
 }

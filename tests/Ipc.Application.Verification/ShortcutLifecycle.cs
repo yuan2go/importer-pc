@@ -31,6 +31,35 @@ static class ShortcutLifecycle
             try { _ = link.TargetPath; } catch (ObjectDisposedException) { rejected = true; }
             Check(rejected, "disposed wrapper rejects access deterministically after repeated Dispose");
         });
+        Scenario("current-user-startup", directory =>
+        {
+            var options = Wire.Decode<DeploymentShortcutOptions>("""{"StartMenu":true,"Desktop":false}""");
+            Check(!options.AutoStart && !Wire.Encode(options).Contains("AutoStart", StringComparison.Ordinal), "old installation JSON preserves the default and original encoding");
+            var old = Release(Path.Combine(directory, "old")) with { Shortcuts = new(false, false, true) };
+            var current = Release(Path.Combine(directory, "current")) with
+            { Shortcuts = old.Shortcuts, DataRoot = old.DataRoot, ConfigurationDirectory = old.ConfigurationDirectory };
+            var startup = Directory.CreateDirectory(Path.Combine(directory, "Startup")).FullName;
+            var menu = Path.Combine(directory, "菜单");
+            var desktop = Path.Combine(directory, "桌面");
+            var planned = DeploymentShortcuts.Plan(old, menu, desktop, startup).Single();
+            Check(planned.Arguments == "" && Path.GetFileName(planned.Path) == InstallationIdentity.DisplayName + ".lnk",
+                "autostart points only to this instance's workstation apphost with empty arguments");
+            var other = Path.Combine(startup, InstallationIdentity.IsTest ? "菜鸟供包台.lnk" : "菜鸟供包台（测试）.lnk");
+            Write(planned with { Path = other }); var otherHash = Wire.FileHash(other);
+            DeploymentShortcuts.Create(old, menu, desktop, startup: startup);
+            Check(DeploymentShortcuts.ReadAutoStart(old, startup), "owned user startup shortcut is written and recognized");
+            DeploymentShortcuts.Create(current, menu, desktop, old, startup);
+            Check(DeploymentShortcuts.ReadAutoStart(current, startup) && !DeploymentShortcuts.ReadAutoStart(old, startup), "update transfers only an owned startup entry to the new executable");
+            DeploymentShortcuts.Create(old, menu, desktop, current, startup);
+            Check(DeploymentShortcuts.ReadAutoStart(old, startup), "rollback can transfer the same entry back to the retained release");
+            DeploymentShortcuts.Create(old with { Shortcuts = new(false, false) }, menu, desktop, startup: startup);
+            Check(!File.Exists(planned.Path), "disabling removes the matching startup shortcut");
+            DeploymentShortcuts.Create(old, menu, desktop, startup: startup);
+            Write(planned with { Target = Path.Combine(directory, "user-selected.exe") }); var foreign = Wire.FileHash(planned.Path);
+            DeploymentShortcuts.Remove(old, menu, desktop, startup);
+            Check(Wire.FileHash(planned.Path) == foreign && Wire.FileHash(other) == otherHash,
+                "uninstall preserves the user-retargeted link and the other instance's distinct startup name");
+        });
         Scenario("directory-conflict", directory =>
         {
             var location = Release(directory); var menu = Path.Combine(directory, "菜单"); var desktop = Path.Combine(directory, "桌面");
@@ -298,7 +327,7 @@ static class ShortcutLifecycle
 
     static DeploymentLocation Release(string root)
     {
-        var release = Path.Combine(root, "发布-12345678"); var target = Path.Combine(release, "desktop", "Ipc.Desktop.exe");
+        var release = Path.Combine(root, "发布-12345678"); var target = Path.Combine(release, "desktop", InstallationIdentity.DesktopExecutable);
         Directory.CreateDirectory(Path.GetDirectoryName(target)!); File.WriteAllText(target, "synthetic target; never executed");
         return new("sportmaster", new string('a', 40), release, Path.Combine(root, "config"), Path.Combine(root, "data"), "S-1-5-21-1", Shortcuts: new(false, true));
     }

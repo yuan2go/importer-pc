@@ -96,6 +96,9 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
                 await gate.WaitAsync(linked.Token).ConfigureAwait(false);
                 try
                 {
+                    foreach (var reader in readers.Values)
+                        if (ReaderSupplyActive(reader.Source.DeviceId) && reader.Source is ITrayPresenceSource tray)
+                            tray.CancelEmptyTrayCalibration();
                     Volatile.Write(ref managementWorkspace, null);
                     foreach (var source in workspaceSources.Keys.Where(source => !readers.Values.Any(r => ReferenceEquals(r.Source, source))))
                         workspaceSources.TryRemove(source, out _);

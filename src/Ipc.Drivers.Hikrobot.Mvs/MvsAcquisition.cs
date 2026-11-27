@@ -56,6 +56,8 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     MvsStillness stillness = new(0, 0);
     MvsTrayPresence trayPresence = new();
     public string TrayPresenceStatus => trayPresence.Status;
+    public TrayPresenceModelSnapshot ReadTrayPresenceModel() => trayPresence.Snapshot();
+    public void CancelEmptyTrayCalibration() => trayPresence.CancelTeaching();
     public void CalibrateEmptyTray()
     {
         lock (gate)

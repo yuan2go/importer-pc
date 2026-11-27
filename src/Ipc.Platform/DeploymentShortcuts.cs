@@ -3,12 +3,13 @@ using System.Text.Json;
 
 namespace Ipc.Platform;
 
-public sealed record DeploymentShortcutOptions(bool StartMenu, bool Desktop);
+public sealed record DeploymentShortcutOptions(bool StartMenu, bool Desktop,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)] bool AutoStart = false);
 public sealed record DeploymentShortcut(string Path, string Target, string Arguments, string WorkingDirectory);
 
 public static class DeploymentShortcuts
 {
-    public static DeploymentShortcut[] Plan(DeploymentLocation location, string programs, string desktop)
+    public static DeploymentShortcut[] Plan(DeploymentLocation location, string programs, string desktop, string? startup = null)
     {
         var options = location.Shortcuts ?? throw new InvalidDataException("部署缺少明确的快捷方式选项；保留原登记并使用当前安装计划。");
         var business = location.ApplicationId switch { "sportmaster" => "SM供包业务", "direct-plc" => "设备直连业务", "wcs-to-plc" => "调度转发业务", _ => location.ApplicationId };
@@ -26,14 +27,16 @@ public static class DeploymentShortcuts
                 result.Add(new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, (location.ApplicationId == "sportmaster" ?
                     entry.Args == "" ? InstallationIdentity.DisplayName : InstallationIdentity.DisplayName + " · " + entry.Name : id + " · " + entry.Name) + ".lnk"), target, entry.Args, location.ReleaseRoot));
         if (options.Desktop) result.Add(new(System.IO.Path.Combine(desktop, InstallationIdentity.DisplayName + ".lnk"), target, "", location.ReleaseRoot));
+        if (options.AutoStart && location.ApplicationId == "sportmaster" && !string.IsNullOrWhiteSpace(startup))
+            result.Add(AutoStartEntry(location, startup));
         return result.ToArray();
     }
 
     [SupportedOSPlatform("windows")]
-    public static void Create(DeploymentLocation location, string programs, string desktop, DeploymentLocation? previous = null)
+    public static void Create(DeploymentLocation location, string programs, string desktop, DeploymentLocation? previous = null, string? startup = null)
     {
         previous ??= location.PreviousDeployment;
-        var plan = Plan(location, programs, desktop);
+        var plan = Plan(location, programs, desktop, startup);
         if (location.ApplicationId == "sportmaster" && location.InventoryFile is { } inventory)
         {
             // A retained deployment may predate the observer. Project its declared
@@ -62,8 +65,8 @@ public static class DeploymentShortcuts
             link.TargetPath = entry.Target; link.Arguments = entry.Arguments; link.WorkingDirectory = entry.WorkingDirectory;
             link.Description = location.ApplicationId == "sportmaster" ? InstallationIdentity.DisplayName : InstallationIdentity.DisplayName + " · " + location.ApplicationId; link.SetIcon(entry.Target, 0); link.Save(entry.Path);
         }
-        var candidates = OwnedCandidates(location, programs, desktop)
-            .Concat(previous is null ? [] : OwnedCandidates(previous, programs, desktop));
+        var candidates = OwnedCandidates(location, programs, desktop, startup)
+            .Concat(previous is null ? [] : OwnedCandidates(previous, programs, desktop, startup));
         RemoveOwned(candidates.Where(c => !plan.Any(p => string.Equals(p.Path, c.Path, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(p.Target, c.Target, StringComparison.OrdinalIgnoreCase) && p.Arguments == c.Arguments)));
     }
@@ -93,17 +96,86 @@ public static class DeploymentShortcuts
     }
 
     [SupportedOSPlatform("windows")]
-    public static void Remove(DeploymentLocation location, string programs, string desktop)
+    public static void Remove(DeploymentLocation location, string programs, string desktop, string? startup = null)
     {
-        RemoveOwned(OwnedCandidates(location, programs, desktop));
+        RemoveOwned(OwnedCandidates(location, programs, desktop, startup));
+    }
+
+    static DeploymentShortcut AutoStartEntry(DeploymentLocation location, string startup) =>
+        new(Path.Combine(startup, InstallationIdentity.DisplayName + ".lnk"),
+            Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable), "", location.ReleaseRoot);
+
+    [SupportedOSPlatform("windows")]
+    public static bool ReadAutoStart(DeploymentLocation location, string? startup)
+    {
+        if (location.ApplicationId != "sportmaster" || string.IsNullOrWhiteSpace(startup)) return false;
+        var entry = AutoStartEntry(location, startup);
+        DeploymentPaths.RequireOrdinaryAncestors(entry.Path);
+        if (!ExistingShortcutFile(entry.Path)) return false;
+        using var link = new ShellLinkFile(entry.Path);
+        return link.TargetPath.Equals(entry.Target, StringComparison.OrdinalIgnoreCase) && link.Arguments == entry.Arguments;
+    }
+
+    [SupportedOSPlatform("windows")]
+    public static bool ReadCurrentUserAutoStart() => ReadAutoStart(RequireCurrentWorkstation(), CurrentUserStartup());
+
+    [SupportedOSPlatform("windows")]
+    public static void SaveCurrentUserAutoStart(bool enabled)
+    {
+        var location = RequireCurrentWorkstation();
+        var startup = CurrentUserStartup();
+        var entry = AutoStartEntry(location, startup);
+        DeploymentPaths.RequireOrdinaryAncestors(entry.Path);
+        if (!enabled) { RemoveOwned([entry]); return; }
+        if (ReadAutoStart(location, startup)) return;
+        if (ExistingShortcutFile(entry.Path))
+            throw new IOException("启动目录已有同名快捷方式，已保留。请先检查它的目标。");
+        Directory.CreateDirectory(startup);
+        var temporary = Path.Combine(startup, "." + Wire.Id() + ".tmp");
+        try
+        {
+            using (var link = new ShellLinkFile())
+            {
+                link.TargetPath = entry.Target; link.Arguments = entry.Arguments; link.WorkingDirectory = entry.WorkingDirectory;
+                link.Description = InstallationIdentity.DisplayName; link.SetIcon(entry.Target, 0); link.Save(temporary);
+            }
+            // Publish only to a free name. Never overwrite a user-edited shortcut.
+            File.Move(temporary, entry.Path);
+        }
+        finally { if (File.Exists(temporary)) File.Delete(temporary); }
+    }
+
+    [SupportedOSPlatform("windows")]
+    public static string CurrentUserStartupDirectory() =>
+        Environment.GetFolderPath(Environment.SpecialFolder.Startup, Environment.SpecialFolderOption.DoNotVerify);
+
+    [SupportedOSPlatform("windows")]
+    static string CurrentUserStartup() =>
+        CurrentUserStartupDirectory() is { Length: > 0 } path ? path :
+            throw new IOException("当前 Windows 用户的启动目录不可用。");
+
+    [SupportedOSPlatform("windows")]
+    static DeploymentLocation RequireCurrentWorkstation()
+    {
+        if (!string.Equals(Path.GetFileName(Environment.ProcessPath), InstallationIdentity.DesktopExecutable, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("请从已安装的供包台打开设置。");
+        var location = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, "sportmaster") ??
+            throw new InvalidOperationException("请从已安装的供包台打开设置。");
+        var executable = Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable);
+        if (!string.Equals(Environment.ProcessPath, executable, StringComparison.OrdinalIgnoreCase) ||
+            Environment.GetCommandLineArgs().Contains(InstallationIdentity.OperationsArgument))
+            throw new InvalidOperationException("请从当前安装的供包台打开设置。");
+        DeploymentPaths.RequireOrdinaryAncestors(executable);
+        MachineRuntimePolicy.RequireProtectedEvidence(executable);
+        return location;
     }
 
     static DeploymentShortcut LegacyTool(DeploymentShortcut entry, DeploymentLocation location) =>
         entry with { Target = Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.LegacyOperationsExecutable), Arguments = "" };
 
-    static IEnumerable<DeploymentShortcut> OwnedCandidates(DeploymentLocation location, string programs, string desktop)
+    static IEnumerable<DeploymentShortcut> OwnedCandidates(DeploymentLocation location, string programs, string desktop, string? startup = null)
     {
-        foreach (var entry in Plan(location with { Shortcuts = new(true, true) }, programs, desktop).Concat(LegacySmMenu(location, programs)))
+        foreach (var entry in Plan(location with { Shortcuts = new(true, true, true) }, programs, desktop, startup).Concat(LegacySmMenu(location, programs)))
         {
             yield return entry;
             if (entry.Arguments == InstallationIdentity.OperationsArgument) yield return LegacyTool(entry, location);

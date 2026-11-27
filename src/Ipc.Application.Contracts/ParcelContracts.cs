@@ -137,6 +137,7 @@ public sealed record ParcelAvailability(bool Admit, bool Resume, bool Configure,
 public interface IParcelApplication : IBusinessApplication
 {
     Task<SmRoundHistoryPage> RoundHistoryAsync(string? position = null, int limit = 100, string? search = null, DateTimeOffset? from = null, DateTimeOffset? to = null) => throw new NotSupportedException("Round history unavailable");
+    Task<DiscoveredCamera[]> DiscoverCamerasAsync(string readerEngine) => throw new NotSupportedException("当前窗口无法扫描相机。");
     Task<string> ReadCameraSerialAsync(string ip, string readerEngine) => throw new NotSupportedException("相机身份读取不可用");
     Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
     Task<ConfigurationSubmissionResult> InspectConfigurationSubmissionAsync(Guid runtimeId, long expectedRevision, ParcelConfiguration candidate) => throw new NotSupportedException("Configuration submission inspection unavailable");

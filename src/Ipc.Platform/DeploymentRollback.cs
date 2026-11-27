@@ -137,7 +137,9 @@ public static partial class WindowsDeploymentSetup
             ConfigurationDirectory = actual.Current.ConfigurationDirectory,
             MaintenanceOperation = actual.Current.MaintenanceOperation,
             RestoreHandoffHash = actual.Current.RestoreHandoffHash,
-            Shortcuts = actual.Current.Shortcuts,
+            Shortcuts = actual.Current.Shortcuts is { } shortcutOptions
+                ? shortcutOptions with { AutoStart = DeploymentShortcuts.ReadAutoStart(actual.Current, DeploymentShortcuts.CurrentUserStartupDirectory()) }
+                : null,
             Recovery = actual.Current.Recovery,
             PreviousDeployment = actual.Current with { PreviousDeployment = null },
             LifecycleOperation = file,

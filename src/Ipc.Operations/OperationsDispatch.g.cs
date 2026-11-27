@@ -17,6 +17,9 @@ internal static class OperationsDispatch
             case "IParcelApplication.RoundHistoryAsync/5":
                 if (args.Length != 5) throw new InvalidDataException("命令参数数量无效。");
                 return await ((IParcelApplication)application).RoundHistoryAsync(Arg<string?>(args, 0), Arg<int>(args, 1), Arg<string?>(args, 2), Arg<DateTimeOffset?>(args, 3), Arg<DateTimeOffset?>(args, 4)).ConfigureAwait(false);
+            case "IParcelApplication.DiscoverCamerasAsync/1":
+                if (args.Length != 1) throw new InvalidDataException("命令参数数量无效。");
+                return await ((IParcelApplication)application).DiscoverCamerasAsync(Arg<string>(args, 0)).ConfigureAwait(false);
             case "IParcelApplication.ReadCameraSerialAsync/2":
                 if (args.Length != 2) throw new InvalidDataException("命令参数数量无效。");
                 return await ((IParcelApplication)application).ReadCameraSerialAsync(Arg<string>(args, 0), Arg<string>(args, 1)).ConfigureAwait(false);

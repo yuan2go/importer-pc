@@ -23,7 +23,7 @@ public sealed partial class ParcelRuntime
                     // A saved camera change replaced this session; the replacement has its own loop.
                     if (!ReferenceEquals(readers.GetValueOrDefault(id), reader)) return;
                     backgroundProgress[name] = (DateTimeOffset.UtcNow, reader.Health?.Health.ToString() ?? "Unconfirmed");
-                    var supplyActive = ReaderSupplyActive(id);
+                    var supplyActive = ReaderCaptureActive(reader);
                     var suspended = supplySuspendedReaders.Contains(id);
                     var restoreWorkspace = !ManagementWorkspaceOpen && reader.Health?.Health == DeviceHealth.Ready && reader.Source is IObservationInspectionSource original && workspaceSources.ContainsKey(original);
                     if (!restoreWorkspace && (!supplyActive && suspended || supplyActive && !suspended &&

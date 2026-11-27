@@ -14,7 +14,13 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
     readonly SemaphoreSlim identityGate = new(1, 1);
     IParcelCapabilityFactory? identityFactory;
     bool identityClosing;
-    public async Task<string> ReadCameraSerialAsync(string ip, string readerEngine)
+    public Task<string> ReadCameraSerialAsync(string ip, string readerEngine) =>
+        WithIdentityFactory(factory => factory.ReadCameraSerial(ip, readerEngine));
+
+    public Task<DiscoveredCamera[]> DiscoverCamerasAsync(string readerEngine) =>
+        WithIdentityFactory(factory => factory.DiscoverCameras(readerEngine));
+
+    async Task<T> WithIdentityFactory<T>(Func<IParcelCapabilityFactory, T> read)
     {
         Authorize();
         await identityGate.WaitAsync().ConfigureAwait(false);
@@ -22,7 +28,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         {
             ObjectDisposedException.ThrowIf(identityClosing, this);
             identityFactory ??= factory();
-            return await Task.Run(() => { Authorize(); return identityFactory.ReadCameraSerial(ip, readerEngine); }).ConfigureAwait(false);
+            return await Task.Run(() => { Authorize(); return read(identityFactory); }).ConfigureAwait(false);
         }
         finally { identityGate.Release(); }
     }

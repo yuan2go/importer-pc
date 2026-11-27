@@ -27,6 +27,7 @@ public sealed record ParcelPorts(IControlledObservationSource Reader, IControlle
     IReadOnlyDictionary<string, IControlledObservationSource>? Readers = null, IReadOnlyDictionary<string, ICapabilityPort>? Devices = null);
 public interface IParcelCapabilityFactory : IAsyncDisposable
 {
+    DiscoveredCamera[] DiscoverCameras(string readerEngine) => throw new NotSupportedException("当前业务无法扫描相机。");
     string ReadCameraSerial(string ip, string readerEngine) => throw new NotSupportedException("相机身份读取不可用");
     CapabilityRequirements Requirements(CapabilityBinding binding) => new(Query: true);
     bool SimulationIdentity(CapabilityBinding binding) => true;

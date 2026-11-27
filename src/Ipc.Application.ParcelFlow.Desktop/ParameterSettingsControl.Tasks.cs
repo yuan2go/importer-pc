@@ -83,6 +83,8 @@ public sealed partial class ParameterSettingsControl
         {
             var combined = Page(2, "左右相机", "填写相机 IP，保存时自动读取序列号。不用的相机请清空 IP。");
             var columns = new Grid(); columns.ColumnDefinitions.Add(new()); columns.ColumnDefinitions.Add(new()); columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
+            if (Audience != SmParameterAudience.Technical && Model is { CameraDiscoverer: not null } cameraModel)
+                AddCameraDiscovery(combined, cameraModel);
             combined.Body.Children.Add(columns);
             foreach (var (page, index) in cameraPages.Select((p, i) => (p, i)))
             {

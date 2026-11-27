@@ -43,7 +43,7 @@ internal sealed partial class StationDebugControl : UserControl
     string position = "left", loadedFrame = "";
     string? ownedScanSession, ownedScanRound, ownedManualRound;
     Guid? ownedManualRuntime;
-    bool active, busy, polling, fit = true, authoritative;
+    bool active, busy, polling, fit = true, authoritative, stationDebug = true;
     long generation;
     TaskCompletionSource? actionFinished;
     Task deactivation = Task.CompletedTask;
@@ -61,11 +61,16 @@ internal sealed partial class StationDebugControl : UserControl
         inspection = vm.Application as ICameraInspection;
         rounds = vm.Application as ICameraReadRounds;
         evidence = new(vm, settings, details);
-        livePreview = new(vm, previewHeight: 224);
+        livePreview = new(vm, previewHeight: 206, showDiagnostics: false);
         livePreview.SelectDevice(Position.ReaderId);
         previewHost.Content = livePreview;
+        previewDiagnostics.Content = livePreview.CreateDiagnostics();
         evidenceHost.Content = evidence;
         InitializeBatch(batchPanel);
+        calibrate.Click += async (_, _) => await Run(_ => livePreview.HasLiveFrame
+            ? vm.CalibrateEmptyTrayAsync(Position, stationDebug)
+            : throw new InvalidOperationException("请等待当前相机的实时画面，再确认空托盘。"));
+        previewTabs.SelectionChanged += (_, args) => { if (args.Source == previewTabs) Buttons(); };
 
         stopRead.Click += async (_, _) => await Run(async _ =>
         {
@@ -96,7 +101,7 @@ internal sealed partial class StationDebugControl : UserControl
             if (updatingRequest) return;
             requestDirty = true; manualDrafts[position] = requestBarcode.Text; Buttons();
         };
-        timer.Tick += async (_, _) => await PollAsync();
+        timer.Tick += async (_, _) => { Buttons(); await PollAsync(); };
         Loaded += async (_, _) =>
         {
             var requested = ++activation; await deactivation;
@@ -211,7 +216,7 @@ internal sealed partial class StationDebugControl : UserControl
     }
     public async Task PollAsync()
     {
-        if (!active || busy || batch is not null || polling || tabs.SelectedIndex == 1 || !vm.IsManagementMode || rounds is null || inspection is null) return;
+        if (!stationDebug || !active || busy || batch is not null || polling || tabs.SelectedIndex == 1 || !vm.IsManagementMode || rounds is null || inspection is null) return;
         polling = true; var version = generation; var token = lifetime!.Token;
         try
         {
@@ -333,7 +338,7 @@ internal sealed partial class StationDebugControl : UserControl
         var waiting = batch is not null || observed?.State is "Preparing" or "Reading" or "Sealing" or "Sending";
         trigger.Content = armCommand is not null || beginCommand is not null ? "检查触发" : current?.State is "Preparing" or "Reading" or "Sealing" ? "扫码中…" : current?.Id is null || current.ManualRequest ? "触发扫码" : "再次扫码";
         trigger.IsEnabled = active && !busy && !waiting && vm.IsManagementMode && canCheckCamera;
-        stopRead.Visibility = observed?.State is "Reading" or "Sealing" ? Visibility.Visible : Visibility.Collapsed;
+        stopRead.Visibility = stationDebug && observed?.State is ("Reading" or "Sealing") ? Visibility.Visible : Visibility.Collapsed;
         stopRead.IsEnabled = active && !busy && vm.IsManagementMode && ownedScanSession == observed?.SessionId &&
             ownedScanRound is not null && ownedScanRound == observed?.Id && observed?.State is "Reading" or "Sealing";
         trigger.ToolTip = canCheckCamera ? "触发时由供包台核对实际连接；读码不额外发送请求。" : "请先配置并启用本位相机；可在下方手工输入条码。";
@@ -344,8 +349,27 @@ internal sealed partial class StationDebugControl : UserControl
         send.IsEnabled = active && !busy && authoritative && vm.Fresh && vm.IsManagementMode && current?.Id == observed?.Id && current?.DeviceId == Position.ReaderId &&
             (sendCommand is not null || !requestDirty && current is { RequestHash: not null, SendAttempts: 0 } && (current.ManualRequest || current.Frame is { } frame && loadedFrame == frame.Id));
         copyResponse.IsEnabled = active && !busy && vm.IsManagementMode && displayedResponse?.Complete == true && originalResponseText is { Length: > 0 };
+        var calibration = CameraAcquisitionPresentation.Calibration(vm, Position, stationDebug);
+        calibrationStatus.Text = calibration.Label;
+        calibrationStatus.SetResourceReference(TextBlock.ForegroundProperty, calibration.Tone);
+        calibrationBadge.SetResourceReference(BackgroundProperty, calibration.Tone == "Muted" ? "Soft" : calibration.Tone + "Background");
+        calibrationBadge.SetResourceReference(Border.BorderBrushProperty, calibration.Tone == "Muted" ? "Line" : calibration.Tone + "Border");
+        calibrationHint.Text = calibration.CanStart && !livePreview.HasLiveFrame ? "请切到实时画面并等待当前相机的新画面。" : calibration.Detail;
+        calibrate.IsEnabled = active && !busy && calibration.CanStart && livePreview.HasLiveFrame;
+        calibrate.Content = Position.TrayPresence?.Calibrating == true ? "校准中…" : "确认空托盘并校准";
         left.IsEnabled = right.IsEnabled = !busy && batch is null; left.SetResourceReference(BackgroundProperty, position == "left" ? "AccentBackground" : "Surface"); right.SetResourceReference(BackgroundProperty, position == "right" ? "AccentBackground" : "Surface");
     }
+    public void SetStationDebug(bool enabled)
+    {
+        if (stationDebug == enabled) return;
+        stationDebug = enabled;
+        if (!enabled) { tabs.SelectedIndex = 0; previewTabs.SelectedIndex = 0; }
+        requestCard.Visibility = trigger.Visibility = lockedFrameTab.Visibility = barcode.Visibility =
+            batchExpander.Visibility = readStatus.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+        LayoutColumns();
+        Buttons();
+    }
+
     void FitRequestCard()
     {
         // The outer scrolling surface measures without a height limit. Give the
@@ -359,7 +383,7 @@ internal sealed partial class StationDebugControl : UserControl
 
     void LayoutColumns()
     {
-        var split = ActualWidth >= 940;
+        var split = stationDebug && ActualWidth >= 940;
         requestColumn.Width = split ? new(4, GridUnitType.Star) : new(0);
         Grid.SetColumn(requestCard, split ? 1 : 0);
         Grid.SetRow(requestCard, split ? 0 : 1);

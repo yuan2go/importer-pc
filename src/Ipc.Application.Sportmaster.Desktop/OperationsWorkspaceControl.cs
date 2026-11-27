@@ -142,9 +142,9 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         debugToolbar.SetResourceReference(StyleProperty, "WorkstationCard");
         DockPanel.SetDock(debugToolbar, Dock.Top);
         device.Children.Add(debugToolbar);
-        deviceViewToggle.Click += (_, _) => { if (ReferenceEquals(deviceView.Content, diagnostic) && workspace) ShowDebugView(); else ShowDiagnosticsView(); };
+        deviceViewToggle.Click += (_, _) => { if (ReferenceEquals(deviceView.Content, diagnostic) && HasConfirmedGrant) ShowDebugView(); else ShowDiagnosticsView(); };
         debugHost.Content = Text("尚未进入调试。请先明确进入，并核对整站影响范围。");
-        deviceView.Content = diagnostic; device.Children.Add(deviceView);
+        device.Children.Add(deviceView); ShowDiagnosticsView();
         enterDebug.Click += async (_, _) => await Run(BeginDebug);
         leaveDebug.Click += async (_, _) => await Run(EndDebug);
         parameters.DiagnosticsRequested += (_, _) => Navigate("debug");
@@ -305,7 +305,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         };
         if (target == "debug" && diagnostic.Content is null)
             diagnostic.Content = new OperationsDeviceDiagnostics(model, OpenDiagnosticSettings,
-                position => { if (workspace) { debug?.SelectPosition(position); ShowDebugView(); } else model.Message = "请先明确进入设备调试。"; });
+                position => { if (HasConfirmedGrant) { ShowDebugView(); debug?.SelectPosition(position); } else model.Message = "请先验证管理密码。"; });
         parameters.IsEnabled = model.IsManagementMode && model.Fresh;
         diagnostic.IsEnabled = model.IsManagementMode && model.Fresh;
         if (diagnostic.Content is OperationsDeviceDiagnostics devices) devices.DebugActive = workspace;
@@ -372,19 +372,20 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     void ShowDebugView()
     {
         debug ??= new StationDebugControl(model, _ => { Navigate("parameters"); return Task.CompletedTask; }, ShowOperation);
+        debug.SetStationDebug(workspace);
         debugHost.Content = debug;
         deviceView.Content = debugHost;
         deviceViewToggle.Content = "查看连接诊断";
-        evidenceViewToggle.Visibility = Visibility.Visible;
-        deviceHeading.Text = "扫码调试";
-        enterDebug.Visibility = Visibility.Collapsed;
-        leaveDebug.Visibility = Visibility.Visible;
+        evidenceViewToggle.Visibility = workspace ? Visibility.Visible : Visibility.Collapsed;
+        deviceHeading.Text = workspace ? "扫码调试" : "相机画面与校准";
+        enterDebug.Visibility = workspace ? Visibility.Collapsed : Visibility.Visible;
+        leaveDebug.Visibility = workspace ? Visibility.Visible : Visibility.Collapsed;
     }
     void ShowDiagnosticsView()
     {
         deviceView.Content = diagnostic;
         evidenceViewToggle.Visibility = Visibility.Collapsed;
-        deviceViewToggle.Content = workspace ? "返回调试画面" : "连接诊断";
+        deviceViewToggle.Content = workspace ? "返回调试画面" : "查看相机画面";
         deviceHeading.Text = "浏览连接诊断";
         enterDebug.Visibility = workspace ? Visibility.Collapsed : Visibility.Visible;
         leaveDebug.Visibility = workspace ? Visibility.Visible : Visibility.Collapsed;

@@ -325,7 +325,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             }
             if (control is not TextBox { IsReadOnly: true })
             {
-                var activation = fieldKey is "WindowOpeningMode" or "ShowPace" or "CueVolume" or "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator"
+                var activation = fieldKey is "WindowOpeningMode" or "ShowPace" or "CueVolume" or "AutoStart" or "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator"
                     ? "立即生效" : draft?.Kind == "observation" || draft is not null && ParameterOwnership.IsRcs(draft) || fieldKey == "StationCode" ? "重连生效" : "需重启生效";
                 var badge = ActivationBadge(activation, activation == "需重启生效" ? "Soft" : "AccentBackground");
                 Grid.SetColumn(badge, 1); field.Children.Add(badge);
@@ -428,14 +428,15 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (m.ApplicationId == "sportmaster") ArrangeSportmasterPages();
         if (!FirstConfiguration && m.ApplicationId == "sportmaster" && Audience != SmParameterAudience.Complete)
         {
+            bool ShowField(string path) => path == "AutoStart" ? Audience == SmParameterAudience.Field : SmParameterOwnership.Show(Audience, path);
             foreach (var pair in locations.ToArray())
-                if (!SmParameterOwnership.Show(Audience, pair.Key))
+                if (!ShowField(pair.Key))
                 {
                     if (pair.Value.Row is { Parent: Panel parent } row) parent.Children.Remove(row);
                     locations[pair.Key] = pair.Value with { Applicable = () => false };
                 }
             foreach (var page in pages)
-                if (!locations.Any(p => ReferenceEquals(p.Value.Page, page) && SmParameterOwnership.Show(Audience, p.Key)))
+                if (!locations.Any(p => ReferenceEquals(p.Value.Page, page) && ShowField(p.Key)))
                     page.Applicable = () => false;
         }
         foreach (var groupActivationLabel in groupActivationLabels) groupActivationLabel();

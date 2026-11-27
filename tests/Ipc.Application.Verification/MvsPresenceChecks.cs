@@ -182,8 +182,13 @@ internal static class MvsPresenceChecks
             Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabled &&
                 await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received,
                 "operator disable completes immediately with an occupied calibrated tray and keeps RCS heartbeat online");
+            camera.Parcel = false;
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
-                { CurrentRoundId: null, SupplyControl.Mode: StationPositionMode.Disabled, CameraConnectionSuspended: true });
+            {
+                CurrentRoundId: null, SupplyControl.Mode: StationPositionMode.Disabled, CameraConnectionSuspended: false,
+                TrayPresence: { Calibrated: true, Presence: TrayPresence.Absent }, BarcodeInput: { Camera: false, Manual: false }
+            });
+            Check(true, "the disabled camera still observes a cleared tray without reopening production admission");
             Check((await h.App.RoundHistoryAsync(search: second.Id)).Items.Single().EndReason == "OperatorDisabledPosition",
                 "operator disable ends the round without empty frames or a second confirmation");
             Check(h.Peer.Requests.Count == 2 && (await h.App.SnapshotAsync()).Positions!.All(p => p.Vehicle is null),

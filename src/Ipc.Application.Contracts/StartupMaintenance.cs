@@ -60,6 +60,7 @@ public interface IStartupRetentionMaintenance
 public interface IStartupMaintenance : IAsyncDisposable, ICompleteBackupSetMaintenance
 {
     ValueTask IAsyncDisposable.DisposeAsync() => ValueTask.CompletedTask;
+    Task<DiscoveredCamera[]> DiscoverCamerasAsync(string readerEngine) => throw new NotSupportedException("当前窗口无法扫描相机。");
     Task<string> ReadCameraSerialAsync(string ip, string readerEngine) => throw new NotSupportedException("相机身份读取不可用");
     Task<StartupClassification> ClassifyAsync() => throw new NotSupportedException("Startup routing metadata unavailable");
     Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");

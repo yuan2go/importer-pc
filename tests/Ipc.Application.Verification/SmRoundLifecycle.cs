@@ -14,6 +14,9 @@ internal static class SmRoundLifecycle
     {
         var clock = new TimeStorageFaultChecks.ManualTime();
         await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "round-lifecycle"), deferred: false, mode: RunMode.Simulation) { StationClock = clock };
+        // These scenarios hold a real reply while the other lane changes vehicle and submits.
+        // Keep those steps inside the request budget, including on slower Windows runners.
+        h.Config.Wcs!.Parameters["request-timeout-ms"] = "5000";
         var config = h.Config with
         {
             BarcodeFilter = new("(?:GOOD-[0-9]+|BG[0-9]+)", "BG[0-9]+"),
@@ -375,9 +378,13 @@ internal static class SmRoundLifecycle
             Check(h.Peer.Requests.Count == beforeCapacity + 2 && !h.Peer.Hold.Task.IsCompleted,
                 "a fenced left request cannot consume the right position's submission opportunity");
             h.Peer.Hold.TrySetResult();
+            Check((await Resolved(held.OperationId!)).Wcs?.State == StageState.Accepted,
+                "the held reply is accepted before the lane can admit another parcel");
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity!.ManagedExecutions == 0);
             var rightRemoval = await h.App.SnapshotAsync();
             var capacitySubmission = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-934", ParcelBarcodeInputKind.PdaKeyboard), default);
+            Check(capacitySubmission is { Status: "Admitted", OperationId: not null },
+                "the next left parcel is admitted after its original remote responsibility ends: " + capacitySubmission.Detail);
             var completed = await Resolved(capacitySubmission.OperationId!);
             Check(completed.Id != held.OperationId && h.Peer.Requests.Count == beforeCapacity + 3,
                 "the original accepted reply releases the independent fence and permits one new PDA task");

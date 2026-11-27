@@ -152,6 +152,18 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
             Message = result.Status + " · " + result.Reason;
         }, "继续本位未尝试阶段");
     }
+    internal async Task CalibrateEmptyTrayAsync(SupplyStationPositionViewModel position, bool stationDebug)
+    {
+        await RequireManagementModeAsync();
+        var state = CameraAcquisitionPresentation.Calibration(this, position, stationDebug);
+        if (!state.CanStart || Snapshot is not { } snapshot) throw new InvalidOperationException(state.Detail);
+        var command = new BusinessCommand(Wire.Id(), snapshot.Revision, "CalibrateEmptyTray", position.ReaderId,
+            stationDebug ? "StationDebug" : "DisabledLane");
+        var result = await ServiceAsync(() => Application.CommandAsync(command));
+        if (result.Status != "Persisted")
+            Message = "校准未开始。请核对本位状态和相机连接后再试。";
+        await RefreshAsync();
+    }
     long historyOpenGeneration;
     public async Task OpenHistoryAsync(string? operationId = null)
     {
@@ -209,6 +221,13 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public bool InputUnadmitted => ParcelPresentation.IsUnadmitted(Input);
     public string LatestInputSummary => ParcelPresentation.InputSummary(Input);
     public bool InputFailed => (!RoundReadActive || CurrentRound?.AutoExpired == true) && ParcelPresentation.IsInputFailure(Input);
+    public TrayPresenceModelSnapshot? TrayPresence => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.TrayPresence;
+    public bool ShowUncalibratedHint => SupplyConfigured && TrayPresence is { Calibrated: false } &&
+        DevicePresentation.Tone == ParcelPresentationTone.Accepted;
+    public string CameraFooterText => ShowUncalibratedHint ? "相机：在线 · 未校空盘" : DevicePresentation.Text;
+    public string CameraFooterForeground => ShowUncalibratedHint ? OperatorTokens.Warning : DevicePresentation.Foreground;
+    public string? CameraFooterHint => ShowUncalibratedHint
+        ? "重启或重连后需由运维校准空托盘。未校准期间，取下异常包裹后请按“已取下包裹”。" : null;
     public SmArrivalSnapshot? Arrival => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.Arrival;
     public SmParcelRound? CurrentRound => owner.Snapshot?.Rounds.SingleOrDefault(r => r.Id == owner.Snapshot.Positions?.SingleOrDefault(p => p.Id == PositionId)?.CurrentRoundId);
     public bool HasCurrentInput => CurrentRound is not null;
@@ -349,7 +368,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         DevicePresentation = !fresh ? ParcelPresentation.Unknown("相机：状态中断") :
             snapshot is not null && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, ReaderId) ? ParcelPresentation.Unknown("相机：待配置") : position?.CameraConnectionSuspended == true ?
             SupplyDisabled ? ParcelPresentation.Neutral("相机：已断开（本位停用）") : ParcelPresentation.Unknown("相机：等待连接") :
-            SupplyDisabled ? ParcelPresentation.Unknown("相机：正在断开或释放待确认") : FastReaderBlocked ? ParcelPresentation.Rejected("相机：离线或恢复中") :
+            FastReaderBlocked ? ParcelPresentation.Rejected("相机：离线或恢复中") :
             device is null ? ParcelPresentation.Unknown("相机：待确认") :
             device.IsValid(now) ? snapshot?.Configuration.Effective.Mode == RunMode.Simulation
                 ? ParcelPresentation.Neutral("相机：模拟连接") : ParcelPresentation.Accepted("相机：在线") :
@@ -372,6 +391,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         // including local drafts. Publish only changed display facts, never drafts.
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity), (nameof(CameraAddress), CameraAddress), (nameof(DevicePresentation), DevicePresentation),
+            (nameof(TrayPresence), TrayPresence), (nameof(CameraFooterText), CameraFooterText), (nameof(CameraFooterForeground), CameraFooterForeground), (nameof(CameraFooterHint), CameraFooterHint),
             (nameof(VehicleNumberText), VehicleNumberText), (nameof(VehicleStatusText), VehicleStatusText),
             (nameof(CompactVehicleStatusText), CompactVehicleStatusText), (nameof(VehicleStatusForeground), VehicleStatusForeground),
             (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(NeedsAttention), NeedsAttention), (nameof(SlotFontSize), SlotFontSize),

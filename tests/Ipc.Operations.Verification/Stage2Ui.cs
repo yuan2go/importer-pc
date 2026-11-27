@@ -131,6 +131,15 @@ internal static partial class Program
                 if (smoke)
                 {
                     var debugView = Visuals(window).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
+                    var calibration = (Button)debugView.FindName("calibrate");
+                    var calibrationStatus = (TextBlock)debugView.FindName("calibrationStatus");
+                    await Until(() => calibration.IsEnabled && calibrationStatus.Text == "未校准");
+                    Press(calibration);
+                    await Until(() => calibrationStatus.Text == "空托盘已确认");
+                    var surface = (FrameworkElement)window.Content;
+                    Check(calibration.TranslatePoint(new Point(0, calibration.ActualHeight), surface).Y <= surface.ActualHeight - 48,
+                        "calibration action fits below the live picture without scrolling");
+                    Capture("operations-debug-calibration");
                     var request = (TextBox)debugView.FindName("requestBarcode");
                     request.Text = "6950123456789";
                     await Until(() => ((Button)debugView.FindName("prepare")).IsEnabled);

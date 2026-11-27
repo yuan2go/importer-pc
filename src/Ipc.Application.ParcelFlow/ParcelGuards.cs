@@ -111,6 +111,8 @@ public sealed partial class ParcelRuntime
             Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),
             SupplyControl = Id == "sportmaster" ? PositionControl(p.Id) : null,
             CameraConnectionSuspended = supplySuspendedReaders.Contains(p.ReaderDeviceId),
+            TrayPresence = readers.GetValueOrDefault(p.ReaderDeviceId) is { Health: { } readerHealth, Source: ITrayPresenceSource tray } &&
+                readerHealth.IsValid(DateTimeOffset.UtcNow) ? tray.ReadTrayPresenceModel() : null,
             CurrentRoundId = CurrentRound(p.Id)?.Id,
             RoundVersion = CurrentRound(p.Id)?.Version,
             Arrival = SmArrivalProjection(p.Id),

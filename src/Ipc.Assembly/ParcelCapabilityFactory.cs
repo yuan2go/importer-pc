@@ -27,6 +27,16 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
 #if SPORTMASTER
     internal Ipc.Drivers.Hikrobot.Mvs.CameraIdentityLookup CameraIdentity { get; init; } = new();
 #endif
+    public DiscoveredCamera[] DiscoverCameras(string readerEngine)
+    {
+#if SPORTMASTER
+        return CameraIdentity.Discover(readerEngine)
+            .Select(device => new DiscoveredCamera(device.Ip, device.Serial, device.Model, device.Firmware, device.HasIpConflict))
+            .ToArray();
+#else
+        throw new NotSupportedException("扫描相机仅适用于 SM 内置相机。");
+#endif
+    }
     public string ReadCameraSerial(string ip, string readerEngine)
     {
 #if SPORTMASTER

@@ -27,10 +27,16 @@ static class ManagementWorkspaceChecks
         var snapshot = await h.App.SnapshotAsync();
         var scope = await h.App.BeginCameraInspectionAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision,
             CameraInspectionMode.ObserveProduction, "Synthetic explicit management read", new()) { SingleReadRounds = true }, default);
-        var round = await h.App.ArmCameraReadAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, scope.SessionId!, h.Left, null), default);
-        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DEBUG"), 2);
-        await CameraRoundHarness.Until(async () => (await h.App.ReadCameraReadRoundAsync(default)).State == "Locked");
-        Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Count(o => o.DebugRequest is null) == 1, "explicit debug reads never create an automatic production request");
+        var armed = await h.App.ArmCameraReadAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, scope.SessionId!, h.Left, null), default);
+        var debugBarcode = CameraRoundHarness.Barcode("SYNTH-DEBUG");
+        var api = h.Api(h.Left);
+        var (round, nextFrame) = await h.FeedArmedReadAsync(armed, 2, async number =>
+        {
+            api.Enqueue(debugBarcode, number);
+            await CameraRoundHarness.Until(() => Task.FromResult(api.LastReturnedFrame == number && api.Acquires == api.Releases));
+        });
+        Check(round.Barcode == "SYNTH-DEBUG" && h.Peer.Requests.Count == 1 &&
+            (await h.App.SnapshotAsync()).Operations.Count(o => o.DebugRequest is null) == 1, "explicit debug reads never create an automatic production request");
         var afterDebug = await h.App.SnapshotAsync();
         var production = before.Operations.Single(o => o.PositionId == "left");
         var history = await h.App.ReadCameraBusinessAsync(h.Left, 0, null, 10, default);
@@ -72,7 +78,7 @@ static class ManagementWorkspaceChecks
         await h.WaitForCameraAdmissionAsync();
         Check((await h.App.SnapshotAsync()).Paused == before.Paused, "original window can restore production even after password authorization expires");
         await h.TrayAsync(h.Left, TrayPresence.Absent);
-        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-CLOSE"), 3);
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-CLOSE"), nextFrame);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
         Check(h.Peer.Requests.Count == 2, "closing management resumes automatic decoding and one production request");
         await h.TrayAsync(h.Left, TrayPresence.Present);

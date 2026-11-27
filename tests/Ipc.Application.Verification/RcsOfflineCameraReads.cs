@@ -140,16 +140,7 @@ static class RcsOfflineCameraReads
         var window = Wire.Id(); await h.App.SetManagementWorkspaceAsync(window, true, default);
         await h.BeginAsync();
         var armed = await h.ArmAsync(h.Left);
-        uint nextFrame = 2;
-        CameraReadRound round = armed;
-        await CameraRoundHarness.Until(async () =>
-        {
-            await Frame(nextFrame++, "SYNTH-OFFLINE-DEBUG");
-            round = await h.App.ReadCameraReadRoundAsync(default);
-            if (round.Id != armed.Id || round.State is not ("Reading" or "Sealing" or "Locked"))
-                throw new InvalidOperationException("Unexpected offline debug read: " + round.Detail);
-            return round.State == "Locked";
-        });
+        var (round, nextFrame) = await h.FeedArmedReadAsync(armed, 2, number => Frame(number, "SYNTH-OFFLINE-DEBUG"));
         Check(round.Barcode == "SYNTH-OFFLINE-DEBUG" && Requests() == 0, "management can explicitly read a real frame while RCS is offline without sending a request");
         await h.App.SetManagementWorkspaceAsync(window, false, default);
         await Frame(nextFrame++, "SYNTH-CLOSED-OFFLINE");

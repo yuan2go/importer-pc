@@ -34,22 +34,28 @@ internal static class SmArrivalCameraChecks
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.VehicleNo == vehicle);
         }
         Task Ready() => h.WaitForCameraAdmissionAsync(h.Left);
-        async Task QueueReadyFrame()
-        {
-            await Ready();
-            var before = h.Handled(h.Left);
-            var number = frame;
-            Queue();
-            await h.WaitFrameAsync(h.Left, number, before);
-        }
-        async Task Accepted()
+        async Task ReadArrivedParcel(string vehicle)
         {
             await CameraRoundHarness.Until(async () =>
             {
-                var round = (await h.App.SnapshotAsync()).Rounds.SingleOrDefault(r => r.PositionId == "left");
-                if (round?.RcsOutcome is "Unknown" or "Rejected" or "Cancelled")
+                var snapshot = await h.App.SnapshotAsync();
+                var lane = snapshot.Positions!.Single(p => p.Id == "left");
+                if (lane.Arrival?.VehicleNo != vehicle)
+                    throw new InvalidOperationException("Expected the confirmed synthetic vehicle " + vehicle);
+                var round = snapshot.Rounds.SingleOrDefault(r => r.PositionId == "left");
+                if (round?.RcsOutcome is "Unknown" or "Rejected" or "Cancelled" or "Conflict")
                     throw new InvalidOperationException("Unexpected result for the synthetic vehicle: " + Wire.Encode(round));
-                return round?.RcsOutcome == "Accepted";
+                if (round?.RcsOutcome == "Accepted") return true;
+                // Keep showing the same physical parcel while waiting for its
+                // first admissible frame. Once claimed, only await its result.
+                if (round?.OperationId is null && lane.BarcodeInput?.Camera == true)
+                {
+                    var before = h.Handled(h.Left);
+                    var number = frame;
+                    Queue();
+                    await h.WaitFrameAsync(h.Left, number, before);
+                }
+                return false;
             });
         }
         var source = h.Factory.Sources[h.Left];
@@ -179,8 +185,7 @@ internal static class SmArrivalCameraChecks
         Check(!(await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival!.CameraBoundaryReady,
             "failed SDK clear never fabricates readiness: native=" + native);
         await Arrive("CAMERA-AFTER-FAIL");
-        await QueueReadyFrame();
-        await Accepted();
+        await ReadArrivedParcel("CAMERA-AFTER-FAIL");
         Check(h.Peer.Requests.Count == 5, "restored arrival dispatches once after the failed clear");
         Check(api.Opens == 1 && api.Destroys == 0 && api.Releases == api.Acquires,
             "new arrival recovers on original owner without per-car reconnect or leaked SDK loan: native=" + native);
@@ -190,9 +195,9 @@ internal static class SmArrivalCameraChecks
         double[] captureToResult = new double[30], rcs = new double[30];
         for (var i = 0; i < captureToResult.Length; i++)
         {
-            await Arrive("MEASURE-" + i);
-            await QueueReadyFrame();
-            await Accepted();
+            var vehicle = "MEASURE-" + i;
+            await Arrive(vehicle);
+            await ReadArrivedParcel(vehicle);
             var measured = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
             var events = JsonSerializer.SerializeToElement(h.App.RuntimeProgress()).GetProperty("Flow").GetProperty("Recent");
             var result = events.EnumerateArray().Single(e => e.GetProperty("Kind").GetString() == "RcsSubmitCompleted" && e.GetProperty("OperationId").GetString() == measured.OperationId).Clone();

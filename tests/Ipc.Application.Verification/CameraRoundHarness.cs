@@ -185,6 +185,20 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         await Until(async () => { value = await App.ReadCameraReadRoundAsync(default); if (value.State is "Faulted" or "Stopped") throw new InvalidOperationException(value.Detail); return value.State == "Locked"; });
         return value!;
     }
+    internal async Task<(CameraReadRound Round, uint NextFrame)> FeedArmedReadAsync(CameraReadRound armed, uint nextFrame, Func<uint, Task> capture)
+    {
+        var round = armed;
+        await Until(async () =>
+        {
+            round = await App.ReadCameraReadRoundAsync(default);
+            if (round.Id != armed.Id || round.State is not ("Reading" or "Sealing" or "Locked"))
+                throw new InvalidOperationException("Unexpected camera read: " + round.Detail);
+            if (round.State == "Locked") return true;
+            if (round.State == "Reading") await capture(nextFrame++);
+            return false;
+        });
+        return (round, nextFrame);
+    }
     public async Task<SendCameraRound> SendCommandAsync(CameraReadRound round) => new(Wire.Id(), (await App.SnapshotAsync()).RuntimeId, round.Id!, round.RequestHash!);
     public async Task EndAsync()
     {

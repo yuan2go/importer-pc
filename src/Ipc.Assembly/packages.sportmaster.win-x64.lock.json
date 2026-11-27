@@ -388,6 +388,12 @@
           "Ipc.Supply.Contracts": "[1.0.0, )"
         }
       },
+      "ipc.integrations.sportmasterrcs": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
+        }
+      },
       "ipc.platform": {
         "type": "Project",
         "dependencies": {

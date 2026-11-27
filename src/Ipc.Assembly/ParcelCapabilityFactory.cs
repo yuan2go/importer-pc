@@ -1,18 +1,34 @@
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
-using Ipc.Adapters;
-using Ipc.Drivers;
-using Ipc.Components;
-#if !DIRECTPLC
-using Ipc.Integrations;
-#endif
 using Ipc.Platform;
 namespace Ipc.Assembly;
 
 public sealed record ParcelExtensionStoreConfiguration(string Root, string TrustFile);
-public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompatibility? compatibility = null,
-    System.Reflection.Assembly? businessAssembly = null, bool installer = false) : IParcelCapabilityFactory
+public sealed class ParcelCapabilityFactory : IParcelCapabilityFactory
 {
+    readonly BusinessLaunch launch;
+    readonly BusinessCompatibility? compatibility;
+    readonly System.Reflection.Assembly? businessAssembly;
+    readonly bool installer;
+    readonly BuiltInCapabilityRegistry registry;
+    readonly ProductCapabilityPolicy policy;
+
+    public ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompatibility? compatibility = null,
+        System.Reflection.Assembly? businessAssembly = null, bool installer = false)
+        : this(launch, ParcelAssembly.CreateCapabilityRegistry(), ParcelAssembly.CreateCapabilityPolicy(), compatibility, businessAssembly, installer)
+    { }
+
+    public ParcelCapabilityFactory(BusinessLaunch launch, BuiltInCapabilityRegistry registry, ProductCapabilityPolicy policy,
+        BusinessCompatibility? compatibility = null, System.Reflection.Assembly? businessAssembly = null, bool installer = false)
+    {
+        this.launch = launch;
+        this.registry = registry;
+        this.policy = policy;
+        this.compatibility = compatibility;
+        this.businessAssembly = businessAssembly;
+        this.installer = installer;
+    }
+
     ExtensionStore? store;
     ExtensionLoading? loading;
     PackageUseLease? use;
@@ -24,50 +40,45 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     internal Action<string> RequireProductionManagement { get; init; } = ManagementModeBroker.RequireProduction;
     bool transferred;
     RunMode mode = RunMode.Simulation;
-#if SPORTMASTER
-    internal Ipc.Drivers.Hikrobot.Mvs.CameraIdentityLookup CameraIdentity { get; init; } = new();
-#endif
-    public DiscoveredCamera[] DiscoverCameras(string readerEngine)
-    {
-#if SPORTMASTER
-        return CameraIdentity.Discover(readerEngine)
-            .Select(device => new DiscoveredCamera(device.Ip, device.Serial, device.Model, device.Firmware, device.HasIpConflict))
-            .ToArray();
-#else
-        throw new NotSupportedException("扫描相机仅适用于 SM 内置相机。");
-#endif
-    }
-    public string ReadCameraSerial(string ip, string readerEngine)
-    {
-#if SPORTMASTER
-        return CameraIdentity.Read(ip, readerEngine);
-#else
-        throw new NotSupportedException("相机身份读取仅适用于 SM 内置相机。");
-#endif
-    }
+    public DiscoveredCamera[] DiscoverCameras(string readerEngine) =>
+        registry.FindCameraDiscovery(readerEngine).Discover(readerEngine);
+
+    public string ReadCameraSerial(string ip, string readerEngine) =>
+        registry.FindCameraDiscovery(readerEngine).ReadSerial(ip, readerEngine);
+
     ExtensionTrust? trustPolicy;
     string? trustFile;
     DeploymentQualification? qualification;
-    static bool UsesBuiltInSportmaster(ParcelConfiguration c) =>
-#if SPORTMASTER
-        c.ApplicationId == "sportmaster";
-#else
-        false;
-#endif
-    public string? AdmissionFailure(ParcelConfiguration c) => c.Mode == RunMode.Production && !UsesBuiltInSportmaster(c) &&
-        (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
-            ? "Production NotReady: exact deployment qualification missing/expired" : null;
-    public bool SimulationIdentity(CapabilityBinding b) => b.Package is null ? b.Implementation != "sportmaster-rcs" : Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module).Assurance?.Simulation != false;
-    public static void RegisterContracts() => ExtensionPublicContracts.Register(typeof(IPlcExtension).Assembly);
-    static bool SupportsExternalExtensions =>
-#if SPORTMASTER
-        false;
-#else
-        true;
-#endif
-    static void RequireExternalExtensions()
+    bool UsesBuiltInOnly(ParcelConfiguration c) => policy.BuiltInOnly && c.ApplicationId == policy.ApplicationId;
+
+    void RequireProduct(ParcelConfiguration c)
     {
-        if (!SupportsExternalExtensions) throw new NotSupportedException("SM当前全部使用内置驱动和组件，外置扩展已停用。");
+        if (c.ApplicationId != policy.ApplicationId && !policy.AllowsMixedVerificationProducts)
+            throw new InvalidDataException("Capability policy belongs to another Application");
+    }
+
+    public string? AdmissionFailure(ParcelConfiguration c)
+    {
+        RequireProduct(c);
+        return c.Mode == RunMode.Production && !UsesBuiltInOnly(c) &&
+            (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
+            ? "Production NotReady: exact deployment qualification missing/expired" : null;
+    }
+
+    // Read-only semantics also apply to historical bindings of the same implementation.
+    // Construction and configuration admission still require the exact current tuple.
+    IBuiltInBindingProvider BindingMetadata(CapabilityBinding b) =>
+        registry.FindBinding(b.Implementation) is { } provider && provider.Descriptor.Kind == b.Kind ? provider :
+            throw new InvalidDataException("No approved capability implementation: " + b.Implementation);
+
+    public bool SimulationIdentity(CapabilityBinding b) => b.Package is null ? BindingMetadata(b).IsSimulation :
+        Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module).Assurance?.Simulation != false;
+
+    public static void RegisterContracts() => ExtensionPublicContracts.Register(typeof(IPlcExtension).Assembly);
+
+    void RequireExternalExtensions()
+    {
+        if (!policy.SupportsExternalExtensions) throw new NotSupportedException("SM当前全部使用内置驱动和组件，外置扩展已停用。");
     }
     ExtensionStore Store()
     {
@@ -95,51 +106,52 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     }
     public ParcelConfiguration Normalize(ParcelConfiguration configuration)
     {
+        RequireProduct(configuration);
         if (store is not null && mode != configuration.Mode) throw new InvalidDataException("Store mode belongs to the original runtime");
         mode = configuration.Mode;
-        CapabilityBinding? Resolve(CapabilityBinding? b)
+        var builtInOnly = UsesBuiltInOnly(configuration);
+        CapabilityBinding? Resolve(CapabilityBinding? binding)
         {
-#if SPORTMASTER
-            if (configuration.ApplicationId == "sportmaster" && b?.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
-                b = RcsRequestPolicy.NormalizeHeartbeat(b with { Parameters = new(b.Parameters.Where(p => !Ipc.Integrations.SportmasterRcs.RcsTaskOptions.RetiredKeys.Contains(p.Key, StringComparer.Ordinal))) });
-#endif
-            if (b is null || b.Implementation != "reference-" + b.Kind || b.Kind is "weight" or "login" or "camera" || b.Package is not null || b.Parameters.ContainsKey("endpoint")) return b;
-            var parameters = new Dictionary<string, string>(b.Parameters);
-            parameters.TryAdd("peer-root", Path.GetFullPath(Path.Combine(launch.DataRoot, "Simulation", "reference-peers")));
-            return b with { Parameters = parameters };
+            if (binding is null) return null;
+            // Protocol defaults also normalize an old candidate before exact
+            // provider admission. Frozen requests never enter this path.
+            if (builtInOnly && registry.FindIntegrationForProtocol(binding) is { } integration)
+                binding = integration.NormalizeProtocol(configuration, binding);
+            return binding.Package is null && registry.FindBinding(binding.Implementation) is { } provider && provider.Contract == binding.Contract ?
+                provider.Normalize(launch, configuration, binding) : binding;
         }
         return configuration with { CapabilityInstances = configuration.CapabilityInstances?.Select(x => Resolve(x)!).ToArray(), Wcs = Resolve(configuration.Wcs), Plc = Resolve(configuration.Plc), Images = configuration.Images is { } i ? i with { Uploader = Resolve(i.Uploader)! } : null };
     }
+
+    bool ReaderAllowedInBuiltInOnlyMode(ParcelConfiguration c, IBuiltInReaderProvider provider) =>
+        provider.AllowedInBuiltInOnlyMode || c.Mode == RunMode.Simulation && policy.AllowedSimulationReaderDrivers.Contains(provider.DriverId);
+
     public void Validate(ParcelConfiguration c) => _ = ValidateDeployment(c);
     public void ValidateStructure(ParcelConfiguration c) => _ = ValidateDeployment(c, false);
     DeploymentQualification? ValidateDeployment(ParcelConfiguration c, bool requireQualification = true)
     {
-        var builtInSportmaster = UsesBuiltInSportmaster(c);
-#if SPORTMASTER
-        // Current SM ships its drivers/components in the protected product release.
-        // External package trust and per-configuration extension qualifications do
-        // not apply to those built-in binaries. Never fall back from an external
-        // binding: the current product explicitly refuses it.
-        if (builtInSportmaster)
+        RequireProduct(c);
+        var builtInOnly = UsesBuiltInOnly(c);
+        var readers = ParcelBindings.Readers(c);
+        if (builtInOnly)
         {
-            if (c.Extensions is not null || ParcelBindings.Readers(c).Any(r => r.Driver.StartsWith("extension:", StringComparison.Ordinal)) ||
+            if (c.Extensions is not null || readers.Any(r => r.Driver.StartsWith("extension:", StringComparison.Ordinal)) ||
                 ParcelBindings.All(c).Any(b => b.Package is not null || b.Module is not null || b.Implementation.StartsWith("extension:", StringComparison.Ordinal)))
                 throw new InvalidDataException("SM当前仅使用随软件安装的内置驱动和组件，不支持外置扩展配置；原配置保留。");
-            foreach (var reader in ParcelBindings.Readers(c))
-                if (reader.Driver != "hikrobot-mvs-reader" && !(c.Mode == RunMode.Simulation && reader.Driver is "manual" or "tcp-line"))
+            foreach (var reader in readers)
+                if (registry.FindReader(reader.Driver) is not { } provider || !ReaderAllowedInBuiltInOnlyMode(c, provider))
                     throw new InvalidDataException("SM当前只支持内置MVS采图与软件识别；不支持原相机配置，原件保留。");
         }
-#endif
         var setupErrors = ParcelConnectionSetup.Validate(c);
         if (setupErrors.Length != 0) throw new InvalidDataException(string.Join("; ", setupErrors));
-        var requiresActiveQualification = requireQualification && ParcelConnectionSetup.HasActiveConnections(c) && !builtInSportmaster;
+        var requiresActiveQualification = requireQualification && ParcelConnectionSetup.HasActiveConnections(c) && !builtInOnly;
         var inventoryErrors = ParcelConfigurationRules.ValidateCapabilityInventory(c);
         if (inventoryErrors.Length != 0) throw new InvalidDataException(string.Join("; ", inventoryErrors));
         RegisterContracts();
         if (store is not null && mode != c.Mode) throw new InvalidDataException("Cannot change the extension store mode within a running owner");
         mode = c.Mode;
         if (requireQualification && c.Mode == RunMode.Production) RequireProductionManagement(launch.DataRoot);
-        if (requireQualification && c.Mode == RunMode.Production && ParcelBindings.Readers(c).Any(r => r.Driver == "manual"))
+        if (requireQualification && c.Mode == RunMode.Production && readers.Any(r => registry.FindReader(r.Driver)?.IsSimulationOnly == true))
             throw new InvalidDataException("Production NotReady: a real reader is required");
         DeploymentQualification? candidateQualification = null;
         if (requiresActiveQualification && (c.Mode == RunMode.Production || c.Extensions?.Packages.Any(p => Store().VerifyInstalled(p).Manifest.Prerequisites.Length > 0) == true))
@@ -148,13 +160,10 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             var hash = Wire.Hash(Wire.Encode(c));
             candidateQualification = DeploymentQualifications.Read(Path.Combine(Path.GetDirectoryName(trustFile!)!, "deployment-qualification." + hash + ".json"), trustPolicy!, mode, hash, Wire.FileHash(typeof(IParcelApplication).Assembly.Location));
         }
-#if !DIRECTPLC
-        if (c.Wcs?.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract && !ParcelConnectionSetup.IsDeferred(c, c.Wcs.InstanceId))
-        {
-            _ = new Ipc.Integrations.SportmasterRcs.RcsTaskOptions(c.Wcs);
-            _ = Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.HeartbeatMapping(c);
-        }
-#endif
+        // Preflight the selected protocol first for precise diagnostics. Provider
+        // admission and construction still require the exact registered binding.
+        if (c.Wcs is { } selected && !ParcelConnectionSetup.IsDeferred(c, selected.InstanceId))
+            registry.FindIntegrationForProtocol(selected)?.ValidateSelectedProtocol(c, selected);
         var bound = ParcelBindings.Bound(c).ToArray();
         var bindings = bound.Concat((c.CapabilityInstances ?? [])).DistinctBy(x => x.InstanceId).ToArray();
         if (compatibility is not null)
@@ -162,23 +171,14 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             if (compatibility.ApplicationId != c.ApplicationId) throw new InvalidDataException("Business compatibility belongs to another Application");
             _ = compatibility.Require(SelectedProviders(c));
         }
-        foreach (var r in ParcelBindings.Readers(c))
-            if (r.Driver is not ("manual" or "tcp-line" or "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader") && !r.Driver.StartsWith("extension:", StringComparison.Ordinal)) throw new InvalidDataException("No approved reader implementation: " + r.Driver);
-#if SPORTMASTER
-        var sdkReaders = ParcelBindings.Readers(c).Where(r => r.Driver == "hikrobot-mvs-reader" && !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).ToArray();
-        foreach (var sdk in sdkReaders)
+        var activeReaders = readers.Where(r => !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).ToArray();
+        foreach (var reader in readers)
         {
-            var issues = ExtensionSchema.Validate(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor.Parameters, sdk.Parameters ?? []);
-            if (issues.Length != 0) throw new InvalidDataException("驱动/" + sdk.DeviceId + ": " + string.Join("; ", issues));
-            Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ValidateReaderParameters(sdk.Parameters ?? new());
-            InstallationResourceBoundary.RequireCamera(sdk.Parameters!.GetValueOrDefault("device.ip", ""), sdk.Parameters!.GetValueOrDefault("device.serial"));
+            if (reader.Driver.StartsWith("extension:", StringComparison.Ordinal)) continue;
+            var provider = registry.RequireReader(reader.Driver);
+            if (!ParcelConnectionSetup.IsDeferred(c, reader.DeviceId)) provider.ValidateBinding(c, reader);
         }
-#endif
-        ValidateHikrobotIdentities(c);
-        var tcpReaders = ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line" && !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).ToArray();
-        foreach (var tcp in tcpReaders) Ipc.Drivers.TcpLineObservationSource.Validate(tcp);
-        if (tcpReaders.GroupBy(r => Ipc.Drivers.TcpLineObservationSource.EndpointIdentity(r)).Any(g => g.Count() > 1))
-            throw new InvalidDataException("device.ip: 左右相机不能连接同一个 IP 和端口");
+        registry.ValidateReaderGroups(c, activeReaders);
         if (c.Extensions is not null)
         {
             var readerBindings = ParcelBindings.Readers(c).Where(r => r.Driver.StartsWith("extension:", StringComparison.Ordinal)).ToArray();
@@ -219,7 +219,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             var sharedReader = ParcelBindings.Readers(c).SingleOrDefault(r => r.DeviceId == camera.Target);
             if (sharedReader is null) continue;
             if (position?.ReaderDeviceId != sharedReader.DeviceId) throw new InvalidDataException("Capture cannot borrow another position's physical reader");
-            if (sharedReader.Driver == "tcp-line") throw new InvalidDataException("TCP条码连接不提供图像采集能力");
+            if (registry.FindReader(sharedReader.Driver)?.SupportsSharedImageCapture == false) throw new InvalidDataException("TCP条码连接不提供图像采集能力");
             if (!sharedReader.Driver.StartsWith("extension:", StringComparison.Ordinal) ? camera.Package is not null :
                 c.Extensions!.Instances.Single(x => "extension:" + x.Id == sharedReader.Driver).PackageId != camera.Package?.Id)
                 throw new InvalidDataException("Shared capture implementation must belong to the same exact reader package");
@@ -230,72 +230,35 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         if (bound.Any(x => !x.Enabled)) throw new InvalidDataException("A bound provider must be enabled");
         foreach (var b in bindings)
         {
-            if (ParcelConnectionSetup.IsDeferred(c, b.InstanceId))
-            {
-                if (b.Package is not null || b.Implementation != "sportmaster-rcs" || b.Version != RcsRequestPolicy.ComponentVersion || b.Contract != "SPORTMASTER-RCS-SORTER-v1")
-                    throw new InvalidDataException("延后配置的RCS仍须使用当前已支持的精确实现和合同。");
-                _ = RcsRequestPolicy.TimeoutMs(b);
-                continue;
-            }
-#if !DIRECTPLC
-            if (b.Package is null && b.Implementation == "sportmaster-rcs" && b.Version == RcsRequestPolicy.ComponentVersion && b.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
-            {
-                // The selected integration was checked with its heartbeat mapping.
-                // Only other inventory entries need their own options validation.
-                if (b.InstanceId != c.Wcs?.InstanceId) _ = new Ipc.Integrations.SportmasterRcs.RcsTaskOptions(b);
-                if (requireQualification && c.Mode == RunMode.Production && candidateQualification is null && !builtInSportmaster) throw new InvalidDataException("RCS生产部署资格尚未完成");
-                continue;
-            }
-#endif
-            if (requireQualification && c.Mode == RunMode.Production && b.Enabled && b.Package is null) throw new InvalidDataException("Production NotReady: reference capability " + b.InstanceId);
-            if (b.Package is null && !(b.Kind == "camera" && ParcelBindings.Readers(c).Any(r => r.DeviceId == b.Target)) && (!Uri.TryCreate(b.Target, UriKind.Absolute, out var target) || target.Scheme != "reference")) throw new InvalidDataException("Reference capability target must use explicit reference:// identity");
-            if (b.Package is null && b.Parameters.TryGetValue("endpoint", out var endpoint) &&
-                (b.Kind is not ("integration" or "plc" or "upload") || !Uri.TryCreate(endpoint, UriKind.Absolute, out var peerUri) || peerUri.Scheme != "http" || peerUri.Host != "127.0.0.1" || peerUri.AbsolutePath != "/parcel-reference/" || peerUri.UserInfo.Length != 0 || peerUri.Query.Length != 0 || peerUri.Fragment.Length != 0))
-                throw new InvalidDataException("Controlled reference HTTP peer must be literal loopback with an exact path");
-            if (b.Package is null && b.Kind is ("login" or "camera" or "upload"))
-            {
-                if (b.Implementation != "reference-" + b.Kind || b.Version != "1.0.0" || b.Contract != "PARCEL-REFERENCE-v1")
-                    throw new InvalidDataException("Optional capability only has an explicit reference implementation; signed real provider binding requires approved policy/contract");
-                var optionalAllowed = b.Kind == "login" ? new[] { "subjects", "reply-mode" } : b.Kind == "camera" ? new[] { "decision", "reply-mode" } : new[] { "decision", "reply-mode", "peer-root", "endpoint" };
-                if (b.Parameters.Keys.Any(x => !optionalAllowed.Contains(x)) ||
-                    b.Kind == "login" && (b.Parameters.GetValueOrDefault("subjects") is not { Length: > 0 and <= 1024 } subjects || subjects.Split(',').Any(x => !ExtensionSchema.IsId(x)) || b.Parameters.GetValueOrDefault("reply-mode", "normal") is not ("normal" or "unavailable")) ||
-                    b.Kind != "login" && (b.Parameters.GetValueOrDefault("decision", "accept") is not ("accept" or "reject") || b.Parameters.GetValueOrDefault("reply-mode", "normal") is not ("normal" or "lose-after-commit")) ||
-                    b.Kind == "upload" && !b.Parameters.ContainsKey("endpoint") && (!b.Parameters.TryGetValue("peer-root", out var peer) || !Path.IsPathFullyQualified(peer)))
-                    throw new InvalidDataException("Invalid bounded reference optional capability parameters");
-                continue;
-            }
-            if (b.Package is not null)
-            {
-                if (c.Extensions?.Packages.Contains(b.Package) != true) throw new InvalidDataException("Capability package absent from exact deployment");
-                if (b.Version != b.Package.Version || b.Implementation != "extension:" + b.Package.Id + "/" + b.Module) throw new InvalidDataException("Capability implementation/version must name its exact installed package/module");
-                var manifest = Store().VerifyInstalled(b.Package).Manifest;
-                var module = manifest.Modules.SingleOrDefault(x => x.Id == b.Module && x.Kind == b.Kind) ?? throw new InvalidDataException("Typed capability/module missing");
-                var errors = ExtensionSchema.Validate(module.Parameters, b.Parameters);
-                if (requireQualification && c.Mode == RunMode.Production && b.Enabled) RequireReal(module, candidateQualification);
-                if (requireQualification) DeploymentQualifications.RequirePrerequisites(candidateQualification, Store().VerifyInstalled(b.Package));
-                if (module.ContractIdentity is not null && module.ContractIdentity != b.Contract) throw new InvalidDataException("Selected binding contract differs from signed provider contract");
-                if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, module.Requirements ?? new(), b.Kind);
-                if (errors.Length != 0) throw new InvalidDataException("Capability schema/native SDK prerequisite evidence is unavailable: " + string.Join("; ", errors));
-                if (bindings.Count(x => x.Package == b.Package && x.Module == b.Module) > module.MaximumInstances) throw new InvalidDataException("Capability instance quota exceeded");
-            }
-            else
-            {
-                if (b.Implementation != "reference-" + b.Kind || b.Version != "1.0.0" || b.Contract != "PARCEL-REFERENCE-v1") throw new InvalidDataException("No approved exact capability implementation/contract");
-                var allowed = b.Kind == "weight" ? Array.Empty<string>() : b.Kind == "plc" ? ["decision", "reply-mode", "complete-on-query", "peer-root", "endpoint"] : ["decision", "reply-mode", "slot", "peer-root", "endpoint"];
-                if (b.Kind != "weight" && b.Parameters.TryGetValue("peer-root", out var peerRoot) && !Path.IsPathFullyQualified(peerRoot)) throw new InvalidDataException("Reference peer location must be an explicit absolute frozen parameter");
-                if (b.Parameters.Keys.Any(x => !allowed.Contains(x)) || b.Parameters.GetValueOrDefault("decision", "accept") is not ("accept" or "reject") ||
-                    b.Parameters.GetValueOrDefault("reply-mode", "normal") is not ("normal" or "lose-after-commit") ||
-                    b.Parameters.GetValueOrDefault("complete-on-query", "false") is not ("true" or "false") ||
-                    b.Parameters.TryGetValue("slot", out var slot) && (string.IsNullOrWhiteSpace(slot) || slot.Length > 64 || slot.Any(char.IsControl)))
-                    throw new InvalidDataException("Invalid reference protocol parameters");
-            }
             if (b.Package is null)
             {
-                var descriptor = ReferenceCapabilityCatalog.Providers.Single(x => x.Kind == b.Kind);
-                var errors = ExtensionSchema.Validate(descriptor.Parameters, b.Parameters);
-                if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
-                if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, descriptor.Requirements, b.Kind);
+                var provider = registry.RequireBinding(b);
+                if (ParcelConnectionSetup.IsDeferred(c, b.InstanceId))
+                {
+                    if (provider is not IBuiltInIntegrationProvider integration)
+                        throw new InvalidDataException("延后配置的RCS仍须使用当前已支持的精确实现和合同。");
+                    integration.ValidateDeferred(b);
+                }
+                else
+                {
+                    provider.Validate(c, b, requireQualification && (provider.IsSimulation || !builtInOnly), candidateQualification);
+                    if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, provider.Requirements, b.Kind);
+                }
+                continue;
             }
+            if (ParcelConnectionSetup.IsDeferred(c, b.InstanceId))
+                throw new InvalidDataException("延后配置的RCS仍须使用当前已支持的精确实现和合同。");
+            if (c.Extensions?.Packages.Contains(b.Package) != true) throw new InvalidDataException("Capability package absent from exact deployment");
+            if (b.Version != b.Package.Version || b.Implementation != "extension:" + b.Package.Id + "/" + b.Module) throw new InvalidDataException("Capability implementation/version must name its exact installed package/module");
+            var manifest = Store().VerifyInstalled(b.Package).Manifest;
+            var module = manifest.Modules.SingleOrDefault(x => x.Id == b.Module && x.Kind == b.Kind) ?? throw new InvalidDataException("Typed capability/module missing");
+            var errors = ExtensionSchema.Validate(module.Parameters, b.Parameters);
+            if (requireQualification && c.Mode == RunMode.Production && b.Enabled) RequireReal(module, candidateQualification);
+            if (requireQualification) DeploymentQualifications.RequirePrerequisites(candidateQualification, Store().VerifyInstalled(b.Package));
+            if (module.ContractIdentity is not null && module.ContractIdentity != b.Contract) throw new InvalidDataException("Selected binding contract differs from signed provider contract");
+            if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, module.Requirements ?? new(), b.Kind);
+            if (errors.Length != 0) throw new InvalidDataException("Capability schema/native SDK prerequisite evidence is unavailable: " + string.Join("; ", errors));
+            if (bindings.Count(x => x.Package == b.Package && x.Module == b.Module) > module.MaximumInstances) throw new InvalidDataException("Capability instance quota exceeded");
         }
         return candidateQualification;
     }
@@ -304,39 +267,19 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         var selected = ParcelBindings.All(c).Where(b => b.Enabled).Select(b => new ProviderVersion(b.Kind, b.Implementation, b.Version, b.Contract)).ToList();
         foreach (var reader in ParcelBindings.Readers(c))
         {
-#if SPORTMASTER
-            if (reader.Driver == Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderImplementation) { var descriptor = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor; selected.Add(new(descriptor.Kind, descriptor.Implementation, descriptor.Version, descriptor.Contract)); continue; }
-#endif
-            if (reader.Driver == "tcp-line") { var descriptor = TcpLineObservationSource.Descriptor; selected.Add(new(descriptor.Kind, descriptor.Implementation, descriptor.Version, descriptor.Contract)); continue; }
-            if (reader.Driver == "manual") { selected.Add(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1")); continue; }
+            if (registry.FindReader(reader.Driver) is { } provider)
+            {
+                var descriptor = provider.Descriptor ?? throw new InvalidDataException("Missing selected reader declaration: " + reader.Driver);
+                selected.Add(new(descriptor.Kind, descriptor.Implementation, descriptor.Version, descriptor.Contract));
+                continue;
+            }
+            if (!reader.Driver.StartsWith("extension:", StringComparison.Ordinal)) _ = registry.RequireReader(reader.Driver);
             var instance = c.Extensions?.Instances.SingleOrDefault(x => reader.Driver == "extension:" + x.Id) ?? throw new InvalidDataException("Missing selected reader instance");
             var package = c.Extensions!.Packages.Single(x => x.Id == instance.PackageId);
             var module = Store().VerifyInstalled(package).Manifest.Modules.Single(x => x.Id == instance.ModuleId);
             selected.Add(new("observation", "extension:" + package.Id + "/" + module.Id, package.Version, module.ContractIdentity ?? "CONTROLLED-OBSERVATION-v1"));
         }
         return selected.Distinct().ToArray();
-    }
-    internal static void ValidateHikrobotIdentities(ParcelConfiguration c)
-    {
-        var bindings = ParcelBindings.Readers(c).Select(r => r.Driver).ToHashSet(StringComparer.Ordinal);
-        var active = (c.Extensions?.Instances ?? []).Concat(ParcelBindings.Readers(c).Where(r => r.Driver is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader").Select(r => new ExtensionInstance(r.DeviceId, r.Driver == "hikrobot-idmvs" ? "hikrobot.idmvs-reader" : "hikrobot.mvs-acquisition", r.Driver == "hikrobot-idmvs" ? "idmvs-reader" : "mvs-acquisition", r.DeviceId, true, r.Parameters ?? []))).Where(i => (bindings.Contains("extension:" + i.Id) || ParcelBindings.Readers(c).Any(r => r.Driver is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" && r.DeviceId == i.DeviceId)) &&
-            i.PackageId is "hikrobot.idmvs-reader" or "hikrobot.mvs-acquisition" && !ParcelConnectionSetup.IsDeferred(c, i.DeviceId)).ToArray();
-        if (active.GroupBy(i => i.Parameters.GetValueOrDefault("device.ip")).Any(g => g.Count() > 1))
-            throw new InvalidDataException("驱动/device.ip: 左右读码实例不能占用同一物理IPv4地址");
-        foreach (var instance in active)
-        {
-            var ip = instance.Parameters.GetValueOrDefault("device.ip", "");
-            if (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255")
-                throw new InvalidDataException("驱动/" + instance.Id + "/device.ip: 需要规范的设备IPv4地址");
-            var serial = instance.Parameters.GetValueOrDefault("device.serial", "");
-            if (c.Mode == RunMode.Production && string.IsNullOrWhiteSpace(serial))
-                throw new InvalidDataException("驱动/" + instance.Id + "/device.serial: 正式启用必须配置预期物理序列号，不能仅凭IP绑定左右相机");
-            if (serial.Length > 32 || serial.Any(char.IsControl))
-                throw new InvalidDataException("驱动/" + instance.Id + "/device.serial: 需要有效的物理序列号");
-        }
-        if (active.Where(i => !string.IsNullOrWhiteSpace(i.Parameters.GetValueOrDefault("device.serial")))
-            .GroupBy(i => i.Parameters["device.serial"], StringComparer.Ordinal).Any(g => g.Count() > 1))
-            throw new InvalidDataException("驱动/device.serial: 左右读码实例不能绑定同一物理序列号");
     }
     internal static void RequireReal(ExtensionModule module, DeploymentQualification? qualification)
     {
@@ -359,39 +302,21 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     public CapabilityRequirements Requirements(CapabilityBinding binding)
     {
         RegisterContracts();
-        if (binding.Package is null && binding.Implementation == "sportmaster-rcs") return new(Query: false);
-        return binding.Package is null ? ReferenceCapabilityCatalog.Providers.Single(x => x.Kind == binding.Kind).Requirements
-            : Store().VerifyInstalled(binding.Package).Manifest.Modules.Single(x => x.Id == binding.Module).Requirements ?? new(Query: true);
+        return binding.Package is null ? BindingMetadata(binding).Requirements :
+            Store().VerifyInstalled(binding.Package).Manifest.Modules.Single(x => x.Id == binding.Module).Requirements ?? new(Query: true);
     }
+
     public CapabilityCatalog Catalog()
     {
         RegisterContracts();
-#if SPORTMASTER
-        return new(ReferenceProviders(), [], []);
-#else
+        if (!policy.SupportsExternalExtensions) return new(registry.Catalog(policy), [], []);
         try { return InstalledCatalog(); }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or System.Security.Cryptography.CryptographicException)
         {
             // Inventory is an optional read model, never capability admission. Existing
             // exact bindings remain unresolved and Validate/Create still fail closed.
-            return new(ReferenceProviders(), [], []) { InventoryDiagnostic = "扩展库存未配置或不可用：" + ex.Message + "。内置配置可读取；原扩展绑定仍须恢复同一可信包后才能保存或启动。" };
+            return new(registry.Catalog(policy), [], []) { InventoryDiagnostic = "扩展库存未配置或不可用：" + ex.Message + "。内置配置可读取；原扩展绑定仍须恢复同一可信包后才能保存或启动。" };
         }
-#endif
-    }
-    static CapabilityDescriptor[] ReferenceProviders()
-    {
-        IEnumerable<CapabilityDescriptor> providers = ReferenceCapabilityCatalog.Providers.Append(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1", [], new())).Append(Ipc.Drivers.TcpLineObservationSource.Descriptor);
-#if SPORTMASTER
-        providers = providers.Where(p => p.Implementation != "tcp-line").Append(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor);
-#endif
-#if !DIRECTPLC
-        using var stream = typeof(ParcelCapabilityFactory).Assembly.GetManifestResourceStream("Ipc.BuiltInRcs.Parameters.json") ?? throw new InvalidDataException("内置RCS参数描述缺失");
-        using var reader = new StreamReader(stream);
-        var rcsParameters = Wire.Decode<ParameterField[]>(reader.ReadToEnd());
-        // Only the current component contract is selectable; old bindings are rejected.
-        providers = providers.Concat(new[] { new CapabilityDescriptor("integration", "sportmaster-rcs", RcsRequestPolicy.ComponentVersion, RcsRequestPolicy.Contract, rcsParameters, new(Query: false)) });
-#endif
-        return providers.ToArray();
     }
     CapabilityCatalog InstalledCatalog()
     {
@@ -401,7 +326,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         var manifests = installed.Select(x => (x.Package, Manifest: Store().VerifyInstalled(x.Package).Manifest)).ToArray();
         var descriptors = manifests.SelectMany(x => x.Manifest.Modules.Select(m =>
             new CapabilityDescriptor(m.Kind, "extension:" + x.Package.Id + "/" + m.Id, x.Package.Version, m.ContractIdentity ?? "PARCEL-REFERENCE-v1", m.Parameters, m.Requirements ?? new(), x.Package, m.Id)));
-        return new(ReferenceProviders().Concat(descriptors).ToArray(), installed.Select(x => x.Package.Id + "@" + x.Package.Version).ToArray(),
+        return new(registry.Catalog(policy).Concat(descriptors).ToArray(), installed.Select(x => x.Package.Id + "@" + x.Package.Version).ToArray(),
             manifests.Select(x => new CapabilityPackage(x.Package, x.Manifest.Dependencies)).ToArray());
     }
     internal ApplicationRelease ReadPublishedRelease(string appRoot)
@@ -487,7 +412,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             }
         var deviceIds = ParcelBindings.Readers(c).Where(r => !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).SelectMany(x => new[] { "device:" + x.DeviceId, "reader:" + x.DeviceId })
             .Concat(ParcelBindings.Bound(c).Where(x => x.Kind is "weight" or "plc" or "camera").SelectMany(x => new[] { "device:" + x.Target, x.Kind + ":" + x.Target })).Distinct();
-        deviceIds = deviceIds.Concat(ParcelBindings.Readers(c).Where(r => r.Driver == "tcp-line" && !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).Select(r => "reader:tcp:" + Ipc.Drivers.TcpLineObservationSource.EndpointIdentity(r)));
+        deviceIds = deviceIds.Concat(ParcelBindings.Readers(c).Where(r => !ParcelConnectionSetup.IsDeferred(c, r.DeviceId))
+            .SelectMany(r => registry.FindReader(r.Driver)?.ResourceLeaseKeys(r) ?? []));
         var resources = deviceIds.ToArray();
         if (resources.Length > 0)
         {
@@ -504,11 +430,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         {
             IControlledObservationSource source;
             if (ParcelConnectionSetup.IsDeferred(c, binding.DeviceId)) source = new DeferredObservationSource(binding.DeviceId);
-#if SPORTMASTER
-            else if (binding.Driver == Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderImplementation) source = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.CreateReader(binding);
-#endif
-            else if (binding.Driver == "tcp-line") source = new Ipc.Drivers.TcpLineObservationSource(binding);
-            else if (binding.Driver == "manual") source = new ManualObservationSource(binding.DeviceId);
+            else if (registry.FindReader(binding.Driver) is { } provider) source = provider.Create(binding);
             else
             {
                 var instance = c.Extensions!.Instances.Single(x => "extension:" + x.Id == binding.Driver);
@@ -521,9 +443,9 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         }
         var reader = readers[c.Reader.DeviceId];
         Dictionary<string, string> hashes = [];
-        T Own<T>(CapabilityBinding b, Func<T> builtIn, Func<ExtensionLoading, ExtensionModule, T> external) where T : class, ICapabilityPort
+        T Own<T>(CapabilityBinding b, Func<ICapabilityPort> builtIn, Func<ExtensionLoading, ExtensionModule, T> external) where T : class, ICapabilityPort
         {
-            T value;
+            ICapabilityPort value;
             if (b.Package is null) { value = builtIn(); constructed.Add(value); hashes.Add(b.InstanceId, BuiltInFingerprint(value.GetType())); }
             else
             {
@@ -531,31 +453,37 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
                 value = external(loading!, module); constructed.Add(value);
                 hashes.Add(b.InstanceId, Wire.Hash(b.Package.ManifestSha256 + ":" + Wire.FileHash(typeof(IParcelApplication).Assembly.Location) + ":" + Wire.FileHash(typeof(ExtensionStore).Assembly.Location)));
             }
-            if (value.InstanceId != b.InstanceId) throw new InvalidDataException("Capability returned a mismatched identity"); return value;
+            if (value.InstanceId != b.InstanceId || value is not T typed)
+                throw new InvalidDataException("Capability returned a mismatched type or identity");
+            return typed;
         }
+        ICapabilityPort CreateDevice(CapabilityBinding binding, string? dataDirectory = null) =>
+            registry.RequireBinding(binding) is IBuiltInDeviceProvider device ? device.Create(binding, dataDirectory) :
+                throw new InvalidDataException("No registered device constructor for " + binding.Implementation);
+
         Dictionary<string, ICapabilityPort> devicePorts = [];
         foreach (var scaleBinding in ParcelBindings.Bound(c).Where(b => b.Kind == "weight"))
-            devicePorts.Add(scaleBinding.InstanceId, Own<IControlledWeightSource>(scaleBinding, () => new ReferenceWeightSource(scaleBinding), (l, m) => l.CreateFactory<IWeightExtension>(scaleBinding.Package!, m, "weight").Create(scaleBinding)));
+            devicePorts.Add(scaleBinding.InstanceId, Own<IControlledWeightSource>(scaleBinding, () => CreateDevice(scaleBinding), (l, m) => l.CreateFactory<IWeightExtension>(scaleBinding.Package!, m, "weight").Create(scaleBinding)));
         var weight = c.Scale is null ? null : (IControlledWeightSource)devicePorts[c.Scale.InstanceId];
-#if DIRECTPLC
-        IWcsPort? wcs = null;
-#else
-        var wcs = c.Wcs is { } w ? Own<IWcsPort>(w, () => ParcelConnectionSetup.IsDeferred(c, w.InstanceId) ? new DeferredWcsPort(w.InstanceId) : w.Implementation == "sportmaster-rcs" ? new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(w) : new ReferenceWcs(w, w.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IWcsExtension>(w.Package!, m, "integration").Create(w)) : null;
+        var wcs = c.Wcs is { } w ? Own<IWcsPort>(w,
+            () => ParcelConnectionSetup.IsDeferred(c, w.InstanceId) ? new DeferredWcsPort(w.InstanceId) :
+                registry.RequireBinding(w) is IBuiltInIntegrationProvider provider ? provider.Create(c, w) :
+                throw new InvalidDataException("No registered WCS constructor for " + w.Implementation),
+            (l, m) => l.CreateFactory<IWcsExtension>(w.Package!, m, "integration").Create(w)) : null;
         if (wcs is IWcsRuntimeConfiguration configuredWcs) configuredWcs.ConfigureRuntime(c);
-#endif
-        var plc = c.Plc is { } p ? Own<IPlcPort>(p, () => new ReferencePlc(p, p.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IPlcExtension>(p.Package!, m, "plc").Create(p)) : null;
-        var login = c.Login is { } a ? Own<IOperatorAuthenticator>(a, () => new ReferenceOperatorAuthenticator(a), (l, m) => l.CreateFactory<ILoginExtension>(a.Package!, m, "login").Create(a)) : null;
+        var plc = c.Plc is { } p ? Own<IPlcPort>(p, () => CreateDevice(p), (l, m) => l.CreateFactory<IPlcExtension>(p.Package!, m, "plc").Create(p)) : null;
+        var login = c.Login is { } a ? Own<IOperatorAuthenticator>(a, () => CreateDevice(a), (l, m) => l.CreateFactory<ILoginExtension>(a.Package!, m, "login").Create(a)) : null;
         foreach (var cameraBinding in ParcelBindings.Bound(c).Where(b => b.Kind == "camera"))
         {
             var path = Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId);
             var sameReader = readers.GetValueOrDefault(cameraBinding.Target);
             var imagePort = Own<IImageCamera>(cameraBinding,
-                () => sameReader is not null ? BindReader(sameReader, cameraBinding, path) : new ReferenceImageCamera(cameraBinding, path),
+                () => sameReader is not null ? BindReader(sameReader, cameraBinding, path) : CreateDevice(cameraBinding, path),
                 (l, m) => sameReader is not null ? BindReader(sameReader, cameraBinding, path) : l.CreateFactory<ICameraExtension>(cameraBinding.Package!, m, "camera").Create(cameraBinding, path));
             devicePorts.Add(cameraBinding.InstanceId, imagePort);
         }
         var camera = c.Images is null ? null : (IImageCamera)devicePorts[c.Images.Camera.InstanceId];
-        var uploader = c.Images?.Uploader is { } u ? Own<IImageUploader>(u, () => new ReferenceImageUploader(u, u.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IUploadExtension>(u.Package!, m, "upload").Create(u)) : null;
+        var uploader = c.Images?.Uploader is { } u ? Own<IImageUploader>(u, () => CreateDevice(u), (l, m) => l.CreateFactory<IUploadExtension>(u.Package!, m, "upload").Create(u)) : null;
         // Software administration has its own credential store and never falls back to this port.
         transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader, readers, devicePorts);
     }
@@ -564,8 +492,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     // deployment, an unconfigured or non-built-in device) returns null and the caller stages a restart.
     public ParcelLiveDevices? CreateLive(ParcelConfiguration c, IReadOnlyCollection<string> readerIds, bool integration)
     {
-#if SPORTMASTER
-        if (!transferred || c.ApplicationId != "sportmaster" || c.Extensions is { Packages.Length: > 0 } || qualification is not null) return null;
+        if (!transferred || c.ApplicationId != policy.ApplicationId || !policy.SupportsLiveReload ||
+            c.Extensions is not null || qualification is not null) return null;
         Dictionary<string, IControlledObservationSource> readers = [];
         Dictionary<string, string> hashes = [];
         IWcsPort? liveWcs = null;
@@ -574,15 +502,22 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             foreach (var id in readerIds)
             {
                 var binding = ParcelBindings.Readers(c).SingleOrDefault(r => r.DeviceId == id);
-                if (binding is null || ParcelConnectionSetup.IsDeferred(c, id) || binding.Driver != Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderImplementation) return Release();
-                var source = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.CreateReader(binding); readers.Add(id, source);
+                if (binding is null || ParcelConnectionSetup.IsDeferred(c, id) ||
+                    registry.FindReader(binding.Driver) is not { SupportsLiveReload: true } provider ||
+                    (UsesBuiltInOnly(c) && !ReaderAllowedInBuiltInOnlyMode(c, provider))) return Release();
+                if (readers.ContainsKey(id)) throw new InvalidDataException("Duplicate live reader identity");
+                var source = provider.Create(binding);
+                readers.Add(id, source);
                 if (source.DeviceId != id) throw new InvalidDataException("Reader returned the wrong stable identity");
             }
             if (integration)
             {
-                if (c.Wcs is not { Package: null, Implementation: "sportmaster-rcs" } w || ParcelConnectionSetup.IsDeferred(c, w.InstanceId)) return Release();
-                var service = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(w); liveWcs = service; service.ConfigureRuntime(c);
-                hashes.Add(w.InstanceId, BuiltInFingerprint(service.GetType()));
+                if (c.Wcs is not { Package: null, Module: null } w || ParcelConnectionSetup.IsDeferred(c, w.InstanceId) ||
+                    registry.FindExactBinding(w) is not IBuiltInIntegrationProvider { SupportsLiveReload: true } provider) return Release();
+                liveWcs = provider.Create(c, w);
+                if (liveWcs.InstanceId != w.InstanceId) throw new InvalidDataException("Capability returned a mismatched identity");
+                if (liveWcs is IWcsRuntimeConfiguration configuration) configuration.ConfigureRuntime(c);
+                hashes.Add(w.InstanceId, BuiltInFingerprint(liveWcs.GetType()));
             }
             return new(readers, liveWcs, hashes);
         }
@@ -602,9 +537,6 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             if (failures.Count != 0) throw new AggregateException("Live candidate cleanup failed; factory retains owners", failures);
             return null;
         }
-#else
-        return null;
-#endif
     }
     static IImageCamera BindReader(IControlledObservationSource source, CapabilityBinding binding, string directory) => source is IReaderImageCapture provider
         ? provider.BindCapture(binding, directory) : throw new InvalidDataException("Reader does not expose controlled original-acquisition capture; a second connection is forbidden");
@@ -629,11 +561,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             try { await resource.DisposeAsync().ConfigureAwait(false); failedLiveCleanup.Remove(resource); }
             catch (Exception error) { liveFailures.Add(error); }
         if (liveFailures.Count != 0) throw new AggregateException("Live candidate release remains incomplete", liveFailures);
-#if SPORTMASTER
-        // Lookups are factory-owned even when normal device ports were transferred
-        // to the runtime. A failed release must retain all enclosing leases.
-        await CameraIdentity.DisposeAsync().ConfigureAwait(false);
-#endif
+        // Discovery stays factory-owned after port transfer. Failed release keeps enclosing leases.
+        await registry.DisposeAsync().ConfigureAwait(false);
         if (!transferred)
         {
             List<Exception> failures = [];

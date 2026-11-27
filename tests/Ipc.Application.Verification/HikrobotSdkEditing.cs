@@ -35,9 +35,9 @@ internal static class HikrobotSdkEditing
         Check(restored.Readers[0].Parameters.Single(p => p.Field.Key == "device.ip").Value == "192.0.2.10" && restored.Readers[1].Parameters.Single(p => p.Field.Key == "device.ip").Value == "192.0.2.11", "reload isolates left and right");
         Check(restored.Readers[0].Parameters.Single(p => p.Field.Key == "reader.engine").Value == "mvid-native" &&
             restored.Readers[1].Parameters.Single(p => p.Field.Key == "reader.engine").Value == "zxing-cpp", "native engine selection is saved and restored independently for each camera");
-        var active = candidate with { DeferredConnections = [] }; ParcelCapabilityFactory.ValidateHikrobotIdentities(active);
+        var active = candidate with { DeferredConnections = [] }; HikrobotReaderBindings.Validate(active);
         var changed = active.Topology!.Readers.Select((r, i) => i == 1 ? r with { Parameters = new(r.Parameters!) { ["device.serial"] = "SYNTH-0" } } : r).ToArray();
-        try { ParcelCapabilityFactory.ValidateHikrobotIdentities(active with { Reader = changed[0], Topology = active.Topology with { Readers = changed } }); throw new Exception("Duplicate accepted"); }
+        try { HikrobotReaderBindings.Validate(active with { Reader = changed[0], Topology = active.Topology with { Readers = changed } }); throw new Exception("Duplicate accepted"); }
         catch (InvalidDataException) { Check(true, "built-in duplicate physical identity rejected"); }
         Check(draft.Readers.All(r => !r.ConfigureLater), "complete camera identities activate without a second configuration-state switch");
         draft.Readers[1].Parameters.Single(p => p.Field.Key == "device.ip").Value = "";

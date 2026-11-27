@@ -18,10 +18,8 @@ static class ParcelCli
         if (map.Keys.Any(x => x is not ("--action" or "--mode" or "--file" or "--extension-trust" or "--dependency-files" or "--extension-root" or "--sha256" or "--destination" or "--data-root" or "--package" or "--operation" or "--reason" or "--original-release" or "--occurrence" or "--wal-sha256"))) throw new ArgumentException("Unknown extension option");
         var mode = Enum.Parse<RunMode>(map.GetValueOrDefault("--mode", "Simulation"));
         if (!Enum.IsDefined(mode)) throw new InvalidDataException("Unknown extension management mode");
-#if SPORTMASTER
-        if (map["--action"].StartsWith("extension-", StringComparison.Ordinal))
+        if (map["--action"].StartsWith("extension-", StringComparison.Ordinal) && !ParcelAssembly.CreateCapabilityPolicy().SupportsExternalExtensions)
             throw new NotSupportedException("SM当前全部使用内置驱动和组件，外置扩展已停用。");
-#endif
         if (map["--action"] == "verify-analysis-backup")
         {
             using var budget = new CancellationTokenSource(TimeSpan.FromMinutes(5));

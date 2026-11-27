@@ -377,6 +377,7 @@
           "Ipc.Drivers": "[1.0.0, )",
           "Ipc.Drivers.Hikrobot.Mvs": "[1.0.0, )",
           "Ipc.Integrations": "[1.0.0, )",
+          "Ipc.Integrations.SportmasterRcs": "[1.0.0, )",
           "Ipc.Platform": "[1.0.0, )",
           "Ipc.Supply": "[1.0.0, )"
         }
@@ -420,6 +421,12 @@
         "dependencies": {
           "Ipc.Reference.Protocol": "[1.0.0, )",
           "Ipc.Supply.Contracts": "[1.0.0, )"
+        }
+      },
+      "ipc.integrations.sportmasterrcs": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
         }
       },
       "ipc.operations": {

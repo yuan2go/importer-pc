@@ -331,6 +331,11 @@
         "resolved": "10.0.13",
         "contentHash": "DkNjtQyPR5Ud/zHnWHdsOuKbFRL9nIC92Q76z0NmHVDoQm40toLtsGFTIWq7toBoVa6fo/DInL3PLxY3Asixyw=="
       },
+      "ZXingCpp": {
+        "type": "Transitive",
+        "resolved": "0.5.3",
+        "contentHash": "9/OpxmBgi0d1HRFYrhQ115Szyd/oAhcsG0p21Fp877sH2S+Fjnlrw3yhyCWhjd/uNQTaMnWkPUKfpaCuWXem7g=="
+      },
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
@@ -341,6 +346,7 @@
         "type": "Project",
         "dependencies": {
           "Ipc.Application.Contracts": "[1.0.0, )",
+          "Ipc.Diagnostics": "[1.0.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
@@ -358,6 +364,7 @@
           "Ipc.Drivers": "[1.0.0, )",
           "Ipc.Drivers.Hikrobot.Mvs": "[1.0.0, )",
           "Ipc.Integrations": "[1.0.0, )",
+          "Ipc.Integrations.SportmasterRcs": "[1.0.0, )",
           "Ipc.Platform": "[1.0.0, )",
           "Ipc.Supply": "[1.0.0, )"
         }
@@ -366,6 +373,12 @@
         "type": "Project",
         "dependencies": {
           "Ipc.Reference.Protocol": "[1.0.0, )"
+        }
+      },
+      "ipc.diagnostics": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
         }
       },
       "ipc.drivers": {
@@ -377,7 +390,8 @@
       "ipc.drivers.hikrobot.mvs": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[1.0.0, )"
+          "Ipc.Platform": "[1.0.0, )",
+          "ZXingCpp": "[0.5.3, )"
         }
       },
       "ipc.integrations": {
@@ -385,6 +399,12 @@
         "dependencies": {
           "Ipc.Reference.Protocol": "[1.0.0, )",
           "Ipc.Supply.Contracts": "[1.0.0, )"
+        }
+      },
+      "ipc.integrations.sportmasterrcs": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
         }
       },
       "ipc.platform": {

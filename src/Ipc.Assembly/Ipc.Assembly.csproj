@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><OutputType>Exe</OutputType><BusinessModule Condition="'$(BusinessModule)' == ''">Supply</BusinessModule><NuGetLockFilePath Condition="'$(NuGetLockFilePath)' == ''">packages.$([System.String]::Copy('$(BusinessModule)').ToLowerInvariant()).lock.json</NuGetLockFilePath><EnableDefaultCompileItems>false</EnableDefaultCompileItems></PropertyGroup>
+ <PropertyGroup>
+  <IncludeHikrobotMvs Condition="'$(IncludeHikrobotMvs)' == '' And '$(BusinessModule)' == 'Sportmaster'">true</IncludeHikrobotMvs>
+  <IncludeSportmasterRcs Condition="'$(IncludeSportmasterRcs)' == '' And '$(BusinessModule)' == 'Sportmaster'">true</IncludeSportmasterRcs>
+ </PropertyGroup>
+ <PropertyGroup Condition="'$(IncludeHikrobotMvs)' == 'true'"><DefineConstants>$(DefineConstants);INCLUDE_HIKROBOT_MVS</DefineConstants></PropertyGroup>
+ <PropertyGroup Condition="'$(IncludeSportmasterRcs)' == 'true'"><DefineConstants>$(DefineConstants);INCLUDE_SPORTMASTER_RCS</DefineConstants></PropertyGroup>
  <ItemGroup><Compile Include="Program.cs"/><ProjectReference Include="../Ipc.Platform/Ipc.Platform.csproj"/></ItemGroup>
  <ItemGroup><InternalsVisibleTo Include="Ipc.Application.Verification"/></ItemGroup>
  <ItemGroup Condition="'$(BusinessModule)' == 'Supply'"><Compile Include="SupplyAssembly.cs"/><ProjectReference Include="../Ipc.Product/Ipc.Product.csproj"/></ItemGroup>
@@ -9,23 +15,21 @@
  <PropertyGroup Condition="'$(BusinessModule)' == 'DirectPlc'"><DefineConstants>$(DefineConstants);DIRECTPLC</DefineConstants></PropertyGroup>
  <PropertyGroup Condition="'$(BusinessModule)' == 'WcsToPlc'"><DefineConstants>$(DefineConstants);WCSTOPLC</DefineConstants></PropertyGroup>
  <ItemGroup Condition="'$(BusinessModule)' == 'Sportmaster' Or '$(BusinessModule)' == 'DirectPlc' Or '$(BusinessModule)' == 'WcsToPlc'">
+  <Compile Include="CapabilityRegistry.cs"/><Compile Include="BuiltInReferenceProviders.cs"/><Compile Include="HikrobotReaderBindings.cs"/>
   <Compile Include="ExtensionConsumerReaders.cs"/><ProjectReference Include="../Ipc.Application.Supply/Ipc.Application.Supply.csproj"/>
   <Compile Include="ParcelAssembly.cs"/><Compile Include="ParcelRuntimeSetup.cs"/><Compile Include="ParcelStartupServices.cs"/><Compile Include="ParcelStartupServices.InstallationContinuation.cs"/><Compile Include="InstallationConfiguration.cs"/><Compile Include="ParcelStartupServices.PasswordRecovery.cs"/><Compile Include="ParcelStartupServices.Quiet.cs"/><Compile Include="ParcelStartupServices.MaintenanceProtocol.cs"/><Compile Include="ParcelStartupServices.Rollback.cs"/><Compile Include="ParcelStartupServices.VersionPruning.cs"/><Compile Include="ParcelStartupServices.DataPurge.cs"/><Compile Include="ParcelStartupServices.VersionTransport.cs"/><Compile Include="ParcelStartupServices.MaintenanceFrames.cs"/><Compile Include="ParcelCapabilityFactory.cs"/><Compile Include="DeferredConnectionPorts.cs"/><Compile Include="OriginalParcelQuery.cs" /><Compile Include="ParcelCli.cs"/>
   <Compile Include="../Ipc.Product/ExtensionBuildCheck.cs" Link="ExtensionBuildCheck.cs"/>
   <ProjectReference Include="../Ipc.Application.$(BusinessModule)/Ipc.Application.$(BusinessModule).csproj"/>
   <ProjectReference Include="../Ipc.Components/Ipc.Components.csproj"/><ProjectReference Include="../Ipc.Drivers/Ipc.Drivers.csproj"/><ProjectReference Include="../Ipc.Integrations/Ipc.Integrations.csproj" Condition="'$(BusinessModule)' != 'DirectPlc'"/>
  </ItemGroup>
- <ItemGroup Condition="'$(BusinessModule)' == 'Sportmaster'"><ProjectReference Include="../Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj"/></ItemGroup>
+ <ItemGroup Condition="'$(IncludeHikrobotMvs)' == 'true'">
+  <Compile Include="BuiltInHikrobotReaderProvider.cs"/>
+  <ProjectReference Include="../Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj"/>
+ </ItemGroup>
+ <ItemGroup Condition="'$(IncludeSportmasterRcs)' == 'true'">
+  <Compile Include="BuiltInSportmasterRcsProvider.cs"/>
+  <ProjectReference Include="../Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj"/>
+ </ItemGroup>
  <Target Name="CheckBusinessSelection" BeforeTargets="PrepareForBuild" Condition="'$(BusinessModule)' != 'Supply' And '$(BusinessModule)' != 'Inspection' And '$(BusinessModule)' != 'Sportmaster' And '$(BusinessModule)' != 'DirectPlc' And '$(BusinessModule)' != 'WcsToPlc'"><Error Text="Choose Supply, Inspection, Sportmaster, DirectPlc or WcsToPlc"/></Target>
  <ItemGroup Condition="'$(BusinessModule)' == 'Sportmaster' Or '$(BusinessModule)' == 'DirectPlc' Or '$(BusinessModule)' == 'WcsToPlc'"><Compile Include="DeploymentBatch.cs"/><Compile Include="DeploymentComponentReview.cs"/></ItemGroup>
- <ItemGroup Condition="'$(BusinessModule)' == 'Sportmaster' Or '$(BusinessModule)' == 'WcsToPlc'">
-  <Compile Include="../Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs" Link="BuiltInRcs/SportmasterRcsTaskService.cs"/>
-  <Compile Include="../Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs" Link="BuiltInRcs/RcsDestinationProtocol.cs"/>
-  <Compile Include="../Ipc.Integrations.SportmasterRcs/RcsDispatchResources.cs" Link="BuiltInRcs/RcsDispatchResources.cs"/>
-  <Compile Include="../Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs" Link="BuiltInRcs/RcsHeartbeat.cs"/>
-  <Compile Include="../Ipc.Integrations.SportmasterRcs/RcsHeartbeatResponse.cs" Link="BuiltInRcs/RcsHeartbeatResponse.cs"/>
-  <EmbeddedResource Include="../Ipc.Integrations.SportmasterRcs/parameters.json" LogicalName="Ipc.BuiltInRcs.Parameters.json"/>
-  <Compile Include="../Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs" Link="StaticValidation/RcsConfigurationValidation.cs"/>
-  <Compile Include="../Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs" Link="StaticValidation/RcsTaskOptions.cs"/>
- </ItemGroup>
 </Project>

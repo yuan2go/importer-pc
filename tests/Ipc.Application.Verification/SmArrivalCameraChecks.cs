@@ -10,7 +10,10 @@ internal static class SmArrivalCameraChecks
     { if (!value) throw new InvalidOperationException(message); Console.WriteLine("PASS ARRIVALCAM " + message); }
     public static async Task Run(string workspace, string root, bool native)
     {
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, native ? "native" : "software"), nativeResults: native, barcodeFilter: new("", "BG-[0-9]+"));
+        // This fixture checks arrival and dispatch, with both timing paths in
+        // the report. The dedicated deadline fixture covers short RCS budgets.
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, native ? "native" : "software"),
+            nativeResults: native, barcodeFilter: new("", "BG-[0-9]+"), rcsTimeoutMs: 10000);
         await h.StartAsync();
         var api = h.Api(h.Left);
         uint frame = 1;
@@ -30,8 +33,25 @@ internal static class SmArrivalCameraChecks
                 throw new InvalidOperationException("Vehicle change was not acknowledged: " + vehicle);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.VehicleNo == vehicle);
         }
-        async Task Ready() => await CameraRoundHarness.Until(async () =>
-            (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
+        Task Ready() => h.WaitForCameraAdmissionAsync(h.Left);
+        async Task QueueReadyFrame()
+        {
+            await Ready();
+            var before = h.Handled(h.Left);
+            var number = frame;
+            Queue();
+            await h.WaitFrameAsync(h.Left, number, before);
+        }
+        async Task Accepted()
+        {
+            await CameraRoundHarness.Until(async () =>
+            {
+                var round = (await h.App.SnapshotAsync()).Rounds.SingleOrDefault(r => r.PositionId == "left");
+                if (round?.RcsOutcome is "Unknown" or "Rejected" or "Cancelled")
+                    throw new InvalidOperationException("Unexpected result for the synthetic vehicle: " + Wire.Encode(round));
+                return round?.RcsOutcome == "Accepted";
+            });
+        }
         var source = h.Factory.Sources[h.Left];
         source.CalibrateEmptyTray();
         for (var sample = 0; sample < 19; sample++)
@@ -158,8 +178,10 @@ internal static class SmArrivalCameraChecks
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CaptureFailure is not null);
         Check(!(await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival!.CameraBoundaryReady,
             "failed SDK clear never fabricates readiness: native=" + native);
-        await Arrive("CAMERA-AFTER-FAIL"); await Ready();
-        Queue(); await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 5));
+        await Arrive("CAMERA-AFTER-FAIL");
+        await QueueReadyFrame();
+        await Accepted();
+        Check(h.Peer.Requests.Count == 5, "restored arrival dispatches once after the failed clear");
         Check(api.Opens == 1 && api.Destroys == 0 && api.Releases == api.Acquires,
             "new arrival recovers on original owner without per-car reconnect or leaked SDK loan: native=" + native);
         // Short measured run of the same-code automatic path. Timing comes
@@ -168,9 +190,9 @@ internal static class SmArrivalCameraChecks
         double[] captureToResult = new double[30], rcs = new double[30];
         for (var i = 0; i < captureToResult.Length; i++)
         {
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left").RcsOutcome == "Accepted");
-            await Arrive("MEASURE-" + i); await Ready(); Queue();
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.SingleOrDefault(r => r.PositionId == "left")?.RcsOutcome == "Accepted");
+            await Arrive("MEASURE-" + i);
+            await QueueReadyFrame();
+            await Accepted();
             var measured = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
             var events = JsonSerializer.SerializeToElement(h.App.RuntimeProgress()).GetProperty("Flow").GetProperty("Recent");
             var result = events.EnumerateArray().Single(e => e.GetProperty("Kind").GetString() == "RcsSubmitCompleted" && e.GetProperty("OperationId").GetString() == measured.OperationId).Clone();

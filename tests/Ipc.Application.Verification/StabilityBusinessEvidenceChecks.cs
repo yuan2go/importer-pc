@@ -53,8 +53,8 @@ internal static partial class StabilityAnalysis
         await SmRoundFixture.NextVehicleAsync(h.App, "right");
         var ended = DateTimeOffset.UtcNow; var last = h.App.RuntimeProgress(); var snapshot = await h.App.SnapshotAsync();
         h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; h.Peer.HoldWhen = null; await Complete(late.OperationId!);
-        await ManagementModeFixture.Authorize(h.App);
-        await h.App.CommandAsync(new(Wire.Id(), (await h.App.SnapshotAsync()).Revision, "Pause"));
+        await SmContractFixture.Pause(h.App);
+        Check((await h.App.SnapshotAsync()).Paused, "business evidence backup was explicitly paused");
         var backup = Path.Combine(root, "business.db");
         BusinessReceipt? receipt = null;
         await CameraRoundHarness.Until(async () => (receipt = await h.App.BackupAsync(backup)).Status == "BackupCreated");

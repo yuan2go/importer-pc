@@ -13,7 +13,7 @@ public sealed partial class ParameterSettingsControl
         foreach (var reader in m.Readers)
         {
             var page = Page(2, reader.Role switch { "left" => "左相机", "right" => "右相机", _ => reader.Role + " 读码实例" }, "");
-            if (m.ApplicationId == "sportmaster") page.Body.Children.Add(Text("填写要使用的相机；另一台不使用时留空。"));
+            if (m.DesktopProfile.UsesStationCameraConfiguration) page.Body.Children.Add(Text("填写要使用的相机；另一台不使用时留空。"));
             Capability(page, reader);
         }
         if (m.Readers.Length == 0)
@@ -21,10 +21,10 @@ public sealed partial class ParameterSettingsControl
             var missing = Page(2, "缺少读码实例", "没有找到这台相机的配置，请用原安装包修复软件。");
             if (MaintenanceRequested is not null) { var open = new Button { Content = "查看实例与角色绑定…", HorizontalAlignment = HorizontalAlignment.Left }; open.Click += (_, _) => MaintenanceRequested?.Invoke(this, EventArgs.Empty); missing.Body.Children.Add(open); }
         }
-        foreach (var component in m.Components.Where(c => (!FirstConfiguration || c.Bound) && (m.ApplicationId != "sportmaster" || c.Kind is not ("login" or "weight" or "plc" or "camera" or "upload"))))
+        foreach (var component in m.Components.Where(c => (!FirstConfiguration || c.Bound) && (!m.DesktopProfile.HidesUnboundSecondaryCapabilities || c.Kind is not ("login" or "weight" or "plc" or "camera" or "upload"))))
         {
             var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "RCS 服务" : FirstConfiguration ? m.ComponentName(component) : m.ComponentLabel(component),
-                ParameterOwnership.IsRcs(component) && m.ApplicationId == "sportmaster" ? "左右投递位共用这个 RCS 地址。保存后按提示重连或重启。" : "保存并重启软件后生效。");
+                ParameterOwnership.IsRcs(component) && m.DesktopProfile.UsesRcsOnlyConfiguration ? "左右投递位共用这个 RCS 地址。保存后按提示重连或重启。" : "保存并重启软件后生效。");
             if (!ParameterOwnership.IsRcs(component))
                 foreach (var role in m.ComponentRoles)
                 {
@@ -60,8 +60,8 @@ public sealed partial class ParameterSettingsControl
     sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);
     void Capability(ObjectPage page, CapabilityDraft draft)
     {
-        if (Model?.ApplicationId != "sportmaster" || draft.Kind != "observation") RuntimeSummary(page, draft);
-        if (Model?.ApplicationId == "sportmaster" && draft.Kind == "observation")
+        if (!BusinessDesktopCatalog.For(Model?.ApplicationId).UsesStationCameraConfiguration || draft.Kind != "observation") RuntimeSummary(page, draft);
+        if (BusinessDesktopCatalog.For(Model?.ApplicationId).UsesStationCameraConfiguration && draft.Kind == "observation")
         {
             var sdkSelected = draft.Provider?.Implementation == "hikrobot-mvs-reader";
             var identity = new TextBox { Text = sdkSelected ? "海康相机（随软件安装）" : "原相机设置不适用于当前 MVS SDK", IsReadOnly = true, MinHeight = 40 };
@@ -92,7 +92,7 @@ public sealed partial class ParameterSettingsControl
             var optional = new CheckBox { Content = "绑定此可选能力", MinHeight = 38 };
             optional.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(draft.Bound)) { Source = draft, Mode = BindingMode.TwoWay }); page.Body.Children.Add(optional);
         }
-        var fixedRcs = Model?.ApplicationId == "sportmaster" && draft.Kind == "integration";
+        var fixedRcs = BusinessDesktopCatalog.For(Model?.ApplicationId).UsesRcsOnlyConfiguration && draft.Kind == "integration";
         if (fixedRcs && !draft.Providers.Contains(draft.Provider!))
         {
             page.Body.Children.Add(Text("此连接不适用于当前 SM。请重新配置 RCS 服务，并填写实际服务地址。"));
@@ -102,7 +102,7 @@ public sealed partial class ParameterSettingsControl
             page.Body.Children.Add(configure);
             return;
         }
-        var choices = draft.Providers.Where(p => Model!.ApplicationId != "sportmaster" || draft.Kind != "observation" || p.Implementation == "hikrobot-mvs-reader").Where(p => !FirstConfiguration || p == draft.Provider || p.Implementation != "manual" && !p.Implementation.StartsWith("reference-", StringComparison.Ordinal)).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation is "manual" or "reference-integration" ? "本地模拟" : p.Contract == "SPORTMASTER-RCS-SORTER-v1" ? "RCS 服务" : p.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "海康标准相机 SDK（MVS，仅采图）" : p.Implementation == "hikrobot-mvs-reader" ? "海康 MVS＋软件识别" : p.Implementation is "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader" ? "海康智能读码器（MvCodeReader SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
+        var choices = draft.Providers.Where(p => !Model!.DesktopProfile.UsesStationCameraConfiguration || draft.Kind != "observation" || p.Implementation == "hikrobot-mvs-reader").Where(p => !FirstConfiguration || p == draft.Provider || p.Implementation != "manual" && !p.Implementation.StartsWith("reference-", StringComparison.Ordinal)).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation is "manual" or "reference-integration" ? "本地模拟" : p.Contract == "SPORTMASTER-RCS-SORTER-v1" ? "RCS 服务" : p.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "海康标准相机 SDK（MVS，仅采图）" : p.Implementation == "hikrobot-mvs-reader" ? "海康 MVS＋软件识别" : p.Implementation is "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader" ? "海康智能读码器（MvCodeReader SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
         if (!fixedRcs && (draft.Kind is "observation" or "integration" && choices.Length > 1 || draft.Provider is null || !choices.Any(c => c.Provider == draft.Provider)))
         {
             var providers = new ComboBox { ItemsSource = choices, SelectedItem = choices.SingleOrDefault(x => x.Provider == draft.Provider), DisplayMemberPath = "Label", MinHeight = 38 };
@@ -169,9 +169,9 @@ public sealed partial class ParameterSettingsControl
         }
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
-            if (Model!.ApplicationId == "sportmaster" && draft.Kind == "observation" &&
+            if (Model!.DesktopProfile.UsesStationCameraConfiguration && draft.Kind == "observation" &&
                 !SmParameterOwnership.Show(Audience, draft.InstanceId + "/" + p.Field.Key)) continue;
-            if (Model.ApplicationId == "sportmaster" && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
+            if (Model.DesktopProfile.UsesStationCameraConfiguration && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
             if (!Ipc.Platform.ExtensionSchema.IsApplicable(draft.Provider.Parameters, draft.Parameters.ToDictionary(x => x.Field.Key, x => x.Value), p.Field)) continue;
             if (draft.IsSimpleCamera && p.Field.Key == "reader.engine") advanced.Add(p);
             else if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);

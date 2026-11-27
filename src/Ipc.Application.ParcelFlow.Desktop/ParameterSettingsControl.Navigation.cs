@@ -10,10 +10,10 @@ public sealed partial class ParameterSettingsControl
     bool selectingPage, navigating;
     long navigationGeneration, editRevision;
     readonly HashSet<ObjectPage> checkedPages = [];
-    ObjectPage[] OrderedPages() => (FirstConfiguration ? pages.OrderBy(p => p.Order) : Model?.ApplicationId == "sportmaster" ? pages.OrderBy(p => p.TaskOrder) : pages.AsEnumerable()).Where(p => p.Available).ToArray();
-    int[] FirstCategories => Model?.ApplicationId == "sportmaster" ? [0, 2, 1, 4] : [0, 1, 2, 3, 4];
+    ObjectPage[] OrderedPages() => (FirstConfiguration ? pages.OrderBy(p => p.Order) : BusinessDesktopCatalog.For(Model?.ApplicationId).UsesWorkstationSettingsFlow ? pages.OrderBy(p => p.TaskOrder) : pages.AsEnumerable()).Where(p => p.Available).ToArray();
+    IReadOnlyList<int> FirstCategories => BusinessDesktopCatalog.For(Model?.ApplicationId).SetupCategories;
     public string CurrentPageTitle => currentPage?.Title ?? "";
-    public string PageProgress => FirstConfiguration && currentPage is not null ? $"第 {Array.IndexOf(FirstCategories, currentPage.Category) + 1} / {FirstCategories.Length} 步" : currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
+    public string PageProgress => FirstConfiguration && currentPage is not null ? $"第 {Array.IndexOf(FirstCategories.ToArray(), currentPage.Category) + 1} / {FirstCategories.Count} 步" : currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
     public bool IsReviewPage => currentPage?.Category == 4;
     public bool HasPreviousPage => currentPage is not null && Array.IndexOf(OrderedPages(), currentPage) > 0;
     public string? NextPageTitle
@@ -39,11 +39,11 @@ public sealed partial class ParameterSettingsControl
     {
         foreach (var (button, index) in firstStepBar.Children.OfType<Button>().Select((b, i) => (b, i)))
         {
-            if (index >= FirstCategories.Length) { button.Visibility = Visibility.Collapsed; continue; }
+            if (index >= FirstCategories.Count) { button.Visibility = Visibility.Collapsed; continue; }
             button.Visibility = Visibility.Visible;
             var category = FirstCategories[index];
             System.Windows.Automation.AutomationProperties.SetAutomationId(button, "FirstSetup.Category." + category);
-            button.Tag = Model?.ApplicationId == "sportmaster" ? new[] { "本站与 RCS", "左右相机", "识读规则", "检查与完成" }[index] : new[] { "本站信息", "业务规则", "左右相机", "RCS 连接", "检查与完成" }[index];
+            button.Tag = BusinessDesktopCatalog.For(Model?.ApplicationId).SetupStepLabels[index];
             System.Windows.Automation.AutomationProperties.SetName(button, "首次配置第" + (index + 1) + "步：" + button.Tag);
             var categoryPages = OrderedPages().Where(p => p.Category == category).ToArray();
             var complete = categoryPages.Length > 0 && categoryPages.All(checkedPages.Contains);
@@ -51,7 +51,7 @@ public sealed partial class ParameterSettingsControl
             System.Windows.Automation.AutomationProperties.SetItemStatus(button, current ? "当前步骤" : complete ? "已检查" : "未检查");
             button.ToolTip = currentPage?.Category == category ? "当前步骤" : "前进时检查前置页面，返回保留输入";
         }
-        var currentIndex = currentPage is null ? -1 : Array.IndexOf(FirstCategories, currentPage.Category);
+        var currentIndex = currentPage is null ? -1 : Array.IndexOf(FirstCategories.ToArray(), currentPage.Category);
         foreach (var line in firstStepBar.Children.OfType<Border>())
             line.SetResourceReference(Border.BackgroundProperty, Grid.GetColumn(line) < currentIndex * 2 ? "Accent" : "Line");
         var issues = Model?.Issues ?? [];

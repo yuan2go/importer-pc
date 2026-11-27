@@ -67,7 +67,7 @@ public partial class MaintenancePage : UserControl
     // duplicate entries and stashed drafts (edits are kept while the window is open) are hidden there.
     void AdvancedToggle_SubmenuOpened(object sender, RoutedEventArgs e)
     {
-        var sm = DataContext is ParcelViewModel { Snapshot.ApplicationId: "sportmaster" };
+        var sm = DataContext is ParcelViewModel { DesktopProfile.UsesWorkstationSettingsFlow: true };
         TechnicalToolsMenu.Visibility = sm && Audience != SmParameterAudience.Complete ? Visibility.Collapsed : Visibility.Visible;
         foreach (var item in new FrameworkElement[] { ManagementPasswordTool, CompareTool, ModulesTool, InventoryTool, InstallationTool, BindingsTool, JsonTool, AdvancedSeparator, ConditionsTool, StashDraftTool, ResumeDraftTool })
             item.Visibility = sm ? Visibility.Collapsed : Visibility.Visible;

@@ -8,6 +8,37 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed partial class ParameterSettingsControl
 {
+    void ThemePreference(ObjectPage page, Panel fields, BusinessDesktopProfile profile, SmDisplayPreferenceDraft preferences)
+    {
+        var choice = new ComboBox
+        {
+            ItemsSource = profile.SupportedThemes,
+            DisplayMemberPath = "DisplayName",
+            SelectedValuePath = "Id",
+            MinHeight = 44,
+            IsEnabled = preferences.CanEdit(nameof(preferences.ThemeId))
+        };
+        choice.SetBinding(ComboBox.SelectedValueProperty, new System.Windows.Data.Binding(nameof(preferences.ThemeId))
+            { Source = preferences, Mode = System.Windows.Data.BindingMode.TwoWay });
+        Field(fields, "界面主题", choice,
+            "仅影响当前 Windows 用户界面配色，使用底部“保存设置”立即生效，不影响供包业务。",
+            nameof(preferences.ThemeId), page);
+        AutomationProperties.SetAutomationId(choice, "StationSettings.Theme");
+        var notice = Text(preferences.ReadFailure(nameof(preferences.ThemeId)));
+        if (choice.IsEnabled)
+            notice.SetBinding(TextBlock.TextProperty, new System.Windows.Data.Binding(nameof(preferences.ThemeStatus)) { Source = preferences });
+        AutomationProperties.SetLiveSetting(notice, AutomationLiveSetting.Polite);
+        if (notice.Text.Length > 0 || choice.IsEnabled)
+        {
+            var visibility = new Style(typeof(TextBlock));
+            var empty = new System.Windows.DataTrigger { Binding = new System.Windows.Data.Binding(nameof(TextBlock.Text)) { RelativeSource = System.Windows.Data.RelativeSource.Self }, Value = "" };
+            empty.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));
+            visibility.Triggers.Add(empty);
+            notice.Style = visibility;
+            page.Body.Children.Add(notice);
+        }
+    }
+
     void AutoStartPreference(ObjectPage page, Panel fields, SmDisplayPreferenceDraft preferences)
     {
         if (FirstConfiguration || Audience == SmParameterAudience.Technical) return;

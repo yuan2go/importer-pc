@@ -142,7 +142,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
     }
     void UpdateState()
     {
-        var automatic = vm.Snapshot?.ApplicationId == "sportmaster";
+        var automatic = vm.DesktopProfile.SupportsLiveConfiguration;
         pauseState.Text = automatic ? "确认保存后，程序自动等待当前请求完成并保存设置。" : !vm.Fresh ? "状态读取中断，请稍候；暂停供包仍可操作。" : vm.Snapshot?.Paused == true ? "已暂停供包。软件暂停不是安全急停。" : "尚未暂停。保存前请先暂停供包。软件暂停不是安全急停。";
         pause.Visibility = automatic || vm.Fresh && vm.Snapshot?.Paused == true ? Visibility.Collapsed : Visibility.Visible;
         var qualified = vm.Fresh && vm.Snapshot?.Availability?.Configure == true;

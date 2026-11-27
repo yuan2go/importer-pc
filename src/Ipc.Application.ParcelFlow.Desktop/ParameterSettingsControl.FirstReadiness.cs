@@ -13,7 +13,7 @@ public sealed partial class ParameterSettingsControl
     string? networkFingerprint;
     bool networkChecking, readinessHooked;
 
-    bool UsesFirstReadiness => FirstConfiguration && Model?.ApplicationId == "sportmaster";
+    bool UsesFirstReadiness => FirstConfiguration && BusinessDesktopCatalog.For(Model?.ApplicationId).UsesFirstReadinessStep;
 
     CameraSlot[] CameraSlots() => (Model?.Readers ?? []).Where(r => r.IsSimpleCamera).Select(r => new CameraSlot(r.Role,
         r.Parameters.FirstOrDefault(p => p.Field.Key == "device.ip")?.Value ?? "", r.Parameters.FirstOrDefault(p => p.Field.Key == "device.serial")?.Value ?? "")).ToArray();

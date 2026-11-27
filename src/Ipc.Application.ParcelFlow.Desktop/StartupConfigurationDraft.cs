@@ -40,7 +40,7 @@ public sealed class StartupConfigurationDraft
         bindings = all.DistinctBy(b => b.InstanceId).ToDictionary(b => b.InstanceId);
         var capabilities = bindings.Values.Select(b => new CapabilityDraft(b.Kind, catalog.Providers, b, true,
             b.InstanceId == c.Login?.InstanceId ? "operator-login" : b.InstanceId == c.Scale?.InstanceId ? "default-scale" : b.Kind)).ToList();
-        if (c.ApplicationId != "sportmaster")
+        if (BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields)
         {
             if (c.Login is null) capabilities.Add(new("login", catalog.Providers, null, false, "operator-login") { InstanceId = "operator.login", Enabled = true });
             if (c.Scale is null) capabilities.Add(new("weight", catalog.Providers, null, false, "default-scale") { InstanceId = "default.scale", Enabled = true });
@@ -53,11 +53,11 @@ public sealed class StartupConfigurationDraft
             return new CapabilityDraft("observation", catalog.Providers, binding, true, ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == reader.DeviceId).Id);
         }).ToArray();
         foreach (var item in Readers.Concat(Capabilities)) item.ConfigureLater = ParcelConnectionSetup.IsDeferred(c, item.Kind == "observation" ? item.Target : item.InstanceId) ||
-            initializeDefaults && c.ApplicationId == "sportmaster" && c.DeferredConnections is null && (item.Kind == "observation" || ParameterOwnership.IsRcs(item));
-        if (c.ApplicationId == "sportmaster") foreach (var reader in Readers) reader.UseSimpleCameraConfiguration();
+            initializeDefaults && BusinessDesktopCatalog.For(c.ApplicationId).UsesStationCameraConfiguration && c.DeferredConnections is null && (item.Kind == "observation" || ParameterOwnership.IsRcs(item));
+        if (BusinessDesktopCatalog.For(c.ApplicationId).UsesStationCameraConfiguration) foreach (var reader in Readers) reader.UseSimpleCameraConfiguration();
     }
     public ParameterEditorModel CreateParameterEditor(Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview, ParcelConfigurationLocations? locations = null) => new(Policy, original.ApplicationId, Readers, Capabilities, preview, original.StationId, locations)
-    { DisplayPreferences = original.ApplicationId == "sportmaster" ? DisplayPreferences ??= new() : null };
+    { DisplayPreferences = BusinessDesktopCatalog.For(original.ApplicationId).SupportsThemePreference ? DisplayPreferences ??= new(original.ApplicationId) : null };
     public ParcelConfiguration Build()
     {
         // Missing inventory remains visible and the exact binding is preserved for application validation.
@@ -80,8 +80,8 @@ public sealed class StartupConfigurationDraft
             DeferredConnections = DeferredConnectionIds(Readers, Capabilities),
             Reader = devices[0],
             Topology = c.Topology is null ? null : c.Topology with { Readers = devices, Positions = c.Topology.Positions.Select((p, i) => p with { ReaderDeviceId = devices[Array.FindIndex(ParcelBindings.Readers(c), r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() },
-            Weight = c.ApplicationId == "sportmaster" ? c.Weight : Policy.BuildWeight(),
-            WeightValidity = c.ApplicationId == "sportmaster" ? c.WeightValidity : Policy.Validity,
+            Weight = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.Weight : Policy.BuildWeight(),
+            WeightValidity = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.WeightValidity : Policy.Validity,
             Login = Capabilities.SingleOrDefault(d => d.Role == "operator-login") is { Bound: true } login ? replacements[login.InstanceId] : null,
             Scale = Policy.WeightSource == WeightSource.Measured && Capabilities.SingleOrDefault(d => d.Role == "default-scale") is { Bound: true } scale ? replacements[scale.InstanceId] : null,
             Wcs = Map(c.Wcs),
@@ -109,13 +109,13 @@ public sealed class StartupConfigurationDraft
             values[prefix + "configureLater"] = draft.ConfigureLater.ToString();
             foreach (var parameter in draft.Parameters) values[prefix + "parameter." + parameter.Field.Key] = parameter.Value;
         }
-        if (original.ApplicationId == "sportmaster") (DisplayPreferences ??= new()).Capture(values);
+        if (BusinessDesktopCatalog.For(original.ApplicationId).UsesStationDisplayPreferences || DisplayPreferences?.ThemeChanged == true) (DisplayPreferences ??= new(original.ApplicationId)).Capture(values);
         return new(values);
     }
     public void Restore(StartupEditorState state)
     {
         var v = state.Values;
-        if (original.ApplicationId == "sportmaster" && v.Keys.Any(k => k.StartsWith("preference.", StringComparison.Ordinal))) (DisplayPreferences ??= new()).Restore(v);
+        if (BusinessDesktopCatalog.For(original.ApplicationId).SupportsThemePreference && v.Keys.Any(k => k.StartsWith("preference.", StringComparison.Ordinal))) (DisplayPreferences ??= new(original.ApplicationId)).Restore(v);
         foreach (var property in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite))
             if (v.TryGetValue("policy." + property.Name, out var value)) property.SetValue(Policy, property.PropertyType.IsEnum ? Enum.Parse(property.PropertyType, value) : property.PropertyType == typeof(bool) ? bool.Parse(value) : value);
         foreach (var (draft, index) in Readers.Concat(Capabilities).Select((d, i) => (d, i)))

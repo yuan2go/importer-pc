@@ -213,7 +213,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     {
         var binding = Build();
         // SM assigns a separate admission identity to each line from this TCP reader.
-        return applicationId == "sportmaster" && binding.Implementation == "tcp-line"
+        return BusinessDesktopCatalog.For(applicationId).UsesStationCameraConfiguration && binding.Implementation == "tcp-line"
             ? binding with { Parameters = new(binding.Parameters) { ["entity.mode"] = "line" } } : binding;
     }
 }
@@ -247,7 +247,7 @@ public partial class ParcelViewModel
         CapabilityDrafts.Clear();
         LoadStructuredConfiguration(c, catalog);
         editorConfigurationHash = baseline.Hash; availableEditorDraft = baseline.Draft; savedEditorHash = baseline.Draft?.DraftHash;
-        SetPresentationMessage(Snapshot?.ApplicationId == "sportmaster" ? OperatorCopy.SmConfigurationLoaded : OperatorCopy.ConfigurationLoaded, PresentationFeedbackKind.ConfigurationRead);
+        SetPresentationMessage(DesktopProfile.UsesWorkstationSettingsFlow ? OperatorCopy.SmConfigurationLoaded : OperatorCopy.ConfigurationLoaded, PresentationFeedbackKind.ConfigurationRead);
     }
     public async Task SaveCapabilitiesAsync()
     {

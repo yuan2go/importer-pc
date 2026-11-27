@@ -66,14 +66,14 @@
          <TabItem x:Name="lockedFrameTab" Header="本轮 Mono8">
           <StackPanel>
            <Grid Margin="0,8,0,0">
-            <ScrollViewer x:Name="viewport" Height="192" Background="{DynamicResource Ink}" HorizontalScrollBarVisibility="Auto"
+            <ScrollViewer x:Name="viewport" Height="192" Background="{DynamicResource DebugVideoCanvas}" HorizontalScrollBarVisibility="Auto"
                           VerticalScrollBarVisibility="Auto" AutomationProperties.Name="同帧读码照片，绿色条码定位框">
              <Grid x:Name="imageLayer" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
               <Image x:Name="photo" Stretch="Fill" IsHitTestVisible="False"/>
               <Canvas x:Name="marks" IsHitTestVisible="False" ClipToBounds="True"/>
              </Grid>
             </ScrollViewer>
-            <TextBlock x:Name="imageHint" Text="等待本轮扫码照片" Foreground="{DynamicResource Surface}" Margin="24"
+            <TextBlock x:Name="imageHint" Text="等待本轮扫码照片" Foreground="{DynamicResource DebugVideoInk}" Margin="24"
                        TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"/>
            </Grid>
            <WrapPanel Margin="0,10,0,0">

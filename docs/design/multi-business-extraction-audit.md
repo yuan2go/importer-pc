@@ -1,6 +1,6 @@
 # 多业务架构解耦摸底报告
 
-PR 1 已完成部署与基座声明，PR 2 已完成内置驱动和组件注册。剩余拆分集中在两个共享工程。`ParcelFlow` 决定 SM 的到位、提交与原请求收口，`ParcelFlow.Desktop` 决定 SM 能编辑、保存和看见哪些字段。[架构基线](framework.md) · [连续供包契约](sm-continuous-induction-closure-01.md)
+PR 1 已完成部署与基座声明，PR 2 已完成内置驱动和组件注册，PR 3 已完成共享桌面字段与主题解耦。PR 4 留待拆分 `ParcelFlow` 的到位、提交与原请求收口。[架构基线](framework.md) · [连续供包契约](sm-continuous-induction-closure-01.md)
 
 ## 统计口径
 
@@ -41,6 +41,16 @@ PR 2 以 PR 1 合并提交 `1255586fc8e44d0e20e0f9968b14948d6ea66515` 为基线�
 | WcsToPlc 装配链接的 RCS 源文件 | 7 | 0 |
 
 编译期产品选择保留在装配根。`ISmHeartbeatControl`、`sportmaster-rcs` 和持久化角色名继续表达协议与存量数据身份。注册和扩展能力仍按现有精确标识、资格、租约和程序集指纹核验。RCS 组件按实际绑定和有效冻结报文核验，不再依赖宿主的业务 ID。发送资源按工位轮转，保留七个目的调用并发、每位 128 个等待上限和现有左右等待数。新增相机或协议组件时实现对应 Provider，在装配根注册并用组件开关声明项目引用。[能力注册契约](../../src/Ipc.Assembly/CapabilityRegistry.cs) · [装配根](../../src/Ipc.Assembly/ParcelAssembly.cs) · [DB14 格式校验](../../src/Ipc.Application.ParcelFlow/ParcelStorageFormat.cs)
+
+PR 3 以 PR 2 合并提交 `35f55438ca2248a8190b49b41c77654591e02d11` 为基线。
+
+| 核查项 | 基线 | PR 3 完成后 |
+| --- | ---: | ---: |
+| `Ipc.Application.ParcelFlow.Desktop` C# 中的 `"sportmaster"` 字面量 | 116（27 文件） | 1（集中注册表） |
+| 历史页 XAML 中的 `"sportmaster"` 条件 | 3 | 0 |
+| `ProductDeploymentProfile` 中暂存的桌面属性 | 5 | 0 |
+
+桌面配置表声明首配步序、设置布局和字段投影，未知标识保守回退。工作站和运维使用同一套 WPF 模板，通过调色板加载浅色与深色。OEM 主题提供完整语义键的资源字典，再在该业务的 `SupportedThemes` 声明。主题保存限于用户偏好文件。[桌面配置表](../../src/Ipc.Application.ParcelFlow.Desktop/BusinessDesktopProfile.cs) · [主题管理器](../../src/Ipc.Presentation.Wpf/WorkstationThemeManager.cs)
 
 ## 七个候选边界
 
@@ -136,7 +146,7 @@ PR 2 以 PR 1 合并提交 `1255586fc8e44d0e20e0f9968b14948d6ea66515` 为基线�
 | [StationSessionStatistics.cs](../../src/Ipc.Application.ParcelFlow/StationSessionStatistics.cs) | 1 | `ReadSessionStatisticsAsync` | 工作区 / 历史与恢复 · 班次统计查询能力 |
 | [StationStatistics.cs](../../src/Ipc.Application.ParcelFlow/StationStatistics.cs) | 2 | `ReadStatisticsAsync`、`SaveOperationsPolicyAsync` | 工作区 / 参数 · 运营统计与统计策略保存 |
 
-### Ipc.Application.ParcelFlow.Desktop
+### Ipc.Application.ParcelFlow.Desktop（PR 3 前逐文件基线）
 
 | 源文件 | 次数 | 入口举例 | 边界与职责 |
 | --- | ---: | --- | --- |

@@ -26,11 +26,11 @@ public partial class ParcelViewModel
     public bool CanSubmitReviewedConfiguration => (CanConfigure || IsManagementMode && !HasUnsavedConfiguration && HasUnsavedDisplayPreferences) && ConfigurationReviewIsCurrent && reviewedConfigurationChanges.Length > 0 && !HasUnconfirmedConfigurationSubmission && (HasUnsavedConfiguration || HasUnsavedDisplayPreferences);
     public ConfigurationChangeItem[] ReviewedConfigurationChanges => reviewedConfigurationChanges;
     public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果未确认" : HasUnsavedConfiguration || HasUnsavedDisplayPreferences ? "有未保存的更改" : "没有未保存的更改";
-    public bool HasPreferenceSaveFailure => Snapshot?.ApplicationId == "sportmaster" && !SmPreferences.LastSaveComplete;
-    public string ConfigurationActivationGuidance => Snapshot?.ApplicationId == "sportmaster" ? "条码规则、相机和 RCS 设置符合当前责任条件时可热生效，只重新连接对应设备；受阻或混合其他设置时待重启。以保存回执为准。" : "保存后需重启软件生效；重启前继续使用当前设置。";
+    public bool HasPreferenceSaveFailure => smPreferences?.LastSaveComplete == false;
+    public string ConfigurationActivationGuidance => DesktopProfile.SupportsLiveConfiguration ? "条码规则、相机和 RCS 设置符合当前责任条件时可热生效，只重新连接对应设备；受阻或混合其他设置时待重启。以保存回执为准。" : "保存后需重启软件生效；重启前继续使用当前设置。";
     public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请先查看上次保存结果" : Snapshot?.Configuration.Failure is not null ? ConfigurationActivationOutcome :
         Snapshot?.Configuration.Pending is not null ? "已保存 · 重启软件后生效" : configurationSubmissionOutcome == "Effective" ? "设置已保存并生效" : ConfigurationActivationGuidance;
-    string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature()) + "\n" + WindowModeDraft + (Snapshot?.ApplicationId == "sportmaster" ? "\n" + SmPreferences.Signature : "");
+    string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature()) + "\n" + WindowModeDraft + "\n" + smPreferences?.Signature;
     ParcelConfiguration CurrentReviewCandidate() => configurationAuthority switch
     {
         "高级JSON" => Wire.Decode<ParcelConfiguration>(ConfigurationDraft),
@@ -41,12 +41,12 @@ public partial class ParcelViewModel
     {
         reviewedConfigurationSignature = null; NotifyConfigurationReview();
         if (HasUnconfirmedConfigurationSubmission) { Message = "上次保存结果未确认，请先查看保存结果。已填写的内容会保留。"; return false; }
-        if (HasUnsavedDisplayPreferences && Snapshot?.ApplicationId == "sportmaster" && SmPreferences.Validate() is { } preferenceError)
+        if (HasUnsavedDisplayPreferences && smPreferences?.Validate() is { } preferenceError)
         { Message = preferenceError; return false; }
-        if (!HasUnsavedConfiguration && HasUnsavedDisplayPreferences && Snapshot?.ApplicationId == "sportmaster")
+        if (!HasUnsavedConfiguration && HasUnsavedDisplayPreferences && WindowPreferenceChanges().Length > 0)
         {
             reviewedConfigurationSignature = CurrentReviewSignature();
-            reviewedConfigurationChanges = SmPreferences.Changes();
+            reviewedConfigurationChanges = WindowPreferenceChanges();
             configurationSubmissionOutcome = ""; NotifyConfigurationReview(); return true;
         }
         if (configurationAuthority == "结构化表单" && ParameterEditor is { } identityEditor && !await identityEditor.PrepareCameraIdentitiesAsync())

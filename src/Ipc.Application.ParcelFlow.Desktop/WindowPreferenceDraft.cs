@@ -12,19 +12,19 @@ public partial class ParcelViewModel
         get
         {
             if (smPreferences is not null) return smPreferences;
-            smPreferences = new();
+            smPreferences = new(windowPreferenceApplication ?? structuredBase?.ApplicationId ?? Snapshot?.ApplicationId ?? BusinessDesktopCatalog.Station.ApplicationId);
             smPreferences.PropertyChanged += (_, _) => WindowPreferenceChanged();
             return smPreferences;
         }
     }
     public string WindowPreferenceStatus { get; private set; } = "";
-    public bool HasUnsavedWindowPreference => windowPreferenceApplication == "sportmaster" ? SmPreferences.WindowChanged : windowPreferenceApplication is not null && windowModeDraft != savedWindowMode;
+    public bool HasUnsavedWindowPreference => BusinessDesktopCatalog.For(windowPreferenceApplication).UsesStationDisplayPreferences ? SmPreferences.WindowChanged : windowPreferenceApplication is not null && windowModeDraft != savedWindowMode;
     public PresentationPreferences.WindowOpeningMode WindowModeDraft
     {
-        get => windowPreferenceApplication == "sportmaster" ? SmPreferences.OpeningMode : windowModeDraft;
+        get => BusinessDesktopCatalog.For(windowPreferenceApplication).UsesStationDisplayPreferences ? SmPreferences.OpeningMode : windowModeDraft;
         set
         {
-            if (windowPreferenceApplication == "sportmaster") { SmPreferences.OpeningMode = value; return; }
+            if (BusinessDesktopCatalog.For(windowPreferenceApplication).UsesStationDisplayPreferences) { SmPreferences.OpeningMode = value; return; }
             if (windowModeDraft == value) return;
             windowModeDraft = value;
             WindowPreferenceStatus = HasUnsavedWindowPreference ? "打开方式已修改，请点击底部“保存设置”。" : "";
@@ -34,9 +34,10 @@ public partial class ParcelViewModel
     public void LoadWindowPreference(string application)
     {
         if (windowPreferenceApplication == application) return;
-        if (application == "sportmaster")
+        if (BusinessDesktopCatalog.For(application).UsesStationDisplayPreferences)
         {
-            _ = SmPreferences; windowPreferenceApplication = application; WindowPreferenceChanged(); return;
+            windowPreferenceApplication = application;
+            _ = SmPreferences; WindowPreferenceChanged(); return;
         }
         var mode = PresentationPreferences.ReadWindowMode(application);
         savedWindowMode = windowModeDraft = mode;
@@ -45,15 +46,17 @@ public partial class ParcelViewModel
     }
     public async Task SaveWindowPreferenceAsync()
     {
-        if (windowPreferenceApplication == "sportmaster")
+        if (BusinessDesktopCatalog.For(windowPreferenceApplication).UsesStationDisplayPreferences)
         {
             await SaveSmPreferencesAsync(); return;
         }
-        if (!HasUnsavedWindowPreference) return;
+        var saveWindow = HasUnsavedWindowPreference;
+        var saveTheme = smPreferences?.ThemeChanged == true;
+        if (!saveWindow && !saveTheme) return;
         var mode = windowModeDraft;
         var application = windowPreferenceApplication!;
         await RequireManagementModeAsync();
-        try
+        if (saveWindow) try
         {
             PresentationPreferences.SaveWindowMode(application, mode);
             savedWindowMode = mode;
@@ -63,6 +66,12 @@ public partial class ParcelViewModel
         catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
         {
             WindowPreferenceStatus = "打开方式未保存；输入已保留，请检查本机设置文件与访问权限后重试。";
+            Message = WindowPreferenceStatus;
+        }
+        if (saveTheme)
+        {
+            SmPreferences.Save();
+            WindowPreferenceStatus = (saveWindow ? WindowPreferenceStatus + " " : "") + SmPreferences.SaveSummary;
             Message = WindowPreferenceStatus;
         }
         WindowPreferenceChanged();
@@ -83,8 +92,14 @@ public partial class ParcelViewModel
         Changed(nameof(CanReviewConfiguration)); Changed(nameof(HasPreferenceSaveFailure));
         NotifyConfigurationReview();
     }
-    ConfigurationChangeItem[] WindowPreferenceChanges() => windowPreferenceApplication == "sportmaster" || Snapshot?.ApplicationId == "sportmaster" ? SmPreferences.Changes() : HasUnsavedWindowPreference
-        ? [new("系统", "显示偏好", "默认打开方式", WindowModeLabel(savedWindowMode), WindowModeLabel(windowModeDraft), "WindowOpeningMode", "") { Activation = "保存后立即生效" }]
-        : [];
+    ConfigurationChangeItem[] WindowPreferenceChanges()
+    {
+        if (BusinessDesktopCatalog.For(windowPreferenceApplication).UsesStationDisplayPreferences || DesktopProfile.UsesStationDisplayPreferences)
+            return SmPreferences.Changes();
+        ConfigurationChangeItem[] changes = smPreferences?.Changes() ?? [];
+        return HasUnsavedWindowPreference
+            ? [.. changes, new("系统", "显示偏好", "默认打开方式", WindowModeLabel(savedWindowMode), WindowModeLabel(windowModeDraft), "WindowOpeningMode", "") { Activation = "保存后立即生效" }]
+            : changes;
+    }
     static string WindowModeLabel(PresentationPreferences.WindowOpeningMode mode) => mode == PresentationPreferences.WindowOpeningMode.FullScreen ? "最大化（全屏）" : "窗口";
 }

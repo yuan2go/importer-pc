@@ -207,11 +207,10 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string VehicleStatusText => vehicle is null ? "小车：待确认" : VehicleNumberText + " · " + (vehicle.Status switch
     { "IDLE" => CanAdmit || CanSubmitBarcode ? "可投包" : "待就绪", "TASKING" => "作业中", _ => "待确认" });
     public string CompactVehicleStatusText => vehicle?.Status switch { "IDLE" => CanAdmit || CanSubmitBarcode ? "可投包" : "待就绪", "TASKING" => "作业中", _ => "待确认" };
-    public string VehicleStatusForeground => vehicle?.Status switch { "IDLE" => CanAdmit || CanSubmitBarcode ? OperatorTokens.Success : OperatorTokens.Muted, "TASKING" => OperatorTokens.Danger, _ => OperatorTokens.Muted };
+    public string VehicleStatusForegroundKey => vehicle?.Status switch { "IDLE" when CanAdmit || CanSubmitBarcode => "OperatorSuccess", "TASKING" => "OperatorDanger", _ => "Muted" };
     public bool InputTargetActive => owner.InputTargetPosition == PositionId;
-    public string InputTargetBrush => InputTargetActive ? OperatorTokens.Accent : "Transparent";
     internal void SetInputFocused(bool focused) { if (focused && !SupplyEnabled) return; if (focused || InputTargetActive) owner.SetInputTarget(focused ? PositionId : ""); }
-    internal void NotifyInputTarget() { PropertyChanged?.Invoke(this, new(nameof(InputTargetActive))); PropertyChanged?.Invoke(this, new(nameof(InputTargetBrush))); }
+    internal void NotifyInputTarget() { PropertyChanged?.Invoke(this, new(nameof(InputTargetActive))); }
     public string ReaderId { get; private set; } = "未配置";
     public string ReaderIdentity { get; private set; } = "未配置";
     public string CameraAddress { get; private set; } = "尚未配置地址";
@@ -224,7 +223,14 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public bool ShowUncalibratedHint => SupplyConfigured && TrayPresence is { Calibrated: false } &&
         DevicePresentation.Tone == ParcelPresentationTone.Accepted;
     public string CameraFooterText => ShowUncalibratedHint ? "相机：在线 · 未校空盘" : DevicePresentation.Text;
-    public string CameraFooterForeground => ShowUncalibratedHint ? OperatorTokens.Warning : DevicePresentation.Foreground;
+    public string CameraFooterForegroundKey => ShowUncalibratedHint ? "OperatorWarning" : DeviceForegroundKey;
+    public string DeviceForegroundKey => DevicePresentation.Tone switch
+    {
+        ParcelPresentationTone.Accepted => "Success",
+        ParcelPresentationTone.Rejected => "Danger",
+        ParcelPresentationTone.Unknown => "Warning",
+        _ => "Muted"
+    };
     public string? CameraFooterHint => ShowUncalibratedHint
         ? "重启或重连后需由运维校准空托盘。未校准期间，取下异常包裹后请按“已取下包裹”。" : null;
     public SmArrivalSnapshot? Arrival => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.Arrival;
@@ -389,10 +395,10 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         // A wildcard invalidation reassigns every TextBox/ItemsSource on every poll,
         // including local drafts. Publish only changed display facts, never drafts.
         foreach (var (name, value) in new (string, object?)[] {
-            (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity), (nameof(CameraAddress), CameraAddress), (nameof(DevicePresentation), DevicePresentation),
-            (nameof(TrayPresence), TrayPresence), (nameof(CameraFooterText), CameraFooterText), (nameof(CameraFooterForeground), CameraFooterForeground), (nameof(CameraFooterHint), CameraFooterHint),
+            (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity), (nameof(CameraAddress), CameraAddress), (nameof(DevicePresentation), DevicePresentation), (nameof(DeviceForegroundKey), DeviceForegroundKey),
+            (nameof(TrayPresence), TrayPresence), (nameof(CameraFooterText), CameraFooterText), (nameof(CameraFooterForegroundKey), CameraFooterForegroundKey), (nameof(CameraFooterHint), CameraFooterHint),
             (nameof(VehicleNumberText), VehicleNumberText), (nameof(VehicleStatusText), VehicleStatusText),
-            (nameof(CompactVehicleStatusText), CompactVehicleStatusText), (nameof(VehicleStatusForeground), VehicleStatusForeground),
+            (nameof(CompactVehicleStatusText), CompactVehicleStatusText), (nameof(VehicleStatusForegroundKey), VehicleStatusForegroundKey),
             (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(NeedsAttention), NeedsAttention), (nameof(SlotFontSize), SlotFontSize),
             (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(HasCurrentInput), HasCurrentInput), (nameof(AttentionReason), AttentionReason), (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId),
             (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity), (nameof(RawCandidates), RawCandidates),

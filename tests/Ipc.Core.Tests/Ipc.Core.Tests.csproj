@@ -3,8 +3,12 @@
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
     <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <ItemGroup>
+    <Using Include="System.IO" />
+    <ProjectReference Include="../../src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj" />
     <ProjectReference Include="../../src/Ipc.Platform/Ipc.Platform.csproj" />
     <ProjectReference Include="../../src/Ipc.Operations/Ipc.Operations.csproj" />
     <Compile Include="../Ipc.Verification/CommercialRemovalVerification.cs" Link="CommercialRemovalVerification.cs" />

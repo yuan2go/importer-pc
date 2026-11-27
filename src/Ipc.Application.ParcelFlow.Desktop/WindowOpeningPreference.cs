@@ -29,7 +29,7 @@ public static class WindowOpeningPreference
         }
         window.StateChanged += (_, _) =>
         {
-            if (application == "sportmaster" && fullScreen && !applying && window.WindowState == WindowState.Normal)
+            if (BusinessDesktopCatalog.For(application).UsesFullScreenOpeningPreference && fullScreen && !applying && window.WindowState == WindowState.Normal)
                 window.WindowState = WindowState.Maximized;
         };
         window.Loaded += (_, _) =>
@@ -43,12 +43,12 @@ public static class WindowOpeningPreference
             if (id == application) window.Dispatcher.Invoke(() =>
             {
                 SetFullScreen(mode == PresentationPreferences.WindowOpeningMode.FullScreen);
-                if (application == "sportmaster") report("");
+                if (BusinessDesktopCatalog.For(application).UsesFullScreenOpeningPreference) report("");
             });
         }
         PresentationPreferences.WindowModeChanged += PreferenceChanged;
         window.Closed += (_, _) => PresentationPreferences.WindowModeChanged -= PreferenceChanged;
-        if (application == "sportmaster") return;
+        if (BusinessDesktopCatalog.For(application).UsesFullScreenOpeningPreference) return;
         var toggle = new RoutedCommand();
         window.CommandBindings.Add(new CommandBinding(toggle, (_, e) => { SetFullScreen(!fullScreen); e.Handled = true; }));
         window.InputBindings.Add(new KeyBinding(toggle, Key.F11, ModifierKeys.None));

@@ -150,7 +150,7 @@ public sealed partial class SupplyStationPositionViewModel
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(Arrival), Arrival), (nameof(SupplyEnabled), SupplyEnabled), (nameof(SupplyDisabling), SupplyDisabling), (nameof(SupplyDisabled), SupplyDisabled),
             (nameof(SupplyConfigured), SupplyConfigured), (nameof(CanChangeSupply), CanChangeSupply), (nameof(CanConfirmPlacementRemoval), CanConfirmPlacementRemoval), (nameof(ShowConfirmedPlacementRemoval), ShowConfirmedPlacementRemoval), (nameof(DisableLabel), DisableLabel), (nameof(EnableLabel), EnableLabel), (nameof(SupplyNotice), SupplyNotice), (nameof(SupplyStateText), SupplyStateText),
-            (nameof(EnableBackground), EnableBackground), (nameof(EnableForeground), EnableForeground), (nameof(DisableBackground), DisableBackground), (nameof(DisableForeground), DisableForeground),
+            (nameof(EnableBackgroundKey), EnableBackgroundKey), (nameof(EnableForegroundKey), EnableForegroundKey), (nameof(DisableBackgroundKey), DisableBackgroundKey), (nameof(DisableForegroundKey), DisableForegroundKey),
             (nameof(Barcode), Barcode), (nameof(HasCurrentInput), HasCurrentInput), (nameof(BarcodePlaceholder), BarcodePlaceholder),
             (nameof(BarcodeObservationKey), BarcodeObservationKey),
             (nameof(CanViewCurrentPicture), CanViewCurrentPicture), (nameof(CanViewWorkDetails), CanViewWorkDetails), (nameof(PictureUnavailableReason), PictureUnavailableReason), (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(SlotAvailable), SlotAvailable), (nameof(Slot), Slot),
@@ -158,7 +158,7 @@ public sealed partial class SupplyStationPositionViewModel
             (nameof(IsProcessing), IsProcessing), (nameof(SlotProvisional), SlotProvisional), (nameof(DisplaySlotVisible), DisplaySlotVisible), (nameof(DisplaySlot), DisplaySlot),
             (nameof(ShowRecentChute), ShowRecentChute), (nameof(RecentChuteBarcode), RecentChuteBarcode),
             (nameof(DisplayPresentation), DisplayPresentation), (nameof(SuccessIdentity), SuccessIdentity), (nameof(DisplaySlotLabel), DisplaySlotLabel), (nameof(ContinuityNotice), ContinuityNotice),
-            (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredAttention), CenteredAttention), (nameof(CenteredRcsRejection), CenteredRcsRejection), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(CenteredStateForeground), CenteredStateForeground),
+            (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredAttention), CenteredAttention), (nameof(CenteredRcsRejection), CenteredRcsRejection), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(CenteredStateForegroundKey), CenteredStateForegroundKey),
             (nameof(ShowRcsGuidance), ShowRcsGuidance), (nameof(RcsGuidanceTitle), RcsGuidanceTitle), (nameof(RcsGuidanceSummary), RcsGuidanceSummary),
             (nameof(RcsGuidanceBarcode), RcsGuidanceBarcode), (nameof(RcsGuidanceBarcodeSuffix), RcsGuidanceBarcodeSuffix), (nameof(RcsGuidanceSecondStep), RcsGuidanceSecondStep),
             (nameof(CenteredStateReason), CenteredStateReason), (nameof(CenteredStateInstruction), CenteredStateInstruction), (nameof(CenteredStateFullInstruction), CenteredStateFullInstruction),

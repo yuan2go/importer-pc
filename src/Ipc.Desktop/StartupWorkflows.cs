@@ -118,7 +118,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (savedDraft is null || draft is null) throw new InvalidOperationException("没有可继续草稿");
             if (savedDraft.BaseChanged) throw new InvalidOperationException("草稿保存后配置已被修改，草稿未自动套用。请先对比当前配置。");
             if (savedDraft.Editor.Values.GetValueOrDefault("editor") == "live-v2") throw new InvalidOperationException("这是软件运行时保存的设置草稿，请在软件的“参数设置”页继续。当前输入和草稿均保留。");
-            if (ProductDeploymentCatalog.Find(document?.Candidate?.ApplicationId)?.UsesStationDisplayPreferences == true) (draft.DisplayPreferences ??= new()).Restore(savedDraft.Editor.Values);
+            if (BusinessDesktopCatalog.For(document?.Candidate?.ApplicationId).UsesStationDisplayPreferences || savedDraft.Editor.Values.ContainsKey("preference.theme")) (draft.DisplayPreferences ??= new(document!.Candidate!.ApplicationId)).Restore(savedDraft.Editor.Values);
             draft = draft.WithRestored(savedDraft.Editor); Render(false); Message("已恢复上次未完成的输入。参数有改动，请重新检查。"); return Task.CompletedTask;
         });
         Action(RepairAction.ExportTemplate, "导出设置模板…", () =>
@@ -345,7 +345,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     }
     async Task ValidateBarcodeRule()
     {
-        if (parameterEditor is not { } editor || ProductDeploymentCatalog.Find(editor.ApplicationId)?.SupportsFirstConfigurationBarcodeTest != true) return;
+        if (parameterEditor is not { } editor || !BusinessDesktopCatalog.For(editor.ApplicationId).SupportsFirstConfigurationBarcodeTest) return;
         var policy = editor.Policy.BuildBarcodePolicy();
         var result = await Task.Run(() => editor.Preview(policy, ["__format_check__"]));
         if (result.Outcome is "InvalidPattern" or "FilterTimeout")
@@ -415,7 +415,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var preferences = draft?.DisplayPreferences;
         document = saved; draft = new(saved.Candidate, saved.Catalog) { DisplayPreferences = preferences };
         lastSaveConfirmed = true; startupSaveUncertain = false;
-        if (ProductDeploymentCatalog.Require(saved.Candidate.ApplicationId).UsesStationDisplayPreferences) preferences?.Save();
+        preferences?.Save();
         Render(false); savedInput = Input();
         saveState.Text = preferences?.HasChanges == true ? "业务配置已保存；本机偏好待保存" : "已保存，启动时检查";
     }
@@ -664,7 +664,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             }
             Render();
             var resumed = initialConfiguration && savedDraft is { BaseChanged: false } && draft is not null && savedDraft.Editor.Values.GetValueOrDefault("editor") != "live-v2";
-            if (resumed) { if (ProductDeploymentCatalog.Find(document?.Candidate?.ApplicationId)?.UsesStationDisplayPreferences == true) (draft!.DisplayPreferences ??= new()).Restore(savedDraft!.Editor.Values); draft = draft!.WithRestored(savedDraft!.Editor); Render(false); preservedDraftInput = savedInput = Input(); }
+            if (resumed) { if (BusinessDesktopCatalog.For(document?.Candidate?.ApplicationId).UsesStationDisplayPreferences || savedDraft!.Editor.Values.ContainsKey("preference.theme")) (draft!.DisplayPreferences ??= new(document!.Candidate!.ApplicationId)).Restore(savedDraft!.Editor.Values); draft = draft!.WithRestored(savedDraft!.Editor); Render(false); preservedDraftInput = savedInput = Input(); }
             diagnosticDetails = string.Join("\n", document!.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic + unavailableDraft;
             Message(initialConfiguration
                 ? document.Candidate is null ? "无法读取配置，原文件已保留。请使用启动修复处理后重新打开。"

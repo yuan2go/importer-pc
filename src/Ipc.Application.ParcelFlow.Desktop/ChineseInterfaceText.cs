@@ -6,7 +6,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 // Presentation only. Never write translated text into contracts, audit or drafts.
 public static class ChineseInterfaceText
 {
-    public static string BusinessName(string id) => id switch { "sportmaster" => "SM 供包业务", "direct-plc" => "设备直连业务", "wcs-to-plc" => "调度转发业务", _ => "当前业务" };
+    public static string BusinessName(string id) => BusinessDesktopCatalog.For(id).BusinessDisplayName;
     public static string ParameterName(string key, string? label = null) => key switch
     {
         "BarcodePattern" or "BarcodeFilter.Pattern" => "条码筛选规则",

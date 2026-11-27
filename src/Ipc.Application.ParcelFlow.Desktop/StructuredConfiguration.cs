@@ -77,16 +77,16 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         return c with
         {
             StationCode = StationCode,
-            SessionLifetimeMs = c.ApplicationId == "sportmaster" || c.Login is null ? c.SessionLifetimeMs : Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
+            SessionLifetimeMs = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields || c.Login is null ? c.SessionLifetimeMs : Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
             BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) && RejectMultipleCodes && MultiCodeSeparator == ";" ? null : BuildBarcodePolicy(),
-            WeightRange = c.ApplicationId == "sportmaster" ? c.WeightRange : BuildWeightRange(),
-            QueueCapacity = c.ApplicationId == "sportmaster" ? c.QueueCapacity : Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096),
+            WeightRange = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.WeightRange : BuildWeightRange(),
+            QueueCapacity = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.QueueCapacity : Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096),
             ReadTimeoutMs = readTimeout == c.EffectiveReadTimeoutMs ? c.ReadTimeoutMs : readTimeout,
-            TimeoutMs = c.ApplicationId == "sportmaster" ? c.TimeoutMs : Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
-            MaximumOperations = c.ApplicationId == "sportmaster" ? c.MaximumOperations : Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
+            TimeoutMs = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.TimeoutMs : Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
+            MaximumOperations = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.MaximumOperations : Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
             Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention,
             BackupSchedule = BuildBackup(),
-            OperationsPolicy = c.ApplicationId == "sportmaster" ? BuildOperations(c.OperationsPolicy) : c.OperationsPolicy
+            OperationsPolicy = BusinessDesktopCatalog.For(c.ApplicationId).UsesScanAndBarcodePolicy ? BuildOperations(c.OperationsPolicy) : c.OperationsPolicy
         };
     }
     public WeightSource WeightSource { get => Get<WeightSource>(); set => Set(value); }
@@ -135,7 +135,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         MaximumAgeMs = c.Weight.MaximumAgeMs.ToString(CultureInfo.InvariantCulture),
         WaitTimeoutMs = c.Weight.WaitTimeoutMs.ToString(CultureInfo.InvariantCulture),
         BackupEnabled = c.BackupSchedule is not null,
-        BackupDirectory = c.BackupSchedule?.Directory ?? (InstallationIdentity.IsTest ? Path.Combine(InstallationIdentity.TestDataArea, "backups", c.ApplicationId) : c.ApplicationId == "sportmaster" && WindowsStoragePaths.ProtectedAnchor is null ? Path.Combine(@"D:\ProgramData\ImporterPc", "backups", c.ApplicationId) : Path.Combine(WindowsStoragePaths.UserRoot, "backups", c.ApplicationId)),
+        BackupDirectory = c.BackupSchedule?.Directory ?? (InstallationIdentity.IsTest ? Path.Combine(InstallationIdentity.TestDataArea, "backups", c.ApplicationId) : ProductDeploymentCatalog.Find(c.ApplicationId)?.UsesStrictWindowsStorage == true && WindowsStoragePaths.ProtectedAnchor is null ? Path.Combine(@"D:\ProgramData\ImporterPc", "backups", c.ApplicationId) : Path.Combine(WindowsStoragePaths.UserRoot, "backups", c.ApplicationId)),
         BackupIntervalMinutes = c.BackupSchedule?.IntervalMinutes.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.BackupIntervalMinutes.ToString(CultureInfo.InvariantCulture),
         BackupMaximumSets = c.BackupSchedule?.MaximumSets.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.MaximumBackupSets.ToString(CultureInfo.InvariantCulture),
         UploadStrategy = c.Images?.Strategy ?? UploadStrategy.BeforeMain,
@@ -199,7 +199,7 @@ public partial class ParcelViewModel
     ParcelConfiguration? structuredBase;
     public SmParameterAudience ParameterAudience { get; set; }
     public ParameterEditorModel? ParameterEditor { get; private set; }
-    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples)), structuredBase.StationId, (application as IParcelConfigurationLocationApplication)?.ConfigurationLocations, ConfigurationRoles.Single(r => r.Role == "登录"), ConfigurationRoles.ToArray()) { CameraSerialReader = (ip, engine) => ServiceAsync(() => application.ReadCameraSerialAsync(ip, engine)), CameraDiscoverer = engine => ServiceAsync(() => application.DiscoverCamerasAsync(engine)), DisplayPreferences = structuredBase.ApplicationId == "sportmaster" ? SmPreferences : null }; Changed(nameof(ParameterEditor)); }
+    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples)), structuredBase.StationId, (application as IParcelConfigurationLocationApplication)?.ConfigurationLocations, ConfigurationRoles.Single(r => r.Role == "登录"), ConfigurationRoles.ToArray()) { CameraSerialReader = (ip, engine) => ServiceAsync(() => application.ReadCameraSerialAsync(ip, engine)), CameraDiscoverer = engine => ServiceAsync(() => application.DiscoverCamerasAsync(engine)), DisplayPreferences = BusinessDesktopCatalog.For(structuredBase.ApplicationId).UsesStationDisplayPreferences ? SmPreferences : null }; Changed(nameof(ParameterEditor)); }
     CapabilityCatalog? installedCatalog;
     string configurationAuthority = "未加载", savedCandidate = "", validationState = "尚未校验";
     public bool HasLoadedConfiguration => configurationAuthority != "未加载";
@@ -218,13 +218,13 @@ public partial class ParcelViewModel
     bool SupportsNewKind(string kind)
     {
         var id = structuredBase?.ApplicationId ?? Snapshot?.ApplicationId;
-        if (id == "sportmaster") return false;
+        if (BusinessDesktopCatalog.For(id).HidesUnboundSecondaryCapabilities) return false;
         if (kind == "login") return !CapabilityDrafts.Any(c => c.Kind == kind);
         if (kind == "observation") return false;
         if (kind is "weight" or "camera") return CapabilityDrafts.Count(c => c.Kind == kind) < (structuredBase?.Topology?.Positions.Length ?? 1) + 1;
         return kind is "plc" or "upload" or "integration" && !(id == "direct-plc" && kind == "integration") && !CapabilityDrafts.Any(c => c.Kind == kind);
     }
-    public System.Windows.Visibility ImageSettingsVisibility => (structuredBase?.ApplicationId ?? Snapshot?.ApplicationId) != "sportmaster" || structuredBase?.Images is not null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+    public System.Windows.Visibility ImageSettingsVisibility => !BusinessDesktopCatalog.For(structuredBase?.ApplicationId ?? Snapshot?.ApplicationId).HidesUnboundSecondaryCapabilities || structuredBase?.Images is not null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
     public string[] NewCapabilityKinds => installedCatalog?.Providers.Where(x => SupportsNewKind(x.Kind)).Select(x => x.Kind).Distinct().ToArray() ?? [];
     public string NewCapabilityKind { get; set; } = "weight";
     public string ParameterConfigurationSummary => (HasUnsavedConfiguration || HasUnsavedDisplayPreferences ? "有未保存修改" : "未修改") + " · " + validationState + " · " +
@@ -237,7 +237,7 @@ public partial class ParcelViewModel
             Snapshot?.Configuration.Confirmation is not { Required: false } ? "  ·  当前设置待确认" : "");
     public string ConfigurationSaveGuidance => !Fresh ? "状态读取中断，恢复后才能检查和保存；已填写的内容会保留。" :
         Busy ? "正在执行当前操作，请等待结果。" :
-        !CanConfigure ? !IsManagementMode ? "请进入管理模式后保存；已填写的内容保留。" : Snapshot?.ApplicationId == "sportmaster" ? "当前仍有保存或备份正在执行，请等待完成后再保存；已填写的内容保留。" : "保存前需要暂停供包，并等待当前请求和维护操作完成；已填写的内容保留。" :
+        !CanConfigure ? !IsManagementMode ? "请进入管理模式后保存；已填写的内容保留。" : DesktopProfile.SupportsLiveConfiguration ? "当前仍有保存或备份正在执行，请等待完成后再保存；已填写的内容保留。" : "保存前需要暂停供包，并等待当前请求和维护操作完成；已填写的内容保留。" :
         "保存条件已满足。核对更改后保存，备注可不填；提交时由业务服务再次检查。" + ConfigurationActivationGuidance;
     public string ConfigurationEditorState
     {
@@ -271,7 +271,7 @@ public partial class ParcelViewModel
         CapabilityRoleDraft LocalRole(string role, string kind, CapabilityBinding? binding)
         {
             var choices = LocalChoices(kind);
-            var visible = c.ApplicationId != "sportmaster" || kind is not ("plc" or "camera" or "upload") || binding is not null;
+            var visible = !BusinessDesktopCatalog.For(c.ApplicationId).HidesUnboundSecondaryCapabilities || kind is not ("plc" or "camera" or "upload") || binding is not null;
             return new(role, kind, choices, choices.Single(x => x.Capability?.InstanceId == binding?.InstanceId), visible);
         }
         var readers = new List<ReaderConfigurationDraft>(); var readerIndex = 0;
@@ -298,7 +298,7 @@ public partial class ParcelViewModel
         StructuredPolicy = policy; StructuredPolicy.PropertyChanged += (_, _) => EditorChanged();
         try { savedCandidate = Wire.Encode(BuildStructuredConfiguration()); }
         catch (InvalidOperationException) { savedCandidate = Wire.Encode(c); }
-        var scanPolicyChanged = c.ApplicationId == "sportmaster" &&
+        var scanPolicyChanged = BusinessDesktopCatalog.For(c.ApplicationId).UsesScanAndBarcodePolicy &&
             ParcelBindings.Readers(c).Any(r => r.Driver == "tcp-line" && r.Parameters?.GetValueOrDefault("entity.mode", "observe-only") != "line");
         AcceptEditorBaseline();
         if (c.StationCode is null || scanPolicyChanged)
@@ -378,8 +378,8 @@ public partial class ParcelViewModel
             Scale = Role("默认秤"),
             Wcs = Role("上游格口"),
             Plc = Role("PLC"),
-            Weight = c.ApplicationId == "sportmaster" ? c.Weight : policy.BuildWeight(),
-            WeightValidity = c.ApplicationId == "sportmaster" ? c.WeightValidity : policy.Validity,
+            Weight = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.Weight : policy.BuildWeight(),
+            WeightValidity = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.WeightValidity : policy.Validity,
             Images = image,
             Extensions = extensions
         };

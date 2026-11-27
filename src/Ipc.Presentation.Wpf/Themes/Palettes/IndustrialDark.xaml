@@ -1,0 +1,69 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <SolidColorBrush x:Key="Background" Color="#0F1722"/>
+ <SolidColorBrush x:Key="Surface" Color="#172231"/>
+ <SolidColorBrush x:Key="Soft" Color="#1D2B3E"/>
+ <SolidColorBrush x:Key="Ink" Color="#F1F5F9"/>
+ <SolidColorBrush x:Key="Muted" Color="#9FB0C4"/>
+ <SolidColorBrush x:Key="Line" Color="#2D3F56"/>
+ <SolidColorBrush x:Key="Accent" Color="#4C8DFF"/>
+ <SolidColorBrush x:Key="AccentHover" Color="#6AA1FF"/>
+ <SolidColorBrush x:Key="AccentPressed" Color="#3474E8"/>
+ <SolidColorBrush x:Key="AccentBackground" Color="#1A2D4A"/>
+ <SolidColorBrush x:Key="Success" Color="#34D399"/>
+ <SolidColorBrush x:Key="SuccessBackground" Color="#112E25"/>
+ <SolidColorBrush x:Key="Warning" Color="#FBBF24"/>
+ <SolidColorBrush x:Key="WarningBackground" Color="#332510"/>
+ <SolidColorBrush x:Key="Danger" Color="#F87171"/>
+ <SolidColorBrush x:Key="DangerBackground" Color="#36181C"/>
+ <SolidColorBrush x:Key="SuccessBorder" Color="#1F5E4A"/>
+ <SolidColorBrush x:Key="WarningBorder" Color="#6E4E1B"/>
+ <SolidColorBrush x:Key="DangerBorder" Color="#7A2E37"/>
+ <SolidColorBrush x:Key="AccentBorder" Color="#355A91"/>
+ <SolidColorBrush x:Key="LineStrong" Color="#445A76"/>
+ <SolidColorBrush x:Key="LineSubtle" Color="#233245"/>
+ <SolidColorBrush x:Key="DisabledText" Color="#6B7D92"/>
+ <SolidColorBrush x:Key="SurfaceHover" Color="#223248"/>
+ <SolidColorBrush x:Key="SurfacePressed" Color="#2A3D57"/>
+ <SolidColorBrush x:Key="DangerHover" Color="#EF4444"/>
+ <SolidColorBrush x:Key="DangerPressed" Color="#DC2626"/>
+ <SolidColorBrush x:Key="OnAccent" Color="#02060B"/>
+ <SolidColorBrush x:Key="OnDanger" Color="#160608"/>
+ <SolidColorBrush x:Key="OnDangerPressed" Color="#FFFFFF"/>
+ <SolidColorBrush x:Key="ShellHeaderLine" Color="#2D3F56"/>
+ <SolidColorBrush x:Key="ShellMuted" Color="#9FB0C4"/>
+ <SolidColorBrush x:Key="ShellSelectedBackground" Color="#1A2D4A"/>
+ <SolidColorBrush x:Key="ShellSelectedBorder" Color="#355A91"/>
+ <SolidColorBrush x:Key="ShellSelectedInk" Color="#4C8DFF"/>
+ <SolidColorBrush x:Key="ShellNoticeBorder" Color="#355A91"/>
+ <SolidColorBrush x:Key="ShellNoticeInk" Color="#F1F5F9"/>
+ <SolidColorBrush x:Key="StatusAcceptedBorder" Color="#1F5E4A"/>
+ <SolidColorBrush x:Key="StatusRejectedBorder" Color="#7A2E37"/>
+ <SolidColorBrush x:Key="StatusUnknownBorder" Color="#6E4E1B"/>
+ <SolidColorBrush x:Key="StatusStaleBackground" Color="#1D2B3E"/>
+ <SolidColorBrush x:Key="StatusStaleBorder" Color="#445A76"/>
+ <SolidColorBrush x:Key="VideoCanvas" Color="#0B111A"/>
+ <SolidColorBrush x:Key="VideoInk" Color="#F1F5F9"/>
+ <SolidColorBrush x:Key="VideoMarker" Color="#34D399"/>
+ <SolidColorBrush x:Key="DebugVideoCanvas" Color="#0B111A"/>
+ <SolidColorBrush x:Key="DebugVideoInk" Color="#F1F5F9"/>
+ <SolidColorBrush x:Key="TerminalCanvas" Color="#090F17"/>
+ <SolidColorBrush x:Key="LogEmptyInk" Color="#9FB0C4"/>
+ <SolidColorBrush x:Key="ChartLine" Color="#445A76"/>
+ <SolidColorBrush x:Key="ChartLeft" Color="#4C8DFF"/>
+ <SolidColorBrush x:Key="ChartRight" Color="#34D399"/>
+ <SolidColorBrush x:Key="EvidenceSelected" Color="#FBBF24"/>
+ <SolidColorBrush x:Key="EvidenceMarker" Color="#67E8F9"/>
+ <SolidColorBrush x:Key="EvidenceInk" Color="#0B111A"/>
+ <SolidColorBrush x:Key="PlainText" Color="#F1F5F9"/>
+ <SolidColorBrush x:Key="OperatorSuccess" Color="#34D399"/>
+ <SolidColorBrush x:Key="OperatorDanger" Color="#F87171"/>
+ <SolidColorBrush x:Key="OperatorWarning" Color="#FBBF24"/>
+ <SolidColorBrush x:Key="OperatorInactive" Color="#445A76"/>
+ <SolidColorBrush x:Key="OperatorOnWarning" Color="#02060B"/>
+ <SolidColorBrush x:Key="InkOnInactive" Color="#F1F5F9"/>
+ <CornerRadius x:Key="RadiusControl">6</CornerRadius>
+ <CornerRadius x:Key="RadiusCard">12</CornerRadius>
+ <CornerRadius x:Key="RadiusBadge">12</CornerRadius>
+ <DropShadowEffect x:Key="ShadowPopup" BlurRadius="14" ShadowDepth="3" Direction="270" Opacity="0.14"/>
+ <DropShadowEffect x:Key="ShadowCard" BlurRadius="8" ShadowDepth="1" Direction="270" Color="#000000" Opacity=".06"/>
+</ResourceDictionary>

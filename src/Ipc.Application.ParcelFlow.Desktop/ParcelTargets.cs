@@ -40,7 +40,7 @@ public partial class ParcelViewModel
     public bool CanHistoryContinue => !Busy && Fresh && Selected is not null && Snapshot?.Availability?.ContinuePrepared.Contains(Selected.Id) == true;
     public bool CanHistoryQuery => !Busy && Fresh && !SelectedRcsQueryUnavailable && Selected is not null && Snapshot?.Operations.Any(x => x.Id == Selected.Id && (x.Wcs?.State == StageState.Unknown || x.Plc?.State is StageState.Unknown or StageState.Accepted || x.Capture?.State == StageState.Unknown || x.Upload?.State == StageState.Unknown)) == true;
     public string CapacityState => Snapshot?.Capacity is { } c
-        ? (Snapshot.ApplicationId == "sportmaster" ? $"当前作业 {c.Unresolved}" : $"未完成 {c.Unresolved}/{c.MaximumUnresolved}") + $" · 在库 {c.Resident} · 已归档 {c.Archived}" : "容量未取得";
+        ? (DesktopProfile.UsesSmCapacityProjection ? $"当前作业 {c.Unresolved}" : $"未完成 {c.Unresolved}/{c.MaximumUnresolved}") + $" · 在库 {c.Resident} · 已归档 {c.Archived}" : "容量未取得";
     public string AuxiliaryState => string.Join("\n", Snapshot?.AuxiliaryReasons ?? []);
     public string InstalledProviderParameters { get; private set; } = "";
     public async Task ValidateConfigurationDraftAsync() { var candidate = Wire.Decode<ParcelConfiguration>(ConfigurationDraft); var r = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate)); Message = r.Status + " · " + r.Reason; }
@@ -78,7 +78,7 @@ public partial class ParcelViewModel
         : "所选行 / 详情 / 命令目标：" + Selected.Id + "；列表为查询时的状态，详情会实时更新";
     public bool HistoryLoading => historyLoading;
     public bool HasNextHistory => !historyLoading && !HistoryFiltersChanged && nextHistory is not null && (!AppendHistory || HistoryItems.Length < 1000);
-    bool AppendHistory => Snapshot?.ApplicationId == "sportmaster";
+    bool AppendHistory => DesktopProfile.UsesCompactHistoryLayout;
     public bool UsesHistoryPaging => !AppendHistory;
     public bool HasPreviousHistory => !AppendHistory && !historyLoading && !HistoryFiltersChanged && historyPageIndex > 0;
     public string HistoryStatus => (HistoryFiltersChanged ? "筛选条件已修改，尚未应用；列表仍是上次查询的结果，翻页和导出已暂停。\n" : "") +

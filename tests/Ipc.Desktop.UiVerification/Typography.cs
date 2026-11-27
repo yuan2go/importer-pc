@@ -26,16 +26,23 @@ static partial class Program
         var window = new Window { Title = "Typography synthetic verification", Width = 1000, Height = 360, Content = panel };
         UiTypography.Apply(window); window.Show(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         var fontRows = new List<object>();
-        foreach (var (block, name, expectedFile, expectedWeight) in new[] {
-            (regular, "regular", "notosanscjksc-regular.otf", 400), (medium, "medium", "notosanscjksc-medium.otf", 500),
-            (code, "code", "notosanscjksc-regular.otf", 400), (codeMedium, "code-medium", "notosanscjksc-medium.otf", 500) })
+        var manager = new WorkstationThemeManager();
+        foreach (var theme in WorkstationThemeManager.BuiltInThemes)
         {
-            block.UpdateLayout();
-            var runs = GlyphRuns(block).ToArray();
-            Check(runs.Length > 0 && runs.All(r => r.GlyphIndices.All(g => g != 0)), name + " has actual glyphs without .notdef");
-            Check(runs.Any(r => r.GlyphTypeface.FontUri.ToString().Contains(expectedFile, StringComparison.OrdinalIgnoreCase) && r.GlyphTypeface.Weight.ToOpenTypeWeight() == expectedWeight), name + " resolves expected font file and real weight");
-            Check(runs.All(r => r.GlyphTypeface.FontUri.ToString().Contains(expectedFile, StringComparison.OrdinalIgnoreCase)), name + " uses only the shipped face, including identifiers and technical text");
-            foreach (var run in runs) fontRows.Add(new { Role = name, Sample = block.Text, Characters = run.Characters is null ? null : new string(run.Characters.ToArray()), FontUri = run.GlyphTypeface.FontUri.ToString(), Weight = run.GlyphTypeface.Weight.ToOpenTypeWeight(), run.GlyphTypeface.Version, GlyphCount = run.GlyphIndices.Count });
+            manager.Apply(System.Windows.Application.Current.Resources, theme);
+            await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            foreach (var (block, name, expectedFile, expectedWeight) in new[] {
+                (regular, "regular", "notosanscjksc-regular.otf", 400), (medium, "medium", "notosanscjksc-medium.otf", 500),
+                (code, "code", "notosanscjksc-regular.otf", 400), (codeMedium, "code-medium", "notosanscjksc-medium.otf", 500) })
+            {
+                block.UpdateLayout();
+                var runs = GlyphRuns(block).ToArray();
+                Check(runs.Length > 0 && runs.All(r => r.GlyphIndices.All(g => g != 0)), theme.Id + " " + name + " has actual glyphs without .notdef");
+                Check(runs.Any(r => r.GlyphTypeface.FontUri.ToString().Contains(expectedFile, StringComparison.OrdinalIgnoreCase) && r.GlyphTypeface.Weight.ToOpenTypeWeight() == expectedWeight), theme.Id + " " + name + " resolves expected font file and real weight");
+                Check(runs.All(r => r.GlyphTypeface.FontUri.ToString().Contains(expectedFile, StringComparison.OrdinalIgnoreCase)), theme.Id + " " + name + " uses only the shipped face, including identifiers and technical text");
+                foreach (var run in runs) fontRows.Add(new { Theme = theme.Id, Role = name, Sample = block.Text, Characters = run.Characters is null ? null : new string(run.Characters.ToArray()), FontUri = run.GlyphTypeface.FontUri.ToString(), Weight = run.GlyphTypeface.Weight.ToOpenTypeWeight(), run.GlyphTypeface.Version, GlyphCount = run.GlyphIndices.Count });
+            }
+            CaptureInternal(evidence, theme.Id == WorkstationThemeManager.IndustrialLightId ? "typography-font-resolution" : "typography-font-resolution-dark", panel, lines);
         }
         foreach (var (file, expected) in new[] { ("Regular", "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b"), ("Medium", "ca094f6b0001fb048ca39ddd797a0cdb0179e1e55c6561e111c49c3e6a61d7b7") })
         {
@@ -44,7 +51,6 @@ static partial class Program
         }
         using (var license = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Ipc.Presentation.Wpf;component/Fonts/OFL.txt")).Stream)
         using (var reader = new StreamReader(license)) Check((await reader.ReadToEndAsync()).Contains("SIL OPEN FONT LICENSE Version 1.1"), "offline OFL license is embedded");
-        CaptureInternal(evidence, "typography-font-resolution", panel, lines);
         File.WriteAllText(Path.Combine(evidence, "FONT-RESOLUTION.json"), JsonSerializer.Serialize(new { OperatingSystem = Environment.OSVersion.ToString(), Dpi = VisualTreeHelper.GetDpi(window).DpiScaleX, Assembly = typeof(UiTypography).Assembly.Location, Fonts = fontRows }, new JsonSerializerOptions { WriteIndented = true }));
         window.Close();
     }

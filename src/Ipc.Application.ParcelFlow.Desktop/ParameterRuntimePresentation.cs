@@ -49,7 +49,7 @@ public partial class ParcelViewModel
                 var mode = (reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode", reader.Driver == "hikrobot-mvs-reader" ? "read-result" : "observe-only");
                 notice += (notice.Length == 0 ? "" : "\n") + (mode == "observe-only"
                     ? "仅观察，不创建供包作业。已连接不代表能读到条码。"
-                    : mode == "read-result" ? snapshot.ApplicationId == "sportmaster"
+                    : mode == "read-result" ? BusinessDesktopCatalog.For(snapshot.ApplicationId).UsesStationCameraConfiguration
                         ? "物理在位证据独立于条码识别；可信移出结束轮次，同轮最多一次请求。取得格口不代表物理包裹完成。"
                         : "逐次识别结果上报已选择，相同条码也会交给 RCS 去重。读码请求不代表物理包裹完成。"
                     : "已选择触发关联方式。已连接不代表包裹分割准确。");
@@ -62,7 +62,7 @@ public partial class ParcelViewModel
             if (IsManagementMode && health is not null)
                 evidence = "\n设备确认：" + health.ConfirmedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") +
                     "\n连接周期：" + health.Epoch + " · 已处理序号：" + health.Sequence + "\n连接证据：" + health.Source;
-            if (!ready) notice += snapshot.ApplicationId == "sportmaster"
+            if (!ready) notice += BusinessDesktopCatalog.For(snapshot.ApplicationId).UsesStationCameraConfiguration
                 ? "\n本相机将自动重连；若提示资源未释放或身份冲突，请联系运维人员在运维工具中处理。"
                 : "\n请检查本相机连接证据和现场实体，暂停并进入管理模式后按当前运行配置受控重连。";
         }

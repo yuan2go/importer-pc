@@ -8,7 +8,7 @@ public partial class HistoryPage
     bool taskFiltersArranged;
     void ArrangeTaskFilters()
     {
-        if (taskFiltersArranged || DataContext is not ParcelViewModel { Snapshot.ApplicationId: "sportmaster" }) return;
+        if (taskFiltersArranged || DataContext is not ParcelViewModel { DesktopProfile.UsesCompactHistoryLayout: true }) return;
         taskFiltersArranged = true;
         RcsTaskColumn.Visibility = Visibility.Visible;
         // Reparent existing editors; each filter still has one binding and one query contract.
@@ -20,7 +20,8 @@ public partial class HistoryPage
             {
                 group.Children.Remove(barcode);
                 var entry = new Grid(); entry.Children.Add(barcode);
-                var hint = new TextBlock { Text = "扫码或输入完整条码", IsHitTestVisible = false, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center, Foreground = (System.Windows.Media.Brush)FindResource("Muted") };
+                var hint = new TextBlock { Text = "扫码或输入完整条码", IsHitTestVisible = false, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center };
+                hint.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
                 void Watermark() => hint.Visibility = barcode.Text.Length == 0 && !barcode.IsKeyboardFocused ? Visibility.Visible : Visibility.Collapsed;
                 barcode.TextChanged += (_, _) => Watermark(); barcode.IsKeyboardFocusWithinChanged += (_, _) => Watermark(); Watermark();
                 entry.Children.Add(hint); group.Children.Add(entry);

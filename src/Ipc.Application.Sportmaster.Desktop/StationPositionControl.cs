@@ -59,10 +59,10 @@ public sealed partial class SupplyStationPositionViewModel
     public string SupplyNotice => SupplyDisabling
         ? "停用中：不再接收新条码。本轮请求及结果保存结束后自动停用。点“启用”可取消。"
         : SupplyConfigured ? "本位已停用，不接收条码。" : "相机编码未配置，本位停用；在设置填写后可启用。";
-    public string EnableBackground => SupplyEnabled ? OperatorTokens.Accent : OperatorTokens.Surface;
-    public string EnableForeground => SupplyEnabled ? OperatorTokens.Surface : OperatorTokens.Muted;
-    public string DisableBackground => SupplyEnabled ? OperatorTokens.Surface : SupplyDisabling ? OperatorTokens.Warning : OperatorTokens.Inactive;
-    public string DisableForeground => SupplyEnabled ? OperatorTokens.Muted : OperatorTokens.Surface;
+    public string EnableBackgroundKey => SupplyEnabled ? "Accent" : "Surface";
+    public string EnableForegroundKey => SupplyEnabled ? "OnAccent" : "Muted";
+    public string DisableBackgroundKey => SupplyEnabled ? "Surface" : SupplyDisabling ? "OperatorWarning" : "OperatorInactive";
+    public string DisableForegroundKey => SupplyEnabled ? "Muted" : SupplyDisabling ? "OperatorOnWarning" : "InkOnInactive";
     internal Task SetSupplyEnabledAsync(bool enabled) => owner.RunAsync(async () =>
     {
         if (!owner.Fresh || owner.Application is not IStationPositionControl control || owner.Snapshot is not { } snapshot) return;

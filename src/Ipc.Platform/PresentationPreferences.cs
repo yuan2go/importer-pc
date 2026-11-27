@@ -10,6 +10,8 @@ public static class PresentationPreferences
     public enum WindowOpeningMode { Window, FullScreen }
     public const int DefaultCueVolume = 80;
     sealed record AudioPreference(int Schema, int Volume);
+    sealed record ThemePreference(int Schema, string ThemeId);
+    public static event Action<string, string>? ThemeChanged;
     public static event Action<string, int>? CueVolumeChanged;
     public static event Action<string, WindowOpeningMode>? WindowModeChanged;
     public static event Action<string, string, bool>? DisplayChanged;
@@ -22,11 +24,14 @@ public static class PresentationPreferences
         {
             case "window": WindowModeChanged?.Invoke(application, ReadWindowMode(application)); break;
             case "audio": CueVolumeChanged?.Invoke(application, ReadCueVolume(application)); break;
+            case "theme":
+                if (ReadSavedTheme(application) is { } theme) ThemeChanged?.Invoke(application, theme);
+                break;
             case "pace": DisplayChanged?.Invoke(application, surface, Read(application, surface) ?? true); break;
             default: throw new ArgumentException("Unsupported saved preference surface", nameof(surface));
         }
     }
-    static T? ReadPreference<T>(string application, string surface, string oversized) where T : class
+    static T? ReadPreference<T>(string application, string surface, string oversized, string? damaged = null) where T : class
     {
         var path = FileFor(application, surface);
         try
@@ -34,11 +39,36 @@ public static class PresentationPreferences
             using var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete);
             if (file.Length > 4096) throw new InvalidDataException(oversized);
             using var reader = new StreamReader(file);
-            return Wire.Decode<T>(reader.ReadToEnd());
+            try { return Wire.Decode<T>(reader.ReadToEnd()); }
+            catch (Exception error) when (damaged is not null && error is (System.Text.Json.JsonException or InvalidDataException))
+            { throw new InvalidDataException(damaged, error); }
         }
         catch (FileNotFoundException) { return null; }
         catch (DirectoryNotFoundException) { return null; }
     }
+    static bool ValidThemeId(string? id) => id is { Length: > 0 and <= 64 } &&
+        id.All(c => char.IsAsciiLetterOrDigit(c) || c is '-' or '_');
+
+    static string? ReadSavedTheme(string application)
+    {
+        var value = ReadPreference<ThemePreference>(application, "theme", "界面主题偏好超出预算；保留原文件", "界面主题偏好已损坏；保留原文件");
+        if (value is null) return null;
+        if (value.Schema != 1 || !ValidThemeId(value.ThemeId)) throw new InvalidDataException("界面主题偏好版本或标识无效；保留原文件");
+        return value.ThemeId;
+    }
+
+    public static string ReadTheme(string application, string defaultThemeId) => ReadSavedTheme(application) ?? defaultThemeId;
+
+    public static void SaveTheme(string application, string themeId)
+    {
+        if (!ValidThemeId(themeId)) throw new InvalidDataException("界面主题标识无效");
+        _ = ReadSavedTheme(application);
+        var file = FileFor(application, "theme");
+        Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+        ExtensionStore.AtomicWrite(file, new ThemePreference(1, themeId));
+        ThemeChanged?.Invoke(application, themeId);
+    }
+
     public static int ReadCueVolume(string application)
     {
         var value = ReadPreference<AudioPreference>(application, "audio", "提示音偏好超出预算；保留原文件");
@@ -96,7 +126,7 @@ public static class PresentationPreferences
     }
     public static void Save(string application, string surface, bool compact)
     {
-        if (surface is "audio" or "window" || surface.StartsWith("station-", StringComparison.Ordinal)) throw new InvalidDataException("请使用对应的专用偏好保存入口。");
+        if (surface is "audio" or "window" or "theme" || surface.StartsWith("station-", StringComparison.Ordinal)) throw new InvalidDataException("请使用对应的专用偏好保存入口。");
         var file = FileFor(application, surface); _ = Read(application, surface);
         Directory.CreateDirectory(Path.GetDirectoryName(file)!); ExtensionStore.AtomicWrite(file, new Preference(1, compact)); DisplayChanged?.Invoke(application, surface, compact);
     }

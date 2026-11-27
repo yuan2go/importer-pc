@@ -45,7 +45,7 @@ public sealed class ParcelPictureWindow : Window
         operatorSession = vm.Snapshot?.CurrentOperator?.SessionId;
         Title = "包裹图片"; Width = Math.Min(1100, SystemParameters.WorkArea.Width); Height = Math.Min(760, SystemParameters.WorkArea.Height);
         MinWidth = 640; MinHeight = 420; WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        UiTypography.Apply(this); FontSize = UiTypography.Body; Background = Brushes.White;
+        UiTypography.Apply(this); FontSize = UiTypography.Body; SetResourceReference(BackgroundProperty, "Surface");
         var body = new DockPanel();
         var top = new StackPanel { Margin = new(20, 12, 20, 8) };
         DockPanel.SetDock(top, Dock.Top); body.Children.Add(top);

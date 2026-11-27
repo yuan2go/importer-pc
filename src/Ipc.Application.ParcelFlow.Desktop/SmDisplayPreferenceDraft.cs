@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Ipc.Platform;
+using Ipc.Presentation.Wpf;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
 
@@ -9,6 +10,10 @@ public sealed record PreferenceSaveItem(string Path, string Name, string State, 
 // Per-user display choices and the installed workstation startup shortcut.
 public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
 {
+    readonly string applicationId;
+    readonly BusinessDesktopProfile profile;
+    string? savedThemeId;
+    string themeId;
     PresentationPreferences.WindowOpeningMode? savedMode;
     bool? savedPace;
     int? savedVolume;
@@ -19,11 +24,24 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
     readonly HashSet<string> uncertain = [];
     readonly Dictionary<string, string> readFailures = [];
     public event PropertyChangedEventHandler? PropertyChanged;
-    public SmDisplayPreferenceDraft()
+    public SmDisplayPreferenceDraft() : this(BusinessDesktopCatalog.Station.ApplicationId) { }
+
+    public SmDisplayPreferenceDraft(string applicationId)
     {
-        Read("WindowOpeningMode", () => savedMode = mode = PresentationPreferences.ReadWindowMode("sportmaster"));
-        Read("ShowPace", () => savedPace = pace = PresentationPreferences.Read("sportmaster", "pace") ?? true);
-        Read("CueVolume", () => savedVolume = volume = PresentationPreferences.ReadCueVolume("sportmaster"));
+        this.applicationId = applicationId;
+        profile = BusinessDesktopCatalog.For(applicationId);
+        themeId = profile.DefaultThemeId;
+        Read(nameof(ThemeId), () =>
+        {
+            var saved = ReadTheme(applicationId);
+            savedThemeId = themeId = WorkstationThemeManager.Resolve(saved, profile.SupportedThemes, profile.DefaultThemeId).Id;
+            if (saved != themeId) ThemeStatus = "已保存的主题不可用，当前使用默认主题。";
+        });
+        if (!profile.UsesStationDisplayPreferences) return;
+
+        Read("WindowOpeningMode", () => savedMode = mode = PresentationPreferences.ReadWindowMode(applicationId));
+        Read("ShowPace", () => savedPace = pace = PresentationPreferences.Read(applicationId, "pace") ?? true);
+        Read("CueVolume", () => savedVolume = volume = PresentationPreferences.ReadCueVolume(applicationId));
         try { savedAutoStart = autoStart = ReadAutoStart(); }
         catch (Exception error) when (StorageError(error))
         {
@@ -50,10 +68,16 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
     public bool ShowPace { get => pace; set { if (pace == value) return; pace = value; Changed(); } }
     public int CueVolume { get => volume; set { if (volume == value) return; volume = value; Changed(); } }
     public bool AutoStart { get => autoStart; set { if (autoStart == value || !CanEdit("AutoStart")) return; autoStart = value; Changed(); } }
+    public string ThemeId { get => themeId; set { if (themeId == value || !CanEdit(nameof(ThemeId))) return; themeId = value; Changed(); } }
+    public string ThemeStatus { get; private set; } = "";
+    public bool ThemeChanged => savedThemeId is not null && themeId != savedThemeId || uncertain.Contains(nameof(ThemeId));
+    string ReadTheme(string application) => PresentationPreferences.ReadTheme(application, profile.DefaultThemeId);
+    string ThemeName(string id) => profile.SupportedThemes.FirstOrDefault(theme => theme.Id == id)?.DisplayName ?? id;
+
     bool AutoStartChanged => savedAutoStart.HasValue && autoStart != savedAutoStart || uncertain.Contains("AutoStart");
     public bool WindowChanged => savedMode.HasValue && mode != savedMode || uncertain.Contains("WindowOpeningMode");
-    public bool HasChanges => WindowChanged || savedPace.HasValue && pace != savedPace || savedVolume.HasValue && volume != savedVolume || AutoStartChanged || uncertain.Count != 0;
-    public string Signature => $"{mode}/{pace}/{volume}/{autoStart}";
+    public bool HasChanges => WindowChanged || savedPace.HasValue && pace != savedPace || savedVolume.HasValue && volume != savedVolume || AutoStartChanged || ThemeChanged || uncertain.Count != 0;
+    public string Signature => $"{mode}/{pace}/{volume}/{autoStart}/{themeId}";
     static string UserIdentity
     {
         get
@@ -66,6 +90,8 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
     public void Capture(IDictionary<string, string> values)
     {
         values["preference.user"] = UserIdentity;
+        values["preference.theme"] = themeId;
+        if (!profile.UsesStationDisplayPreferences) return;
         values["preference.mode"] = mode.ToString(); values["preference.pace"] = pace.ToString(); values["preference.volume"] = volume.ToString(System.Globalization.CultureInfo.InvariantCulture);
         if (savedAutoStart.HasValue) values["preference.autostart"] = autoStart.ToString();
     }
@@ -73,6 +99,16 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
     {
         if (values.GetValueOrDefault("preference.user") != UserIdentity)
             throw new System.IO.InvalidDataException("偏好草稿缺少当前Windows用户身份或属于另一用户；原草稿与当前输入保留。");
+        var restoredTheme = values.GetValueOrDefault("preference.theme", themeId);
+        if (!profile.SupportedThemes.Any(theme => theme.Id == restoredTheme))
+        {
+            restoredTheme = profile.DefaultThemeId;
+            ThemeStatus = "草稿中的主题不可用，当前使用默认主题。";
+        }
+        if (!CanEdit(nameof(ThemeId)) && restoredTheme != themeId)
+            throw new System.IO.InvalidDataException("主题偏好文件读取失败；请先核对访问权限，草稿与原件保留。");
+        if (!profile.UsesStationDisplayPreferences) { ThemeId = restoredTheme; return; }
+
         var restoredMode = Enum.Parse<PresentationPreferences.WindowOpeningMode>(values["preference.mode"]);
         var restoredPace = bool.Parse(values["preference.pace"]);
         var restoredVolume = int.Parse(values["preference.volume"], System.Globalization.CultureInfo.InvariantCulture);
@@ -80,13 +116,13 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
             throw new System.IO.InvalidDataException("原偏好文件读取失败；请先修复访问或文件问题，草稿与原件保留。");
         if (values.TryGetValue("preference.autostart", out var startup) && !CanEdit("AutoStart") && bool.Parse(startup) != autoStart)
             throw new InvalidOperationException("当前无法修改开机自启。请从已安装的供包台打开设置。");
-        OpeningMode = restoredMode; ShowPace = restoredPace; CueVolume = restoredVolume;
+        ThemeId = restoredTheme; OpeningMode = restoredMode; ShowPace = restoredPace; CueVolume = restoredVolume;
         if (startup is not null) AutoStart = bool.Parse(startup);
     }
     public PreferenceSaveItem[] LastSave { get; private set; } = [];
     public bool LastSaveComplete => LastSave.All(x => x.State is "Saved" or "Unchanged");
     public string SaveSummary => string.Join("；", LastSave.Select(x => x.Name + "：" + x.Detail));
-    public string? Validate() => !Enum.IsDefined(mode) ? "请选择默认打开方式。" : volume is < 0 or > 100 ? "提示音音量须为0～100。" : null;
+    public string? Validate() => !profile.SupportedThemes.Any(theme => theme.Id == themeId) ? "请选择可用的界面主题。" : !Enum.IsDefined(mode) ? "请选择默认打开方式。" : volume is < 0 or > 100 ? "提示音音量须为0～100。" : null;
     public ConfigurationChangeItem[] Changes()
     {
         List<ConfigurationChangeItem> changes = [];
@@ -95,6 +131,7 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
         if (WindowChanged) Add("WindowOpeningMode", "默认打开方式", savedMode is { } before ? Mode(before) : "未核对", Mode(mode));
         if (savedPace.HasValue && pace != savedPace || uncertain.Contains("ShowPace")) Add("ShowPace", "效率显示", savedPace == true ? "显示" : "隐藏", pace ? "显示" : "隐藏");
         if (savedVolume.HasValue && volume != savedVolume || uncertain.Contains("CueVolume")) Add("CueVolume", "提示音音量", savedVolume + "%", volume + "%");
+        if (ThemeChanged) Add(nameof(ThemeId), "界面主题", ThemeName(savedThemeId ?? profile.DefaultThemeId), ThemeName(themeId));
         if (AutoStartChanged) Add("AutoStart", "开机自动启动供包台", savedAutoStart == true ? "开启" : "关闭", autoStart ? "开启" : "关闭");
         return changes.ToArray();
     }
@@ -102,25 +139,27 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
     {
         if (Validate() is { } error) throw new InvalidOperationException(error);
         // Freeze this attempt. Notification callbacks cannot silently adopt newer edits.
-        var selectedMode = mode; var selectedPace = pace; var selectedVolume = volume; var selectedAutoStart = autoStart;
+        var selectedMode = mode; var selectedPace = pace; var selectedVolume = volume; var selectedAutoStart = autoStart; var selectedTheme = themeId;
         List<PreferenceSaveItem> results = [];
-        SaveOne("WindowOpeningMode", "打开方式", selectedMode, savedMode, PresentationPreferences.ReadWindowMode,
+        SaveOne("WindowOpeningMode", "打开方式", selectedMode, savedMode.HasValue, savedMode.GetValueOrDefault(), PresentationPreferences.ReadWindowMode,
             PresentationPreferences.SaveWindowMode, value => savedMode = value);
-        SaveOne("ShowPace", "效率显示", selectedPace, savedPace, app => PresentationPreferences.Read(app, "pace") ?? true,
+        SaveOne("ShowPace", "效率显示", selectedPace, savedPace.HasValue, savedPace.GetValueOrDefault(), app => PresentationPreferences.Read(app, "pace") ?? true,
             (app, value) => PresentationPreferences.Save(app, "pace", value), value => savedPace = value);
-        SaveOne("CueVolume", "提示音", selectedVolume, savedVolume, PresentationPreferences.ReadCueVolume,
+        SaveOne("CueVolume", "提示音", selectedVolume, savedVolume.HasValue, savedVolume.GetValueOrDefault(), PresentationPreferences.ReadCueVolume,
             PresentationPreferences.SaveCueVolume, value => savedVolume = value);
-        SaveOne("AutoStart", "开机自启", selectedAutoStart, savedAutoStart, _ => ReadAutoStart(),
+        SaveOne("AutoStart", "开机自启", selectedAutoStart, savedAutoStart.HasValue, savedAutoStart.GetValueOrDefault(), _ => ReadAutoStart(),
             (_, value) => WriteAutoStart(value), value => savedAutoStart = value);
+        SaveOne(nameof(ThemeId), "界面主题", selectedTheme, savedThemeId is not null, savedThemeId ?? profile.DefaultThemeId, ReadTheme,
+            PresentationPreferences.SaveTheme, value => { savedThemeId = value; ThemeStatus = ""; Changed(nameof(ThemeStatus)); });
         LastSave = results.ToArray(); Changed(nameof(LastSave)); return LastSave;
 
-        void SaveOne<T>(string path, string name, T target, T? original, Func<string, T> read, Action<string, T> write, Action<T> accepted) where T : struct
+        void SaveOne<T>(string path, string name, T target, bool hasOriginal, T original, Func<string, T> read, Action<string, T> write, Action<T> accepted)
         {
-            if (original is null || EqualityComparer<T>.Default.Equals(target, original.Value) && !uncertain.Contains(path)) return;
+            if (!hasOriginal || EqualityComparer<T>.Default.Equals(target, original) && !uncertain.Contains(path)) return;
             try
             {
-                if (!uncertain.Contains(path) || !EqualityComparer<T>.Default.Equals(read("sportmaster"), target)) write("sportmaster", target);
-                else if (path != "AutoStart") PresentationPreferences.RefreshSaved("sportmaster", path switch { "WindowOpeningMode" => "window", "ShowPace" => "pace", _ => "audio" });
+                if (!uncertain.Contains(path) || !EqualityComparer<T>.Default.Equals(read(applicationId), target)) write(applicationId, target);
+                else if (path != "AutoStart") PresentationPreferences.RefreshSaved(applicationId, path switch { "WindowOpeningMode" => "window", "ShowPace" => "pace", nameof(ThemeId) => "theme", _ => "audio" });
                 accepted(target); uncertain.Remove(path); results.Add(new(path, name, "Saved", "已保存并生效"));
             }
             catch (Exception writeError) when (StorageError(writeError))
@@ -129,7 +168,7 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
                 // throwing. Inspect this exact target before declaring failure/retrying.
                 try
                 {
-                    var actual = read("sportmaster");
+                    var actual = read(applicationId);
                     if (EqualityComparer<T>.Default.Equals(actual, target))
                     {
                         accepted(target); uncertain.Remove(path);
@@ -152,6 +191,6 @@ public sealed class SmDisplayPreferenceDraft : INotifyPropertyChanged
     void Changed([CallerMemberName] string name = "")
     {
         PropertyChanged?.Invoke(this, new(name)); PropertyChanged?.Invoke(this, new(nameof(HasChanges)));
-        PropertyChanged?.Invoke(this, new(nameof(WindowChanged))); PropertyChanged?.Invoke(this, new(nameof(SaveSummary)));
+        PropertyChanged?.Invoke(this, new(nameof(WindowChanged))); PropertyChanged?.Invoke(this, new(nameof(ThemeChanged))); PropertyChanged?.Invoke(this, new(nameof(SaveSummary)));
     }
 }

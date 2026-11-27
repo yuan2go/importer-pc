@@ -43,7 +43,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
     readonly Image image = new() { Stretch = Stretch.Fill };
     readonly Canvas marks = new() { IsHitTestVisible = false, ClipToBounds = true };
     readonly Grid imageLayer = new() { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, ClipToBounds = true };
-    readonly ScrollViewer viewport = new() { Height = 270, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Background = ColorBrush("#18212D") };
+    readonly ScrollViewer viewport = new() { Height = 270, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly TextBlock zoomText = Label("适应窗口");
     CancellationTokenSource? lifetime, selectionCancellation;
     CameraInspectionStatus? status;
@@ -77,6 +77,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
     }
     public StationDebugEvidenceControl(SupplyStationViewModel vm, Func<string, Task> settings, Func<string, Task> details)
     {
+        viewport.SetResourceReference(BackgroundProperty, "VideoCanvas");
         this.vm = vm; this.settings = settings; this.details = details; api = vm.Application as ICameraInspection;
         Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; SetResourceReference(ForegroundProperty, "Ink"); SetResourceReference(BackgroundProperty, "Surface");
@@ -306,7 +307,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
     {
         marks.Children.Clear(); if (original is null || overlay.IsChecked != true) return;
         for (var i = 0; i < original.Metadata.Symbols.Length; i++)
-        { var symbol = original.Metadata.Symbols[i]; if (symbol.Corners.Length != 4) continue; var color = symbols.SelectedIndex == i ? Brushes.Yellow : Brushes.Cyan; marks.Children.Add(new Polygon { Points = new PointCollection(symbol.Corners.Select(p => new Point(p.X, p.Y))), Stroke = color, StrokeThickness = 2 / scale, Fill = Brushes.Transparent }); var label = new TextBlock { Text = (i + 1) + " " + symbol.Format + " · " + Short(symbol.Text, 32), Foreground = Brushes.Black, Background = color, FontSize = 14 / scale }; Canvas.SetLeft(label, Math.Clamp(symbol.Corners.Min(p => p.X), 0, Math.Max(0, original.Metadata.Width - 1))); Canvas.SetTop(label, Math.Clamp(symbol.Corners.Min(p => p.Y) - 20 / scale, 0, Math.Max(0, original.Metadata.Height - 1))); marks.Children.Add(label); }
+        { var symbol = original.Metadata.Symbols[i]; if (symbol.Corners.Length != 4) continue; var color = symbols.SelectedIndex == i ? "EvidenceSelected" : "EvidenceMarker"; var mark = new Polygon { Points = new PointCollection(symbol.Corners.Select(p => new Point(p.X, p.Y))), StrokeThickness = 2 / scale, Fill = Brushes.Transparent }; mark.SetResourceReference(Shape.StrokeProperty, color); marks.Children.Add(mark); var label = new TextBlock { Text = (i + 1) + " " + symbol.Format + " · " + Short(symbol.Text, 32), FontSize = 14 / scale }; label.SetResourceReference(TextBlock.ForegroundProperty, "EvidenceInk"); label.SetResourceReference(TextBlock.BackgroundProperty, color); Canvas.SetLeft(label, Math.Clamp(symbol.Corners.Min(p => p.X), 0, Math.Max(0, original.Metadata.Width - 1))); Canvas.SetTop(label, Math.Clamp(symbol.Corners.Min(p => p.Y) - 20 / scale, 0, Math.Max(0, original.Metadata.Height - 1))); marks.Children.Add(label); }
     }
     static string InputText(string value) => value switch { "Admitted" => "已受理", "Rejected" => "未受理", "Blocked" => "已受阻", "Duplicate" => "重复输入事件", _ => value };
     static string ResultText(CameraOperationStatus value) => value.BusinessAccepted ? "RCS业务已接受 · " + StateText(value.State) : value.StageState switch { "Unknown" => "请求结果未知", "Rejected" => "RCS业务拒绝", "Prepared" => "请求已准备", _ => "业务状态 " + StateText(value.State) };
@@ -314,7 +315,6 @@ internal sealed class StationDebugEvidenceControl : UserControl
     static string SessionText(string value) => value switch { "Idle" => "尚未采集", "Preparing" => "正在准备采集", "Transitioning" => "正在切换", "Active" => "关联采集中", "Closed" => "会话已结束", "Expired" => "期限已到", "Faulted" => "采集故障", "Suspended" => "采集已停止", "RecoveryFenced" => "旧版调试记录", "Unavailable" => "诊断集合不可用", "Stopped" => "采集已停止", "Interrupted" => "上次会话中断", _ => value };
     static string Short(string value, int length) => value.Length > length ? value[..length] + "…" : value;
     static string Protect(string value, int limit) => DiagnosticText.Protect(value[..Math.Min(value.Length, limit)]) + (value.Length > limit ? "\n[显示已截断]" : "");
-    static Brush ColorBrush(string color) => (Brush)new BrushConverter().ConvertFromString(color)!;
     static Button Button(string text) => new() { Content = text, MinHeight = 44, Padding = new(12, 6, 12, 6), Margin = new(0, 0, 8, 6) };
     static TextBlock Label(string text) { var label = new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 4, 0, 6) }; label.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); return label; }
     static TextBlock Title(string text) => new() { Text = text, FontSize = UiTypography.Group, FontWeight = UiTypography.Emphasis, Margin = new(0, 8, 0, 8) };

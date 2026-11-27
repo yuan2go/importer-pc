@@ -28,7 +28,7 @@ public partial class ParcelViewModel
         string Reference(CapabilityDraft? capability) => capability is null ? "none" : CapabilityDrafts.IndexOf(capability).ToString(System.Globalization.CultureInfo.InvariantCulture);
         foreach (var role in ConfigurationRoles) values["role." + role.Role] = Reference(role.Selection.Capability);
         foreach (var position in PositionDrafts) { values["position." + position.Id + ".scale"] = Reference(position.Scale.Capability); values["position." + position.Id + ".camera"] = Reference(position.Camera.Capability); }
-        if (structuredBase.ApplicationId == "sportmaster") SmPreferences.Capture(values);
+        if (BusinessDesktopCatalog.For(structuredBase.ApplicationId).UsesStationDisplayPreferences || smPreferences?.ThemeChanged == true) SmPreferences.Capture(values);
         availableEditorDraft = await ServiceAsync(() => access.SaveEditorDraftAsync(editorConfigurationHash, savedEditorHash, new(values)));
         savedEditorHash = availableEditorDraft.DraftHash;
         Message = "未完成设置已加密保存（含尚无效的输入）；不是Pending，不生效、不重连、不发请求。";
@@ -71,7 +71,8 @@ public partial class ParcelViewModel
         foreach (var role in roles) { var choices = Choices(role.Kind); temporary.ConfigurationRoles.Add(new(role.Role, role.Kind, choices, Resolve(choices, v["role." + role.Role]), role.Visibility == System.Windows.Visibility.Visible)); }
         var positions = temporary.PositionDrafts.ToArray(); temporary.PositionDrafts.Clear();
         foreach (var p in positions) { var restored = new PositionConfigurationDraft(p.Original, Choices("weight"), Choices("camera")); restored.Scale = Resolve(restored.Scales, v["position." + p.Id + ".scale"]); restored.Camera = Resolve(restored.Cameras, v["position." + p.Id + ".camera"]); temporary.PositionDrafts.Add(restored); }
-        if (temporary.structuredBase!.ApplicationId == "sportmaster")
+        var restorePreferences = BusinessDesktopCatalog.For(temporary.structuredBase!.ApplicationId).UsesStationDisplayPreferences || v.ContainsKey("preference.theme");
+        if (restorePreferences)
         {
             // Validate in isolation before replacing either business or local drafts.
             temporary.SmPreferences.Restore(v);
@@ -87,7 +88,7 @@ public partial class ParcelViewModel
         configurationAuthority = v["authority"]; ConfigurationDraft = v["json"]; ConfigurationReason = v["reason"];
         DisplayNameDraft = v["display.name"];
         TargetEfficiencyDraft = v["display.target"];
-        if (structuredBase!.ApplicationId == "sportmaster") SmPreferences.Restore(v);
+        if (restorePreferences) SmPreferences.Restore(v);
         RebuildParameterEditor(); NotifyConfigurationEditorState(); Message = "已继续加密草稿；当前编辑来源和无效输入保留。校验后才能保存Pending。";
     }
 }

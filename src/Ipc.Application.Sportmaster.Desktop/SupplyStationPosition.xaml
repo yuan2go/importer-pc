@@ -1,4 +1,4 @@
-<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:local="clr-namespace:Ipc.Application.Sportmaster.Desktop" x:Class="Ipc.Application.Sportmaster.Desktop.SupplyStationPosition">
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:local="clr-namespace:Ipc.Application.Sportmaster.Desktop" x:Class="Ipc.Application.Sportmaster.Desktop.SupplyStationPosition" Foreground="{DynamicResource PlainText}">
  <UserControl.Resources>
   <ResourceDictionary>
    <ResourceDictionary.MergedDictionaries>
@@ -12,10 +12,16 @@
    <Style.Triggers><DataTrigger Binding="{Binding PositionId}" Value="right"><Setter Property="Margin" Value="6,0,0,0"/></DataTrigger></Style.Triggers>
   </Style>
  </UserControl.Style>
- <Border x:Name="InputTargetOutline" BorderBrush="{Binding InputTargetBrush}" BorderThickness="2" Margin="2" CornerRadius="{DynamicResource RadiusCard}">
+ <Border x:Name="InputTargetOutline" BorderThickness="2" Margin="2" CornerRadius="{DynamicResource RadiusCard}">
+  <Border.Style>
+   <Style TargetType="Border">
+    <Setter Property="BorderBrush" Value="Transparent"/>
+    <Style.Triggers><DataTrigger Binding="{Binding InputTargetActive}" Value="True"><Setter Property="BorderBrush" Value="{DynamicResource Accent}"/></DataTrigger></Style.Triggers>
+   </Style>
+  </Border.Style>
   <Grid>
    <Border Background="{DynamicResource Surface}" CornerRadius="{DynamicResource RadiusCard}"
-           Effect="{StaticResource ShadowCard}" IsHitTestVisible="False"/>
+           Effect="{DynamicResource ShadowCard}" IsHitTestVisible="False"/>
    <Border x:Name="PositionOutline" Style="{StaticResource StationPositionCard}">
    <Grid>
     <Grid.RowDefinitions>
@@ -50,8 +56,8 @@
          <DataTrigger Binding="{Binding SupplyConfigured}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
         </Style.Triggers></Style></Border.Style>
         <StackPanel Orientation="Horizontal">
-         <Button x:Name="EnableSupply" Content="启用" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" Background="{Binding EnableBackground}" Foreground="{Binding EnableForeground}" AutomationProperties.Name="启用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
-         <Button x:Name="DisableSupply" Content="{Binding DisableLabel}" Click="DisableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" Background="{Binding DisableBackground}" Foreground="{Binding DisableForeground}" AutomationProperties.Name="停用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
+         <Button x:Name="EnableSupply" Content="启用" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" type:PaletteBrush.BackgroundKey="{Binding EnableBackgroundKey}" type:PaletteBrush.ForegroundKey="{Binding EnableForegroundKey}" AutomationProperties.Name="启用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
+         <Button x:Name="DisableSupply" Content="{Binding DisableLabel}" Click="DisableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="0" type:PaletteBrush.BackgroundKey="{Binding DisableBackgroundKey}" type:PaletteBrush.ForegroundKey="{Binding DisableForegroundKey}" AutomationProperties.Name="停用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
         </StackPanel>
        </Border>
       </StackPanel>
@@ -60,7 +66,7 @@
       <Grid x:Name="VehicleState" VerticalAlignment="Center" ToolTip="{Binding VehicleStatusText}">
        <Grid.Resources>
         <Style TargetType="TextBlock">
-         <Setter Property="Foreground" Value="{Binding VehicleStatusForeground}"/>
+         <Setter Property="type:PaletteBrush.ForegroundKey" Value="{Binding VehicleStatusForegroundKey}"/>
          <Setter Property="FontSize" Value="{x:Static type:UiTypography.Label}"/>
          <Setter Property="FontWeight" Value="{x:Static type:UiTypography.Emphasis}"/>
          <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -279,11 +285,11 @@
            </MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger>
           </Style.Triggers></Style></Path.Style>
          </Path>
-        <TextBlock x:Name="CenteredStateTitle" Text="{Binding CenteredStateTitle}" TextAlignment="Center" TextWrapping="Wrap" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{Binding CenteredStateForeground}" HorizontalAlignment="Center" AutomationProperties.LiveSetting="Polite">
+        <TextBlock x:Name="CenteredStateTitle" Text="{Binding CenteredStateTitle}" TextAlignment="Center" TextWrapping="Wrap" FontWeight="{x:Static type:UiTypography.Emphasis}" type:PaletteBrush.ForegroundKey="{Binding CenteredStateForegroundKey}" HorizontalAlignment="Center" AutomationProperties.LiveSetting="Polite">
          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Exception}"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.PageTitle}"/></DataTrigger><DataTrigger Binding="{Binding CenteredRcsRejection}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
         </TextBlock>
         </StackPanel>
-        <local:RejectionMessageBox x:Name="CenteredRcsMessage" Text="{Binding CenteredStateTitle,Mode=OneWay}" Foreground="{Binding CenteredStateForeground}"
+        <local:RejectionMessageBox x:Name="CenteredRcsMessage" Text="{Binding CenteredStateTitle,Mode=OneWay}" type:PaletteBrush.ForegroundKey="{Binding CenteredStateForegroundKey}"
                  TextAlignment="Center" TextWrapping="Wrap" VerticalContentAlignment="Stretch" FontWeight="{x:Static type:UiTypography.Emphasis}" IsTabStop="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                  AutomationProperties.Name="RCS 返回消息，可选择复制" AutomationProperties.LiveSetting="Polite">
          <TextBox.Style>
@@ -470,7 +476,7 @@
      <Grid Grid.Row="2" x:Name="PositionDeviceFooter">
       <Grid.Style><Style TargetType="Grid"><Setter Property="Margin" Value="0,7,0,0"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0"/></DataTrigger></Style.Triggers></Style></Grid.Style>
       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-      <TextBlock x:Name="CameraConnection" VerticalAlignment="Center" Text="{Binding CameraFooterText}" ToolTip="{Binding CameraFooterHint}" TextWrapping="Wrap" Foreground="{Binding CameraFooterForeground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="相机连接状态" AutomationProperties.LiveSetting="Polite"/>
+      <TextBlock x:Name="CameraConnection" VerticalAlignment="Center" Text="{Binding CameraFooterText}" ToolTip="{Binding CameraFooterHint}" TextWrapping="Wrap" type:PaletteBrush.ForegroundKey="{Binding CameraFooterForegroundKey}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="相机连接状态" AutomationProperties.LiveSetting="Polite"/>
       <TextBlock Grid.Column="1" FontSize="{x:Static type:UiTypography.Label}" HorizontalAlignment="Right"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="{Binding DataContext.PaceVisibility,RelativeSource={RelativeSource AncestorType=Window}}"/><Setter Property="Text" Value="{Binding DataContext.LeftPaceText,RelativeSource={RelativeSource AncestorType=Window}}"/><Style.Triggers><DataTrigger Binding="{Binding PositionId}" Value="right"><Setter Property="Text" Value="{Binding DataContext.RightPaceText,RelativeSource={RelativeSource AncestorType=Window}}"/></DataTrigger><DataTrigger Binding="{Binding DataContext.IsCompact,RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
      </Grid>
      </Grid>

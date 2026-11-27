@@ -13,6 +13,7 @@ using Ipc.Application.Sportmaster.Desktop;
 using Ipc.Operations;
 using Ipc.Operations.Desktop;
 using Ipc.Platform;
+using Ipc.Presentation.Wpf;
 
 internal static partial class Program
 {
@@ -32,7 +33,15 @@ internal static partial class Program
         using var use = new OperationsToolLease(Installation());
         var app = new System.Windows.Application();
         app.Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Presentation.Wpf;component/Themes/Workstation.xaml", UriKind.Relative) });
-        var window = new OperationsWindow(Installation());
+        var installation = Installation();
+        if (!smoke) PresentationPreferences.SaveTheme(installation.Location.ApplicationId, WorkstationThemeManager.IndustrialDarkId);
+        var window = new OperationsWindow(installation);
+        if (!smoke)
+        {
+            var expected = (Color)ColorConverter.ConvertFromString("#0F1722");
+            Check(app.Resources["Background"] is SolidColorBrush palette && palette.Color == expected,
+                "operations loads the saved dark palette at application scope so its dialogs inherit the same theme");
+        }
         async Task Until(Func<bool> condition)
         {
             var started = Stopwatch.GetTimestamp();
@@ -114,6 +123,8 @@ internal static partial class Program
                 Check(editor.NavigateToParameter("ReadTimeoutMs"), "technical read deadline is reachable in the real operations editor");
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                 Check(!editor.NavigateToParameter("StationCode"), "technical editor cannot navigate to the removed field-owned station code");
+                Check(!editor.NavigateToParameter("ThemeId") && !Visuals(window).OfType<ComboBox>().Any(choice =>
+                    AutomationProperties.GetAutomationId(choice) == "StationSettings.Theme"), "technical editor does not expose the per-user theme selector");
                 Check(!model.Snapshot!.Paused && (loseOwner ? model.Snapshot.Positions!.Single(p => p.Id == "right").Admit : model.Snapshot.Positions!.All(p => p.Admit)), "native login and professional page leave legitimate admission open; existing parcel ownership is retained");
                 tabs.SelectedIndex = 2;
                 await Until(() => Visuals(window).OfType<Button>().Any(b => Equals(b.Content, "进入设备调试（暂停整站供包）") && b.IsEnabled));

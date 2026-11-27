@@ -6,6 +6,8 @@ using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
+using System.Windows.Media;
+using Ipc.Presentation.Wpf;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster.Desktop;
@@ -53,6 +55,8 @@ static partial class Program
             foreach (var camera in fixture.Factory.Cameras.Values) camera.ConfirmConnected();
             await fixture.App.ConfigureManagementPasswordAsync(password);
             fixture.Peer.ReplySlot = "CH-08";
+            using var theme = new WorkstationThemeBinding("sportmaster", System.Windows.Application.Current.Resources, Dispatcher.CurrentDispatcher,
+                warning => throw new InvalidOperationException(warning));
             var window = new SupplyStationWindow(fixture.App, null, "standard");
             await using var owner = new NativeWindowOwner(window);
             window.Show();
@@ -63,6 +67,31 @@ static partial class Program
             await AwaitUi(() => model.Left.ShowConfirmedTask && model.Left.Slot == "CH-08" && model.Right.CenteredStateTitle == "等待投包");
             await Capture(window, 1536, 816, evidence, "work-success-waiting", lines);
             AssertStatusDot(window, SupplyStationViewModel.StationStatusTone.Ready, "#FF147450");
+            await Capture(window, 1536, 816, evidence, "work-theme-light", lines);
+            var themedBefore = await fixture.App.SnapshotAsync();
+            var requestsBeforeTheme = fixture.Peer.Requests.Count;
+            PresentationPreferences.SaveTheme("sportmaster", WorkstationThemeManager.IndustrialDarkId);
+            await AwaitUi(() => window.Background is SolidColorBrush background && background.Color == (Color)ColorConverter.ConvertFromString("#0F1722"));
+            await Capture(window, 1536, 816, evidence, "work-theme-dark", lines);
+            foreach (var position in Visuals<SupplyStationPosition>(window))
+            {
+                var disabled = (Button)position.FindName("DisableSupply");
+                var heading = Visuals<TextBlock>(position).Single(text => AutomationProperties.GetName(text) == "投递位");
+                if (disabled.Background is not SolidColorBrush buttonColor || buttonColor.Color != (Color)ColorConverter.ConvertFromString("#172231") ||
+                    heading.Foreground is not SolidColorBrush headingColor || headingColor.Color != (Color)ColorConverter.ConvertFromString("#F1F5F9"))
+                    throw new InvalidOperationException("The dark workstation retained an unthemed lane switch or heading.");
+            }
+            var themedAfter = await fixture.App.SnapshotAsync();
+            if (model.Left.Slot != "CH-08" || !model.Left.ShowConfirmedTask ||
+                themedBefore.RuntimeId != themedAfter.RuntimeId || themedBefore.Configuration.Revision != themedAfter.Configuration.Revision ||
+                themedBefore.Paused != themedAfter.Paused || fixture.Peer.Requests.Count != requestsBeforeTheme ||
+                !Devices(themedBefore).SequenceEqual(Devices(themedAfter)))
+                throw new InvalidOperationException("Live palette replacement changed the workstation state or sent another request.");
+            lines.Add("PASS THEME the same workstation retains its identity, current result, device epochs, configuration revision and supply state after live replacement");
+            static IEnumerable<(string, string)> Devices(ParcelSnapshot snapshot) =>
+                (snapshot.Devices ?? []).Select(device => (device.DeviceId, device.Epoch)).OrderBy(device => device.DeviceId, StringComparer.Ordinal);
+            PresentationPreferences.SaveTheme("sportmaster", WorkstationThemeManager.IndustrialLightId);
+            await AwaitUi(() => window.Background is SolidColorBrush background && background.Color == (Color)ColorConverter.ConvertFromString("#F1F4F7"));
             var mute = (ToggleButton)window.FindName("MuteToggleButton");
             if (!mute.IsVisible || mute.IsChecked != false || mute.ActualWidth != 44 || mute.ActualHeight != 44)
                 throw new InvalidOperationException("The 44 DIP cue control must start audible on a new profile.");
@@ -181,6 +210,13 @@ static partial class Program
                 if (!editor.NavigateToParameter("AutoStart"))
                     throw new InvalidOperationException("AutoStart was not exposed in the field preferences page.");
                 await Capture(station, 1220, 800, evidence, "settings-edit-preferences", lines);
+                if (!editor.NavigateToParameter(nameof(SmDisplayPreferenceDraft.ThemeId)))
+                    throw new InvalidOperationException("Theme is missing from display and cue preferences.");
+                await Capture(station, 1220, 800, evidence, "settings-edit-preferences-theme", lines);
+                var themePicker = Visuals<ComboBox>(station).Single(control => AutomationProperties.GetAutomationId(control) == "StationSettings.Theme");
+                if (!themePicker.IsEnabled || themePicker.ActualHeight < 44 || !Equals(themePicker.SelectedValue, WorkstationThemeManager.IndustrialLightId))
+                    throw new InvalidOperationException("Theme selector must show the current preference and preserve a 44 DIP hit area.");
+                lines.Add("PASS THEME day-to-day settings show the 44 DIP theme selector");
                 var autoStart = Visuals<CheckBox>(station).Single(control => AutomationProperties.GetAutomationId(control) == "StationSettings.AutoStart");
                 if (autoStart.IsEnabled)
                     throw new InvalidOperationException("A source checkout must not be able to write the current Windows Startup folder.");
@@ -188,6 +224,22 @@ static partial class Program
                     throw new InvalidOperationException("Camera settings paused the workstation.");
             }
             finally { policy.StationCode = savedStationCode; }
+
+            var beforeSave = await fixture.App.SnapshotAsync();
+            var themeControl = Visuals<ComboBox>(station).Single(control => AutomationProperties.GetAutomationId(control) == "StationSettings.Theme");
+            themeControl.SelectedValue = WorkstationThemeManager.IndustrialDarkId;
+            await AwaitUi(() => model.HasUnsavedDisplayPreferences && !model.HasUnsavedConfiguration);
+            Press(Visuals<Button>(station).Single(button => button.Name == "SaveChanges"));
+            await AwaitUi(() => !model.HasUnsavedDisplayPreferences && window.Background is SolidColorBrush background &&
+                background.Color == (Color)ColorConverter.ConvertFromString("#0F1722"));
+            var afterSave = await fixture.App.SnapshotAsync();
+            if (afterSave.Configuration.Revision != beforeSave.Configuration.Revision || afterSave.Paused != beforeSave.Paused ||
+                !Devices(beforeSave).SequenceEqual(Devices(afterSave)) ||
+                PresentationPreferences.ReadTheme("sportmaster", WorkstationThemeManager.IndustrialLightId) != WorkstationThemeManager.IndustrialDarkId ||
+                !Equals(station.FindResource("Background"), window.FindResource("Background")))
+                throw new InvalidOperationException("The normal save must apply local theme to both windows without changing business configuration or pausing.");
+            lines.Add("PASS THEME normal settings save updates both open windows without advancing business configuration or pausing");
+            PresentationPreferences.SaveTheme("sportmaster", WorkstationThemeManager.IndustrialLightId);
 
             var snapshot = await fixture.App.SnapshotAsync();
             var rightControl = snapshot.Positions!.Single(position => position.Id == "right").SupplyControl!;
@@ -298,5 +350,10 @@ static partial class Program
             if (label != "保存并进入") Press(primary);
         }
         await Capture(wizard, 1080, 700, evidence, "setup-step-4", lines);
+        var appearance = Visuals<Expander>(wizard).Single(panel => panel.Header is string title && title.StartsWith("维护与显示", StringComparison.Ordinal));
+        appearance.IsExpanded = true;
+        await AwaitUi(() => Visuals<ComboBox>(wizard).Any(choice => choice.IsVisible && choice.IsEnabled &&
+            AutomationProperties.GetAutomationId(choice) == "StationSettings.Theme"));
+        lines.Add("PASS THEME first configuration exposes the theme preference in optional display settings");
     }
 }

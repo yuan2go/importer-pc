@@ -84,8 +84,9 @@ public partial class OperationsWindow : Window
             discovery = DiscoverLogs();
         };
         Closing += ClosingWindow;
-        var theme = new WorkstationThemeBinding(installation.Location.ApplicationId, Resources, Dispatcher,
-            message => Trace.TraceWarning(message));
+        var hostResources = System.Windows.Application.Current?.Resources ?? Resources;
+        var theme = new WorkstationThemeBinding(installation.Location.ApplicationId, hostResources, Dispatcher,
+            message => { Trace.TraceWarning(message); InstallationText.Text += "\n" + message; });
         Closed += (_, _) => { theme.Dispose(); lifetime.Dispose(); };
     }
 

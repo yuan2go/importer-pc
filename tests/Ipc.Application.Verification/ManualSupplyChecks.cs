@@ -130,6 +130,7 @@ internal sealed partial class ManualSupplyHarness : IAsyncDisposable
     public ParcelRuntime App = null!;
     public Func<IDisposable?>? RootOwnership { get; set; }
     public TimeProvider? StationClock { get; init; }
+    public TimeProvider? RcsHeartbeatSchedule { get; init; }
     public Func<DeviceBinding, IControlledObservationSource>? CameraSource { get; init; }
     public ManualSupplyHarness(string workspace, string folder, bool deferred, int? maximumOperations = null, RunMode mode = RunMode.Production)
     {
@@ -164,7 +165,7 @@ internal sealed partial class ManualSupplyHarness : IAsyncDisposable
     }
     public async Task StartAsync(bool ready = true, string? rcsImplementationFingerprint = null)
     {
-        Factory = new(Launch) { CameraSource = CameraSource };
+        Factory = new(Launch) { CameraSource = CameraSource, RcsHeartbeatSchedule = RcsHeartbeatSchedule };
         if (rcsImplementationFingerprint is not null) Factory.RcsImplementationFingerprint = rcsImplementationFingerprint;
         App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { }, AcquireRootOwnership = RootOwnership };
         if (StationClock is not null) App.StationTime = StationClock;
@@ -197,6 +198,7 @@ internal sealed partial class ManualSupplyHarness : IAsyncDisposable
     {
         readonly ParcelCapabilityFactory validation = new(launch);
         public Func<DeviceBinding, IControlledObservationSource>? CameraSource { get; init; }
+        public TimeProvider? RcsHeartbeatSchedule { get; init; }
         public bool RcsOffline;
         public bool FailDisposal { get; set; }
         public bool FailPreparation { get; set; }
@@ -220,6 +222,7 @@ internal sealed partial class ManualSupplyHarness : IAsyncDisposable
                 else { var source = new SilentCamera(reader.DeviceId); readers.Add(reader.DeviceId, source); Cameras.Add(reader.DeviceId, source); }
             }
             var wcs = Rcs = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
+            if (RcsHeartbeatSchedule is { } schedule) wcs.HeartbeatScheduleForVerification = schedule;
             return new(readers[c.Reader.DeviceId], null, CameraSource is null ? new RcsHealth(wcs, this) : wcs, null,
                 new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint }, Readers: readers);
         }

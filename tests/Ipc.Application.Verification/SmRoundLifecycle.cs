@@ -13,7 +13,13 @@ internal static class SmRoundLifecycle
     public static async Task Run(string workspace, string root)
     {
         var clock = new TimeStorageFaultChecks.ManualTime();
-        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "round-lifecycle"), deferred: false, mode: RunMode.Simulation) { StationClock = clock };
+        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "round-lifecycle"), deferred: false, mode: RunMode.Simulation)
+        {
+            StationClock = clock,
+            // This fixture drives vehicle changes with real, explicit heartbeats.
+            // Keep unsolicited fast probes from starting during the backup admission check.
+            RcsHeartbeatSchedule = new SportmasterRcs.RequestClock()
+        };
         // These scenarios hold a real reply while the other lane changes vehicle and submits.
         // Keep those steps inside the request budget, including on slower Windows runners.
         h.Config.Wcs!.Parameters["request-timeout-ms"] = "5000";
@@ -399,9 +405,14 @@ internal static class SmRoundLifecycle
         var beforeBackup = await h.App.SnapshotAsync();
         Check((await h.App.CommandAsync(new(Wire.Id(), beforeBackup.Revision, "Pause"))).Status == "Persisted", "T17 backup uses the original paused custody fence");
         var backup = Path.Combine(root, "round-custody.db");
-        var backupReceipt = await LifecycleOptimization.AfterMonitorDrain(h.App, () => h.App.BackupAsync(backup, default));
+        var backupReceipt = await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
+        {
+            Check(await SmRoundFixture.CompletedHeartbeatAsync(h.App) == RcsHeartbeatResult.Received,
+                "T17 complete backup waits for the real heartbeat response and its completion");
+            return await h.App.BackupAsync(backup, default);
+        }, h.Factory.Rcs.InstanceId);
         Check(backupReceipt.Status == "BackupCreated" && ParcelRecovery.InspectAnalysisBackup(backup, new Ipc.Application.Sportmaster.SportmasterFlow()).DatabaseVersion == ParcelRepository.CurrentStorageVersion,
-            "T17 complete backup verifies round/image custody together with original requests, receipts and permanent numbering");
+            "T17 complete backup verifies round/image custody together with original requests, receipts and permanent numbering: " + backupReceipt.Status + " / " + backupReceipt.Reason);
         await h.App.DisposeAsync();
         var directory = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster");
         using (var repo = new ParcelRepository(directory, "sportmaster"))

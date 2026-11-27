@@ -35,7 +35,7 @@ public static partial class DesktopRecoveryInstallation
         {
             Task(plan, location, remove: true);
             // Other products may share Ipc.Desktop.exe and the protected dump directory.
-            if (!new[] { "sportmaster", "direct-plc", "wcs-to-plc" }.Select(WindowsDeploymentSetup.Current)
+            if (!ProductDeploymentCatalog.RecoveryEntryProducts.Select(WindowsDeploymentSetup.Current)
                 .Any(d => d is { LifecycleState: "Installed", Recovery.Enabled: true }))
             {
                 using var machine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);

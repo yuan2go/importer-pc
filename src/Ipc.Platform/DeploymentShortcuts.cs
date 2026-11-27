@@ -9,25 +9,28 @@ public sealed record DeploymentShortcut(string Path, string Target, string Argum
 
 public static class DeploymentShortcuts
 {
-    public static DeploymentShortcut[] Plan(DeploymentLocation location, string programs, string desktop, string? startup = null)
+    public static DeploymentShortcut[] Plan(DeploymentLocation location, string programs, string desktop, string? startup = null) =>
+        Plan(location, RequireShortcutProfile(location), programs, desktop, startup);
+
+    static ProductDeploymentProfile RequireShortcutProfile(DeploymentLocation location) =>
+        ProductDeploymentCatalog.Find(location.ApplicationId) is { SupportsWindowsShortcuts: true } profile ? profile :
+            throw new NotSupportedException("此产品未声明安装快捷方式：" + location.ApplicationId);
+
+    static DeploymentShortcut[] Plan(DeploymentLocation location, ProductDeploymentProfile profile, string programs, string desktop, string? startup)
     {
         var options = location.Shortcuts ?? throw new InvalidDataException("部署缺少明确的快捷方式选项；保留原登记并使用当前安装计划。");
-        var business = location.ApplicationId switch { "sportmaster" => "SM供包业务", "direct-plc" => "设备直连业务", "wcs-to-plc" => "调度转发业务", _ => location.ApplicationId };
-        var id = InstallationIdentity.DisplayName + " · " + business + " · " + location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
         var target = System.IO.Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable);
         var result = new List<DeploymentShortcut>();
-        if (options.StartMenu && location.ApplicationId == "sportmaster")
+        if (options.StartMenu && profile.UseDualProgramShortcuts)
         {
             result.Add(new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, InstallationIdentity.DisplayName + ".lnk"), target, "", location.ReleaseRoot));
             result.Add(new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, InstallationIdentity.OperationsDisplayName + ".lnk"),
                 target, InstallationIdentity.OperationsArgument, location.ReleaseRoot));
         }
         else if (options.StartMenu)
-            foreach (var entry in new[] { (Name: "运行", Args: ""), (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
-                result.Add(new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, (location.ApplicationId == "sportmaster" ?
-                    entry.Args == "" ? InstallationIdentity.DisplayName : InstallationIdentity.DisplayName + " · " + entry.Name : id + " · " + entry.Name) + ".lnk"), target, entry.Args, location.ReleaseRoot));
+            result.AddRange(VersionedMenu(location, profile, programs));
         if (options.Desktop) result.Add(new(System.IO.Path.Combine(desktop, InstallationIdentity.DisplayName + ".lnk"), target, "", location.ReleaseRoot));
-        if (options.AutoStart && location.ApplicationId == "sportmaster" && !string.IsNullOrWhiteSpace(startup))
+        if (options.AutoStart && profile.SupportsAutoStart && !string.IsNullOrWhiteSpace(startup))
             result.Add(AutoStartEntry(location, startup));
         return result.ToArray();
     }
@@ -36,8 +39,10 @@ public static class DeploymentShortcuts
     public static void Create(DeploymentLocation location, string programs, string desktop, DeploymentLocation? previous = null, string? startup = null)
     {
         previous ??= location.PreviousDeployment;
-        var plan = Plan(location, programs, desktop, startup);
-        if (location.ApplicationId == "sportmaster" && location.InventoryFile is { } inventory)
+        var profile = RequireShortcutProfile(location);
+        if (previous is not null) _ = RequireShortcutProfile(previous);
+        var plan = Plan(location, profile, programs, desktop, startup);
+        if (profile.UseDualProgramShortcuts && location.InventoryFile is { } inventory)
         {
             // A retained deployment may predate the observer. Project its declared
             // entries, never borrow an EXE from another build or infer capability
@@ -59,11 +64,11 @@ public static class DeploymentShortcuts
             var exists = ExistingShortcutFile(entry.Path);
             using var link = new ShellLinkFile(exists ? entry.Path : null);
             if (exists && (!string.Equals(link.TargetPath, entry.Target, StringComparison.OrdinalIgnoreCase) || link.Arguments != entry.Arguments) &&
-                !((location.ApplicationId == "sportmaster" || entry.Arguments == "" && System.IO.Path.GetFileName(entry.Path) == InstallationIdentity.DisplayName + ".lnk") &&
+                !((profile.UseDualProgramShortcuts || entry.Arguments == "" && System.IO.Path.GetFileName(entry.Path) == InstallationIdentity.DisplayName + ".lnk") &&
                   PreviousOwnsTarget(location, previous, entry, link.TargetPath, link.Arguments)))
                 throw new IOException("保留目标不同的既有快捷方式：" + entry.Path);
             link.TargetPath = entry.Target; link.Arguments = entry.Arguments; link.WorkingDirectory = entry.WorkingDirectory;
-            link.Description = location.ApplicationId == "sportmaster" ? InstallationIdentity.DisplayName : InstallationIdentity.DisplayName + " · " + location.ApplicationId; link.SetIcon(entry.Target, 0); link.Save(entry.Path);
+            link.Description = profile.ShortcutDescription; link.SetIcon(entry.Target, 0); link.Save(entry.Path);
         }
         var candidates = OwnedCandidates(location, programs, desktop, startup)
             .Concat(previous is null ? [] : OwnedCandidates(previous, programs, desktop, startup));
@@ -108,7 +113,7 @@ public static class DeploymentShortcuts
     [SupportedOSPlatform("windows")]
     public static bool ReadAutoStart(DeploymentLocation location, string? startup)
     {
-        if (location.ApplicationId != "sportmaster" || string.IsNullOrWhiteSpace(startup)) return false;
+        if (ProductDeploymentCatalog.Find(location.ApplicationId)?.SupportsAutoStart != true || string.IsNullOrWhiteSpace(startup)) return false;
         var entry = AutoStartEntry(location, startup);
         DeploymentPaths.RequireOrdinaryAncestors(entry.Path);
         if (!ExistingShortcutFile(entry.Path)) return false;
@@ -159,7 +164,9 @@ public static class DeploymentShortcuts
     {
         if (!string.Equals(Path.GetFileName(Environment.ProcessPath), InstallationIdentity.DesktopExecutable, StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException("请从已安装的供包台打开设置。");
-        var location = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, "sportmaster") ??
+        var profile = ProductDeploymentCatalog.IsolatedWorkstation;
+        if (!profile.SupportsAutoStart) throw new InvalidOperationException("此产品未声明开机自启。");
+        var location = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, profile.ApplicationId) ??
             throw new InvalidOperationException("请从已安装的供包台打开设置。");
         var executable = Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable);
         if (!string.Equals(Environment.ProcessPath, executable, StringComparison.OrdinalIgnoreCase) ||
@@ -175,23 +182,27 @@ public static class DeploymentShortcuts
 
     static IEnumerable<DeploymentShortcut> OwnedCandidates(DeploymentLocation location, string programs, string desktop, string? startup = null)
     {
-        foreach (var entry in Plan(location with { Shortcuts = new(true, true, true) }, programs, desktop, startup).Concat(LegacySmMenu(location, programs)))
+        var profile = RequireShortcutProfile(location);
+        foreach (var entry in Plan(location with { Shortcuts = new(true, true, true) }, profile, programs, desktop, startup))
         {
             yield return entry;
             if (entry.Arguments == InstallationIdentity.OperationsArgument) yield return LegacyTool(entry, location);
         }
-        if (location.ApplicationId == "sportmaster")
+        if (profile.UseDualProgramShortcuts)
+        {
+            foreach (var entry in VersionedMenu(location, profile, programs)) yield return entry;
             foreach (var entry in new[] { (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
                 yield return new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, InstallationIdentity.DisplayName + " · " + entry.Name + ".lnk"),
                     System.IO.Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable), entry.Args, location.ReleaseRoot);
+        }
     }
 
     // Exact names from the registered installation only. Never sweep menu folders
     // or remove a user-retargeted shortcut based on its display name.
-    static IEnumerable<DeploymentShortcut> LegacySmMenu(DeploymentLocation location, string programs)
+    static IEnumerable<DeploymentShortcut> VersionedMenu(DeploymentLocation location, ProductDeploymentProfile profile, string programs)
     {
-        if (location.ApplicationId != "sportmaster") yield break;
-        var id = InstallationIdentity.DisplayName + " · SM供包业务 · sportmaster · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
+        var id = InstallationIdentity.DisplayName + " · " + profile.ShortcutBusinessName + " · " + location.ApplicationId + " · " +
+            location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
         foreach (var entry in new[] { (Name: "运行", Args: ""), (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
             yield return new(System.IO.Path.Combine(programs, InstallationIdentity.DisplayName, id + " · " + entry.Name + ".lnk"),
                 System.IO.Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable), entry.Args, location.ReleaseRoot);

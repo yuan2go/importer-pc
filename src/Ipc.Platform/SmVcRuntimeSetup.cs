@@ -19,7 +19,7 @@ internal static class SmVcRuntimeSetup
 
     internal static string[] Missing(DeploymentMedia media)
     {
-        if (media.ApplicationId != "sportmaster" || !media.Files.ContainsKey("desktop/vendor/hikrobot-mvid/MVIDCodeReader.dll") && !media.Files.ContainsKey(ActivationFile)) return [];
+        if (ProductDeploymentCatalog.Find(media.ApplicationId)?.RequiresBundledMvidVcRuntime != true || !media.Files.ContainsKey("desktop/vendor/hikrobot-mvid/MVIDCodeReader.dll") && !media.Files.ContainsKey(ActivationFile)) return [];
         using var resource = typeof(SmVcRuntimeSetup).Assembly.GetManifestResourceStream("Ipc.SmVcRuntime.json")!;
         using var reader = new StreamReader(resource);
         var inventory = Wire.Decode<Inventory>(reader.ReadToEnd());
@@ -34,7 +34,7 @@ internal static class SmVcRuntimeSetup
 
     internal static Outcome[] Ensure(DeploymentMedia media, string release, Action<WindowsInstallationStage>? progress)
     {
-        if (media.ApplicationId != "sportmaster" || !media.Files.ContainsKey("desktop/vendor/hikrobot-mvid/MVIDCodeReader.dll") &&
+        if (ProductDeploymentCatalog.Find(media.ApplicationId)?.RequiresBundledMvidVcRuntime != true || !media.Files.ContainsKey("desktop/vendor/hikrobot-mvid/MVIDCodeReader.dll") &&
             !media.Files.ContainsKey(ActivationFile) && !media.Files.ContainsKey(Vc2008) && !media.Files.ContainsKey(Vc2010)) return [];
         if (RuntimeInformation.ProcessArchitecture != Architecture.X64)
             throw new PlatformNotSupportedException("海康原生识码组件需要 64 位 Windows 安装环境。");

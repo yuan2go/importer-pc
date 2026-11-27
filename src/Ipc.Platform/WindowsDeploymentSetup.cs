@@ -30,7 +30,7 @@ public static partial class WindowsDeploymentSetup
         MachineRuntimePolicy.RequireProtectedEvidence(file);
         var current = Wire.Decode<DeploymentLocation>(File.ReadAllText(file));
         if (current.ApplicationId != application) throw new InvalidDataException("Existing deployment identity differs");
-        if (application == "sportmaster")
+        if (ProductDeploymentCatalog.Find(application)?.UsesStrictWindowsStorage == true)
         {
             InstallationIdentity.RequireDataRoot(current.DataRoot);
             InstallationIdentity.RequireProgramRoot(current.ReleaseRoot);
@@ -98,9 +98,9 @@ public static partial class WindowsDeploymentSetup
     }
     internal static void RequireInstallationVersion(ApplicationRelease candidate, string previousReleaseFile)
     {
-        if (candidate.ApplicationId == "sportmaster" && !File.Exists(previousReleaseFile))
+        if (ProductDeploymentCatalog.Find(candidate.ApplicationId)?.MissingReleaseRepairVersion is { } repairVersion && !File.Exists(previousReleaseFile))
         {
-            if (candidate.BusinessVersion != "1.0.0") throw new InvalidDataException("修复安装须使用当前 1.0.0 完整安装包。");
+            if (candidate.BusinessVersion != repairVersion) throw new InvalidDataException("修复安装须使用当前 1.0.0 完整安装包。");
             return;
         }
         ReleaseVersionPolicy.RequireForward(candidate, Wire.Decode<ApplicationRelease>(File.ReadAllText(previousReleaseFile)));
@@ -116,7 +116,8 @@ public static partial class WindowsDeploymentSetup
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Checking);
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         RequireCurrentInstallationRequest(request);
-        if (request.ApplicationId == "sportmaster") ApplicationRootOwnership.RequireWindowsStorage(request.DataRoot, request.ProgramRoot);
+        var profile = ProductDeploymentCatalog.Find(request.ApplicationId);
+        if (profile?.UsesStrictWindowsStorage == true) ApplicationRootOwnership.RequireWindowsStorage(request.DataRoot, request.ProgramRoot);
         request.Recovery?.Validate();
         var media = DeploymentMedia.Inspect(request.MediaRoot, request.ApplicationId, execution?.Token ?? CancellationToken.None);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");
@@ -140,16 +141,16 @@ public static partial class WindowsDeploymentSetup
             if (Wire.FileHash(trust) != request.TrustSha256) throw new InvalidDataException("Selected independent trust policy changed");
             _ = ReadTrust(trust, request.Mode);
         }
-        using var programUse = request.ApplicationId == "sportmaster" ? DeploymentProgramUse.Maintain(Current(request.ApplicationId)) : null;
+        using var programUse = profile?.UsesProgramUseLock == true ? DeploymentProgramUse.Maintain(Current(request.ApplicationId)) : null;
         if (execution is { Committing: false }) execution.BeginCommit(MaintenanceStage.InstallingMachine);
         else execution?.Report(MaintenanceStage.InstallingMachine);
         MachineRuntimeSetup.InstallForAccount(request.RuntimeAccountSid);
-        using var rootOwnership = request.ApplicationId == "sportmaster" ? new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), request.ApplicationId, data, execution?.Token ?? default) : null;
+        using var rootOwnership = profile?.UsesStrictWindowsStorage == true ? new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), request.ApplicationId, data, execution?.Token ?? default) : null;
         TrustedProgramRoots.Approve(vendor, data, sid); ProtectedDirectory(Path.Combine(vendor, "releases"), sid);
         ProtectedDirectory(Path.Combine(MachineRoot, "deployments"), sid);
         using var setup = new FileStream(Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         var before = Current(request.ApplicationId);
-        RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId, closeUncommitted: request.ApplicationId == "sportmaster");
+        RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId, closeUncommitted: profile?.CloseUncommittedOnInstall == true);
         RequireNoUnresolvedLifecycle(request.ApplicationId);
         // A partial permanent deletion must never become an empty working station.
         if (before?.LifecycleState is "Purging" or "PartiallyPurged")
@@ -213,7 +214,7 @@ public static partial class WindowsDeploymentSetup
             installPackages(request);
             var location = new DeploymentLocation(request.ApplicationId, media.SourceCommit, releaseRoot, config, data, request.RuntimeAccountSid,
                 RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts)
-            { Recovery = request.Recovery ?? before?.Recovery ?? (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc" ? new() : null) };
+            { Recovery = request.Recovery ?? before?.Recovery ?? (profile?.UsesRecoveryEntry == true ? new() : null) };
             if (before is null && request.ExpectedRegistrationHash is null && location.Recovery is not null)
                 DesktopRecoverySupervisor.InitializeNewDeployment(location);
             location = location with
@@ -226,7 +227,7 @@ public static partial class WindowsDeploymentSetup
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
             progress?.Invoke(WindowsInstallationStage.RegisteringManagementService);
-            if (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.Install(data, Path.Combine(releaseRoot, "app"),
+            if (profile?.UsesManagementModeBroker == true) ManagementModeBroker.Install(data, Path.Combine(releaseRoot, "app"),
                 entry => AppendServiceDiagnostic(operation + ".service.jsonl", entry, sid));
             WriteProtected(operation, new { Status = "ReadyToCommit", RequestIdentity = InstallationRequestIdentity(request), Request = request, request.ChangePlanIdentity, Location = location, Previous = before, BusinessStarted = false, CameraRuntime = cameraRuntime }, sid);
             progress?.Invoke(WindowsInstallationStage.CommittingInstallation);

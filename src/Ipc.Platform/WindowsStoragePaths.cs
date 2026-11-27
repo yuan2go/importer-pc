@@ -230,7 +230,7 @@ public static class WindowsStoragePaths
                 if (!Directory.Exists(path))
                 {
                     if (new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator)) return ProvisionUserRoot(sid);
-                    var deployment = WindowsDeploymentSetup.Current("sportmaster") ?? throw new UnauthorizedAccessException("个人目录尚未准备，请先完成供包台安装。");
+                    var deployment = WindowsDeploymentSetup.Current(ProductDeploymentCatalog.IsolatedWorkstation.ApplicationId) ?? throw new UnauthorizedAccessException("个人目录尚未准备，请先完成供包台安装。");
                     try { _ = ManagementModeBroker.Call<string>(deployment.DataRoot, new("ProvisionUserRoot")); }
                     catch (Exception error) when (error is InvalidOperationException or OperationCanceledException)
                     { throw new IOException("个人偏好目录准备未完成，请检查安装和管理授权服务。", error); }

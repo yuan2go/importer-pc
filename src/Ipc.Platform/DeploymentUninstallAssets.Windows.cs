@@ -5,7 +5,7 @@ namespace Ipc.Platform;
 
 public static partial class WindowsDeploymentSetup
 {
-    static string AssetInventoryArchive(string sha) => Path.Combine(MachineRoot, "deployments", "sportmaster.inventory-" + sha + ".json");
+    static string AssetInventoryArchive(string applicationId, string sha) => Path.Combine(MachineRoot, "deployments", applicationId + ".inventory-" + sha + ".json");
     static string AssetRecordFile(string application, string operation)
     {
         _ = RemovalOperationFile(application, operation);
@@ -52,7 +52,7 @@ public static partial class WindowsDeploymentSetup
         using var otherLeases = AcquireOtherPurgeDeployments(application, MachineRoot);
         if (Wire.FileHash(Registration(application)) != expectedHash) throw new InvalidOperationException("安装信息已变化，未清理历史文件。");
         var current = Current(application) ?? throw new InvalidDataException("缺少本站登记。");
-        if (application != "sportmaster" || current.LifecycleState is not ("RemovedDataRetained" or "Purged"))
+        if (ProductDeploymentCatalog.Find(application)?.SupportsOpaqueRemoval != true || current.LifecycleState is not ("RemovedDataRetained" or "Purged"))
             throw new InvalidOperationException("请先完成原程序和数据删除事务，再清理历史文件。");
         using var ownership = new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), application, current.DataRoot, execution?.Token ?? default);
         var others = ReadVersionReferences(Path.Combine(MachineRoot, "deployments")).Where(x => x.ApplicationId != application).ToArray();
@@ -84,7 +84,7 @@ public static partial class WindowsDeploymentSetup
             }).ToArray();
             record = PlanUninstallAssets(current, Wire.Id(), MachineRoot, parent, inputs, others, (hash, json) =>
             {
-                var archive = AssetInventoryArchive(hash);
+                var archive = AssetInventoryArchive(application, hash);
                 if (!File.Exists(archive)) WriteProtectedBytes(archive, System.Text.Encoding.UTF8.GetBytes(json), sid, overwrite: false);
                 MachineRuntimePolicy.RequireProtectedEvidence(archive);
                 if (Wire.FileHash(archive) != hash) throw new InvalidDataException("保管的安全库存回执不一致。");

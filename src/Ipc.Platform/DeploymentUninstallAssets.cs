@@ -24,7 +24,7 @@ public static partial class WindowsDeploymentSetup
         string machineRoot, string cacheParent, UninstallAssetInventory[] inventories, DeploymentLocation[] others,
         Action<string, string> archiveInventory, CancellationToken cancellationToken = default)
     {
-        if (location.ApplicationId != "sportmaster" || location.LifecycleState == "Installed" || inventories.Length > 128)
+        if (ProductDeploymentCatalog.Find(location.ApplicationId)?.SupportsOpaqueRemoval != true || location.LifecycleState == "Installed" || inventories.Length > 128)
             throw new InvalidDataException("历史程序清理需要已退役的本站登记及有界库存。");
         var areas = new Dictionary<string, DeploymentVersionFiles>(StringComparer.OrdinalIgnoreCase);
         var caches = new List<string>(); var retained = new List<DeploymentVersionRetention>();

@@ -41,7 +41,7 @@ public static partial class WindowsDeploymentSetup
 
     public static void ValidateRestoreIntent(DeploymentRestoreIntent intent)
     {
-        if (intent.SchemaVersion != 1 || intent.ApplicationId != "sportmaster" || intent.Source is null || intent.Source.ApplicationId != intent.ApplicationId ||
+        if (intent.SchemaVersion != 1 || ProductDeploymentCatalog.Find(intent.ApplicationId)?.RequiresRestoreHandoff != true || intent.Source is null || intent.Source.ApplicationId != intent.ApplicationId ||
             intent.Source.LifecycleState != "Installed" || !Guid.TryParseExact(intent.OperationId, "N", out var operation) || operation == Guid.Empty ||
             !ExtensionSchema.IsHash(intent.BackupIdentity) || intent.Identity != Wire.Hash(Wire.Encode(intent with { Identity = "" })) ||
             !Path.IsPathFullyQualified(intent.Backup) || !Path.IsPathFullyQualified(intent.TargetRoot) || !Path.IsPathFullyQualified(intent.TargetDirectory) ||
@@ -51,7 +51,7 @@ public static partial class WindowsDeploymentSetup
 
     public static DeploymentRestoreIntent[] ReadRestoreIntents(string application)
     {
-        if (application != "sportmaster") throw new NotSupportedException("此恢复续办仅用于 SM。");
+        if (ProductDeploymentCatalog.Find(application)?.RequiresRestoreHandoff != true) throw new NotSupportedException("此恢复续办仅用于 SM。");
         var directory = Path.Combine(MachineRoot, "deployments");
         if (!Directory.Exists(directory)) return [];
         var files = Directory.EnumerateFiles(directory, application + ".restore-*.json").Take(129).ToArray();
@@ -73,7 +73,7 @@ public static partial class WindowsDeploymentSetup
     public static DeploymentRestoreOperation PrepareRestoreIntent(string application, string backup, string backupIdentity, string targetRoot, string targetDirectory)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        if (application != "sportmaster") throw new NotSupportedException("此恢复续办仅用于 SM。");
+        if (ProductDeploymentCatalog.Find(application)?.RequiresRestoreHandoff != true) throw new NotSupportedException("此恢复续办仅用于 SM。");
         var observed = Current(application) ?? throw new InvalidDataException("缺少当前部署登记。");
         var stopped = new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), application, observed.DataRoot, default);
         FileStream? lease = null;
@@ -96,7 +96,7 @@ public static partial class WindowsDeploymentSetup
 
     public static IDisposable HoldRestoreInspection(string application)
     {
-        if (application != "sportmaster") throw new NotSupportedException("此恢复核查仅用于 SM。");
+        if (ProductDeploymentCatalog.Find(application)?.RequiresRestoreHandoff != true) throw new NotSupportedException("此恢复核查仅用于 SM。");
         return new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
     }
 

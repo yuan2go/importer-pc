@@ -3,6 +3,7 @@ using System.IO.Pipes;
 using System.Security.Principal;
 using System.Text.Json;
 using Ipc.Application.Contracts;
+using Ipc.Platform;
 
 namespace Ipc.Operations;
 
@@ -28,9 +29,16 @@ public sealed class OperationsServer : IAsyncDisposable
     readonly OperationsControlServer? control;
 
     public OperationsServer(OperationsInstallation installation, IParcelPresentationSource source, ParcelSnapshot initial, IParcelApplication? application = null, Func<IStartupMaintenance>? backupFactory = null)
+        : this(installation.Location.ApplicationId, installation, source, initial, application, backupFactory)
+    { }
+
+    public OperationsServer(string expectedApplicationId, OperationsInstallation installation, IParcelPresentationSource source, ParcelSnapshot initial,
+        IParcelApplication? application = null, Func<IStartupMaintenance>? backupFactory = null)
     {
         this.installation = installation; installation.RequireRead(); runtime = initial.RuntimeId;
-        if (initial.ApplicationId != "sportmaster" || runtime == Guid.Empty) throw new InvalidDataException("运维快照不属于本站业务。");
+        if (ProductDeploymentCatalog.Find(expectedApplicationId)?.SupportsStandaloneOperationsTool != true ||
+            installation.Location.ApplicationId != expectedApplicationId || initial.ApplicationId != expectedApplicationId || runtime == Guid.Empty)
+            throw new InvalidDataException("运维快照不属于本站业务。");
         using var identity = WindowsIdentity.GetCurrent(); sid = identity.User!.Value;
         var created = new List<NamedPipeServerStream>();
         IParcelPresentationSubscription? selected = null;

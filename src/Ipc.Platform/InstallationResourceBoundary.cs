@@ -21,14 +21,15 @@ public static class InstallationResourceBoundary
         if (OtherInstallationForVerification is { } read) return read();
         if (!OperatingSystem.IsWindows()) return null;
         var anchor = WindowsStoragePaths.ProtectedAnchorFor(!InstallationIdentity.IsTest);
-        var file = Path.Combine(anchor, "Machine", "deployments", "sportmaster.json");
+        var application = ProductDeploymentCatalog.IsolatedWorkstation.ApplicationId;
+        var file = Path.Combine(anchor, "Machine", "deployments", application + ".json");
         try { _ = File.GetAttributes(file); }
         catch (FileNotFoundException) { return null; }
         catch (DirectoryNotFoundException) { return null; }
         MachineRuntimePolicy.RequireProtectedEvidenceAt(file, anchor);
         if (new FileInfo(file).Length > 1024 * 1024) throw new InvalidDataException("另一实例的安装登记超过读取范围。");
         var location = Wire.Decode<DeploymentLocation>(File.ReadAllText(file));
-        if (location.ApplicationId != "sportmaster") throw new InvalidDataException("另一实例的安装身份无法核验。");
+        if (location.ApplicationId != application) throw new InvalidDataException("另一实例的安装身份无法核验。");
         return location;
     }
 
@@ -42,6 +43,8 @@ public static class InstallationResourceBoundary
     static Reservations ReadReservationsCore(DeploymentLocation? location)
     {
         if (location is null || location.LifecycleState == "Purged") return new([], [], []);
+        var application = ProductDeploymentCatalog.IsolatedWorkstation.ApplicationId;
+        if (location.ApplicationId != application) throw new InvalidDataException("另一实例的安装身份无法核验。");
         var configurations = new List<JsonObject>();
         long bytes = 0;
         var seed = Path.Combine(location.ConfigurationDirectory, "business.json");
@@ -54,11 +57,11 @@ public static class InstallationResourceBoundary
             foreach (var station in Directory.EnumerateDirectories(root))
             {
                 if (++count > 128) throw new InvalidDataException("另一实例的站点范围无法核验。");
-                var area = Path.Combine(station, "sportmaster");
+                var area = Path.Combine(station, application);
                 var ledger = Path.Combine(area, "configuration.json");
                 if (!Exists(ledger))
                 {
-                    if (Exists(Path.Combine(area, "sportmaster.db"))) throw new InvalidDataException("另一实例的配置账缺失，不能确认设备归属。");
+                    if (Exists(Path.Combine(area, application + ".db"))) throw new InvalidDataException("另一实例的配置账缺失，不能确认设备归属。");
                     continue;
                 }
                 var envelope = ReadJson(ledger, ref bytes);
@@ -71,7 +74,7 @@ public static class InstallationResourceBoundary
         var rcs = new List<Uri>();
         foreach (var config in configurations)
         {
-            if ((int?)config["SchemaVersion"] != 3 || (string?)config["ApplicationId"] != "sportmaster")
+            if ((int?)config["SchemaVersion"] != 3 || (string?)config["ApplicationId"] != application)
                 throw new InvalidDataException("另一实例的配置不是当前 SM 格式，不能确认设备归属。");
             var primary = config["Reader"]?.AsObject() ?? throw new InvalidDataException("另一实例的相机配置无法核验。");
             var readers = config["Topology"]?["Readers"]?.AsArray();

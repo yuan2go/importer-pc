@@ -167,7 +167,7 @@ public static partial class WindowsDeploymentSetup
     public static QuietDeploymentOperation BeginQuietOperation(QuietDeploymentIntent intent)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority(); intent.Validate();
-        if (intent.ApplicationId != "sportmaster") throw new NotSupportedException("当前静默幂等账仅用于SM。");
+        if (ProductDeploymentCatalog.Find(intent.ApplicationId)?.UsesQuietOperationJournal != true) throw new NotSupportedException("当前静默幂等账仅用于SM。");
         ApplicationRootOwnership.RequireWindowsStorage(intent.RequestedDataRoot ?? Current(intent.ApplicationId)?.DataRoot ?? InstallationIdentity.DefaultDataRoot, InstallationIdentity.DefaultProgramRoot);
         var sid = new SecurityIdentifier(MachineRuntimePolicy.SharedUsersSid);
         var directory = Path.Combine(MachineRoot, "deployments");
@@ -274,7 +274,7 @@ public static partial class WindowsDeploymentSetup
             if (!File.Exists(removal)) return ProjectQuietOutcome(record, hash == record.ExpectedRegistrationHash ? "NotStarted" : "Unknown");
             var original = RemovalRecords(record.Intent.ApplicationId).Single(item => item.File == removal).State;
             var state = ProjectRemoval(original, removal, current, hash!).Status;
-            if (current.ApplicationId == "sportmaster" && state == "RemovedDataRetained")
+            if (ProductDeploymentCatalog.Find(current.ApplicationId)?.SupportsOpaqueRemoval == true && state == "RemovedDataRetained")
             {
                 var assets = InspectUninstallAssetsCore(current);
                 state = assets?.Status == "Completed" ? state : assets?.Status == "RestartRequired" ? "RestartRequired" : "RemovedWithRetainedFiles";

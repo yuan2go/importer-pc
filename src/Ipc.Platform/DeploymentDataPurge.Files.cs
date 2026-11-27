@@ -13,7 +13,7 @@ public static partial class WindowsDeploymentSetup
         var roots = new[] { Path.GetFullPath(location.DataRoot), Path.GetFullPath(location.ConfigurationDirectory) };
         // The service keys its credential store by the canonical data root. Use
         // that same mapping, never a caller-supplied credential deletion path.
-        return location.ApplicationId == "sportmaster"
+        return ProductDeploymentCatalog.Find(location.ApplicationId)?.SupportsOpaqueRemoval == true
             ? [.. roots, ManagementModeBroker.ProtectedRoot(location.DataRoot, Path.Combine(Path.GetDirectoryName(Path.GetFullPath(machineRoot))!, "Administrators"))]
             : roots;
     }
@@ -42,7 +42,7 @@ public static partial class WindowsDeploymentSetup
     {
         var directory = Path.Combine(machineRoot, "deployments");
         DeploymentPaths.RequireOrdinaryAncestors(directory);
-        var applications = new[] { "sportmaster", "direct-plc", "wcs-to-plc" }.Concat(
+        var applications = ProductDeploymentCatalog.KnownManagedIds.Concat(
             Directory.EnumerateFiles(directory, "*.json").Select(Path.GetFileNameWithoutExtension).OfType<string>().Where(name => !name.Contains('.')))
             .Where(name => name != application).Distinct(StringComparer.OrdinalIgnoreCase).Order(StringComparer.Ordinal).Take(129).ToArray();
         if (applications.Length > 128) throw new InvalidDataException("安装登记超过核对范围，数据保留。");

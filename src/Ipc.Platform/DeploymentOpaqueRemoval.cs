@@ -18,7 +18,7 @@ public static partial class WindowsDeploymentSetup
         Action<DeploymentLocation> shortcuts, MaintenanceExecution? execution, string? operationId = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        if (application != "sportmaster") throw new NotSupportedException("此卸载方式仅用于当前SM。");
+        if (ProductDeploymentCatalog.Find(application)?.SupportsOpaqueRemoval != true) throw new NotSupportedException("此卸载方式仅用于当前SM。");
         if (Wire.FileHash(Registration(application)) != expectedHash) throw new InvalidOperationException("安装信息已变化，请重新打开卸载程序。");
         var current = Current(application) ?? throw new InvalidDataException("未找到安装信息。");
         if (current.LifecycleState == "Installed")
@@ -39,7 +39,7 @@ public static partial class WindowsDeploymentSetup
 
     static void RequireOpaqueRemovalCapability(DeploymentLocation location)
     {
-        if (location.ApplicationId != "sportmaster") throw new NotSupportedException("此程序移除方式仅用于当前SM。");
+        if (ProductDeploymentCatalog.Find(location.ApplicationId)?.SupportsOpaqueRemoval != true) throw new NotSupportedException("此程序移除方式仅用于当前SM。");
         var cache = RequireMaintenanceCache(location);
         using var original = JsonDocument.Parse(File.ReadAllBytes(location.InventoryFile!));
         var files = original.RootElement.GetProperty("Files");

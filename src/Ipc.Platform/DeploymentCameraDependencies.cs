@@ -27,9 +27,14 @@ public static partial class WindowsDeploymentSetup
     }
 
     [SupportedOSPlatform("windows")]
-    public static CameraDependencyInspection InspectCameraDependencies(string directory)
+    public static CameraDependencyInspection InspectCameraDependencies(string directory) =>
+        InspectCameraDependencies(directory, ProductDeploymentCatalog.CameraDependencyProducts.Single());
+
+    [SupportedOSPlatform("windows")]
+    public static CameraDependencyInspection InspectCameraDependencies(string directory, string applicationId)
     {
-        var location = Current("sportmaster");
+        RequireCameraDependencyProduct(applicationId);
+        var location = Current(applicationId);
         if (location is not { LifecycleState: "Installed", MaintenanceRoot: not null } || !Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar)
             .Equals(Path.Combine(location.ReleaseRoot, "desktop"), StringComparison.OrdinalIgnoreCase)) return new([], []);
         var files = CameraInventory(location);
@@ -82,10 +87,15 @@ public static partial class WindowsDeploymentSetup
     }
 
     [SupportedOSPlatform("windows")]
-    public static void RepairCameraDependencies(string expectedRegistrationHash)
+    public static void RepairCameraDependencies(string expectedRegistrationHash) =>
+        RepairCameraDependencies(expectedRegistrationHash, ProductDeploymentCatalog.CameraDependencyProducts.Single());
+
+    [SupportedOSPlatform("windows")]
+    public static void RepairCameraDependencies(string expectedRegistrationHash, string applicationId)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        var location = Current("sportmaster") ?? throw new InvalidDataException("未找到SM安装登记。");
+        RequireCameraDependencyProduct(applicationId);
+        var location = Current(applicationId) ?? throw new InvalidDataException("未找到SM安装登记。");
         using var stopped = new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), location.ApplicationId, location.DataRoot, default);
         using var setup = new FileStream(Path.Combine(MachineRoot, "deployments", location.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         if (Wire.FileHash(Registration(location.ApplicationId)) != expectedRegistrationHash || location.LifecycleState != "Installed")
@@ -108,7 +118,13 @@ public static partial class WindowsDeploymentSetup
         foreach (var name in RestoreCameraDependencyFiles(location, files))
             new FileInfo(Path.Combine(location.ReleaseRoot, name)).SetAccessControl(MachineRuntimeSetup.FileAcl(sid, FileSystemRights.ReadAndExecute));
         _ = SmVcRuntimeSetup.Ensure(media, media.Root, null);
-        var result = InspectCameraDependencies(Path.Combine(location.ReleaseRoot, "desktop"));
+        var result = InspectCameraDependencies(Path.Combine(location.ReleaseRoot, "desktop"), applicationId);
         if (result.NeedsRepair) throw new IOException("相机依赖仍未就绪，请使用同版完整安装包修复。");
+    }
+
+    static void RequireCameraDependencyProduct(string applicationId)
+    {
+        if (ProductDeploymentCatalog.Find(applicationId)?.RequiresBundledCameraDependencies != true)
+            throw new NotSupportedException("此产品未声明随包相机依赖。");
     }
 }

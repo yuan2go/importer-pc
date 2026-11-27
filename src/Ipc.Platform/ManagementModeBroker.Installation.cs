@@ -185,7 +185,7 @@ public static partial class ManagementModeBroker
     public static void RemoveIfUnused(string dataRoot)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-        if (new[] { "sportmaster", "direct-plc", "wcs-to-plc" }.Select(WindowsDeploymentSetup.Current).Any(d => d is { LifecycleState: "Installed" } && Path.GetFullPath(d.DataRoot).Equals(Path.GetFullPath(dataRoot), StringComparison.OrdinalIgnoreCase))) return;
+        if (ProductDeploymentCatalog.KnownManagedIds.Select(WindowsDeploymentSetup.Current).Any(d => d is { LifecycleState: "Installed" } && Path.GetFullPath(d.DataRoot).Equals(Path.GetFullPath(dataRoot), StringComparison.OrdinalIgnoreCase))) return;
         using var manager = OpenSCManager(null, null, 1); using var service = OpenService(manager, ServiceName(dataRoot), 0xF01FF);
         if (service.IsInvalid) { if (Marshal.GetLastWin32Error() == 1060) return; throw new Win32Exception(Marshal.GetLastWin32Error()); }
         Stop(service); if (!DeleteService(service)) throw new Win32Exception(Marshal.GetLastWin32Error());

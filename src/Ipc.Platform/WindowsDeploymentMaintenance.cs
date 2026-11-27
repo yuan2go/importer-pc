@@ -56,7 +56,7 @@ public static partial class WindowsDeploymentSetup
         using var key = machine.CreateSubKey(SystemKey(location.ApplicationId), true);
         var executable = Path.Combine(location.MaintenanceRoot ?? location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable);
         var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(location.ReleaseRoot, "app", "application-release.json")));
-        key.SetValue("DisplayName", location.ApplicationId == "sportmaster" ? InstallationIdentity.DisplayName : "菜鸟供包台 · " + location.ApplicationId);
+        key.SetValue("DisplayName", ProductDeploymentCatalog.Find(location.ApplicationId)?.DisplayName ?? "菜鸟供包台 · " + location.ApplicationId);
         key.SetValue("DisplayVersion", release.BusinessVersion ?? "reference");
         key.SetValue("QuietUninstallString", "\"" + executable + "\" /quiet /uninstall /norestart");
         key.SetValue("EstimatedSize", (int)Math.Min(int.MaxValue, new DirectoryInfo(location.ReleaseRoot).EnumerateFiles("*", SearchOption.AllDirectories).Sum(f => f.Length) / 1024), RegistryValueKind.DWord);
@@ -143,8 +143,8 @@ public static partial class WindowsDeploymentSetup
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         if (Wire.FileHash(Registration(application)) != expectedHash) throw new InvalidOperationException("部署登记变化；重新检查卸载计划");
         var location = Current(application) ?? throw new InvalidDataException("没有可核验的原部署");
-        using var programUse = application == "sportmaster" ? DeploymentProgramUse.Maintain(location) : null;
-        using var rootOwnership = application == "sportmaster" && !withoutBusinessInspection ? ApplicationRootOwnership.AcquireMaintenance(application, location.DataRoot) : null;
+        using var programUse = ProductDeploymentCatalog.Find(application)?.UsesProgramUseLock == true ? DeploymentProgramUse.Maintain(location) : null;
+        using var rootOwnership = ProductDeploymentCatalog.Find(application)?.UsesStrictWindowsStorage == true && !withoutBusinessInspection ? ApplicationRootOwnership.AcquireMaintenance(application, location.DataRoot) : null;
         var sid = new SecurityIdentifier(location.RuntimeAccountSid);
         var operation = location.LifecycleState != "Installed" && location.MaintenanceOperation is not null ? location.MaintenanceOperation : RemovalOperationFile(application, operationId ?? Wire.Id());
         _ = TrustedProgramRoots.RequireBoundary(location.ReleaseRoot);
@@ -188,7 +188,7 @@ public static partial class WindowsDeploymentSetup
             var retired = location with { LifecycleState = "RemovedDataRetained", MaintenanceOperation = operation };
             if (Directory.Exists(location.ReleaseRoot)) WriteProtected(Path.Combine(location.ReleaseRoot, "deployment-retired.json"), retired, sid);
             WriteProtected(Registration(application), retired, sid); // one irreversible detach; reentry reads this state
-            if (application is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.RemoveIfUnused(location.DataRoot);
+            if (ProductDeploymentCatalog.Find(application)?.UsesManagementModeBroker == true) ManagementModeBroker.RemoveIfUnused(location.DataRoot);
             ProjectInstalledApplication(retired); removeShortcuts(location);
             execution?.Report(MaintenanceStage.RemovingProgram);
             // New removals leave locked files as explicit leftovers. They never add a
@@ -270,7 +270,7 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static void SwitchDataRoot(string application, string expectedRegistrationHash, string newDataRoot, string handoffHash, DesktopRecoveryMigration recovery)
     {
-        if (application == "sportmaster") throw new InvalidOperationException("SM 恢复使用原次交接提交入口。");
+        if (ProductDeploymentCatalog.Find(application)?.RequiresRestoreHandoff == true) throw new InvalidOperationException("SM 恢复使用原次交接提交入口。");
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         if (!ExtensionSchema.IsHash(handoffHash)) throw new InvalidDataException("Missing restore handoff identity");
         DeploymentPaths.RequireOrdinaryAncestors(newDataRoot);

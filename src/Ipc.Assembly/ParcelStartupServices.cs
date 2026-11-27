@@ -57,6 +57,7 @@ public static partial class ParcelStartupServices
     static bool IsInitialDraft(ParcelConfiguration candidate) => candidate.Mode == RunMode.Production &&
         Wire.Encode(candidate with { StationId = SystemParameterDefaults.InitialStationId }) == Wire.Encode(ParcelAssembly.Definition().InitialConfiguration());
     public static string ApplicationId => ParcelAssembly.Definition().Id;
+    static ProductDeploymentProfile DeploymentProfile { get; } = ProductDeploymentCatalog.Require(ApplicationId);
     public static string DefaultRuntimeAccount(bool currentUserOnly = false)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
@@ -131,15 +132,15 @@ public static partial class ParcelStartupServices
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public static async Task<bool> EnsureCameraDependenciesAsync(string desktopDirectory)
     {
-        if (!OperatingSystem.IsWindows() || ApplicationId != "sportmaster") return false;
+        if (!OperatingSystem.IsWindows() || !DeploymentProfile.RequiresBundledCameraDependencies) return false;
         var registration = WindowsDeploymentSetup.Registration(ApplicationId);
         if (!File.Exists(registration)) return false;
         var expected = Wire.FileHash(registration);
-        var inspection = await Task.Run(() => WindowsDeploymentSetup.InspectCameraDependencies(desktopDirectory));
+        var inspection = await Task.Run(() => WindowsDeploymentSetup.InspectCameraDependencies(desktopDirectory, ApplicationId));
         if (!inspection.NeedsRepair) return false;
         await ElevateAsync(new("RepairCameraDependencies", ExpectedHash: expected));
         if (Wire.FileHash(registration) != expected) throw new InvalidOperationException("安装登记已变化，请重新启动核对。");
-        if ((await Task.Run(() => WindowsDeploymentSetup.InspectCameraDependencies(desktopDirectory))).NeedsRepair)
+        if ((await Task.Run(() => WindowsDeploymentSetup.InspectCameraDependencies(desktopDirectory, ApplicationId))).NeedsRepair)
             throw new IOException("相机依赖恢复后仍未就绪，请使用同版完整安装包修复。");
         return true;
     }
@@ -213,8 +214,8 @@ public static partial class ParcelStartupServices
             case "MediaConcludeInstallation": return ContinueInstallationCore(request, repair: false, execution);
             case "MediaRepairInstallation": return ContinueInstallationCore(request, repair: true, execution);
             case "RepairCameraDependencies":
-                if (!OperatingSystem.IsWindows() || ApplicationId != "sportmaster") throw new PlatformNotSupportedException();
-                WindowsDeploymentSetup.RepairCameraDependencies(request.ExpectedHash ?? throw new InvalidDataException("缺少原安装身份。"));
+                if (!OperatingSystem.IsWindows() || !DeploymentProfile.RequiresBundledCameraDependencies) throw new PlatformNotSupportedException();
+                WindowsDeploymentSetup.RepairCameraDependencies(request.ExpectedHash ?? throw new InvalidDataException("缺少原安装身份。"), ApplicationId);
                 break;
             case "MediaUninstall":
                 RequireMatchingMedia(request.Deployment ?? throw new InvalidDataException("缺少完整安装包。"), execution?.Token ?? default);
@@ -305,15 +306,15 @@ public static partial class ParcelStartupServices
                             WindowsDeploymentSetup.RepairRestoreCommit(ApplicationId, committedProof.Id, request.ExpectedHash!);
                         break; // Previous commit succeeded; receipt loss must not create a second handoff.
                     }
-                    var originalRestore = ApplicationId == "sportmaster" ? WindowsDeploymentSetup.ReadRestoreIntents(ApplicationId)
+                    var originalRestore = DeploymentProfile.RequiresRestoreHandoff ? WindowsDeploymentSetup.ReadRestoreIntents(ApplicationId)
                         .Single(i => i.BackupIdentity == request.ExpectedHash && i.TargetRoot == Path.GetFullPath(request.Destination!)).OperationId : null;
                     using var recoveryMigration = WindowsDeploymentSetup.PrepareRecoveryMigration(originalDeployment, request.Destination!, request.ChangePlanIdentity!, originalRestore);
                     var restoreCore = Core(new(originalDeployment.ConfigurationDirectory, originalDeployment.DataRoot, null, null), installer: true);
-                    var routingSeed = ApplicationId == "sportmaster" ? restoreCore.RestoredSeed(request.Destination!, request.ExpectedHash!) : null;
+                    var routingSeed = DeploymentProfile.RequiresRestoreHandoff ? restoreCore.RestoredSeed(request.Destination!, request.ExpectedHash!) : null;
                     await restoreCore.AdoptRestoreOwnedAsync(request.Backup!, request.Destination!, request.ExpectedHash!, proof =>
                     {
                         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-                        if (ApplicationId == "sportmaster") WindowsDeploymentSetup.CommitRestore(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), proof.Id, routingSeed!, recoveryMigration);
+                        if (DeploymentProfile.RequiresRestoreHandoff) WindowsDeploymentSetup.CommitRestore(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), proof.Id, routingSeed!, recoveryMigration);
                         else WindowsDeploymentSetup.SwitchDataRoot(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), recoveryMigration);
                         return Task.CompletedTask;
                     }, recoveryMigration);
@@ -338,7 +339,7 @@ public static partial class ParcelStartupServices
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 var install = request.Deployment ?? throw new InvalidDataException("Missing deployment");
                 if (install.ApplicationId != ParcelAssembly.Definition().Id) throw new InvalidDataException("Helper belongs to another Application");
-                if (ApplicationId == "sportmaster") ApplicationRootOwnership.RequireWindowsStorage(install.DataRoot, install.ProgramRoot);
+                if (DeploymentProfile.UsesStrictWindowsStorage) ApplicationRootOwnership.RequireWindowsStorage(install.DataRoot, install.ProgramRoot);
                 RequireMatchingMedia(install, execution?.Token ?? default);
                 _ = DeploymentComponentReviewing.Inspect(install, execution?.Token ?? default);
                 ValidateSeed(install); // Validate bounded source/identity and ordinary paths before creating even an owner lease.

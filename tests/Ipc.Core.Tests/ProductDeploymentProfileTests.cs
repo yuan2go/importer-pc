@@ -32,6 +32,14 @@ public sealed class ProductDeploymentProfileTests
         Assert.AreEqual(workstation, profile.RequiresBundledMvidVcRuntime);
         Assert.AreEqual(workstation, profile.SupportsStandaloneOperationsTool);
         Assert.AreEqual(workstation, profile.UsesQuietOperationJournal);
+        Assert.AreEqual(workstation, profile.PreservesInstallationConfiguration);
+        Assert.AreEqual(workstation ? "supply-station" : "classic", profile.DefaultDesktopUi);
+        Assert.AreEqual(workstation, profile.UsesInlineInstallationReview);
+        Assert.AreEqual(workstation, profile.UsesInstallationContinuation);
+        Assert.AreEqual(workstation, profile.ShowsAdvancedDeploymentMaintenance);
+        Assert.AreEqual(workstation, profile.UsesStationDisplayPreferences);
+        Assert.AreEqual(workstation, profile.SupportsFirstConfigurationBarcodeTest);
+        Assert.AreEqual(workstation ? "SM " : "", profile.InstallerVersionPrefix);
         Assert.AreEqual(workstation ? "1.0.0" : null, profile.MissingReleaseRepairVersion);
         Assert.AreEqual(workstation, profile.AllowsSameVersionRollback("1.0.0", "1.0.0"));
         Assert.IsFalse(profile.AllowsSameVersionRollback("1.0.0", "1.0.1"));

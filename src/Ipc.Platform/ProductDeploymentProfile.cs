@@ -24,6 +24,15 @@ public sealed class ProductDeploymentProfile
     public bool RequiresBundledMvidVcRuntime { get; init; }
     public bool SupportsStandaloneOperationsTool { get; init; }
     public bool UsesQuietOperationJournal { get; init; }
+    public bool PreservesInstallationConfiguration { get; init; }
+    public string DefaultDesktopUi { get; init; } = "classic";
+    public bool UsesInlineInstallationReview { get; init; }
+    public bool UsesInstallationContinuation { get; init; }
+    public bool ShowsAdvancedDeploymentMaintenance { get; init; }
+    public bool UsesStationDisplayPreferences { get; init; }
+    public bool SupportsFirstConfigurationBarcodeTest { get; init; }
+    public string InstallerVersionPrefix { get; init; } = "";
+    public string FirstUseGuidance { get; init; } = "首次打开后，请完成设备与服务配置，再按检查结果启动。";
     public string? MissingReleaseRepairVersion { get; init; }
     internal string? SameVersionRollbackVersion { get; init; }
 
@@ -52,6 +61,15 @@ public static class ProductDeploymentCatalog
         RequiresBundledMvidVcRuntime = true,
         SupportsStandaloneOperationsTool = true,
         UsesQuietOperationJournal = true,
+        PreservesInstallationConfiguration = true,
+        DefaultDesktopUi = "supply-station",
+        UsesInlineInstallationReview = true,
+        UsesInstallationContinuation = true,
+        ShowsAdvancedDeploymentMaintenance = true,
+        UsesStationDisplayPreferences = true,
+        SupportsFirstConfigurationBarcodeTest = true,
+        InstallerVersionPrefix = "SM ",
+        FirstUseGuidance = "首次打开后先设置供包台。相机和 RCS 可稍后配置，配置完成前不能供包。",
         MissingReleaseRepairVersion = "1.0.0",
         SameVersionRollbackVersion = "1.0.0"
     };

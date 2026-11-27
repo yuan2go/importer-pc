@@ -12,7 +12,9 @@ Importer PC 使用 C#、.NET 10、WPF 和 SQLite。构建时由产品和装配�
 
 ## 现状与下一阶段的边界
 
-现有装配和部分共享路径仍按产品标识选择行为。例如 [ParcelCapabilityFactory](../../src/Ipc.Assembly/ParcelCapabilityFactory.cs) 绑定 SM 的内置能力，[部署快捷方式](../../src/Ipc.Platform/DeploymentShortcuts.cs) 限定自启适用产品。这些是真实依赖。后续迁移应逐项确定该判断约束的是产品装配、业务策略还是平台操作，并追踪全部调用者。
+PR 1 已把部署与基座层的产品能力收敛到 `ProductDeploymentCatalog`。编译期装配选定业务 ID，平台、启动安装壳和独立运维据此读取部署声明。运行时仍逐项核验受保护安装登记、介质、程序及数据所有权。声明只供执行时查询，原登记、发布清单和业务账继续使用既有格式与身份。未知产品不具备任何已声明能力。[产品部署声明](../../src/Ipc.Platform/ProductDeploymentProfile.cs) · [部署快捷方式](../../src/Ipc.Platform/DeploymentShortcuts.cs)
+
+[ParcelCapabilityFactory](../../src/Ipc.Assembly/ParcelCapabilityFactory.cs) 仍绑定 SM 的内置能力。能力工厂、共享工作站字段和轮次契约按后续 PR 分别处理。[解耦清点](multi-business-extraction-audit.md)
 
 通用平台层不得新增 `Id == "sportmaster"` 或等价的业务特判。业务决定能做什么，平台执行有明确输入、身份和失败语义的操作。具体例子是由应用判定本轮是否允许提交，由存储机制原子提交应用给出的身份及事实；由装配确定快捷方式用途，由部署机制核验实际安装、目标和所属用户。引入新的共享能力要有实际消费者，不以规划中的业务替换已有装配。
 

@@ -30,14 +30,15 @@ public static class ParcelAssembly
 #error A registered Application must be selected at build time.
 #endif
         runtime.ManagementPasswordSetupApproval = password => ParcelStartupServices.ManagementMode(launch).ConfigureManagementPasswordAsync(password);
-#if SPORTMASTER
-        var deployment = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, runtime.Id);
-        runtime.AcquireRootOwnership = () => ApplicationRootOwnership.AcquireRuntime(runtime.Id, launch.DataRoot, () =>
+        if (ProductDeploymentCatalog.Require(runtime.Id).UsesStrictWindowsStorage)
         {
-            if (deployment is not null) DeploymentMedia.RequireRuntimeLocation(deployment,
-                DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, runtime.Id), launch.DataRoot, launch.ConfigurationDirectory);
-        });
-#endif
+            var deployment = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, runtime.Id);
+            runtime.AcquireRootOwnership = () => ApplicationRootOwnership.AcquireRuntime(runtime.Id, launch.DataRoot, () =>
+            {
+                if (deployment is not null) DeploymentMedia.RequireRuntimeLocation(deployment,
+                    DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, runtime.Id), launch.DataRoot, launch.ConfigurationDirectory);
+            });
+        }
         runtime.ManagementPasswordResetApproval = password => ParcelStartupServices.ManagementMode(launch).ResetManagementPasswordAsync(password);
         runtime.ManagementPasswordRecoveryInspection = () => ParcelStartupServices.ManagementMode(launch).InspectManagementPasswordRecoveryAsync();
         ApplicationReleaseValidation.ValidateIfPublished(AppContext.BaseDirectory, runtime.Id, runtime.Presentation, businessAssembly);

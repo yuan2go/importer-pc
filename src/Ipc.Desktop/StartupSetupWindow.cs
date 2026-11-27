@@ -15,6 +15,7 @@ public sealed record InstallationPreparationProgress(string Stage, string File, 
 
 public sealed class StartupSetupWindow : StartupWorkflowWindow
 {
+    readonly ProductDeploymentProfile deploymentProfile;
     internal Func<string, DeploymentLocation?> CurrentInstallation { get; set; } = WindowsDeploymentSetup.Current;
     internal Func<DeploymentLocation, uint> LaunchDesktop { get; set; } = location => OrdinaryRuntimeProcess.LaunchForCurrentUser(
         Path.Combine(location.ReleaseRoot, "desktop", InstallationIdentity.DesktopExecutable), ["--after-install"], location.ReleaseRoot);
@@ -63,14 +64,15 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     InstallationInspection? originalInspection;
     public StartupSetupWindow(BusinessLaunch launch, Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia = null, string? businessVersion = null) : base("安装 · " + InstallationIdentity.DisplayName, installation: true, applicationId: Ipc.Assembly.ParcelStartupServices.ApplicationId)
     {
+        deploymentProfile = ProductDeploymentCatalog.Require(ApplicationId);
         this.prepareMedia = prepareMedia;
         ConcludeInstallation = (request, progress, token) => ParcelStartupServices.ContinueInstallationAsync(media ?? throw new InvalidOperationException("请先核验完整介质。"), request, false, progress, token);
-        if (ApplicationId == "sportmaster") RepairRegistration = async (request, progress, token) =>
+        if (deploymentProfile.UsesInstallationContinuation) RepairRegistration = async (request, progress, token) =>
         {
             var result = await ParcelStartupServices.ContinueInstallationAsync(media ?? throw new InvalidOperationException("请先核验完整介质。"), request, true, progress, token);
             if (result.Status != "Completed") throw new InstallationOutcomeUnknownException(result.Detail);
         };
-        if (businessVersion is not null) { VersionLabel.Text = "版本: " + (ApplicationId == "sportmaster" ? "SM " : "") + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
+        if (businessVersion is not null) { VersionLabel.Text = "版本: " + deploymentProfile.InstallerVersionPrefix + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
         back = Action("上一步", () =>
         {
             CaptureInputs();
@@ -141,7 +143,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         Closing += (_, _) => { if (preparing is not null) { CloseAfterCancellation = true; preparing.Cancel(); Message("正在取消安装文件准备，请稍候…"); } };
     }
     string ApplicationId => ParcelStartupServices.ApplicationId;
-    bool InlineReviewReady => ApplicationId == "sportmaster" && step == 1 && reviewed is not null;
+    bool InlineReviewReady => deploymentProfile.UsesInlineInstallationReview && step == 1 && reviewed is not null;
     void Section(string label)
     {
         Body.Children.Add(new TextBlock { Text = label, FontSize = UiTypography.Group, FontWeight = UiTypography.Emphasis, Margin = new(0, 20, 0, 10) });
@@ -248,7 +250,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             Height = Math.Min(optionsHeight, MaxHeight);
             var current = InlineReviewReady ? reviewedLocation : CurrentInstallation(ApplicationId);
-            var retainRegistered = ApplicationId == "sportmaster" && current is not null;
+            var retainRegistered = deploymentProfile.PreservesInstallationConfiguration && current is not null;
             if (retainRegistered)
             {
                 selectedProgram = Directory.GetParent(Directory.GetParent(current!.ReleaseRoot)!.FullName)!.FullName;
@@ -273,13 +275,13 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Section("安装位置");
             // New SM stations use independent D-drive locations. Existing deployments
             // and explicitly reviewed/user-entered paths retain their original authority.
-            program = InstallationFolder("程序目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? (ApplicationId == "sportmaster" ? InstallationIdentity.DefaultProgramRoot : WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation")) : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName), retainRegistered, InlineReviewReady);
-            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? (ApplicationId == "sportmaster" ? InstallationIdentity.DefaultDataRoot : Path.Combine(WindowsDeploymentSetup.MachineRoot, "data")), retainRegistered, InlineReviewReady);
+            program = InstallationFolder("程序目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? (deploymentProfile.UsesStrictWindowsStorage ? InstallationIdentity.DefaultProgramRoot : WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation")) : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName), retainRegistered, InlineReviewReady);
+            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? (deploymentProfile.UsesStrictWindowsStorage ? InstallationIdentity.DefaultDataRoot : Path.Combine(WindowsDeploymentSetup.MachineRoot, "data")), retainRegistered, InlineReviewReady);
             if (retainRegistered) Note("沿用本机已登记的程序和数据位置。需要迁移位置时，请先完成完整备份，再按恢复流程处理。");
             startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu };
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop };
             var shortcuts = new StackPanel(); shortcuts.Children.Add(startMenu); shortcuts.Children.Add(desktopIcon);
-            if (ApplicationId == "sportmaster")
+            if (deploymentProfile.SupportsAutoStart)
             {
                 if (!autoStartInitialized)
                 {
@@ -322,7 +324,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 Body.Children.Add(advanced);
             }
             else { Section("安装设置"); Row("快捷方式", shortcuts); }
-            if (ApplicationId == "sportmaster")
+            if (deploymentProfile.RequiresBundledCameraDependencies)
                 Note("相机采图、条码识别和 RCS 接口已随软件安装，无需另装组件。安装完成不代表相机或 RCS 已连接。程序和数据按本机存储规则放在 D 盘。");
             if (current is not null && !InlineReviewReady)
             {
@@ -360,7 +362,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Section("安装位置"); Summary("程序目录", r.ProgramRoot!); Summary("数据目录", r.DataRoot);
             Section("安装设置");
             Summary("开始菜单", r.Shortcuts!.StartMenu ? "创建快捷方式" : "不创建快捷方式"); Summary("桌面", r.Shortcuts.Desktop ? "创建快捷方式" : "不创建快捷方式");
-            if (ApplicationId == "sportmaster") Summary("开机自启", r.Shortcuts.AutoStart ? "开启" : "关闭");
+            if (deploymentProfile.SupportsAutoStart) Summary("开机自启", r.Shortcuts.AutoStart ? "开启" : "关闭");
             Note(CurrentInstallation(ApplicationId)?.LifecycleState == "Purged" ? "原本站数据已删除；本次沿用原登记位置重新配置，不恢复原记录。" : "请先关闭供包台；安装保留现有账户、数据与配置。");
             foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
             Note("安装需要 Windows 管理员授权（与软件管理密码无关）。"); next.Content = "安装";
@@ -369,7 +371,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             Height = Math.Min(optionsHeight, MaxHeight);
             if (needsFirstConfiguration == true)
-            { Section("首次使用"); Note(ApplicationId == "sportmaster" ? "首次打开后先设置供包台。相机和 RCS 可稍后配置，配置完成前不能供包。" : "首次打开后，请完成设备与服务配置，再按检查结果启动。"); }
+            { Section("首次使用"); Note(deploymentProfile.FirstUseGuidance); }
             else Note(needsFirstConfiguration == false ? "已有配置已识别。打开后自动检查并启动；条件不满足时会显示具体原因。" : configurationMessage.Length > 0 ? configurationMessage : "打开后自动检查配置；首次配置保存后自动启动，条件不满足时会显示具体原因。安装完成不代表设备已可运行。");
             var canRun = ParcelStartupServices.IsRuntimeAccount(installed!);
             runAfter = new CheckBox { Content = "完成后打开供包台", IsChecked = canRun && !reopenedInstallation, IsEnabled = canRun, VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 16, 12, 0) };
@@ -511,9 +513,9 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 try { root = await prepareMedia(progress, cancellation.Token); } finally { preparing = null; Actions.IsEnabled = false; cancel.IsEnabled = true; }
             }
             media = await Task.Run(() => DeploymentMedia.Inspect(root, ApplicationId));
-            VersionLabel.Text = "版本: " + (ApplicationId == "sportmaster" ? "SM " : "") + "V" + Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "desktop", "application-release.json"))).BusinessVersion + " Windows 64位";
+            VersionLabel.Text = "版本: " + deploymentProfile.InstallerVersionPrefix + "V" + Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "desktop", "application-release.json"))).BusinessVersion + " Windows 64位";
             VersionLabel.Visibility = Visibility.Visible; newStation = SystemParameterDefaults.InitialStationId; step = 1;
-            if (ApplicationId == "sportmaster")
+            if (deploymentProfile.UsesInstallationContinuation)
             {
                 var original = await Task.Run(() => DiscoverInstallation(ApplicationId, media.SourceCommit));
                 if (original is not null) ApplyOriginal(original);
@@ -526,7 +528,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             CaptureInputs(); preflightError = ""; Render(); var current = CurrentInstallation(ApplicationId);
             var selectedAccount = current?.RuntimeAccountSid ?? MachineRuntimePolicy.SharedUsersSid;
             var configPath = current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config");
-            if (ApplicationId == "sportmaster")
+            if (deploymentProfile.PreservesInstallationConfiguration)
             {
                 if (preparedConfigurationDirectory is { } previous && Directory.Exists(previous)) { File.Delete(Path.Combine(previous, "business.json")); Directory.Delete(previous); }
                 preparedConfigurationDirectory = Path.Combine(Path.GetTempPath(), "ipc-install-seed-" + Wire.Id());
@@ -548,11 +550,11 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewedCandidate.ConfigurationSource, "business.json")));
             // Publish UI readiness only after every preview/seed check succeeds.
             // The execution path still rechecks the original registration CAS and owners.
-            if (ApplicationId == "sportmaster") HideCompletedMaintenanceProgress();
+            if (deploymentProfile.UsesInlineInstallationReview) HideCompletedMaintenanceProgress();
             reviewedLocation = current;
             reviewed = reviewedCandidate;
             components = preview.review;
-            step = ApplicationId == "sportmaster" ? 1 : 2;
+            step = deploymentProfile.UsesInlineInstallationReview ? 1 : 2;
             Render();
         }
         else if (step == 2 || InlineReviewReady)

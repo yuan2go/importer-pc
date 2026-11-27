@@ -1,10 +1,10 @@
 # 多业务架构解耦摸底报告
 
-目前可以直接复用的是编译期装配、Parcel 的业务流程契约、设备端口和受保护部署机制。主要的拆分工作在两个共享工程：`ParcelFlow` 决定 SM 的到位、提交与原请求收口，`ParcelFlow.Desktop` 决定 SM 能编辑、保存和看见哪些字段。建议先拆界面和装配选择，最后处理发送围栏所在的事务。本轮只记录现状和候选边界。[架构基线](framework.md) · [连续供包契约](sm-continuous-induction-closure-01.md)
+目前可以直接复用的是编译期装配、Parcel 的业务流程契约、设备端口和受保护部署机制。主要的拆分工作在两个共享工程：`ParcelFlow` 决定 SM 的到位、提交与原请求收口，`ParcelFlow.Desktop` 决定 SM 能编辑、保存和看见哪些字段。建议先拆界面和装配选择，最后处理发送围栏所在的事务。PR 1 已完成部署与基座声明收敛。[架构基线](framework.md) · [连续供包契约](sm-continuous-induction-closure-01.md)
 
 ## 统计口径
 
-基于 Stage 2 提交 `0bf67b21`。扫描 Git 跟踪的 533 份 C# 和 24 份 XAML。下表按 C# 语法树统计值恰为 `sportmaster` 的字符串字面量，同一文件不同编译分支取并集，相同源码位置只计一次。比较列只计直接的 `==` 和 `!=`，两侧操作数都识别。模式列包括属性模式、`is` 白名单和 `switch` 名称映射。最后一列包括调用参数、默认参数、常量、白名单数组及导出字段。
+以下是 Stage 2 提交 `0bf67b21` 的历史基线。扫描 Git 跟踪的 533 份 C# 和 24 份 XAML。下表按 C# 语法树统计值恰为 `sportmaster` 的字符串字面量，同一文件不同编译分支取并集，相同源码位置只计一次。比较列只计直接的 `==` 和 `!=`，两侧操作数都识别。模式列包括属性模式、`is` 白名单和 `switch` 名称映射。最后一列包括调用参数、默认参数、常量、白名单数组及导出字段。
 
 | 共享工程 | 命中文件 | 字面量 | 直接比较 | 常量模式 | 其他 |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -16,7 +16,17 @@
 | Ipc.Operations | 2 | 5 | 2 | 0 | 3 |
 | **六个工程** | **109** | **376** | **337** | **12** | **27** |
 
-全 `src/` 共 119 个文件、393 处。其余 17 处分布在 Application.Contracts（3 文件 / 5 处）、Sportmaster（1 / 1）、Sportmaster.Desktop（3 / 8）、Integrations.SportmasterRcs（2 / 2）和 Operations.Desktop（1 / 1）。Contracts 中的热生效比较、待配置连接和字段归属会影响拆分。业务模块声明自己的 ID，以及运维程序校验所读安装的 ID，均需保留身份语义。[配置生效](../../src/Ipc.Application.Contracts/ConfigurationActivation.cs) · [待配置连接](../../src/Ipc.Application.Contracts/ParcelConnectionSetup.cs) · [字段归属](../../src/Ipc.Application.Contracts/SmParameterAudience.cs)
+该基线的全 `src/` 共 119 个文件、393 处。其余 17 处分布在 Application.Contracts（3 文件 / 5 处）、Sportmaster（1 / 1）、Sportmaster.Desktop（3 / 8）、Integrations.SportmasterRcs（2 / 2）和 Operations.Desktop（1 / 1）。Contracts 中的热生效比较、待配置连接和字段归属会影响拆分。业务模块声明自己的 ID，以及运维程序校验所读安装的 ID，均需保留身份语义。[配置生效](../../src/Ipc.Application.Contracts/ConfigurationActivation.cs) · [待配置连接](../../src/Ipc.Application.Contracts/ParcelConnectionSetup.cs) · [字段归属](../../src/Ipc.Application.Contracts/SmParameterAudience.cs)
+
+PR 1 在主线基线 `aa1789872c0afe892612cc93074ba79f085f137e` 上完成。本表用 `git grep -o -F '"sportmaster"'` 统计 PR 1 涉及的四个工程。
+
+| 工程 | 基线 | PR 1 完成后 | 余项 |
+| --- | ---: | ---: | --- |
+| Ipc.Platform | 66 | 1 | 内置产品注册表 |
+| Ipc.Operations | 5 | 0 | 从受保护登记和宿主身份取得产品 ID |
+| Ipc.Desktop | 25 | 1 | `ParcelApp` 编译期选择 |
+| Ipc.Assembly | 16 | 4 | `ParcelAssembly` 编译期选择 1 处，`ParcelCapabilityFactory` 3 处留给 PR 2 |
+| 合计 | 112 | 6 | 部署与启动服务中的字面量特判为 0 |
 
 字面量之外还有三类依赖需要沿调用链核对。`#if SPORTMASTER` 和 MSBuild 的 `BusinessModule` 决定交付哪些程序集。`UsesBuiltInSportmaster` 等谓词放大一个比较的影响。`ISmHeartbeatControl`、`sportmaster-rcs` 和持久化角色名直接表达协议或存量数据身份。这些没有重复计入字面量。将构建标识、独立偏好分区、原作业身份或 DB14 的业务标识改名，会产生可见的兼容性问题。[桌面项目](../../src/Ipc.Desktop/Ipc.Desktop.csproj) · [装配工厂](../../src/Ipc.Assembly/ParcelCapabilityFactory.cs) · [DB14 格式校验](../../src/Ipc.Application.ParcelFlow/ParcelStorageFormat.cs)
 
@@ -51,10 +61,10 @@
 
 各步均保留编译期选择并单独合并。每个 PR 都运行锁定依赖的 SM Desktop 构建、完整 Core 回归和文档门禁。触及的业务装配单独构建。下面列出每步最能揭示行为变化的附加对照。
 
-1. **先迁移字段与页面选择。** 从共享设置页、偏好草稿和启动窗口移出 SM 字段及页面选择。由已选业务向工作站和运维视图传入声明。复用 `SmParameterOwnership.ProjectCandidate`。对照旧配置、完整候选和冻结请求的序列化结果、两个编辑器并发保存、个人偏好部分保存失败后的重试。运行 `--sm-configuration-preferences`、`--sm-parameters` 及 WPF 字体门禁。
-2. **集中装配与安装入口声明。** 由现有装配选择一个拓扑、能力工厂和产品维护入口。分别编译 DirectPlc、WcsToPlc 和 Sportmaster。保持 SM 内置 MVID/MVS 和 RCS 的依赖闭包、安装 ID、受保护路径、自启目标和正式/测试实例身份。对照 `--sm-built-in-only`、`--shortcut-lifecycle`、`--installation-resource-boundary`。运行 Operations.Verification 核对双进程及权限边界。
-3. **抽出轮次与协议决策。** 先把基于原状态和证据的判断迁到 SM 模块，提交、锁顺序、I/O 和回执持久化留在原调用点。对照同车下一件、A→B→A、左右位并行、取件后迟到回包、原生预览和单工位校准。使用 `--sm-round-lifecycle`、`--sm-dispatch-resources`、`--sm-arrivals`、`--sm-single-lane-calibration`、`--rcs-heartbeat` 和 Drivers 回归。重开应用必须继续核对原请求和原编号。
-4. **收拢历史、离线恢复和维护分支。** 将终态分类和容量口径交还具体业务，核验每个仍保留的 ID 是登记键、存储键或经验证的白名单成员。以 Stage 2 格式的隔离副本读回原站、已生效/待生效修订、WAL 中已提交事实、Unknown 围栏、编号高水位与恢复意图。恢复、回滚和删除分别使用原有所有权和引用检查。对照 `--storage-schema-only`、`--backup-consistency`、`--lifecycle-restore`、`--industrial-rollback`。任一步改变原账、扩大准入或引入二次发送，都在该 PR 内撤回，无须靠迁移数据库回退。
+1. **部署与基座声明，已完成。** 平台集中声明产品部署能力，启动、安装和独立运维核验同一产品 ID。保留原登记键、受保护路径、快捷方式、恢复凭据和正式／测试实例的权限边界。对照 `--shortcut-lifecycle`、`--installation-resource-boundary`、离线部署回归及 Operations.Verification。[产品部署声明](../../src/Ipc.Platform/ProductDeploymentProfile.cs)
+2. **集中装配与能力选择。** 由现有装配选择拓扑和能力工厂。分别编译 DirectPlc、WcsToPlc 和 Sportmaster，保持 SM 内置 MVID/MVS 和 RCS 的依赖闭包。对照 `--sm-built-in-only` 和驱动回归。
+3. **迁移字段与页面选择。** 从共享设置页和偏好草稿移出 SM 字段归属，由已选业务向工作站和运维视图传入声明。对照旧配置、完整候选和冻结请求的序列化结果、并发保存与偏好部分保存失败后的重试。运行 `--sm-configuration-preferences`、`--sm-parameters` 及 WPF 字体门禁。
+4. **抽出轮次与协议决策。** 将基于原状态和证据的判断迁到 SM 模块，保留原调用点的提交事务、锁顺序、I/O 和回执持久化。对照同车下一件、A→B→A、左右位并行、取件后迟到回包、原生预览及单工位校准。重开应用仍须核对原请求、Unknown 和原编号。
 
 核心入口按实际领域分组。[平台](../../tests/Ipc.Core.Tests/PlatformRegression.cs) · [SM](../../tests/Ipc.Core.Tests/SportmasterRegression.cs) · [驱动](../../tests/Ipc.Core.Tests/DriversRegression.cs) · [部署](../../tests/Ipc.Core.Tests/DeploymentRegression.cs) · [工业 CI](../../.github/workflows/industrial-core.yml) · [SM 交付 CI](../../.github/workflows/sportmaster-commercial.yml)
 
@@ -146,57 +156,11 @@
 | [WindowOpeningPreference.cs](../../src/Ipc.Application.ParcelFlow.Desktop/WindowOpeningPreference.cs) | 3 | `Attach`、`PreferenceChanged` | 工作区 / 参数 · 全屏窗口恢复与偏好变更 |
 | [WindowPreferenceDraft.cs](../../src/Ipc.Application.ParcelFlow.Desktop/WindowPreferenceDraft.cs) | 7 | `HasUnsavedWindowPreference`、`WindowModeDraft` | 参数 · 个人窗口方式的装载、草稿与保存 |
 
-### Ipc.Platform
+### PR 1 剩余字面量
 
 | 源文件 | 次数 | 入口举例 | 边界与职责 |
 | --- | ---: | --- | --- |
-| [DeploymentCameraDependencies.cs](../../src/Ipc.Platform/DeploymentCameraDependencies.cs) | 2 | `InspectCameraDependencies`、`RepairCameraDependencies` | 部署 · 枚举当前产品登记，核验及修复随包相机依赖 |
-| [DeploymentDataPurge.Files.cs](../../src/Ipc.Platform/DeploymentDataPurge.Files.cs) | 2 | `DataPurgeRoots`、`AcquireOtherPurgeDeployments` | 部署 · 枚举可归属的数据根及其他安装保留范围 |
-| [DeploymentDataPurge.cs](../../src/Ipc.Platform/DeploymentDataPurge.cs) | 2 | `PurgeData`、`ResumeDataPurge` | 部署 · 清理与续办时取得对应根的维护所有权 |
-| [DeploymentMaintenanceCache.cs](../../src/Ipc.Platform/DeploymentMaintenanceCache.cs) | 1 | `InstalledInventory` | 部署 · 根据安装阶段查找维护库存 |
-| [DeploymentOpaqueRemoval.cs](../../src/Ipc.Platform/DeploymentOpaqueRemoval.cs) | 2 | `UninstallProgram`、`RequireOpaqueRemovalCapability` | 部署 · 受保护的不透明卸载方式及准入 |
-| [DeploymentPurgedRestoreSource.cs](../../src/Ipc.Platform/DeploymentPurgedRestoreSource.cs) | 5 | `RequirePurgedRestoreSource`、`ProjectPurgedRestoreSource` | 部署 / 历史与恢复 · 用原卸载、部署与数据根证明恢复来源 |
-| [DeploymentQuietJournal.cs](../../src/Ipc.Platform/DeploymentQuietJournal.cs) | 2 | `BeginQuietOperation`、`InspectQuietRecord` | 部署 · 静默原操作的登记及只读核对 |
-| [DeploymentRestoreIntent.cs](../../src/Ipc.Platform/DeploymentRestoreIntent.cs) | 4 | `ValidateRestoreIntent`、`ReadRestoreIntents` | 部署 / 历史与恢复 · 受保护恢复意图的产品身份、版本和原记录 |
-| [DeploymentRollback.cs](../../src/Ipc.Platform/DeploymentRollback.cs) | 6 | `RollbackVersionAllowed`、`Rollback` | 部署 · 同为 1.0.0 的回滚资格、登记修复与恢复占用 |
-| [DeploymentShortcuts.cs](../../src/Ipc.Platform/DeploymentShortcuts.cs) | 11 | `Plan`、`Create` | 部署 · 快捷方式计划、受控自启、正式与测试实例及旧入口归属 |
-| [DeploymentUninstallAssets.Windows.cs](../../src/Ipc.Platform/DeploymentUninstallAssets.Windows.cs) | 1 | `CleanUninstallAssets` | 部署 · Windows 卸载后残留资源的产品及阶段准入 |
-| [DeploymentUninstallAssets.cs](../../src/Ipc.Platform/DeploymentUninstallAssets.cs) | 1 | `PlanUninstallAssets` | 部署 · 冻结可清理的卸载资产清单 |
-| [DeploymentVersionPruning.cs](../../src/Ipc.Platform/DeploymentVersionPruning.cs) | 2 | `PruneVersions`、`InspectVersionPruning` | 部署 · 清理过期部署前核对维护所有权和保留引用 |
-| [DesktopRecoveryInstallation.cs](../../src/Ipc.Platform/DesktopRecoveryInstallation.cs) | 1 | `Project` | 部署 · 从已登记产品投影恢复入口 |
-| [DesktopRecoveryMigration.cs](../../src/Ipc.Platform/DesktopRecoveryMigration.cs) | 2 | `PrepareRecoveryMigration` | 部署 · 旧安装恢复路径选择停止所有权 |
-| [DesktopRecoverySupervisor.cs](../../src/Ipc.Platform/DesktopRecoverySupervisor.cs) | 1 | `HandleAsync` | 部署 · 恢复子进程受控参数的产品白名单 |
-| [InstallationResourceBoundary.cs](../../src/Ipc.Platform/InstallationResourceBoundary.cs) | 3 | `ReadOtherInstallation`、`ReadReservationsCore` | 部署 · 同机其他实例的登记和保留目录 |
-| [ManagementModeBroker.Installation.cs](../../src/Ipc.Platform/ManagementModeBroker.Installation.cs) | 1 | `RemoveIfUnused` | 部署 / 工作区 · 核对仍依赖管理代理的安装后决定移除 |
-| [ManagementModeBroker.Windows.cs](../../src/Ipc.Platform/ManagementModeBroker.Windows.cs) | 1 | `IsManaged` | 部署 / 工作区 · 按当前登记识别受管数据根 |
-| [SmVcRuntimeSetup.cs](../../src/Ipc.Platform/SmVcRuntimeSetup.cs) | 2 | `Missing`、`Ensure` | 部署 · 按介质内容检查原生相机的 VC 运行库 |
-| [WindowsDeploymentMaintenance.cs](../../src/Ipc.Platform/WindowsDeploymentMaintenance.cs) | 5 | `ProjectInstalledApplication`、`Remove` | 部署 · Windows 登记显示名称、移除及切换数据根 |
-| [WindowsDeploymentSetup.cs](../../src/Ipc.Platform/WindowsDeploymentSetup.cs) | 8 | `Current`、`RequireInstallationVersion` | 部署 · 读取登记、同版本安装许可与受保护系统入口 |
-| [WindowsStoragePaths.cs](../../src/Ipc.Platform/WindowsStoragePaths.cs) | 1 | `UserRoot` | 部署 / 参数 · 按受保护安装定位用户目录 |
-
-### Ipc.Desktop
-
-| 源文件 | 次数 | 入口举例 | 边界与职责 |
-| --- | ---: | --- | --- |
-| [DesktopLaunchOptions.cs](../../src/Ipc.Desktop/DesktopLaunchOptions.cs) | 1 | `DefaultUi` | 工作区 · 默认工作站视图 |
-| [MaintenanceCenterWindow.cs](../../src/Ipc.Desktop/MaintenanceCenterWindow.cs) | 1 | `MaintenanceCenterWindow` | 工作区 / 部署 · 维护中心的产品入口 |
-| [ParcelApp.xaml.cs](../../src/Ipc.Desktop/ParcelApp.xaml.cs) | 1 | `ApplicationId` | 拓扑 / 工作区 · 编译期工作站业务标识及窗口装配 |
-| [StartupSetupWindow.cs](../../src/Ipc.Desktop/StartupSetupWindow.cs) | 15 | `StartupSetupWindow`、`InlineReviewReady` | 部署 / 工作区 · 安装、修复、复核和下一步按钮的行为 |
-| [StartupWorkflows.cs](../../src/Ipc.Desktop/StartupWorkflows.cs) | 7 | `StartupRepairWindow`、`ValidateBarcodeRule` | 参数 / 部署 · 首配、草稿恢复、条码试算及安装维护入口 |
-
-### Ipc.Assembly
-
-| 源文件 | 次数 | 入口举例 | 边界与职责 |
-| --- | ---: | --- | --- |
-| [ParcelAssembly.cs](../../src/Ipc.Assembly/ParcelAssembly.cs) | 1 | `InstalledBusiness.Create` | 拓扑 · 编译期将产品标识绑定到实际 Flow 和运行时工厂 |
-| [ParcelCapabilityFactory.cs](../../src/Ipc.Assembly/ParcelCapabilityFactory.cs) | 3 | `UsesBuiltInSportmaster`、`Resolve` | 拓扑 / 协议 · 内置相机、RCS、扩展校验路径与热替换的选择 |
-| [ParcelStartupServices.DataPurge.cs](../../src/Ipc.Assembly/ParcelStartupServices.DataPurge.cs) | 1 | `SimpleUninstallCore` | 部署 · 简化卸载的产品准入 |
-| [ParcelStartupServices.Quiet.cs](../../src/Ipc.Assembly/ParcelStartupServices.Quiet.cs) | 5 | `RunQuietAsync`、`ExecuteQuietCommand` | 部署 · 静默安装命令与原操作续办 |
-| [ParcelStartupServices.cs](../../src/Ipc.Assembly/ParcelStartupServices.cs) | 6 | `EnsureCameraDependenciesAsync`、`ExecuteAsync` | 部署 · 相机依赖与安装、维护命令的执行选择 |
-
-### Ipc.Operations
-
-| 源文件 | 次数 | 入口举例 | 边界与职责 |
-| --- | ---: | --- | --- |
-| [OperationsInstallation.cs](../../src/Ipc.Operations/OperationsInstallation.cs) | 4 | `Load`、`LogDirectories` | 工作区 / 部署 · 从当前受保护登记取得同版程序、进程角色及日志根 |
-| [OperationsServer.cs](../../src/Ipc.Operations/OperationsServer.cs) | 1 | `OperationsServer` | 工作区 · 首份快照的业务身份及运行实例校验 |
+| [ProductDeploymentProfile.cs](../../src/Ipc.Platform/ProductDeploymentProfile.cs) | 1 | `ProductDeploymentCatalog` | 已声明产品 ID 和部署能力 |
+| [ParcelApp.xaml.cs](../../src/Ipc.Desktop/ParcelApp.xaml.cs) | 1 | `ApplicationId` | 编译期工作站业务标识及窗口装配 |
+| [ParcelAssembly.cs](../../src/Ipc.Assembly/ParcelAssembly.cs) | 1 | `InstalledBusiness.Create` | 编译期将产品标识绑定到实际 Flow 和运行时工厂 |
+| [ParcelCapabilityFactory.cs](../../src/Ipc.Assembly/ParcelCapabilityFactory.cs) | 3 | `UsesBuiltInSportmaster`、`Resolve` | PR 2 的内置相机、RCS、扩展校验及热替换选择 |

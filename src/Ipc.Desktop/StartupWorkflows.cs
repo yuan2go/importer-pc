@@ -118,7 +118,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (savedDraft is null || draft is null) throw new InvalidOperationException("没有可继续草稿");
             if (savedDraft.BaseChanged) throw new InvalidOperationException("草稿保存后配置已被修改，草稿未自动套用。请先对比当前配置。");
             if (savedDraft.Editor.Values.GetValueOrDefault("editor") == "live-v2") throw new InvalidOperationException("这是软件运行时保存的设置草稿，请在软件的“参数设置”页继续。当前输入和草稿均保留。");
-            if (document?.Candidate?.ApplicationId == "sportmaster") (draft.DisplayPreferences ??= new()).Restore(savedDraft.Editor.Values);
+            if (ProductDeploymentCatalog.Find(document?.Candidate?.ApplicationId)?.UsesStationDisplayPreferences == true) (draft.DisplayPreferences ??= new()).Restore(savedDraft.Editor.Values);
             draft = draft.WithRestored(savedDraft.Editor); Render(false); Message("已恢复上次未完成的输入。参数有改动，请重新检查。"); return Task.CompletedTask;
         });
         Action(RepairAction.ExportTemplate, "导出设置模板…", () =>
@@ -345,12 +345,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     }
     async Task ValidateBarcodeRule()
     {
-        if (parameterEditor?.ApplicationId != "sportmaster") return;
-        var policy = parameterEditor.Policy.BuildBarcodePolicy();
-        var result = await Task.Run(() => parameterEditor.Preview(policy, ["__format_check__"]));
+        if (parameterEditor is not { } editor || ProductDeploymentCatalog.Find(editor.ApplicationId)?.SupportsFirstConfigurationBarcodeTest != true) return;
+        var policy = editor.Policy.BuildBarcodePolicy();
+        var result = await Task.Run(() => editor.Preview(policy, ["__format_check__"]));
         if (result.Outcome is "InvalidPattern" or "FilterTimeout")
         {
-            parameterEditor.Report(result.Detail); LocateFirstIssue();
+            editor.Report(result.Detail); LocateFirstIssue();
             throw new InvalidOperationException("请修正条码规则后继续。");
         }
     }
@@ -415,7 +415,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var preferences = draft?.DisplayPreferences;
         document = saved; draft = new(saved.Candidate, saved.Catalog) { DisplayPreferences = preferences };
         lastSaveConfirmed = true; startupSaveUncertain = false;
-        if (saved.Candidate.ApplicationId == "sportmaster") preferences?.Save();
+        if (ProductDeploymentCatalog.Require(saved.Candidate.ApplicationId).UsesStationDisplayPreferences) preferences?.Save();
         Render(false); savedInput = Input();
         saveState.Text = preferences?.HasChanges == true ? "业务配置已保存；本机偏好待保存" : "已保存，启动时检查";
     }
@@ -535,7 +535,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             RepairAction.ReadRestore or RepairAction.OpenRestore => maintenance is not null,
             RepairAction.ExecuteRestore => recovery is not null && !UnknownOutcome,
             RepairAction.AdoptRestore => restoredPreview?.State is "Isolated" or "HandoffPrepared" or "ProjectionPending" or "AdoptedIsolated" && restoredBackup is not null,
-            RepairAction.Rollback or RepairAction.VersionPrune or RepairAction.History => ParcelStartupServices.ApplicationId == "sportmaster",
+            RepairAction.Rollback or RepairAction.VersionPrune or RepairAction.History => ProductDeploymentCatalog.Require(ParcelStartupServices.ApplicationId).ShowsAdvancedDeploymentMaintenance,
             RepairAction.ContinueDraft => draft is not null && savedDraft is not null,
             _ => draft is not null && (!startupSaveUncertain || kind is RepairAction.SaveDraft or RepairAction.ExportTemplate)
         };
@@ -664,7 +664,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             }
             Render();
             var resumed = initialConfiguration && savedDraft is { BaseChanged: false } && draft is not null && savedDraft.Editor.Values.GetValueOrDefault("editor") != "live-v2";
-            if (resumed) { if (document?.Candidate?.ApplicationId == "sportmaster") (draft!.DisplayPreferences ??= new()).Restore(savedDraft!.Editor.Values); draft = draft!.WithRestored(savedDraft!.Editor); Render(false); preservedDraftInput = savedInput = Input(); }
+            if (resumed) { if (ProductDeploymentCatalog.Find(document?.Candidate?.ApplicationId)?.UsesStationDisplayPreferences == true) (draft!.DisplayPreferences ??= new()).Restore(savedDraft!.Editor.Values); draft = draft!.WithRestored(savedDraft!.Editor); Render(false); preservedDraftInput = savedInput = Input(); }
             diagnosticDetails = string.Join("\n", document!.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic + unavailableDraft;
             Message(initialConfiguration
                 ? document.Candidate is null ? "无法读取配置，原文件已保留。请使用启动修复处理后重新打开。"
@@ -881,14 +881,14 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     RepairAction.Check or RepairAction.Start => selectedTask == RepairTask.Review,
                     RepairAction.SaveAndStart => selectedTask == RepairTask.Review && !SceneOnly && savedInput != Input(),
                     RepairAction.Install or RepairAction.PlanRestore or RepairAction.ReadRestore => selectedTask == RepairTask.Recovery,
-                    RepairAction.Rollback or RepairAction.VersionPrune or RepairAction.History => selectedTask == RepairTask.Recovery && document?.Candidate?.ApplicationId == "sportmaster",
+                    RepairAction.Rollback or RepairAction.VersionPrune or RepairAction.History => selectedTask == RepairTask.Recovery && ProductDeploymentCatalog.Find(document?.Candidate?.ApplicationId)?.ShowsAdvancedDeploymentMaintenance == true,
                     RepairAction.ExecuteRestore => selectedTask == RepairTask.Recovery && recovery is not null,
                     RepairAction.AdoptRestore => selectedTask == RepairTask.Recovery && restoredPreview is not null,
                     RepairAction.Previous => !SceneOnly && selectedTask is RepairTask.Parameters or RepairTask.Review,
                     RepairAction.Next => !SceneOnly && selectedTask is RepairTask.Directory or RepairTask.Parameters,
                     _ => false
                 };
-            if (kind is RepairAction.ReadRestore or RepairAction.OpenRestore && ParcelStartupServices.ApplicationId != "sportmaster") visible = false;
+            if (kind is RepairAction.ReadRestore or RepairAction.OpenRestore && !ProductDeploymentCatalog.Require(ParcelStartupServices.ApplicationId).RequiresRestoreHandoff) visible = false;
             if (initialConfiguration && kind == RepairAction.OpenRestore && !authorityAllowed) visible = false;
             button.Visibility = (RestoreAdopted ? kind == RepairAction.Exit : visible) ? Visibility.Visible : Visibility.Collapsed;
             button.IsEnabled = CanExecute(kind);

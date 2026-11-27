@@ -26,17 +26,19 @@ public partial class App : System.Windows.Application
 #else
     const string ApplicationId = "wcs-to-plc";
 #endif
+    static ProductDeploymentProfile DeploymentProfile { get; } = ProductDeploymentCatalog.Require(ApplicationId);
+
     protected override async void OnStartup(StartupEventArgs e)
     {
 #if SPORTMASTER
-        if (e.Args.Contains(InstallationIdentity.OperationsArgument, StringComparer.Ordinal))
+        if (DeploymentProfile.SupportsStandaloneOperationsTool && e.Args.Contains(InstallationIdentity.OperationsArgument, StringComparer.Ordinal))
         {
             base.OnStartup(e);
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             try
             {
                 if (e.Args.Length != 1) throw new ArgumentException("运维入口不接受其他启动参数。");
-                var deployment = await Task.Run(() => Ipc.Operations.OperationsInstallation.Load(AppContext.BaseDirectory));
+                var deployment = await Task.Run(() => Ipc.Operations.OperationsInstallation.Load(AppContext.BaseDirectory, ApplicationId));
                 var lease = new Ipc.Operations.OperationsToolLease(deployment);
                 Exit += (_, _) => lease.Dispose();
                 MainWindow = new Ipc.Operations.Desktop.OperationsWindow(deployment) { Title = InstallationIdentity.OperationsDisplayName };
@@ -176,11 +178,12 @@ public partial class App : System.Windows.Application
             // A supervised child must never replace its registered process ID.
             if (!recoveryChild && OrdinaryRuntimeProcess.RelaunchCurrentIfElevated(ordinaryArguments.ToArray()))
             { startup.AllowClose = true; Shutdown(0); return; }
-#if SPORTMASTER
-            startup.Phase("检查相机依赖", "正在检查相机组件与系统运行库。缺失时从同版维护缓存恢复，系统安装可能需要 Windows 授权。", "开始核验相机启动依赖");
-            if (await ParcelStartupServices.EnsureCameraDependenciesAsync(AppContext.BaseDirectory))
-                startup.Phase("相机依赖已恢复", "正在继续启动检查，尚未连接设备。", "相机启动依赖已恢复并复查");
-#endif
+            if (DeploymentProfile.RequiresBundledCameraDependencies)
+            {
+                startup.Phase("检查相机依赖", "正在检查相机组件与系统运行库。缺失时从同版维护缓存恢复，系统安装可能需要 Windows 授权。", "开始核验相机启动依赖");
+                if (await ParcelStartupServices.EnsureCameraDependenciesAsync(AppContext.BaseDirectory))
+                    startup.Phase("相机依赖已恢复", "正在继续启动检查，尚未连接设备。", "相机启动依赖已恢复并复查");
+            }
             if (!recoveryChild && OperatingSystem.IsWindows() && File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json")) &&
                 DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is { LifecycleState: "Installed", Recovery.Enabled: true } installed &&
                 Path.GetFullPath(launch.DataRoot).Equals(Path.GetFullPath(installed.DataRoot), StringComparison.OrdinalIgnoreCase) &&
@@ -222,14 +225,15 @@ public partial class App : System.Windows.Application
             await Ipc.Application.ParcelFlow.Desktop.WorkstationEntry.BeginRuntimeAsync(application);
             var initial = await Task.Run(application.SnapshotAsync);
             crashDiagnostics.SetContext(initial.RuntimeId.ToString(), string.Join(",", initial.Devices?.Select(d => d.DeviceId + ":" + d.Epoch) ?? []), initial.State);
-            #if SPORTMASTER
+#if SPORTMASTER
             try
             {
-                if (DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId, requireReady: false) is { } currentInstallation &&
+                if (DeploymentProfile.SupportsStandaloneOperationsTool &&
+                    DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId, requireReady: false) is { } currentInstallation &&
                     Path.GetFullPath(launch.DataRoot).Equals(Path.GetFullPath(currentInstallation.DataRoot), StringComparison.OrdinalIgnoreCase) &&
                     Path.GetFullPath(launch.ConfigurationDirectory).Equals(Path.GetFullPath(currentInstallation.ConfigurationDirectory), StringComparison.OrdinalIgnoreCase))
-                    operations = new(Ipc.Operations.OperationsInstallation.Load(AppContext.BaseDirectory), (IParcelPresentationSource)application, initial, application,
-                        () => ParcelStartupServices.Maintenance(launch));
+                    operations = new(ApplicationId, Ipc.Operations.OperationsInstallation.Load(AppContext.BaseDirectory, ApplicationId),
+                        (IParcelPresentationSource)application, initial, application, () => ParcelStartupServices.Maintenance(launch));
             }
             catch (Exception error) { crashDiagnostics.Report("Operations.ReadOnlyEndpointUnavailable", error); }
 #endif

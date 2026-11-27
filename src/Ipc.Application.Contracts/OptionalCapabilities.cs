@@ -10,4 +10,5 @@ public interface IImageCamera : Ipc.Platform.IImageCamera<FrozenRequest, StageRe
 public interface IImageUploader : Ipc.Platform.IImageUploader<FrozenRequest, StageReply> { }
 public interface ILoginExtension { IOperatorAuthenticator Create(CapabilityBinding binding); }
 public interface ICameraExtension { IImageCamera Create(CapabilityBinding binding, string temporaryDirectory); }
+public interface IVolumeExtension { IControlledVolumeSource Create(CapabilityBinding binding); }
 public interface IUploadExtension { IImageUploader Create(CapabilityBinding binding); }

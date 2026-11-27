@@ -17,4 +17,257 @@
     <sys:String x:Key="Common.LanguageSaveFailed">Установка завершена, но язык сохранить не удалось. Повторите попытку в настройках станции.</sys:String>
     <sys:String x:Key="Installer.LanguageTitle">选择安装语言 / Select Setup Language / Выбор языка установки</sys:String>
     <sys:String x:Key="Installer.LanguagePrompt">安装语言 / Setup language / Язык установки</sys:String>
+    <sys:String x:Key="Installer.CancelTrilingual" xml:space="preserve">取消 / Cancel / Отмена</sys:String>
+    <sys:String x:Key="Installer.ContinueTrilingual" xml:space="preserve">继续 / Continue / Далее</sys:String>
+    <sys:String x:Key="Setup.Install" xml:space="preserve">Установить</sys:String>
+    <sys:String x:Key="Setup.TitlePrefix" xml:space="preserve">Установка · </sys:String>
+    <sys:String x:Key="Setup.MediaRequired" xml:space="preserve">Сначала проверьте комплект установки.</sys:String>
+    <sys:String x:Key="Setup.VersionPrefix" xml:space="preserve">Версия: </sys:String>
+    <sys:String x:Key="Setup.VersionSuffix" xml:space="preserve"> Windows 64-разрядная</sys:String>
+    <sys:String x:Key="Setup.CheckMedia" xml:space="preserve">Проверить комплект установки</sys:String>
+    <sys:String x:Key="Setup.OpenRecords" xml:space="preserve">Открыть журнал установки</sys:String>
+    <sys:String x:Key="Setup.ViewResult" xml:space="preserve">Проверить результат</sys:String>
+    <sys:String x:Key="Setup.RepairRegistration" xml:space="preserve">Восстановить меню «Пуск» и запуск…</sys:String>
+    <sys:String x:Key="Setup.RegistrationChanged" xml:space="preserve">Запись об установке изменилась. Сначала проверьте результат.</sys:String>
+    <sys:String x:Key="Setup.RepairRegistrationDetail" xml:space="preserve">Восстановление меню «Пуск» и запуска
+Установка: </sys:String>
+    <sys:String x:Key="Setup.RepairKeepsData" xml:space="preserve">
+Данные и настройки сохраняются.</sys:String>
+    <sys:String x:Key="Setup.CloseOriginal" xml:space="preserve">Завершить исходную попытку и проверить заново</sys:String>
+    <sys:String x:Key="Setup.CheckOriginalFirst" xml:space="preserve">Сначала проверьте результат исходной установки.</sys:String>
+    <sys:String x:Key="Setup.CloseOriginalDetail" xml:space="preserve">Завершение проверенной незавершённой установки
+Исходная операция: </sys:String>
+    <sys:String x:Key="Setup.OriginalStillOpen" xml:space="preserve">Исходная установка ещё не завершена. Проверьте её результат.</sys:String>
+    <sys:String x:Key="Setup.OriginalClosed" xml:space="preserve">Незавершённая установка закрыта. Проверьте текущие параметры.</sys:String>
+    <sys:String x:Key="Setup.RecheckOptions" xml:space="preserve">Проверить параметры заново</sys:String>
+    <sys:String x:Key="Setup.UninstallAction" xml:space="preserve">Удалить программу…</sys:String>
+    <sys:String x:Key="Setup.CancelPreparing" xml:space="preserve">Подготовка прерывается. Подождите…</sys:String>
+    <sys:String x:Key="Setup.RegisteredPathHelp" xml:space="preserve">Используется сохранённый путь. Для переноса выполните полное резервное копирование и восстановление.</sys:String>
+    <sys:String x:Key="Setup.FrozenPathHelp" xml:space="preserve">Параметры проверены. Для изменения выберите «Изменить параметры».</sys:String>
+    <sys:String x:Key="Setup.Browse" xml:space="preserve">Обзор…</sys:String>
+    <sys:String x:Key="Setup.BrowseName" xml:space="preserve">Выбрать: </sys:String>
+    <sys:String x:Key="Setup.PendingResult" xml:space="preserve">Результат установки уточняется</sys:String>
+    <sys:String x:Key="Setup.Incomplete" xml:space="preserve">Установка не завершена</sys:String>
+    <sys:String x:Key="Setup.Installing" xml:space="preserve">Установка</sys:String>
+    <sys:String x:Key="Setup.Preparing" xml:space="preserve">Подготовка к установке</sys:String>
+    <sys:String x:Key="Setup.Options" xml:space="preserve">Параметры установки</sys:String>
+    <sys:String x:Key="Setup.Confirm" xml:space="preserve">Подтверждение установки</sys:String>
+    <sys:String x:Key="Setup.Complete" xml:space="preserve">Установка завершена</sys:String>
+    <sys:String x:Key="Setup.EditOptions" xml:space="preserve">Изменить параметры</sys:String>
+    <sys:String x:Key="Setup.NotCommitted" xml:space="preserve">Исходная установка проверена и не зафиксирована. Завершите её перед повторной проверкой.</sys:String>
+    <sys:String x:Key="Setup.RepairOutcomeUnknown" xml:space="preserve">Установка завершена. Восстановление меню «Пуск» и запуска не подтверждено. Проверьте результат.</sys:String>
+    <sys:String x:Key="Setup.OutcomeUnknown" xml:space="preserve">Не удалось подтвердить итог установки.</sys:String>
+    <sys:String x:Key="Setup.CheckNoReplay" xml:space="preserve">Нажмите «Проверить результат». Повторная установка не запустится.</sys:String>
+    <sys:String x:Key="Setup.NoRepeat" xml:space="preserve">Дождитесь подтверждения перед повторной установкой.</sys:String>
+    <sys:String x:Key="Setup.CloseKeepsRunning" xml:space="preserve">Закрытие окна не остановит текущую установку.</sys:String>
+    <sys:String x:Key="Setup.FailedStage" xml:space="preserve">Этап остановки: </sys:String>
+    <sys:String x:Key="Setup.PartialFailure" xml:space="preserve">. Установка могла выполниться частично. Автоматического отката нет. При повторе условия будут проверены заново. Сначала подтвердите исходный результат, если он неизвестен.</sys:String>
+    <sys:String x:Key="Setup.ReturnOptions" xml:space="preserve">К параметрам установки</sys:String>
+    <sys:String x:Key="Setup.WaitCompletion" xml:space="preserve">Дождитесь результата установки.</sys:String>
+    <sys:String x:Key="Setup.CancellationNotice" xml:space="preserve">Отмена доступна на отдельных этапах. После отмены дождитесь результата. Закрытие окна не отменяет изменения.</sys:String>
+    <sys:String x:Key="Setup.CheckingMedia" xml:space="preserve">Проверяем файлы установки. Подождите…</sys:String>
+    <sys:String x:Key="Setup.ReviewReady" xml:space="preserve">Параметры проверены. Проверьте изменения. Они вступят в силу после нажатия «Установить».</sys:String>
+    <sys:String x:Key="Setup.ChooseOptions" xml:space="preserve">Выберите место и параметры установки, затем нажмите «Далее».</sys:String>
+    <sys:String x:Key="Setup.ActionLabel" xml:space="preserve">Операция: </sys:String>
+    <sys:String x:Key="Setup.ConfirmOptions" xml:space="preserve">. Подтвердите указанные параметры для продолжения.</sys:String>
+    <sys:String x:Key="Setup.Installed" xml:space="preserve">Станция подачи Cainiao установлена.</sys:String>
+    <sys:String x:Key="Setup.MediaDetails" xml:space="preserve">Файлы установки</sys:String>
+    <sys:String x:Key="Setup.ReadingMedia" xml:space="preserve">Проверяем версию и целостность. Затем откроются параметры установки.</sys:String>
+    <sys:String x:Key="Setup.RetryCheck" xml:space="preserve">Повторить проверку</sys:String>
+    <sys:String x:Key="Setup.Reinstall" xml:space="preserve">Переустановить</sys:String>
+    <sys:String x:Key="Setup.Repair" xml:space="preserve">Восстановить</sys:String>
+    <sys:String x:Key="Setup.Update" xml:space="preserve">Обновить</sys:String>
+    <sys:String x:Key="Setup.Impact" xml:space="preserve">Изменения при установке</sys:String>
+    <sys:String x:Key="Setup.DataPurged" xml:space="preserve">Предыдущие данные станции и пароль управления удалены. Установка использует сохранённый путь и сохраняет записи развёртывания и аудита. Удалённые рабочие записи не восстанавливаются.</sys:String>
+    <sys:String x:Key="Setup.KeepStation" xml:space="preserve">. Учётная запись, данные и настройки сохраняются. Закройте станцию. Установка проверит, что программа завершена и ресурсы освобождены.</sys:String>
+    <sys:String x:Key="Setup.RequiresWindowsAdmin" xml:space="preserve">Для установки нужны права администратора Windows. Пароль управления станцией задаётся отдельно.</sys:String>
+    <sys:String x:Key="Setup.AutoStartShort" xml:space="preserve">Запуск при входе</sys:String>
+    <sys:String x:Key="Common.Enabled" xml:space="preserve">Вкл.</sys:String>
+    <sys:String x:Key="Setup.Dependencies" xml:space="preserve">Компоненты для установки: </sys:String>
+    <sys:String x:Key="Setup.Location" xml:space="preserve">Место установки</sys:String>
+    <sys:String x:Key="Setup.ProgramDirectory" xml:space="preserve">Папка программы</sys:String>
+    <sys:String x:Key="Setup.DataDirectory" xml:space="preserve">Папка данных</sys:String>
+    <sys:String x:Key="Setup.MaintainLocation" xml:space="preserve">Сохраняются зарегистрированные папки программы и данных. Для переноса сделайте полную резервную копию и выполните восстановление.</sys:String>
+    <sys:String x:Key="Setup.StartMenuShortcut" xml:space="preserve">Создать ярлыки в меню «Пуск»</sys:String>
+    <sys:String x:Key="Setup.DesktopShortcut" xml:space="preserve">Создать ярлык на рабочем столе</sys:String>
+    <sys:String x:Key="Setup.AutostartUnavailable" xml:space="preserve">Не удалось проверить ярлык автозапуска. Проверьте папку автозагрузки для этой учётной записи Windows.</sys:String>
+    <sys:String x:Key="Setup.AutoStart" xml:space="preserve">Запускать станцию при входе</sys:String>
+    <sys:String x:Key="Setup.AutoStartHelp" xml:space="preserve">Станция запускается при входе этого пользователя Windows.</sys:String>
+    <sys:String x:Key="Setup.AdvancedShortcuts" xml:space="preserve">Дополнительные параметры · Ярлыки</sys:String>
+    <sys:String x:Key="Setup.Advanced" xml:space="preserve">Дополнительные параметры</sys:String>
+    <sys:String x:Key="Setup.Settings" xml:space="preserve">Настройки установки</sys:String>
+    <sys:String x:Key="Setup.Shortcuts" xml:space="preserve">Ярлыки</sys:String>
+    <sys:String x:Key="Setup.BundledDrivers" xml:space="preserve">Захват изображения, распознавание штрихкодов и поддержка RCS входят в комплект. Установка не подключает оборудование. Программа и данные размещаются на диске D.</sys:String>
+    <sys:String x:Key="Setup.PurgedReinstall" xml:space="preserve">Переустановка. Прежние данные станции удалены. Используется сохранённый путь.</sys:String>
+    <sys:String x:Key="Setup.PurgedNotice" xml:space="preserve">Удалённые записи и пароль управления не восстанавливаются. Журналы развёртывания и аудита и личные настройки сохраняются. Закройте станцию, чтобы установка проверила освобождение ресурсов.</sys:String>
+    <sys:String x:Key="Setup.KeepExisting" xml:space="preserve">. Учётная запись, данные и настройки сохраняются.</sys:String>
+    <sys:String x:Key="Setup.ThisOperation" xml:space="preserve">Операция: </sys:String>
+    <sys:String x:Key="Setup.ReleaseBeforeInstall" xml:space="preserve">. Учётная запись, папка данных и настройки сохраняются. Закройте станцию, чтобы установка проверила освобождение ресурсов.</sys:String>
+    <sys:String x:Key="Setup.ReinstallKeepsRecords" xml:space="preserve">Переустановка сохраняет рабочие записи.</sys:String>
+    <sys:String x:Key="Setup.Preflight" xml:space="preserve">Подробности предварительной проверки</sys:String>
+    <sys:String x:Key="Setup.ThisPreflight" xml:space="preserve">Подробности текущей проверки</sys:String>
+    <sys:String x:Key="Setup.StartMenu" xml:space="preserve">Меню «Пуск»</sys:String>
+    <sys:String x:Key="Setup.CreateShortcut" xml:space="preserve">Создать ярлык</sys:String>
+    <sys:String x:Key="Setup.NoShortcut" xml:space="preserve">Без ярлыка</sys:String>
+    <sys:String x:Key="Setup.Desktop" xml:space="preserve">Рабочий стол</sys:String>
+    <sys:String x:Key="Setup.PurgedData" xml:space="preserve">Прежние данные станции удалены. Используется сохранённый путь. Удалённые записи не восстанавливаются.</sys:String>
+    <sys:String x:Key="Setup.CloseFirst" xml:space="preserve">Закройте станцию. Учётная запись, данные и настройки сохраняются.</sys:String>
+    <sys:String x:Key="Setup.Authority" xml:space="preserve">Для установки нужны права администратора Windows. Пароль управления станцией задаётся отдельно.</sys:String>
+    <sys:String x:Key="Setup.FirstUse" xml:space="preserve">Первый запуск</sys:String>
+    <sys:String x:Key="Setup.FoundConfig" xml:space="preserve">Найдена конфигурация. При запуске программа проверит её и сообщит, если что-то мешает работе.</sys:String>
+    <sys:String x:Key="Setup.FirstConfiguration" xml:space="preserve">При запуске программа проверит конфигурацию. Сохраните начальные настройки для запуска. Если проверка не пройдена, программа сообщит причину.</sys:String>
+    <sys:String x:Key="Setup.OpenAfter" xml:space="preserve">Открыть станцию после установки</sys:String>
+    <sys:String x:Key="Setup.UseOriginalAccount" xml:space="preserve">Откройте программу из учётной записи Windows, назначенной станции.</sys:String>
+    <sys:String x:Key="Setup.NoStageMessage" xml:space="preserve">Сообщения о ходе установки не получены.</sys:String>
+    <sys:String x:Key="Setup.PreviousMessages" xml:space="preserve">Предыдущие сообщения</sys:String>
+    <sys:String x:Key="Setup.WindowsConfirm" xml:space="preserve">Ожидается разрешение Windows. Подтвердите запрос.</sys:String>
+    <sys:String x:Key="Setup.WaitForAuthorization" xml:space="preserve">Ожидается разрешение Windows.</sys:String>
+    <sys:String x:Key="Setup.Authorizing" xml:space="preserve">Ожидается разрешение Windows. Подтвердите запрос, если он появится.</sys:String>
+    <sys:String x:Key="Setup.PastAuthorization" xml:space="preserve">Это предыдущие сообщения. Они не означают, что сейчас требуется разрешение.</sys:String>
+    <sys:String x:Key="Setup.Diagnostics" xml:space="preserve">Диагностика</sys:String>
+    <sys:String x:Key="Setup.RawMessage" xml:space="preserve">Исходное сообщение</sys:String>
+    <sys:String x:Key="Setup.Details" xml:space="preserve">Подробности установки</sys:String>
+    <sys:String x:Key="Setup.ViewDetails" xml:space="preserve">Подробности этой установки</sys:String>
+    <sys:String x:Key="Setup.RecordsUnavailable" xml:space="preserve">Папка записей установки пока недоступна.</sys:String>
+    <sys:String x:Key="Setup.RecordsError" xml:space="preserve">Папка записей установки недоступна: </sys:String>
+    <sys:String x:Key="Setup.RecordsMissing" xml:space="preserve">Папка записей установки не создана или недоступна.</sys:String>
+    <sys:String x:Key="Setup.OpenRecordsFailed" xml:space="preserve">Не удалось открыть записи установки: </sys:String>
+    <sys:String x:Key="Setup.OutcomeStillUnknown" xml:space="preserve"> Результат ещё не подтверждён. Не повторяйте установку.</sys:String>
+    <sys:String x:Key="Setup.ViewFailureDetails" xml:space="preserve"> Проверьте подробности сбоя.</sys:String>
+    <sys:String x:Key="Setup.CheckingClosed" xml:space="preserve">Проверяем, закрыта ли станция</sys:String>
+    <sys:String x:Key="Setup.Copying" xml:space="preserve">Копируем и проверяем файлы программы</sys:String>
+    <sys:String x:Key="Setup.CameraRuntime" xml:space="preserve">Проверяем и устанавливаем компоненты камер</sys:String>
+    <sys:String x:Key="Setup.PreparingData" xml:space="preserve">Подготавливаем настройки и папки данных</sys:String>
+    <sys:String x:Key="Setup.InstallingComponents" xml:space="preserve">Устанавливаем проверенные компоненты</sys:String>
+    <sys:String x:Key="Setup.ManagementService" xml:space="preserve">Регистрируем службу управления</sys:String>
+    <sys:String x:Key="Setup.Committing" xml:space="preserve">Сохраняем запись об установке</sys:String>
+    <sys:String x:Key="Setup.CreatingShortcuts" xml:space="preserve">Создаём выбранные ярлыки</sys:String>
+    <sys:String x:Key="Setup.Registering" xml:space="preserve">Регистрируем программу в Windows</sys:String>
+    <sys:String x:Key="Setup.CheckingResult" xml:space="preserve">Проверяем результат установки</sys:String>
+    <sys:String x:Key="Setup.ResumeFailed" xml:space="preserve">Не удалось продолжить исходную установку: </sys:String>
+    <sys:String x:Key="Setup.KeepOriginal" xml:space="preserve">
+Исходная операция и записи сохранены. Проверьте её результат.</sys:String>
+    <sys:String x:Key="Setup.StartDiagnosticsUnavailable" xml:space="preserve">Диагностика запуска недоступна. Проверьте журнал запуска.</sys:String>
+    <sys:String x:Key="Setup.OpenFailed" xml:space="preserve">Установка завершена, но станция не открылась. Нажмите «Готово» для повтора или снимите флажок, чтобы закрыть окно.
+</sys:String>
+    <sys:String x:Key="Setup.PreflightUnavailable" xml:space="preserve">Диагностика недоступна. Проверьте пути и настройки, затем повторите попытку.</sys:String>
+    <sys:String x:Key="Setup.PreflightFailed" xml:space="preserve">Предварительная проверка не пройдена. Посмотрите подробности.</sys:String>
+    <sys:String x:Key="Common.IncompletePrefix" xml:space="preserve">Не завершено: </sys:String>
+    <sys:String x:Key="Setup.WindowsRequired" xml:space="preserve">Для установки требуется Windows</sys:String>
+    <sys:String x:Key="Setup.CancelPreparation" xml:space="preserve">Отменить подготовку</sys:String>
+    <sys:String x:Key="Setup.CheckOptionsDetails" xml:space="preserve">Проверка параметров
+Комплект: </sys:String>
+    <sys:String x:Key="Setup.ProgramDetails" xml:space="preserve">
+Программа: </sys:String>
+    <sys:String x:Key="Setup.DataDetails" xml:space="preserve">
+Данные: </sys:String>
+    <sys:String x:Key="Setup.PreflightCancelDetail" xml:space="preserve">
+Проверка остановится после текущего файла или компонента.</sys:String>
+    <sys:String x:Key="Setup.PreflightStopped" xml:space="preserve">Проверка остановлена. Изменения не внесены.</sys:String>
+    <sys:String x:Key="Setup.PreparingRequest" xml:space="preserve">Готовим запрос на установку</sys:String>
+    <sys:String x:Key="Setup.DeployDetails" xml:space="preserve">Установка / Обновление / Восстановление
+Комплект: </sys:String>
+    <sys:String x:Key="Setup.RetainedDataDetails" xml:space="preserve">
+Сохраняемые данные: </sys:String>
+    <sys:String x:Key="Setup.ConfigurationUnknown" xml:space="preserve">Конфигурация не проверена. Откройте станцию, чтобы увидеть результат проверки. Оборудование пока не запущено.</sys:String>
+    <sys:String x:Key="Setup.ConfigurationFailure" xml:space="preserve">Не удалось проверить конфигурацию: </sys:String>
+    <sys:String x:Key="Setup.DevicesStopped" xml:space="preserve">. Оборудование не запущено.</sys:String>
+    <sys:String x:Key="Setup.SignInRuntime" xml:space="preserve">Запустите станцию из назначенной учётной записи Windows.</sys:String>
+    <sys:String x:Key="Setup.MissingOriginalIdentity" xml:space="preserve">Исходная установка не идентифицирована полностью. Перед новой операцией проверьте защищённую запись.</sys:String>
+    <sys:String x:Key="Setup.VerifyCurrentOptions" xml:space="preserve">Повторно проверьте текущие параметры.</sys:String>
+    <sys:String x:Key="Setup.LastOperation" xml:space="preserve">
+Предыдущая операция: </sys:String>
+    <sys:String x:Key="Setup.OriginalOperation" xml:space="preserve">Исходная операция: </sys:String>
+    <sys:String x:Key="Setup.SourceCommit" xml:space="preserve">
+Исходный коммит: </sys:String>
+    <sys:String x:Key="Setup.ProgramFolderDetails" xml:space="preserve">
+Папка программы: </sys:String>
+    <sys:String x:Key="Setup.DataFolderDetails" xml:space="preserve">
+Папка данных: </sys:String>
+    <sys:String x:Key="Uninstall.Missing" xml:space="preserve">Запись об установке не найдена.</sys:String>
+    <sys:String x:Key="Uninstall.KeepData" xml:space="preserve">Сохранить данные станции</sys:String>
+    <sys:String x:Key="Uninstall.DeleteData" xml:space="preserve">Удалить также данные станции</sys:String>
+    <sys:String x:Key="Uninstall.WindowTitle" xml:space="preserve">Станция подачи Cainiao · Удаление</sys:String>
+    <sys:String x:Key="Uninstall.Heading" xml:space="preserve">Удалить станцию подачи Cainiao</sys:String>
+    <sys:String x:Key="Uninstall.KeepDetail" xml:space="preserve">Сохранить настройки, записи, снимки, журналы и пароль управления.</sys:String>
+    <sys:String x:Key="Uninstall.DeleteDetail" xml:space="preserve">Безвозвратно удалить настройки, записи, снимки, журналы и пароль управления. После переустановки задайте новый пароль.</sys:String>
+    <sys:String x:Key="Uninstall.Action" xml:space="preserve">Удалить</sys:String>
+    <sys:String x:Key="Uninstall.CloseFirst" xml:space="preserve">Закройте станцию перед удалением.</sys:String>
+    <sys:String x:Key="Uninstall.RecordChanged" xml:space="preserve">Запись об установке изменилась. Откройте средство удаления заново.</sys:String>
+    <sys:String x:Key="Uninstall.DeletePreview" xml:space="preserve">Удалить программу, данные станции и пароль управления. Резервная копия не создаётся.</sys:String>
+    <sys:String x:Key="Uninstall.KeepPreview" xml:space="preserve">Удалить программу и сохранить данные. Резервная копия не создаётся.</sys:String>
+    <sys:String x:Key="Uninstall.StillInstalled" xml:space="preserve">Программа ещё установлена. Нажмите «Удалить», чтобы обработать предыдущую попытку.</sys:String>
+    <sys:String x:Key="Uninstall.PreviousUnknown" xml:space="preserve">Результат предыдущего удаления не подтверждён. Проверьте позже.</sys:String>
+    <sys:String x:Key="Uninstall.ResultTitle" xml:space="preserve">Станция подачи Cainiao · Результат удаления</sys:String>
+    <sys:String x:Key="Uninstall.Result" xml:space="preserve">Результат удаления</sys:String>
+    <sys:String x:Key="Uninstall.DataDeleted" xml:space="preserve">Данные станции и пароль управления удалены.</sys:String>
+    <sys:String x:Key="Uninstall.DataKept" xml:space="preserve">Данные станции сохранены.</sys:String>
+    <sys:String x:Key="Uninstall.MaintenanceRestart" xml:space="preserve">Очистка отложена: файлы обслуживания используются. После перезапуска Windows проверьте результат полным установщиком.</sys:String>
+    <sys:String x:Key="Uninstall.FilesKept" xml:space="preserve">Часть старых файлов программы или кеша обслуживания не удалена. Посмотрите подробности перед повтором. Непроверенные файлы сохранены.</sys:String>
+    <sys:String x:Key="Uninstall.CompleteWithPurge" xml:space="preserve">Удаление завершено. Данные станции, пароль, старые файлы программы и кеш обслуживания удалены.</sys:String>
+    <sys:String x:Key="Uninstall.DataBusy" xml:space="preserve">Программа удалена. Часть данных осталась. Закройте программы, использующие эти файлы, и повторите попытку.</sys:String>
+    <sys:String x:Key="Uninstall.Restart" xml:space="preserve">Программа удалена. Некоторые файлы будут удалены после перезапуска Windows.</sys:String>
+    <sys:String x:Key="Uninstall.PurgePending" xml:space="preserve">Программа удалена. Данные станции остались. Повторите удаление для очистки.</sys:String>
+    <sys:String x:Key="Uninstall.CompleteKept" xml:space="preserve">Удаление завершено. Данные станции сохранены.</sys:String>
+    <sys:String x:Key="Uninstall.FilesBusy" xml:space="preserve">Программа удалена. Некоторые файлы остались. Закройте программы, использующие их, и повторите попытку.</sys:String>
+    <sys:String x:Key="Uninstall.ProgramPath" xml:space="preserve">Папка программы: </sys:String>
+    <sys:String x:Key="Uninstall.DataPath" xml:space="preserve">
+Сохранённые данные: </sys:String>
+    <sys:String x:Key="Uninstall.ReceiptPath" xml:space="preserve">
+Запись об удалении: </sys:String>
+    <sys:String x:Key="Uninstall.PurgeReceipt" xml:space="preserve">Запись об очистке данных: </sys:String>
+    <sys:String x:Key="Uninstall.CacheReceipt" xml:space="preserve">Запись об очистке: </sys:String>
+    <sys:String x:Key="Uninstall.Remaining" xml:space="preserve">Оставшиеся файлы и папки:
+</sys:String>
+    <sys:String x:Key="Uninstall.Unverified" xml:space="preserve">
+Сохранённые непроверенные элементы:
+</sys:String>
+    <sys:String x:Key="Uninstall.Details" xml:space="preserve">Подробности удаления</sys:String>
+    <sys:String x:Key="Uninstall.RemainingPrefix" xml:space="preserve">Осталось очистить: </sys:String>
+    <sys:String x:Key="Uninstall.FolderCount" xml:space="preserve"> папок и </sys:String>
+    <sys:String x:Key="Uninstall.RetainedSummary" xml:space="preserve"> сохранённых элементов. Полный список приведён в записи об очистке.</sys:String>
+    <sys:String x:Key="Uninstall.ScopePurge" xml:space="preserve">Очистка включает пароль управления этой станции. Общие драйверы и библиотеки, личные настройки, записи безопасности и внешние резервные копии сохраняются.</sys:String>
+    <sys:String x:Key="Uninstall.ScopeKeep" xml:space="preserve">Пароль управления, общие драйверы и библиотеки, личные настройки, записи безопасности и внешние резервные копии сохраняются.</sys:String>
+    <sys:String x:Key="Uninstall.Retry" xml:space="preserve">Повторить удаление</sys:String>
+    <sys:String x:Key="Uninstall.UnknownNoReplay" xml:space="preserve">Результат удаления неизвестен. Повторное нажатие проверит исходную операцию без нового удаления.
+</sys:String>
+    <sys:String x:Key="Setup.WorkflowTitle" xml:space="preserve">Установка станции подачи Cainiao</sys:String>
+    <sys:String x:Key="Startup.Product" xml:space="preserve">Станция подачи Cainiao</sys:String>
+    <sys:String x:Key="Setup.HostVersion" xml:space="preserve">Текущий модуль обслуживания: </sys:String>
+    <sys:String x:Key="Setup.CurrentDeployment" xml:space="preserve">
+
+Зарегистрированная установка: </sys:String>
+    <sys:String x:Key="Setup.Unregistered" xml:space="preserve">Не зарегистрировано</sys:String>
+    <sys:String x:Key="Setup.TargetMedia" xml:space="preserve">
+
+Выбранный комплект: </sys:String>
+    <sys:String x:Key="Setup.BuildTransition" xml:space="preserve">
+Текущая сборка → целевая сборка:
+</sys:String>
+    <sys:String x:Key="Setup.CouldNotReadDeployment" xml:space="preserve">
+Не удалось прочитать запись об установке: </sys:String>
+    <sys:String x:Key="Setup.CopyVersion" xml:space="preserve">Сведения о версии (можно скопировать)</sys:String>
+    <sys:String x:Key="Setup.StepWelcome" xml:space="preserve">1  Приветствие и место</sys:String>
+    <sys:String x:Key="Setup.StepInstall" xml:space="preserve">2  Установка</sys:String>
+    <sys:String x:Key="Setup.StepFinished" xml:space="preserve">3  Завершение</sys:String>
+    <sys:String x:Key="Setup.StepOptions" xml:space="preserve">1  Параметры установки</sys:String>
+    <sys:String x:Key="Setup.StepConfirm" xml:space="preserve">2  Подтверждение и установка</sys:String>
+    <sys:String x:Key="Setup.VersionInformation" xml:space="preserve">Сведения о версии</sys:String>
+    <sys:String x:Key="Setup.MaintenanceUnknown" xml:space="preserve">Результат последней операции не подтверждён. Проверьте его перед повтором. При закрытии окна записи сохранятся.</sys:String>
+    <sys:String x:Key="Setup.MaintenancePastUnknown" xml:space="preserve">Результат предыдущего обслуживания не подтверждён. Не повторяйте операцию.
+</sys:String>
+    <sys:String x:Key="Setup.CheckReceipt" xml:space="preserve">
+Перед повтором проверьте исходную квитанцию и текущее состояние. Выполненные шаги не откатываются.</sys:String>
+    <sys:String x:Key="Setup.ChooseFolder" xml:space="preserve">Выбрать папку…</sys:String>
+    <sys:String x:Key="Setup.CleanupFailed" xml:space="preserve">Не удалось очистить все файлы установки</sys:String>
+    <sys:String x:Key="Setup.PackageUnavailable" xml:space="preserve">Установщик недоступен</sys:String>
+    <sys:String x:Key="Setup.MissingPayload" xml:space="preserve">Встроенные файлы установки отсутствуют. Используйте полный установщик.</sys:String>
+    <sys:String x:Key="Setup.MissingMetadata" xml:space="preserve">Отсутствуют сведения об установщике</sys:String>
+    <sys:String x:Key="Setup.PreparingBusy" xml:space="preserve">Папка подготовки установки занята</sys:String>
+    <sys:String x:Key="Setup.UnownedFolder" xml:space="preserve">Папка не относится к этой установке и сохранена.</sys:String>
+    <sys:String x:Key="Setup.LinkInPreparation" xml:space="preserve">Папка подготовки содержит ссылку и сохранена: </sys:String>
+    <sys:String x:Key="Setup.VerifyFiles">Проверяем файлы установки</sys:String>
+    <sys:String x:Key="Setup.PrepareFiles">Подготавливаем файлы установки</sys:String>
+    <sys:String x:Key="Setup.RecheckFiles">Повторно проверяем файлы установки</sys:String>
+    <sys:String x:Key="Setup.FilesReady">Файлы установки готовы</sys:String>
 </ResourceDictionary>

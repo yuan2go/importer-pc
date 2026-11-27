@@ -16,9 +16,11 @@ public static partial class ParcelStartupServices
         var code = 1603;
         object? result = null;
         var replay = false;
+        string? installedLanguage = null;
         try
         {
             var command = InstallerCommandLine.Parse(args); operationId = command.OperationId;
+            if (command.Action == "Install") installedLanguage = command.Language;
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
             MachineRuntimePolicy.RequireExtensionInstallerAuthority();
             log = Path.GetFullPath(command.Log ?? Path.Combine(InstallationIdentity.DeploymentLogRoot, command.OperationId + ".log"));
@@ -92,6 +94,22 @@ public static partial class ParcelStartupServices
                 catch (Exception error) { code = 1627; Console.Error.WriteLine("原结构化日志释放未确认：" + error.GetType().Name); }
                 try { operation?.Dispose(); }
                 catch (Exception error) { code = 1627; Console.Error.WriteLine("原静默命令租约释放未确认：" + error.GetType().Name); }
+            }
+        }
+        if (code == 0 && installedLanguage is { } language && OperatingSystem.IsWindows())
+        {
+            try
+            {
+                using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+                if (identity.User?.Value is not (null or "S-1-5-18" or "S-1-5-19" or "S-1-5-20"))
+                    PresentationPreferences.SaveLanguage(ApplicationId, language);
+                else
+                    Console.Error.WriteLine("Installation completed. A service account has no interactive language preference.");
+            }
+            catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
+            {
+                Console.Error.WriteLine("Installation completed, but the current user's language preference could not be saved: "
+                    + DiagnosticText.Protect(error.Message));
             }
         }
         if (failureDetail is not null) Console.Error.WriteLine(Wire.Encode(new { OperationId = operationId, ExitCode = code, Result = result }));

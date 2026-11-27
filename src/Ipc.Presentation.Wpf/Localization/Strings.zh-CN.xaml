@@ -17,4 +17,257 @@
     <sys:String x:Key="Common.LanguageSaveFailed">安装已完成，但无法保存所选界面语言。请在供包台设置中重试。</sys:String>
     <sys:String x:Key="Installer.LanguageTitle">选择安装语言 / Select Setup Language / Выбор языка установки</sys:String>
     <sys:String x:Key="Installer.LanguagePrompt">安装语言 / Setup language / Язык установки</sys:String>
+    <sys:String x:Key="Installer.CancelTrilingual" xml:space="preserve">取消 / Cancel / Отмена</sys:String>
+    <sys:String x:Key="Installer.ContinueTrilingual" xml:space="preserve">继续 / Continue / Далее</sys:String>
+    <sys:String x:Key="Setup.Install" xml:space="preserve">安装</sys:String>
+    <sys:String x:Key="Setup.TitlePrefix" xml:space="preserve">安装 · </sys:String>
+    <sys:String x:Key="Setup.MediaRequired" xml:space="preserve">请先核验完整介质。</sys:String>
+    <sys:String x:Key="Setup.VersionPrefix" xml:space="preserve">版本: </sys:String>
+    <sys:String x:Key="Setup.VersionSuffix" xml:space="preserve"> Windows 64位</sys:String>
+    <sys:String x:Key="Setup.CheckMedia" xml:space="preserve">检查安装媒介</sys:String>
+    <sys:String x:Key="Setup.OpenRecords" xml:space="preserve">打开安装记录目录</sys:String>
+    <sys:String x:Key="Setup.ViewResult" xml:space="preserve">查看本次安装结果</sys:String>
+    <sys:String x:Key="Setup.RepairRegistration" xml:space="preserve">修复开始菜单和程序入口…</sys:String>
+    <sys:String x:Key="Setup.RegistrationChanged" xml:space="preserve">安装登记已变化，请先查看安装结果</sys:String>
+    <sys:String x:Key="Setup.RepairRegistrationDetail" xml:space="preserve">修复开始菜单和程序入口
+安装位置：</sys:String>
+    <sys:String x:Key="Setup.RepairKeepsData" xml:space="preserve">
+数据和配置不变。</sys:String>
+    <sys:String x:Key="Setup.CloseOriginal" xml:space="preserve">结束原次并重新审阅</sys:String>
+    <sys:String x:Key="Setup.CheckOriginalFirst" xml:space="preserve">请先核对原安装结果。</sys:String>
+    <sys:String x:Key="Setup.CloseOriginalDetail" xml:space="preserve">结束已核验未提交的原安装
+原操作：</sys:String>
+    <sys:String x:Key="Setup.OriginalStillOpen" xml:space="preserve">原次安装尚未完成收口，请核对原结果。</sys:String>
+    <sys:String x:Key="Setup.OriginalClosed" xml:space="preserve">原次未提交安装已结束。请重新核对当前安装选项。</sys:String>
+    <sys:String x:Key="Setup.RecheckOptions" xml:space="preserve">重新检查安装选项</sys:String>
+    <sys:String x:Key="Setup.UninstallAction" xml:space="preserve">卸载程序…</sys:String>
+    <sys:String x:Key="Setup.CancelPreparing" xml:space="preserve">正在取消安装文件准备，请稍候…</sys:String>
+    <sys:String x:Key="Setup.RegisteredPathHelp" xml:space="preserve">沿用已登记位置；迁移位置请使用完整备份与恢复流程。</sys:String>
+    <sys:String x:Key="Setup.FrozenPathHelp" xml:space="preserve">安装选项已核对；需要修改时请先选择修改选项。</sys:String>
+    <sys:String x:Key="Setup.Browse" xml:space="preserve">浏览…</sys:String>
+    <sys:String x:Key="Setup.BrowseName" xml:space="preserve">浏览</sys:String>
+    <sys:String x:Key="Setup.PendingResult" xml:space="preserve">安装结果待确认</sys:String>
+    <sys:String x:Key="Setup.Incomplete" xml:space="preserve">安装未完成</sys:String>
+    <sys:String x:Key="Setup.Installing" xml:space="preserve">正在安装</sys:String>
+    <sys:String x:Key="Setup.Preparing" xml:space="preserve">准备安装</sys:String>
+    <sys:String x:Key="Setup.Options" xml:space="preserve">安装选项</sys:String>
+    <sys:String x:Key="Setup.Confirm" xml:space="preserve">确认安装</sys:String>
+    <sys:String x:Key="Setup.Complete" xml:space="preserve">安装完成</sys:String>
+    <sys:String x:Key="Setup.EditOptions" xml:space="preserve">修改选项</sys:String>
+    <sys:String x:Key="Setup.NotCommitted" xml:space="preserve">原安装已核验未提交，请结束原次后重新审阅。</sys:String>
+    <sys:String x:Key="Setup.RepairOutcomeUnknown" xml:space="preserve">安装已完成，但开始菜单和程序入口的修复结果未确认。请先查看安装结果。</sys:String>
+    <sys:String x:Key="Setup.OutcomeUnknown" xml:space="preserve">未能确认本次安装的最终结果。</sys:String>
+    <sys:String x:Key="Setup.CheckNoReplay" xml:space="preserve">请点击“查看本次安装结果”确认，查看不会重新安装。</sys:String>
+    <sys:String x:Key="Setup.NoRepeat" xml:space="preserve">确认前，请勿重复安装。</sys:String>
+    <sys:String x:Key="Setup.CloseKeepsRunning" xml:space="preserve">关闭窗口不会停止仍在进行的安装。</sys:String>
+    <sys:String x:Key="Setup.FailedStage" xml:space="preserve">停止位置：</sys:String>
+    <sys:String x:Key="Setup.PartialFailure" xml:space="preserve">。安装可能已部分完成，不会自动回滚；重试会重新核对安装条件。结果未确认时须先核对原次安装。</sys:String>
+    <sys:String x:Key="Setup.ReturnOptions" xml:space="preserve">返回安装选项</sys:String>
+    <sys:String x:Key="Setup.WaitCompletion" xml:space="preserve">请稍候，安装完成后将显示结果。</sys:String>
+    <sys:String x:Key="Setup.CancellationNotice" xml:space="preserve">取消是否可用以当前步骤和取消按钮为准。请求取消后仍须等待本次结果；关闭窗口不会回滚安装。</sys:String>
+    <sys:String x:Key="Setup.CheckingMedia" xml:space="preserve">正在检查安装文件，请稍候…</sys:String>
+    <sys:String x:Key="Setup.ReviewReady" xml:space="preserve">选项已核对。请查看本次影响，点击安装后才修改电脑。</sys:String>
+    <sys:String x:Key="Setup.ChooseOptions" xml:space="preserve">选择安装位置和安装设置，然后点击下一步。</sys:String>
+    <sys:String x:Key="Setup.ActionLabel" xml:space="preserve">本次操作：</sys:String>
+    <sys:String x:Key="Setup.ConfirmOptions" xml:space="preserve">。确认以下选项后开始。</sys:String>
+    <sys:String x:Key="Setup.Installed" xml:space="preserve">菜鸟供包台已安装。</sys:String>
+    <sys:String x:Key="Setup.MediaDetails" xml:space="preserve">安装文件详情</sys:String>
+    <sys:String x:Key="Setup.ReadingMedia" xml:space="preserve">正在核对版本与完整性，完成后显示安装选项。</sys:String>
+    <sys:String x:Key="Setup.RetryCheck" xml:space="preserve">重试检查</sys:String>
+    <sys:String x:Key="Setup.Reinstall" xml:space="preserve">重新安装</sys:String>
+    <sys:String x:Key="Setup.Repair" xml:space="preserve">修复安装</sys:String>
+    <sys:String x:Key="Setup.Update" xml:space="preserve">更新</sys:String>
+    <sys:String x:Key="Setup.Impact" xml:space="preserve">本次安装影响</sys:String>
+    <sys:String x:Key="Setup.DataPurged" xml:space="preserve">原本站数据和管理密码已删除。本次沿用原登记位置重新配置，不恢复已删除的业务记录；机器部署和审计证据保留。</sys:String>
+    <sys:String x:Key="Setup.KeepStation" xml:space="preserve">。保留现有账户、数据与配置；请先关闭供包台。安装会核验程序已退出并释放资源，不要求清空作业或暂停供包。</sys:String>
+    <sys:String x:Key="Setup.RequiresWindowsAdmin" xml:space="preserve">安装需要 Windows 管理员授权，与软件管理密码无关。</sys:String>
+    <sys:String x:Key="Setup.AutoStartShort" xml:space="preserve">开机自启</sys:String>
+    <sys:String x:Key="Common.Enabled" xml:space="preserve">开启</sys:String>
+    <sys:String x:Key="Setup.Dependencies" xml:space="preserve">安装所需依赖：</sys:String>
+    <sys:String x:Key="Setup.Location" xml:space="preserve">安装位置</sys:String>
+    <sys:String x:Key="Setup.ProgramDirectory" xml:space="preserve">程序目录</sys:String>
+    <sys:String x:Key="Setup.DataDirectory" xml:space="preserve">数据目录</sys:String>
+    <sys:String x:Key="Setup.MaintainLocation" xml:space="preserve">沿用本机已登记的程序和数据位置。需要迁移位置时，请先完成完整备份，再按恢复流程处理。</sys:String>
+    <sys:String x:Key="Setup.StartMenuShortcut" xml:space="preserve">在开始菜单创建快捷方式</sys:String>
+    <sys:String x:Key="Setup.DesktopShortcut" xml:space="preserve">在桌面创建快捷方式</sys:String>
+    <sys:String x:Key="Setup.AutostartUnavailable" xml:space="preserve">未能核对本账户的启动快捷方式，请检查 Windows 启动目录。</sys:String>
+    <sys:String x:Key="Setup.AutoStart" xml:space="preserve">开机自动启动供包台</sys:String>
+    <sys:String x:Key="Setup.AutoStartHelp" xml:space="preserve">当前 Windows 用户登录后自动启动供包台。</sys:String>
+    <sys:String x:Key="Setup.AdvancedShortcuts" xml:space="preserve">高级选项 · 快捷方式</sys:String>
+    <sys:String x:Key="Setup.Advanced" xml:space="preserve">高级安装选项</sys:String>
+    <sys:String x:Key="Setup.Settings" xml:space="preserve">安装设置</sys:String>
+    <sys:String x:Key="Setup.Shortcuts" xml:space="preserve">快捷方式</sys:String>
+    <sys:String x:Key="Setup.BundledDrivers" xml:space="preserve">相机采图、条码识别和 RCS 接口已随软件安装，无需另装组件。安装完成不代表相机或 RCS 已连接。程序和数据按本机存储规则放在 D 盘。</sys:String>
+    <sys:String x:Key="Setup.PurgedReinstall" xml:space="preserve">本次操作：重新安装。原本站数据已删除，将沿用原登记位置重新配置。</sys:String>
+    <sys:String x:Key="Setup.PurgedNotice" xml:space="preserve">不恢复已删除的业务记录和管理密码；机器部署及审计证据、个人偏好保留。请先关闭供包台，安装时会确认资源已释放。</sys:String>
+    <sys:String x:Key="Setup.KeepExisting" xml:space="preserve">。账户、数据和配置将保留。</sys:String>
+    <sys:String x:Key="Setup.ThisOperation" xml:space="preserve">本次</sys:String>
+    <sys:String x:Key="Setup.ReleaseBeforeInstall" xml:space="preserve">将保留账户、数据目录和配置；请先关闭供包台，安装时会确认资源已释放。</sys:String>
+    <sys:String x:Key="Setup.ReinstallKeepsRecords" xml:space="preserve">重新安装不会清除已有业务记录。</sys:String>
+    <sys:String x:Key="Setup.Preflight" xml:space="preserve">安装预检详情</sys:String>
+    <sys:String x:Key="Setup.ThisPreflight" xml:space="preserve">本次安装预检详情</sys:String>
+    <sys:String x:Key="Setup.StartMenu" xml:space="preserve">开始菜单</sys:String>
+    <sys:String x:Key="Setup.CreateShortcut" xml:space="preserve">创建快捷方式</sys:String>
+    <sys:String x:Key="Setup.NoShortcut" xml:space="preserve">不创建快捷方式</sys:String>
+    <sys:String x:Key="Setup.Desktop" xml:space="preserve">桌面</sys:String>
+    <sys:String x:Key="Setup.PurgedData" xml:space="preserve">原本站数据已删除；本次沿用原登记位置重新配置，不恢复原记录。</sys:String>
+    <sys:String x:Key="Setup.CloseFirst" xml:space="preserve">请先关闭供包台；安装保留现有账户、数据与配置。</sys:String>
+    <sys:String x:Key="Setup.Authority" xml:space="preserve">安装需要 Windows 管理员授权（与软件管理密码无关）。</sys:String>
+    <sys:String x:Key="Setup.FirstUse" xml:space="preserve">首次使用</sys:String>
+    <sys:String x:Key="Setup.FoundConfig" xml:space="preserve">已有配置已识别。打开后自动检查并启动；条件不满足时会显示具体原因。</sys:String>
+    <sys:String x:Key="Setup.FirstConfiguration" xml:space="preserve">打开后自动检查配置；首次配置保存后自动启动，条件不满足时会显示具体原因。安装完成不代表设备已可运行。</sys:String>
+    <sys:String x:Key="Setup.OpenAfter" xml:space="preserve">完成后打开供包台</sys:String>
+    <sys:String x:Key="Setup.UseOriginalAccount" xml:space="preserve">请使用原供包台的 Windows 账户打开程序。</sys:String>
+    <sys:String x:Key="Setup.NoStageMessage" xml:space="preserve">未收到阶段消息。</sys:String>
+    <sys:String x:Key="Setup.PreviousMessages" xml:space="preserve">历史消息</sys:String>
+    <sys:String x:Key="Setup.WindowsConfirm" xml:space="preserve">等待 Windows 授权，请在授权窗口确认</sys:String>
+    <sys:String x:Key="Setup.WaitForAuthorization" xml:space="preserve">等待 Windows 授权。</sys:String>
+    <sys:String x:Key="Setup.Authorizing" xml:space="preserve">等待 Windows 授权；如有提示，请在电脑上确认。</sys:String>
+    <sys:String x:Key="Setup.PastAuthorization" xml:space="preserve">以下为历史消息，不代表当前仍在等待授权。</sys:String>
+    <sys:String x:Key="Setup.Diagnostics" xml:space="preserve">诊断结果</sys:String>
+    <sys:String x:Key="Setup.RawMessage" xml:space="preserve">原始消息文本</sys:String>
+    <sys:String x:Key="Setup.Details" xml:space="preserve">安装详情</sys:String>
+    <sys:String x:Key="Setup.ViewDetails" xml:space="preserve">查看本次安装详情</sys:String>
+    <sys:String x:Key="Setup.RecordsUnavailable" xml:space="preserve">本次安装尚未提供记录目录。</sys:String>
+    <sys:String x:Key="Setup.RecordsError" xml:space="preserve">记录目录尚未生成或当前无法访问：</sys:String>
+    <sys:String x:Key="Setup.RecordsMissing" xml:space="preserve">安装记录目录尚未生成或当前无法访问。</sys:String>
+    <sys:String x:Key="Setup.OpenRecordsFailed" xml:space="preserve">无法打开安装记录目录：</sys:String>
+    <sys:String x:Key="Setup.OutcomeStillUnknown" xml:space="preserve"> 最终结果仍待确认，请勿重复安装。</sys:String>
+    <sys:String x:Key="Setup.ViewFailureDetails" xml:space="preserve"> 请查看本次失败详情。</sys:String>
+    <sys:String x:Key="Setup.CheckingClosed" xml:space="preserve">正在确认供包台已关闭</sys:String>
+    <sys:String x:Key="Setup.Copying" xml:space="preserve">正在复制并校验程序文件</sys:String>
+    <sys:String x:Key="Setup.CameraRuntime" xml:space="preserve">正在检查并补齐相机运行库</sys:String>
+    <sys:String x:Key="Setup.PreparingData" xml:space="preserve">正在准备配置与数据目录</sys:String>
+    <sys:String x:Key="Setup.InstallingComponents" xml:space="preserve">正在安装已核验组件</sys:String>
+    <sys:String x:Key="Setup.ManagementService" xml:space="preserve">正在登记管理授权服务</sys:String>
+    <sys:String x:Key="Setup.Committing" xml:space="preserve">正在提交安装登记</sys:String>
+    <sys:String x:Key="Setup.CreatingShortcuts" xml:space="preserve">正在创建所选快捷方式</sys:String>
+    <sys:String x:Key="Setup.Registering" xml:space="preserve">正在登记 Windows 程序入口</sys:String>
+    <sys:String x:Key="Setup.CheckingResult" xml:space="preserve">正在确认安装结果</sys:String>
+    <sys:String x:Key="Setup.ResumeFailed" xml:space="preserve">原安装续办未完成：</sys:String>
+    <sys:String x:Key="Setup.KeepOriginal" xml:space="preserve">
+原操作和记录保留，请核对原结果后继续。</sys:String>
+    <sys:String x:Key="Setup.StartDiagnosticsUnavailable" xml:space="preserve">启动诊断无法显示，请查看启动记录。</sys:String>
+    <sys:String x:Key="Setup.OpenFailed" xml:space="preserve">安装已完成，但打开供包台未成功。可点击完成重试打开，或取消勾选后关闭。
+</sys:String>
+    <sys:String x:Key="Setup.PreflightUnavailable" xml:space="preserve">预检诊断无法显示，请检查路径与配置后重试。</sys:String>
+    <sys:String x:Key="Setup.PreflightFailed" xml:space="preserve">安装预检未通过，请查看本次预检详情。</sys:String>
+    <sys:String x:Key="Common.IncompletePrefix" xml:space="preserve">未完成：</sys:String>
+    <sys:String x:Key="Setup.WindowsRequired" xml:space="preserve">安装向导需要 Windows</sys:String>
+    <sys:String x:Key="Setup.CancelPreparation" xml:space="preserve">取消准备</sys:String>
+    <sys:String x:Key="Setup.CheckOptionsDetails" xml:space="preserve">检查安装选项
+安装包：</sys:String>
+    <sys:String x:Key="Setup.ProgramDetails" xml:space="preserve">
+程序：</sys:String>
+    <sys:String x:Key="Setup.DataDetails" xml:space="preserve">
+数据：</sys:String>
+    <sys:String x:Key="Setup.PreflightCancelDetail" xml:space="preserve">
+取消将在当前文件或组件核验结束后停止。</sys:String>
+    <sys:String x:Key="Setup.PreflightStopped" xml:space="preserve">已停止检查，电脑上未做任何更改。</sys:String>
+    <sys:String x:Key="Setup.PreparingRequest" xml:space="preserve">正在准备安装请求</sys:String>
+    <sys:String x:Key="Setup.DeployDetails" xml:space="preserve">安装 / 升级 / 修复
+安装包：</sys:String>
+    <sys:String x:Key="Setup.RetainedDataDetails" xml:space="preserve">
+保留数据：</sys:String>
+    <sys:String x:Key="Setup.ConfigurationUnknown" xml:space="preserve">暂时无法检查配置状态。打开软件后按检查结果处理；设备尚未启动。</sys:String>
+    <sys:String x:Key="Setup.ConfigurationFailure" xml:space="preserve">暂时无法检查配置状态：</sys:String>
+    <sys:String x:Key="Setup.DevicesStopped" xml:space="preserve">。设备尚未启动。</sys:String>
+    <sys:String x:Key="Setup.SignInRuntime" xml:space="preserve">请登录指定运行账户后运行程序</sys:String>
+    <sys:String x:Key="Setup.MissingOriginalIdentity" xml:space="preserve">未取得原安装完整身份，请核对受保护原记录；不能据此开始新操作。</sys:String>
+    <sys:String x:Key="Setup.VerifyCurrentOptions" xml:space="preserve">请重新核对当前安装选项。</sys:String>
+    <sys:String x:Key="Setup.LastOperation" xml:space="preserve">
+上次操作：</sys:String>
+    <sys:String x:Key="Setup.OriginalOperation" xml:space="preserve">原操作：</sys:String>
+    <sys:String x:Key="Setup.SourceCommit" xml:space="preserve">
+来源提交：</sys:String>
+    <sys:String x:Key="Setup.ProgramFolderDetails" xml:space="preserve">
+程序目录：</sys:String>
+    <sys:String x:Key="Setup.DataFolderDetails" xml:space="preserve">
+数据目录：</sys:String>
+    <sys:String x:Key="Uninstall.Missing" xml:space="preserve">未找到安装信息。</sys:String>
+    <sys:String x:Key="Uninstall.KeepData" xml:space="preserve">保留本站数据</sys:String>
+    <sys:String x:Key="Uninstall.DeleteData" xml:space="preserve">同时删除本站数据</sys:String>
+    <sys:String x:Key="Uninstall.WindowTitle" xml:space="preserve">菜鸟供包台 · 卸载</sys:String>
+    <sys:String x:Key="Uninstall.Heading" xml:space="preserve">卸载菜鸟供包台</sys:String>
+    <sys:String x:Key="Uninstall.KeepDetail" xml:space="preserve">保留配置、记录、图片、日志和管理密码。</sys:String>
+    <sys:String x:Key="Uninstall.DeleteDetail" xml:space="preserve">删除配置、记录、图片、日志和管理密码，不可撤销。重新安装后创建新密码。</sys:String>
+    <sys:String x:Key="Uninstall.Action" xml:space="preserve">卸载</sys:String>
+    <sys:String x:Key="Uninstall.CloseFirst" xml:space="preserve">卸载前请先关闭供包台。</sys:String>
+    <sys:String x:Key="Uninstall.RecordChanged" xml:space="preserve">安装信息已变化，请关闭并重新打开卸载程序。</sys:String>
+    <sys:String x:Key="Uninstall.DeletePreview" xml:space="preserve">卸载程序并删除本站数据和管理密码；不创建备份。</sys:String>
+    <sys:String x:Key="Uninstall.KeepPreview" xml:space="preserve">卸载程序，保留本站数据；不创建备份。</sys:String>
+    <sys:String x:Key="Uninstall.StillInstalled" xml:space="preserve">程序尚未卸载。可重新点击“卸载”，将自动处理上次未完成的卸载。</sys:String>
+    <sys:String x:Key="Uninstall.PreviousUnknown" xml:space="preserve">上次卸载结果尚未确认，请稍后再次查看。</sys:String>
+    <sys:String x:Key="Uninstall.ResultTitle" xml:space="preserve">菜鸟供包台 · 卸载结果</sys:String>
+    <sys:String x:Key="Uninstall.Result" xml:space="preserve">卸载结果</sys:String>
+    <sys:String x:Key="Uninstall.DataDeleted" xml:space="preserve">本站数据已删除，管理密码已清除。</sys:String>
+    <sys:String x:Key="Uninstall.DataKept" xml:space="preserve">本站数据保留。</sys:String>
+    <sys:String x:Key="Uninstall.MaintenanceRestart" xml:space="preserve">历史清理尚未完成：维护程序正在使用缓存，已登记重启清理。重启后请用完整安装包核对原结果。</sys:String>
+    <sys:String x:Key="Uninstall.FilesKept" xml:space="preserve">历史程序或维护缓存尚未全部清理，请查看详情后重试。无法核验的文件保留。</sys:String>
+    <sys:String x:Key="Uninstall.CompleteWithPurge" xml:space="preserve">卸载完成，本站数据已删除，管理密码已清除，历史程序和维护缓存已清理。</sys:String>
+    <sys:String x:Key="Uninstall.DataBusy" xml:space="preserve">程序已卸载，部分数据尚未删除。请关闭占用文件的程序后重试卸载。</sys:String>
+    <sys:String x:Key="Uninstall.Restart" xml:space="preserve">程序已卸载。部分文件将在重启电脑后删除。</sys:String>
+    <sys:String x:Key="Uninstall.PurgePending" xml:space="preserve">程序已卸载，本站数据尚未删除。可重试卸载以完成数据清理。</sys:String>
+    <sys:String x:Key="Uninstall.CompleteKept" xml:space="preserve">卸载完成，本站数据已保留。</sys:String>
+    <sys:String x:Key="Uninstall.FilesBusy" xml:space="preserve">程序已卸载，部分文件尚未删除。请关闭占用文件的程序后重试卸载。</sys:String>
+    <sys:String x:Key="Uninstall.ProgramPath" xml:space="preserve">程序目录：</sys:String>
+    <sys:String x:Key="Uninstall.DataPath" xml:space="preserve">
+保留数据：</sys:String>
+    <sys:String x:Key="Uninstall.ReceiptPath" xml:space="preserve">
+卸载记录：</sys:String>
+    <sys:String x:Key="Uninstall.PurgeReceipt" xml:space="preserve">数据清理记录：</sys:String>
+    <sys:String x:Key="Uninstall.CacheReceipt" xml:space="preserve">历史清理记录：</sys:String>
+    <sys:String x:Key="Uninstall.Remaining" xml:space="preserve">剩余文件或目录：
+</sys:String>
+    <sys:String x:Key="Uninstall.Unverified" xml:space="preserve">
+保留的未核验项：
+</sys:String>
+    <sys:String x:Key="Uninstall.Details" xml:space="preserve">卸载详情</sys:String>
+    <sys:String x:Key="Uninstall.RemainingPrefix" xml:space="preserve">历史清理尚有 </sys:String>
+    <sys:String x:Key="Uninstall.FolderCount" xml:space="preserve"> 个目录、</sys:String>
+    <sys:String x:Key="Uninstall.RetainedSummary" xml:space="preserve"> 个保留项；此处仅显示摘要，完整清单见历史清理记录。</sys:String>
+    <sys:String x:Key="Uninstall.ScopePurge" xml:space="preserve">本站管理密码包含在数据清理范围内。共享驱动和系统运行库、个人偏好、安全回执和本站以外的备份保留。</sys:String>
+    <sys:String x:Key="Uninstall.ScopeKeep" xml:space="preserve">管理密码、共享驱动和系统运行库、个人偏好、安全回执和本站以外的备份保留。</sys:String>
+    <sys:String x:Key="Uninstall.Retry" xml:space="preserve">重试卸载</sys:String>
+    <sys:String x:Key="Uninstall.UnknownNoReplay" xml:space="preserve">卸载结果未确认。再次点击卸载按钮只核对原结果，不会重复执行。
+</sys:String>
+    <sys:String x:Key="Setup.WorkflowTitle" xml:space="preserve">安装菜鸟供包台</sys:String>
+    <sys:String x:Key="Startup.Product" xml:space="preserve">菜鸟供包台</sys:String>
+    <sys:String x:Key="Setup.HostVersion" xml:space="preserve">实际运行维护宿主：</sys:String>
+    <sys:String x:Key="Setup.CurrentDeployment" xml:space="preserve">
+
+当前登记部署：</sys:String>
+    <sys:String x:Key="Setup.Unregistered" xml:space="preserve">未登记</sys:String>
+    <sys:String x:Key="Setup.TargetMedia" xml:space="preserve">
+
+所选目标介质：</sys:String>
+    <sys:String x:Key="Setup.BuildTransition" xml:space="preserve">
+当前构建 → 目标构建：
+</sys:String>
+    <sys:String x:Key="Setup.CouldNotReadDeployment" xml:space="preserve">
+当前登记未读取：</sys:String>
+    <sys:String x:Key="Setup.CopyVersion" xml:space="preserve">版本信息（可选择复制）</sys:String>
+    <sys:String x:Key="Setup.StepWelcome" xml:space="preserve">1  欢迎与位置</sys:String>
+    <sys:String x:Key="Setup.StepInstall" xml:space="preserve">2  安装</sys:String>
+    <sys:String x:Key="Setup.StepFinished" xml:space="preserve">3  安装完成</sys:String>
+    <sys:String x:Key="Setup.StepOptions" xml:space="preserve">1  安装选项</sys:String>
+    <sys:String x:Key="Setup.StepConfirm" xml:space="preserve">2  确认并安装</sys:String>
+    <sys:String x:Key="Setup.VersionInformation" xml:space="preserve">版本信息</sys:String>
+    <sys:String x:Key="Setup.MaintenanceUnknown" xml:space="preserve">上次操作结果未确认，请勿重复执行。请先查看结果，或关闭窗口（记录会保留）。</sys:String>
+    <sys:String x:Key="Setup.MaintenancePastUnknown" xml:space="preserve">上次维护操作结果未确认，请勿重复执行。
+</sys:String>
+    <sys:String x:Key="Setup.CheckReceipt" xml:space="preserve">
+请核对原回执和当前状态后再试；失败提示不表示已执行步骤被回滚。</sys:String>
+    <sys:String x:Key="Setup.ChooseFolder" xml:space="preserve">选择文件夹…</sys:String>
+    <sys:String x:Key="Setup.CleanupFailed" xml:space="preserve">安装准备文件清理未完成</sys:String>
+    <sys:String x:Key="Setup.PackageUnavailable" xml:space="preserve">安装包不可用</sys:String>
+    <sys:String x:Key="Setup.MissingPayload" xml:space="preserve">内嵌安装文件缺失，请使用完整发布的安装程序</sys:String>
+    <sys:String x:Key="Setup.MissingMetadata" xml:space="preserve">安装包说明缺失</sys:String>
+    <sys:String x:Key="Setup.PreparingBusy" xml:space="preserve">安装准备目录已被占用</sys:String>
+    <sys:String x:Key="Setup.UnownedFolder" xml:space="preserve">拒绝清理不属于本次安装的目录</sys:String>
+    <sys:String x:Key="Setup.LinkInPreparation" xml:space="preserve">准备目录出现链接，保留目录：</sys:String>
+    <sys:String x:Key="Setup.VerifyFiles">正在校验安装文件</sys:String>
+    <sys:String x:Key="Setup.PrepareFiles">正在准备安装文件</sys:String>
+    <sys:String x:Key="Setup.RecheckFiles">正在复核安装文件</sys:String>
+    <sys:String x:Key="Setup.FilesReady">安装文件已就绪</sys:String>
 </ResourceDictionary>

@@ -17,4 +17,257 @@
     <sys:String x:Key="Common.LanguageSaveFailed">Installation is complete, but the selected language could not be saved. Try again in workstation settings.</sys:String>
     <sys:String x:Key="Installer.LanguageTitle">选择安装语言 / Select Setup Language / Выбор языка установки</sys:String>
     <sys:String x:Key="Installer.LanguagePrompt">安装语言 / Setup language / Язык установки</sys:String>
+    <sys:String x:Key="Installer.CancelTrilingual" xml:space="preserve">取消 / Cancel / Отмена</sys:String>
+    <sys:String x:Key="Installer.ContinueTrilingual" xml:space="preserve">继续 / Continue / Далее</sys:String>
+    <sys:String x:Key="Setup.Install" xml:space="preserve">Install</sys:String>
+    <sys:String x:Key="Setup.TitlePrefix" xml:space="preserve">Setup · </sys:String>
+    <sys:String x:Key="Setup.MediaRequired" xml:space="preserve">Verify the complete installation media first.</sys:String>
+    <sys:String x:Key="Setup.VersionPrefix" xml:space="preserve">Version: </sys:String>
+    <sys:String x:Key="Setup.VersionSuffix" xml:space="preserve"> Windows 64-bit</sys:String>
+    <sys:String x:Key="Setup.CheckMedia" xml:space="preserve">Check installation media</sys:String>
+    <sys:String x:Key="Setup.OpenRecords" xml:space="preserve">Open setup records</sys:String>
+    <sys:String x:Key="Setup.ViewResult" xml:space="preserve">Check setup result</sys:String>
+    <sys:String x:Key="Setup.RepairRegistration" xml:space="preserve">Repair Start menu and app entry…</sys:String>
+    <sys:String x:Key="Setup.RegistrationChanged" xml:space="preserve">The installation record changed. Check the setup result first.</sys:String>
+    <sys:String x:Key="Setup.RepairRegistrationDetail" xml:space="preserve">Repair Start menu and app entry
+Installation: </sys:String>
+    <sys:String x:Key="Setup.RepairKeepsData" xml:space="preserve">
+Data and settings are kept.</sys:String>
+    <sys:String x:Key="Setup.CloseOriginal" xml:space="preserve">Close the original attempt and review again</sys:String>
+    <sys:String x:Key="Setup.CheckOriginalFirst" xml:space="preserve">Check the original setup result first.</sys:String>
+    <sys:String x:Key="Setup.CloseOriginalDetail" xml:space="preserve">Close the verified, uncommitted installation
+Original operation: </sys:String>
+    <sys:String x:Key="Setup.OriginalStillOpen" xml:space="preserve">The original installation is still open. Check its result.</sys:String>
+    <sys:String x:Key="Setup.OriginalClosed" xml:space="preserve">The uncommitted installation was closed. Review the current setup options.</sys:String>
+    <sys:String x:Key="Setup.RecheckOptions" xml:space="preserve">Check setup options again</sys:String>
+    <sys:String x:Key="Setup.UninstallAction" xml:space="preserve">Uninstall…</sys:String>
+    <sys:String x:Key="Setup.CancelPreparing" xml:space="preserve">Stopping media preparation. Please wait…</sys:String>
+    <sys:String x:Key="Setup.RegisteredPathHelp" xml:space="preserve">The registered location is kept. Use a full backup and restore to move it.</sys:String>
+    <sys:String x:Key="Setup.FrozenPathHelp" xml:space="preserve">Options were verified. Select Edit options to change them.</sys:String>
+    <sys:String x:Key="Setup.Browse" xml:space="preserve">Browse…</sys:String>
+    <sys:String x:Key="Setup.BrowseName" xml:space="preserve">Browse </sys:String>
+    <sys:String x:Key="Setup.PendingResult" xml:space="preserve">Setup result pending</sys:String>
+    <sys:String x:Key="Setup.Incomplete" xml:space="preserve">Setup incomplete</sys:String>
+    <sys:String x:Key="Setup.Installing" xml:space="preserve">Installing</sys:String>
+    <sys:String x:Key="Setup.Preparing" xml:space="preserve">Preparing setup</sys:String>
+    <sys:String x:Key="Setup.Options" xml:space="preserve">Setup options</sys:String>
+    <sys:String x:Key="Setup.Confirm" xml:space="preserve">Confirm installation</sys:String>
+    <sys:String x:Key="Setup.Complete" xml:space="preserve">Setup complete</sys:String>
+    <sys:String x:Key="Setup.EditOptions" xml:space="preserve">Edit options</sys:String>
+    <sys:String x:Key="Setup.NotCommitted" xml:space="preserve">The original installation was verified and did not commit. Close it before reviewing again.</sys:String>
+    <sys:String x:Key="Setup.RepairOutcomeUnknown" xml:space="preserve">Setup is complete. The Start menu and app entry repair is unconfirmed. Check the setup result.</sys:String>
+    <sys:String x:Key="Setup.OutcomeUnknown" xml:space="preserve">The final setup result could not be confirmed.</sys:String>
+    <sys:String x:Key="Setup.CheckNoReplay" xml:space="preserve">Select Check setup result to verify. This does not reinstall the application.</sys:String>
+    <sys:String x:Key="Setup.NoRepeat" xml:space="preserve">Wait for confirmation before installing again.</sys:String>
+    <sys:String x:Key="Setup.CloseKeepsRunning" xml:space="preserve">Closing this window does not stop setup in progress.</sys:String>
+    <sys:String x:Key="Setup.FailedStage" xml:space="preserve">Stopped at: </sys:String>
+    <sys:String x:Key="Setup.PartialFailure" xml:space="preserve">. Setup may be partially complete. It does not roll back automatically. A retry rechecks the requirements. Confirm the original result first if it is uncertain.</sys:String>
+    <sys:String x:Key="Setup.ReturnOptions" xml:space="preserve">Back to setup options</sys:String>
+    <sys:String x:Key="Setup.WaitCompletion" xml:space="preserve">Please wait for the setup result.</sys:String>
+    <sys:String x:Key="Setup.CancellationNotice" xml:space="preserve">Cancel is available when the current step permits it. After cancelling, wait for the result. Closing the window does not roll back setup.</sys:String>
+    <sys:String x:Key="Setup.CheckingMedia" xml:space="preserve">Checking installation files. Please wait…</sys:String>
+    <sys:String x:Key="Setup.ReviewReady" xml:space="preserve">Options verified. Review the impact. Setup changes this computer only after you select Install.</sys:String>
+    <sys:String x:Key="Setup.ChooseOptions" xml:space="preserve">Choose the installation location and options, then select Next.</sys:String>
+    <sys:String x:Key="Setup.ActionLabel" xml:space="preserve">Operation: </sys:String>
+    <sys:String x:Key="Setup.ConfirmOptions" xml:space="preserve">. Confirm the following options to proceed.</sys:String>
+    <sys:String x:Key="Setup.Installed" xml:space="preserve">Cainiao Induction Station is installed.</sys:String>
+    <sys:String x:Key="Setup.MediaDetails" xml:space="preserve">Installation file details</sys:String>
+    <sys:String x:Key="Setup.ReadingMedia" xml:space="preserve">Verifying the version and integrity before showing setup options.</sys:String>
+    <sys:String x:Key="Setup.RetryCheck" xml:space="preserve">Retry check</sys:String>
+    <sys:String x:Key="Setup.Reinstall" xml:space="preserve">Reinstall</sys:String>
+    <sys:String x:Key="Setup.Repair" xml:space="preserve">Repair installation</sys:String>
+    <sys:String x:Key="Setup.Update" xml:space="preserve">Update</sys:String>
+    <sys:String x:Key="Setup.Impact" xml:space="preserve">What setup changes</sys:String>
+    <sys:String x:Key="Setup.DataPurged" xml:space="preserve">The previous station data and management password were deleted. Setup uses the registered location and keeps deployment and audit records. Deleted work records are not restored.</sys:String>
+    <sys:String x:Key="Setup.KeepStation" xml:space="preserve">. The account, data and configuration are kept. Close the workstation first. Setup checks that it has exited and released its resources.</sys:String>
+    <sys:String x:Key="Setup.RequiresWindowsAdmin" xml:space="preserve">Setup requires Windows administrator approval. The workstation management password is separate.</sys:String>
+    <sys:String x:Key="Setup.AutoStartShort" xml:space="preserve">Start at sign-in</sys:String>
+    <sys:String x:Key="Common.Enabled" xml:space="preserve">On</sys:String>
+    <sys:String x:Key="Setup.Dependencies" xml:space="preserve">Setup dependencies: </sys:String>
+    <sys:String x:Key="Setup.Location" xml:space="preserve">Installation location</sys:String>
+    <sys:String x:Key="Setup.ProgramDirectory" xml:space="preserve">Program folder</sys:String>
+    <sys:String x:Key="Setup.DataDirectory" xml:space="preserve">Data folder</sys:String>
+    <sys:String x:Key="Setup.MaintainLocation" xml:space="preserve">Setup keeps the registered program and data folders. To move them, make a full backup and follow the restore procedure.</sys:String>
+    <sys:String x:Key="Setup.StartMenuShortcut" xml:space="preserve">Create Start menu shortcuts</sys:String>
+    <sys:String x:Key="Setup.DesktopShortcut" xml:space="preserve">Create a desktop shortcut</sys:String>
+    <sys:String x:Key="Setup.AutostartUnavailable" xml:space="preserve">The start-up shortcut could not be checked. Check this account’s Windows Startup folder.</sys:String>
+    <sys:String x:Key="Setup.AutoStart" xml:space="preserve">Start the workstation at sign-in</sys:String>
+    <sys:String x:Key="Setup.AutoStartHelp" xml:space="preserve">Start the workstation when this Windows user signs in.</sys:String>
+    <sys:String x:Key="Setup.AdvancedShortcuts" xml:space="preserve">Advanced options · Shortcuts</sys:String>
+    <sys:String x:Key="Setup.Advanced" xml:space="preserve">Advanced setup options</sys:String>
+    <sys:String x:Key="Setup.Settings" xml:space="preserve">Setup settings</sys:String>
+    <sys:String x:Key="Setup.Shortcuts" xml:space="preserve">Shortcuts</sys:String>
+    <sys:String x:Key="Setup.BundledDrivers" xml:space="preserve">Camera acquisition, barcode recognition and RCS support are included. Setup does not connect the devices. Program files and data use drive D under local storage rules.</sys:String>
+    <sys:String x:Key="Setup.PurgedReinstall" xml:space="preserve">Reinstallation. Previous station data was deleted. Setup keeps the registered location.</sys:String>
+    <sys:String x:Key="Setup.PurgedNotice" xml:space="preserve">Deleted work records and the management password are not restored. Deployment and audit evidence and personal settings are kept. Close the workstation so setup can verify that its resources are released.</sys:String>
+    <sys:String x:Key="Setup.KeepExisting" xml:space="preserve">. The account, data and configuration are kept.</sys:String>
+    <sys:String x:Key="Setup.ThisOperation" xml:space="preserve">This operation: </sys:String>
+    <sys:String x:Key="Setup.ReleaseBeforeInstall" xml:space="preserve">. Your account, data folder and settings are kept. Close the workstation so setup can verify that its resources are released.</sys:String>
+    <sys:String x:Key="Setup.ReinstallKeepsRecords" xml:space="preserve">Reinstallation keeps existing work records.</sys:String>
+    <sys:String x:Key="Setup.Preflight" xml:space="preserve">Preflight check details</sys:String>
+    <sys:String x:Key="Setup.ThisPreflight" xml:space="preserve">Current preflight check details</sys:String>
+    <sys:String x:Key="Setup.StartMenu" xml:space="preserve">Start menu</sys:String>
+    <sys:String x:Key="Setup.CreateShortcut" xml:space="preserve">Create shortcut</sys:String>
+    <sys:String x:Key="Setup.NoShortcut" xml:space="preserve">No shortcut</sys:String>
+    <sys:String x:Key="Setup.Desktop" xml:space="preserve">Desktop</sys:String>
+    <sys:String x:Key="Setup.PurgedData" xml:space="preserve">Previous station data was deleted. Setup uses the registered location and does not restore deleted records.</sys:String>
+    <sys:String x:Key="Setup.CloseFirst" xml:space="preserve">Close the workstation. Setup keeps the account, data and configuration.</sys:String>
+    <sys:String x:Key="Setup.Authority" xml:space="preserve">Setup requires Windows administrator approval. The workstation management password is separate.</sys:String>
+    <sys:String x:Key="Setup.FirstUse" xml:space="preserve">First use</sys:String>
+    <sys:String x:Key="Setup.FoundConfig" xml:space="preserve">Existing configuration found. The application checks it on launch and explains any issue that prevents startup.</sys:String>
+    <sys:String x:Key="Setup.FirstConfiguration" xml:space="preserve">On launch, the application checks the configuration. Save the initial configuration to start. If checks fail, it explains what to address.</sys:String>
+    <sys:String x:Key="Setup.OpenAfter" xml:space="preserve">Open the workstation after setup</sys:String>
+    <sys:String x:Key="Setup.UseOriginalAccount" xml:space="preserve">Open the application with the workstation’s Windows account.</sys:String>
+    <sys:String x:Key="Setup.NoStageMessage" xml:space="preserve">No progress message received.</sys:String>
+    <sys:String x:Key="Setup.PreviousMessages" xml:space="preserve">Previous messages</sys:String>
+    <sys:String x:Key="Setup.WindowsConfirm" xml:space="preserve">Waiting for Windows approval. Confirm in the Windows prompt.</sys:String>
+    <sys:String x:Key="Setup.WaitForAuthorization" xml:space="preserve">Waiting for Windows approval.</sys:String>
+    <sys:String x:Key="Setup.Authorizing" xml:space="preserve">Waiting for Windows approval. Confirm the prompt if shown.</sys:String>
+    <sys:String x:Key="Setup.PastAuthorization" xml:space="preserve">These are previous messages and do not indicate a pending approval.</sys:String>
+    <sys:String x:Key="Setup.Diagnostics" xml:space="preserve">Diagnostics</sys:String>
+    <sys:String x:Key="Setup.RawMessage" xml:space="preserve">Original message</sys:String>
+    <sys:String x:Key="Setup.Details" xml:space="preserve">Setup details</sys:String>
+    <sys:String x:Key="Setup.ViewDetails" xml:space="preserve">View setup details</sys:String>
+    <sys:String x:Key="Setup.RecordsUnavailable" xml:space="preserve">The setup records folder is not available yet.</sys:String>
+    <sys:String x:Key="Setup.RecordsError" xml:space="preserve">Setup records folder is unavailable: </sys:String>
+    <sys:String x:Key="Setup.RecordsMissing" xml:space="preserve">The setup records folder has not been created or cannot be accessed.</sys:String>
+    <sys:String x:Key="Setup.OpenRecordsFailed" xml:space="preserve">Could not open setup records: </sys:String>
+    <sys:String x:Key="Setup.OutcomeStillUnknown" xml:space="preserve"> The result is still unconfirmed. Do not retry setup.</sys:String>
+    <sys:String x:Key="Setup.ViewFailureDetails" xml:space="preserve"> Check the failure details.</sys:String>
+    <sys:String x:Key="Setup.CheckingClosed" xml:space="preserve">Checking that the workstation is closed</sys:String>
+    <sys:String x:Key="Setup.Copying" xml:space="preserve">Copying and checking program files</sys:String>
+    <sys:String x:Key="Setup.CameraRuntime" xml:space="preserve">Checking and installing camera runtime files</sys:String>
+    <sys:String x:Key="Setup.PreparingData" xml:space="preserve">Preparing settings and data folders</sys:String>
+    <sys:String x:Key="Setup.InstallingComponents" xml:space="preserve">Installing verified components</sys:String>
+    <sys:String x:Key="Setup.ManagementService" xml:space="preserve">Registering the management service</sys:String>
+    <sys:String x:Key="Setup.Committing" xml:space="preserve">Saving the installation record</sys:String>
+    <sys:String x:Key="Setup.CreatingShortcuts" xml:space="preserve">Creating selected shortcuts</sys:String>
+    <sys:String x:Key="Setup.Registering" xml:space="preserve">Registering the app in Windows</sys:String>
+    <sys:String x:Key="Setup.CheckingResult" xml:space="preserve">Checking the setup result</sys:String>
+    <sys:String x:Key="Setup.ResumeFailed" xml:space="preserve">Could not resume the original installation: </sys:String>
+    <sys:String x:Key="Setup.KeepOriginal" xml:space="preserve">
+The original attempt and records are kept. Check its result before continuing.</sys:String>
+    <sys:String x:Key="Setup.StartDiagnosticsUnavailable" xml:space="preserve">Startup diagnostics are unavailable. Check the startup log.</sys:String>
+    <sys:String x:Key="Setup.OpenFailed" xml:space="preserve">Setup is complete, but the workstation did not open. Select Finish to retry, or clear the checkbox to close.
+</sys:String>
+    <sys:String x:Key="Setup.PreflightUnavailable" xml:space="preserve">Preflight diagnostics are unavailable. Check the paths and configuration, then retry.</sys:String>
+    <sys:String x:Key="Setup.PreflightFailed" xml:space="preserve">Preflight checks failed. Review the details.</sys:String>
+    <sys:String x:Key="Common.IncompletePrefix" xml:space="preserve">Could not complete: </sys:String>
+    <sys:String x:Key="Setup.WindowsRequired" xml:space="preserve">Setup requires Windows</sys:String>
+    <sys:String x:Key="Setup.CancelPreparation" xml:space="preserve">Cancel preparation</sys:String>
+    <sys:String x:Key="Setup.CheckOptionsDetails" xml:space="preserve">Check setup options
+Media: </sys:String>
+    <sys:String x:Key="Setup.ProgramDetails" xml:space="preserve">
+Program: </sys:String>
+    <sys:String x:Key="Setup.DataDetails" xml:space="preserve">
+Data: </sys:String>
+    <sys:String x:Key="Setup.PreflightCancelDetail" xml:space="preserve">
+Cancel stops the check after the current file or component is verified.</sys:String>
+    <sys:String x:Key="Setup.PreflightStopped" xml:space="preserve">Checks stopped. No changes were made to this computer.</sys:String>
+    <sys:String x:Key="Setup.PreparingRequest" xml:space="preserve">Preparing the setup request</sys:String>
+    <sys:String x:Key="Setup.DeployDetails" xml:space="preserve">Install / Update / Repair
+Media: </sys:String>
+    <sys:String x:Key="Setup.RetainedDataDetails" xml:space="preserve">
+Retained data: </sys:String>
+    <sys:String x:Key="Setup.ConfigurationUnknown" xml:space="preserve">Configuration could not be checked. Open the workstation to see what checks are required. Devices are still stopped.</sys:String>
+    <sys:String x:Key="Setup.ConfigurationFailure" xml:space="preserve">Could not check configuration: </sys:String>
+    <sys:String x:Key="Setup.DevicesStopped" xml:space="preserve">. The devices have not started.</sys:String>
+    <sys:String x:Key="Setup.SignInRuntime" xml:space="preserve">Sign in to the assigned Windows account to run the workstation.</sys:String>
+    <sys:String x:Key="Setup.MissingOriginalIdentity" xml:space="preserve">The original installation identity is incomplete. Verify the protected record before starting a new operation.</sys:String>
+    <sys:String x:Key="Setup.VerifyCurrentOptions" xml:space="preserve">Review the current setup options again.</sys:String>
+    <sys:String x:Key="Setup.LastOperation" xml:space="preserve">
+Previous operation: </sys:String>
+    <sys:String x:Key="Setup.OriginalOperation" xml:space="preserve">Original operation: </sys:String>
+    <sys:String x:Key="Setup.SourceCommit" xml:space="preserve">
+Source commit: </sys:String>
+    <sys:String x:Key="Setup.ProgramFolderDetails" xml:space="preserve">
+Program folder: </sys:String>
+    <sys:String x:Key="Setup.DataFolderDetails" xml:space="preserve">
+Data folder: </sys:String>
+    <sys:String x:Key="Uninstall.Missing" xml:space="preserve">No installation was found.</sys:String>
+    <sys:String x:Key="Uninstall.KeepData" xml:space="preserve">Keep station data</sys:String>
+    <sys:String x:Key="Uninstall.DeleteData" xml:space="preserve">Also delete station data</sys:String>
+    <sys:String x:Key="Uninstall.WindowTitle" xml:space="preserve">Cainiao Induction Station · Uninstall</sys:String>
+    <sys:String x:Key="Uninstall.Heading" xml:space="preserve">Uninstall Cainiao Induction Station</sys:String>
+    <sys:String x:Key="Uninstall.KeepDetail" xml:space="preserve">Keep settings, records, images, logs and the management password.</sys:String>
+    <sys:String x:Key="Uninstall.DeleteDetail" xml:space="preserve">Permanently delete settings, records, images, logs and the management password. Set a new password after reinstallation.</sys:String>
+    <sys:String x:Key="Uninstall.Action" xml:space="preserve">Uninstall</sys:String>
+    <sys:String x:Key="Uninstall.CloseFirst" xml:space="preserve">Close the workstation before uninstalling.</sys:String>
+    <sys:String x:Key="Uninstall.RecordChanged" xml:space="preserve">The installation record changed. Close and reopen the uninstaller.</sys:String>
+    <sys:String x:Key="Uninstall.DeletePreview" xml:space="preserve">Uninstall and delete station data and the management password. No backup will be created.</sys:String>
+    <sys:String x:Key="Uninstall.KeepPreview" xml:space="preserve">Uninstall and keep station data. No backup will be created.</sys:String>
+    <sys:String x:Key="Uninstall.StillInstalled" xml:space="preserve">The application is still installed. Select Uninstall to resolve the previous attempt.</sys:String>
+    <sys:String x:Key="Uninstall.PreviousUnknown" xml:space="preserve">The previous uninstall result is unconfirmed. Check again later.</sys:String>
+    <sys:String x:Key="Uninstall.ResultTitle" xml:space="preserve">Cainiao Induction Station · Removal result</sys:String>
+    <sys:String x:Key="Uninstall.Result" xml:space="preserve">Removal result</sys:String>
+    <sys:String x:Key="Uninstall.DataDeleted" xml:space="preserve">Station data and the management password were deleted.</sys:String>
+    <sys:String x:Key="Uninstall.DataKept" xml:space="preserve">Station data has been kept.</sys:String>
+    <sys:String x:Key="Uninstall.MaintenanceRestart" xml:space="preserve">Cleanup is pending because maintenance files are in use. After Windows restarts, verify the result with the full installer.</sys:String>
+    <sys:String x:Key="Uninstall.FilesKept" xml:space="preserve">Some older program files or maintenance cache could not be cleared. Review the details before retrying. Unverified files were kept.</sys:String>
+    <sys:String x:Key="Uninstall.CompleteWithPurge" xml:space="preserve">Uninstall complete. Station data, password, older program files and maintenance cache were cleared.</sys:String>
+    <sys:String x:Key="Uninstall.DataBusy" xml:space="preserve">Application removed. Some data remains. Close programs using those files and retry.</sys:String>
+    <sys:String x:Key="Uninstall.Restart" xml:space="preserve">Application removed. Some files will be deleted after Windows restarts.</sys:String>
+    <sys:String x:Key="Uninstall.PurgePending" xml:space="preserve">Application removed. Station data remains. Retry to finish data cleanup.</sys:String>
+    <sys:String x:Key="Uninstall.CompleteKept" xml:space="preserve">Uninstall complete. Station data was kept.</sys:String>
+    <sys:String x:Key="Uninstall.FilesBusy" xml:space="preserve">Application removed. Some files remain. Close programs using those files and retry.</sys:String>
+    <sys:String x:Key="Uninstall.ProgramPath" xml:space="preserve">Program folder: </sys:String>
+    <sys:String x:Key="Uninstall.DataPath" xml:space="preserve">
+Retained data: </sys:String>
+    <sys:String x:Key="Uninstall.ReceiptPath" xml:space="preserve">
+Uninstall record: </sys:String>
+    <sys:String x:Key="Uninstall.PurgeReceipt" xml:space="preserve">Data cleanup record: </sys:String>
+    <sys:String x:Key="Uninstall.CacheReceipt" xml:space="preserve">Cleanup record: </sys:String>
+    <sys:String x:Key="Uninstall.Remaining" xml:space="preserve">Remaining files or folders:
+</sys:String>
+    <sys:String x:Key="Uninstall.Unverified" xml:space="preserve">
+Unverified items kept:
+</sys:String>
+    <sys:String x:Key="Uninstall.Details" xml:space="preserve">Uninstall details</sys:String>
+    <sys:String x:Key="Uninstall.RemainingPrefix" xml:space="preserve">Cleanup remaining: </sys:String>
+    <sys:String x:Key="Uninstall.FolderCount" xml:space="preserve"> folders and </sys:String>
+    <sys:String x:Key="Uninstall.RetainedSummary" xml:space="preserve"> items kept. See the cleanup record for the complete list.</sys:String>
+    <sys:String x:Key="Uninstall.ScopePurge" xml:space="preserve">Data cleanup includes this station’s management password. Shared drivers and runtimes, personal preferences, security receipts and backups outside the station are kept.</sys:String>
+    <sys:String x:Key="Uninstall.ScopeKeep" xml:space="preserve">The management password, shared drivers and runtimes, personal preferences, security receipts and backups outside the station are kept.</sys:String>
+    <sys:String x:Key="Uninstall.Retry" xml:space="preserve">Retry uninstall</sys:String>
+    <sys:String x:Key="Uninstall.UnknownNoReplay" xml:space="preserve">The uninstall result is unconfirmed. Select Uninstall again to check the original attempt without rerunning it.
+</sys:String>
+    <sys:String x:Key="Setup.WorkflowTitle" xml:space="preserve">Set up Cainiao Induction Station</sys:String>
+    <sys:String x:Key="Startup.Product" xml:space="preserve">Cainiao Induction Station</sys:String>
+    <sys:String x:Key="Setup.HostVersion" xml:space="preserve">Active maintenance host: </sys:String>
+    <sys:String x:Key="Setup.CurrentDeployment" xml:space="preserve">
+
+Registered deployment: </sys:String>
+    <sys:String x:Key="Setup.Unregistered" xml:space="preserve">Not registered</sys:String>
+    <sys:String x:Key="Setup.TargetMedia" xml:space="preserve">
+
+Selected media: </sys:String>
+    <sys:String x:Key="Setup.BuildTransition" xml:space="preserve">
+Current build → target build:
+</sys:String>
+    <sys:String x:Key="Setup.CouldNotReadDeployment" xml:space="preserve">
+Current registration could not be read: </sys:String>
+    <sys:String x:Key="Setup.CopyVersion" xml:space="preserve">Version information (select to copy)</sys:String>
+    <sys:String x:Key="Setup.StepWelcome" xml:space="preserve">1  Welcome and location</sys:String>
+    <sys:String x:Key="Setup.StepInstall" xml:space="preserve">2  Install</sys:String>
+    <sys:String x:Key="Setup.StepFinished" xml:space="preserve">3  Finish</sys:String>
+    <sys:String x:Key="Setup.StepOptions" xml:space="preserve">1  Setup options</sys:String>
+    <sys:String x:Key="Setup.StepConfirm" xml:space="preserve">2  Confirm and install</sys:String>
+    <sys:String x:Key="Setup.VersionInformation" xml:space="preserve">Version information</sys:String>
+    <sys:String x:Key="Setup.MaintenanceUnknown" xml:space="preserve">The last result is unconfirmed. Check it before retrying. You may close this window and the records will be kept.</sys:String>
+    <sys:String x:Key="Setup.MaintenancePastUnknown" xml:space="preserve">The last maintenance result is unconfirmed. Do not repeat the operation.
+</sys:String>
+    <sys:String x:Key="Setup.CheckReceipt" xml:space="preserve">
+Check the original receipt and current state before retrying. A failure does not undo completed steps.</sys:String>
+    <sys:String x:Key="Setup.ChooseFolder" xml:space="preserve">Select folder…</sys:String>
+    <sys:String x:Key="Setup.CleanupFailed" xml:space="preserve">Setup files could not all be removed</sys:String>
+    <sys:String x:Key="Setup.PackageUnavailable" xml:space="preserve">Installer unavailable</sys:String>
+    <sys:String x:Key="Setup.MissingPayload" xml:space="preserve">Embedded setup files are missing. Use the complete installer.</sys:String>
+    <sys:String x:Key="Setup.MissingMetadata" xml:space="preserve">Missing installer information</sys:String>
+    <sys:String x:Key="Setup.PreparingBusy" xml:space="preserve">The setup preparation folder is in use</sys:String>
+    <sys:String x:Key="Setup.UnownedFolder" xml:space="preserve">The folder does not belong to this installation and was kept.</sys:String>
+    <sys:String x:Key="Setup.LinkInPreparation" xml:space="preserve">The setup folder contains a link and was kept: </sys:String>
+    <sys:String x:Key="Setup.VerifyFiles">Checking installation files</sys:String>
+    <sys:String x:Key="Setup.PrepareFiles">Preparing installation files</sys:String>
+    <sys:String x:Key="Setup.RecheckFiles">Rechecking installation files</sys:String>
+    <sys:String x:Key="Setup.FilesReady">Installation files are ready</sys:String>
 </ResourceDictionary>

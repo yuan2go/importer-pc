@@ -24,7 +24,7 @@ public abstract partial class StartupWorkflowWindow : Window
     protected readonly TextBlock WorkflowBusinessName = new TextBlock() { FontSize = UiTypography.Label, Margin = new(0, 4, 0, 0), Visibility = Visibility.Collapsed }.Themed(TextBlock.ForegroundProperty, "Muted");
     protected StackPanel Form;
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
-    protected readonly TextBlock InstallationHeading = new() { Text = "安装菜鸟供包台", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis };
+    protected readonly TextBlock InstallationHeading = new() { Text = UiText.Get("Setup.WorkflowTitle"), FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis };
     protected readonly TextBlock VersionLabel = new() { FontSize = UiTypography.Body, Margin = new(0, 8, 0, 0), Visibility = Visibility.Collapsed };
     protected readonly TextBox BuildIdentityDetails = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 140, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     protected void ShowBuildIdentity(DeploymentLocation? registered, DeploymentMedia? target = null)
@@ -32,9 +32,9 @@ public abstract partial class StartupWorkflowWindow : Window
         var running = WindowsDeploymentSetup.RunningBuild((System.Reflection.Assembly.GetEntryAssembly() ?? typeof(StartupWorkflowWindow).Assembly));
         var current = registered is null ? null : WindowsDeploymentSetup.RegisteredBuild(registered);
         var targetBuild = target is null ? null : WindowsDeploymentSetup.MediaBuild(target);
-        BuildIdentityDetails.Text = "实际运行维护宿主：" + running.BusinessVersion + "\n" + running.SourceCommit +
-            "\n\n当前登记部署：" + (current is null ? "未登记" : current.BusinessVersion + "\n" + current.SourceCommit + "\n" + current.Detail) +
-            (targetBuild is null ? "" : "\n\n所选目标介质：" + targetBuild.BusinessVersion + "\n" + targetBuild.SourceCommit + "\n" + targetBuild.Detail + "\n当前构建 → 目标构建：\n" + (current?.SourceCommit ?? "未登记") + " → " + targetBuild.SourceCommit);
+        BuildIdentityDetails.Text = UiText.Get("Setup.HostVersion") + running.BusinessVersion + "\n" + running.SourceCommit +
+            UiText.Get("Setup.CurrentDeployment") + (current is null ? UiText.Get("Setup.Unregistered") : current.BusinessVersion + "\n" + current.SourceCommit + "\n" + current.Detail) +
+            (targetBuild is null ? "" : UiText.Get("Setup.TargetMedia") + targetBuild.BusinessVersion + "\n" + targetBuild.SourceCommit + "\n" + targetBuild.Detail + UiText.Get("Setup.BuildTransition") + (current?.SourceCommit ?? UiText.Get("Setup.Unregistered")) + " → " + targetBuild.SourceCommit);
     }
     readonly TextBlock[] installationSteps = new TextBlock[3];
     protected void InstallationStep(int step)
@@ -65,19 +65,19 @@ public abstract partial class StartupWorkflowWindow : Window
         {
             if (BuildIdentityDetails.Text.Length != 0) return;
             try { ShowBuildIdentity(WindowsDeploymentSetup.Current(applicationId)); }
-            catch (Exception error) { BuildIdentityDetails.Text = "实际运行维护宿主：" + WindowsDeploymentSetup.RunningBuild((System.Reflection.Assembly.GetEntryAssembly() ?? typeof(StartupWorkflowWindow).Assembly)) + "\n当前登记未读取：" + error.Message; }
+            catch (Exception error) { BuildIdentityDetails.Text = UiText.Get("Setup.HostVersion") + WindowsDeploymentSetup.RunningBuild((System.Reflection.Assembly.GetEntryAssembly() ?? typeof(StartupWorkflowWindow).Assembly)) + UiText.Get("Setup.CouldNotReadDeployment") + error.Message; }
         };
         if (installation)
         {
-            var buildIdentity = new Expander { Header = "版本信息（可选择复制）", Content = BuildIdentityDetails, Margin = new(0, 4, 0, 4) };
+            var buildIdentity = new Expander { Header = UiText.Get("Setup.CopyVersion"), Content = BuildIdentityDetails, Margin = new(0, 4, 0, 4) };
             Width = 880; Height = 560; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
             var layout = new Grid(); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
             var rail = new StackPanel { Margin = new(16, 28, 16, 24) };
             rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 48, Height = 48, HorizontalAlignment = HorizontalAlignment.Left });
-            rail.Children.Add(new TextBlock { Text = "菜鸟供包台", FontSize = UiTypography.Body, FontWeight = UiTypography.Emphasis, Margin = new(0, 16, 0, 16) });
+            rail.Children.Add(new TextBlock { Text = UiText.Get("Startup.Product"), FontSize = UiTypography.Body, FontWeight = UiTypography.Emphasis, Margin = new(0, 16, 0, 16) });
             var stepLabels = BusinessDesktopCatalog.For(applicationId).UsesWorkstationSettingsFlow
-                ? new[] { ("1  欢迎与位置", 0), ("2  安装", 1), ("3  安装完成", 2) }
-                : new[] { ("1  安装选项", 0), ("2  确认并安装", 1), ("3  安装完成", 2) };
+                ? new[] { (UiText.Get("Setup.StepWelcome"), 0), (UiText.Get("Setup.StepInstall"), 1), (UiText.Get("Setup.StepFinished"), 2) }
+                : new[] { (UiText.Get("Setup.StepOptions"), 0), (UiText.Get("Setup.StepConfirm"), 1), (UiText.Get("Setup.StepFinished"), 2) };
             foreach (var (label, index) in stepLabels)
             { installationSteps[index] = new TextBlock { Text = label, Margin = new(0, 12, 0, 12), TextWrapping = TextWrapping.Wrap }; rail.Children.Add(installationSteps[index]); }
             var sidebar = new Border { Child = rail }.Themed(Border.BackgroundProperty, "Soft"); layout.Children.Add(sidebar);
@@ -106,7 +106,7 @@ public abstract partial class StartupWorkflowWindow : Window
         FooterHost.Children.Add(Actions); Grid.SetRow(FooterHost, 2);
         FooterHost.Margin = new(20, 0, 20, 8);
         FooterHost.Themed(DockPanel.BackgroundProperty, "Surface");
-        var identityButton = new ToggleButton { Content = "版本信息", Margin = new(8, 0, 0, 0) };
+        var identityButton = new ToggleButton { Content = UiText.Get("Setup.VersionInformation"), Margin = new(8, 0, 0, 0) };
         var identityCard = new Border { Child = BuildIdentityDetails, Width = 420, Margin = new(8) }.Themed(StyleProperty, "WorkstationCard");
         var identityPopup = new Popup { Child = identityCard, PlacementTarget = identityButton, Placement = PlacementMode.Bottom,
             HorizontalOffset = -300, StaysOpen = false, AllowsTransparency = true };
@@ -128,7 +128,7 @@ public abstract partial class StartupWorkflowWindow : Window
         var button = new Button { Content = label, MinHeight = 44, MinWidth = 100, Margin = new(0, 12, 10, 0), Padding = new(12, 6, 12, 6) };
         button.Click += async (_, _) =>
         {
-            if (UnknownOutcome && !readOnly) { Message("上次操作结果未确认，请勿重复执行。请先查看结果，或关闭窗口（记录会保留）。"); return; }
+            if (UnknownOutcome && !readOnly) { Message(UiText.Get("Setup.MaintenanceUnknown")); return; }
             await Run(action);
         }; Actions.Children.Add(button); return button;
     }
@@ -145,8 +145,8 @@ public abstract partial class StartupWorkflowWindow : Window
     {
         if (error is MaintenanceCancelledException) { Message(error.Message); return; }
         UnknownOutcome |= error is InstallationOutcomeUnknownException;
-        Status.Text = UnknownOutcome ? "上次维护操作结果未确认，请勿重复执行。\n" + ChineseInterfaceText.ParameterMessage(error.Message)
-            : "未完成：" + ChineseInterfaceText.ParameterMessage(error.Message) + "\n请核对原回执和当前状态后再试；失败提示不表示已执行步骤被回滚。";
+        Status.Text = UnknownOutcome ? UiText.Get("Setup.MaintenancePastUnknown") + ChineseInterfaceText.ParameterMessage(error.Message)
+            : UiText.Get("Common.IncompletePrefix") + ChineseInterfaceText.ParameterMessage(error.Message) + UiText.Get("Setup.CheckReceipt");
         Status.SetResourceReference(TextBlock.ForegroundProperty, UnknownOutcome ? "Warning" : "Danger");
     }
     protected void Message(string text) { Status.Text = text; Status.Foreground = Foreground; }
@@ -160,7 +160,7 @@ public abstract partial class StartupWorkflowWindow : Window
     protected TextBox Folder(string label, string value)
     {
         var box = Field(label, value, _ => { });
-        var browse = new Button { Content = "选择文件夹…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+        var browse = new Button { Content = UiText.Get("Setup.ChooseFolder"), MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         browse.Click += (_, _) => { var picker = new OpenFolderDialog { Title = label }; if (picker.ShowDialog(this) == true) box.Text = picker.FolderName; };
         Form.Children.Add(browse); return box;
     }

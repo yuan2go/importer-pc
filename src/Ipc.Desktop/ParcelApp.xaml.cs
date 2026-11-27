@@ -125,7 +125,11 @@ public partial class App : System.Windows.Application
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
             if (mode == "--setup" || mode is null && published && DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is null)
             {
-                var setup = new StartupSetupWindow(selected.Business); MainWindow = setup; setup.ShowDialog();
+                if (InstallerLanguageWindow.Choose(Resources) is { } language)
+                {
+                    var setup = new StartupSetupWindow(selected.Business, initialLanguage: language);
+                    MainWindow = setup; setup.ShowDialog();
+                }
                 startup.AllowClose = true; Shutdown(); return;
             }
             if (mode == "--maintenance") { await Repair(); return; }

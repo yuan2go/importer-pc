@@ -2,6 +2,8 @@ namespace Ipc.Platform;
 
 public sealed record InstallerCommandLine(string Action, string? DataRoot, string? Log, string OperationId)
 {
+    public string? Language { get; init; }
+
     public static bool IsQuiet(string[] args) => args.Any(a => a.Equals("/quiet", StringComparison.OrdinalIgnoreCase) ||
         a.StartsWith("/quiet=", StringComparison.OrdinalIgnoreCase));
     public static InstallerCommandLine Parse(string[] args)
@@ -9,8 +11,10 @@ public sealed record InstallerCommandLine(string Action, string? DataRoot, strin
         if (!IsQuiet(args)) throw new ArgumentException("静默调用必须指定/quiet。");
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         string action = "Install"; string? data = null, log = null, operation = null;
-        foreach (var item in args)
+        string? language = null;
+        for (var index = 0; index < args.Length; index++)
         {
+            var item = args[index];
             var pair = item.Split('=', 2); var name = pair[0];
             if (!seen.Add(name)) throw new ArgumentException("重复的安装参数：" + name);
             switch (name.ToLowerInvariant())
@@ -25,6 +29,12 @@ public sealed record InstallerCommandLine(string Action, string? DataRoot, strin
                 case "/dataroot": data = Value(pair); break;
                 case "/log": log = Value(pair); break;
                 case "/operationid": operation = Value(pair); break;
+                case "--lang":
+                    language = pair.Length == 2 ? Value(pair) :
+                        ++index < args.Length ? args[index] : throw new ArgumentException("Missing --lang value.");
+                    if (!PresentationPreferences.SupportedLanguages.Contains(language, StringComparer.Ordinal))
+                        throw new ArgumentException("--lang requires zh-CN, en-US or ru-RU.");
+                    break;
                 default: throw new ArgumentException("未知安装参数：" + name);
             }
         }
@@ -35,7 +45,7 @@ public sealed record InstallerCommandLine(string Action, string? DataRoot, strin
         }
         foreach (var path in new[] { data, log }.OfType<string>())
             if (!Path.IsPathFullyQualified(path) || path.StartsWith(@"\\", StringComparison.Ordinal) || path.StartsWith("//", StringComparison.Ordinal)) throw new ArgumentException("安装路径须为本机绝对路径。");
-        return new(action, data, log, operation ?? Guid.NewGuid().ToString("N"));
+        return new(action, data, log, operation ?? Guid.NewGuid().ToString("N")) { Language = language };
     }
     static string Value(string[] pair) => pair.Length == 2 && !string.IsNullOrWhiteSpace(pair[1]) ? pair[1] : throw new ArgumentException("参数缺少值。");
 }

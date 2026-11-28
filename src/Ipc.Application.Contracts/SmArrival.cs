@@ -1,37 +1,6 @@
 using Ipc.Platform;
 namespace Ipc.Application.Contracts;
 
-public sealed record SmHeartbeatMember(string PositionId, string StationCode, string BcrCode, long ControlRevision);
-public sealed record SmHeartbeatIntent(long RequestId, string Configuration, SmHeartbeatMember[] Members)
-{
-    public Dictionary<string, long> Controls { get; init; } = [];
-    public bool MaintenanceLease { get; init; }
-}
-public sealed record SmHeartbeatConfirmation(bool HttpResponded, bool ProtocolConfirmed, StationVehicleState[] Vehicles,
-    DateTimeOffset ReceivedAt, DateTimeOffset ValidUntil)
-{
-    public DateTimeOffset? AttemptStartedAt { get; init; }
-    public string? Target { get; init; }
-    public string? RequestBody { get; init; }
-    public int? HttpStatus { get; init; }
-    public string? ResponseBody { get; init; }
-    public int ResponseBytes { get; init; }
-    public bool ResponseComplete { get; init; }
-    public double ElapsedMs { get; init; }
-    public string? Failure { get; init; }
-}
-// The Application journals the exact intent before HTTP, without holding its
-// business gate across I/O. A timeout is not remote cancellation evidence.
-public interface ISmHeartbeatOwner
-{
-    Task<SmHeartbeatIntent?> BeginHeartbeatAsync(long requestId, CancellationToken token);
-    Task CompleteHeartbeatAsync(SmHeartbeatIntent intent, SmHeartbeatConfirmation confirmation);
-}
-public interface ISmHeartbeatControl
-{
-    void SetHeartbeatOwner(ISmHeartbeatOwner owner);
-    void RefreshHeartbeat();
-}
 public sealed record SmArrivalSnapshot(string? VehicleNo, string Generation, bool Confirmed, bool Submitted,
     bool CameraBoundaryReady, string? RecoveryReason, string? TargetOperation)
 {

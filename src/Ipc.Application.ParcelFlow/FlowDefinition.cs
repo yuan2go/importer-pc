@@ -5,6 +5,31 @@ namespace Ipc.Application.ParcelFlow;
 public abstract class FlowDefinition
 {
     public abstract string Id { get; }
+    public virtual bool UsesIndependentPositionControl => false;
+    public virtual bool SupportsBarcodeFiltering => false;
+    public virtual bool SupportsOperationsShiftPolicy => false;
+    public virtual bool SupportsManualRcsDebug => false;
+    public virtual IReadOnlyList<string> AllowedWorkstationPages => [];
+    public virtual bool UsesDeferredConnections => false;
+    public virtual long DefaultDiskReserveBytes => SystemParameterDefaults.MinimumFreeBytes;
+    public virtual string[] ValidateFlowConfiguration(ParcelConfiguration configuration) => [];
+
+    public virtual bool UsesArrivalRounds => false;
+    public virtual bool UsesTrustedTrayPresence => false;
+    public virtual bool AllowsSingleLaneCalibration => false;
+    public virtual bool RequiresArrivalHeartbeatForAutomaticRead => false;
+    public virtual bool IsAutomaticReadTarget(ParcelConfiguration configuration, string positionId) => false;
+    public virtual bool RequiresRecoveryReviewOnStart => false;
+
+    public virtual bool RetainsReleasedUnknownsInHistory => false;
+    public virtual bool CountsCurrentRoundCapacity => false;
+    public virtual bool HasTerminalRecoveryBasis(ParcelOperation operation) => false;
+    public virtual bool ClassifyIncompatibleOriginal(ParcelOperation operation) => false;
+    public virtual bool SupportsStationStatistics => false;
+    public virtual bool SupportsAutomaticHistoryCleanup => false;
+    public virtual StationOperationFact? ProjectStationOperationFacts(ParcelOperation operation) => null;
+    public virtual ParcelConfiguration ProjectWorkstationConfiguration(ParcelConfiguration original, ParcelConfiguration masked) => masked;
+
     public virtual bool AutomaticConfigurationQuiescence => false;
     public virtual bool ArchiveOriginalFrames => false;
     public virtual ParcelConfiguration InitialConfiguration() => throw new InvalidDataException("本Application未声明缺配引导模板；仍可选择原配置或完整备份");
@@ -22,6 +47,8 @@ public abstract class FlowDefinition
     public string[] Validate(ParcelConfiguration c) => [.. ParcelConfigurationRules.Validate(c, Id, PositionRoles), .. ValidateBusiness(c)];
 
 }
+public sealed record StationOperationFact(StageFact Stage, string Reason);
+
 public sealed record ParcelPorts(IControlledObservationSource Reader, IControlledWeightSource? Weight, IWcsPort? Wcs, IPlcPort? Plc,
     IReadOnlyDictionary<string, string> ImplementationHashes, IOperatorAuthenticator? Login = null, IImageCamera? Camera = null, IImageUploader? Uploader = null,
     IReadOnlyDictionary<string, IControlledObservationSource>? Readers = null, IReadOnlyDictionary<string, ICapabilityPort>? Devices = null);

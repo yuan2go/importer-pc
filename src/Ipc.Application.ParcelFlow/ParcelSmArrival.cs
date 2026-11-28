@@ -3,7 +3,7 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
-public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
+public sealed partial class ParcelRuntime : IStationHeartbeatOwner, ISmRemoteRecovery
 {
     sealed record ArrivalCapture(string Generation, string Epoch, bool Ready, DateTimeOffset Until, string? Failure = null, long MinimumCaptureTicks = 0, string? BoundaryId = null);
     readonly ConcurrentDictionary<string, ArrivalCapture> arrivalCaptures = new();
@@ -11,11 +11,11 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
     readonly Dictionary<string, (string Generation, string Epoch, string Reference)> arrivalVisualBaselines = [];
     readonly Dictionary<string, (long Revision, bool Included)> membershipConfirmations = [];
     readonly HashSet<string> arrivalBoundaryWorkers = [];
-    SmHeartbeatIntent? maintenanceHeartbeatPending;
+    StationHeartbeatIntent? maintenanceHeartbeatPending;
     readonly HashSet<string> maintenanceHeartbeatUncertain = [];
     void PrepareSmHeartbeatMaintenance()
     {
-        if (Id != "sportmaster" || ports?.Wcs is not ISmHeartbeatControl) return;
+        if (Id != "sportmaster" || ports?.Wcs is not IStationHeartbeatControl) return;
         var cycles = positions.Keys.Select(p => SmCycle(p) with
         {
             HeartbeatMaintenanceLease = true, HeartbeatIncluded = UsesSmArrival(p) && HeartbeatIncludes(p),
@@ -27,7 +27,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
     }
     void CompleteSmHeartbeatMaintenance()
     {
-        if (Id != "sportmaster" || ports?.Wcs is not ISmHeartbeatControl) return;
+        if (Id != "sportmaster" || ports?.Wcs is not IStationHeartbeatControl) return;
         var cycles = positions.Keys.Select(p => SmCycle(p) with
         {
             HeartbeatMaintenanceLease = false, HeartbeatPending = maintenanceHeartbeatPending?.RequestId,
@@ -63,9 +63,9 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
     }
     void BindSmHeartbeat(ICapabilityPort? port)
     {
-        if (Id == "sportmaster" && port is ISmHeartbeatControl control) control.SetHeartbeatOwner(this);
+        if (Id == "sportmaster" && port is IStationHeartbeatControl control) control.SetHeartbeatOwner(this);
     }
-    void RefreshSmHeartbeat() { if (ports?.Wcs is ISmHeartbeatControl control) control.RefreshHeartbeat(); }
+    void RefreshSmHeartbeat() { if (ports?.Wcs is IStationHeartbeatControl control) control.RefreshHeartbeat(); }
     bool SmMembershipConfirmed(string position, bool included) => membershipConfirmations.TryGetValue(position, out var confirmation) &&
         confirmation == (PositionControl(position).Revision, included);
     bool SmArrivalConfirmed(string position) => PositionSupplyEnabled(position) && SmMembershipConfirmed(position, true) &&
@@ -90,7 +90,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
         if (debug && !PositionSupplyEnabled(position)) return "调试真实发送须先启用并确认本位小车；不能向已撤车的位置发送。";
         return null;
     }
-    public async Task<SmHeartbeatIntent?> BeginHeartbeatAsync(long requestId, CancellationToken token)
+    public async Task<StationHeartbeatIntent?> BeginHeartbeatAsync(long requestId, CancellationToken token)
     {
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
@@ -99,7 +99,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
             if (backupInProgress)
             {
                 var leased = positions.Keys.Where(p => SmCycle(p).HeartbeatIncluded)
-                    .Select(p => new SmHeartbeatMember(p, Effective.StationCode!, Effective.Wcs!.Parameters[p + "-bcr-code"], PositionControl(p).Revision)).ToArray();
+                    .Select(p => new StationHeartbeatMember(p, Effective.StationCode!, Effective.Wcs!.Parameters[p + "-bcr-code"], PositionControl(p).Revision)).ToArray();
                 return maintenanceHeartbeatPending = new(requestId, SmHeartbeatConfiguration, leased)
                 { Controls = positions.Keys.ToDictionary(p => p, p => PositionControl(p).Revision), MaintenanceLease = true };
             }
@@ -108,7 +108,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
             // those writes on the repository's single connection.
             if (!Volatile.Read(ref stationStartupCompleted) || fatalStorage.Task.IsCompleted || configurationSaving || stopping.IsCancellationRequested) return null;
             if (repository is null || stopped) throw new OperationCanceledException("Runtime stopped", token);
-            var members = new List<SmHeartbeatMember>();
+            var members = new List<StationHeartbeatMember>();
             foreach (var position in positions.Keys)
             {
                 var included = UsesSmArrival(position) && HeartbeatIncludes(position);
@@ -141,7 +141,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
         }
         finally { gate.Release(); }
     }
-    public async Task CompleteHeartbeatAsync(SmHeartbeatIntent intent, SmHeartbeatConfirmation confirmation)
+    public async Task CompleteHeartbeatAsync(StationHeartbeatIntent intent, StationHeartbeatConfirmation confirmation)
     {
         await gate.WaitAsync().ConfigureAwait(false);
         try

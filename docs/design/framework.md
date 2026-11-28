@@ -10,17 +10,25 @@ Importer PC 使用 C#、.NET 10、WPF 和 SQLite。构建时由产品和装配�
 | 设备、协议 | Ipc.Drivers.Hikrobot.Mvs、Ipc.Integrations.SportmasterRcs 等 | 驱动占用及释放真实设备，集成核对协议响应，向 Application 返回可归属的证据 |
 | WPF 与运维 | Ipc.Presentation.Wpf、业务 Desktop、Ipc.Operations | 投影带身份和版本的状态，保存本窗草稿；独立运维进程经本机 IPC 访问工作站 |
 
-## 现状与下一阶段的边界
+## 四层架构解耦
 
 PR 1 已把部署与基座层的产品能力收敛到 `ProductDeploymentCatalog`。编译期装配选定业务 ID，平台、启动安装壳和独立运维据此读取部署声明。运行时仍逐项核验受保护安装登记、介质、程序及数据所有权。声明只供执行时查询，原登记、发布清单和业务账继续使用既有格式与身份。未知产品不具备任何已声明能力。[产品部署声明](../../src/Ipc.Platform/ProductDeploymentProfile.cs) · [部署快捷方式](../../src/Ipc.Platform/DeploymentShortcuts.cs)
 
-PR 2 已把内置驱动和协议组件的选择收敛到装配根。产品能力策略决定外置扩展、模拟读头和热替换的准入，注册表按现有驱动 ID 或实现 ID 路由。工厂核验版本与协议、持有资源租约，并把成功构造的端口交给应用。热替换候选释放失败时保留原对象及租约，停机继续收口。RCS 组件验证实际协议、绑定和冻结报文，发送资源按工位轮转，总并发上限为七，每位最多等待 128 个请求。工作站字段归属见下文。轮次契约继续由 ParcelFlow 持有。[装配根](../../src/Ipc.Assembly/ParcelAssembly.cs) · [能力注册契约](../../src/Ipc.Assembly/CapabilityRegistry.cs) · [解耦清点](multi-business-extraction-audit.md)
+PR 2 已把内置驱动和协议组件的选择收敛到装配根。产品能力策略决定外置扩展、模拟读头和热替换的准入，注册表按现有驱动 ID 或实现 ID 路由。工厂核验版本与协议、持有资源租约，并把成功构造的端口交给应用。热替换候选释放失败时保留原对象及租约，停机继续收口。RCS 组件验证实际协议、绑定和冻结报文，发送资源按工位轮转，总并发上限为七，每位最多等待 128 个请求。工作站字段归属见下文。轮次写入与回执保管由 ParcelFlow 持有。[装配根](../../src/Ipc.Assembly/ParcelAssembly.cs) · [能力注册契约](../../src/Ipc.Assembly/CapabilityRegistry.cs) · [解耦清点](multi-business-extraction-audit.md)
 
 PR 3 已将桌面身份、默认入口、设置页顺序和字段可见性集中到桌面配置表。部署声明及安装权限仍由平台层核验。工作站与独立运维启动时加载当前 Windows 用户的主题，保存后替换现有窗口的调色板，业务配置版本和设备会话继续由原应用持有。[桌面配置表](../../src/Ipc.Application.ParcelFlow.Desktop/BusinessDesktopProfile.cs) · [主题管理器](../../src/Ipc.Presentation.Wpf/WorkstationThemeManager.cs)
 
 `Workstation.xaml` 负责控件结构、44 DIP 触摸控件和焦点样式。默认浅色和工业深色共享语义资源键及随包 Noto Sans CJK SC 400 / 500 字体。新增 OEM 主题时，在 `Themes/Palettes/` 增加包含完整语义键和对应资源类型的字典，并在产品的 `SupportedThemes` 声明其 ID、名称和 WPF 资源 URI。验收覆盖现场文字颜色、键盘焦点和同一窗口热替换。[共享结构](../../src/Ipc.Presentation.Wpf/Themes/Workstation.xaml) · [浅色调色板](../../src/Ipc.Presentation.Wpf/Themes/Palettes/IndustrialLight.xaml) · [深色调色板](../../src/Ipc.Presentation.Wpf/Themes/Palettes/IndustrialDark.xaml)
 
 通用平台层不得新增 `Id == "sportmaster"` 或等价的业务特判。业务决定能做什么，平台执行有明确输入、身份和失败语义的操作。具体例子是由应用判定本轮是否允许提交，由存储机制原子提交应用给出的身份及事实；由装配确定快捷方式用途，由部署机制核验实际安装、目标和所属用户。引入新的共享能力要有实际消费者，不以规划中的业务替换已有装配。
+
+PR 6 完成执行策略抽离。SM 在 `SportmasterFlow` 声明拓扑、作业页面、单侧校准、到位代次、轮次、停用收口和历史统计。RCS 通过通用心跳端口提交带成员身份的确认。ParcelFlow 在原锁和 T1、T2、T3 事务中持久化策略结果，继续核验配置 CAS、原请求身份、远端发送围栏和回执保管。DB14 结构、schema3 与既有发布视图标识沿用原值。[解耦清点](multi-business-extraction-audit.md#pr-6-收官核查) · [执行策略](../../src/Ipc.Application.ParcelFlow/FlowDefinition.cs) · [SM 轮次策略](../../src/Ipc.Application.Sportmaster/SportmasterFlow.Rounds.cs)
+
+### 接入业务、页面和主题
+
+1. 在具体业务模块继承 `FlowDefinition`，声明角色、所需端口、终态与恢复依据。装配以该定义和具体提供者构造一个 `ParcelRuntime`。完整备份通过已选定的定义核对业务身份，各业务声明的能力由自己的配置决定。
+2. 相机、称重、PLC 或上位机组件按下节的提供者契约接入。产品装配根明确选择 Provider、依赖和准入策略。平台授权、锁和版本校验沿现有边界执行。
+3. 业务桌面提供 `BusinessDesktopProfile` 和主页面工厂。新增页面注册到业务页面清单，并通过同一个应用实例使用快照和命令。把新文案同步加入三语资源，新增主题提供完整语义调色板并在桌面描述符中声明。配置和业务事实沿原账保存。
 
 ### 界面语言
 

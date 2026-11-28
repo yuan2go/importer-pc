@@ -11,17 +11,26 @@ public sealed record LiveDeviceChange(string[] Readers, bool Integration);
 public static class ConfigurationActivation
 {
     public static bool RulesOnly(string application, ParcelConfiguration effective, ParcelConfiguration? pending, ParcelConfiguration candidate)
-        => application == "sportmaster" && pending is null &&
+        => RulesOnly(application == WorkstationPages.StationConfigurationId, effective, pending, candidate);
+
+    public static bool RulesOnly(bool supported, ParcelConfiguration effective, ParcelConfiguration? pending, ParcelConfiguration candidate)
+        => supported && pending is null &&
            Wire.Encode(candidate with { BarcodeFilter = effective.BarcodeFilter, WorkstationPage = effective.WorkstationPage }) == Wire.Encode(effective);
 
     public static bool WorkstationPageOnly(string application, ParcelConfiguration effective, ParcelConfiguration? pending, ParcelConfiguration candidate)
-        => application == "sportmaster" && pending is null && candidate.WorkstationPage != effective.WorkstationPage &&
+        => WorkstationPageOnly(application == WorkstationPages.StationConfigurationId, effective, pending, candidate);
+
+    public static bool WorkstationPageOnly(bool supported, ParcelConfiguration effective, ParcelConfiguration? pending, ParcelConfiguration candidate)
+        => supported && pending is null && candidate.WorkstationPage != effective.WorkstationPage &&
            Wire.Encode(candidate with { WorkstationPage = effective.WorkstationPage }) == Wire.Encode(effective);
 
     // A live swap preserves logical device IDs, roles and drivers. A configured camera may change IP or serial.
     public static LiveDeviceChange? LiveDevices(string application, ParcelConfiguration effective, ParcelConfiguration? pending, ParcelConfiguration candidate)
+        => LiveDevices(application == WorkstationPages.StationConfigurationId, effective, pending, candidate);
+
+    public static LiveDeviceChange? LiveDevices(bool supported, ParcelConfiguration effective, ParcelConfiguration? pending, ParcelConfiguration candidate)
     {
-        if (application != "sportmaster" || pending is not null || effective.Topology is not { } before || candidate.Topology is not { } after ||
+        if (!supported || pending is not null || effective.Topology is not { } before || candidate.Topology is not { } after ||
             before.Readers.Length != after.Readers.Length || Wire.Encode(effective.DeferredConnections ?? []) != Wire.Encode(candidate.DeferredConnections ?? []))
             return null;
         List<string> readers = [];

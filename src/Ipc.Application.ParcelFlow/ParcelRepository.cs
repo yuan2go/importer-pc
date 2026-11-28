@@ -15,6 +15,7 @@ public sealed partial class ParcelRepository : IDisposable
     readonly SqliteConnection db;
     readonly string rawRoot;
     readonly CancellationToken maintenanceCancellation;
+    readonly FlowDefinition? storageFlow;
     readonly Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver;
     public int StorageVersion { get; private set; }
     public const int CurrentStorageVersion = 14;
@@ -89,12 +90,18 @@ public sealed partial class ParcelRepository : IDisposable
         : this(directory, application, CancellationToken.None, positions) { }
     internal ParcelRepository(string directory, string application, CancellationToken maintenanceCancellation, string[]? positions = null)
         : this(directory, application, maintenanceCancellation, positions, null) { }
+    internal ParcelRepository(string directory, FlowDefinition flow, CancellationToken maintenanceCancellation, string[]? positions = null)
+        : this(directory, flow.Id, maintenanceCancellation, positions, null, flow) { }
+
     internal ParcelRepository(string directory, string application, CancellationToken maintenanceCancellation, string[]? positions,
-        Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver)
+        Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver, FlowDefinition? storageFlow = null)
     {
         this.maintenanceCancellation = maintenanceCancellation;
+        this.storageFlow = storageFlow;
         this.openObserver = openObserver;
         maintenanceCancellation.ThrowIfCancellationRequested();
+        if (storageFlow is not null && !ExtensionSchema.IsId(storageFlow.Id))
+            throw new InvalidDataException("Invalid composed flow storage identity");
         rawRoot = Path.Combine(directory, "receipts");
         var database = Path.Combine(directory, application + ".db");
         var existing = File.Exists(database);
@@ -107,7 +114,7 @@ public sealed partial class ParcelRepository : IDisposable
                 db.Open();
                 if (maintenanceCancellation.CanBeCanceled)
                     SQLitePCL.raw.sqlite3_progress_handler(db.Handle, 1000, _ => maintenanceCancellation.IsCancellationRequested ? 1 : 0, null);
-                StorageVersion = ReadStorageVersion(database, application);
+                StorageVersion = ReadStorageVersion(database, application, immutable: false, flow: storageFlow);
                 ValidateDurableReplyIdentities();
                 // Validate original facts while the connection is still read-only.
                 // Refusal must precede journal-mode changes and derived-state repairs.

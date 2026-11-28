@@ -145,6 +145,7 @@ if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run
 if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); return; }
 if (args.Contains("--lifecycle-restore")) { await LifecycleRestore.Run(workspace, root); return; }
 if (args.Contains("--sm-runtime-responsibility")) { await SmRuntimeResponsibility.Run(workspace, root); return; }
+if (args.Contains("--multi-business-composition")) { await MultiBusinessComposition.Run(root); return; }
 if (args.Contains("--capability-registry-routing")) { await CapabilityRegistryChecks.Routing(workspace, root); return; }
 if (args.Contains("--capability-registry-discovery")) { await CapabilityRegistryChecks.Discovery(root); return; }
 if (args.Contains("--capability-registry-live")) { await CapabilityRegistryChecks.Live(workspace, root); return; }

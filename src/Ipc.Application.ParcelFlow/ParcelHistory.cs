@@ -267,13 +267,12 @@ public sealed partial class ParcelRuntime
         !pending.Contains(op.Id) && op.Upload?.State is not (StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
     int? projectedCapacity;
     long HistoricalUnknownCount => (archiveCount?.HistoricalUnknown ?? 0);
-    int UnresolvedCapacity => Id == "sportmaster" ? smCurrentRounds.Count : projectedCapacity ?? operations.Values.Count(x => !ArchiveEligible(x));
+    int UnresolvedCapacity => definition.CountsCurrentRoundCapacity ? smCurrentRounds.Count : projectedCapacity ?? operations.Values.Count(x => !ArchiveEligible(x));
     bool CapacityAvailable => storageCapacityFailure is null && !fatalStorage.Task.IsCompleted &&
-        (Id == "sportmaster" || UnresolvedCapacity < Effective.MaximumOperations);
+        (definition.CountsCurrentRoundCapacity || UnresolvedCapacity < Effective.MaximumOperations);
     ParcelCapacity Capacity() => new(UnresolvedCapacity, operations.Count, archiveCount?.Count ?? 0,
-        Id == "sportmaster" ? int.MaxValue : Effective.MaximumOperations, CapacityAvailable,
-        Id == "sportmaster" ? "SM parcel admission has no unresolved-operation count limit; actual storage reserve and original request guards remain enforced"
-            : "Capacity covers current operations. History and permanent request identities remain subject to storage reserve", freeStorageBytes, Retention.MinimumFreeBytes)
+        definition.CountsCurrentRoundCapacity ? int.MaxValue : Effective.MaximumOperations, CapacityAvailable,
+        definition.CapacityPolicyDescription, freeStorageBytes, Retention.MinimumFreeBytes)
     {
         HistoricalUnknown = HistoricalUnknownCount,
         CurrentRounds = smCurrentRounds.Count,
@@ -283,7 +282,7 @@ public sealed partial class ParcelRuntime
     };
     void ArchiveSettled(bool requested = false, string? reason = null, BusinessCommand? command = null)
     {
-        var threshold = Id == "sportmaster" ? Retention.ResidentHistory : Math.Min(Retention.ResidentHistory, Effective.MaximumOperations);
+        var threshold = definition.CountsCurrentRoundCapacity ? Retention.ResidentHistory : Math.Min(Retention.ResidentHistory, Effective.MaximumOperations);
         if (!requested && operations.Count < threshold) return;
         var pending = repository!.PendingReceipts().Select(r => r.Operation).ToHashSet(StringComparer.Ordinal);
         var candidates = operations.Values.Where(op => ArchiveEligible(op, pending)).OrderBy(x => x.ObservedAt).Take(256).Select(x => x.Id).ToArray();

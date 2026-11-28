@@ -8,7 +8,7 @@ public sealed partial class ParcelRuntime
     // Leave the operation in its current owner until the actual call and T3
     // finish. A deadline, a new display, and a pending raw receipt grant no custody.
     bool CanRetainSmUnknown(ParcelOperation op) =>
-        ParcelRepository.IsSmUnknownHistoryCandidate(op) &&
+        definition.IsReleasedUnknownHistoryCandidate(op) &&
         (releasedPlacements.Contains(op.Id) || IsDebugRequest(op)) &&
         !StageRunning(op) &&
         !identityConflicts.Values.Any(conflict => conflict.OriginalOperation == op.Id) &&
@@ -16,7 +16,7 @@ public sealed partial class ParcelRuntime
 
     void RetainReleasedSmUnknowns()
     {
-        if (Id != "sportmaster" || backupInProgress || failure is not null) return;
+        if (!definition.RetainsReleasedUnknownsInHistory || backupInProgress || failure is not null) return;
         while (true)
         {
             var batch = operations.Values.Where(op => !obsoleteSmOriginals.Contains(op.Id) && CanRetainSmUnknown(op)).Take(128).ToArray();
@@ -44,16 +44,6 @@ public sealed partial class ParcelRuntime
 
 public sealed partial class ParcelRepository
 {
-    internal static bool IsSmUnknownHistoryCandidate(ParcelOperation op) =>
-        op.FrozenConfiguration is { ApplicationId: "sportmaster", Images: null, Plc: null } &&
-        op is { State: ParcelState.WcsUnknown, Capture: null, Upload: null, Plc: null, Image: null } &&
-        op.OriginalFrame?.State != "Pending" &&
-        op.Wcs is
-        {
-            State: StageState.Unknown, Attempts: 1,
-            Request.Binding: { Package: null, Implementation: "sportmaster-rcs", Contract: RcsRequestPolicy.Contract }
-        };
-
     internal bool HasPendingReceipt(string operation)
     {
         using var command = db.CreateCommand();
@@ -66,7 +56,7 @@ public sealed partial class ParcelRepository
     {
         // Same atomic original-byte move as other history. This separate entry point
         // does not confer a terminal result or permission to expire the record.
-        if (originals.Any(op => !IsSmUnknownHistoryCandidate(op)))
+        if (storageFlow is null || originals.Any(op => !storageFlow.IsReleasedUnknownHistoryCandidate(op)))
             throw new InvalidOperationException("Only closed SM execution with an unknown RCS outcome can enter this custody path");
         MoveToHistory(originals.Select(op => op.Id).ToArray(), "SmUnknownHistoryRetained",
             "Placement ended or debug only; external execution ended and original receipt custody closed; outcome remains Unknown");

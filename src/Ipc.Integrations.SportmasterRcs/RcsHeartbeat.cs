@@ -8,7 +8,7 @@ using Ipc.Platform;
 
 namespace Ipc.Integrations.SportmasterRcs;
 
-public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
+public sealed partial class SportmasterRcsTaskService : IStationHeartbeatControl
 {
     internal const string HeartbeatCommand = "sorter.task.station_heartbeat";
     const int FastProbeIntervalMs = 250, FastProbeWindowMs = 2500;
@@ -26,10 +26,10 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
     string heartbeatEvidence = "RCS client stopped; upstream acceptance unconfirmed";
     StationVehicleState[] stationVehicles = [];
     static long lastHeartbeatId;
-    ISmHeartbeatOwner? heartbeatOwner;
+    IStationHeartbeatOwner? heartbeatOwner;
     readonly SemaphoreSlim heartbeatRefresh = new(0, 1);
     int heartbeatRefreshPending;
-    public void SetHeartbeatOwner(ISmHeartbeatOwner owner)
+    public void SetHeartbeatOwner(IStationHeartbeatOwner owner)
     {
         lock (lifecycle)
         {
@@ -196,8 +196,8 @@ public sealed partial class SportmasterRcsTaskService : ISmHeartbeatControl
         }
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(stop);
         timeout.CancelAfter(TimeSpan.FromMilliseconds(3000));
-        SmHeartbeatIntent? intent = null;
-        var confirmation = new SmHeartbeatConfirmation(false, false, [], default, default);
+        StationHeartbeatIntent? intent = null;
+        var confirmation = new StationHeartbeatConfirmation(false, false, [], default, default);
         var started = System.Diagnostics.Stopwatch.GetTimestamp();
         var scheduledAt = HeartbeatScheduleForVerification.GetTimestamp();
         try

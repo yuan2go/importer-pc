@@ -12,7 +12,7 @@ public sealed partial class ParcelStartupMaintenance
     RestoreMachineEvidence RecoveryEvidence(ParcelConfiguration c) => HandoffMachineIdentity is null
         ? RestoreEvidence ?? RestoreMachineEvidence.For(c) : (RestoreEvidence ?? RestoreMachineEvidence.For(c)) with { PolicyIdentity = HandoffMachineIdentity };
     DeploymentRestoreIntent[] OriginalRestoreIntents() => RestoreIntentReader?.Invoke() ??
-        (definition.Id == "sportmaster" && OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json"))
+        (ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json"))
             ? WindowsDeploymentSetup.ReadRestoreIntents(definition.Id) : []);
     DeploymentRestoreOperation OpenOriginalRestoreCopy(string backup, string identity, string root, string target)
     {
@@ -52,7 +52,7 @@ public sealed partial class ParcelStartupMaintenance
     public Task<StartupRecoveryPreview[]> ReadRestoreOperationsAsync()
     {
         Authorize();
-        using var owner = RestoreInspectionOwner?.Invoke() ?? (definition.Id == "sportmaster" && OperatingSystem.IsWindows() &&
+        using var owner = RestoreInspectionOwner?.Invoke() ?? (ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && OperatingSystem.IsWindows() &&
             File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")) ? WindowsDeploymentSetup.HoldRestoreInspection(definition.Id) : null);
         return Task.FromResult(OriginalRestoreIntents().Select(ProjectRestore).ToArray());
     }

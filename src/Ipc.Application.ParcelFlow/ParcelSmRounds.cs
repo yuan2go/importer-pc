@@ -28,7 +28,7 @@ public sealed partial class ParcelRuntime
         SubmittedOperation = null, SubmissionAttempted = false,
         TargetOperation = cycle.TargetOperation is { } id &&
             (operations.GetValueOrDefault(id) ?? repository!.ReadOperation(id))?.Wcs is { } stage &&
-            (stage.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled || SmRequestNotDelivered(stage))
+            definition.HasConfirmedDestinationOutcome(stage)
             ? null : cycle.TargetOperation,
         RecoveryCause = cycle.RecoveryCause & ~SmRemoteRecoveryCause.RequestMayBind
     };
@@ -150,12 +150,12 @@ public sealed partial class ParcelRuntime
     }
     void MaintainSmRounds()
     {
-        if (Id != "sportmaster") return;
+        if (!definition.UsesArrivalRounds) return;
         foreach (var id in smCurrentRounds.Values.ToArray())
         {
             var round = CheckSmReadDeadline(smRounds[id]);
             if ((round.Manual || !SmVisualReliable(round.PositionId)) && round.SuccessTicks is { } accepted && round.SuccessClockRuntime == runtimeId &&
-                StationTime.GetElapsedTime(accepted).TotalMilliseconds >= 3000)
+                definition.EndsSuccessfulRound(StationTime.GetElapsedTime(accepted)))
                 EndSmRound(round, "SuccessDisplayElapsed");
         }
         foreach (var round in smRounds.Values.Where(r => r.EndedAt is not null &&
@@ -164,7 +164,7 @@ public sealed partial class ParcelRuntime
     SmParcelRound CheckSmReadDeadline(SmParcelRound round)
     {
         if (round.OperationId is null && !round.AutoExpired &&
-            (round.ClockRuntime != runtimeId || StationTime.GetElapsedTime(round.StartedTicks).TotalMilliseconds >= round.ReadTimeoutMs))
+            (round.ClockRuntime != runtimeId || definition.IsReadWindowExpired(round, StationTime.GetElapsedTime(round.StartedTicks))))
         {
             round = round with { Version = round.Version + 1, State = SmRoundState.ReadException, AutoExpired = true, ReadOutcome = "ReadWindowExpired" };
             StoreSmRound(round, "ReadWindowExpired");
@@ -210,7 +210,7 @@ public sealed partial class ParcelRuntime
     }
     void RestoreSmRounds()
     {
-        if (Id != "sportmaster") return;
+        if (!definition.UsesArrivalRounds) return;
         while (repository!.PendingRoundImages() is { Length: > 0 } pending)
             foreach (var round in pending)
                 StoreSmRound(round with
@@ -551,7 +551,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
-            if (Id != "sportmaster" || stopped) throw new InvalidOperationException("当前轮次记录不可用。");
+            if (!definition.UsesArrivalRounds || stopped) throw new InvalidOperationException("当前轮次记录不可用。");
             database = Path.Combine(directory!, Id + ".db");
         }
         finally { gate.Release(); }

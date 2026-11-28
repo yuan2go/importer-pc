@@ -9,7 +9,7 @@ public static class SmParameterOwnership
 {
     public static ParcelConfiguration ProjectCandidate(ParcelConfiguration original, ParcelConfiguration edited, SmParameterAudience audience)
     {
-        if (audience == SmParameterAudience.Complete || original.ApplicationId != "sportmaster") return edited;
+        if (audience == SmParameterAudience.Complete || original.ApplicationId != WorkstationPages.StationConfigurationId) return edited;
         var field = audience == SmParameterAudience.Field;
         Dictionary<string, string>? Parameters(Dictionary<string, string>? before, Dictionary<string, string>? after)
         {

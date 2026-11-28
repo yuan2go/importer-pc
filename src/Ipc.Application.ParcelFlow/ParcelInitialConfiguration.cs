@@ -22,7 +22,7 @@ public sealed partial class ParcelRepository
             foreach (var item in page.Items)
             {
                 var op = item.Operation;
-                if (flow.Id == "sportmaster" && item.Archived && IsSmUnknownHistoryCandidate(op)) continue;
+                if (item.Archived && flow.IsReleasedUnknownHistoryCandidate(op)) continue;
                 if (op.OriginalFrame?.State == "Pending" || !(flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected) || op.RecoveryRequired ||
                     op.FrozenConfiguration.Images is not null && !op.ImageReleased ||
                     new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(x => x.State is not (StageState.Accepted or StageState.Rejected or StageState.Cancelled))) return false;
@@ -36,7 +36,7 @@ public sealed partial class ParcelRepository
 public sealed partial class ParcelStartupMaintenance
 {
     public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) =>
-        Task.FromResult(BarcodeFiltering.Select(policy ?? (definition.Id == "sportmaster" ? new BarcodeFilterPolicy("") : null), candidates.ToArray()));
+        Task.FromResult(BarcodeFiltering.Select(policy ?? (definition.SupportsBarcodeFiltering ? new BarcodeFilterPolicy("") : null), candidates.ToArray()));
     public async Task<StartupCheckReport> CheckAsync(ParcelConfiguration candidate)
     {
         var state = ReadState(); RequireIdentity(state.Envelope?.Effective ?? state.Seed, candidate);
@@ -46,7 +46,7 @@ public sealed partial class ParcelStartupMaintenance
         {
             try { ports.ValidateStructure(candidate); checks.Add(new("精确包与参数闭包", "PASS", "静态检查；未加载模块/SDK")); }
             catch (Exception error) when (error is IOException or InvalidDataException or InvalidOperationException or UnauthorizedAccessException) { checks.Add(new("精确包与参数闭包", "FAIL", error.Message)); }
-            var label = definition.Id == "sportmaster" ? "设置提交检查" : "部署资格与提交条件";
+            var label = definition.AdmissionCheckLabel;
             try { ports.Validate(candidate); checks.Add(new(label, "PASS", "保存及生效时仍会重新检查")); }
             catch (Exception error) when (error is IOException or InvalidDataException or InvalidOperationException or UnauthorizedAccessException) { checks.Add(new(label, "BLOCKED", error.Message)); }
         }
@@ -72,7 +72,7 @@ public sealed partial class ParcelStartupMaintenance
             if (Directory.Exists(Path.Combine(directory, "receipts")))
                 foreach (var file in RecoveryFiles.Enumerate(directory, "receipts"))
                 { var target = RecoveryFiles.Resolve(scratch, file); Directory.CreateDirectory(Path.GetDirectoryName(target)!); RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory, file), target, Wire.FileHash(RecoveryFiles.Resolve(directory, file))); }
-            using var repository = new ParcelRepository(scratch, definition.Id);
+            using var repository = new ParcelRepository(scratch, definition, CancellationToken.None);
             if (!repository.InitialRepairResponsibilitiesClear(definition)) throw new InvalidOperationException("原作业、回执、图像或身份责任未清；须使用原发布核对，不允许初始配置替换");
         }
         finally { Directory.Delete(scratch, true); }

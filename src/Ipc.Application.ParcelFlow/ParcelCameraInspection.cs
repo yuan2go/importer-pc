@@ -17,7 +17,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
     bool singleReadInspection;
     void InitializeCameraInspection()
     {
-        if (Id != "sportmaster") return;
+        if (!definition.SupportsInspectionCapture) return;
         try { inspectionStore = new(directory!, () => Effective.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes); }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or Microsoft.Data.Sqlite.SqliteException)
         { inspectionStoreFailure = "原相机诊断集合不可用，原件保留；请导出诊断记录。"; }
@@ -65,7 +65,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
             try
             {
                 authority.ThrowIfCancellationRequested(); Management.Require();
-                if (Id != "sportmaster" || command.RuntimeId != runtimeId || stopped || stopping.IsCancellationRequested || repository is null || configuration is null)
+                if (!definition.SupportsInspectionCapture || command.RuntimeId != runtimeId || stopped || stopping.IsCancellationRequested || repository is null || configuration is null)
                     throw new InvalidOperationException("运行实例已变化，请重新读取调试状态。");
                 if (InspectionStore.FindCommand(command.CommandId, Wire.Hash(Wire.Encode(command))) is { } existing) return InspectionStore.Status(existing, false);
                 if (collectingInspection is not null) throw new InvalidOperationException("已有调试采集正在运行，请先结束该采集。");

@@ -38,20 +38,20 @@ internal static class RcsArrivalContinuityChecks
         }
         finally { h.Api(h.Left).ClearGate.Set(); h.Peer.HeartbeatUnavailable = false; }
     }
-    sealed class FailingHeartbeatOwner(ParcelConfiguration configuration) : ISmHeartbeatOwner
+    sealed class FailingHeartbeatOwner(ParcelConfiguration configuration) : IStationHeartbeatOwner
     {
         int calls, completions;
         public readonly TaskCompletionSource Retry = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public readonly TaskCompletionSource Completed = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        public async Task<SmHeartbeatIntent?> BeginHeartbeatAsync(long id, CancellationToken token)
+        public async Task<StationHeartbeatIntent?> BeginHeartbeatAsync(long id, CancellationToken token)
         {
             var call = Interlocked.Increment(ref calls);
             if (call == 1) throw new IOException("synthetic heartbeat intent failure");
             if (call >= 3) await Retry.Task.WaitAsync(token);
-            return new(id, Wire.Hash(Wire.Encode(configuration)), configuration.Topology!.Positions.Select(p => new SmHeartbeatMember(p.Id,
+            return new(id, Wire.Hash(Wire.Encode(configuration)), configuration.Topology!.Positions.Select(p => new StationHeartbeatMember(p.Id,
                 configuration.StationCode!, configuration.Wcs!.Parameters![p.Id + "-bcr-code"], 0)).ToArray());
         }
-        public Task CompleteHeartbeatAsync(SmHeartbeatIntent intent, SmHeartbeatConfirmation confirmation)
+        public Task CompleteHeartbeatAsync(StationHeartbeatIntent intent, StationHeartbeatConfirmation confirmation)
         {
             if (Interlocked.Increment(ref completions) == 1) throw new IOException("synthetic heartbeat completion failure");
             Completed.TrySetResult(); return Task.CompletedTask;

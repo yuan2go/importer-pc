@@ -271,7 +271,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         if (collection.Authority.IsCancellationRequested || collection.Expires <= now || System.Diagnostics.Stopwatch.GetElapsedTime(collection.StartedTicks) >= collection.Lifetime) return false;
         return Volatile.Read(ref accepting) == 1 && failure is null && !stopping.IsCancellationRequested && RestoreConfirmed &&
             configuration?.Current.Confirmation?.Required != true && configuration!.Current.Pending is null && !configurationSaving && !backupInProgress &&
-            !ParcelConnectionSetup.BlocksWork(Effective) && factory.AdmissionFailure(Effective) is null && !HasIdentityConflict(op.PositionId!) &&
+            !ParcelConnectionSetup.BlocksWork(Effective, definition.UsesDeferredConnections) && factory.AdmissionFailure(Effective) is null && !HasIdentityConflict(op.PositionId!) &&
             ManualPositionMaintenanceClear(op.PositionId!) && !interruptedPositions.ContainsKey(op.PositionId!) && overload == 0 &&
             Wire.Hash(Wire.Encode(Effective)) == op.ConfigurationHash && OriginalRoundFrameMatches(op, evidence, round) &&
             AdmissionCapabilitiesReady(op.PositionId) && WeightReady(op) &&

@@ -21,8 +21,7 @@ public static partial class ParcelRecovery
     {
         source = Path.GetFullPath(source);
         RecoveryFiles.RequireOrdinaryAncestors(source);
-        var manifest = VerifyBackup(source, authority, token);
-        if (manifest.Application != flow.Id) throw new InvalidDataException("备份所属业务不符");
+        var manifest = VerifyBackup(source, authority, token, flow: flow);
         var root = source + ".recovery";
         var config = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(RecoveryFiles.Resolve(root, "configuration.json")));
         if (config.Effective.ApplicationId != manifest.Application || flow.Validate(config.Effective).Length != 0 ||

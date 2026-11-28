@@ -284,7 +284,7 @@ public sealed partial class ParcelStartupMaintenance
         => ObserveMaintenance(progress, token, execution =>
         {
             Authorize(); RequireBackupSetBoundary(backup);
-            using var references = RestoreInspectionOwner?.Invoke() ?? (definition.Id == "sportmaster" && OperatingSystem.IsWindows() &&
+            using var references = RestoreInspectionOwner?.Invoke() ?? (ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && OperatingSystem.IsWindows() &&
                 File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")) ? WindowsDeploymentSetup.HoldRestoreInspection(definition.Id) : null);
             return Task.FromResult(ParcelRecovery.DeleteSet(backup, identity, definition.Id, Authorize, id => RequireUnreferencedBackup(id, backup), execution));
         });
@@ -295,7 +295,7 @@ public sealed partial class ParcelStartupMaintenance
         var forbidden = new List<string> { launch.ConfigurationDirectory, AppContext.BaseDirectory, WindowsDeploymentSetup.MachineRoot };
         var dataRoots = new List<(string Root, string Application)> { (launch.DataRoot, definition.Id) };
         if (OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")))
-            foreach (var application in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
+            foreach (var application in ParcelRepository.LegacyStorageIds)
                 if (WindowsDeploymentSetup.Current(application) is { } installed)
                 {
                     forbidden.Add(installed.ReleaseRoot); forbidden.Add(installed.ConfigurationDirectory);

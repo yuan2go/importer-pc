@@ -21,7 +21,7 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                 await gate.WaitAsync(owned).ConfigureAwait(false);
                 try
                 {
-                    if (repository is null || Id != "sportmaster" || !SessionValid)
+                    if (repository is null || !definition.SupportsManualInput || !SessionValid)
                         return new("Rejected", "作业输入不可用或操作员会话已失效。", null, null, repository?.Revision ?? 0);
                     if (repository.PriorCommand(command) is { } prior)
                     {

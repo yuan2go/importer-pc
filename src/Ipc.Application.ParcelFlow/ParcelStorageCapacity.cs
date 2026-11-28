@@ -16,7 +16,7 @@ public sealed partial class ParcelRuntime
     DateTimeOffset retentionChecked;
     string? retentionWarning;
     internal Func<long>? StorageAvailableBytesForVerification { get; set; }
-    ParcelRetentionPolicy Retention => Effective.Retention ?? new();
+    ParcelRetentionPolicy Retention => Effective.Retention ?? new(MinimumFreeBytes: definition.DefaultDiskReserveBytes);
     void RefreshStorageCapacity()
     {
         var timestamp = StorageTimeForVerification.GetTimestamp();

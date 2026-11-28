@@ -1,6 +1,6 @@
 # 多业务架构解耦摸底报告
 
-PR 1 已完成部署与基座声明，PR 2 已完成内置驱动和组件注册，PR 3 已完成共享桌面字段与主题解耦。PR 4 已交付[三语国际化](framework.md#界面语言)，PR 5 已接入[多作业页面和构建通道](framework.md#sm-作业界面与构建渠道)。页面选择仍由桌面配置表和运维权限边界维护，工作站沿用同一运行实例。后续业务核心工作留待拆分 `ParcelFlow` 的到位、提交与原请求收口。[架构基线](framework.md) · [连续供包契约](sm-continuous-induction-closure-01.md)
+PR 1 已完成部署与基座声明，PR 2 已完成内置驱动和组件注册，PR 3 已完成共享桌面字段与主题解耦。PR 4 已交付[三语国际化](framework.md#界面语言)，PR 5 已接入[多作业页面和构建通道](framework.md#sm-作业界面与构建渠道)。页面选择仍由桌面配置表和运维权限边界维护，工作站沿用同一运行实例。PR 6 已将 SM 到位、轮次、启停、配置与历史的决策接到 `SportmasterFlow`，由 ParcelFlow 在原事务内执行。[架构基线](framework.md) · [连续供包契约](sm-continuous-induction-closure-01.md)
 
 ## 统计口径
 
@@ -52,9 +52,27 @@ PR 3 以 PR 2 合并提交 `35f55438ca2248a8190b49b41c77654591e02d11` 为基线�
 
 桌面配置表声明首配步序、设置布局和字段投影，未知标识保守回退。工作站和运维使用同一套 WPF 模板，通过调色板加载浅色与深色。OEM 主题提供完整语义键的资源字典，再在该业务的 `SupportedThemes` 声明。主题保存限于用户偏好文件。[桌面配置表](../../src/Ipc.Application.ParcelFlow.Desktop/BusinessDesktopProfile.cs) · [主题管理器](../../src/Ipc.Presentation.Wpf/WorkstationThemeManager.cs)
 
-## 七个候选边界
+## PR 6 收官核查
 
-表中接口名仅供后续 PR 讨论。已有契约能承载的变化优先落到现有类型。多个边界共享同一次提交的地方，调用位置、锁和事务需一起审查。
+| 共享工程 | Stage 2 C# 基线 | PR 5 合并后 | PR 6 |
+| --- | ---: | ---: | ---: |
+| Ipc.Application.ParcelFlow | 148 | 147 | 1 |
+| Ipc.Application.ParcelFlow.Desktop | 116 | 1 | 1 |
+| Ipc.Platform | 66 | 1 | 1 |
+| Ipc.Desktop | 25 | 1 | 1 |
+| Ipc.Assembly | 16 | 1 | 1 |
+| Ipc.Operations | 5 | 0 | 0 |
+| **六个工程** | **376** | **151** | **5** |
+
+PR 5 和 PR 6 两列用 `git grep -o -F '"sportmaster"'` 核对。按全源码文本计算，Stage 2 还含桌面 XAML 的 3 处，合计 379。五处余项分别供产品部署注册、产品装配、桌面启动、桌面配置表和 DB14 历史身份使用。RCS 集成从 2 处降为 0。源码门禁核对精确声明与出现次数。
+
+`IStationHeartbeatControl` 和 `IStationHeartbeatOwner` 负责心跳的提交授权与有效响应归属。业务策略只读配置、事实和时间证据，提供到位代次、读窗结束、启停、远端结果及历史归属的判断。锁、SQLite 提交、CAS、远端等待、回执责任及永久编号由原所有者维护。未确认结果转入历史后仍保留独立的远端发送围栏。
+
+组合测试使用 `weigh-plc-demo` 的独立业务定义和能力注册，覆盖测试相机、称重、PLC、操作员登录、配置 CAS、DB14 停机重开和完整备份核验。桌面使用独立调色板并验证三语切换。开放新身份限于持有明确 `FlowDefinition` 的存储入口。通用离线读者仍只认历史白名单，且配置、DB14 结构、基线摘要、原始请求和备份证据的检查均保留。[供包执行策略](../../src/Ipc.Application.ParcelFlow/FlowDefinition.cs) · [组合测试](../../tests/Ipc.Core.Tests/MultiBusinessCompositionTests.cs) · [源码护栏](../../tests/Ipc.Core.Tests/ArchitectureBoundaryGuardTests.cs)
+
+## 历史候选边界
+
+下表保留 Stage 2 对职责边界的清点。现行入口见收官核查与架构基线。
 
 | 边界及候选入口 | 由业务决定 | 继续由原所有者保证 |
 | --- | --- | --- |

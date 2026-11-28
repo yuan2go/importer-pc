@@ -5,6 +5,59 @@ namespace Ipc.Application.ParcelFlow;
 public abstract class FlowDefinition
 {
     public abstract string Id { get; }
+    public virtual bool UsesIndependentPositionControl => false;
+    public virtual bool SupportsBarcodeFiltering => false;
+    public virtual bool SupportsOperationsShiftPolicy => false;
+    public virtual bool SupportsManualRcsDebug => false;
+    public virtual IReadOnlyList<string> AllowedWorkstationPages => [];
+    public virtual bool UsesDeferredConnections => false;
+    public virtual long DefaultDiskReserveBytes => SystemParameterDefaults.MinimumFreeBytes;
+    public virtual string[] ValidateFlowConfiguration(ParcelConfiguration configuration) => [];
+
+    public virtual bool UsesArrivalRounds => false;
+    public virtual bool UsesTrustedTrayPresence => false;
+    public virtual bool AllowsSingleLaneCalibration => false;
+    public virtual bool SupportsInspectionCapture => false;
+    public virtual bool SupportsManualInput => false;
+    public virtual bool SupportsManagedWorkspace => false;
+    public virtual bool SupportsLiveConfiguration => false;
+    public virtual bool ReconnectsReadersAutomatically => false;
+    public virtual bool UsesEarlyDurableIngress => false;
+    public virtual bool SkipsPreviousCameraInputs => false;
+    public virtual bool UsesPositionScopedRequests => false;
+    public virtual bool UsesStationHeartbeat(ParcelConfiguration configuration) => false;
+    public virtual string? FrozenRequestStationCode(ParcelConfiguration configuration) => null;
+    public virtual bool RequiresNewArrival(SmPositionCycle cycle, StationVehicleState vehicle) => false;
+    public virtual SmPositionCycle NewArrival(SmPositionCycle cycle, StationVehicleState vehicle, long requestId,
+        string generation, string placementGeneration) => throw new NotSupportedException();
+    public virtual SmPositionCycle[] ProjectDestinationCustody(SmPositionCycle cycle, ParcelOperation operation, bool firstAttempt) => [];
+    public virtual bool HasConfirmedDestinationOutcome(StageFact stage) => false;
+    public virtual bool EndsSuccessfulRound(TimeSpan displayed) => false;
+    public virtual bool IsReadWindowExpired(SmParcelRound round, TimeSpan elapsed) => false;
+    public virtual StationPositionMode ResolvePositionMode(bool enabled, bool drainsOriginal) =>
+        enabled ? StationPositionMode.Enabled : StationPositionMode.Disabled;
+    public virtual bool HasPositionScopedRecovery(ParcelOperation operation, bool isDebug, bool placementReleased) => false;
+    public virtual bool RequiresArrivalHeartbeatForAutomaticRead => false;
+    public virtual bool IsAutomaticReadTarget(ParcelConfiguration configuration, string positionId) => false;
+    public virtual bool RequiresRecoveryReviewOnStart => true;
+
+    public virtual bool RetainsReleasedUnknownsInHistory => false;
+    public virtual bool CountsCurrentRoundCapacity => false;
+    public virtual bool DestinationAssignmentIsMainResult => false;
+    public virtual bool HasTerminalRecoveryBasis(ParcelOperation operation) => false;
+    public virtual bool ClassifyIncompatibleOriginal(ParcelOperation operation) => false;
+    public virtual bool SupportsStationStatistics => false;
+    public virtual bool SupportsStationDiagnostics => false;
+    public virtual bool SupportsCameraDiscovery => false;
+    public virtual bool SupportsStationExceptions => false;
+    public virtual bool ValidatesWeightRange => true;
+    public virtual string AdmissionCheckLabel => "部署资格与提交条件";
+    public virtual string CapacityPolicyDescription => "Capacity covers current operations. History and permanent request identities remain subject to storage reserve";
+    public virtual bool IsReleasedUnknownHistoryCandidate(ParcelOperation operation) => false;
+    public virtual bool SupportsAutomaticHistoryCleanup => false;
+    public virtual StationOperationFact? ProjectStationOperationFacts(ParcelOperation operation) => null;
+    public virtual ParcelConfiguration ProjectWorkstationConfiguration(ParcelConfiguration original, ParcelConfiguration masked) => masked;
+
     public virtual bool AutomaticConfigurationQuiescence => false;
     public virtual bool ArchiveOriginalFrames => false;
     public virtual ParcelConfiguration InitialConfiguration() => throw new InvalidDataException("本Application未声明缺配引导模板；仍可选择原配置或完整备份");
@@ -19,9 +72,30 @@ public abstract class FlowDefinition
     public virtual int QueuedObservationTimeoutMs(ParcelConfiguration configuration) => configuration.TimeoutMs;
     public virtual ParcelOperation RestoreMainProjection(ParcelOperation operation) => operation;
     public abstract string[] ValidateBusiness(ParcelConfiguration config);
-    public string[] Validate(ParcelConfiguration c) => [.. ParcelConfigurationRules.Validate(c, Id, PositionRoles), .. ValidateBusiness(c)];
+    public string[] Validate(ParcelConfiguration c) => [.. ParcelConfigurationRules.Validate(c, this), .. ValidateBusiness(c)];
 
 }
+public sealed record StationOperationFact(StageFact Stage, string Reason)
+{
+    // Both the composed flow and legacy DB14 writing entry point use the
+    // same projection for destination request counters and reason keys.
+    public static StationOperationFact? FromDestinationRequest(ParcelOperation op)
+    {
+        if (op.DebugRequest is not null || op.OperatorDebugRequest is not null || op.Wcs is not { } stage) return null;
+        var attempted = stage.Attempts > 0;
+        var reason = !attempted ? "" : stage.State switch
+        {
+            StageState.Conflict => "RcsConflict",
+            StageState.Unknown when stage.Replies.LastOrDefault()?.SenderDelivery == SenderDeliveryEvidence.ConnectionRefusedBeforeBody => "RcsNotDelivered",
+            StageState.Unknown when stage.LocalFailure == RequestLocalFailure.DeadlineExpired => "RcsTimeout",
+            StageState.Unknown => "RcsUnknown",
+            StageState.Rejected => "RcsRejected",
+            _ => ""
+        };
+        return new(stage, reason);
+    }
+}
+
 public sealed record ParcelPorts(IControlledObservationSource Reader, IControlledWeightSource? Weight, IWcsPort? Wcs, IPlcPort? Plc,
     IReadOnlyDictionary<string, string> ImplementationHashes, IOperatorAuthenticator? Login = null, IImageCamera? Camera = null, IImageUploader? Uploader = null,
     IReadOnlyDictionary<string, IControlledObservationSource>? Readers = null, IReadOnlyDictionary<string, ICapabilityPort>? Devices = null);

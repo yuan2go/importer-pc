@@ -58,7 +58,7 @@ public sealed partial class ParcelRepository
             pending.All(x => x.Stage == "image-upload" && x.Reply is null && HasReceiptOutcomeBasis(x.Id));
     }
     bool ExternalWorkComplete(ParcelOperation op, string application) => (!op.RecoveryRequired || HasTerminalRecoveryBasis(op, application)) &&
-        (op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application == "sportmaster" && op.State == ParcelState.SlotResolved) &&
+        (op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || (storageFlow?.DestinationAssignmentIsMainResult ?? application == LegacyStationStorageId) && op.State == ParcelState.SlotResolved) &&
         new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().All(s => s.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled);
 }
 public sealed partial class ParcelRuntime

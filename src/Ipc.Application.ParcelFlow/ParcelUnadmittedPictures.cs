@@ -8,7 +8,7 @@ public sealed partial class ParcelRuntime
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, ParcelInputSnapshot> blockedInputs = new();
     ParcelInputSnapshot? ContinuingBlockedObservation(string position, Observation observation)
     {
-        if (Id != "sportmaster" || observation.OperatorInput is not null || observation.InspectionSessionId is not null ||
+        if (!definition.UsesArrivalRounds || observation.OperatorInput is not null || observation.InspectionSessionId is not null ||
             observation.Kind != "Read" || observation.CandidateIssue is not null ||
             !readers.TryGetValue(observation.DeviceId, out var reader) || reader.Epoch != observation.Epoch ||
             !blockedInputs.TryGetValue(position, out var input) || input.Observation.Epoch != observation.Epoch ||
@@ -18,7 +18,7 @@ public sealed partial class ParcelRuntime
 
     ParcelInputSnapshot? DisplayedInput(string position, ManualWorkCardExpiry? expired = null)
     {
-        if (Id == "sportmaster")
+        if (definition.UsesArrivalRounds)
         {
             var round = CurrentRound(position);
             return round?.Observation is { } observation ? new(position, observation,
@@ -41,7 +41,7 @@ public sealed partial class ParcelRuntime
         if (eligible && ContinuingBlockedObservation(input.PositionId, input.Observation) is not null) return;
         blockedInputPictures.Remove(input.PositionId);
         blockedInputs.TryRemove(input.PositionId, out _);
-        if (Id != "sportmaster" || !eligible || !readers.TryGetValue(input.Observation.DeviceId, out var reader) ||
+        if (!definition.UsesArrivalRounds || !eligible || !readers.TryGetValue(input.Observation.DeviceId, out var reader) ||
             RetainInputPicture(input.Observation, reader) is not { } image) return;
         blockedInputPictures[input.PositionId] = image;
         blockedInputs[input.PositionId] = input;

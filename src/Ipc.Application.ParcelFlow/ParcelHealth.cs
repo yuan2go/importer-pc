@@ -9,7 +9,7 @@ public sealed partial class ParcelRuntime : IStationRcsHeartbeat
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
-            if (Id != "sportmaster" || stopped || stopping.IsCancellationRequested || repository is null || !SessionValid ||
+            if (!definition.UsesPositionScopedRequests || stopped || stopping.IsCancellationRequested || repository is null || !SessionValid ||
                 configurationSaving || ports?.Wcs is not { } wcs || wcs is not IWcsHeartbeat heartbeat || !PortMaintenanceClear(wcs))
                 return RcsHeartbeatResult.Unavailable;
             var started = System.Diagnostics.Stopwatch.GetTimestamp();

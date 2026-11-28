@@ -20,7 +20,7 @@ public sealed partial class ParcelRuntime : IStationSessionStatistics
             await gate.WaitAsync(budget.Token).ConfigureAwait(false);
             try
             {
-                if (Id != "sportmaster") throw new NotSupportedException("当前业务不提供SM运行班次");
+                if (!definition.SupportsStationStatistics) throw new NotSupportedException("当前业务不提供SM运行班次");
                 shift = repository?.CurrentStationShiftId ?? throw new InvalidOperationException("业务运行班次尚未建立");
                 now = StationTime.GetUtcNow(); elapsed = repository.CurrentStationElapsed;
                 policy = Wire.Decode<StationOperationsPolicy>(Wire.Encode(Effective.OperationsPolicy ?? StationShiftSchedule.Default));

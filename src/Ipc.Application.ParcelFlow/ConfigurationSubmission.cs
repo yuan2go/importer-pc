@@ -8,7 +8,7 @@ public sealed partial class ParcelRuntime
     {
         Management.Require();
         // Offline, bounded, no configuration write or external/device operation.
-        return Task.FromResult(BarcodeFiltering.Select(policy ?? (Id == "sportmaster" ? new BarcodeFilterPolicy("") : null), candidates.ToArray()));
+        return Task.FromResult(BarcodeFiltering.Select(policy ?? (definition.SupportsBarcodeFiltering ? new BarcodeFilterPolicy("") : null), candidates.ToArray()));
     }
     public async Task<ConfigurationSubmissionResult> InspectConfigurationSubmissionAsync(Guid owner, long expectedRevision, ParcelConfiguration candidate)
     {

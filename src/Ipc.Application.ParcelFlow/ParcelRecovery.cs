@@ -22,7 +22,7 @@ public static partial class ParcelRecovery
         => RestoreCore(backup, target, true, authority, execution.Token, execution);
     // One custody verifier for restore and original-maintenance inspection.
     // Read-only: no target directory or cleanup intent is created here.
-    internal static ParcelRecoveryManifest VerifyBackup(string source, Action? authority = null, CancellationToken token = default, bool unpublishedDelivery = false)
+    internal static ParcelRecoveryManifest VerifyBackup(string source, Action? authority = null, CancellationToken token = default, bool unpublishedDelivery = false, FlowDefinition? flow = null)
     {
         token.ThrowIfCancellationRequested(); source = Path.GetFullPath(source); authority?.Invoke();
         RecoveryFiles.RequireOrdinaryAncestors(source);
@@ -46,7 +46,8 @@ public static partial class ParcelRecovery
         if (!ExtensionSchema.IsId(manifest.Application) || manifest.Database != Path.GetFileName(source) || Wire.FileHash(source, token) != manifest.DatabaseHash ||
             manifest.Files is null || !manifest.Files.ContainsKey("configuration.json") || manifest.Files.Count > RecoveryFiles.MaximumFiles || !ExtensionSchema.IsHash(manifest.DatabaseHash))
             throw new InvalidDataException("Incomplete or changed backup custody manifest");
-        _ = ParcelRepository.ReadStorageVersion(source, manifest.Application, immutable: true);
+        _ = ParcelRepository.ReadStorageVersion(source, manifest.Application, immutable: true, flow: flow);
+        if (flow is not null && manifest.Application != flow.Id) throw new InvalidDataException("备份所属业务不符");
         foreach (var file in manifest.Files)
         {
             authority?.Invoke();

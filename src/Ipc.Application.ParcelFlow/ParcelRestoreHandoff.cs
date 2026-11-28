@@ -11,7 +11,7 @@ public sealed partial class ParcelStartupMaintenance
     public async Task AdoptRestoreOwnedAsync(string backup, string targetRoot, string expectedBackupHash, Func<StartupRestoreHandoff, Task> commit, DesktopRecoveryMigration? ownership = null)
     {
         Authorize();
-        if (definition.Id == "sportmaster" && OperatingSystem.IsWindows())
+        if (ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && OperatingSystem.IsWindows())
         {
             if (ownership is null) throw new InvalidOperationException("恢复接管必须持有原应用的真实停机所有权。");
             ownership.RequireStoppedSource(definition.Id, launch.DataRoot);
@@ -37,15 +37,15 @@ public sealed partial class ParcelStartupMaintenance
         var manifest = ReadIsolatedRestore(target, expectedBackupHash, verifyCopy: true);
         if (!manifest.Files.TryGetValue(ParcelMachineOrigin.FileName, out var originHash) || !manifest.Files.TryGetValue("configuration.json", out var configurationHash))
             throw new InvalidDataException("恢复缺少原机器或配置保管证据，不能补盖来源。");
-        if (definition.Id == "sportmaster" && intent is null && evidence.RequireRegistration && HandoffMachineIdentity is null)
+        if (ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && intent is null && evidence.RequireRegistration && HandoffMachineIdentity is null)
             throw new InvalidDataException("隔离副本没有受保护原恢复意图，请核对当前恢复入口，不能猜测接管。");
         var sourceExists = Directory.Exists(source);
-        if (definition.Id == "sportmaster" && Directory.Exists(launch.DataRoot) && OtherRootBlocker(source) is { } otherRoot)
+        if (ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && Directory.Exists(launch.DataRoot) && OtherRootBlocker(source) is { } otherRoot)
             throw new InvalidDataException(otherRoot);
-        using var sourceOwner = sourceExists && !(definition.Id == "sportmaster" && OperatingSystem.IsWindows()) ? new ResourceLease(source, ["application-owner"]) : null;
+        using var sourceOwner = sourceExists && !(ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && OperatingSystem.IsWindows()) ? new ResourceLease(source, ["application-owner"]) : null;
         using var targetOwner = new ResourceLease(target, ["application-owner"]);
         using var targetCopy = CopyForMaintenance(target);
-        if (ParcelRepository.ReadStorageVersion(targetCopy.Database, definition.Id) != ParcelRepository.CurrentStorageVersion)
+        if (ParcelRepository.ReadStorageVersion(targetCopy.Database, definition) != ParcelRepository.CurrentStorageVersion)
             throw new InvalidDataException("恢复交接仅支持当前 DB14，原件保留，不转换旧格式。");
         var minimum = ParcelRepository.ReadIntegrationRequestIdFloor(targetCopy.Database);
         DeploymentPurgedRestoreSource? purged = null;
@@ -53,7 +53,7 @@ public sealed partial class ParcelStartupMaintenance
         {
             ParcelMachineOrigin.Require(source, c, evidence);
             using var sourceCopy = CopyForMaintenance(source);
-            if (ParcelRepository.ReadStorageVersion(sourceCopy.Database, definition.Id) != ParcelRepository.CurrentStorageVersion)
+            if (ParcelRepository.ReadStorageVersion(sourceCopy.Database, definition) != ParcelRepository.CurrentStorageVersion)
                 throw new InvalidDataException("原来源不属于当前 DB14，保留原件。");
             ParcelRepository.RequireHandoffSourceEquivalent(sourceCopy.Database, targetCopy.Database);
             if (manifest.Files.Any(f => !File.Exists(RecoveryFiles.Resolve(source, f.Key)) || Wire.FileHash(RecoveryFiles.Resolve(source, f.Key)) != f.Value) ||

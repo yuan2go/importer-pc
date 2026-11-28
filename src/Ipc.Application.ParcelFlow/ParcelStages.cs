@@ -32,7 +32,7 @@ public sealed partial class ParcelRuntime
             }
             var port = PortFor(op, kind);
             if (!PortMaintenanceClear(port)) return op;
-            if (Id == "sportmaster" && kind == ParcelStage.Wcs && !query && port is IWcsDispatchResources resources)
+            if (definition.UsesPositionScopedRequests && kind == ParcelStage.Wcs && !query && port is IWcsDispatchResources resources)
             {
                 reservedRequest = Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
                 using var wait = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, IsDebugRequest(op) ? Management.Require() : CancellationToken.None);
@@ -134,7 +134,7 @@ public sealed partial class ParcelRuntime
             DateTimeOffset? callStarted = null, callCompleted = null;
             ParcelCallEvidence? CallEvidence() => callStarted is { } started && callCompleted is { } completed && callMs is { } elapsed
                 ? new(runtimeId, stage.Request.Id, started, completed, elapsed, definition.RequestTimeoutMs(op, kind)) : null;
-            if (Id == "sportmaster" && kind == ParcelStage.Wcs) RecordRcsPerformance(op, query ? "RcsQueryStarted" : "RcsSubmitStarted");
+            if (definition.UsesPositionScopedRequests && kind == ParcelStage.Wcs) RecordRcsPerformance(op, query ? "RcsQueryStarted" : "RcsSubmitStarted");
             try
             {
                 reply = await ExternalPortAsync(port, () => PortCallAsync(port, async () =>
@@ -258,7 +258,7 @@ public sealed partial class ParcelRuntime
     }
     void LogRcsResult(ParcelOperation operation, ParcelStage kind, long startedTicks, bool query, double? callMs)
     {
-        if (Id != "sportmaster" || kind != ParcelStage.Wcs || operation.Wcs is not { } stage) return;
+        if (!definition.UsesPositionScopedRequests || kind != ParcelStage.Wcs || operation.Wcs is not { } stage) return;
         if (callMs is { } elapsed) RecordRequestLatency(operation, elapsed);
         RecordRcsPerformance(operation, query ? "RcsQueryCompleted" : "RcsSubmitCompleted", callMs);
         // Ordinary operational summary. Credentials, target URLs and raw bodies stay out.
@@ -339,9 +339,9 @@ public sealed partial class ParcelRuntime
         foreach (var op0 in operations.Values.ToArray())
         {
             var op = op0;
-            var positionScopedRecovery = Id == "sportmaster" && !IsDebugRequest(op) &&
-                (releasedPlacements.Contains(op.Id) || (op.Wcs?.Request.Binding ?? op.FrozenConfiguration.Wcs)?.Contract == RcsRequestPolicy.Contract);
-            positionScopedRecovery |= Id == "sportmaster" && CanRetainSmUnknown(op);
+            var positionScopedRecovery = definition.UsesPositionScopedRequests &&
+                definition.HasPositionScopedRecovery(op, IsDebugRequest(op), releasedPlacements.Contains(op.Id));
+            positionScopedRecovery |= definition.UsesPositionScopedRequests && CanRetainSmUnknown(op);
             if (!IsSettled(op))
             {
                 op = op with { RecoveryRequired = !MainTerminated(op) };

@@ -15,7 +15,7 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
     public Task<DiagnosticProductInformation> ReadDiagnosticProductInformationAsync(CancellationToken token)
         => OwnedRead(owned =>
         {
-            if (Id != "sportmaster") throw new NotSupportedException("该业务尚未提供普通版本概览。");
+            if (!definition.SupportsStationDiagnostics) throw new NotSupportedException("该业务尚未提供普通版本概览。");
             owned.ThrowIfCancellationRequested();
             var release = StationDiagnosticProjection.Release(definition.GetType().Assembly, Id);
             owned.ThrowIfCancellationRequested();
@@ -31,7 +31,7 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
 
     public Task<DiagnosticPackageReceipt> ExportDiagnosticOverviewAsync(string destination, CancellationToken token)
     {
-        if (Id != "sportmaster") throw new NotSupportedException("该业务尚未提供普通诊断概览。");
+        if (!definition.SupportsStationDiagnostics) throw new NotSupportedException("该业务尚未提供普通诊断概览。");
         return ExportDiagnosticPackage(destination, detailed: false, token);
     }
 
@@ -204,7 +204,7 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
             {
                 Schema = 1,
                 CapturedAt = now,
-                Application = "sportmaster",
+                Application = Id,
                 RuntimeFailurePresent = failure is not null,
                 CapabilityCount = health.Length,
                 CapabilityReadyCount = health.Count(h => h.Ready && h.ConfirmedAt <= now && h.ValidUntil > now && h.ValidUntil > h.ConfirmedAt),

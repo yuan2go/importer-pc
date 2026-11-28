@@ -9,7 +9,7 @@ public sealed partial class ParcelRuntime : IStationExceptions
     public Task<StationExceptionPage> ReadExceptionsAsync(StationExceptionQuery query, CancellationToken token)
         => OwnedRead(owned =>
         {
-            if (Id != "sportmaster") throw new NotSupportedException("当前业务不提供SM异常查询");
+            if (!definition.SupportsStationExceptions) throw new NotSupportedException("当前业务不提供SM异常查询");
             return Task.FromResult(StationExceptionReader.Read(Path.Combine(directory!, Id + ".db"), query, owned));
         }, token);
 }

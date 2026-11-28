@@ -6,6 +6,7 @@ namespace Ipc.Application.WcsToPlc;
 public sealed class WcsToPlcFlow : FlowDefinition
 {
     public override string Id => "wcs-to-plc";
+    public override IReadOnlyList<string> AllowedWorkstationPages => [WorkstationPages.Classic];
     public override string[] ValidateBusiness(ParcelConfiguration c) => c.Wcs is null || c.Plc is null ? ["WcsToPlc capability dependencies do not match its flow"] : [];
     public override bool PredecessorsAccepted(ParcelOperation op, ParcelStage stage) => stage == ParcelStage.Wcs || stage == ParcelStage.Plc && op.Wcs?.State == StageState.Accepted && !string.IsNullOrWhiteSpace(op.Slot);
     public override ParcelStage[] ReconciliationStages(ParcelOperation op) =>

@@ -6,6 +6,7 @@ namespace Ipc.Application.DirectPlc;
 public sealed class DirectPlcFlow : FlowDefinition
 {
     public override string Id => "direct-plc";
+    public override IReadOnlyList<string> AllowedWorkstationPages => [WorkstationPages.Classic];
     public override string[] ValidateBusiness(ParcelConfiguration c) => c.Wcs is not null || c.Plc is null ? ["DirectPlc capability dependencies do not match its flow"] : [];
     public override bool PredecessorsAccepted(ParcelOperation op, ParcelStage stage) => stage == ParcelStage.Plc;
     public override ParcelStage[] ReconciliationStages(ParcelOperation op) =>

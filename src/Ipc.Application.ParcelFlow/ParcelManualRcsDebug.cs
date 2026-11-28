@@ -53,7 +53,7 @@ public sealed partial class ParcelRuntime
             try
             {
                 t.ThrowIfCancellationRequested(); authority.ThrowIfCancellationRequested(); Management.Require();
-                if (repository is null || stopped || Id != "sportmaster") throw new InvalidOperationException("Application未运行或已停止。");
+                if (repository is null || stopped || !definition.SupportsManualRcsDebug) throw new InvalidOperationException("Application未运行或已停止。");
                 if (repository.PriorCommand(receipt) is { } priorReceipt)
                 {
                     if (priorReceipt.Status == "Rejected") throw new InvalidOperationException(priorReceipt.Reason);

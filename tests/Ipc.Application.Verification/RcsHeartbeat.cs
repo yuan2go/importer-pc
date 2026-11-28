@@ -181,12 +181,12 @@ static partial class SportmasterRcs
 
     static async Task Until(Func<bool> predicate) => await Until(() => Task.FromResult(predicate()));
 
-    sealed class ProbeHeartbeatOwner(SmHeartbeatMember[] members) : ISmHeartbeatOwner
+    sealed class ProbeHeartbeatOwner(StationHeartbeatMember[] members) : IStationHeartbeatOwner
     {
-        public volatile SmHeartbeatMember[] Members = members;
-        public Task<SmHeartbeatIntent?> BeginHeartbeatAsync(long requestId, CancellationToken token)
-            => Task.FromResult<SmHeartbeatIntent?>(new(requestId, "synthetic", Members));
-        public Task CompleteHeartbeatAsync(SmHeartbeatIntent intent, SmHeartbeatConfirmation confirmation) => Task.CompletedTask;
+        public volatile StationHeartbeatMember[] Members = members;
+        public Task<StationHeartbeatIntent?> BeginHeartbeatAsync(long requestId, CancellationToken token)
+            => Task.FromResult<StationHeartbeatIntent?>(new(requestId, "synthetic", Members));
+        public Task CompleteHeartbeatAsync(StationHeartbeatIntent intent, StationHeartbeatConfirmation confirmation) => Task.CompletedTask;
     }
 
     static async Task FastProbeChecks(string workspace)
@@ -202,7 +202,7 @@ static partial class SportmasterRcs
         var configuration = HeartbeatConfiguration(workspace, binding);
         var left = binding.Parameters["left-bcr-code"];
         var owner = new ProbeHeartbeatOwner(RcsConfigurationValidation.HeartbeatMapping(configuration)
-            .Select(p => new SmHeartbeatMember(p.Bcr == left ? "left" : "right", p.Station, p.Bcr, 0)).ToArray());
+            .Select(p => new StationHeartbeatMember(p.Bcr == left ? "left" : "right", p.Station, p.Bcr, 0)).ToArray());
         service.SetHeartbeatOwner(owner);
         service.ConfigureRuntime(configuration);
         await service.StartAsync(default);

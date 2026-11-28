@@ -19,7 +19,7 @@ public sealed partial class ParcelRuntime
         try
         {
             Management.Require();
-            if (Id != "sportmaster" || stopped || stopping.IsCancellationRequested)
+            if (!definition.SupportsCameraDiscovery || stopped || stopping.IsCancellationRequested)
                 throw new InvalidOperationException("当前供包台无法扫描相机。");
             try
             {

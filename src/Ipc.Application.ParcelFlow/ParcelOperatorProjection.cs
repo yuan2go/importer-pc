@@ -9,22 +9,8 @@ public sealed partial class ParcelRuntime
     // Stored originals are untouched; authenticated administrators receive those exact originals.
     static CapabilityBinding? OperatorBinding(CapabilityBinding? b) => b is null ? null : b with { Target = "", Parameters = [] };
     static DeviceBinding OperatorReader(DeviceBinding r) => r with { Parameters = null };
-    static ParcelConfiguration WorkstationConfiguration(ParcelConfiguration original)
-    {
-        var masked = OperatorConfiguration(original);
-        if (original.ApplicationId != "sportmaster") return masked;
-        Dictionary<string, string>? Fields(Dictionary<string, string>? parameters) => parameters?
-            .Where(p => SmParameterOwnership.FieldParameter(p.Key)).ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
-        DeviceBinding Reader(DeviceBinding reader) => reader with { Parameters = Fields(reader.Parameters) };
-        var endpoint = original.Wcs is { } binding && Uri.TryCreate(binding.Target, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https"
-            ? new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri.GetLeftPart(UriPartial.Authority) : "";
-        return masked with
-        {
-            Reader = Reader(original.Reader),
-            Topology = original.Topology is { } topology ? topology with { Readers = topology.Readers.Select(Reader).ToArray() } : null,
-            Wcs = masked.Wcs is { } rcs ? rcs with { Target = endpoint, Parameters = Fields(original.Wcs!.Parameters)! } : null
-        };
-    }
+    ParcelConfiguration WorkstationConfiguration(ParcelConfiguration original)
+        => definition.ProjectWorkstationConfiguration(original, OperatorConfiguration(original));
     static ParcelConfiguration OperatorConfiguration(ParcelConfiguration c) => c with
     {
         Reader = OperatorReader(c.Reader),
@@ -58,7 +44,7 @@ public sealed partial class ParcelRuntime
     ParcelHistoryPage OperatorHistory(ParcelHistoryPage page) => Management.Status().Authorized ? page : page with
     { Items = page.Items.Select(item => item with { Operation = OperatorOperation(item.Operation) }).ToArray() };
     ParcelSnapshot OperatorSnapshot(ParcelSnapshot s) => OperatorSnapshot(s, Management.Status().Authorized);
-    static ParcelSnapshot OperatorSnapshot(ParcelSnapshot s, bool authorized) => authorized ? s : s with
+    ParcelSnapshot OperatorSnapshot(ParcelSnapshot s, bool authorized) => authorized ? s : s with
     {
         BackupScheduleStatus = null,
         Configuration = s.Configuration with

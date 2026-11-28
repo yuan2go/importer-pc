@@ -36,19 +36,13 @@ public sealed partial class ParcelRepository
     }
     void ProjectStationRequest(ParcelOperation op, SqliteTransaction tx, string? inheritedShift = null)
         => ProjectStationRequestCore(db, op, tx, inheritedShift ?? stationShiftId ?? "");
-    static void ProjectStationRequestCore(SqliteConnection connection, ParcelOperation op, SqliteTransaction tx, string shift)
+    void ProjectStationRequestCore(SqliteConnection connection, ParcelOperation op, SqliteTransaction tx, string shift)
     {
-        if (op.FrozenConfiguration.ApplicationId != "sportmaster" || op.DebugRequest is not null || op.OperatorDebugRequest is not null || op.Wcs is not { } stage) return;
+        var fact = storageFlow is not null ? storageFlow.ProjectStationOperationFacts(op) :
+            op.FrozenConfiguration.ApplicationId == LegacyStationStorageId ? StationOperationFact.FromDestinationRequest(op) : null;
+        if (fact is null) return;
+        var (stage, reason) = fact;
         var attempted = stage.Attempts > 0;
-        var reason = !attempted ? "" : stage.State switch
-        {
-            StageState.Conflict => "RcsConflict",
-            StageState.Unknown when stage.Replies.LastOrDefault()?.SenderDelivery == SenderDeliveryEvidence.ConnectionRefusedBeforeBody => "RcsNotDelivered",
-            StageState.Unknown when stage.LocalFailure == RequestLocalFailure.DeadlineExpired => "RcsTimeout",
-            StageState.Unknown => "RcsUnknown",
-            StageState.Rejected => "RcsRejected",
-            _ => ""
-        };
         using var c = connection.CreateCommand(); c.Transaction = tx;
         c.CommandText = """
             INSERT INTO station_metric_facts VALUES($id,'request',$owner,NULL,$shift,$at,$minute,$position,0,$requests,$assigned,$rejected,$unknown,$manual,$scope,$reason,$issues)

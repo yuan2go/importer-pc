@@ -228,9 +228,9 @@ internal sealed partial class ManualSupplyHarness : IAsyncDisposable
         }
         public ValueTask DisposeAsync() => FailDisposal ? ValueTask.FromException(new IOException("synthetic factory still owns resources")) : validation.DisposeAsync();
     }
-    sealed class RcsHealth(Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService inner, ManualFactory owner) : IWcsPort, IWcsRequestPreparer, IWcsDispatchResources, ISmHeartbeatControl, IWcsHeartbeat
+    sealed class RcsHealth(Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService inner, ManualFactory owner) : IWcsPort, IWcsRequestPreparer, IWcsDispatchResources, IStationHeartbeatControl, IWcsHeartbeat
     {
-        public void SetHeartbeatOwner(ISmHeartbeatOwner owner) => inner.SetHeartbeatOwner(owner);
+        public void SetHeartbeatOwner(IStationHeartbeatOwner owner) => inner.SetHeartbeatOwner(owner);
         public void RefreshHeartbeat() => inner.RefreshHeartbeat();
         public Task<RcsHeartbeatResult> SendHeartbeatAsync(CancellationToken token) => inner.SendHeartbeatAsync(token);
         public WcsDispatchProgress DispatchProgress => inner.DispatchProgress;

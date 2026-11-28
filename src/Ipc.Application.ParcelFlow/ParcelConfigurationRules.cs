@@ -8,22 +8,38 @@ public static partial class ParcelConfigurationRules
     public const int CurrentConfigurationSchema = 3;
     public static string[] Validate(ParcelConfiguration c, string application, string[] positionRoles)
     {
+        var station = application == ParcelRepository.LegacyStationStorageId;
+        return Validate(c, application, positionRoles, station, station, station, !station,
+            page => WorkstationPages.IsAllowed(application, page),
+            configuration => ValidateBackupBoundary(configuration, configuration.ApplicationId == ParcelRepository.LegacyStationStorageId), station);
+    }
+
+    internal static string[] Validate(ParcelConfiguration c, FlowDefinition definition)
+        => Validate(c, definition.Id, definition.PositionRoles, definition.SupportsOperationsShiftPolicy,
+            definition.SupportsBarcodeFiltering, definition.CountsCurrentRoundCapacity, definition.ValidatesWeightRange,
+            page => definition.AllowedWorkstationPages.Contains(page, StringComparer.Ordinal),
+            definition.ValidateFlowConfiguration, definition.UsesDeferredConnections);
+
+    static string[] Validate(ParcelConfiguration c, string application, string[] positionRoles, bool shiftPolicy,
+        bool barcodeFiltering, bool countsRounds, bool validatesWeightRange, Func<string, bool> allowsPage,
+        Func<ParcelConfiguration, string[]> validateFlowConfiguration, bool allowsDeferred)
+    {
         if (c.SchemaVersion != CurrentConfigurationSchema || c.Topology is null) return ["仅支持第三版完整拓扑配置；请保留原配置并使用当前模板。"];
         if (c.MaintenanceLogin is not null) return ["旧维护认证配置不再支持；管理密码由管理模式保护，原配置不得自动转换。"];
         List<string> e = [];
-        if (c.WorkstationPage is { } page && !WorkstationPages.IsAllowed(application, page))
+        if (c.WorkstationPage is { } page && !allowsPage(page))
             e.Add("WorkstationPage: " + page);
         if (c.ReadTimeoutMs is < SystemParameterDefaults.MinimumReadTimeoutMs or > SystemParameterDefaults.MaximumReadTimeoutMs) e.Add("ReadTimeoutMs: 自动识读期限须为100～60000毫秒");
         if (c.OperationsPolicy is { } operations)
         {
-            if (application != "sportmaster") e.Add("班次与自动维护策略仅用于SM");
+            if (!shiftPolicy) e.Add("班次与自动维护策略仅用于SM");
             e.AddRange(StationShiftSchedule.Validate(operations));
             if (operations.AutomaticHistoryCleanup && c.Retention?.HistoryDays is not (>= 7 and <= 30)) e.Add("启用自动清理前须配置7～30天历史保留期");
         }
         if (c.Reader is null || c.Weight is null || c.Images is { Camera: null })
             return ["Malformed configuration: missing reader/weight/camera"];
-        if (application != "sportmaster" && c.BarcodeFilter is not null) e.Add("BarcodeFilter belongs to the Sportmaster Application");
-        e.AddRange(ValidateCapabilityInventory(c));
+        if (!barcodeFiltering && c.BarcodeFilter is not null) e.Add("BarcodeFilter belongs to the Sportmaster Application");
+        e.AddRange(ValidateCapabilityInventory(c, allowsDeferred));
         if (e.Count == 0) e.AddRange(ValidateTopology(c, positionRoles));
         if (e.Count != 0) return e.ToArray(); // No topology/binding deduplication may hide invalid originals.
         // Validate the selected current RCS contract before startup can create a
@@ -37,11 +53,11 @@ public static partial class ParcelConfigurationRules
             }
             catch (InvalidDataException error) { e.Add(error.Message); }
         }
-        e.AddRange(ParcelConnectionSetup.Validate(c));
+        e.AddRange(ParcelConnectionSetup.Validate(c, allowsDeferred));
         if (c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("应用/站点/模式无效；请使用全新数据目录");
         if (c.StationCode is not null && (string.IsNullOrWhiteSpace(c.StationCode) || c.StationCode.Length > 256 || c.StationCode.Any(char.IsControl))) e.Add("Invalid system station code");
         if (c.Weight.Source != WeightSource.Disabled && (c.WeightValidity is null || !Enum.IsDefined(c.WeightValidity.Value))) e.Add("重量有效期必须明确配置。");
-        if (c.QueueCapacity is < 1 or > 4096 || c.TimeoutMs is < 100 or > 30000 || application != "sportmaster" && c.MaximumOperations is < 1 or > 100000) e.Add("Invalid resource/time/retention budget");
+        if (c.QueueCapacity is < 1 or > 4096 || c.TimeoutMs is < 100 or > 30000 || !countsRounds && c.MaximumOperations is < 1 or > 100000) e.Add("Invalid resource/time/retention budget");
         if (c.Retention is { } retention && (retention.ResidentHistory is < 1 or > 10000 || retention.MinimumFreeBytes is < 1048576 or > 1099511627776)) e.Add("Invalid resident history/storage reserve policy");
         if (c.Retention?.DiagnosticLogDays is < 1 or > 3650) e.Add("Retention.DiagnosticLogDays: 诊断日志保留须为1～3650天，或留空按容量轮转");
         if (c.Retention?.HistoryDays is < 7 or > 30) e.Add("Retention.HistoryDays: 已结历史保留须为7～30天；留空不按天清理");
@@ -54,7 +70,7 @@ public static partial class ParcelConfigurationRules
             if (capacity.WalWarningBytes is < 1048576 or > 1099511627776 || capacity.WalCheckpointSeconds is < 1 or > 3600)
                 e.Add("Retention WAL monitoring requires 1MiB..1TiB warning and 1..3600 seconds interval");
         }
-        if (application != "sportmaster" && c.Weight.Source != WeightSource.Disabled && c.WeightRange is { } range)
+        if (validatesWeightRange && c.Weight.Source != WeightSource.Disabled && c.WeightRange is { } range)
         {
             if (range.Minimum < 0 || range.Maximum <= 0 || range.Maximum > 100000 || range.Minimum > range.Maximum ||
                 c.Weight.Precision is < 0 or > 6 || decimal.Round(range.Minimum, c.Weight.Precision) != range.Minimum || decimal.Round(range.Maximum, c.Weight.Precision) != range.Maximum)
@@ -63,9 +79,7 @@ public static partial class ParcelConfigurationRules
                 e.Add("WeightRange: 显式配置重量超出本业务允许范围");
         }
         if (c.BackupSchedule is { } backup && (string.IsNullOrWhiteSpace(backup.Directory) || !Path.IsPathFullyQualified(backup.Directory) || backup.IntervalMinutes is < 15 or > 10080 || backup.MaximumSets is < 1 or > 1000)) e.Add("备份计划须指定绝对目录、15～10080分钟周期和1～1000份容量上限；不会自动删除原件");
-        if (c.ApplicationId == "sportmaster" && c.BackupSchedule is { } schedule && !string.IsNullOrWhiteSpace(schedule.Directory) && Path.IsPathFullyQualified(schedule.Directory))
-            try { InstallationIdentity.RequireExternalFilePath(schedule.Directory); }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException) { e.Add(error.Message); }
+        e.AddRange(validateFlowConfiguration(c));
         if (string.IsNullOrWhiteSpace(c.Reader.DeviceId) || c.Reader.Role != "parcel-reader" || string.IsNullOrWhiteSpace(c.Reader.Driver) || string.IsNullOrWhiteSpace(c.Reader.Revision)) e.Add("A stable parcel reader binding is required");
         var w = c.Weight;
         if (!Enum.IsDefined(w.Source) || w.Source != WeightSource.Disabled && (!Enum.IsDefined(w.Unit) || w.Precision is < 0 or > 6 || w.MaximumAgeMs is < 100 or > 60000 || w.WaitTimeoutMs is < 100 or > 300000)) e.Add("Invalid weight policy");
@@ -81,6 +95,14 @@ public static partial class ParcelConfigurationRules
         if (c.Login is not null && c.SessionLifetimeMs is < 100 or > 86400000) e.Add("Invalid session lifetime");
         return e.ToArray();
     }
+    internal static string[] ValidateBackupBoundary(ParcelConfiguration c, bool protectedStorage)
+    {
+        if (protectedStorage && c.BackupSchedule is { } schedule && !string.IsNullOrWhiteSpace(schedule.Directory) && Path.IsPathFullyQualified(schedule.Directory))
+            try { InstallationIdentity.RequireExternalFilePath(schedule.Directory); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException) { return [error.Message]; }
+        return [];
+    }
+
     static string[] ValidateTopology(ParcelConfiguration c, string[] positionRoles)
     {
         List<string> errors = [];

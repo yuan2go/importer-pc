@@ -10,13 +10,13 @@ public sealed partial class ParcelRuntime
     void RecordCapabilityHealth(CapabilityHealth value)
     {
         capabilityHealth[value.InstanceId] = value;
-        if (Id == "sportmaster" && Effective.Wcs?.InstanceId == value.InstanceId)
+        if (definition.RequiresArrivalHeartbeatForAutomaticRead && Effective.Wcs?.InstanceId == value.InstanceId)
             Volatile.Write(ref automaticCameraRcsHealth, value);
     }
     bool AutomaticCameraReadsAllowed(string device) => AutomaticCameraReadBlock(device) is null;
     string? AutomaticCameraReadBlock(string device)
     {
-        if (Id != "sportmaster") return null;
+        if (!definition.RequiresArrivalHeartbeatForAutomaticRead) return null;
         if (positions.Values.Any(p => p.ReaderDeviceId == device && !PositionSupplyEnabled(p.Id))) return "PositionSupplyDisabled";
         var health = Volatile.Read(ref automaticCameraRcsHealth);
         var now = DateTimeOffset.UtcNow;
@@ -31,7 +31,7 @@ public sealed partial class ParcelRuntime
     }
     InspectionRegistration? AutomaticReadRegistration(InspectionRegistration? registration)
     {
-        if (Id != "sportmaster") return registration;
+        if (!definition.RequiresArrivalHeartbeatForAutomaticRead) return registration;
         if (registration is null)
             return new(automaticCameraReadScope, false, _ => true, false) { DecodeAllowed = AutomaticCameraReadsAllowed,
                 MinimumDecodeIntervalMs = device => smReadIntervals.GetValueOrDefault(device) };

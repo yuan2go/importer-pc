@@ -21,7 +21,7 @@ public static class ParcelOfflineReceiptRecovery
         var wal = database + "-wal";
         if (File.Exists(wal) && new FileInfo(wal).Length > 0 && (!ExtensionSchema.IsHash(expectedWalHash) || Wire.FileHash(wal) != expectedWalHash))
             throw new InvalidDataException("Nonempty original WAL requires its exact --wal-sha256; main file hash alone is incomplete");
-        var version = ParcelRepository.ReadStorageVersion(database, definition.Id);
+        var version = ParcelRepository.ReadStorageVersion(database, definition);
         if (version != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("仅支持当前第10版回执核对；原库保留，请使用全新数据目录。");
         var envelope = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(Path.Combine(directory, "configuration.json")));
         var c = envelope.Effective;
@@ -30,7 +30,7 @@ public static class ParcelOfflineReceiptRecovery
             throw new InvalidDataException("Original deployment identity differs");
         var dataRoot = Directory.GetParent(directory)!.Parent!.Parent!.FullName;
         if (registerBackup is null && (c.Extensions?.Packages.Length > 0 || envelope.Pending?.Extensions?.Packages.Length > 0)) throw new InvalidDataException("Extension backup consumer registration required");
-        using (var repository = new ParcelRepository(directory, definition.Id, token, ParcelBindings.Positions(c).Select(p => p.Id).ToArray()))
+        using (var repository = new ParcelRepository(directory, definition, token, ParcelBindings.Positions(c).Select(p => p.Id).ToArray()))
         {
             var pending = repository.PendingReceipts().SingleOrDefault(x => x.Id == occurrence);
             if (pending.Id is null) throw new InvalidDataException("Original pending receipt occurrence unavailable");
@@ -82,7 +82,7 @@ public static class ParcelOfflineReceiptRecovery
             repository.ValidateRawInventory();
             Boundary?.Invoke("AfterReceiptRecovery");
         }
-        using var readback = new ParcelRepository(directory, definition.Id, token, ParcelBindings.Positions(c).Select(p => p.Id).ToArray());
+        using var readback = new ParcelRepository(directory, definition, token, ParcelBindings.Positions(c).Select(p => p.Id).ToArray());
         return new { Status = "OutcomeCheckedCustodyRetained", DatabaseVersion = readback.StorageVersion, OriginalOccurrence = occurrence, Raw = readback.ReceiptById(occurrence), Pending = readback.PendingReceipts().Length, Backup = backup, OriginalQueryOnly = true, OriginalSubmitAttemptsUnchanged = true };
     }
     static string OutcomeDetail(string original, string query, ParcelOperation before, string reason, string backup, string release) =>

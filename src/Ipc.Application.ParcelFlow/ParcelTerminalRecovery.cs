@@ -19,12 +19,13 @@ public sealed partial class ParcelRepository
         return op.State switch
         {
             ParcelState.Abandoned => (op.Plc is null or { State: StageState.Cancelled, Attempts: 0 }) && HasInspectedAbandonment(op),
-            ParcelState.SlotResolved => application == "sportmaster" && op.Wcs is { State: StageState.Accepted } wcs &&
-                !string.IsNullOrWhiteSpace(op.Slot) && wcs.Replies.Any(r => r.BusinessAccepted == true && r.Slot == op.Slot),
+            ParcelState.SlotResolved => storageFlow?.HasTerminalRecoveryBasis(op) ??
+                (application == LegacyStationStorageId && op.Wcs is { State: StageState.Accepted } wcs &&
+                 !string.IsNullOrWhiteSpace(op.Slot) && wcs.Replies.Any(r => r.BusinessAccepted == true && r.Slot == op.Slot)),
             ParcelState.WcsRejected => application != "direct-plc" && op.Wcs is { State: StageState.Rejected } rejected &&
                 rejected.Replies.All(r => r.Destination?.Outcome != WcsDestinationOutcome.UnpackRequired),
-            ParcelState.PlcRejected => application != "sportmaster" && op.Plc is { State: StageState.Rejected },
-            ParcelState.PhysicalCompleted => application != "sportmaster" && op.Plc is { State: StageState.Accepted } plc &&
+            ParcelState.PlcRejected => !(storageFlow?.DestinationAssignmentIsMainResult ?? application == LegacyStationStorageId) && op.Plc is { State: StageState.Rejected },
+            ParcelState.PhysicalCompleted => !(storageFlow?.DestinationAssignmentIsMainResult ?? application == LegacyStationStorageId) && op.Plc is { State: StageState.Accepted } plc &&
                 plc.Replies.Any(r => r.BusinessAccepted == true && r.PhysicalCompleted == true),
             ParcelState.ImageRejected => op.Capture?.State == StageState.Rejected || op.FrozenConfiguration.Images?.Strategy == UploadStrategy.BeforeMain &&
                 op.Upload is { State: StageState.Rejected } upload && SettledStageHasCustody(op, upload),

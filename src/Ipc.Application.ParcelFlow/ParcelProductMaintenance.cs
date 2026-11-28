@@ -64,7 +64,7 @@ public sealed partial class ParcelStartupMaintenance
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Verifying);
         var inspection = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution?.Token ?? CancellationToken.None);
         var markers = new[] { "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }.Where(n => File.Exists(Path.Combine(state.Directory, n))).ToArray();
-        if (purpose is "Rollback" or "PruneVersions" && definition.Id == "sportmaster" && markers.Contains("RESTORED-ISOLATED.json"))
+        if (purpose is "Rollback" or "PruneVersions" && ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && markers.Contains("RESTORED-ISOLATED.json"))
         {
             var c = state.Envelope?.Effective ?? state.Seed;
             using var snapshot = ParcelRepository.OpenHandoffSnapshot(copy.Database);
@@ -157,7 +157,7 @@ public sealed partial class ParcelStartupMaintenance
     async Task BackupCopy(string directory, string destination, (ParcelConfiguration Seed, ConfigurationRevision<ParcelConfiguration>? Envelope, string Directory, string File, string Hash) state, Snapshot copy, MaintenanceExecution? execution = null, bool finalOperation = true)
     {
         var envelope = state.Envelope ?? throw new InvalidDataException("数据库存在而原配置账缺失");
-        _ = ParcelRepository.ReadStorageVersion(copy.Database, definition.Id);
+        _ = ParcelRepository.ReadStorageVersion(copy.Database, definition);
         await using var ports = factory();
         using var database = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = copy.Database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); database.Open();
         // Back up the exact current-format private DB/WAL snapshot without runtime

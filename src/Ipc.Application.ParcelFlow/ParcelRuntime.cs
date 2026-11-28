@@ -137,7 +137,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // configuration confirmation or recovery can write to the current store.
         try
         {
-            repository = new(directory, Id, ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray())
+            repository = new(directory, definition, CancellationToken.None, ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray())
             {
                 Boundary = point => Boundary?.Invoke(point),
                 ProjectionChanged = InvalidatePresentation,
@@ -145,11 +145,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 SoftwarePauseActor = () => currentOperator?.Subject
             };
             repository.LoadSoftwarePauseEvidence();
-            if (launch.RequireRecoveryReview && Id != "sportmaster")
+            if (launch.RequireRecoveryReview && definition.RequiresRecoveryReviewOnStart)
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
             await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
-            foreach (var position in repository.RecoverIngress(Id == "sportmaster")) interruptedPositions.TryAdd(position, 0);
-            if (Id == "sportmaster")
+            foreach (var position in repository.RecoverIngress(definition.SkipsPreviousCameraInputs)) interruptedPositions.TryAdd(position, 0);
+            if (definition.UsesArrivalRounds)
                 foreach (var position in ParcelBindings.Positions(Effective))
                     if (repository.Cycle(position.Id) is { } cycle) smCycles[position.Id] = cycle with { Presence = TrayPresence.Unknown };
             InitializeCameraInspection();
@@ -182,8 +182,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             operations.Add(op.Id, op);
             if (op.PositionId is not null) admissionPositions.TryAdd(op.AdmissionId, op.PositionId);
         }
-        if (Id == "sportmaster") releasedPlacements.UnionWith(repository.ReadReleasedPlacements());
-        if (Id == "sportmaster") repository.CleanupIncompatibleSmReceipts();
+        if (definition.UsesArrivalRounds) releasedPlacements.UnionWith(repository.ReadReleasedPlacements());
+        if (definition.UsesPositionScopedRequests) repository.CleanupIncompatibleSmReceipts();
         repository.ValidateRawInventory();
         RecoverOriginalFrameArchives();
         foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
@@ -198,11 +198,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             {
                 // A current responsibility can clear during normal operation. Keep the
                 // validated candidate pending so the next orderly restart can activate it.
-                var block = Id == "sportmaster" && configuration.Current.Pending is not null ? SmConfigurationBlock() : null;
+                var block = definition.SupportsLiveConfiguration && configuration.Current.Pending is not null ? SmConfigurationBlock() : null;
                 if (block is { } reason)
                     WriteRuntimeLog("参数", "设置等待当前责任收口", new { Reason = reason.ToString(), ConfigurationRevision = configuration.Current.Revision }, "警告");
                 else
-                    startupConfiguration = configuration.BeginActivation(candidate => { RequireSameIdentity(seed, candidate); return Id == "sportmaster" || ConfigurationResponsibilitiesClear(); }, factory.Validate);
+                    startupConfiguration = configuration.BeginActivation(candidate => { RequireSameIdentity(seed, candidate); return definition.SupportsLiveConfiguration || ConfigurationResponsibilitiesClear(); }, factory.Validate);
             }
             else if (configuration.Current.InitialRepair is not null && configuration.Current.Status == "PendingRestart")
             {
@@ -235,7 +235,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             }
             // SM opens a new shift with empty barcode inputs. Unresolved originals
             // are restored independently through operations, never through old reads.
-            if (Id != "sportmaster")
+            if (!definition.SkipsPreviousCameraInputs)
                 foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
                     latestInputs.Add(input.PositionId, input);
             foreach (var reader in ReaderPorts()) readers[reader.DeviceId] = new(reader);
@@ -262,7 +262,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (definition.ArchiveOriginalFrames && reader.Source is IOriginalFrameSource originalFrames) originalFrames.EnableOriginalFrames();
                 // A disabled reader may be started later without rebuilding its
                 // source. Install the read policy before deferring acquisition.
-                if (Id == "sportmaster" && reader.Source is IObservationInspectionSource source)
+                if (definition.SupportsInspectionCapture && reader.Source is IObservationInspectionSource source)
                     await ApplyInspectionAsync(source, null, token).ConfigureAwait(false);
                 if (!ReaderCaptureActive(reader)) { supplySuspendedReaders.Add(reader.Source.DeviceId); continue; }
                 try
@@ -289,18 +289,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             // Reconnect and Pending edits cannot change retention.
             journal.ConfigureRetention(Effective.Retention?.DiagnosticLogDays);
             token.ThrowIfCancellationRequested();
-            if (Id == "sportmaster")
+            if (definition.SupportsStationStatistics)
             {
                 await gate.WaitAsync(token).ConfigureAwait(false);
                 try { repository.ValidateStationProjection(); repository.OpenStationShift(runtimeId, StationTime, stationOpeningAt, stationOpeningTicks); }
                 finally { gate.Release(); }
             }
-            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && (Id == "sportmaster" || !launch.RequireRecoveryReview) &&
+            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && (!definition.RequiresRecoveryReviewOnStart || !launch.RequireRecoveryReview) &&
                 !File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json"));
             foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
             backgroundTasks.TryAdd("maintenance", Task.Run(MaintainAsync, CancellationToken.None));
             backgroundTasks.TryAdd("wal-checkpoint", Task.Run(ObserveWalAsync, CancellationToken.None));
-            foreach (var reader in readers.Values.Where(r => (Id == "sportmaster" || r.Source is IAutomaticReconnectObservationSource) &&
+            foreach (var reader in readers.Values.Where(r => (definition.ReconnectsReadersAutomatically || r.Source is IAutomaticReconnectObservationSource) &&
                 !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId)))
                 backgroundTasks.TryAdd("reader-reconnect:" + reader.Source.DeviceId, Task.Run(() => ReconnectReaderAutomaticallyAsync(reader), CancellationToken.None));
             maintenanceWorker = Task.WhenAll(backgroundTasks.Values);
@@ -348,7 +348,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
 
     bool Enqueue(object item)
     {
-        if (Id != "sportmaster" || item is not Observation observation) return EnqueueCore(item);
+        if (!definition.UsesEarlyDurableIngress || item is not Observation observation) return EnqueueCore(item);
         lock (backupIngressSync)
         {
             if (backupInProgress)
@@ -375,7 +375,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
             item is ParcelMeasurement m ? admissionPositions.GetValueOrDefault(m.Measurement.AdmissionId) ?? positions.Values.FirstOrDefault(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == m.InstanceId)?.Id : null;
         if (positionId is null || !ingressLanes.TryGetValue(positionId, out var lane)) return false;
-        if (Id == "sportmaster" && observation is not null && !SmCameraArrivalCurrent(positionId, observation))
+        if (definition.UsesArrivalRounds && observation is not null && !SmCameraArrivalCurrent(positionId, observation))
         {
             ReleaseIngressAcquisition(observation);
             Interlocked.Increment(ref lane.ObservedOnly);
@@ -389,12 +389,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             double capacityWaitMs = 0;
             if (Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
             var at = DateTimeOffset.UtcNow;
-            if (Id == "sportmaster" && observation is { TrayPresence: null })
+            if (definition.UsesEarlyDurableIngress && observation is { TrayPresence: null })
             {
                 if (CoalescePausedObservation(positionId, observation, lane, enteredTicks, laneWaitMs)) return true;
             }
             if (observation is { TrayPresence: null }) RecordPresentationRead(positionId, observation);
-            if (Id == "sportmaster" && observation is not null)
+            if (definition.UsesEarlyDurableIngress && observation is not null)
             {
                 // Stop before the durable write when a normal bounded lane is full.
                 // The source retains this decoded observation while waiting. No business
@@ -503,7 +503,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     if (!startupCompleted || stopping.IsCancellationRequested)
                     {
                         Boundary?.Invoke("BeforeStartupIngressDisposition");
-                        if (Id == "sportmaster" && item.Value is ParcelObservation)
+                        if (definition.SkipsPreviousCameraInputs && item.Value is ParcelObservation)
                         {
                             FinishIngress(item.Id, "Processed", "SkippedAtStop; old camera input is not replayed; original requests unchanged");
                             Interlocked.Increment(ref lane.Processed);
@@ -617,7 +617,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     async Task<ObservationHandling> ProcessTrustedObservationAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt, ObservationSession reader)
     {
-        var manual = o.OperatorInput is { } entry && Id == "sportmaster" && activeOperatorCommands.Contains(entry.CommandId) &&
+        var manual = o.OperatorInput is { } entry && definition.SupportsManualInput && activeOperatorCommands.Contains(entry.CommandId) &&
             o.AdmissionId == "manual." + entry.CommandId && o.Epoch == "operator." + runtimeId.ToString("N") && o.DeviceId == positions[position].ReaderDeviceId;
         if (o.OperatorInput is not null && !manual) throw new InvalidDataException("人工来源必须由本次持久人工命令建立。");
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
@@ -629,7 +629,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (workspaceInspectionSessions.ContainsKey(o.InspectionSessionId)) return new(ObservationDisposition.DiagnosticOnly, "Management camera inspection");
             return RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "CameraInspectionIsolated:" + o.InspectionSessionId + "; 实机调试输入，仅留证，不创建作业或请求，结束后不回放", selection: definition.SelectBarcode(Effective, o)), "CameraInspectionInputBlocked");
         }
-        if (Id == "sportmaster")
+        if (definition.UsesArrivalRounds)
         {
             return await ProcessSmObservationAsync(position, o, admittedOperator, reader, manual).ConfigureAwait(false);
         }
@@ -796,7 +796,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             (op.Wcs is null || op.Wcs.Attempts == 0))
             op = op with { State = ParcelState.Abandoned, Reason = "Round ended before first RCS attempt; original stage cleanup retained" };
         var round = SmRoundAfterOperation(op);
-        var takeover = Id == "sportmaster" && IsDebugRequest(op) && op.Wcs is { State: StageState.Dispatching, Attempts: 1 } &&
+        var takeover = definition.SupportsManualRcsDebug && IsDebugRequest(op) && op.Wcs is { State: StageState.Dispatching, Attempts: 1 } &&
             CurrentRound(op.PositionId!) is { OperationId: null } current ? current : null;
         if (takeover is not null) round = takeover with
         { Version = takeover.Version + 1, State = SmRoundState.Ended, EndedAt = StationTime.GetUtcNow(), EndReason = "DebugTookPosition" };
@@ -851,7 +851,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     FrozenRequest Prepare(ParcelOperation op, string stage, CapabilityBinding binding, string? slot, string? wcsRequest)
     {
         var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition, op.PositionId, op.ReaderBinding)
-        { OperatorInput = op.OperatorInput, StationCode = op.FrozenConfiguration.ApplicationId == "sportmaster" ? op.FrozenConfiguration.StationCode : null });
+        { OperatorInput = op.OperatorInput, StationCode = definition.FrozenRequestStationCode(op.FrozenConfiguration) });
         return new(Wire.Id(), Id, op.Id, op.AdmissionId, stage, binding, op.ImplementationHashes[binding.InstanceId],
             op.ConfigurationHash, payload, Wire.Hash(payload), ReceiptTimeForVerification.GetUtcNow());
     }

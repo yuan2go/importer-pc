@@ -579,6 +579,14 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                         result = new[] { new { index = 1, success = false,
                         command = "sorter.task.dest_request", msg = RejectionMessage ?? "合成异常：未找到可用格口，请人工核对包裹。", data = new { chuteCode = "" } } }
                     });
+                if (!heartbeat && Mode == "unpack")
+                    reply = JsonSerializer.Serialize(new
+                    {
+                        requestId = id,
+                        result = new[] { new { index = 1, success = false, code = "NEED_UNPACK", message = "NEED_UNPACK",
+                            command = "sorter.task.dest_request", data = new { barcode = "6950123456826", skuId = "SYNTH-SKU", scanQty = 5,
+                                chutes = new[] { new { chuteNo = "CH-09", orderNo = "ORDER-02", remaining = 2, phase = "ASSIGNED" } } } } }
+                    });
                 if (!heartbeat && Mode == "no-device")
                     reply = JsonSerializer.Serialize(new
                     {

@@ -142,6 +142,7 @@ public partial class ParcelViewModel
                 var policy = path switch
                 {
                     "StationCode" => ("系统", "供包台标识", "供包台编号", "StationCode"),
+                    "WorkstationPage" => ("业务模块", UiText.Get("Page.Setting"), UiText.Get("Page.Setting"), "WorkstationPage"),
                     "ReadTimeoutMs" => ("业务模块", "条码筛选", "自动识读期限", "ReadTimeoutMs"),
                     "QueueCapacity" => ("业务模块", "接收与等待限制", "扫码消息缓冲上限", "QueueCapacity"),
                     "TimeoutMs" => ("业务模块", "接收与等待限制", "外部服务等待时间（毫秒）", "TimeoutMs"),

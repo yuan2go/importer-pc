@@ -140,6 +140,8 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         if (BusinessDesktopCatalog.For(ApplicationId).UsesLegacyWeightAndQueueFields) { Number(nameof(Policy.QueueCapacity), Policy.QueueCapacity, 1, 4096); Number(nameof(Policy.TimeoutMs), Policy.TimeoutMs, 100, 30000); }
         if (BusinessDesktopCatalog.For(ApplicationId).UsesLegacyWeightAndQueueFields) Number(nameof(Policy.MaximumOperations), Policy.MaximumOperations, 1, 100000);
         Number(nameof(Policy.ResidentHistory), Policy.ResidentHistory, 1, 10000);
+        if (Policy.WorkstationPage is { } page && !WorkstationPages.IsAllowed(ApplicationId, page))
+            Issue("业务模块", nameof(Policy.WorkstationPage), UiText.Format("Page.Invalid", page));
         if (BusinessDesktopCatalog.For(ApplicationId).UsesScanAndBarcodePolicy) Number(nameof(Policy.ReadTimeoutMs), Policy.ReadTimeoutMs, SystemParameterDefaults.MinimumReadTimeoutMs, SystemParameterDefaults.MaximumReadTimeoutMs);
         if (BusinessDesktopCatalog.For(ApplicationId).UsesStationDisplayPreferences && DisplayPreferences?.Validate() is { } preferenceError)
             Issue("系统", Enum.IsDefined(DisplayPreferences.OpeningMode) ? "CueVolume" : "WindowOpeningMode", preferenceError);

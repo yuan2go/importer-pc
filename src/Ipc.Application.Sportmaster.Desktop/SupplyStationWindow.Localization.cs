@@ -14,5 +14,6 @@ public partial class SupplyStationWindow
     {
         ViewModel.RefreshLanguage();
         ApplyNavigation();
+        RefreshWorkstationContent();
     }
 }

@@ -389,6 +389,12 @@
           "Ipc.Presentation.Wpf": "[1.0.0, )"
         }
       },
+      "ipc.application.sportmaster.desktop": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.ParcelFlow.Desktop": "[1.0.0, )"
+        }
+      },
       "ipc.diagnostics": {
         "type": "Project",
         "dependencies": {

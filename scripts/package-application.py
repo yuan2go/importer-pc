@@ -13,7 +13,10 @@ import subprocess
 import tempfile
 import tarfile
 import zipfile
-from release_build import frozen_export, build_properties, cleanup, archive_package
+from release_build import (
+    INSTALLATION_CHANNELS, archive_package, build_properties, cleanup, frozen_export,
+    resolve_channel, resolve_default_page,
+)
 from composition import resolve
 from application_compatibility import read_business, read_storage_format, read_deployment_compatibility
 from application_bundles import read_packages, publish_packages
@@ -27,7 +30,9 @@ p.add_argument('--application', choices=APPLICATIONS, required=True)
 p.add_argument('--target', choices=['portable', 'win-x64'], required=True)
 p.add_argument('--output', type=Path, required=True)
 p.add_argument('--dotnet', default='dotnet')
-p.add_argument('--test-instance', action='store_true', help='Independent SM test installation and data')
+p.add_argument('--test-instance', action='store_true', help='Alias for --channel test')
+p.add_argument('--channel', choices=INSTALLATION_CHANNELS, help='Installation channel (default: formal)')
+p.add_argument('--default-page', help='Workstation view built into the package')
 p.add_argument('--source-branch', help='Verifiable branch for detached release builds; otherwise detached CI records DETACHED')
 p.add_argument('--composition', help='Existing composition matching the selected Application; defaults to its reference core')
 p.add_argument('--extension-package', type=Path, action='append', default=[], help='Exact signed offline Driver/Component package; repeat for its complete dependency closure')
@@ -38,8 +43,14 @@ p.add_argument('--mvid-runtime', type=Path, default=os.environ.get('IPC_MVID_RUN
 p.add_argument('--vc-redist', type=Path, default=os.environ.get('IPC_SM_VC_REDIST'), help='Directory with pinned Microsoft VC++ 2008 and 2010 SP1 x64 installers')
 p.add_argument('--verification-without-vendor-runtime', action='store_true', default=os.environ.get('IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME') == '1', help='Explicit non-delivery verification medium when vendor files are unavailable')
 a = p.parse_args()
+try:
+    channel = resolve_channel(a.channel, a.test_instance)
+    default_page = resolve_default_page(a.application, a.default_page)
+except ValueError as error:
+    p.error(str(error))
+a.test_instance = channel == 'test'
 if a.test_instance and (a.application != 'sportmaster' or a.target != 'win-x64'):
-    p.error('--test-instance requires SM Windows x64')
+    p.error('--channel test requires SM Windows x64')
 if a.target == 'win-x64' and a.application == 'sportmaster' and a.mvid_runtime and not a.vc_redist:
     p.error('MVID offline delivery requires --vc-redist')
 if a.vc_redist and (a.target != 'win-x64' or a.application != 'sportmaster' or not (a.mvid_runtime or a.verification_without_vendor_runtime)):
@@ -53,8 +64,7 @@ if subprocess.check_output(['git', 'status', '--porcelain', '--', *SOURCE_PATHS]
     raise ValueError('Commit exact runtime, configuration, packaging and shipped guides before publication')
 source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
 provenance = capture_provenance(root, source, a.source_branch, a.application, '', a.target)
-if a.test_instance:
-    provenance['InstallationChannel'] = 'Test'
+provenance.update(InstallationChannel=channel.capitalize(), DefaultWorkstationPage=default_page)
 desktop_executable = 'Ipc.Desktop.Test.exe' if a.test_instance else 'Ipc.Desktop.exe'
 module = APPLICATIONS[a.application]
 lock = 'packages.' + a.application + ('.win-x64' if a.target == 'win-x64' else '') + '.lock.json'
@@ -75,7 +85,7 @@ if bundles and a.extension_trust is None:
 business, compatibility_source = read_business(build_source, a.application, selection)
 database_format = read_storage_format(build_source)
 provenance['BusinessVersion'] = business['BusinessVersion']
-frozen_properties = build_properties(source, build_source, artifacts, a.test_instance)
+frozen_properties = build_properties(source, build_source, artifacts, a.test_instance, default_page)
 for project, destination in [('Ipc.Assembly', 'app'), *([('Ipc.Desktop', 'desktop')] if a.target == 'win-x64' else [])]:
     command = [a.dotnet, 'publish', f'src/{project}/{project}.csproj', '-c', 'Release', '-m:1', '-nr:false',
                '-p:EnableWindowsTargeting=true', '-p:RestoreLockedMode=true',
@@ -168,7 +178,7 @@ cleanup(build_source, extraction, artifacts, workspace)
     ('Sportmaster: current Production SDK configuration; cameras/RCS remain deferred until explicitly configured. Synthetic verification uses its separate test fixture.\n' if a.application == 'sportmaster' else 'Use the selected Application configuration.\n')
     + 'Console: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
     + ('Windows: double-click Setup.cmd; first launch from an unpacked package also opens the native installation wizard (no PowerShell required).\nChoose install/data folders and shortcuts; review then approve Windows UAC. Initial drivers are selected by the verified medium; no account name or trust-file entry is required. Program files are installed side by side and data is retained.\nStart from the installed Start Menu shortcut. Offline startup repair: Maintenance.cmd or the installed startup-repair shortcut; business/devices do not need to start.\nNew SM stations default to D:\\CainiaoSupplyStation for programs and D:\\ProgramData\\ImporterPc\\data for business data; other Applications use their configured defaults. Same-format updates retain the registered program and data roots and configuration. Non-current data formats are refused before writing. See PARCEL14-OPERATIONS.md for current-format backup and restore.\n' if a.target == 'win-x64' else '')
-    + ('Sportmaster default native UI: desktop/Ipc.Desktop.exe (supply-station)\nUse LIFECYCLE-OPERATIONS.md for current native workflows and validation boundaries.\n' if a.target == 'win-x64' and a.application == 'sportmaster' else '')
+    + (f'Sportmaster default native UI: desktop/Ipc.Desktop.exe ({default_page})\nUse LIFECYCLE-OPERATIONS.md for current native workflows and validation boundaries.\n' if a.target == 'win-x64' and a.application == 'sportmaster' else '')
     )
 if a.test_instance:
     start_file = output / 'APPLICATION-START.txt'

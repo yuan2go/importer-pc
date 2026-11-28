@@ -14,7 +14,7 @@ Importer PC 使用 C#、.NET 10、WPF 和 SQLite。构建时由产品和装配�
 
 PR 1 已把部署与基座层的产品能力收敛到 `ProductDeploymentCatalog`。编译期装配选定业务 ID，平台、启动安装壳和独立运维据此读取部署声明。运行时仍逐项核验受保护安装登记、介质、程序及数据所有权。声明只供执行时查询，原登记、发布清单和业务账继续使用既有格式与身份。未知产品不具备任何已声明能力。[产品部署声明](../../src/Ipc.Platform/ProductDeploymentProfile.cs) · [部署快捷方式](../../src/Ipc.Platform/DeploymentShortcuts.cs)
 
-PR 2 已把内置驱动和协议组件的选择收敛到装配根。产品能力策略决定外置扩展、模拟读头和热替换的准入，注册表按现有驱动 ID 或实现 ID 路由。工厂核验版本与协议、持有资源租约，并把成功构造的端口交给应用。热替换候选释放失败时保留原对象及租约，停机继续收口。RCS 组件验证实际协议、绑定和冻结报文，发送资源按工位轮转，总并发上限为七，每位最多等待 128 个请求。工作站字段归属见下文。轮次契约留在 PR 4。[装配根](../../src/Ipc.Assembly/ParcelAssembly.cs) · [能力注册契约](../../src/Ipc.Assembly/CapabilityRegistry.cs) · [解耦清点](multi-business-extraction-audit.md)
+PR 2 已把内置驱动和协议组件的选择收敛到装配根。产品能力策略决定外置扩展、模拟读头和热替换的准入，注册表按现有驱动 ID 或实现 ID 路由。工厂核验版本与协议、持有资源租约，并把成功构造的端口交给应用。热替换候选释放失败时保留原对象及租约，停机继续收口。RCS 组件验证实际协议、绑定和冻结报文，发送资源按工位轮转，总并发上限为七，每位最多等待 128 个请求。工作站字段归属见下文。轮次契约继续由 ParcelFlow 持有。[装配根](../../src/Ipc.Assembly/ParcelAssembly.cs) · [能力注册契约](../../src/Ipc.Assembly/CapabilityRegistry.cs) · [解耦清点](multi-business-extraction-audit.md)
 
 PR 3 已将桌面身份、默认入口、设置页顺序和字段可见性集中到桌面配置表。部署声明及安装权限仍由平台层核验。工作站与独立运维启动时加载当前 Windows 用户的主题，保存后替换现有窗口的调色板，业务配置版本和设备会话继续由原应用持有。[桌面配置表](../../src/Ipc.Application.ParcelFlow.Desktop/BusinessDesktopProfile.cs) · [主题管理器](../../src/Ipc.Presentation.Wpf/WorkstationThemeManager.cs)
 
@@ -50,3 +50,12 @@ PR 3 已将桌面身份、默认入口、设置页顺序和字段可见性集中
 系统、业务、驱动和组件从同一本配置账取得当前修订。保存完整候选并实施 CAS，按资源和业务责任决定可热生效或保留 Pending。恢复已接纳请求时按创建它的原始配置和请求执行。运行数据、配置修订、部署登记、个人偏好分别由所属存储维护。[当前格式](../runtime/version-compatibility-01.md) · [配置保存](../runtime/parameter-inheritance-02.md)
 
 停机、安装、回滚、恢复和清理都要先核验实际所有权。复制或回滚程序不能替换业务库、撤销既有外部效果或覆盖永久编号。恢复已复制的隔离数据，仍须核对原站和原请求，按明确操作启用。[安装生命周期](industrial-lifecycle-01.md) · [正式与测试实例](sm-test-instance-isolation.md)
+
+
+## SM 作业界面与构建渠道
+
+SM 桌面配置表同时登记大格口页 `supply-station` 和料箱拆包页 `tote-station`。启动时依次采用显式 `--ui`、生效配置的 `WorkstationPage` 和编译固化默认页。普通与监督子进程只转发显式覆盖。既有发布清单的 `Views` 负责描述工作台、记录和维护入口，作业页面单独声明。
+
+专业参数归运维工具，通过原授权与配置 CAS 保存。现场设置候选始终保留运维选择。只有两位均无在途轮次且没有设置或确认窗口时，工作站才替换当前作业区，原应用、视图模型和设备连接持续运行。料箱会话在工作站本地计数，按唯一作业编号记录实际分配结果。拆包核对采用 RCS 返回的原始业务事实，确认按钮调用原取件命令。
+
+使用 `python scripts/build-sm-installer.py --channel formal --default-page supply-station --output <D盘新目录>` 同时生成冻结介质和单文件安装器。构建记录保存通道与固化页。安装器核对介质身份和每个共享 DLL 的 SHA-256。测试渠道使用 `--channel test`，沿既有测试安装边界隔离。

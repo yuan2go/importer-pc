@@ -42,7 +42,9 @@ public partial class ParcelViewModel
         var v = saved.Editor.Values;
         if (v.GetValueOrDefault("editor") != "live-v3") throw new InvalidOperationException("不是当前设置草稿；首配草稿从启动修复入口继续，非当前格式请使用全新数据目录，原文件和输入保留");
         var required = new[] { "base", "authority", "json", "reason", "capabilities", "readers", "display.identity", "display.name", "display.target" }
-            .Concat(typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite).Select(p => "policy." + p.Name))
+            .Concat(typeof(ConfigurationPolicyDraft).GetProperties()
+                .Where(p => p.CanRead && p.CanWrite && p.Name != nameof(ConfigurationPolicyDraft.WorkstationPage))
+                .Select(p => "policy." + p.Name))
             .Concat(ConfigurationRoles.Select(r => "role." + r.Role))
             .Concat(PositionDrafts.SelectMany(p => new[] { "position." + p.Id + ".scale", "position." + p.Id + ".camera" }));
         if (required.Any(key => !v.ContainsKey(key))) throw new InvalidDataException("草稿不是当前完整格式；原文件和输入保留，请使用全新数据目录。");
@@ -58,7 +60,8 @@ public partial class ParcelViewModel
         for (int n = 0; n < originalReaders.Length; n++) temporary.ReaderDrafts.Add(new(originalReaders[n], CapabilityDraft.RestoreRaw(savedReaders[n], installedCatalog.Providers)));
         temporary.CapabilityDrafts.Clear(); foreach (var draft in Wire.Decode<CapabilityDraft.Saved[]>(v["capabilities"])) temporary.CapabilityDrafts.Add(CapabilityDraft.RestoreRaw(draft, installedCatalog.Providers));
         foreach (var p in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite))
-        { var value = v["policy." + p.Name]; p.SetValue(temporary.StructuredPolicy, p.PropertyType.IsEnum ? Enum.Parse(p.PropertyType, value) : p.PropertyType == typeof(bool) ? bool.Parse(value) : value); }
+            if (v.TryGetValue("policy." + p.Name, out var value))
+                p.SetValue(temporary.StructuredPolicy, p.PropertyType.IsEnum ? Enum.Parse(p.PropertyType, value) : p.PropertyType == typeof(bool) ? bool.Parse(value) : value);
         CapabilityChoice[] Choices(string kind) => [new("不绑定/沿用默认", null), .. temporary.CapabilityDrafts.Where(c => c.Kind == kind).Select(c => new CapabilityChoice(c.InstanceId, c))];
         CapabilityChoice Resolve(CapabilityChoice[] choices, string reference)
         {

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supply Station · Dual Camera Scan Workstation</title>
+  <link href="https://g.alicdn.com/code/lib/daisyui/5.1.25/daisyui.css" rel="stylesheet" type="text/css"/>
+  <link href="https://g.alicdn.com/code/lib/daisyui/5.1.25/themes.css" rel="stylesheet" type="text/css"/>
+  <script src="https://g.alicdn.com/code/lib/react/17.0.2/umd/react.development.js"></script>
+  <script src="https://g.alicdn.com/code/lib/react-dom/17.0.2/umd/react-dom.development.js"></script>
+  <script src="https://g.alicdn.com/code/lib/react-router-dom/5.3.4/react-router-dom.js"></script>
+  <script src="https://g.alicdn.com/code/lib/tailwindcss-browser/4.1.13/index.global.js"></script>
+  <script src="https://g.alicdn.com/code/lib/babel-standalone/7.25.0/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body {
+      background: #f0f2f5;
+      color: #1a1a2e;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 13px;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.45; transform: scale(0.7); }
+    }
+    .breathe { animation: breathe 1.8s ease-in-out infinite; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .slide-in { animation: slideIn 0.2s ease-out forwards; }
+
+    @keyframes highlight {
+      0%   { box-shadow: 0 0 0 0 rgba(37,99,235,0.15); }
+      50%  { box-shadow: 0 0 0 4px rgba(37,99,235,0.15); }
+      100% { box-shadow: 0 0 0 0 rgba(37,99,235,0); }
+    }
+    .highlight-flash { animation: highlight 0.6s ease-out; }
+
+    .btn { border: none; border-radius: 6px; font-size: 13px; font-weight: 500;
+           cursor: pointer; transition: all 0.15s; padding: 8px 0; font-family: inherit; }
+    .btn:active { transform: scale(0.97); }
+    .btn-default  { background: #fff; color: #374151; border: 1px solid #d1d5db; }
+    .btn-default:hover { background: #f9fafb; border-color: #9ca3af; }
+    .btn-success  { background: #fff; color: #16a34a; border: 1px solid #86efac; }
+    .btn-success:hover { background: #f0fdf4; border-color: #4ade80; }
+    .btn-success:disabled { color: #86efac; border-color: #bbf7d0; cursor: not-allowed; transform: none; }
+
+    .info-row { display: flex; align-items: center; justify-content: space-between;
+                padding: 7px 0; border-bottom: 1px solid #f3f4f6; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { font-size: 12px; color: #6b7280; min-width: 80px; flex-shrink: 0; }
+    .info-value { font-size: 13px; color: #111827; font-weight: 500;
+                  text-align: right; max-width: 170px;
+                  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .info-value.empty  { color: #d1d5db; font-weight: 400; }
+    .info-value.accent { color: #2563eb; font-weight: 600; }
+    .info-value.mono   { font-family: 'Courier New', Consolas, monospace; font-size: 12px; }
+
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    .fade-in { animation: fadeIn 0.25s ease-out; }
+    .hist-item { display:flex; align-items:center; justify-content:space-between;
+                 padding: 5px 10px; font-size:11px; border-bottom:1px solid #f3f4f6; }
+    .hist-item:last-child { border-bottom:none; }
+
+    .divider { width: 1px; background: #e5e7eb; flex-shrink: 0; }
+
+    .field-input {
+      width: 100%; border: 1px solid #e5e7eb; border-radius: 6px;
+      padding: 5px 10px; font-size: 12px; color: #111827;
+      background: #fff; outline: none; transition: border-color 0.15s;
+      font-family: 'Courier New', Consolas, monospace;
+    }
+    .field-input::placeholder { color: #d1d5db; font-family: inherit; }
+    .field-input:focus { border-color: #2563eb; }
+
+    .group-label {
+      font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase;
+      letter-spacing: 0.06em; padding: 0 0 6px 0;
+      border-bottom: 1px solid #f3f4f6; margin-bottom: 2px;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+window.__SHAPE__ = { pages:{}, context:null, layout:null, router:null, canvas:null };
+</script>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* ── mock data ── */
+const BARCODES   = ['6901068034919','6902827041372','6903114001254','6901234567890','6904567123456'];
+const SKUS       = ['WMS-K29401','WMS-K88231','WMS-B04510','WMS-D12890','WMS-E77631'];
+const SLOTS      = ['A-01','A-04','B-02','B-07','C-03','D-05','E-06','F-08'];
+const WAVES      = ['W-20240812','W-20240813','W-20240814'];
+const CONTAINERS = ['TC-2024-0091','TC-2024-0092','TC-2024-0145','TC-2024-0201'];
+const ERR_MSGS   = [
+  'Container barcode error, please re-scan',
+  'Barcode not matched to wave task, please verify',
+  'Target slot is full, please select another',
+  'Network timeout, please try again',
+];
+const pick   = arr => arr[Math.floor(Math.random() * arr.length)];
+const taskId = () => 'TASK-' + String(Math.floor(Math.random()*900000)+100000);
+const EMPTY  = { wave:'', task:'', barcode:'', sku:'', qty:'', slot:'' };
+const nowStr = () => new Date().toLocaleTimeString('en-US', { hour12:false });
+
+/* ══ InfoPanel ══ */
+function InfoPanel({ data, onChange, glowing }) {
+  const inputFields = [
+    { key:'barcode',   label:'Product Barcode', placeholder:'Scan or enter manually' },
+    { key:'sku',       label:'SKU Code',        placeholder:'Scan or enter manually' },
+    { key:'qty',       label:'Quantity',        placeholder:'Enter quantity', type:'number' },
+  ];
+  const displayFields = [
+    { key:'wave', label:'Wave No.' },
+    { key:'task', label:'Task No.' },
+    { key:'slot', label:'Target Slot' },
+  ];
+  return (
+    <div className={glowing ? 'highlight-flash' : ''} style={{ display:'flex', flexDirection:'column', gap:8 }}>
+
+      <div style={{ background:'#fff', borderRadius:8, border:'1px solid #e5e7eb', padding:'10px 14px' }}>
+        <div className="group-label">Scan Info</div>
+        {inputFields.map(f => (
+          <div key={f.key} className="info-row">
+            <span className="info-label" style={{ flexShrink:0 }}>{f.label}</span>
+            <input
+              className="field-input"
+              type={f.type || 'text'}
+              value={data[f.key] || ''}
+              placeholder={f.placeholder}
+              onChange={e => onChange(f.key, e.target.value)}
+              style={{ maxWidth:180 }}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div style={{ background:'#fff', borderRadius:8, border:'1px solid #e5e7eb', padding:'10px 14px' }}>
+        <div className="group-label">Task Info</div>
+        {displayFields.map(f => (
+          <div key={f.key} className="info-row">
+            <span className="info-label">{f.label}</span>
+            <span className={`info-value ${data[f.key] ? (f.key==='slot'?'accent':'mono') : 'empty'}`}>
+              {data[f.key] || '—'}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ══ ScanHistory ══ */
+function ScanHistory({ items }) {
+  const [open, setOpen] = useState(false);
+  if (!items.length) return null;
+  return (
+    <div style={{ border:'1px solid #e5e7eb', borderRadius:8, overflow:'hidden', background:'#fff' }}>
+      <button onClick={()=>setOpen(v=>!v)} style={{
+        width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between',
+        padding:'7px 12px', background:'none', border:'none', cursor:'pointer',
+        fontSize:12, color:'#6b7280', fontFamily:'inherit'
+      }}>
+        <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Scan History
+          <span style={{
+            background:'#eff6ff', color:'#2563eb', borderRadius:10,
+            fontSize:10, padding:'1px 6px', fontWeight:600
+          }}>{items.length}</span>
+        </div>
+        <span style={{ fontSize:10, transform: open?'rotate(180deg)':'rotate(0)', transition:'transform 0.2s', display:'block' }}>▾</span>
+      </button>
+      {open && (
+        <div className="fade-in" style={{ maxHeight:100, overflowY:'auto', borderTop:'1px solid #f3f4f6' }}>
+          {items.map((r,i)=>(
+            <div key={i} className="hist-item">
+              <div style={{ display:'flex', gap:10, alignItems:'center' }}>
+                <span style={{ color:'#9ca3af', minWidth:56 }}>{r.time}</span>
+                <span style={{ fontFamily:'Courier New,monospace', color:'#374151' }}>{r.barcode}</span>
+              </div>
+              <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+                <span style={{ color:'#6b7280', background:'#f3f4f6', borderRadius:4, padding:'1px 6px' }}>{r.slot}</span>
+                <span style={{ color: r.ok ? '#16a34a' : '#dc2626', fontWeight:500 }}>
+                  {r.ok ? '✓ Dispatched' : '✗ Failed'}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ══ StatusBar ══ */
+function StatusBar({ status }) {
+  if (!status) return <div style={{ height:36 }} />;
+  const ok = status.type === 'success';
+  return (
+    <div key={status.key} className="slide-in" style={{
+      height:36, display:'flex', alignItems:'center', gap:8,
+      padding:'0 12px', borderRadius:6, fontSize:12, fontWeight:500,
+      background: ok ? '#f0fdf4' : '#fef2f2',
+      border: `1px solid ${ok ? '#bbf7d0' : '#fecaca'}`,
+      color: ok ? '#15803d' : '#dc2626',
+    }}>
+      {ok
+        ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      }
+      <span style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{status.msg}</span>
+    </div>
+  );
+}
+
+/* ══ ScanStation ══ */
+function ScanStation({ code, side, sessionKey, onDispatch }) {
+  const [camOnline,   setCamOnline]  = useState(true);
+  const [agvReady,    setAgvReady]   = useState(false);
+  const [scanning,    setScanning]   = useState(false);
+  const [data,        setData]       = useState(EMPTY);
+  const [packQty,     setPackQty]    = useState(null);
+  const [unpackState, setUnpackState]= useState(null); // null | 'matched' | 'needed' | 'done'
+  const [status,      setStatus]     = useState(null);
+  const [scanCount,   setScanCount]  = useState(0);
+  const [lastTime,    setLastTime]   = useState(null);
+  const [glowing,     setGlowing]    = useState(false);
+  const [history,     setHistory]    = useState([]);
+  const timerRef = useRef(null);
+  const wrapRef  = useRef(null);
+  const hasData  = !!data.barcode;
+  const canScan  = camOnline && agvReady;
+
+  const flash = () => { setGlowing(true); setTimeout(()=>setGlowing(false), 650); };
+
+  const doScan = useCallback(() => {
+    if (!canScan || scanning) return;
+    setScanning(true); setStatus(null);
+    timerRef.current = setTimeout(() => {
+      if (Math.random() < 0.1) {
+        setScanning(false);
+        setStatus({ type:'error', msg:pick(ERR_MSGS), key:Date.now() });
+        return;
+      }
+      const reqQty = Math.floor(Math.random()*48)+1;
+      const pQty = Math.random() < 0.6
+        ? reqQty + Math.floor(Math.random()*80)+10
+        : reqQty;
+      const d = {
+        wave:pick(WAVES), task:taskId(),
+        barcode:pick(BARCODES), sku:pick(SKUS),
+        qty: reqQty, slot:pick(SLOTS),
+      };
+      setData(d);
+      setPackQty(pQty);
+      setUnpackState(pQty > reqQty ? 'needed' : 'matched');
+      setScanning(false);
+      setScanCount(c=>c+1); setLastTime(nowStr()); flash();
+    }, 1600 + Math.random()*600);
+  }, [canScan, scanning]);
+
+  useEffect(() => () => clearTimeout(timerRef.current), []);
+
+  useEffect(() => {
+    const el = wrapRef.current; if (!el) return;
+    const onKey = e => {
+      if (e.code==='Space'||e.code==='Enter') { e.preventDefault(); doScan(); }
+      if (e.code==='Escape') { setData(EMPTY); setStatus(null); }
+    };
+    el.addEventListener('keydown', onKey);
+    return () => el.removeEventListener('keydown', onKey);
+  }, [doScan]);
+
+  useEffect(() => {
+    setData(EMPTY); setPackQty(null); setUnpackState(null); setStatus(null);
+    setScanning(false); setScanCount(0); setLastTime(null); setGlowing(false); setHistory([]);
+  }, [sessionKey]);
+
+  const handleChange = (key, val) => setData(prev => ({ ...prev, [key]: val }));
+
+  const handleConfirmUnpack = () => {
+    setUnpackState('done');
+    setStatus({ type:'success', msg:`Unpacking complete — removed ${data.qty} pcs of ${data.sku}`, key:Date.now() });
+    flash();
+  };
+  const handleClear = () => { setData(EMPTY); setPackQty(null); setUnpackState(null); setStatus(null); };
+  const handleDispatch = () => {
+    if (!hasData) { setStatus({ type:'error', msg:'No product info detected, cannot dispatch', key:Date.now() }); return; }
+    if (unpackState === 'needed') { setStatus({ type:'error', msg:'Package qty exceeds demand — please confirm unpacking first', key:Date.now() }); return; }
+    setHistory(h => [{ time:nowStr(), barcode:data.barcode, slot:data.slot, ok:true }, ...h].slice(0,8));
+    setStatus({ type:'success', msg:`Dispatch successful — Task ${data.task} sent to slot ${data.slot}`, key:Date.now() }); flash();
+    onDispatch();
+  };
+
+  const borderColor = side==='left' ? '#2563eb' : '#7c3aed';
+
+  return (
+    <div ref={wrapRef} tabIndex={0} style={{ outline:'none', height:'100%', display:'flex', flexDirection:'column', padding:16, gap:10, overflowY:'auto' }}>
+
+      {/* Station Header */}
+      <div style={{
+        background:'#fff', borderRadius:10, border:'1px solid #e5e7eb',
+        padding:'10px 14px', display:'flex', alignItems:'center', justifyContent:'space-between',
+        flexShrink:0
+      }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+          <div style={{ width:4, height:22, background:borderColor, borderRadius:2, flexShrink:0 }} />
+          <div>
+            <div style={{ fontSize:16, fontWeight:700, color:'#111827', letterSpacing:'0.03em' }}>{code}</div>
+            <div style={{ fontSize:11, color:'#9ca3af', marginTop:1 }}>Scan Station</div>
+          </div>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          {/* AGV Status */}
+          <button onClick={() => setAgvReady(v => !v)}
+            style={{
+              display:'flex', alignItems:'center', gap:6,
+              padding:'5px 10px', borderRadius:6,
+              background: agvReady ? '#fffbeb' : '#f9fafb',
+              border: `1px solid ${agvReady ? '#fcd34d' : '#e5e7eb'}`,
+              color: agvReady ? '#92400e' : '#9ca3af',
+              cursor:'pointer', fontSize:12, fontWeight:500, fontFamily:'inherit',
+              transition:'all 0.15s'
+            }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+              stroke={agvReady ? '#d97706' : '#9ca3af'} strokeWidth="2">
+              <rect x="1" y="3" width="15" height="13" rx="2"/>
+              <path d="M16 8h4l3 3v5h-7V8z"/>
+              <circle cx="5.5" cy="18.5" r="2.5"/>
+              <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+            {agvReady ? 'AGV Ready' : 'AGV Not Ready'}
+          </button>
+          {/* Camera Status */}
+          <button onClick={()=>{ setCamOnline(v=>!v); if(camOnline){ clearTimeout(timerRef.current); setScanning(false); }}}
+            style={{
+              display:'flex', alignItems:'center', gap:6,
+              padding:'5px 10px', borderRadius:6,
+              background: camOnline ? '#f0fdf4' : '#fef2f2',
+              border: `1px solid ${camOnline ? '#bbf7d0' : '#fecaca'}`,
+              color: camOnline ? '#15803d' : '#dc2626',
+              cursor:'pointer', fontSize:12, fontWeight:500, fontFamily:'inherit'
+            }}>
+            <div className={camOnline ? 'breathe' : ''} style={{
+              width:7, height:7, borderRadius:'50%',
+              background: camOnline ? '#22c55e' : '#f87171'
+            }} />
+            {camOnline ? 'Camera Online' : 'Camera Offline'}
+          </button>
+        </div>
+      </div>
+
+      {/* Scan Stats */}
+      <div style={{ display:'flex', justifyContent:'space-between', padding:'0 2px', flexShrink:0 }}>
+        <span style={{ fontSize:11, color:'#9ca3af' }}>
+          Scans: <span style={{ color:'#374151', fontWeight:600 }}>{scanCount}</span>
+        </span>
+        {lastTime && <span style={{ fontSize:11, color:'#9ca3af' }}>
+          Last scan: <span style={{ color:'#374151' }}>{lastTime}</span>
+        </span>}
+      </div>
+
+      {/* AGV Not Ready Banner */}
+      {!agvReady && (
+        <div style={{
+          flexShrink:0, display:'flex', alignItems:'center', gap:10,
+          padding:'10px 14px', borderRadius:8,
+          background:'#fffbeb', border:'1px solid #fcd34d'
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" style={{ flexShrink:0 }}>
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span style={{ fontSize:12, color:'#92400e', fontWeight:500 }}>
+            AGV not in position — scanning disabled until AGV arrives.
+          </span>
+        </div>
+      )}
+
+      {/* Info Panel */}
+      <div style={{ flexShrink:0, opacity: agvReady ? 1 : 0.45, pointerEvents: agvReady ? 'auto' : 'none', transition:'opacity 0.2s' }}>
+        <InfoPanel data={data} onChange={handleChange} glowing={glowing} />
+      </div>
+
+      {/* Unpack Comparison Card */}
+      {hasData && unpackState && (
+        <div style={{ flexShrink:0 }}>
+
+          {/* Unpack Required */}
+          {unpackState === 'needed' && (
+            <div style={{ borderRadius:8, border:'1px solid #fcd34d', background:'#fffbeb', overflow:'hidden' }}>
+              <div style={{
+                display:'flex', alignItems:'center', gap:8,
+                padding:'9px 14px', borderBottom:'1px solid #fef3c7'
+              }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" style={{flexShrink:0}}>
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <span style={{ fontSize:12, fontWeight:600, color:'#92400e' }}>Package qty exceeds demand — unpacking required</span>
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr auto 1fr', alignItems:'center', padding:'12px 16px', gap:8 }}>
+                <div style={{ textAlign:'center' }}>
+                  <div style={{ fontSize:11, color:'#9ca3af', marginBottom:3 }}>Package Qty</div>
+                  <div style={{ fontSize:22, fontWeight:700, color:'#d97706', fontFamily:'Courier New,monospace' }}>{packQty}</div>
+                  <div style={{ fontSize:10, color:'#b45309' }}>pcs</div>
+                </div>
+                <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                  <span style={{ fontSize:10, color:'#d97706', fontWeight:600 }}>Remove</span>
+                  <span style={{ fontSize:13, fontWeight:700, color:'#d97706', fontFamily:'Courier New,monospace' }}>
+                    {packQty - data.qty} pcs
+                  </span>
+                </div>
+                <div style={{ textAlign:'center' }}>
+                  <div style={{ fontSize:11, color:'#9ca3af', marginBottom:3 }}>Required Qty</div>
+                  <div style={{ fontSize:22, fontWeight:700, color:'#111827', fontFamily:'Courier New,monospace' }}>{data.qty}</div>
+                  <div style={{ fontSize:10, color:'#6b7280' }}>pcs</div>
+                </div>
+              </div>
+              <div style={{ padding:'0 14px 12px' }}>
+                <button onClick={handleConfirmUnpack} style={{
+                  width:'100%', padding:'9px 0', borderRadius:6, border:'none',
+                  background:'#d97706', color:'#fff', fontSize:13, fontWeight:600,
+                  cursor:'pointer', fontFamily:'inherit', transition:'background 0.15s'
+                }}
+                onMouseOver={e=>e.currentTarget.style.background='#b45309'}
+                onMouseOut={e=>e.currentTarget.style.background='#d97706'}>
+                  Confirm Unpacked — Remove {packQty - data.qty} pcs
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Quantity Matched */}
+          {unpackState === 'matched' && (
+            <div style={{
+              display:'flex', alignItems:'center', gap:8,
+              padding:'10px 14px', borderRadius:8,
+              background:'#f0fdf4', border:'1px solid #bbf7d0'
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <div style={{ fontSize:12, color:'#15803d' }}>
+                Quantity matched
+                <span style={{ color:'#86efac', margin:'0 6px' }}>·</span>
+                Package <strong>{packQty}</strong> pcs = Required <strong>{data.qty}</strong> pcs — ready to dispatch
+              </div>
+            </div>
+          )}
+
+          {/* Unpacking Confirmed */}
+          {unpackState === 'done' && (
+            <div style={{
+              display:'flex', alignItems:'center', gap:8,
+              padding:'10px 14px', borderRadius:8,
+              background:'#f0fdf4', border:'1px solid #bbf7d0'
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <div style={{ fontSize:12, color:'#15803d' }}>
+                Unpacking confirmed
+                <span style={{ color:'#86efac', margin:'0 6px' }}>·</span>
+                Removed <strong>{data.qty}</strong> pcs from package ({packQty} pcs) — ready to dispatch
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Scan History */}
+      <div style={{ flexShrink:0 }}>
+        <ScanHistory items={history} />
+      </div>
+
+      {/* Action Buttons */}
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1.2fr', gap:8, flexShrink:0 }}>
+        <button className="btn btn-default" onClick={handleClear}>
+          Clear
+        </button>
+        <button className="btn btn-success" onClick={handleDispatch}
+          disabled={!hasData || !agvReady || unpackState === 'needed'}>
+          Dispatch
+        </button>
+      </div>
+
+      {/* Status Feedback */}
+      <div style={{ flexShrink:0 }}>
+        <StatusBar status={status} />
+      </div>
+
+    </div>
+  );
+}
+
+/* ══ App ══ */
+function App() {
+  const [time,           setTime]           = useState(new Date().toLocaleTimeString('en-US', { hour12:false }));
+  const [container,      setContainer]      = useState('');
+  const [plannedItems,   setPlannedItems]   = useState(null);
+  const [totalDispatched,setTotalDispatched]= useState(0);
+  const [endModal,       setEndModal]       = useState(null);
+  const [sessionKey,     setSessionKey]     = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setTime(new Date().toLocaleTimeString('en-US', { hour12:false })), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const handleDispatch = () => {
+    setTotalDispatched(n => n + 1);
+    setPlannedItems(p => p === null ? Math.floor(Math.random()*6)+3 : p);
+  };
+
+  const resetSession = () => {
+    setContainer(''); setPlannedItems(null); setTotalDispatched(0);
+    setSessionKey(k => k + 1);
+  };
+
+  const handleEndSupply = () => {
+    const planned = plannedItems || 0;
+    if (totalDispatched < planned) {
+      setEndModal({ planned, actual: totalDispatched });
+    } else {
+      resetSession();
+    }
+  };
+
+  const handleForceEnd = () => { setEndModal(null); resetSession(); };
+
+  return (
+    <div style={{ height:'100vh', display:'flex', flexDirection:'column', background:'#f0f2f5' }}>
+
+      {/* Top Nav */}
+      <div style={{
+        height:52, background:'#fff', borderBottom:'1px solid #e5e7eb',
+        display:'flex', alignItems:'center', justifyContent:'space-between',
+        padding:'0 24px', flexShrink:0
+      }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          <div style={{
+            width:32, height:32, borderRadius:8, background:'#2563eb',
+            display:'flex', alignItems:'center', justifyContent:'center'
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <div>
+            <div style={{ fontSize:15, fontWeight:700, color:'#111827' }}>Supply Station</div>
+            <div style={{ fontSize:10, color:'#9ca3af' }}>Dual Camera Scan System</div>
+          </div>
+        </div>
+
+        <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+            <div className="breathe" style={{ width:7, height:7, borderRadius:'50%', background:'#22c55e' }} />
+            <span style={{ fontSize:12, color:'#6b7280' }}>System Normal</span>
+          </div>
+          <div style={{ width:1, height:16, background:'#e5e7eb' }} />
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <div style={{
+              width:30, height:30, borderRadius:'50%', background:'#eff6ff',
+              display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0
+            }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div style={{ lineHeight:1 }}>
+              <div style={{ fontSize:13, fontWeight:600, color:'#111827' }}>Li Ming</div>
+              <div style={{ fontSize:10, color:'#9ca3af', marginTop:2 }}>Operator</div>
+            </div>
+          </div>
+          <div style={{ width:1, height:16, background:'#e5e7eb' }} />
+          <div style={{
+            background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:6,
+            padding:'4px 10px', fontSize:12, color:'#374151', fontWeight:500,
+            fontFamily:'Courier New,monospace'
+          }}>{time}</div>
+        </div>
+      </div>
+
+      {/* Station Tabs */}
+      <div style={{ display:'flex', background:'#fff', borderBottom:'1px solid #e5e7eb', flexShrink:0 }}>
+        <div style={{
+          flex:1, display:'flex', alignItems:'center', gap:8,
+          padding:'8px 20px', borderBottom:'2px solid #2563eb'
+        }}>
+          <div style={{ width:8, height:8, borderRadius:'50%', background:'#2563eb' }} />
+          <span style={{ fontSize:12, fontWeight:600, color:'#2563eb' }}>Left Station ST-A01</span>
+        </div>
+        <div style={{ width:1, background:'#e5e7eb', margin:'8px 0' }} />
+        <div style={{
+          flex:1, display:'flex', alignItems:'center', gap:8,
+          padding:'8px 20px', borderBottom:'2px solid #7c3aed'
+        }}>
+          <div style={{ width:8, height:8, borderRadius:'50%', background:'#7c3aed' }} />
+          <span style={{ fontSize:12, fontWeight:600, color:'#7c3aed' }}>Right Station ST-A02</span>
+        </div>
+      </div>
+
+      {/* Shared Container Module */}
+      <div style={{
+        background:'#fff', borderBottom:'1px solid #e5e7eb',
+        padding:'10px 20px', flexShrink:0
+      }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:6, flexShrink:0 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            </svg>
+            <span style={{ fontSize:11, fontWeight:600, color:'#6b7280', textTransform:'uppercase', letterSpacing:'0.06em' }}>Current Tote</span>
+          </div>
+          <input
+            className="field-input"
+            type="text"
+            value={container}
+            placeholder="Scan container barcode"
+            onChange={e => setContainer(e.target.value)}
+            style={{ flex:1, maxWidth:280 }}
+          />
+          {totalDispatched > 0 && (
+            <div style={{ display:'flex', alignItems:'center', gap:10, fontSize:12, color:'#6b7280' }}>
+              <span>Dispatched: <strong style={{color:'#111827'}}>{totalDispatched}</strong></span>
+              {plannedItems && (
+                <span style={{ color: totalDispatched < plannedItems ? '#d97706' : '#16a34a', fontWeight:600 }}>
+                  / Planned: {plannedItems}
+                </span>
+              )}
+            </div>
+          )}
+          <button onClick={handleEndSupply} style={{
+            marginLeft:'auto', flexShrink:0,
+            padding:'6px 16px', borderRadius:6,
+            background:'#fff', border:'1px solid #f59e0b',
+            color:'#b45309', fontSize:12, fontWeight:500,
+            cursor:'pointer', fontFamily:'inherit', transition:'all 0.15s',
+            display:'flex', alignItems:'center', gap:6
+          }}
+          onMouseOver={e=>{e.currentTarget.style.background='#fffbeb';}}
+          onMouseOut={e=>{e.currentTarget.style.background='#fff';}}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>
+            </svg>
+            End Supply
+          </button>
+        </div>
+      </div>
+
+      {/* Dual Station */}
+      <div style={{ flex:1, display:'flex', overflow:'hidden' }}>
+        <div style={{ flex:1, overflow:'hidden' }}>
+          <ScanStation code="ST-A01" side="left" sessionKey={sessionKey} onDispatch={handleDispatch} />
+        </div>
+        <div className="divider" />
+        <div style={{ flex:1, overflow:'hidden' }}>
+          <ScanStation code="ST-A02" side="right" sessionKey={sessionKey} onDispatch={handleDispatch} />
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{
+        height:30, background:'#fff', borderTop:'1px solid #e5e7eb',
+        display:'flex', alignItems:'center', justifyContent:'center'
+      }}>
+        <span style={{ fontSize:11, color:'#9ca3af' }}>
+          Click status badges to toggle · Focus station and press Space to scan · Esc to clear
+        </span>
+      </div>
+
+      {/* End Supply Confirmation Modal */}
+      {endModal && (
+        <div style={{
+          position:'fixed', inset:0, background:'rgba(0,0,0,0.38)',
+          display:'flex', alignItems:'center', justifyContent:'center', zIndex:200
+        }}>
+          <div style={{
+            background:'#fff', borderRadius:12, padding:'24px',
+            width:340, boxShadow:'0 12px 40px rgba(0,0,0,0.18)',
+            border:'1px solid #e5e7eb'
+          }}>
+            <div style={{ display:'flex', alignItems:'flex-start', gap:14, marginBottom:20 }}>
+              <div style={{
+                width:40, height:40, borderRadius:10, background:'#fef3c7', flexShrink:0,
+                display:'flex', alignItems:'center', justifyContent:'center'
+              }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontSize:15, fontWeight:700, color:'#111827', marginBottom:8 }}>
+                  Missing Items Detected
+                </div>
+                <div style={{ fontSize:12, color:'#6b7280', lineHeight:1.7 }}>
+                  <div style={{ display:'flex', gap:16, marginBottom:6 }}>
+                    <span>Dispatched: <strong style={{color:'#111827'}}>{endModal.actual}</strong></span>
+                    <span>Planned: <strong style={{color:'#111827'}}>{endModal.planned}</strong></span>
+                  </div>
+                  <div style={{
+                    padding:'8px 12px', borderRadius:6, background:'#fef2f2',
+                    border:'1px solid #fecaca', color:'#dc2626', fontWeight:600, fontSize:12
+                  }}>
+                    {endModal.planned - endModal.actual} item(s) missing — force end?
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+              <button onClick={()=>setEndModal(null)} style={{
+                padding:'10px 0', borderRadius:6, border:'1px solid #e5e7eb',
+                background:'#fff', color:'#374151', fontSize:13, fontWeight:500,
+                cursor:'pointer', fontFamily:'inherit', transition:'background 0.15s'
+              }}
+              onMouseOver={e=>{e.currentTarget.style.background='#f9fafb';}}
+              onMouseOut={e=>{e.currentTarget.style.background='#fff';}}>
+                Cancel
+              </button>
+              <button onClick={handleForceEnd} style={{
+                padding:'10px 0', borderRadius:6, border:'none',
+                background:'#dc2626', color:'#fff', fontSize:13, fontWeight:600,
+                cursor:'pointer', fontFamily:'inherit', transition:'background 0.15s'
+              }}
+              onMouseOver={e=>{e.currentTarget.style.background='#b91c1c';}}
+              onMouseOut={e=>{e.currentTarget.style.background='#dc2626';}}>
+                Force End
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>

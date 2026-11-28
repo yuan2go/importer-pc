@@ -1,0 +1,21 @@
+<Window x:Class="Ipc.Application.Sportmaster.Desktop.ToteEndSupplyConfirmWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="{DynamicResource Tote.Shortage}" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+ Width="490" SizeToContent="Height" ResizeMode="NoResize" Background="{DynamicResource Background}" Foreground="{DynamicResource Ink}">
+ <Border Style="{DynamicResource WorkstationCard}" Margin="12" Padding="18">
+  <StackPanel>
+   <TextBlock Text="{DynamicResource Tote.Shortage}" FontWeight="Medium" FontSize="23" TextWrapping="Wrap"/>
+   <TextBlock x:Name="Counts" TextWrapping="Wrap" Margin="0,8,0,6"/>
+   <Border Background="{DynamicResource DangerBackground}" BorderBrush="{DynamicResource DangerBorder}" BorderThickness="1"
+    CornerRadius="{DynamicResource RadiusControl}" Padding="10" Margin="0,0,0,12">
+    <TextBlock x:Name="Missing" Foreground="{DynamicResource Danger}" TextWrapping="Wrap" FontWeight="Medium"/>
+   </Border>
+   <WrapPanel HorizontalAlignment="Right">
+    <Button x:Name="CancelAction" Content="{DynamicResource Common.Cancel}" IsCancel="True" IsDefault="True" MinHeight="44" MinWidth="92" Margin="0,0,8,0"/>
+    <Button Content="{DynamicResource Tote.ForceEnd}" Style="{DynamicResource DangerButton}" MinHeight="44" Click="ForceEnd_Click"
+     AutomationProperties.AutomationId="Tote.ForceEnd"/>
+   </WrapPanel>
+  </StackPanel>
+ </Border>
+</Window>

@@ -128,6 +128,35 @@ internal static partial class Program
                 }
                 var editor = Visuals(window).OfType<MaintenancePage>().Single();
                 Check(editor.Audience == Ipc.Application.Contracts.SmParameterAudience.Technical, "operations reuses the existing complete editor in technical scope");
+                bool PageChoiceVisible() => Visuals(window).OfType<ComboBox>().Any(choice =>
+                    AutomationProperties.GetAutomationId(choice) == "Technical.WorkstationPage" && choice.IsVisible);
+                ComboBox PageChoice() => Visuals(window).OfType<ComboBox>().Single(choice =>
+                    AutomationProperties.GetAutomationId(choice) == "Technical.WorkstationPage" && choice.IsVisible);
+                Check(editor.NavigateToParameter("WorkstationPage"), "technical page selector is reachable");
+                await Until(PageChoiceVisible);
+                var pageChoice = PageChoice();
+                var originalPage = pageChoice.SelectedValue;
+                Check(pageChoice.IsEnabled && pageChoice.Items.Count == 3 && pageChoice.ActualHeight >= 44,
+                    "professional parameters offer both workstation pages and the installer default");
+                var alternatePage = Equals(originalPage, "tote-station") ? "supply-station" : "tote-station";
+                pageChoice.SelectedValue = alternatePage;
+                await Until(() => model.HasUnsavedConfiguration);
+                pageChoice.SelectedValue = originalPage;
+                await Until(() => !model.HasUnsavedConfiguration);
+                if (smoke)
+                {
+                    Capture("operations-workstation-page-switch-zh");
+                    PresentationPreferences.SaveLanguage(installation.Location.ApplicationId, "ru-RU");
+                    await Until(() => UiText.Language == "ru-RU");
+                    Check(editor.NavigateToParameter("WorkstationPage"), "localized technical page selector is reachable");
+                    await Until(PageChoiceVisible);
+                    var localeDefault = UiText.Format("Page.FollowPackage", UiText.Get("Page.Supply"));
+                    await Until(() => Visuals(PageChoice()).OfType<TextBlock>().Any(text => text.Text == localeDefault) &&
+                        Visuals(window).OfType<TextBlock>().Any(text => text.IsVisible && text.Text == UiText.Get("Page.WhenIdle")));
+                    Capture("operations-workstation-page-switch-ru");
+                    PresentationPreferences.SaveLanguage(installation.Location.ApplicationId, "zh-CN");
+                    await Until(() => UiText.Language == "zh-CN");
+                }
                 Check(editor.NavigateToParameter("ReadTimeoutMs"), "technical read deadline is reachable in the real operations editor");
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                 Check(!editor.NavigateToParameter("StationCode"), "technical editor cannot navigate to the removed field-owned station code");

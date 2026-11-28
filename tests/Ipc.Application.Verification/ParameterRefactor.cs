@@ -135,7 +135,10 @@ static class ParameterRefactor
         var beforeStale = (await app.SnapshotAsync()).Configuration; var beforeStaleBytes = Wire.Encode(beforeStale);
         stale.StructuredPolicy!.ResidentHistory = "1900"; stale.ConfigurationReason = "Synthetic stale CAS"; await stale.SaveStructuredConfigurationAsync();
         Check(stale.ConfigurationSubmissionOutcome == "Conflict" && stale.HasUnsavedConfiguration && stale.StructuredPolicy.ResidentHistory == "1900" && Wire.Encode((await app.SnapshotAsync()).Configuration) == beforeStaleBytes, "CAS conflict preserves input and cannot replace the saved candidate");
-        var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.ReadTimeoutMs = "bad";
+        // Headless editor has no window timer. Refresh after the stale-CAS
+        // assertion before checking validation of the next, distinct draft.
+        await stale.RefreshAsync();
+        var invalidRevision = stale.Snapshot!.Configuration.Revision; stale.StructuredPolicy.ReadTimeoutMs = "bad";
         _ = stale.ConfigurationEditorState;
         await stale.SaveStructuredConfigurationAsync();
         Check(stale.HasUnsavedConfiguration && stale.StructuredPolicy.ReadTimeoutMs == "bad" && stale.ParameterEditor!.Issues.Any(i => i.Path == "ReadTimeoutMs") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision,

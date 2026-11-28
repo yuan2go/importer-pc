@@ -11,9 +11,13 @@ namespace Ipc.Application.Sportmaster.Desktop;
 
 public partial class SupplyStationPosition : UserControl
 {
-    public SupplyStationPosition()
+    public SupplyStationPosition() : this(null) { }
+
+    internal SupplyStationPosition(ToteStationLaneControl? tote)
     {
-        InitializeComponent(); InitializeCompositionFeedback();
+        InitializeComponent();
+        if (tote is not null) UseToteLayout(tote);
+        InitializeCompositionFeedback();
         PreviewMouseLeftButtonDown += (_, e) =>
         {
             if (DataContext is not SupplyStationPositionViewModel p) return;
@@ -51,9 +55,50 @@ public partial class SupplyStationPosition : UserControl
             var value = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string;
             if (submitting || submitted is not null || value is null || value.Any(char.IsControl) ||
                 BarcodeEntry.Text.Length - BarcodeEntry.SelectionLength + value.Length > 4096)
-            { e.CancelCommand(); overflow = true; showingDraftNotice = false; RefreshSubmitAvailability(); InputFeedback.Text = "粘贴无效：只能粘贴一个完整条码（不含换行或Tab，最多4096字符）。请清空后重新输入。"; }
+            { e.CancelCommand(); overflow = true; showingDraftNotice = false; RefreshSubmitAvailability(); InputFeedback.Text = UiText.Get("Tote.InvalidPaste"); }
         });
     }
+    void UseToteLayout(ToteStationLaneControl tote)
+    {
+        // The alternate layout uses the exact same barcode editor, guarded
+        // submission/recheck actions, and Unknown guidance as the classic view.
+        static void Move(FrameworkElement element, ContentControl host)
+        {
+            ((Panel)element.Parent).Children.Remove(element);
+            host.Content = element;
+        }
+        Move(BarcodeEntry, tote.ScanEntry);
+        Move(SubmitBarcode, tote.DispatchAction);
+        Move(RebaseInput, tote.ConfirmInput);
+        Move(ConfirmManualPlacementRemoval, tote.ParcelRemoval);
+        Move(InputFeedback, tote.Feedback);
+        Move(RcsGuidancePanel, tote.UnknownGuide);
+        SubmitBarcode.SetResourceReference(ContentControl.ContentProperty, "Tote.Dispatch");
+        SubmitBarcode.Margin = new(0, 0, 5, 0);
+        BarcodeEntry.FontSize = UiTypography.Body;
+        BarcodeEntry.MinHeight = 44;
+        tote.ClearButton.Click += ClearInput_Click;
+        DataContextChanged += (_, _) =>
+        {
+            if (DataContext is SupplyStationPositionViewModel p)
+                System.Windows.Automation.AutomationProperties.SetAutomationId(BarcodeEntry,
+                    p.PositionId == "left" ? "Tote.Left.BarcodeInput" : "Tote.Right.BarcodeInput");
+        };
+        Content = tote;
+        Background = null;
+        PreviewKeyDown += (_, args) =>
+        {
+            if (args.Key == Key.Escape && IsBarcodeInputFocused && editing) args.Handled = ClearToteDraft();
+        };
+    }
+
+    internal bool ClearToteDraft()
+    {
+        if (Content is not ToteStationLaneControl || !editing) return false;
+        ClearInput_Click(this, new RoutedEventArgs());
+        return true;
+    }
+
     sealed record InputBasis(Guid Runtime, long Configuration, string? Observation, string? Operation, string? Round, string? Arrival, string? Placement);
     const int PdaMinimumLength = 6, PdaRapidGapMs = 35, PdaMaximumGapMs = 250, PdaEnterGapMs = 100;
     (int At, int Length, char Character)? expectedKeyboardText;
@@ -73,7 +118,7 @@ public partial class SupplyStationPosition : UserControl
             if (editing && submitted is null)
             {
                 RebaseInput.Visibility = Visibility.Visible;
-                InputFeedback.Text = "小车已变化，输入保留为草稿；请重新核对当前包裹。";
+                InputFeedback.Text = UiText.Get("Tote.VehicleChanged");
             }
         }
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.ShowCenteredState) or nameof(SupplyStationPositionViewModel.CenteredAttention)) RefreshDraftNoticeVisibility();
@@ -221,15 +266,20 @@ public partial class SupplyStationPosition : UserControl
         if (submitting || submitted is not null) { InputFeedback.Text = "上次提交结果未确认，请先点“查看提交结果”。"; return; }
         ResetPdaDetection();
         terminalTextRetained = false; editing = BarcodeEntry.Text.Length > 0;
-        CaptureInputBasis(); RebaseInput.Visibility = Visibility.Collapsed; InputFeedback.Text = "已确认本位包裹，请重新提交条码。"; BarcodeEntry.Focus(); RefreshSubmitAvailability();
+        CaptureInputBasis(); RebaseInput.Visibility = Visibility.Collapsed; InputFeedback.Text = UiText.Get("Tote.Rebased"); BarcodeEntry.Focus(); RefreshSubmitAvailability();
     }
     void ClearInput_Click(object sender, RoutedEventArgs e)
     {
         showingDraftNotice = false;
-        if (submitting || submitted is not null) { InputFeedback.Text = "上次提交结果未确认，暂不能清空；请先点“查看提交结果”。"; return; }
+        if (submitting || submitted is not null)
+        {
+            InputFeedback.Text = Content is ToteStationLaneControl ? UiText.Get("Tote.ClearBlocked") : "上次提交结果未确认，暂不能清空；请先点“查看提交结果”。";
+            return;
+        }
+        if (Content is ToteStationLaneControl && !editing) return;
         ResetPdaDetection();
         terminalTextRetained = false; editing = false; BarcodeEntry.Clear(); overflow = false; inputBasis = null;
-        InputFeedback.Text = "输入已清空，相机读码将自动更新。"; BarcodeEntry.Focus(); RefreshSubmitAvailability();
+        InputFeedback.Text = UiText.Get("Tote.ClearFeedback"); BarcodeEntry.Focus(); RefreshSubmitAvailability();
     }
     async void BarcodeEntry_KeyDown(object sender, KeyEventArgs e)
     {
@@ -282,21 +332,21 @@ public partial class SupplyStationPosition : UserControl
         if (submitting || Host is not { } host || DataContext is not SupplyStationPositionViewModel p) return;
         var vm = host.ViewModel;
         if (!vm.CanStartOperation || !vm.Fresh || vm.Application is not IParcelWorkstation service)
-        { InputFeedback.Text = "当前不能提交，请等待状态恢复。"; return; }
+        { InputFeedback.Text = UiText.Get("Tote.SubmitWait"); return; }
         if (submitted is null)
         {
-            if (!p.CanSubmitBarcode) { InputFeedback.Text = "本位暂不能接收新条码；请按当前提示处理。"; RefreshSubmitAvailability(); return; }
-            if (!editing) { InputFeedback.Text = "框内是上一件的条码；请输入本件条码后再提交。"; return; }
-            if (overflow) { InputFeedback.Text = "条码不完整，请清空后重扫或重新输入。"; return; }
-            if (BarcodeEntry.Text.Length == 0) { InputFeedback.Text = "请输入完整条码，再按回车或点击提交。"; return; }
+            if (!p.CanSubmitBarcode) { InputFeedback.Text = UiText.Get("Tote.LaneBlocked"); RefreshSubmitAvailability(); return; }
+            if (!editing) { InputFeedback.Text = UiText.Get("Tote.OldBarcode"); return; }
+            if (overflow) { InputFeedback.Text = UiText.Get("Tote.IncompleteBarcode"); return; }
+            if (BarcodeEntry.Text.Length == 0) { InputFeedback.Text = UiText.Get("Tote.EnterFullBarcode"); return; }
             if (inputBasis is null) CaptureInputBasis();
             if (inputBasis?.Arrival != p.Arrival?.Generation || inputBasis?.Placement != p.Arrival?.PlacementBoundary)
             {
                 ResetPdaDetection(); RebaseInput.Visibility = Visibility.Visible;
-                InputFeedback.Text = "小车已变化，输入保留为草稿；请核对当前包裹后点击重新确认。";
+                InputFeedback.Text = UiText.Get("Tote.VehicleRecheck");
                 return;
             }
-            if (inputBasis is not { } basis) { InputFeedback.Text = "本位状态未读取，请稍后再提交。"; return; }
+            if (inputBasis is not { } basis) { InputFeedback.Text = UiText.Get("Tote.NoInputBasis"); return; }
             // A burst is predominantly rapid. A few delayed key messages must
             // not change its source, but a break or an edited draft must.
             var length = BarcodeEntry.Text.Length;
@@ -308,18 +358,18 @@ public partial class SupplyStationPosition : UserControl
         }
         var request = submitted; submitting = true; BarcodeEntry.IsReadOnly = true;
         SubmitBarcode.IsEnabled = false; RebaseInput.IsEnabled = false;
-        InputFeedback.Text = "正在提交，请等待结果，勿重复扫描。";
+        InputFeedback.Text = UiText.Get("Tote.Submitting");
         // Submission ownership is local to this position; management Busy remains global.
             try
             {
                 var receipt = await vm.ServiceAsync(() => service.SubmitParcelBarcodeAsync(request, CancellationToken.None));
                 InputFeedback.Text = receipt.Status switch
                 {
-                    "Admitted" => "本次条码已受理。",
-                    "Rejected" => "本次条码未受理，请核对条码和本位提示。",
-                    "Blocked" => "本位暂不能受理，请按本位提示处理。",
-                    "Conflict" => "本位状态已变化，请核对包裹和条码后再提交。",
-                    "Duplicate" => "本次条码已处理，请勿重复提交。",
+                    "Admitted" => UiText.Get("Tote.Submitted"),
+                    "Rejected" => UiText.Get("Tote.Refused"),
+                    "Blocked" => UiText.Get("Tote.Blocked"),
+                    "Conflict" => UiText.Get("Tote.LaneChanged"),
+                    "Duplicate" => UiText.Get("Tote.Duplicate"),
                     _ => SubmissionUnconfirmed
                 };
                 vm.ReportBarcodeFeedback(receipt, InputFeedback.Text);
@@ -347,11 +397,12 @@ public partial class SupplyStationPosition : UserControl
         finally
         {
         submitting = false; BarcodeEntry.IsReadOnly = submitted is not null;
-        SubmitBarcode.Content = submitted is null ? "提交" : "查看提交结果";
+        SubmitBarcode.SetResourceReference(ContentControl.ContentProperty,
+            submitted is not null ? "Tote.CheckSubmission" : Content is ToteStationLaneControl ? "Tote.Dispatch" : "Work.Submit");
         RefreshSubmitAvailability(); RebaseInput.IsEnabled = submitted is null; RefreshBarcodeDisplay(); PrepareResultReplacement();
         }
     }
-    const string SubmissionUnconfirmed = "提交结果未确认，请保留包裹；点“查看提交结果”，勿重复提交。";
+    static string SubmissionUnconfirmed => UiText.Get("Tote.UnconfirmedSubmit");
     void Picture_Click(object sender, RoutedEventArgs e)
     {
         if (editing || terminalTextRetained || submitting || submitted is not null || Host is not { } host ||

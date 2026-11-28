@@ -54,6 +54,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string MaximumWeight { get => Get<string>(); set => Set(value); }
     public string QueueCapacity { get => Get<string>(); set => Set(value); }
     public string ReadTimeoutMs { get => Get<string>(); set => Set(value); }
+    public string? WorkstationPage { get => Get<string?>(); set => Set(value is "" ? null : value); }
     public bool AutomaticHistoryCleanup { get => Get<bool>(); set => Set(value); }
     public string CleanupTimeZoneId { get => Get<string>(); set => Set(value); }
     public string CleanupHour { get => Get<string>(); set => Set(value); }
@@ -82,6 +83,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
             WeightRange = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.WeightRange : BuildWeightRange(),
             QueueCapacity = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.QueueCapacity : Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096),
             ReadTimeoutMs = readTimeout == c.EffectiveReadTimeoutMs ? c.ReadTimeoutMs : readTimeout,
+            WorkstationPage = WorkstationPage,
             TimeoutMs = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.TimeoutMs : Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
             MaximumOperations = !BusinessDesktopCatalog.For(c.ApplicationId).UsesLegacyWeightAndQueueFields ? c.MaximumOperations : Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
             Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention,
@@ -119,6 +121,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         MaximumWeight = c.WeightRange?.Maximum.ToString(CultureInfo.InvariantCulture) ?? "",
         QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture),
         ReadTimeoutMs = c.EffectiveReadTimeoutMs.ToString(CultureInfo.InvariantCulture),
+        WorkstationPage = c.WorkstationPage,
         AutomaticHistoryCleanup = c.OperationsPolicy?.AutomaticHistoryCleanup == true,
         CleanupTimeZoneId = (c.OperationsPolicy ?? StationShiftSchedule.Default).TimeZoneId,
         CleanupHour = (c.OperationsPolicy ?? StationShiftSchedule.Default).CleanupHour.ToString(CultureInfo.InvariantCulture),

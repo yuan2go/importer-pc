@@ -9,7 +9,9 @@ import subprocess
 import tempfile
 import zipfile
 from release_provenance import capture as capture_provenance, installer_name, MODULE_SHORT_NAMES
-from release_build import frozen_export, build_properties
+from release_build import (
+    INSTALLATION_CHANNELS, build_properties, frozen_export, resolve_channel, resolve_default_page,
+)
 from application_compatibility import APPLICATIONS
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +26,7 @@ def verify_shared_binaries(media, binaries):
             file = binaries / Path(name).name
             if not file.is_file() or hashlib.sha256(file.read_bytes()).digest() != hashlib.sha256(archive.read(name)).digest():
                 raise ValueError('Installer UI and embedded desktop bytes differ: ' + name)
+        return len(selected)
 
 
 def safe_name(name):
@@ -36,7 +39,7 @@ def safe_name(name):
     return name
 
 
-def inspect_medium(path, source, test_instance=False):
+def inspect_medium(path, source, test_instance=False, default_page=None):
     with zipfile.ZipFile(path) as archive:
         names = {}
         total = 0
@@ -71,8 +74,13 @@ def inspect_medium(path, source, test_instance=False):
             raise ValueError('Expected the packaged BUILD-INFO source record')
         provenance_bytes = archive.read(names['build-info.json'])
         provenance = json.loads(provenance_bytes)
-        if (provenance.get('InstallationChannel') == 'Test') != test_instance:
+        channel = 'Test' if test_instance else 'Formal'
+        if provenance.get('InstallationChannel', 'Formal') != channel:
             raise ValueError('Installer installation identity differs from the medium')
+        application = releases[0]['ApplicationId']
+        media_page = resolve_default_page(application, provenance.get('DefaultWorkstationPage'))
+        if default_page is not None and resolve_default_page(application, default_page) != media_page:
+            raise ValueError('Installer default page differs from the frozen medium')
         if (provenance.get('SourceCommit') != source or provenance.get('BusinessVersion') != releases[0]['BusinessVersion']
                 or provenance.get('ApplicationId') != releases[0]['ApplicationId'] or provenance.get('Target') != 'win-x64'
                 or provenance.get('BusinessModuleShortName') != MODULE_SHORT_NAMES[releases[0]['ApplicationId']]
@@ -87,6 +95,7 @@ def inspect_medium(path, source, test_instance=False):
         return dict(ApplicationId=releases[0]['ApplicationId'], SourceCommit=source, SourceBranch=provenance['SourceBranch'],
                     BusinessModuleShortName=provenance['BusinessModuleShortName'],
                     BusinessVersion=releases[0]['BusinessVersion'], Sha256=digest,
+                    InstallationChannel=channel, DefaultWorkstationPage=media_page,
                     ZipBytes=Path(path).stat().st_size, UnpackedBytes=total, FileCount=len(names))
 
 
@@ -119,14 +128,20 @@ def main():
     parser.add_argument('--media', type=Path, required=True, help='Frozen win-x64 ZIP from package-application.py')
     parser.add_argument('--output', type=Path, required=True, help='New delivery directory, or the canonical English versioned EXE path')
     parser.add_argument('--dotnet', default='dotnet')
-    parser.add_argument('--test-instance', action='store_true', help='Wrap an independent SM test medium')
+    parser.add_argument('--test-instance', action='store_true', help='Alias for --channel test')
+    parser.add_argument('--channel', choices=INSTALLATION_CHANNELS, help='Installation channel (default: formal)')
+    parser.add_argument('--default-page', help='Expected default page (defaults to the frozen medium)')
     args = parser.parse_args()
+    try:
+        test_instance = resolve_channel(args.channel, args.test_instance) == 'test'
+    except ValueError as error:
+        parser.error(str(error))
     if subprocess.check_output(['git', 'status', '--porcelain', '--', 'src', 'scripts', 'Directory.Build.props', 'global.json'], cwd=ROOT, text=True).strip():
         raise ValueError('Commit installer, payload runtime and packaging sources first')
     source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    descriptor = inspect_medium(args.media.resolve(), source, args.test_instance)
+    descriptor = inspect_medium(args.media.resolve(), source, test_instance, args.default_page)
     capture_provenance(ROOT, source, descriptor['SourceBranch'], descriptor['ApplicationId'], descriptor['BusinessVersion'], 'win-x64')
-    name = installer_name(descriptor['ApplicationId'], descriptor['BusinessVersion'], args.test_instance)
+    name = installer_name(descriptor['ApplicationId'], descriptor['BusinessVersion'], test_instance)
     output = args.output.resolve()
     if output.suffix.lower() == '.exe':
         if output.name != name:
@@ -147,17 +162,17 @@ def main():
     subprocess.run([args.dotnet, 'publish', 'src/Ipc.Installer/Ipc.Installer.csproj', '-c', 'Release', '-m:1', '-nr:false', '-r', 'win-x64', '--self-contained', 'true',
                     '-p:InstallerPayload=' + str(payload), '-p:InstallerDescriptor=' + str(metadata),
                     '-p:Application=' + module, '-p:NuGetLockFilePath=packages.' + descriptor['ApplicationId'] + '.win-x64.lock.json',
-                    '-p:RestoreLockedMode=true', *build_properties(source, snapshot, artifacts, args.test_instance),
+                    '-p:RestoreLockedMode=true', *build_properties(source, snapshot, artifacts, test_instance, descriptor['DefaultWorkstationPage']),
                     '-p:CopyOutputSymbolsToPublishDirectory=false',
                     '-p:ArtifactsPath=' + str(artifacts), '-p:InstallerBusinessVersion=' + descriptor['BusinessVersion'],
                     '-o', str(publish)], cwd=snapshot, check=True)
-    verify_shared_binaries(args.media, artifacts / 'bin/Ipc.Installer/release_win-x64')
+    shared = verify_shared_binaries(args.media, artifacts / 'bin/Ipc.Installer/release_win-x64')
     published = [file for file in publish.iterdir() if file.is_file()]
     if len(published) != 1 or published[0].name != 'Ipc.Installer.exe':
         raise ValueError('Installer is not a standalone EXE: ' + repr([p.name for p in published]))
     digest = publish_installer(published[0], output)
     print(json.dumps(dict(Installer=str(output), Sha256=digest, SourceCommit=source, Payload=descriptor,
-                         DeliveryFiles=1, Authenticode='NOT_SIGNED', ActualWindowsInstallation='NOT_RUN'), ensure_ascii=False))
+                         SharedBinariesVerified=shared, DeliveryFiles=1, Authenticode='NOT_SIGNED', ActualWindowsInstallation='NOT_RUN'), ensure_ascii=False))
 
 
 if __name__ == '__main__':

@@ -46,18 +46,18 @@ public sealed partial class ParcelRuntime : IStationPositionControl
 {
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, StationPositionState> positionControls = new(StringComparer.Ordinal);
     readonly HashSet<string> supplySuspendedReaders = new(StringComparer.Ordinal);
-    bool ReaderSupplyActive(string reader) => Id != "sportmaster" || !positions.Values.Any(p => p.ReaderDeviceId == reader && PositionControl(p.Id).Mode == StationPositionMode.Disabled);
+    bool ReaderSupplyActive(string reader) => !definition.UsesIndependentPositionControl || !positions.Values.Any(p => p.ReaderDeviceId == reader && PositionControl(p.Id).Mode == StationPositionMode.Disabled);
     bool ReaderCaptureActive(ObservationSession reader) => ReaderSupplyActive(reader.Source.DeviceId) ||
         reader.Source is ITrayPresenceSource && positions.Values.Any(position => position.ReaderDeviceId == reader.Source.DeviceId &&
             PositionHasRcsCode(position.Id));
     StationPositionState PositionControl(string position) => positionControls.GetValueOrDefault(position)
         ?? new(position, StationPositionMode.Enabled, 0, null, null, null, null);
-    bool PositionSupplyEnabled(string position) => Id != "sportmaster" || PositionControl(position).Mode == StationPositionMode.Enabled;
-    bool PositionHasRcsCode(string position) => !UsesSmArrival(position) ||
-        !string.IsNullOrWhiteSpace(Effective.Wcs!.Parameters.GetValueOrDefault(position + "-bcr-code"));
+    bool PositionSupplyEnabled(string position) => !definition.UsesIndependentPositionControl || PositionControl(position).Mode == StationPositionMode.Enabled;
+    bool PositionHasRcsCode(string position) => !definition.UsesArrivalRounds ||
+        definition.IsAutomaticReadTarget(Effective, position);
     void InitializePositionControls()
     {
-        if (Id != "sportmaster") return;
+        if (!definition.UsesIndependentPositionControl) return;
         foreach (var position in positions.Keys)
             if (repository!.ReadPositionControl(position) is { } state)
                 positionControls[position] = state;
@@ -65,7 +65,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
     }
     void DisableUnconfiguredPositions()
     {
-        if (Id != "sportmaster") return;
+        if (!definition.UsesIndependentPositionControl) return;
         foreach (var position in positions.Keys.Where(p => !PositionHasRcsCode(p) && PositionControl(p).Mode != StationPositionMode.Disabled))
         {
             var state = new StationPositionState(position, StationPositionMode.Disabled, repository!.Revision + 1,
@@ -85,7 +85,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
     }
     void MaintainPositionControls()
     {
-        if (Id != "sportmaster" || repository is null || backupInProgress) return;
+        if (!definition.UsesIndependentPositionControl || repository is null || backupInProgress) return;
         foreach (var state in positionControls.Values.Where(s => s.Mode == StationPositionMode.Disabling).ToArray())
             if (!maintainedResources.ContainsKey(positions[state.PositionId].ReaderDeviceId) && !PositionDrainRequired(state.PositionId))
             {
@@ -118,7 +118,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
-            if (stopped || stopping.IsCancellationRequested || Id != "sportmaster" || repository is null || !SessionValid)
+            if (stopped || stopping.IsCancellationRequested || !definition.UsesIndependentPositionControl || repository is null || !SessionValid)
                 return new("Rejected", "供包台尚未就绪或操作员会话已失效。", repository?.Revision ?? 0);
             if (repository.PriorCommand(command) is { } prior) return prior;
             var previous = PositionControl(request.PositionId);
@@ -149,8 +149,8 @@ public sealed partial class ParcelRuntime : IStationPositionControl
             var round = CurrentRound(request.PositionId);
             var placementCode = round?.SelectedCode;
             var cameraSeen = round is { Manual: false };
-            var state = new StationPositionState(request.PositionId, request.Enabled ? StationPositionMode.Enabled :
-                PositionDrainRequired(request.PositionId) ? StationPositionMode.Disabling : StationPositionMode.Disabled,
+            var state = new StationPositionState(request.PositionId,
+                definition.ResolvePositionMode(request.Enabled, !request.Enabled && PositionDrainRequired(request.PositionId)),
                 repository.Revision + 1, StationTime.GetUtcNow(), currentOperator?.Subject ?? "local-workstation", current?.Id,
                 current?.Wcs?.Replies.LastOrDefault(r => r.Destination is not null)?.Destination?.TaskId, placementCode, cameraSeen);
             var receipt = new BusinessReceipt("Accepted", label + (state.Mode == StationPositionMode.Enabled ? "已启用。" :
@@ -182,7 +182,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
-            if (Id != "sportmaster" || repository is null || stopped) throw new InvalidOperationException("供包台尚未就绪。");
+            if (!definition.UsesIndependentPositionControl || repository is null || stopped) throw new InvalidOperationException("供包台尚未就绪。");
             return repository.PositionControlHistory(beforeSequence, limit);
         }
         finally { gate.Release(); }

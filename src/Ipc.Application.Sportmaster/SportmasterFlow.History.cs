@@ -7,6 +7,7 @@ public sealed partial class SportmasterFlow
 {
     public override bool RetainsReleasedUnknownsInHistory => true;
     public override bool CountsCurrentRoundCapacity => true;
+    public override bool DestinationAssignmentIsMainResult => true;
     public override bool SupportsStationStatistics => true;
     public override bool SupportsAutomaticHistoryCleanup => true;
     public override bool SupportsStationDiagnostics => true;
@@ -28,6 +29,12 @@ public sealed partial class SportmasterFlow
             State: StageState.Unknown, Attempts: 1,
             Request.Binding: { Package: null, Implementation: "sportmaster-rcs", Contract: RcsRequestPolicy.Contract }
         };
+
+    public override bool ClassifyIncompatibleOriginal(ParcelOperation operation) =>
+        operation.FrozenConfiguration is { Images: null, Plc: null } &&
+        operation.Capture is null && operation.Upload is null && operation.Plc is null &&
+        (operation.Wcs?.Request.Binding ?? operation.FrozenConfiguration.Wcs) is
+        { Package: null, Implementation: "sportmaster-rcs", Contract: RcsRequestPolicy.Contract };
 
     public override StationOperationFact? ProjectStationOperationFacts(ParcelOperation operation) =>
         operation.FrozenConfiguration.ApplicationId != Id ? null : StationOperationFact.FromDestinationRequest(operation);

@@ -17,12 +17,33 @@ public abstract class FlowDefinition
     public virtual bool UsesArrivalRounds => false;
     public virtual bool UsesTrustedTrayPresence => false;
     public virtual bool AllowsSingleLaneCalibration => false;
+    public virtual bool SupportsInspectionCapture => false;
+    public virtual bool SupportsManualInput => false;
+    public virtual bool SupportsManagedWorkspace => false;
+    public virtual bool SupportsLiveConfiguration => false;
+    public virtual bool ReconnectsReadersAutomatically => false;
+    public virtual bool UsesEarlyDurableIngress => false;
+    public virtual bool SkipsPreviousCameraInputs => false;
+    public virtual bool UsesPositionScopedRequests => false;
+    public virtual bool UsesStationHeartbeat(ParcelConfiguration configuration) => false;
+    public virtual string? FrozenRequestStationCode(ParcelConfiguration configuration) => null;
+    public virtual bool RequiresNewArrival(SmPositionCycle cycle, StationVehicleState vehicle) => false;
+    public virtual SmPositionCycle NewArrival(SmPositionCycle cycle, StationVehicleState vehicle, long requestId,
+        string generation, string placementGeneration) => throw new NotSupportedException();
+    public virtual SmPositionCycle[] ProjectDestinationCustody(SmPositionCycle cycle, ParcelOperation operation, bool firstAttempt) => [];
+    public virtual bool HasConfirmedDestinationOutcome(StageFact stage) => false;
+    public virtual bool EndsSuccessfulRound(TimeSpan displayed) => false;
+    public virtual bool IsReadWindowExpired(SmParcelRound round, TimeSpan elapsed) => false;
+    public virtual StationPositionMode ResolvePositionMode(bool enabled, bool drainsOriginal) =>
+        enabled ? StationPositionMode.Enabled : StationPositionMode.Disabled;
+    public virtual bool HasPositionScopedRecovery(ParcelOperation operation, bool isDebug, bool placementReleased) => false;
     public virtual bool RequiresArrivalHeartbeatForAutomaticRead => false;
     public virtual bool IsAutomaticReadTarget(ParcelConfiguration configuration, string positionId) => false;
     public virtual bool RequiresRecoveryReviewOnStart => true;
 
     public virtual bool RetainsReleasedUnknownsInHistory => false;
     public virtual bool CountsCurrentRoundCapacity => false;
+    public virtual bool DestinationAssignmentIsMainResult => false;
     public virtual bool HasTerminalRecoveryBasis(ParcelOperation operation) => false;
     public virtual bool ClassifyIncompatibleOriginal(ParcelOperation operation) => false;
     public virtual bool SupportsStationStatistics => false;

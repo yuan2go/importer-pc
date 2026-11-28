@@ -12,7 +12,7 @@ public sealed partial class ParcelRuntime
     DateTimeOffset nextParcelPictureRetention;
     void InitializeParcelPictures()
     {
-        if (Id != "sportmaster") return;
+        if (!definition.UsesArrivalRounds) return;
         // Main's business OriginalFrame archive is the only producer for daily
         // pictures. Open an existing 03 cache only for legacy read/retention.
         if (!Directory.Exists(Path.Combine(directory!, "parcel-pictures"))) return;
@@ -55,7 +55,7 @@ public sealed partial class ParcelRuntime
             await gate.WaitAsync(owned).ConfigureAwait(false);
             try
             {
-                if (Id != "sportmaster" || !SessionValid || stopped) throw new InvalidOperationException("当前轮次图片读取不可用。");
+                if (!definition.UsesArrivalRounds || !SessionValid || stopped) throw new InvalidOperationException("当前轮次图片读取不可用。");
                 round = repository!.Round(roundId);
                 roundOperatorSession = currentOperator?.SessionId;
             }
@@ -88,7 +88,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync(owned).ConfigureAwait(false);
         try
         {
-            if (Id != "sportmaster" || !SessionValid || stopped) throw new InvalidOperationException("当前操作员会话或作业读取不可用。");
+            if (!definition.UsesArrivalRounds || !SessionValid || stopped) throw new InvalidOperationException("当前操作员会话或作业读取不可用。");
             operatorSession = currentOperator?.SessionId;
             if (operationId is not null)
             {

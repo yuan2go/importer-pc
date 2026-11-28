@@ -100,6 +100,8 @@ public sealed partial class ParcelRepository : IDisposable
         this.storageFlow = storageFlow;
         this.openObserver = openObserver;
         maintenanceCancellation.ThrowIfCancellationRequested();
+        if (storageFlow is not null && !ExtensionSchema.IsId(storageFlow.Id))
+            throw new InvalidDataException("Invalid composed flow storage identity");
         rawRoot = Path.Combine(directory, "receipts");
         var database = Path.Combine(directory, application + ".db");
         var existing = File.Exists(database);
@@ -112,7 +114,7 @@ public sealed partial class ParcelRepository : IDisposable
                 db.Open();
                 if (maintenanceCancellation.CanBeCanceled)
                     SQLitePCL.raw.sqlite3_progress_handler(db.Handle, 1000, _ => maintenanceCancellation.IsCancellationRequested ? 1 : 0, null);
-                StorageVersion = ReadStorageVersion(database, application);
+                StorageVersion = ReadStorageVersion(database, application, immutable: false, flow: storageFlow);
                 ValidateDurableReplyIdentities();
                 // Validate original facts while the connection is still read-only.
                 // Refusal must precede journal-mode changes and derived-state repairs.

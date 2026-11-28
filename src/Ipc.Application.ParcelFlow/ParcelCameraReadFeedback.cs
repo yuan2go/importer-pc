@@ -21,7 +21,7 @@ public sealed partial class ParcelRuntime
     readonly List<(IObservationReadFeedbackSource Source, Action<ObservationReadFeedback> Handler)> cameraReadSubscriptions = [];
     void RegisterCameraReadFeedback(ObservationSession session)
     {
-        if (Id != "sportmaster" || session.Source is not IObservationReadFeedbackSource source) return;
+        if (!definition.UsesArrivalRounds || session.Source is not IObservationReadFeedbackSource source) return;
         Action<ObservationReadFeedback> handler = frame =>
         {
             // The registered source owns this callback. Old epochs/ticks cannot

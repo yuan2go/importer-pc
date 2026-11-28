@@ -14,10 +14,7 @@ public sealed partial class ParcelRuntime
             if (IsSettled(op) || !op.ImplementationHashes.Any(original =>
                 ports!.ImplementationHashes.GetValueOrDefault(original.Key) != original.Value)) continue;
 
-            if (Id == "sportmaster" && op.FrozenConfiguration is { Images: null, Plc: null } &&
-                op.Capture is null && op.Upload is null && op.Plc is null &&
-                (op.Wcs?.Request.Binding ?? op.FrozenConfiguration.Wcs) is
-                { Package: null, Implementation: "sportmaster-rcs", Contract: RcsRequestPolicy.Contract })
+            if (definition.ClassifyIncompatibleOriginal(op))
             {
                 // Locally recovered final results still belong to history. An
                 // obsolete unfinished request can neither be sent nor queried.

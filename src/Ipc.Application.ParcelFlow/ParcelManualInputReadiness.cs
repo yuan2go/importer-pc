@@ -6,7 +6,7 @@ namespace Ipc.Application.ParcelFlow;
 public sealed partial class ParcelRuntime
 {
     bool CanManuallyAdmit(string position) => ManualInputReasons(position).Length == 0;
-    bool IsManualParcel(ParcelOperation op) => Id == "sportmaster" && op.OperatorInput is { } input &&
+    bool IsManualParcel(ParcelOperation op) => definition.SupportsManualInput && op.OperatorInput is { } input &&
         input.Kind is "Keyboard" or "PdaKeyboard" && Guid.TryParseExact(input.CommandId, "N", out _) &&
         op.Acquisition is null && op.AdmissionId == "manual." + input.CommandId && op.PositionId is "left" or "right";
 
@@ -19,7 +19,7 @@ public sealed partial class ParcelRuntime
     // deliberately does not consult the acquisition device's connection/epoch.
     string[] ManualInputReasons(string position, bool includePause = true, bool debugRequest = false)
     {
-        if (Id != "sportmaster") return ["当前业务不提供人工供包。"];
+        if (!definition.SupportsManualInput) return ["当前业务不提供人工供包。"];
         if (!positions.ContainsKey(position)) return ["投递位不存在，请重新读取运行配置。"];
         var reasons = new List<string>();
         if (!debugRequest && SmTargetBlock(position) is { } targetReason) reasons.Add(targetReason);

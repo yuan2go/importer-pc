@@ -10,7 +10,7 @@ public sealed partial class ParcelRuntime
         if (Volatile.Read(ref accepting) != 1 || stopping.IsCancellationRequested) return ParcelInputBlockReason.StationStartingOrStopping;
         if (configuration?.Current.Confirmation?.Required == true) return ParcelInputBlockReason.ConfigurationUnconfirmed;
         if (!RestoreConfirmed) return ParcelInputBlockReason.RestoreUnconfirmed;
-        if (ParcelConnectionSetup.BlocksWork(Effective)) return ParcelInputBlockReason.ConnectionNotConfigured;
+        if (ParcelConnectionSetup.BlocksWork(Effective, definition.UsesDeferredConnections)) return ParcelInputBlockReason.ConnectionNotConfigured;
         if (factory.AdmissionFailure(Effective) is not null) return ParcelInputBlockReason.InstallationNotReady;
         if (!SessionValid) return ParcelInputBlockReason.OperatorSessionExpired;
         if (failure is not null) return ParcelInputBlockReason.RuntimeFault;
@@ -36,7 +36,7 @@ public sealed partial class ParcelRuntime
         if (AdmissionCapabilityBlock(position) is { } capability) return capability;
         if (reader.Source is IObservationInspectionSource && AutomaticCameraReadBlock(device) is { } readBlock)
             return readBlock == "RcsRemoteConfirmationUnavailable" ? ParcelInputBlockReason.RcsUnavailable : ParcelInputBlockReason.VehicleUnconfirmed;
-        if (Id == "sportmaster") return null;
+        if (definition.UsesPositionScopedRequests) return null;
         var original = operations.Values.FirstOrDefault(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) &&
             (NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x)));
         return original is null ? null : PriorWorkBlock(original);
@@ -50,7 +50,7 @@ public sealed partial class ParcelRuntime
     bool CanContinueUpload(ParcelOperation op) => op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached &&
         CanSendUpload(op) && op.Upload is { State: StageState.Prepared, Attempts: 0 } &&
         (!factory.Requirements(op.FrozenConfiguration.Images.Uploader!).MeasuredWeight || WeightReady(op));
-    bool CanSendUpload(ParcelOperation op) => Volatile.Read(ref accepting) == 1 && !ParcelConnectionSetup.BlocksWork(Effective) && op.Upload is { } upload && PortMaintenanceClear(Capability(upload.Request.Binding.InstanceId)) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested &&
+    bool CanSendUpload(ParcelOperation op) => Volatile.Read(ref accepting) == 1 && !ParcelConnectionSetup.BlocksWork(Effective, definition.UsesDeferredConnections) && op.Upload is { } upload && PortMaintenanceClear(Capability(upload.Request.Binding.InstanceId)) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested &&
         !repository!.Paused && failure is null && SessionValid && (Effective.Login is null || currentOperator is not null && currentOperator.Subject == op.Operator?.Subject);
     bool CanAbandon(ParcelOperation op) => repository!.Paused && SessionValid && !MainTerminated(op) && !obsoleteSmOriginals.Contains(op.Id) &&
         (op.Wcs is null || op.Wcs is { State: StageState.Prepared, Attempts: 0 } || op.Wcs.State is StageState.Accepted or StageState.Rejected) &&
@@ -69,7 +69,7 @@ public sealed partial class ParcelRuntime
         if (repository!.Paused) return ParcelInputBlockReason.SoftwarePaused;
         if (CameraPositionBlock(position) is { } positionBlock) return positionBlock;
         if (!ImageCapacityAvailable()) return ParcelInputBlockReason.ImageCapacityUnavailable;
-        if (Id == "sportmaster")
+        if (definition.UsesArrivalRounds)
         {
             if (SmTargetBlock(position) is not null) return ParcelInputBlockReason.VehicleUnconfirmed;
             if (UsesSmArrival(position) && (!arrivalCaptures.TryGetValue(positions[position].ReaderDeviceId, out var capture) || !capture.Ready || capture.Epoch != readers[positions[position].ReaderDeviceId].Epoch))
@@ -87,7 +87,7 @@ public sealed partial class ParcelRuntime
         var now = StationTime.GetUtcNow();
         ManualWorkCardExpiry? expired = null;
         var current = DisplayedOperation(p.Id, latest, now, expired);
-        var manual = Id == "sportmaster" ? ManualInputReasons(p.Id) : null;
+        var manual = definition.SupportsManualInput ? ManualInputReasons(p.Id) : null;
         var camera = CanAdmit(p.Id);
         var manualReady = manual is { Length: 0 };
         var reasons = new List<string>();
@@ -109,19 +109,19 @@ public sealed partial class ParcelRuntime
             PlacementClearedAt = confirmedEmptyTrays.TryGetValue(p.Id, out var clearedAt) ? clearedAt : null,
             BarcodeInput = manual is null ? null : new(camera, manualReady, manual),
             Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),
-            SupplyControl = Id == "sportmaster" ? PositionControl(p.Id) : null,
+            SupplyControl = definition.UsesIndependentPositionControl ? PositionControl(p.Id) : null,
             CameraConnectionSuspended = supplySuspendedReaders.Contains(p.ReaderDeviceId),
             TrayPresence = readers.GetValueOrDefault(p.ReaderDeviceId) is { Health: { } readerHealth, Source: ITrayPresenceSource tray } &&
                 readerHealth.IsValid(DateTimeOffset.UtcNow) ? tray.ReadTrayPresenceModel() : null,
             CurrentRoundId = CurrentRound(p.Id)?.Id,
             RoundVersion = CurrentRound(p.Id)?.Version,
             Arrival = SmArrivalProjection(p.Id),
-            AutomaticSuppressed = Id == "sportmaster" && SmCycle(p.Id).AutoSuppressed
+            AutomaticSuppressed = definition.UsesArrivalRounds && SmCycle(p.Id).AutoSuppressed
         };
     }).ToArray();
     StationVehicleState? PositionVehicle(string position, DateTimeOffset now)
     {
-        if (Id != "sportmaster" || !PositionSupplyEnabled(position) || Effective.Wcs is not { } binding ||
+        if (!definition.UsesPositionScopedRequests || !PositionSupplyEnabled(position) || Effective.Wcs is not { } binding ||
             !capabilityHealth.TryGetValue(binding.InstanceId, out var health) || !health.Ready ||
             health.RemoteConfirmation != RemoteConnectionConfirmation.ResponseReceived || health.ConfirmedAt > now || health.ValidUntil <= now) return null;
         var matching = health.StationVehicles.Where(v => v.StationCode == Effective.StationCode &&
@@ -152,7 +152,7 @@ public sealed partial class ParcelRuntime
         var now = DateTimeOffset.UtcNow;
         foreach (var binding in bindings)
             if (!capabilityHealth.TryGetValue(binding.InstanceId, out var health) || !health.Ready || health.ConfirmedAt > now || health.ValidUntil <= now)
-                return Id == "sportmaster" && binding.InstanceId == Effective.Wcs?.InstanceId ? ParcelInputBlockReason.RcsUnavailable : ParcelInputBlockReason.CapabilityUnavailable;
+                return definition.UsesPositionScopedRequests && binding.InstanceId == Effective.Wcs?.InstanceId ? ParcelInputBlockReason.RcsUnavailable : ParcelInputBlockReason.CapabilityUnavailable;
         return null;
     }
     void ExpireWeights()

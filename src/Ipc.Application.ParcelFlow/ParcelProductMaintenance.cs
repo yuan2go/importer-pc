@@ -157,7 +157,7 @@ public sealed partial class ParcelStartupMaintenance
     async Task BackupCopy(string directory, string destination, (ParcelConfiguration Seed, ConfigurationRevision<ParcelConfiguration>? Envelope, string Directory, string File, string Hash) state, Snapshot copy, MaintenanceExecution? execution = null, bool finalOperation = true)
     {
         var envelope = state.Envelope ?? throw new InvalidDataException("数据库存在而原配置账缺失");
-        _ = ParcelRepository.ReadStorageVersion(copy.Database, definition.Id);
+        _ = ParcelRepository.ReadStorageVersion(copy.Database, definition);
         await using var ports = factory();
         using var database = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = copy.Database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); database.Open();
         // Back up the exact current-format private DB/WAL snapshot without runtime

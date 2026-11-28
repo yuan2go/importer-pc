@@ -45,7 +45,7 @@ public sealed partial class ParcelStartupMaintenance
         using var sourceOwner = sourceExists && !(ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && OperatingSystem.IsWindows()) ? new ResourceLease(source, ["application-owner"]) : null;
         using var targetOwner = new ResourceLease(target, ["application-owner"]);
         using var targetCopy = CopyForMaintenance(target);
-        if (ParcelRepository.ReadStorageVersion(targetCopy.Database, definition.Id) != ParcelRepository.CurrentStorageVersion)
+        if (ParcelRepository.ReadStorageVersion(targetCopy.Database, definition) != ParcelRepository.CurrentStorageVersion)
             throw new InvalidDataException("恢复交接仅支持当前 DB14，原件保留，不转换旧格式。");
         var minimum = ParcelRepository.ReadIntegrationRequestIdFloor(targetCopy.Database);
         DeploymentPurgedRestoreSource? purged = null;
@@ -53,7 +53,7 @@ public sealed partial class ParcelStartupMaintenance
         {
             ParcelMachineOrigin.Require(source, c, evidence);
             using var sourceCopy = CopyForMaintenance(source);
-            if (ParcelRepository.ReadStorageVersion(sourceCopy.Database, definition.Id) != ParcelRepository.CurrentStorageVersion)
+            if (ParcelRepository.ReadStorageVersion(sourceCopy.Database, definition) != ParcelRepository.CurrentStorageVersion)
                 throw new InvalidDataException("原来源不属于当前 DB14，保留原件。");
             ParcelRepository.RequireHandoffSourceEquivalent(sourceCopy.Database, targetCopy.Database);
             if (manifest.Files.Any(f => !File.Exists(RecoveryFiles.Resolve(source, f.Key)) || Wire.FileHash(RecoveryFiles.Resolve(source, f.Key)) != f.Value) ||

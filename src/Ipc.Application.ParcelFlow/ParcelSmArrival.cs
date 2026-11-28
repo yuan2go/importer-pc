@@ -15,7 +15,7 @@ public sealed partial class ParcelRuntime : IStationHeartbeatOwner, ISmRemoteRec
     readonly HashSet<string> maintenanceHeartbeatUncertain = [];
     void PrepareSmHeartbeatMaintenance()
     {
-        if (Id != "sportmaster" || ports?.Wcs is not IStationHeartbeatControl) return;
+        if (!definition.UsesArrivalRounds || ports?.Wcs is not IStationHeartbeatControl) return;
         var cycles = positions.Keys.Select(p => SmCycle(p) with
         {
             HeartbeatMaintenanceLease = true, HeartbeatIncluded = UsesSmArrival(p) && HeartbeatIncludes(p),
@@ -27,7 +27,7 @@ public sealed partial class ParcelRuntime : IStationHeartbeatOwner, ISmRemoteRec
     }
     void CompleteSmHeartbeatMaintenance()
     {
-        if (Id != "sportmaster" || ports?.Wcs is not IStationHeartbeatControl) return;
+        if (!definition.UsesArrivalRounds || ports?.Wcs is not IStationHeartbeatControl) return;
         var cycles = positions.Keys.Select(p => SmCycle(p) with
         {
             HeartbeatMaintenanceLease = false, HeartbeatPending = maintenanceHeartbeatPending?.RequestId,
@@ -51,7 +51,7 @@ public sealed partial class ParcelRuntime : IStationHeartbeatOwner, ISmRemoteRec
     bool SmHeartbeatChangeUnconfirmed(ParcelConfiguration candidate) => smCycles.Values.Any(c =>
         (c.HeartbeatPending is not null || c.UncertainMembership is not null || c.HeartbeatMaintenanceLease) &&
         c.HeartbeatConfiguration != SmHeartbeatPositionConfiguration(c.PositionId, candidate));
-    bool UsesSmArrival(string position) => Id == "sportmaster" && Effective.Wcs?.Contract == RcsRequestPolicy.Contract;
+    bool UsesSmArrival(string position) => definition.UsesStationHeartbeat(Effective);
     bool HeartbeatIncludes(string position) => PositionControl(position).Mode != StationPositionMode.Disabled;
     void StoreSmCycle(SmPositionCycle cycle, string reason)
     {
@@ -63,7 +63,7 @@ public sealed partial class ParcelRuntime : IStationHeartbeatOwner, ISmRemoteRec
     }
     void BindSmHeartbeat(ICapabilityPort? port)
     {
-        if (Id == "sportmaster" && port is IStationHeartbeatControl control) control.SetHeartbeatOwner(this);
+        if (definition.UsesArrivalRounds && port is IStationHeartbeatControl control) control.SetHeartbeatOwner(this);
     }
     void RefreshSmHeartbeat() { if (ports?.Wcs is IStationHeartbeatControl control) control.RefreshHeartbeat(); }
     bool SmMembershipConfirmed(string position, bool included) => membershipConfirmations.TryGetValue(position, out var confirmation) &&
@@ -207,15 +207,9 @@ public sealed partial class ParcelRuntime : IStationHeartbeatOwner, ISmRemoteRec
                 if (!wasConfirmed && cycle.VehicleNo == vehicle.VehicleNo)
                     arrivalCaptures.TryRemove(positions[position].ReaderDeviceId, out _);
                 arrivalConfirmations[position] = vehicle;
-                if (cycle.VehicleNo != vehicle.VehicleNo && cycle.RecoveryReason is null)
+                if (definition.RequiresNewArrival(cycle, vehicle))
                 {
-                    var next = ReleaseSmPlacementClaim(cycle) with
-                    {
-                        Generation = Wire.Id(), PlacementGeneration = Wire.Id(), VehicleNo = vehicle.VehicleNo, ArrivalAt = vehicle.ReceivedAt,
-                        ArrivalEvidence = "heartbeat:" + intent.RequestId,
-                        AutoSuppressed = false, Presence = TrayPresence.Unknown, Epoch = null, Sequence = 0,
-                        Evidence = null, ClearedAt = vehicle.ReceivedAt, Withdrawn = false
-                    };
+                    var next = definition.NewArrival(ReleaseSmPlacementClaim(cycle), vehicle, intent.RequestId, Wire.Id(), Wire.Id());
                     if (CurrentRound(position) is { } round)
                         EndSmRound(round, "VehicleChanged", replacementCycle: next);
                     else
@@ -237,7 +231,7 @@ public sealed partial class ParcelRuntime : IStationHeartbeatOwner, ISmRemoteRec
     }
     void MaintainSmArrivalCaptures()
     {
-        if (Id != "sportmaster" || stopping.IsCancellationRequested) return;
+        if (!definition.UsesArrivalRounds || stopping.IsCancellationRequested) return;
         foreach (var position in positions.Keys.Where(UsesSmArrival))
         {
             var reader = readers[positions[position].ReaderDeviceId];
@@ -289,7 +283,7 @@ public sealed partial class ParcelRuntime : IStationHeartbeatOwner, ISmRemoteRec
         (observation.TrayPresence is not null || capture.Until > DateTimeOffset.UtcNow);
     SmArrivalSnapshot? SmArrivalProjection(string position)
     {
-        if (Id != "sportmaster") return null;
+        if (!definition.UsesArrivalRounds) return null;
         var cycle = SmCycle(position);
         arrivalCaptures.TryGetValue(positions[position].ReaderDeviceId, out var capture);
         return new(cycle.VehicleNo, cycle.Generation, !UsesSmArrival(position) || SmArrivalConfirmed(position), cycle.SubmittedOperation is not null,
@@ -300,21 +294,12 @@ public sealed partial class ParcelRuntime : IStationHeartbeatOwner, ISmRemoteRec
         { Configured = PositionHasRcsCode(position), CaptureFailure = capture?.Failure is not null ? "相机换车边界未确认；可核对后人工提交，或联系维护检查相机。" : null,
             SubmissionAttempted = cycle.SubmissionAttempted, PlacementBoundary = cycle.PlacementGeneration ?? cycle.Generation, RecoveryToken = cycle.RecoveryToken, PlacementClosed = UsesSmArrival(position) && cycle.AutoSuppressed && cycle.SubmittedOperation is null && CurrentRound(position) is null };
     }
-    static bool SmRequestNotDelivered(StageFact stage) => stage is
-        { Attempts: 1, Replies: [{ SenderDelivery: SenderDeliveryEvidence.ConnectionRefusedBeforeBody }] };
     SmPositionCycle[] SmCyclesAfterOperation(ParcelOperation op, bool firstAttempt)
     {
         if (op.PositionId is not { } position || !UsesSmArrival(position)) return [];
-        var cycle = SmCycle(position);
-        if (firstAttempt && op.Wcs is { Attempts: 1, State: StageState.Dispatching } &&
-            (cycle.TargetOperation is null || cycle.TargetOperation == op.Id))
-            return [cycle with { TargetOperation = op.Id, SubmissionAttempted = true, SubmittedOperation = op.Id }];
-        if (cycle.TargetOperation == op.Id && op.Wcs is { } stage &&
-            (stage.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled || SmRequestNotDelivered(stage)))
-            return [cycle with { TargetOperation = null }];
-        return [];
+        return definition.ProjectDestinationCustody(SmCycle(position), op, firstAttempt);
     }
-    bool SmTargetDispatchAllowed(ParcelOperation op) => Id != "sportmaster" ||
+    bool SmTargetDispatchAllowed(ParcelOperation op) => !definition.UsesArrivalRounds ||
         SmTargetBlock(op.PositionId!, op.Id, IsDebugRequest(op)) is null &&
         (!UsesSmArrival(op.PositionId!) || op.ArrivalGeneration == SmCycle(op.PositionId!).Generation);
     public async Task<BusinessReceipt> ConfirmRemoteRecoveryAsync(ConfirmSmRemoteRecovery request, CancellationToken token)

@@ -39,7 +39,7 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
             await gate.WaitAsync(linked.Token).ConfigureAwait(false);
             try
             {
-                if (Id != "sportmaster" || stopped) throw new InvalidOperationException("供包台尚未就绪。");
+                if (!definition.SupportsManagedWorkspace || stopped) throw new InvalidOperationException("供包台尚未就绪。");
                 if (open) Management.Require();
                 if (managementWorkspace is { } current && current != windowId) throw new InvalidOperationException("另一个管理窗口尚未关闭。");
                 if (open && managementWorkspace == windowId) return new BusinessReceipt("Opened", "原管理窗口已打开。", repository?.Revision ?? 0);

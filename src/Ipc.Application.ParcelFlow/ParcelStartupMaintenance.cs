@@ -205,7 +205,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
             if (sources.Any(p => Wire.FileHash(p) != originalHashes[p]) || File.Exists(database + "-wal") != originalHashes.ContainsKey(database + "-wal"))
                 throw new IOException("读取期间原库发生变化；请关闭供包台后重新读取，原文件保留。");
             var copied = Path.Combine(scratch, Path.GetFileName(database));
-            return ParcelRepository.ReadStorageVersion(copied, definition.Id);
+            return ParcelRepository.ReadStorageVersion(copied, definition);
         }
         finally { Directory.Delete(scratch, recursive: true); }
     }

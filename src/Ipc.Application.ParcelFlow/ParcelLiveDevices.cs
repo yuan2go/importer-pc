@@ -133,7 +133,7 @@ public sealed partial class ParcelRuntime
                     connect.CancelAfter(candidate.TimeoutMs);
                     try
                     {
-                        if (Id == "sportmaster" && session.Source is IObservationInspectionSource startedSource)
+                        if (definition.SupportsInspectionCapture && session.Source is IObservationInspectionSource startedSource)
                             await ApplyInspectionAsync(startedSource, null, connect.Token).ConfigureAwait(false);
                         if (!ReaderCaptureActive(session)) { supplySuspendedReaders.Add(id); continue; }
                         supplySuspendedReaders.Remove(id);
@@ -154,7 +154,7 @@ public sealed partial class ParcelRuntime
                 var monitor = Task.Run(() => MonitorAsync(started), CancellationToken.None);
                 backgroundTasks["capability:" + started.InstanceId] = monitor; auxiliary.Add(monitor);
             }
-            foreach (var id in change.Readers.Where(id => Id == "sportmaster" || readers[id].Source is IAutomaticReconnectObservationSource))
+            foreach (var id in change.Readers.Where(id => definition.ReconnectsReadersAutomatically || readers[id].Source is IAutomaticReconnectObservationSource))
             {
                 var session = readers[id];
                 var recovery = Task.Run(() => ReconnectReaderAutomaticallyAsync(session), CancellationToken.None);

@@ -151,7 +151,7 @@ public sealed partial class ParcelRuntime
                     { throw new RecoveryFileFailure(RecoveryFailureOrigin.Source, "RetentionSourceOpen", error); }
                     Ipc.Platform.Storage.Database.Backup(source, p, cancellation);
                 }, factory.RegisterBackup, cancellation.ThrowIfCancellationRequested, cancellation);
-            var manifest = ParcelRecovery.VerifyBackup(backup, cancellation.ThrowIfCancellationRequested, cancellation);
+            var manifest = ParcelRecovery.VerifyBackup(backup, cancellation.ThrowIfCancellationRequested, cancellation, flow: definition);
             await gate.WaitAsync(cancellation).ConfigureAwait(false);
             try
             {

@@ -7,18 +7,24 @@ public static class ParcelConnectionSetup
 {
     public static bool IsDeferred(ParcelConfiguration c, string identity) => c.DeferredConnections?.Contains(identity, StringComparer.Ordinal) == true;
     public static bool BlocksWork(ParcelConfiguration c)
+        => BlocksWork(c, c.ApplicationId == WorkstationPages.StationConfigurationId);
+
+    public static bool BlocksWork(ParcelConfiguration c, bool supportsDeferredConnections)
     {
         if (c.DeferredConnections is not { Length: > 0 }) return false;
-        if (c.ApplicationId != "sportmaster") return true;
+        if (!supportsDeferredConnections) return true;
         return c.Wcs is null || IsDeferred(c, c.Wcs.InstanceId);
     }
     public static bool HasActiveConnections(ParcelConfiguration c) => ParcelBindings.Readers(c).Any(r => !IsDeferred(c, r.DeviceId)) ||
         ParcelBindings.Bound(c).Any(b => !IsDeferred(c, b.InstanceId));
     public static string[] Validate(ParcelConfiguration c)
+        => Validate(c, c.ApplicationId == WorkstationPages.StationConfigurationId);
+
+    public static string[] Validate(ParcelConfiguration c, bool supportsDeferredConnections)
     {
         if (c.DeferredConnections is not { Length: > 0 } pending) return [];
         var allowed = ParcelBindings.Readers(c).Select(r => r.DeviceId).Concat(c.Wcs is { Contract: "SPORTMASTER-RCS-SORTER-v1" } w ? new[] { w.InstanceId } : []).ToHashSet(StringComparer.Ordinal);
-        return c.ApplicationId != "sportmaster" || pending.Length > 3 || pending.Distinct(StringComparer.Ordinal).Count() != pending.Length || pending.Any(x => x is null || !allowed.Contains(x))
+        return !supportsDeferredConnections || pending.Length > 3 || pending.Distinct(StringComparer.Ordinal).Count() != pending.Length || pending.Any(x => x is null || !allowed.Contains(x))
             ? ["延后配置只适用于当前Sportmaster左右相机和RCS连接，身份不得重复或缺失。"] : [];
     }
 }

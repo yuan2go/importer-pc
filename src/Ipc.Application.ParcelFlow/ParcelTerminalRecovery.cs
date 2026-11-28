@@ -24,8 +24,8 @@ public sealed partial class ParcelRepository
                  !string.IsNullOrWhiteSpace(op.Slot) && wcs.Replies.Any(r => r.BusinessAccepted == true && r.Slot == op.Slot)),
             ParcelState.WcsRejected => application != "direct-plc" && op.Wcs is { State: StageState.Rejected } rejected &&
                 rejected.Replies.All(r => r.Destination?.Outcome != WcsDestinationOutcome.UnpackRequired),
-            ParcelState.PlcRejected => !(storageFlow?.CountsCurrentRoundCapacity ?? application == LegacyStationStorageId) && op.Plc is { State: StageState.Rejected },
-            ParcelState.PhysicalCompleted => !(storageFlow?.CountsCurrentRoundCapacity ?? application == LegacyStationStorageId) && op.Plc is { State: StageState.Accepted } plc &&
+            ParcelState.PlcRejected => !(storageFlow?.DestinationAssignmentIsMainResult ?? application == LegacyStationStorageId) && op.Plc is { State: StageState.Rejected },
+            ParcelState.PhysicalCompleted => !(storageFlow?.DestinationAssignmentIsMainResult ?? application == LegacyStationStorageId) && op.Plc is { State: StageState.Accepted } plc &&
                 plc.Replies.Any(r => r.BusinessAccepted == true && r.PhysicalCompleted == true),
             ParcelState.ImageRejected => op.Capture?.State == StageState.Rejected || op.FrozenConfiguration.Images?.Strategy == UploadStrategy.BeforeMain &&
                 op.Upload is { State: StageState.Rejected } upload && SettledStageHasCustody(op, upload),

@@ -116,7 +116,7 @@ public sealed partial class ParcelRepository
         if (envelope.Pending is not null || expectedDays is not null && envelope.Effective.Retention?.HistoryDays != expectedDays ||
             envelope.Effective.ApplicationId != flow.Id || envelope.Effective.Retention?.HistoryDays is not (>= 7 and <= 30) || envelope.Confirmation?.Required == true)
             throw new InvalidOperationException("Activate a confirmed 7..30 day retention policy first; no implicit default deletion");
-        if (ReadStorageVersion(database, flow.Id) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("Storage format differs; preserve originals and verify permanent numbering with the matching release before preparing a separate current-format directory");
+        if (ReadStorageVersion(database, flow) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("Storage format differs; preserve originals and verify permanent numbering with the matching release before preparing a separate current-format directory");
         phase("InitializeRepository");
         using var repository = new ParcelRepository(directory, flow, cancellationToken);
         if (!repository.Paused) throw new InvalidOperationException("Pause and fully stop the application before retention");

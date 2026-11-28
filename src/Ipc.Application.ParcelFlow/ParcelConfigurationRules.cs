@@ -11,7 +11,7 @@ public static partial class ParcelConfigurationRules
         var station = application == ParcelRepository.LegacyStationStorageId;
         return Validate(c, application, positionRoles, station, station, station, !station,
             page => WorkstationPages.IsAllowed(application, page),
-            configuration => ValidateBackupBoundary(configuration, configuration.ApplicationId == ParcelRepository.LegacyStationStorageId));
+            configuration => ValidateBackupBoundary(configuration, configuration.ApplicationId == ParcelRepository.LegacyStationStorageId), station);
     }
 
     internal static string[] Validate(ParcelConfiguration c, FlowDefinition definition)
@@ -22,7 +22,7 @@ public static partial class ParcelConfigurationRules
 
     static string[] Validate(ParcelConfiguration c, string application, string[] positionRoles, bool shiftPolicy,
         bool barcodeFiltering, bool countsRounds, bool validatesWeightRange, Func<string, bool> allowsPage,
-        Func<ParcelConfiguration, string[]> validateFlowConfiguration, bool? allowsDeferred = null)
+        Func<ParcelConfiguration, string[]> validateFlowConfiguration, bool allowsDeferred)
     {
         if (c.SchemaVersion != CurrentConfigurationSchema || c.Topology is null) return ["仅支持第三版完整拓扑配置；请保留原配置并使用当前模板。"];
         if (c.MaintenanceLogin is not null) return ["旧维护认证配置不再支持；管理密码由管理模式保护，原配置不得自动转换。"];
@@ -53,7 +53,7 @@ public static partial class ParcelConfigurationRules
             }
             catch (InvalidDataException error) { e.Add(error.Message); }
         }
-        e.AddRange(ParcelConnectionSetup.Validate(c));
+        e.AddRange(ParcelConnectionSetup.Validate(c, allowsDeferred));
         if (c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("应用/站点/模式无效；请使用全新数据目录");
         if (c.StationCode is not null && (string.IsNullOrWhiteSpace(c.StationCode) || c.StationCode.Length > 256 || c.StationCode.Any(char.IsControl))) e.Add("Invalid system station code");
         if (c.Weight.Source != WeightSource.Disabled && (c.WeightValidity is null || !Enum.IsDefined(c.WeightValidity.Value))) e.Add("重量有效期必须明确配置。");

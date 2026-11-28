@@ -32,12 +32,12 @@ public sealed partial class ParcelRuntime
     string? PlacementRemovalOperation(string position, ParcelOperation? latest, ParcelOperation? displayed)
     {
         var round = CurrentRound(position);
-        return Id == "sportmaster" && SessionValid && round is not null && !ManagementWorkspaceOpen && !configurationSaving && !stopping.IsCancellationRequested &&
+        return definition.UsesArrivalRounds && SessionValid && round is not null && !ManagementWorkspaceOpen && !configurationSaving && !stopping.IsCancellationRequested &&
             (round.RequireRemoval || !SmVisualReliable(position)) ? round.Id + ":" + round.Version : null;
     }
     bool ConfirmPlacementRemoval(BusinessCommand command)
     {
-        if (Id != "sportmaster" || string.IsNullOrEmpty(command.Value) || CurrentRound(command.Owner ?? "") is not { } round ||
+        if (!definition.UsesArrivalRounds || string.IsNullOrEmpty(command.Value) || CurrentRound(command.Owner ?? "") is not { } round ||
             PlacementRemovalOperation(round.PositionId, null, null) != command.Value) return false;
         EndSmRound(round, "OperatorConfirmedRemoval", physicallyRemoved: true, command: command); return true;
     }

@@ -10,6 +10,25 @@ import tarfile
 import zipfile
 
 
+INSTALLATION_CHANNELS = ('formal', 'test')
+SM_WORKSTATION_PAGES = ('supply-station', 'tote-station')
+
+
+def resolve_channel(channel, test_instance):
+    if channel == 'formal' and test_instance:
+        raise ValueError('--channel formal conflicts with --test-instance')
+    return channel or ('test' if test_instance else 'formal')
+
+
+def resolve_default_page(application, default_page):
+    allowed = SM_WORKSTATION_PAGES if application == 'sportmaster' else ('classic',)
+    if default_page is None:
+        return allowed[0]
+    if default_page not in allowed:
+        raise ValueError(f'--default-page for {application} must be one of: {", ".join(allowed)}')
+    return default_page
+
+
 def frozen_export(root, source, destination):
     destination.mkdir(parents=True)
     extraction = ('\\\\?\\' + str(destination)) if os.name == 'nt' else str(destination)
@@ -40,7 +59,7 @@ def frozen_export(root, source, destination):
     return extraction
 
 
-def build_properties(source, snapshot, artifacts, test_instance=False):
+def build_properties(source, snapshot, artifacts, test_instance=False, default_page=None):
     artifacts.mkdir(parents=True, exist_ok=True)
     # Windows TEMP can use RUNNER~1 while MSBuild expands that 8.3 alias.
     # Map the canonical compiler paths, otherwise embedded PDBs retain each
@@ -50,7 +69,10 @@ def build_properties(source, snapshot, artifacts, test_instance=False):
     link = artifacts / 'frozen-source-link.json'
     link.write_text(json.dumps({'documents': {'/_/src/*':
         'https://raw.githubusercontent.com/yuan2go/importer-pc/' + source + '/*'}}), encoding='utf-8')
-    return (['-p:TestInstallation=true'] if test_instance else []) + ['-p:PublishReadyToRun=false', '-p:PublishAot=false', '-p:DebugType=embedded',
+    variants = ['-p:TestInstallation=true'] if test_instance else []
+    if default_page is not None:
+        variants.append('-p:DefaultWorkstationPage=' + default_page)
+    return variants + ['-p:PublishReadyToRun=false', '-p:PublishAot=false', '-p:DebugType=embedded',
             '-p:PathMap=' + str(snapshot) + '=/_/src%2C' + str(artifacts) + '=/_/build',
             '-p:SourceRevisionId=' + source, '-p:EnableSourceControlManagerQueries=false',
             '-p:EnableSourceLink=false', '-p:SourceLink=' + str(link)]

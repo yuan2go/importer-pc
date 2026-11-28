@@ -46,7 +46,8 @@ def publish(output, record):
     text = ('CainiaoSupplyStation - Build information\n'
             + '\n'.join(f'{name}: {record[name]}' for name in
                         ('ApplicationId', 'BusinessModuleShortName', 'BusinessVersion', 'Target', 'SourceBranch', 'SourceCommit',
-                         'SourceCommitUtc', 'PackagedUtc', 'SourceRepository'))
+                         'SourceCommitUtc', 'PackagedUtc', 'SourceRepository', 'InstallationChannel', 'DefaultWorkstationPage')
+                        if name in record)
             + '\n\nDiagnostic record only. The protected deployment registration remains authoritative.\n')
     encoded = json.dumps(record, ensure_ascii=False, indent=2) + '\n'
     for directory in [output, output / 'app', *([output / 'desktop'] if (output / 'desktop').exists() else [])]:

@@ -137,7 +137,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // configuration confirmation or recovery can write to the current store.
         try
         {
-            repository = new(directory, Id, ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray())
+            repository = new(directory, definition, CancellationToken.None, ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray())
             {
                 Boundary = point => Boundary?.Invoke(point),
                 ProjectionChanged = InvalidatePresentation,

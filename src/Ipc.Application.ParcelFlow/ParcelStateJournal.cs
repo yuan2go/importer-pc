@@ -64,7 +64,7 @@ public sealed partial class ParcelRuntime
     // observation IDs from change detection; include them in emitted evidence.
     void WriteStationState(string trigger, bool force = false)
     {
-        if (Id != "sportmaster" || journal is null || repository is null || configuration is null || ports is null || positions.Count == 0) return;
+        if (!definition.SupportsStationDiagnostics || journal is null || repository is null || configuration is null || ports is null || positions.Count == 0) return;
         var now = DateTimeOffset.UtcNow;
         string Validity(CapabilityHealth? h) => h is null ? "Unconfirmed" : !h.Ready ? "Unavailable" : h.ConfirmedAt > now || h.ValidUntil <= now ? "Expired" : "Ready";
         var projected = PositionSnapshots();
@@ -108,7 +108,7 @@ public sealed partial class ParcelRuntime
                     round.SuccessAt,
                     round.PresenceEvidence
                 } : null,
-                VisualReliable = Id == "sportmaster" && SmVisualReliable(p.Id),
+                VisualReliable = definition.UsesTrustedTrayPresence && SmVisualReliable(p.Id),
                 CameraBlockers = cameraReasons.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray(),
                 ManualBlockers = p.BarcodeInput?.ManualBlockingReasons,
                 Camera = new
@@ -212,7 +212,7 @@ public sealed partial class ParcelRuntime
         var evidence = projected.Select(p =>
         {
             var input = latestInputs.GetValueOrDefault(p.Id);
-            object? placementEvidence = Id == "sportmaster" ? SmCycle(p.Id) : null;
+            object? placementEvidence = definition.UsesArrivalRounds ? SmCycle(p.Id) : null;
             return new
             {
                 PositionId = p.Id,

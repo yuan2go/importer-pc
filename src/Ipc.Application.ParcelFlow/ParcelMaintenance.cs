@@ -67,7 +67,7 @@ public sealed partial class ParcelRepository
                 if (op.ConfigurationHash != Wire.Hash(Wire.Encode(op.FrozenConfiguration))) throw new InvalidDataException("Original frozen configuration hash differs");
                 // Archive custody is committed by the Application only after the
                 // placement and actual execution/receipt responsibility end.
-                if (flow.Id == "sportmaster" && r.GetInt64(2) == 1 && IsSmUnknownHistoryCandidate(op))
+                if (r.GetInt64(2) == 1 && flow.IsReleasedUnknownHistoryCandidate(op))
                 { historicalUnknown++; continue; }
                 var terminated = flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected;
                 if (!terminated || op.RecoveryRequired || new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(x => x.State is not (StageState.Accepted or StageState.Rejected or StageState.Cancelled)) ||
@@ -96,7 +96,7 @@ public sealed partial class ParcelRepository
             }
         }
         var reasons = new List<string>();
-        var currentRounds = flow.Id == "sportmaster" ? Scalar("SELECT count(*) FROM sm_parcel_rounds WHERE active=1") : 0;
+        var currentRounds = flow.CountsCurrentRoundCapacity ? Scalar("SELECT count(*) FROM sm_parcel_rounds WHERE active=1") : 0;
         if (currentRounds != 0) reasons.Add("Current parcel rounds still require their original placement disposition");
         if (Scalar("SELECT count(*) FROM parcel_ingress WHERE state IN ('Pending','Interrupted')") != 0)
             reasons.Add("Original input custody requires matching-release inspection; never replay accepted source input");

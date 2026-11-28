@@ -58,7 +58,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
     (ParcelConfiguration Seed, ConfigurationRevision<ParcelConfiguration>? Envelope, string Directory, string File, string Hash) ReadState(bool authorize = true)
     {
         if (authorize) Authorize();
-        if (definition.Id == "sportmaster")
+        if (ProductDeploymentCatalog.Find(definition.Id)?.UsesStrictWindowsStorage == true)
         {
             InstallationIdentity.RequireDataRoot(launch.DataRoot);
             InstallationIdentity.RequireIndependentPath(launch.ConfigurationDirectory);
@@ -268,7 +268,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         var original = BackupConfiguration(backup);
         var originalDirectory = Path.Combine(launch.DataRoot, original.Mode.ToString(), original.StationId, definition.Id);
         RecoveryFiles.RequireOrdinaryAncestors(originalDirectory);
-        var ownedCopy = definition.Id == "sportmaster" && (RestoreIntentWriter is not null || OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")));
+        var ownedCopy = ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && (RestoreIntentWriter is not null || OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")));
         using var originalOwner = !ownedCopy && Directory.Exists(originalDirectory) ? new ResourceLease(originalDirectory, ["application-owner"]) : null;
         var suffix = Path.Combine(original.Mode.ToString(), original.StationId, definition.Id);
         var full = Path.GetFullPath(destination);
@@ -297,7 +297,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         // A complete current-format backup supplies its own station identity.
         // It is not an editable candidate for the current seed; adoption later
         // binds it to the protected deployment/source-retirement evidence.
-        if (definition.Id != "sportmaster") RequireIdentity(Wire.Decode<ParcelConfiguration>(Text(ReadBytes(Seed))), c);
+        if (ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff != true) RequireIdentity(Wire.Decode<ParcelConfiguration>(Text(ReadBytes(Seed))), c);
         var errors = definition.Validate(c); if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
         return c;
     }

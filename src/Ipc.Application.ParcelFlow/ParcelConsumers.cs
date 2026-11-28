@@ -46,7 +46,7 @@ public sealed partial class ParcelRepository
                         stage.Request.ApplicationId != application || stage.Request.OperationId != op.Id || stage.Request.ConfigurationHash != op.ConfigurationHash ||
                         !ParcelBindings.All(op.FrozenConfiguration).Any(b => Wire.Encode(b) == Wire.Encode(stage.Request.Binding)))
                         throw new InvalidDataException("Unknown/changed frozen stage identity; retain packages");
-                var terminal = op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application == "sportmaster" && op.State == ParcelState.SlotResolved;
+                var terminal = op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application == LegacyStationStorageId && op.State == ParcelState.SlotResolved;
                 var pendingReceipt = pendingReceipts.Remove(op.Id);
                 var unsettledStage = new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
                 if (!terminal || op.RecoveryRequired || unsettledStage || op.FrozenConfiguration.Images is not null && !op.ImageReleased || pendingReceipt)
@@ -59,9 +59,9 @@ public sealed partial class ParcelRepository
     {
         if (configuration is null || owner is not null && (configuration.StationId != owner.StationId || configuration.Mode != owner.Mode))
             throw new InvalidDataException("Consumer configuration owner differs; retain packages");
-        var errors = ParcelConfigurationRules.Validate(configuration, application, application == "sportmaster" ? ["left", "right"] : ["main"]);
+        var errors = ParcelConfigurationRules.Validate(configuration, application, application == LegacyStationStorageId ? ["left", "right"] : ["main"]);
         if (errors.Length != 0) throw new InvalidDataException("Unknown/invalid consumer configuration: " + string.Join("; ", errors));
-        if (application == "sportmaster" ? configuration.Wcs is null || configuration.Plc is not null :
+        if (application == LegacyStationStorageId ? configuration.Wcs is null || configuration.Plc is not null :
             configuration.Plc is null || application == "direct-plc" && configuration.Wcs is not null || application == "wcs-to-plc" && configuration.Wcs is null)
             throw new InvalidDataException("Consumer main capability ownership differs from declared Application");
         var deployment = configuration.Extensions;

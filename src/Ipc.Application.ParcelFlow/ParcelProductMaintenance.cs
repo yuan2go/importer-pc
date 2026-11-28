@@ -64,7 +64,7 @@ public sealed partial class ParcelStartupMaintenance
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Verifying);
         var inspection = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution?.Token ?? CancellationToken.None);
         var markers = new[] { "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }.Where(n => File.Exists(Path.Combine(state.Directory, n))).ToArray();
-        if (purpose is "Rollback" or "PruneVersions" && definition.Id == "sportmaster" && markers.Contains("RESTORED-ISOLATED.json"))
+        if (purpose is "Rollback" or "PruneVersions" && ProductDeploymentCatalog.Find(definition.Id)?.RequiresRestoreHandoff == true && markers.Contains("RESTORED-ISOLATED.json"))
         {
             var c = state.Envelope?.Effective ?? state.Seed;
             using var snapshot = ParcelRepository.OpenHandoffSnapshot(copy.Database);

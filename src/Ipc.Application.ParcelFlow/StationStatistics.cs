@@ -16,7 +16,7 @@ public sealed partial class ParcelRuntime : IStationOperations
     public Task<StationStatistics> ReadStatisticsAsync(DateTimeOffset from, DateTimeOffset toExclusive, CancellationToken token)
         => OwnedRead(async owned =>
         {
-            if (Id != "sportmaster") throw new NotSupportedException("本统计用于SM业务");
+            if (!definition.SupportsStationStatistics) throw new NotSupportedException("本统计用于SM业务");
             StationOperationsPolicy policy;
             await gate.WaitAsync(owned).ConfigureAwait(false);
             try { policy = Wire.Decode<StationOperationsPolicy>(Wire.Encode(Effective.OperationsPolicy ?? StationShiftSchedule.Default)); }
@@ -32,7 +32,7 @@ public sealed partial class ParcelRuntime : IStationOperations
         try
         {
             Management.Require();
-            if (Id != "sportmaster" || configuration is null) throw new InvalidOperationException("SM尚未就绪");
+            if (!definition.SupportsStationStatistics || configuration is null) throw new InvalidOperationException("SM尚未就绪");
             var errors = StationShiftSchedule.Validate(policy); if (errors.Length != 0) return new("Rejected", string.Join("；", errors), repository!.Revision);
             var existing = (configuration.Current.Pending ?? Effective).OperationsPolicy ?? StationShiftSchedule.Default;
             if (Wire.Encode(policy.Shifts) != Wire.Encode(existing.Shifts))

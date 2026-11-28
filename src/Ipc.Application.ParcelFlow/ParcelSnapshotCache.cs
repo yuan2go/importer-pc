@@ -24,7 +24,7 @@ public sealed partial class ParcelRuntime
             {
                 if (archiveCountRead is null || archiveCountReadRevision != revision || archiveCountRead.IsFaulted || archiveCountRead.IsCanceled)
                 {
-                    archiveCountRead = OwnedRead(token => Task.FromResult(original.ReadArchivedCount(Id == "sportmaster", token)));
+                    archiveCountRead = OwnedRead(token => Task.FromResult(original.ReadArchivedCount(definition.RetainsReleasedUnknownsInHistory, token)));
                     archiveCountReadRevision = revision;
                 }
                 read = archiveCountRead;

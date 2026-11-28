@@ -3,7 +3,7 @@ using Ipc.Application.ParcelFlow;
 using Ipc.Platform;
 namespace Ipc.Application.Sportmaster;
 
-public sealed class SportmasterFlow : FlowDefinition
+public sealed partial class SportmasterFlow : FlowDefinition
 {
     public override string Id => "sportmaster";
     public override bool AutomaticConfigurationQuiescence => true;

@@ -15,6 +15,7 @@ public sealed partial class ParcelRepository : IDisposable
     readonly SqliteConnection db;
     readonly string rawRoot;
     readonly CancellationToken maintenanceCancellation;
+    readonly FlowDefinition? storageFlow;
     readonly Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver;
     public int StorageVersion { get; private set; }
     public const int CurrentStorageVersion = 14;
@@ -89,10 +90,14 @@ public sealed partial class ParcelRepository : IDisposable
         : this(directory, application, CancellationToken.None, positions) { }
     internal ParcelRepository(string directory, string application, CancellationToken maintenanceCancellation, string[]? positions = null)
         : this(directory, application, maintenanceCancellation, positions, null) { }
+    internal ParcelRepository(string directory, FlowDefinition flow, CancellationToken maintenanceCancellation, string[]? positions = null)
+        : this(directory, flow.Id, maintenanceCancellation, positions, null, flow) { }
+
     internal ParcelRepository(string directory, string application, CancellationToken maintenanceCancellation, string[]? positions,
-        Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver)
+        Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver, FlowDefinition? storageFlow = null)
     {
         this.maintenanceCancellation = maintenanceCancellation;
+        this.storageFlow = storageFlow;
         this.openObserver = openObserver;
         maintenanceCancellation.ThrowIfCancellationRequested();
         rawRoot = Path.Combine(directory, "receipts");

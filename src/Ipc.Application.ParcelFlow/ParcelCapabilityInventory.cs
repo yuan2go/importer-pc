@@ -8,6 +8,9 @@ public static partial class ParcelConfigurationRules
     // Format validation is shared by live configuration and offline responsibility
     // readers; it never loads providers or requires a package to remain installed.
     public static string[] ValidateCapabilityInventory(ParcelConfiguration configuration)
+        => ValidateCapabilityInventory(configuration, null);
+
+    static string[] ValidateCapabilityInventory(ParcelConfiguration configuration, bool? allowsDeferred)
     {
         if (configuration.SchemaVersion != 3 || configuration.MaintenanceLogin is not null) return ["Unsupported capability inventory schema"];
         var inventory = configuration.CapabilityInstances;
@@ -42,7 +45,7 @@ public static partial class ParcelConfigurationRules
         // inspect their originals once rather than validating each mirror again.
         foreach (var binding in inventory ?? roles)
         {
-            var deferredRcs = configuration.ApplicationId == "sportmaster" && binding.InstanceId == configuration.Wcs?.InstanceId &&
+            var deferredRcs = (allowsDeferred ?? configuration.ApplicationId == ParcelRepository.LegacyStationStorageId) && binding.InstanceId == configuration.Wcs?.InstanceId &&
                 binding.Contract == "SPORTMASTER-RCS-SORTER-v1" && ParcelConnectionSetup.IsDeferred(configuration, binding.InstanceId);
             if (!ExtensionSchema.IsId(binding.InstanceId) || !ExtensionSchema.IsVersion(binding.Version) ||
                 binding.Kind is not ("weight" or "plc" or "integration" or "login" or "camera" or "upload") ||

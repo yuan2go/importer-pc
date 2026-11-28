@@ -4,6 +4,11 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRepository
 {
+    // Historical DB14 storage identity allowlist used by unscoped offline readers.
+    internal const string LegacyStationStorageId = "sportmaster";
+    internal static IReadOnlyList<string> LegacyStorageIds { get; } =
+        Array.AsReadOnly(new[] { LegacyStationStorageId, "direct-plc", "wcs-to-plc" });
+
     const string UnsupportedStorage = "仅支持当前数据格式，原文件已保留；请用匹配版本核对原记录和永久请求编号，勿清空或覆盖原数据。";
     public static int ReadStorageVersion(string database, string application)
         => ReadStorageVersion(database, application, immutable: false);
@@ -24,7 +29,7 @@ public sealed partial class ParcelRepository
             using var r = c.ExecuteReader();
             if (!r.Read()) throw new InvalidDataException(UnsupportedStorage);
             var actual = r.GetString(0);
-            if (actual is not ("sportmaster" or "direct-plc" or "wcs-to-plc") || application is not null && actual != application ||
+            if (!LegacyStorageIds.Contains(actual, StringComparer.Ordinal) || application is not null && actual != application ||
                 r.GetInt64(1) != CurrentStorageVersion || r.GetString(2) != Database.BaselineHash(Baseline) || r.Read())
                 throw new InvalidDataException(UnsupportedStorage);
             r.Close(); RequireSchema(db, actual, tx);

@@ -55,7 +55,7 @@ public sealed partial class ParcelRuntime
     }
     void TryAutomaticCleanup(DateTimeOffset now)
     {
-        if (Id != "sportmaster" || Effective.OperationsPolicy is not { AutomaticHistoryCleanup: true } policy || cleanupStateFault) return;
+        if (!definition.SupportsAutomaticHistoryCleanup || Effective.OperationsPolicy is not { AutomaticHistoryCleanup: true } policy || cleanupStateFault) return;
         var ticks = cleanupClock.GetTimestamp();
         if (cleanupUtc is { } prior && Math.Abs((now - prior - cleanupClock.GetElapsedTime(cleanupTicks, ticks)).TotalSeconds) > 5)
         {

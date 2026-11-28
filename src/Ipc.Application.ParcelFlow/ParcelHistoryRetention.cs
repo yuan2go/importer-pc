@@ -118,7 +118,7 @@ public sealed partial class ParcelRepository
             throw new InvalidOperationException("Activate a confirmed 7..30 day retention policy first; no implicit default deletion");
         if (ReadStorageVersion(database, flow.Id) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("Storage format differs; preserve originals and verify permanent numbering with the matching release before preparing a separate current-format directory");
         phase("InitializeRepository");
-        using var repository = new ParcelRepository(directory, flow.Id, cancellationToken);
+        using var repository = new ParcelRepository(directory, flow, cancellationToken);
         if (!repository.Paused) throw new InvalidOperationException("Pause and fully stop the application before retention");
         phase("ValidateOriginal");
         using (var integrity = repository.db.CreateCommand())

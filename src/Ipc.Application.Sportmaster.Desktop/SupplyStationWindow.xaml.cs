@@ -72,6 +72,7 @@ public partial class SupplyStationWindow : Window
             ViewModel.RefreshFreshness();
             EnforceManagementModeView();
             FollowWorkstationPage();
+            RefreshWorkstationContent();
             if (ViewModel.Application is not IParcelPresentationSource && pendingRefresh.IsCompleted && !closing && !closed) pendingRefresh = RefreshAsync();
         };
         Loaded += async (_, _) =>
@@ -99,9 +100,8 @@ public partial class SupplyStationWindow : Window
         if (page is not ("workstation" or "history")) throw new ArgumentException("工作站仅提供作业与记录；现场设置使用独立非模态窗口。");
         ViewModel.SelectedPage = page; ApplyLayout();
         PageHost.Content = page == "history" ? PositionHistory() : WorkstationContent();
+        UpdateWorkstationChrome();
     }
-
-    FrameworkElement WorkstationContent() => workContent;
 
     void FollowWorkstationPage()
     {
@@ -116,6 +116,7 @@ public partial class SupplyStationWindow : Window
         if (ViewModel.SelectedPage == "workstation")
         {
             PageHost.Content = WorkstationContent();
+            UpdateWorkstationChrome();
             RestoreBarcodeFocus();
         }
     }

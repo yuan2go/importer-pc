@@ -261,6 +261,10 @@ public partial class App : System.Windows.Application
             if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station)
             {
                 station.ReopenOwnerAsync = ReopenStopped;
+                station.RecordToteSession = summary => RuntimeJournal.AppendMetadata(
+                    Path.Combine(launch.DataRoot, effective.Mode.ToString(), effective.StationId, effective.ApplicationId, "diagnostics"),
+                    new { At = DateTimeOffset.UtcNow, Source = "Workstation", Level = "Info", Event = "LocalToteSessionEnded",
+                        Summary = summary, RcsReported = false });
                 if (languageNotice is not null) station.ViewModel.SetLanguagePreferenceNotice(languageNotice);
             }
 #endif

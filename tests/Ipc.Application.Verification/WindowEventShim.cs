@@ -150,6 +150,9 @@ namespace Ipc.Application.Sportmaster.Desktop
         readonly System.Windows.Controls.TextBlock TestInstallationLabel = new();
         readonly System.Windows.Controls.Grid workContent = new();
         void BuildOperatorWorkspace() { workContent.Children.Add(work); }
+        System.Windows.FrameworkElement WorkstationContent() => workContent;
+        void UpdateWorkstationChrome() { }
+        void RefreshWorkstationContent() { }
         void RestoreBarcodeFocus() { }
         void InitializeAudio() { }
         readonly System.Windows.Controls.Grid ClientArea = new();

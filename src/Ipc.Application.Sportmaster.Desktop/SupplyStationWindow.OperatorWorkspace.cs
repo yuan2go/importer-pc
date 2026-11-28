@@ -11,6 +11,9 @@ namespace Ipc.Application.Sportmaster.Desktop;
 public partial class SupplyStationWindow
 {
     readonly Grid workContent = new();
+    IEnumerable<SupplyStationPosition> ActiveLanes => ShowingTote && toteWorkstation is { } tote
+        ? [tote.Left, tote.Right] : work.Children.OfType<SupplyStationPosition>();
+    bool WorkInputHasFocus => ShowingTote ? ActiveLanes.Any(lane => lane.IsKeyboardFocusWithin) : work.IsKeyboardFocusWithin;
     string recentInputPosition = "left";
     bool focusRestoreQueued;
     bool barcodeSelectionCancelled;
@@ -66,10 +69,14 @@ public partial class SupplyStationWindow
             barcodeKeyTimestamp = eligible && args.Key != Key.Enter ? at : null;
             barcodeEnterTimestamp = eligible && args.Key == Key.Enter ? at : null;
             if (args.Key == Key.Escape && ViewModel.SelectedPage == "workstation" && ViewModel.InputTargetPosition.Length != 0)
-            { args.Handled = true; CancelBarcodeSelection(); return; }
+            {
+                args.Handled = true;
+                if (!ShowingTote || RecentPosition()?.ClearToteDraft() != true) CancelBarcodeSelection();
+                return;
+            }
             if (args.Key is not (Key.F2 or Key.F3) || Keyboard.Modifiers != ModifierKeys.None || !CanRestoreBarcodeFocus) return;
             var id = args.Key == Key.F2 ? "left" : "right";
-            if (work.Children.OfType<SupplyStationPosition>().FirstOrDefault(c => c.DataContext is SupplyStationPositionViewModel p && p.PositionId == id && p.SupplyEnabled) is not { IsVisible: true, IsEnabled: true } target) return;
+            if (ActiveLanes.FirstOrDefault(c => c.DataContext is SupplyStationPositionViewModel p && p.PositionId == id && p.SupplyEnabled) is not { IsVisible: true, IsEnabled: true } target) return;
             args.Handled = true; recentInputPosition = id; target.FocusBarcodeInput();
         };
         PreviewMouseDown += (_, args) =>
@@ -95,7 +102,7 @@ public partial class SupplyStationWindow
             if (!CanRestoreBarcodeFocus || Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) ||
                 args.Text.Length == 0 || args.Text.Any(char.IsControl)) return;
             if (ViewModel.InputTargetPosition is "left" or "right" && RecentPosition() is { } position &&
-                work.IsKeyboardFocusWithin && !position.IsBarcodeInputFocused)
+                WorkInputHasFocus && !position.IsBarcodeInputFocused)
             { args.Handled = true; position.ReceiveScannerText(args.Text, TakeBarcodeKeyTimestamp()); }
         };
     }
@@ -105,7 +112,7 @@ public partial class SupplyStationWindow
         barcodeEnterTimestamp = null;
         barcodeNativeKeys.Clear();
         barcodeSelectionCancelled = true;
-        if (work.IsKeyboardFocusWithin)
+        if (WorkInputHasFocus)
         {
             Keyboard.ClearFocus(); FocusManager.SetFocusedElement(this, null);
             // Keep window shortcuts available after Esc without leaving a
@@ -146,14 +153,14 @@ public partial class SupplyStationWindow
     }
     bool CanRestoreBarcodeFocus => IsLoaded && IsActive && IsEnabled && !closing && !closed &&
         ViewModel.SelectedPage == "workstation" && ViewModel.ViewportReady && !OwnedWindows.OfType<Window>().Any(w => w.IsVisible && w.IsActive);
-    SupplyStationPosition? RecentPosition() => work.Children.OfType<SupplyStationPosition>().FirstOrDefault(c =>
+    SupplyStationPosition? RecentPosition() => ActiveLanes.FirstOrDefault(c =>
         c.DataContext is SupplyStationPositionViewModel p && p.PositionId == recentInputPosition && p.SupplyEnabled);
     internal void RefreshEnabledPositionFocus()
     {
         if (ViewModel.InputTargetPosition.Length == 0 || RecentPosition() is not null) return;
         CancelBarcodeSelection();
         if (!CanRestoreBarcodeFocus) return;
-        var next = work.Children.OfType<SupplyStationPosition>().FirstOrDefault(c => c.DataContext is SupplyStationPositionViewModel { SupplyEnabled: true });
+        var next = ActiveLanes.FirstOrDefault(c => c.DataContext is SupplyStationPositionViewModel { SupplyEnabled: true });
         next?.FocusBarcodeInput();
     }
     void RestoreBarcodeFocus()

@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.IO;
 using System.Windows;
 using System.ComponentModel;
@@ -19,9 +20,9 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public Visibility SimulationVisibility => IsSimulationMode ? Visibility.Visible : Visibility.Collapsed;
     public string EnvironmentStatus => Snapshot?.Configuration.Effective.Mode switch
     {
-        RunMode.Simulation => "模拟模式 · 软件暂停不是安全急停 · 不操作真实设备",
-        RunMode.Production => "生产模式 · 软件暂停不是安全急停，紧急情况请按现场急停按钮",
-        _ => "软件暂停不是安全急停，紧急情况请按现场急停按钮"
+        RunMode.Simulation => UiText.Get("Work.SimSafety"),
+        RunMode.Production => UiText.Get("Work.ProductionSafety"),
+        _ => UiText.Get("Work.Safety")
     };
     public string Flow => flow;
     public string PresentationId => presentationId;

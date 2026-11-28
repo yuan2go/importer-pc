@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
@@ -22,7 +23,7 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
         ViewModel = model; this.settings = settings; showDebug = debug;
         var body = new StackPanel { Margin = new(14, 10, 14, 12) };
         body.Children.Add(CreateDiagnosticRows());
-        if (diagnosticLogDetails is not null) body.Children.Add(new Expander { Header = "技术详情", Content = diagnosticLogDetails });
+        if (diagnosticLogDetails is not null) body.Children.Add(new Expander { Header = UiText.Get("Ops.TechnicalDetails"), Content = diagnosticLogDetails });
         Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     }
     static TextBlock ProductText(string text, bool heading = false) => new() { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0,4,0,4), FontSize = heading ? UiTypography.Group : UiTypography.Body };
@@ -107,16 +108,16 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
                     };
                 }, "处理" + name + "连接");
             };
-            buttons.Children.Add(ProductButton("调试", () => { if (position is null) showDebug("left"); else showDebug(position.PositionId); return Task.CompletedTask; })); row.Children.Add(buttons);
+            buttons.Children.Add(ProductButton(UiText.Get("Work.Debug"), () => { if (position is null) showDebug("left"); else showDebug(position.PositionId); return Task.CompletedTask; })); row.Children.Add(buttons);
             var facts = new StackPanel(); facts.Children.Add(Bound(time, ViewModel));
             var technical = ProductText("等待读取设备详情"); technical.FontSize = UiTypography.Label; facts.Children.Add(technical); details[id] = technical;
-            var edit = new Button { Content = "专业参数", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            var edit = new Button { Content = UiText.Get("Ops.Parameters"), MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
             edit.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
             edit.Click += async (_, _) => await Configure(); facts.Children.Add(edit);
             if (position is not null)
             {
                 facts.Children.Add(ProductText("清空托盘后校准在位判断。校准后可连续自动供包；重连或重启后须重新校准。校准期间保持空盘，等待详情显示空托盘已确认。"));
-                var teach = new Button { Content = "确认空托盘并校准", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+                var teach = new Button { Content = UiText.Get("Debug.ConfirmTray"), MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
                 AutomationProperties.SetAutomationId(teach, "CalibrateEmptyTray." + id);
                 teach.Click += async (_, _) => await ViewModel.RunAsync(async () =>
                 {
@@ -149,10 +150,10 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
         Connection("左相机", ViewModel.Left.ReaderId, nameof(ViewModel.LeftConnectionDiagnosis), nameof(ViewModel.LeftConnectionTime), ViewModel.Left);
         Connection("右相机", ViewModel.Right.ReaderId, nameof(ViewModel.RightConnectionDiagnosis), nameof(ViewModel.RightConnectionTime), ViewModel.Right);
         Connection("RCS", "shared", nameof(ViewModel.RcsConnectionDiagnosis), nameof(ViewModel.RcsConnectionTime), null);
-        var storageBadge = new TextBlock { Text = "等待读取", FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap };
+        var storageBadge = new TextBlock { Text = UiText.Get("Ops.WaitRead"), FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap };
         var storagePill = Badge(storageBadge);
         var storage = Card("存储", "storage", storagePill); var storageText = ProductText(""); storage.Children.Add(storageText);
-        var storageSettings = new Button { Content = "数据与记录设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 0, 0, 10) };
+        var storageSettings = new Button { Content = UiText.Get("Ops.StorageSettings"), MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 0, 0, 10) };
         storageSettings.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
         storageSettings.Click += async (_, _) => await settings(null, "HistoryDays"); storage.Children.Add(storageSettings);
         var storageDetails = new StackPanel(); storageDetails.Children.Add(Bound(nameof(ViewModel.BackupStatusText), ViewModel));
@@ -172,7 +173,7 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
                 : "剩余空间未确认。请检查 D 盘并等待状态更新。";
         });
 
-        var logState = ProductText("详细日志状态未确认"); var toggle = new Button { Content = "开启详细日志 30 分钟", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, IsEnabled = false };
+        var logState = ProductText(UiText.Get("Ops.LogNotConfirmed")); var toggle = new Button { Content = UiText.Get("Ops.EnableVerbose"), MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, IsEnabled = false };
         var logDetails = new StackPanel(); logDetails.Children.Add(logState); logDetails.Children.Add(toggle);
         diagnosticLogDetails = logDetails;
         CancellationTokenSource? lifetime = null; long generation = 0; bool reading = false, setting = false;
@@ -202,7 +203,7 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
                 toggle.Content = settings?.DebugEnabled == true ? "关闭详细日志" : "开启详细日志 30 分钟"; toggle.IsEnabled = settings is not null && !setting;
             }
             catch (OperationCanceledException) when (token.IsCancellationRequested) { }
-            catch (Exception) { if (version == generation) { foreach (var text in details.Values) text.Text = "详情读取中断，旧指标已失效；正在自动重试。"; logState.Text = "详细日志状态未确认"; toggle.IsEnabled = false; } }
+            catch (Exception) { if (version == generation) { foreach (var text in details.Values) text.Text = UiText.Get("Ops.RetryingDetails"); logState.Text = UiText.Get("Ops.LogNotConfirmed"); toggle.IsEnabled = false; } }
             finally { reading = false; UpdateActions(); }
         }
         toggle.Click += async (_, _) =>
@@ -216,7 +217,7 @@ internal sealed class OperationsDeviceDiagnostics : UserControl
         };
         var poll = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) }; poll.Tick += async (_, _) => { UpdateActions(); await Read(); };
         panel.Loaded += async (_, _) => { generation++; lifetime = new(); ViewModel.PropertyChanged += changed; UpdateActions(); poll.Start(); await Read(); };
-        panel.Unloaded += (_, _) => { generation++; poll.Stop(); ViewModel.PropertyChanged -= changed; lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; current = null; toggle.IsEnabled = false; toggle.Content = "详细日志状态未确认"; };
+        panel.Unloaded += (_, _) => { generation++; poll.Stop(); ViewModel.PropertyChanged -= changed; lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; current = null; toggle.IsEnabled = false; toggle.Content = UiText.Get("Ops.LogNotConfirmed"); };
         return panel;
     }
 }

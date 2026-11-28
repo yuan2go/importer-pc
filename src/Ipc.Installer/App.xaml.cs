@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.Windows;
 using System.IO;
 using Ipc.Desktop;
@@ -10,9 +11,9 @@ public partial class App : System.Windows.Application
 {
     protected override async void OnStartup(StartupEventArgs e)
     {
+        ShutdownMode = ShutdownMode.OnExplicitShutdown;
         if (InstallerCommandLine.IsQuiet(e.Args))
         {
-            ShutdownMode = ShutdownMode.OnExplicitShutdown;
             InstallerPreparation? silentPreparation = null; var result = 1603;
             try
             {
@@ -37,9 +38,11 @@ public partial class App : System.Windows.Application
         base.OnStartup(e);
         try
         {
+            var language = InstallerLanguageWindow.Choose(Resources);
+            if (language is null) { Shutdown(1602); return; }
             var preparation = new InstallerPreparation();
             var launch = new BusinessLaunch("", InstallationIdentity.DefaultLaunchDataRoot, null, null);
-            var window = new StartupSetupWindow(launch, preparation.PrepareAsync, preparation.BusinessVersion);
+            var window = new StartupSetupWindow(launch, preparation.PrepareAsync, preparation.BusinessVersion, language);
             window.Closed += (_, _) =>
             {
                 try
@@ -48,10 +51,10 @@ public partial class App : System.Windows.Application
                     if (clean) preparation.Cleanup();
                     Shutdown(clean ? 0 : 3); // Unknown outcome is not an installation success exit.
                 }
-                catch (Exception error) { MessageBox.Show(error.Message, "安装准备文件清理未完成", MessageBoxButton.OK, MessageBoxImage.Warning); Shutdown(2); }
+                catch (Exception error) { MessageBox.Show(error.Message, UiText.Get("Setup.CleanupFailed"), MessageBoxButton.OK, MessageBoxImage.Warning); Shutdown(2); }
             };
             MainWindow = window; window.Show();
         }
-        catch (Exception error) { MessageBox.Show(error.Message, "安装包不可用", MessageBoxButton.OK, MessageBoxImage.Error); Shutdown(2); }
+        catch (Exception error) { MessageBox.Show(error.Message, UiText.Get("Setup.PackageUnavailable"), MessageBoxButton.OK, MessageBoxImage.Error); Shutdown(2); }
     }
 }

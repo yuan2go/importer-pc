@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.AccessControl;
 
 namespace Ipc.Platform;
@@ -9,8 +10,13 @@ public static class PresentationPreferences
     internal static Func<string>? UserRootForVerification = null;
     public enum WindowOpeningMode { Window, FullScreen }
     public const int DefaultCueVolume = 80;
+    public const string DefaultLanguage = "zh-CN";
+    public static IReadOnlyList<string> SupportedLanguages { get; } =
+        Array.AsReadOnly(new[] { DefaultLanguage, "en-US", "ru-RU" });
     sealed record AudioPreference(int Schema, int Volume);
     sealed record ThemePreference(int Schema, string ThemeId);
+    sealed record LanguagePreference(int Schema, string Language);
+    public static event Action<string, string>? LanguageChanged;
     public static event Action<string, string>? ThemeChanged;
     public static event Action<string, int>? CueVolumeChanged;
     public static event Action<string, WindowOpeningMode>? WindowModeChanged;
@@ -24,6 +30,9 @@ public static class PresentationPreferences
         {
             case "window": WindowModeChanged?.Invoke(application, ReadWindowMode(application)); break;
             case "audio": CueVolumeChanged?.Invoke(application, ReadCueVolume(application)); break;
+            case "language":
+                if (ReadSavedLanguage(application) is { } language) LanguageChanged?.Invoke(application, language);
+                break;
             case "theme":
                 if (ReadSavedTheme(application) is { } theme) ThemeChanged?.Invoke(application, theme);
                 break;
@@ -67,6 +76,40 @@ public static class PresentationPreferences
         Directory.CreateDirectory(Path.GetDirectoryName(file)!);
         ExtensionStore.AtomicWrite(file, new ThemePreference(1, themeId));
         ThemeChanged?.Invoke(application, themeId);
+    }
+
+    public static string LanguagePreferenceFile(string application) => FileFor(application, "language");
+
+    static string? ReadSavedLanguage(string application)
+    {
+        var value = ReadPreference<LanguagePreference>(application, "language", "界面语言偏好超出预算；保留原文件",
+            "界面语言偏好已损坏；保留原文件");
+        if (value is null) return null;
+        if (value.Schema != 1 || !SupportedLanguages.Contains(value.Language, StringComparer.Ordinal))
+            throw new InvalidDataException("界面语言偏好版本或语言无效；保留原文件");
+        return value.Language;
+    }
+
+    public static string ReadLanguage(string application, string defaultLanguage = DefaultLanguage) =>
+        ReadSavedLanguage(application) ?? (SupportedLanguages.Contains(defaultLanguage, StringComparer.Ordinal) ? defaultLanguage : DefaultLanguage);
+
+    public static void SaveLanguage(string application, string language)
+    {
+        if (!SupportedLanguages.Contains(language, StringComparer.Ordinal)) throw new InvalidDataException("界面语言无效");
+        _ = ReadSavedLanguage(application);
+        var file = FileFor(application, "language");
+        Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+        ExtensionStore.AtomicWrite(file, new LanguagePreference(1, language));
+        LanguageChanged?.Invoke(application, language);
+    }
+
+    public static string ResolveInitialLanguage(string? preferred, string? osCultureName)
+    {
+        if (preferred is not null && SupportedLanguages.Contains(preferred, StringComparer.Ordinal)) return preferred;
+        var culture = osCultureName ?? CultureInfo.CurrentUICulture.Name;
+        var language = culture.Split('-', 2)[0];
+        if (language.Equals("ru", StringComparison.OrdinalIgnoreCase)) return "ru-RU";
+        return language.Equals("en", StringComparison.OrdinalIgnoreCase) ? "en-US" : DefaultLanguage;
     }
 
     public static int ReadCueVolume(string application)
@@ -126,7 +169,7 @@ public static class PresentationPreferences
     }
     public static void Save(string application, string surface, bool compact)
     {
-        if (surface is "audio" or "window" or "theme" || surface.StartsWith("station-", StringComparison.Ordinal)) throw new InvalidDataException("请使用对应的专用偏好保存入口。");
+        if (surface is "audio" or "window" or "theme" or "language" || surface.StartsWith("station-", StringComparison.Ordinal)) throw new InvalidDataException("请使用对应的专用偏好保存入口。");
         var file = FileFor(application, surface); _ = Read(application, surface);
         Directory.CreateDirectory(Path.GetDirectoryName(file)!); ExtensionStore.AtomicWrite(file, new Preference(1, compact)); DisplayChanged?.Invoke(application, surface, compact);
     }

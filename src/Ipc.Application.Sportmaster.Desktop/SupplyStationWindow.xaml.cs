@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 public partial class SupplyStationWindow : Window
 {
     partial void InitializePresentationFeedback();
+    partial void InitializeLanguage();
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     readonly Grid work = new();
     readonly HistoryPage history = new();
@@ -32,6 +34,7 @@ public partial class SupplyStationWindow : Window
         ViewModel.ParameterAudience = SmParameterAudience.Field;
         ViewModel.RequireOwnedManagementSession = true;
         InitializeAudio();
+        InitializeLanguage();
         ViewModel.RequestActivationAsync = RequestActivation;
         WindowOpeningPreference.Attach(this, "sportmaster", ShowPresentationPreferenceFailure);
         // Cached pages retain their binding source while detached from PageHost.
@@ -100,11 +103,11 @@ public partial class SupplyStationWindow : Window
     void DismissGlobalFeedback_Click(object sender, RoutedEventArgs e) => ViewModel.DismissGlobalOperationFeedback();
     async void ResumeSupply_Click(object sender, RoutedEventArgs e)
     {
-        if (ViewModel.CanResumeInViewport) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"), "恢复供包");
+        if (ViewModel.CanResumeInViewport) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"), UiText.Get("Work.Resume"));
     }
     async void RcsConnection_Click(object sender, RoutedEventArgs e) => await ViewModel.CheckRcsAsync();
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
-    async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
+    async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), UiText.Get("History.Title")); }
     void Layout_Click(object sender, RoutedEventArgs e)
     {
         compact = !compact; ApplyLayout();
@@ -174,7 +177,7 @@ public partial class SupplyStationWindow : Window
             var dirtyWindows = affected.Where(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.ViewModel, x.maintenance)).ToArray();
             var dirty = dirtyWindows.Length;
             if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(ManagementDialogOwner, dirty,
-                dirty == 1 ? dirtyWindows[0].ViewModel.SaveIncompleteEditorAsync : null, "关闭")))
+                dirty == 1 ? dirtyWindows[0].ViewModel.SaveIncompleteEditorAsync : null, UiText.Get("Common.Close"))))
             {
                 ViewModel.Message = "已取消退出，当前输入已保留。";
                 RestoreAfterClose(); return;

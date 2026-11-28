@@ -1,6 +1,6 @@
 # 多业务架构解耦摸底报告
 
-PR 1 已完成部署与基座声明，PR 2 已完成内置驱动和组件注册，PR 3 已完成共享桌面字段与主题解耦。PR 4 留待拆分 `ParcelFlow` 的到位、提交与原请求收口。[架构基线](framework.md) · [连续供包契约](sm-continuous-induction-closure-01.md)
+PR 1 已完成部署与基座声明，PR 2 已完成内置驱动和组件注册，PR 3 已完成共享桌面字段与主题解耦。桌面国际化见[界面语言](framework.md#界面语言)。后续业务核心工作留待拆分 `ParcelFlow` 的到位、提交与原请求收口。[架构基线](framework.md) · [连续供包契约](sm-continuous-induction-closure-01.md)
 
 ## 统计口径
 

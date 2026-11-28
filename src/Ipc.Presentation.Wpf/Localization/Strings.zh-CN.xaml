@@ -1,0 +1,1270 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+    <sys:String x:Key="Common.Cancel">取消</sys:String>
+    <sys:String x:Key="Common.Continue">继续</sys:String>
+    <sys:String x:Key="Common.Close">关闭</sys:String>
+    <sys:String x:Key="Common.Back">上一步</sys:String>
+    <sys:String x:Key="Common.Next">下一步</sys:String>
+    <sys:String x:Key="Common.Finish">完成</sys:String>
+    <sys:String x:Key="Common.Save">保存设置</sys:String>
+    <sys:String x:Key="Common.Settings">设置</sys:String>
+    <sys:String x:Key="Common.Language">界面语言</sys:String>
+    <sys:String x:Key="Common.Theme">界面主题</sys:String>
+    <sys:String x:Key="Common.AppliesNow">立即生效</sys:String>
+    <sys:String x:Key="Common.LanguageHelp">仅影响当前 Windows 用户的界面文字。点击“保存设置”立即生效。</sys:String>
+    <sys:String x:Key="Common.LanguageUnreadable">本机界面语言未能读取，原文件保留。已使用简体中文。</sys:String>
+    <sys:String x:Key="Common.LanguageSaveFailed">安装已完成，但无法保存所选界面语言。请在供包台设置中重试。</sys:String>
+    <sys:String x:Key="Installer.LanguageTitle">选择安装语言 / Select Setup Language / Выбор языка установки</sys:String>
+    <sys:String x:Key="Installer.LanguagePrompt">安装语言 / Setup language / Язык установки</sys:String>
+    <sys:String x:Key="Installer.CancelTrilingual" xml:space="preserve">取消 / Cancel / Отмена</sys:String>
+    <sys:String x:Key="Installer.ContinueTrilingual" xml:space="preserve">继续 / Continue / Далее</sys:String>
+    <sys:String x:Key="Setup.Install" xml:space="preserve">安装</sys:String>
+    <sys:String x:Key="Setup.TitlePrefix" xml:space="preserve">安装 · </sys:String>
+    <sys:String x:Key="Setup.MediaRequired" xml:space="preserve">请先核验完整介质。</sys:String>
+    <sys:String x:Key="Setup.VersionPrefix" xml:space="preserve">版本: </sys:String>
+    <sys:String x:Key="Setup.VersionSuffix" xml:space="preserve"> Windows 64位</sys:String>
+    <sys:String x:Key="Setup.CheckMedia" xml:space="preserve">检查安装媒介</sys:String>
+    <sys:String x:Key="Setup.OpenRecords" xml:space="preserve">打开安装记录目录</sys:String>
+    <sys:String x:Key="Setup.ViewResult" xml:space="preserve">查看本次安装结果</sys:String>
+    <sys:String x:Key="Setup.RepairRegistration" xml:space="preserve">修复开始菜单和程序入口…</sys:String>
+    <sys:String x:Key="Setup.RegistrationChanged" xml:space="preserve">安装登记已变化，请先查看安装结果</sys:String>
+    <sys:String x:Key="Setup.RepairRegistrationDetail" xml:space="preserve">修复开始菜单和程序入口
+安装位置：</sys:String>
+    <sys:String x:Key="Setup.RepairKeepsData" xml:space="preserve">
+数据和配置不变。</sys:String>
+    <sys:String x:Key="Setup.CloseOriginal" xml:space="preserve">结束原次并重新审阅</sys:String>
+    <sys:String x:Key="Setup.CheckOriginalFirst" xml:space="preserve">请先核对原安装结果。</sys:String>
+    <sys:String x:Key="Setup.CloseOriginalDetail" xml:space="preserve">结束已核验未提交的原安装
+原操作：</sys:String>
+    <sys:String x:Key="Setup.OriginalStillOpen" xml:space="preserve">原次安装尚未完成收口，请核对原结果。</sys:String>
+    <sys:String x:Key="Setup.OriginalClosed" xml:space="preserve">原次未提交安装已结束。请重新核对当前安装选项。</sys:String>
+    <sys:String x:Key="Setup.RecheckOptions" xml:space="preserve">重新检查安装选项</sys:String>
+    <sys:String x:Key="Setup.UninstallAction" xml:space="preserve">卸载程序…</sys:String>
+    <sys:String x:Key="Setup.CancelPreparing" xml:space="preserve">正在取消安装文件准备，请稍候…</sys:String>
+    <sys:String x:Key="Setup.RegisteredPathHelp" xml:space="preserve">沿用已登记位置；迁移位置请使用完整备份与恢复流程。</sys:String>
+    <sys:String x:Key="Setup.FrozenPathHelp" xml:space="preserve">安装选项已核对；需要修改时请先选择修改选项。</sys:String>
+    <sys:String x:Key="Setup.Browse" xml:space="preserve">浏览…</sys:String>
+    <sys:String x:Key="Setup.BrowseName" xml:space="preserve">浏览</sys:String>
+    <sys:String x:Key="Setup.PendingResult" xml:space="preserve">安装结果待确认</sys:String>
+    <sys:String x:Key="Setup.Incomplete" xml:space="preserve">安装未完成</sys:String>
+    <sys:String x:Key="Setup.Installing" xml:space="preserve">正在安装</sys:String>
+    <sys:String x:Key="Setup.Preparing" xml:space="preserve">准备安装</sys:String>
+    <sys:String x:Key="Setup.Options" xml:space="preserve">安装选项</sys:String>
+    <sys:String x:Key="Setup.Confirm" xml:space="preserve">确认安装</sys:String>
+    <sys:String x:Key="Setup.Complete" xml:space="preserve">安装完成</sys:String>
+    <sys:String x:Key="Setup.EditOptions" xml:space="preserve">修改选项</sys:String>
+    <sys:String x:Key="Setup.NotCommitted" xml:space="preserve">原安装已核验未提交，请结束原次后重新审阅。</sys:String>
+    <sys:String x:Key="Setup.RepairOutcomeUnknown" xml:space="preserve">安装已完成，但开始菜单和程序入口的修复结果未确认。请先查看安装结果。</sys:String>
+    <sys:String x:Key="Setup.OutcomeUnknown" xml:space="preserve">未能确认本次安装的最终结果。</sys:String>
+    <sys:String x:Key="Setup.CheckNoReplay" xml:space="preserve">请点击“查看本次安装结果”确认，查看不会重新安装。</sys:String>
+    <sys:String x:Key="Setup.NoRepeat" xml:space="preserve">确认前，请勿重复安装。</sys:String>
+    <sys:String x:Key="Setup.CloseKeepsRunning" xml:space="preserve">关闭窗口不会停止仍在进行的安装。</sys:String>
+    <sys:String x:Key="Setup.FailedStage" xml:space="preserve">停止位置：</sys:String>
+    <sys:String x:Key="Setup.PartialFailure" xml:space="preserve">。安装可能已部分完成，不会自动回滚；重试会重新核对安装条件。结果未确认时须先核对原次安装。</sys:String>
+    <sys:String x:Key="Setup.ReturnOptions" xml:space="preserve">返回安装选项</sys:String>
+    <sys:String x:Key="Setup.WaitCompletion" xml:space="preserve">请稍候，安装完成后将显示结果。</sys:String>
+    <sys:String x:Key="Setup.CancellationNotice" xml:space="preserve">取消是否可用以当前步骤和取消按钮为准。请求取消后仍须等待本次结果；关闭窗口不会回滚安装。</sys:String>
+    <sys:String x:Key="Setup.CheckingMedia" xml:space="preserve">正在检查安装文件，请稍候…</sys:String>
+    <sys:String x:Key="Setup.ReviewReady" xml:space="preserve">选项已核对。请查看本次影响，点击安装后才修改电脑。</sys:String>
+    <sys:String x:Key="Setup.ChooseOptions" xml:space="preserve">选择安装位置和安装设置，然后点击下一步。</sys:String>
+    <sys:String x:Key="Setup.ActionLabel" xml:space="preserve">本次操作：</sys:String>
+    <sys:String x:Key="Setup.ConfirmOptions" xml:space="preserve">。确认以下选项后开始。</sys:String>
+    <sys:String x:Key="Setup.Installed" xml:space="preserve">菜鸟供包台已安装。</sys:String>
+    <sys:String x:Key="Setup.MediaDetails" xml:space="preserve">安装文件详情</sys:String>
+    <sys:String x:Key="Setup.ReadingMedia" xml:space="preserve">正在核对版本与完整性，完成后显示安装选项。</sys:String>
+    <sys:String x:Key="Setup.RetryCheck" xml:space="preserve">重试检查</sys:String>
+    <sys:String x:Key="Setup.Reinstall" xml:space="preserve">重新安装</sys:String>
+    <sys:String x:Key="Setup.Repair" xml:space="preserve">修复安装</sys:String>
+    <sys:String x:Key="Setup.Update" xml:space="preserve">更新</sys:String>
+    <sys:String x:Key="Setup.Impact" xml:space="preserve">本次安装影响</sys:String>
+    <sys:String x:Key="Setup.DataPurged" xml:space="preserve">原本站数据和管理密码已删除。本次沿用原登记位置重新配置，不恢复已删除的业务记录；机器部署和审计证据保留。</sys:String>
+    <sys:String x:Key="Setup.KeepStation" xml:space="preserve">。保留现有账户、数据与配置；请先关闭供包台。安装会核验程序已退出并释放资源，不要求清空作业或暂停供包。</sys:String>
+    <sys:String x:Key="Setup.RequiresWindowsAdmin" xml:space="preserve">安装需要 Windows 管理员授权，与软件管理密码无关。</sys:String>
+    <sys:String x:Key="Setup.AutoStartShort" xml:space="preserve">开机自启</sys:String>
+    <sys:String x:Key="Common.Enabled" xml:space="preserve">开启</sys:String>
+    <sys:String x:Key="Setup.Dependencies" xml:space="preserve">安装所需依赖：</sys:String>
+    <sys:String x:Key="Setup.Location" xml:space="preserve">安装位置</sys:String>
+    <sys:String x:Key="Setup.ProgramDirectory" xml:space="preserve">程序目录</sys:String>
+    <sys:String x:Key="Setup.DataDirectory" xml:space="preserve">数据目录</sys:String>
+    <sys:String x:Key="Setup.MaintainLocation" xml:space="preserve">沿用本机已登记的程序和数据位置。需要迁移位置时，请先完成完整备份，再按恢复流程处理。</sys:String>
+    <sys:String x:Key="Setup.StartMenuShortcut" xml:space="preserve">在开始菜单创建快捷方式</sys:String>
+    <sys:String x:Key="Setup.DesktopShortcut" xml:space="preserve">在桌面创建快捷方式</sys:String>
+    <sys:String x:Key="Setup.AutostartUnavailable" xml:space="preserve">未能核对本账户的启动快捷方式，请检查 Windows 启动目录。</sys:String>
+    <sys:String x:Key="Setup.AutoStart" xml:space="preserve">开机自动启动供包台</sys:String>
+    <sys:String x:Key="Setup.AutoStartHelp" xml:space="preserve">当前 Windows 用户登录后自动启动供包台。</sys:String>
+    <sys:String x:Key="Setup.AdvancedShortcuts" xml:space="preserve">高级选项 · 快捷方式</sys:String>
+    <sys:String x:Key="Setup.Advanced" xml:space="preserve">高级安装选项</sys:String>
+    <sys:String x:Key="Setup.Settings" xml:space="preserve">安装设置</sys:String>
+    <sys:String x:Key="Setup.Shortcuts" xml:space="preserve">快捷方式</sys:String>
+    <sys:String x:Key="Setup.BundledDrivers" xml:space="preserve">相机采图、条码识别和 RCS 接口已随软件安装，无需另装组件。安装完成不代表相机或 RCS 已连接。程序和数据按本机存储规则放在 D 盘。</sys:String>
+    <sys:String x:Key="Setup.PurgedReinstall" xml:space="preserve">本次操作：重新安装。原本站数据已删除，将沿用原登记位置重新配置。</sys:String>
+    <sys:String x:Key="Setup.PurgedNotice" xml:space="preserve">不恢复已删除的业务记录和管理密码；机器部署及审计证据、个人偏好保留。请先关闭供包台，安装时会确认资源已释放。</sys:String>
+    <sys:String x:Key="Setup.KeepExisting" xml:space="preserve">。账户、数据和配置将保留。</sys:String>
+    <sys:String x:Key="Setup.ThisOperation" xml:space="preserve">本次</sys:String>
+    <sys:String x:Key="Setup.ReleaseBeforeInstall" xml:space="preserve">将保留账户、数据目录和配置；请先关闭供包台，安装时会确认资源已释放。</sys:String>
+    <sys:String x:Key="Setup.ReinstallKeepsRecords" xml:space="preserve">重新安装不会清除已有业务记录。</sys:String>
+    <sys:String x:Key="Setup.Preflight" xml:space="preserve">安装预检详情</sys:String>
+    <sys:String x:Key="Setup.ThisPreflight" xml:space="preserve">本次安装预检详情</sys:String>
+    <sys:String x:Key="Setup.StartMenu" xml:space="preserve">开始菜单</sys:String>
+    <sys:String x:Key="Setup.CreateShortcut" xml:space="preserve">创建快捷方式</sys:String>
+    <sys:String x:Key="Setup.NoShortcut" xml:space="preserve">不创建快捷方式</sys:String>
+    <sys:String x:Key="Setup.Desktop" xml:space="preserve">桌面</sys:String>
+    <sys:String x:Key="Setup.PurgedData" xml:space="preserve">原本站数据已删除；本次沿用原登记位置重新配置，不恢复原记录。</sys:String>
+    <sys:String x:Key="Setup.CloseFirst" xml:space="preserve">请先关闭供包台；安装保留现有账户、数据与配置。</sys:String>
+    <sys:String x:Key="Setup.Authority" xml:space="preserve">安装需要 Windows 管理员授权（与软件管理密码无关）。</sys:String>
+    <sys:String x:Key="Setup.FirstUse" xml:space="preserve">首次使用</sys:String>
+    <sys:String x:Key="Setup.FoundConfig" xml:space="preserve">已有配置已识别。打开后自动检查并启动；条件不满足时会显示具体原因。</sys:String>
+    <sys:String x:Key="Setup.FirstConfiguration" xml:space="preserve">打开后自动检查配置；首次配置保存后自动启动，条件不满足时会显示具体原因。安装完成不代表设备已可运行。</sys:String>
+    <sys:String x:Key="Setup.OpenAfter" xml:space="preserve">完成后打开供包台</sys:String>
+    <sys:String x:Key="Setup.UseOriginalAccount" xml:space="preserve">请使用原供包台的 Windows 账户打开程序。</sys:String>
+    <sys:String x:Key="Setup.NoStageMessage" xml:space="preserve">未收到阶段消息。</sys:String>
+    <sys:String x:Key="Setup.PreviousMessages" xml:space="preserve">历史消息</sys:String>
+    <sys:String x:Key="Setup.WindowsConfirm" xml:space="preserve">等待 Windows 授权，请在授权窗口确认</sys:String>
+    <sys:String x:Key="Setup.WaitForAuthorization" xml:space="preserve">等待 Windows 授权。</sys:String>
+    <sys:String x:Key="Setup.Authorizing" xml:space="preserve">等待 Windows 授权；如有提示，请在电脑上确认。</sys:String>
+    <sys:String x:Key="Setup.PastAuthorization" xml:space="preserve">以下为历史消息，不代表当前仍在等待授权。</sys:String>
+    <sys:String x:Key="Setup.Diagnostics" xml:space="preserve">诊断结果</sys:String>
+    <sys:String x:Key="Setup.RawMessage" xml:space="preserve">原始消息文本</sys:String>
+    <sys:String x:Key="Setup.Details" xml:space="preserve">安装详情</sys:String>
+    <sys:String x:Key="Setup.ViewDetails" xml:space="preserve">查看本次安装详情</sys:String>
+    <sys:String x:Key="Setup.RecordsUnavailable" xml:space="preserve">本次安装尚未提供记录目录。</sys:String>
+    <sys:String x:Key="Setup.RecordsError" xml:space="preserve">记录目录尚未生成或当前无法访问：</sys:String>
+    <sys:String x:Key="Setup.RecordsMissing" xml:space="preserve">安装记录目录尚未生成或当前无法访问。</sys:String>
+    <sys:String x:Key="Setup.OpenRecordsFailed" xml:space="preserve">无法打开安装记录目录：</sys:String>
+    <sys:String x:Key="Setup.OutcomeStillUnknown" xml:space="preserve"> 最终结果仍待确认，请勿重复安装。</sys:String>
+    <sys:String x:Key="Setup.ViewFailureDetails" xml:space="preserve"> 请查看本次失败详情。</sys:String>
+    <sys:String x:Key="Setup.CheckingClosed" xml:space="preserve">正在确认供包台已关闭</sys:String>
+    <sys:String x:Key="Setup.Copying" xml:space="preserve">正在复制并校验程序文件</sys:String>
+    <sys:String x:Key="Setup.CameraRuntime" xml:space="preserve">正在检查并补齐相机运行库</sys:String>
+    <sys:String x:Key="Setup.PreparingData" xml:space="preserve">正在准备配置与数据目录</sys:String>
+    <sys:String x:Key="Setup.InstallingComponents" xml:space="preserve">正在安装已核验组件</sys:String>
+    <sys:String x:Key="Setup.ManagementService" xml:space="preserve">正在登记管理授权服务</sys:String>
+    <sys:String x:Key="Setup.Committing" xml:space="preserve">正在提交安装登记</sys:String>
+    <sys:String x:Key="Setup.CreatingShortcuts" xml:space="preserve">正在创建所选快捷方式</sys:String>
+    <sys:String x:Key="Setup.Registering" xml:space="preserve">正在登记 Windows 程序入口</sys:String>
+    <sys:String x:Key="Setup.CheckingResult" xml:space="preserve">正在确认安装结果</sys:String>
+    <sys:String x:Key="Setup.ResumeFailed" xml:space="preserve">原安装续办未完成：</sys:String>
+    <sys:String x:Key="Setup.KeepOriginal" xml:space="preserve">
+原操作和记录保留，请核对原结果后继续。</sys:String>
+    <sys:String x:Key="Setup.StartDiagnosticsUnavailable" xml:space="preserve">启动诊断无法显示，请查看启动记录。</sys:String>
+    <sys:String x:Key="Setup.OpenFailed" xml:space="preserve">安装已完成，但打开供包台未成功。可点击完成重试打开，或取消勾选后关闭。
+</sys:String>
+    <sys:String x:Key="Setup.PreflightUnavailable" xml:space="preserve">预检诊断无法显示，请检查路径与配置后重试。</sys:String>
+    <sys:String x:Key="Setup.PreflightFailed" xml:space="preserve">安装预检未通过，请查看本次预检详情。</sys:String>
+    <sys:String x:Key="Common.IncompletePrefix" xml:space="preserve">未完成：</sys:String>
+    <sys:String x:Key="Setup.WindowsRequired" xml:space="preserve">安装向导需要 Windows</sys:String>
+    <sys:String x:Key="Setup.CancelPreparation" xml:space="preserve">取消准备</sys:String>
+    <sys:String x:Key="Setup.CheckOptionsDetails" xml:space="preserve">检查安装选项
+安装包：</sys:String>
+    <sys:String x:Key="Setup.ProgramDetails" xml:space="preserve">
+程序：</sys:String>
+    <sys:String x:Key="Setup.DataDetails" xml:space="preserve">
+数据：</sys:String>
+    <sys:String x:Key="Setup.PreflightCancelDetail" xml:space="preserve">
+取消将在当前文件或组件核验结束后停止。</sys:String>
+    <sys:String x:Key="Setup.PreflightStopped" xml:space="preserve">已停止检查，电脑上未做任何更改。</sys:String>
+    <sys:String x:Key="Setup.PreparingRequest" xml:space="preserve">正在准备安装请求</sys:String>
+    <sys:String x:Key="Setup.DeployDetails" xml:space="preserve">安装 / 升级 / 修复
+安装包：</sys:String>
+    <sys:String x:Key="Setup.RetainedDataDetails" xml:space="preserve">
+保留数据：</sys:String>
+    <sys:String x:Key="Setup.ConfigurationUnknown" xml:space="preserve">暂时无法检查配置状态。打开软件后按检查结果处理；设备尚未启动。</sys:String>
+    <sys:String x:Key="Setup.ConfigurationFailure" xml:space="preserve">暂时无法检查配置状态：</sys:String>
+    <sys:String x:Key="Setup.DevicesStopped" xml:space="preserve">。设备尚未启动。</sys:String>
+    <sys:String x:Key="Setup.SignInRuntime" xml:space="preserve">请登录指定运行账户后运行程序</sys:String>
+    <sys:String x:Key="Setup.MissingOriginalIdentity" xml:space="preserve">未取得原安装完整身份，请核对受保护原记录；不能据此开始新操作。</sys:String>
+    <sys:String x:Key="Setup.VerifyCurrentOptions" xml:space="preserve">请重新核对当前安装选项。</sys:String>
+    <sys:String x:Key="Setup.LastOperation" xml:space="preserve">
+上次操作：</sys:String>
+    <sys:String x:Key="Setup.OriginalOperation" xml:space="preserve">原操作：</sys:String>
+    <sys:String x:Key="Setup.SourceCommit" xml:space="preserve">
+来源提交：</sys:String>
+    <sys:String x:Key="Setup.ProgramFolderDetails" xml:space="preserve">
+程序目录：</sys:String>
+    <sys:String x:Key="Setup.DataFolderDetails" xml:space="preserve">
+数据目录：</sys:String>
+    <sys:String x:Key="Uninstall.Missing" xml:space="preserve">未找到安装信息。</sys:String>
+    <sys:String x:Key="Uninstall.KeepData" xml:space="preserve">保留本站数据</sys:String>
+    <sys:String x:Key="Uninstall.DeleteData" xml:space="preserve">同时删除本站数据</sys:String>
+    <sys:String x:Key="Uninstall.WindowTitle" xml:space="preserve">菜鸟供包台 · 卸载</sys:String>
+    <sys:String x:Key="Uninstall.Heading" xml:space="preserve">卸载菜鸟供包台</sys:String>
+    <sys:String x:Key="Uninstall.KeepDetail" xml:space="preserve">保留配置、记录、图片、日志和管理密码。</sys:String>
+    <sys:String x:Key="Uninstall.DeleteDetail" xml:space="preserve">删除配置、记录、图片、日志和管理密码，不可撤销。重新安装后创建新密码。</sys:String>
+    <sys:String x:Key="Uninstall.Action" xml:space="preserve">卸载</sys:String>
+    <sys:String x:Key="Uninstall.CloseFirst" xml:space="preserve">卸载前请先关闭供包台。</sys:String>
+    <sys:String x:Key="Uninstall.RecordChanged" xml:space="preserve">安装信息已变化，请关闭并重新打开卸载程序。</sys:String>
+    <sys:String x:Key="Uninstall.DeletePreview" xml:space="preserve">卸载程序并删除本站数据和管理密码；不创建备份。</sys:String>
+    <sys:String x:Key="Uninstall.KeepPreview" xml:space="preserve">卸载程序，保留本站数据；不创建备份。</sys:String>
+    <sys:String x:Key="Uninstall.StillInstalled" xml:space="preserve">程序尚未卸载。可重新点击“卸载”，将自动处理上次未完成的卸载。</sys:String>
+    <sys:String x:Key="Uninstall.PreviousUnknown" xml:space="preserve">上次卸载结果尚未确认，请稍后再次查看。</sys:String>
+    <sys:String x:Key="Uninstall.ResultTitle" xml:space="preserve">菜鸟供包台 · 卸载结果</sys:String>
+    <sys:String x:Key="Uninstall.Result" xml:space="preserve">卸载结果</sys:String>
+    <sys:String x:Key="Uninstall.DataDeleted" xml:space="preserve">本站数据已删除，管理密码已清除。</sys:String>
+    <sys:String x:Key="Uninstall.DataKept" xml:space="preserve">本站数据保留。</sys:String>
+    <sys:String x:Key="Uninstall.MaintenanceRestart" xml:space="preserve">历史清理尚未完成：维护程序正在使用缓存，已登记重启清理。重启后请用完整安装包核对原结果。</sys:String>
+    <sys:String x:Key="Uninstall.FilesKept" xml:space="preserve">历史程序或维护缓存尚未全部清理，请查看详情后重试。无法核验的文件保留。</sys:String>
+    <sys:String x:Key="Uninstall.CompleteWithPurge" xml:space="preserve">卸载完成，本站数据已删除，管理密码已清除，历史程序和维护缓存已清理。</sys:String>
+    <sys:String x:Key="Uninstall.DataBusy" xml:space="preserve">程序已卸载，部分数据尚未删除。请关闭占用文件的程序后重试卸载。</sys:String>
+    <sys:String x:Key="Uninstall.Restart" xml:space="preserve">程序已卸载。部分文件将在重启电脑后删除。</sys:String>
+    <sys:String x:Key="Uninstall.PurgePending" xml:space="preserve">程序已卸载，本站数据尚未删除。可重试卸载以完成数据清理。</sys:String>
+    <sys:String x:Key="Uninstall.CompleteKept" xml:space="preserve">卸载完成，本站数据已保留。</sys:String>
+    <sys:String x:Key="Uninstall.FilesBusy" xml:space="preserve">程序已卸载，部分文件尚未删除。请关闭占用文件的程序后重试卸载。</sys:String>
+    <sys:String x:Key="Uninstall.ProgramPath" xml:space="preserve">程序目录：</sys:String>
+    <sys:String x:Key="Uninstall.DataPath" xml:space="preserve">
+保留数据：</sys:String>
+    <sys:String x:Key="Uninstall.ReceiptPath" xml:space="preserve">
+卸载记录：</sys:String>
+    <sys:String x:Key="Uninstall.PurgeReceipt" xml:space="preserve">数据清理记录：</sys:String>
+    <sys:String x:Key="Uninstall.CacheReceipt" xml:space="preserve">历史清理记录：</sys:String>
+    <sys:String x:Key="Uninstall.Remaining" xml:space="preserve">剩余文件或目录：
+</sys:String>
+    <sys:String x:Key="Uninstall.Unverified" xml:space="preserve">
+保留的未核验项：
+</sys:String>
+    <sys:String x:Key="Uninstall.Details" xml:space="preserve">卸载详情</sys:String>
+    <sys:String x:Key="Uninstall.RemainingPrefix" xml:space="preserve">历史清理尚有 </sys:String>
+    <sys:String x:Key="Uninstall.FolderCount" xml:space="preserve"> 个目录、</sys:String>
+    <sys:String x:Key="Uninstall.RetainedSummary" xml:space="preserve"> 个保留项；此处仅显示摘要，完整清单见历史清理记录。</sys:String>
+    <sys:String x:Key="Uninstall.ScopePurge" xml:space="preserve">本站管理密码包含在数据清理范围内。共享驱动和系统运行库、个人偏好、安全回执和本站以外的备份保留。</sys:String>
+    <sys:String x:Key="Uninstall.ScopeKeep" xml:space="preserve">管理密码、共享驱动和系统运行库、个人偏好、安全回执和本站以外的备份保留。</sys:String>
+    <sys:String x:Key="Uninstall.Retry" xml:space="preserve">重试卸载</sys:String>
+    <sys:String x:Key="Uninstall.UnknownNoReplay" xml:space="preserve">卸载结果未确认。再次点击卸载按钮只核对原结果，不会重复执行。
+</sys:String>
+    <sys:String x:Key="Setup.WorkflowTitle" xml:space="preserve">安装菜鸟供包台</sys:String>
+    <sys:String x:Key="Startup.Product" xml:space="preserve">菜鸟供包台</sys:String>
+    <sys:String x:Key="Setup.HostVersion" xml:space="preserve">实际运行维护宿主：</sys:String>
+    <sys:String x:Key="Setup.CurrentDeployment" xml:space="preserve">
+
+当前登记部署：</sys:String>
+    <sys:String x:Key="Setup.Unregistered" xml:space="preserve">未登记</sys:String>
+    <sys:String x:Key="Setup.TargetMedia" xml:space="preserve">
+
+所选目标介质：</sys:String>
+    <sys:String x:Key="Setup.BuildTransition" xml:space="preserve">
+当前构建 → 目标构建：
+</sys:String>
+    <sys:String x:Key="Setup.CouldNotReadDeployment" xml:space="preserve">
+当前登记未读取：</sys:String>
+    <sys:String x:Key="Setup.CopyVersion" xml:space="preserve">版本信息（可选择复制）</sys:String>
+    <sys:String x:Key="Setup.StepWelcome" xml:space="preserve">1  欢迎与位置</sys:String>
+    <sys:String x:Key="Setup.StepInstall" xml:space="preserve">2  安装</sys:String>
+    <sys:String x:Key="Setup.StepFinished" xml:space="preserve">3  安装完成</sys:String>
+    <sys:String x:Key="Setup.StepOptions" xml:space="preserve">1  安装选项</sys:String>
+    <sys:String x:Key="Setup.StepConfirm" xml:space="preserve">2  确认并安装</sys:String>
+    <sys:String x:Key="Setup.VersionInformation" xml:space="preserve">版本信息</sys:String>
+    <sys:String x:Key="Setup.MaintenanceUnknown" xml:space="preserve">上次操作结果未确认，请勿重复执行。请先查看结果，或关闭窗口（记录会保留）。</sys:String>
+    <sys:String x:Key="Setup.MaintenancePastUnknown" xml:space="preserve">上次维护操作结果未确认，请勿重复执行。
+</sys:String>
+    <sys:String x:Key="Setup.CheckReceipt" xml:space="preserve">
+请核对原回执和当前状态后再试；失败提示不表示已执行步骤被回滚。</sys:String>
+    <sys:String x:Key="Setup.ChooseFolder" xml:space="preserve">选择文件夹…</sys:String>
+    <sys:String x:Key="Setup.CleanupFailed" xml:space="preserve">安装准备文件清理未完成</sys:String>
+    <sys:String x:Key="Setup.PackageUnavailable" xml:space="preserve">安装包不可用</sys:String>
+    <sys:String x:Key="Setup.MissingPayload" xml:space="preserve">内嵌安装文件缺失，请使用完整发布的安装程序</sys:String>
+    <sys:String x:Key="Setup.MissingMetadata" xml:space="preserve">安装包说明缺失</sys:String>
+    <sys:String x:Key="Setup.PreparingBusy" xml:space="preserve">安装准备目录已被占用</sys:String>
+    <sys:String x:Key="Setup.UnownedFolder" xml:space="preserve">拒绝清理不属于本次安装的目录</sys:String>
+    <sys:String x:Key="Setup.LinkInPreparation" xml:space="preserve">准备目录出现链接，保留目录：</sys:String>
+    <sys:String x:Key="Setup.VerifyFiles">正在校验安装文件</sys:String>
+    <sys:String x:Key="Setup.PrepareFiles">正在准备安装文件</sys:String>
+    <sys:String x:Key="Setup.RecheckFiles">正在复核安装文件</sys:String>
+    <sys:String x:Key="Setup.FilesReady">安装文件已就绪</sys:String>
+  <sys:String x:Key="Common.LanguageWatchUnavailable" xml:space="preserve">无法监视此用户的界面语言更新。</sys:String>
+  <sys:String x:Key="Common.LanguageInvalid" xml:space="preserve">请选择可用的界面语言。</sys:String>
+  <sys:String x:Key="Common.LayoutMinimize" xml:space="preserve">最小化到任务栏</sys:String>
+  <sys:String x:Key="Common.Maximize" xml:space="preserve">最大化窗口</sys:String>
+  <sys:String x:Key="Common.Copy" xml:space="preserve">复制</sys:String>
+  <sys:String x:Key="Common.Cut" xml:space="preserve">剪切</sys:String>
+  <sys:String x:Key="Common.Paste" xml:space="preserve">粘贴</sys:String>
+  <sys:String x:Key="Common.SelectAll" xml:space="preserve">全选</sys:String>
+  <sys:String x:Key="Common.Query" xml:space="preserve">查询</sys:String>
+  <sys:String x:Key="Common.CancelQuery" xml:space="preserve">取消查询</sys:String>
+  <sys:String x:Key="Common.Previous" xml:space="preserve">上一页</sys:String>
+  <sys:String x:Key="Common.NextPage" xml:space="preserve">下一页</sys:String>
+  <sys:String x:Key="Common.Pending" xml:space="preserve">待确认</sys:String>
+  <sys:String x:Key="Common.SetupDisplay" xml:space="preserve">显示与提示音</sys:String>
+  <sys:String x:Key="Common.CamerasLeft" xml:space="preserve">左相机</sys:String>
+  <sys:String x:Key="Common.CamerasRight" xml:space="preserve">右相机</sys:String>
+  <sys:String x:Key="Common.StationRcs" xml:space="preserve">本站与 RCS</sys:String>
+  <sys:String x:Key="Common.Offline" xml:space="preserve">离线</sys:String>
+  <sys:String x:Key="Common.Connect" xml:space="preserve">连接</sys:String>
+  <sys:String x:Key="Common.DateToday" xml:space="preserve">今天</sys:String>
+  <sys:String x:Key="Common.LastDay" xml:space="preserve">最近24小时</sys:String>
+  <sys:String x:Key="Common.Error" xml:space="preserve">错误</sys:String>
+  <sys:String x:Key="Common.Warning" xml:space="preserve">警告</sys:String>
+  <sys:String x:Key="Common.Info" xml:space="preserve">信息</sys:String>
+  <sys:String x:Key="Common.All" xml:space="preserve">全部</sys:String>
+  <sys:String x:Key="Common.Time" xml:space="preserve">时间</sys:String>
+  <sys:String x:Key="Common.Level" xml:space="preserve">级别</sys:String>
+  <sys:String x:Key="Common.Source" xml:space="preserve">来源</sys:String>
+  <sys:String x:Key="Common.Status" xml:space="preserve">状态</sys:String>
+  <sys:String x:Key="Common.ViewDetails" xml:space="preserve">查看详情</sys:String>
+  <sys:String x:Key="Common.Original" xml:space="preserve">原文</sys:String>
+  <sys:String x:Key="Work.TestEdition" xml:space="preserve">测试版</sys:String>
+  <sys:String x:Key="Work.LocalClock" xml:space="preserve">本机时间</sys:String>
+  <sys:String x:Key="Work.Notice" xml:space="preserve">本机设置通知</sys:String>
+  <sys:String x:Key="Work.ReadNotice" xml:space="preserve">本机设置读取通知</sys:String>
+  <sys:String x:Key="Work.NoNotice" xml:space="preserve">暂无本机设置通知</sys:String>
+  <sys:String x:Key="Work.Exit" xml:space="preserve">退出供包台</sys:String>
+  <sys:String x:Key="Work.Resume" xml:space="preserve">恢复供包</sys:String>
+  <sys:String x:Key="Work.ResumeHelp" xml:space="preserve">核对当前供包条件后恢复；未确认的原请求仍须核对，不会重新发送。</sys:String>
+  <sys:String x:Key="Work.StatusDescription" xml:space="preserve">工作站状态说明</sys:String>
+  <sys:String x:Key="Work.CheckRcs" xml:space="preserve">检查 RCS 心跳</sys:String>
+  <sys:String x:Key="Work.CheckRcsHelp" xml:space="preserve">点击发送一次 RCS 心跳。每件包裹以本件返回的格口为准。</sys:String>
+  <sys:String x:Key="Work.NavWork" xml:space="preserve">作业</sys:String>
+  <sys:String x:Key="Work.NavRecords" xml:space="preserve">记录</sys:String>
+  <sys:String x:Key="Work.SettingsHelp" xml:space="preserve">设置（查看不暂停，修改需验证密码）</sys:String>
+  <sys:String x:Key="Work.SettingsAccessible" xml:space="preserve">设置，查看不暂停，修改需验证密码</sys:String>
+  <sys:String x:Key="Work.CollapseMenu" xml:space="preserve">收起菜单</sys:String>
+  <sys:String x:Key="Work.ExpandMenu" xml:space="preserve">展开菜单</sys:String>
+  <sys:String x:Key="Work.DismissNotice" xml:space="preserve">关闭提示</sys:String>
+  <sys:String x:Key="Work.LastResult" xml:space="preserve">最近一次操作结果，可选择复制</sys:String>
+  <sys:String x:Key="Work.WindowTooSmall" xml:space="preserve">窗口太小，无法完整显示作业信息（至少需要 800 × 420）。请最大化窗口；相机和当前任务不受影响。</sys:String>
+  <sys:String x:Key="Work.Lane" xml:space="preserve">投递位</sys:String>
+  <sys:String x:Key="Work.Enable" xml:space="preserve">启用</sys:String>
+  <sys:String x:Key="Work.Disable" xml:space="preserve">停用</sys:String>
+  <sys:String x:Key="Work.DisablePending" xml:space="preserve">停用中</sys:String>
+  <sys:String x:Key="Work.EnableLane" xml:space="preserve">启用本投递位</sys:String>
+  <sys:String x:Key="Work.DisableLane" xml:space="preserve">停用本投递位</sys:String>
+  <sys:String x:Key="Work.BarcodeInput" xml:space="preserve">本次条码，可输入，回车提交</sys:String>
+  <sys:String x:Key="Work.BarcodeHelp" xml:space="preserve">点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。完整条码输入后按回车或点击提交。</sys:String>
+  <sys:String x:Key="Work.ClearInput" xml:space="preserve">清空输入</sys:String>
+  <sys:String x:Key="Work.Image" xml:space="preserve">图片</sys:String>
+  <sys:String x:Key="Work.ViewCurrentImage" xml:space="preserve">查看当前包裹图片</sys:String>
+  <sys:String x:Key="Work.StatusSymbol" xml:space="preserve">本位状态符号</sys:String>
+  <sys:String x:Key="Work.LaneReason" xml:space="preserve">本位原因，可选择复制</sys:String>
+  <sys:String x:Key="Work.PreviousCode" xml:space="preserve">上一件条码，仅供查看</sys:String>
+  <sys:String x:Key="Work.ResultNeedsReview" xml:space="preserve">取格口结果待核对</sys:String>
+  <sys:String x:Key="Work.CurrentCode" xml:space="preserve">当前条码</sys:String>
+  <sys:String x:Key="Work.CurrentCodeCopy" xml:space="preserve">当前条码，可选择复制</sys:String>
+  <sys:String x:Key="Work.UnknownStep1" xml:space="preserve">1. 取下包裹，放到异常暂存篮</sys:String>
+  <sys:String x:Key="Work.UnknownStep3" xml:space="preserve">3. 呼叫班长或运维核对，请勿再次上件</sys:String>
+  <sys:String x:Key="Work.RawRcsResponse" xml:space="preserve">RCS 返回消息，可选择复制</sys:String>
+  <sys:String x:Key="Work.Removed" xml:space="preserve">已取下包裹</sys:String>
+  <sys:String x:Key="Work.Wave" xml:space="preserve">波次号</sys:String>
+  <sys:String x:Key="Work.WaveAccessible" xml:space="preserve">本次任务波次号</sys:String>
+  <sys:String x:Key="Work.Task" xml:space="preserve">任务号</sys:String>
+  <sys:String x:Key="Work.TaskAccessible" xml:space="preserve">本次调度任务号</sys:String>
+  <sys:String x:Key="Work.Sku" xml:space="preserve">商品编码</sys:String>
+  <sys:String x:Key="Work.SkuAccessible" xml:space="preserve">本次任务商品编码</sys:String>
+  <sys:String x:Key="Work.ReturnQuantity" xml:space="preserve">返回数量</sys:String>
+  <sys:String x:Key="Work.ReturnQuantityAccessible" xml:space="preserve">本次调度返回数量</sys:String>
+  <sys:String x:Key="Work.Submit" xml:space="preserve">提交</sys:String>
+  <sys:String x:Key="Work.ConfirmParcel" xml:space="preserve">确认本位包裹</sys:String>
+  <sys:String x:Key="Work.ConfirmParcelHelp" xml:space="preserve">本位状态已变化。请确认手上的包裹属于本位后再提交。</sys:String>
+  <sys:String x:Key="Work.RemoveAndConfirm" xml:space="preserve">取下本件后确认，准备接收下一件</sys:String>
+  <sys:String x:Key="Work.RemovalWithPending" xml:space="preserve">确认包裹已取下。原请求仍需核对，本位暂不能再次上件。</sys:String>
+  <sys:String x:Key="Work.CameraState" xml:space="preserve">相机连接状态</sys:String>
+  <sys:String x:Key="Work.ExitPrompt" xml:space="preserve">确认退出供包台？</sys:String>
+  <sys:String x:Key="Work.CancelExit" xml:space="preserve">取消退出</sys:String>
+  <sys:String x:Key="Work.ExitScope" xml:space="preserve">将停止当前供包业务，并关闭所有相关窗口。</sys:String>
+  <sys:String x:Key="Work.ExitVisible" xml:space="preserve">本次可见作业：{0}</sys:String>
+  <sys:String x:Key="Work.ExitUnknown" xml:space="preserve">结果未知阶段：{0}</sys:String>
+  <sys:String x:Key="Work.ExitSnapshot" xml:space="preserve">状态读取：{0}</sys:String>
+  <sys:String x:Key="Work.ExitPending" xml:space="preserve">待生效配置：{0}</sys:String>
+  <sys:String x:Key="Work.ExitRequests" xml:space="preserve">已发送请求及未确认结果仍保留，请继续核对原记录。</sys:String>
+  <sys:String x:Key="Work.ExitWithDrafts" xml:space="preserve">下一步逐窗处理未保存设置；停止失败会保留当前窗口。</sys:String>
+  <sys:String x:Key="Work.EmergencyNotice" xml:space="preserve">软件暂停不是安全急停，紧急情况请使用现场急停按钮。</sys:String>
+  <sys:String x:Key="Work.ContinueExit" xml:space="preserve">继续退出</sys:String>
+  <sys:String x:Key="Settings.StationTitle" xml:space="preserve">供包台设置</sys:String>
+  <sys:String x:Key="Settings.UnlockEdit" xml:space="preserve">验证密码并编辑</sys:String>
+  <sys:String x:Key="Settings.ReadOnly" xml:space="preserve">只读模式</sys:String>
+  <sys:String x:Key="Settings.VersionStatus" xml:space="preserve">当前设置版本和生效状态</sys:String>
+  <sys:String x:Key="Settings.ReturnWork" xml:space="preserve">返回作业</sys:String>
+  <sys:String x:Key="Settings.HideHelp" xml:space="preserve">暂时隐藏设置，保留当前草稿和有效编辑授权</sys:String>
+  <sys:String x:Key="Settings.CloseHelp" xml:space="preserve">关闭本窗并结束本窗编辑授权</sys:String>
+  <sys:String x:Key="History.Selected" xml:space="preserve">已选</sys:String>
+  <sys:String x:Key="History.Title" xml:space="preserve">作业记录</sys:String>
+  <sys:String x:Key="History.Clear" xml:space="preserve">清除筛选</sys:String>
+  <sys:String x:Key="History.FirstPage" xml:space="preserve">首屏</sys:String>
+  <sys:String x:Key="History.More" xml:space="preserve">加载更多</sys:String>
+  <sys:String x:Key="History.Export" xml:space="preserve">导出表格</sys:String>
+  <sys:String x:Key="History.ExportHelp" xml:space="preserve">先查询，再导出当前查询结果</sys:String>
+  <sys:String x:Key="History.CancelExport" xml:space="preserve">取消导出</sys:String>
+  <sys:String x:Key="History.Filters" xml:space="preserve">筛选条件 · 条码、投递位、状态与时间</sys:String>
+  <sys:String x:Key="History.Barcode" xml:space="preserve">完整条码</sys:String>
+  <sys:String x:Key="History.BarcodeAccessible" xml:space="preserve">历史完整条码</sys:String>
+  <sys:String x:Key="History.BarcodeHelp" xml:space="preserve">输入完整条码，保留前导零</sys:String>
+  <sys:String x:Key="History.LaneAccessible" xml:space="preserve">历史投递位</sys:String>
+  <sys:String x:Key="History.LaneHelp" xml:space="preserve">按投递位筛选；已停用的投递位可在“更多筛选”中按编号查询</sys:String>
+  <sys:String x:Key="History.BusinessState" xml:space="preserve">业务状态</sys:String>
+  <sys:String x:Key="History.StateAccessible" xml:space="preserve">历史业务状态</sys:String>
+  <sys:String x:Key="History.TimeRange" xml:space="preserve">时间范围</sys:String>
+  <sys:String x:Key="History.LastWeek" xml:space="preserve">最近7天</sys:String>
+  <sys:String x:Key="History.AnyTime" xml:space="preserve">不限时间</sys:String>
+  <sys:String x:Key="History.Start" xml:space="preserve">开始时间</sys:String>
+  <sys:String x:Key="History.StartAccessible" xml:space="preserve">历史开始含时区</sys:String>
+  <sys:String x:Key="History.End" xml:space="preserve">结束时间</sys:String>
+  <sys:String x:Key="History.EndAccessible" xml:space="preserve">历史结束不含含时区</sys:String>
+  <sys:String x:Key="History.RangeHelp" xml:space="preserve">按本机时间查询，包含开始时刻，不包含结束时刻；留空表示不限。</sys:String>
+  <sys:String x:Key="History.MoreFilters" xml:space="preserve">更多筛选与查询信息</sys:String>
+  <sys:String x:Key="History.Request" xml:space="preserve">请求编号</sys:String>
+  <sys:String x:Key="History.OriginalRequest" xml:space="preserve">历史原请求编号</sys:String>
+  <sys:String x:Key="History.ExactLane" xml:space="preserve">历史投递位编号</sys:String>
+  <sys:String x:Key="History.ExactLaneAccessible" xml:space="preserve">历史投递位精确ID</sys:String>
+  <sys:String x:Key="History.ScannedAt" xml:space="preserve">扫描时间</sys:String>
+  <sys:String x:Key="History.Chute" xml:space="preserve">格口</sys:String>
+  <sys:String x:Key="History.BarcodeImage" xml:space="preserve">条码 / 图片</sys:String>
+  <sys:String x:Key="History.OpenPicture" xml:space="preserve">查看此作业的包裹图片</sys:String>
+  <sys:String x:Key="History.OpenRecordPicture" xml:space="preserve">查看此记录的包裹图片</sys:String>
+  <sys:String x:Key="History.InputSource" xml:space="preserve">输入来源</sys:String>
+  <sys:String x:Key="History.OpenTask" xml:space="preserve">查看这条作业的任务详情</sys:String>
+  <sys:String x:Key="History.ViewTask" xml:space="preserve">查看任务详情</sys:String>
+  <sys:String x:Key="History.TaskLog" xml:space="preserve">查看该作业的日志</sys:String>
+  <sys:String x:Key="History.QuerySelected" xml:space="preserve">查询所选作业的结果</sys:String>
+  <sys:String x:Key="History.ContinueSelected" xml:space="preserve">继续处理所选作业</sys:String>
+  <sys:String x:Key="History.CopyData" xml:space="preserve">复制完整数据</sys:String>
+  <sys:String x:Key="History.TaskDetails" xml:space="preserve">任务详情</sys:String>
+  <sys:String x:Key="History.OpenParcelImage" xml:space="preserve">查看这件包裹的图片</sys:String>
+  <sys:String x:Key="History.ViewPicture" xml:space="preserve">查看图片</sys:String>
+  <sys:String x:Key="History.Inspection" xml:space="preserve">包裹检查说明</sys:String>
+  <sys:String x:Key="History.Safety" xml:space="preserve">不替代现场安全许可</sys:String>
+  <sys:String x:Key="History.Technical" xml:space="preserve">技术详情（维护人员）</sys:String>
+  <sys:String x:Key="Ops.Title" xml:space="preserve">供包运维工具</sys:String>
+  <sys:String x:Key="Ops.Vehicle" xml:space="preserve">小车状态</sys:String>
+  <sys:String x:Key="Ops.Round" xml:space="preserve">当前轮次</sys:String>
+  <sys:String x:Key="Ops.Task" xml:space="preserve">当前任务</sys:String>
+  <sys:String x:Key="Ops.Manual" xml:space="preserve">人工输入</sys:String>
+  <sys:String x:Key="Ops.SupplyNotice" xml:space="preserve">供包提示</sys:String>
+  <sys:String x:Key="Ops.SupplyNoticeCopy" xml:space="preserve">本位供包提示，可复制</sys:String>
+  <sys:String x:Key="Ops.VerifyStation" xml:space="preserve">站点待核验</sys:String>
+  <sys:String x:Key="Ops.CheckConnection" xml:space="preserve">核验连接中</sys:String>
+  <sys:String x:Key="Ops.Environment" xml:space="preserve">环境信息</sys:String>
+  <sys:String x:Key="Ops.EnvironmentAccessible" xml:space="preserve">版本、完整来源和本机路径</sys:String>
+  <sys:String x:Key="Ops.ReadOnlySafety" xml:space="preserve">仅浏览不会暂停供包 · 软件暂停非安全急停</sys:String>
+  <sys:String x:Key="Ops.Overview" xml:space="preserve">运行总览</sys:String>
+  <sys:String x:Key="Ops.WorkstationStatus" xml:space="preserve">工作站状态</sys:String>
+  <sys:String x:Key="Ops.VisibleTasks" xml:space="preserve">当前可见作业</sys:String>
+  <sys:String x:Key="Ops.Custody" xml:space="preserve">待核对 / 历史留存</sys:String>
+  <sys:String x:Key="Ops.PendingSettings" xml:space="preserve">待生效设置</sys:String>
+  <sys:String x:Key="Ops.DevicesStorage" xml:space="preserve">设备与存储状态</sys:String>
+  <sys:String x:Key="Ops.Technical" xml:space="preserve">技术说明</sys:String>
+  <sys:String x:Key="Ops.LogCenter" xml:space="preserve">日志中心</sys:String>
+  <sys:String x:Key="Ops.LogSource" xml:space="preserve">日志来源</sys:String>
+  <sys:String x:Key="Ops.OfflineLog" xml:space="preserve">离线运行日志 · 只读</sys:String>
+  <sys:String x:Key="Ops.OfflineLogHelp" xml:space="preserve">只读取已落盘运行日志</sys:String>
+  <sys:String x:Key="Ops.CompleteLog" xml:space="preserve">完整在线日志 · 需授权</sys:String>
+  <sys:String x:Key="Ops.CompleteLogHelp" xml:space="preserve">使用工作站的已授权连接查询完整在线日志</sys:String>
+  <sys:String x:Key="Ops.LogArea" xml:space="preserve">日志范围</sys:String>
+  <sys:String x:Key="Ops.TimeAccessible" xml:space="preserve">日志时间范围</sys:String>
+  <sys:String x:Key="Ops.LastHour" xml:space="preserve">最近1小时</sys:String>
+  <sys:String x:Key="Ops.LevelAccessible" xml:space="preserve">日志级别</sys:String>
+  <sys:String x:Key="Ops.Keyword" xml:space="preserve">关键词</sys:String>
+  <sys:String x:Key="Ops.KeywordAccessible" xml:space="preserve">日志关键词</sys:String>
+  <sys:String x:Key="Ops.KeyEvents" xml:space="preserve">关键事件</sys:String>
+  <sys:String x:Key="Ops.PickScope" xml:space="preserve">请选择日志范围后查询</sys:String>
+  <sys:String x:Key="Ops.QueryLog" xml:space="preserve">查询日志</sys:String>
+  <sys:String x:Key="Ops.TimeLocal" xml:space="preserve">时间（本机）</sys:String>
+  <sys:String x:Key="Ops.Event" xml:space="preserve">事件</sys:String>
+  <sys:String x:Key="Ops.RawLog" xml:space="preserve">所选日志原文</sys:String>
+  <sys:String x:Key="Ops.CopyLog" xml:space="preserve">复制所选原文</sys:String>
+  <sys:String x:Key="Ops.LogScopeHelp" xml:space="preserve">查询范围与技术说明</sys:String>
+  <sys:String x:Key="Ops.OfflineBoundary" xml:space="preserve">离线查询只读取运行日志，不读取业务数据库或认证日志。</sys:String>
+  <sys:String x:Key="Ops.Debug" xml:space="preserve">设备调试</sys:String>
+  <sys:String x:Key="Ops.Parameters" xml:space="preserve">专业参数</sys:String>
+  <sys:String x:Key="Ops.Maintenance" xml:space="preserve">维护中心</sys:String>
+  <sys:String x:Key="Debug.Scan" xml:space="preserve">扫码调试</sys:String>
+  <sys:String x:Key="Debug.TriggerScan" xml:space="preserve">触发扫码</sys:String>
+  <sys:String x:Key="Debug.StopScan" xml:space="preserve">停止扫码</sys:String>
+  <sys:String x:Key="Debug.NotStarted" xml:space="preserve">尚未开始扫码</sys:String>
+  <sys:String x:Key="Debug.WaitScan" xml:space="preserve">等待扫码</sys:String>
+  <sys:String x:Key="Debug.Preview" xml:space="preserve">相机预览与锁定帧</sys:String>
+  <sys:String x:Key="Debug.Live" xml:space="preserve">实时画面</sys:String>
+  <sys:String x:Key="Debug.MonoFrame" xml:space="preserve">本轮 Mono8</sys:String>
+  <sys:String x:Key="Debug.FrameAccessible" xml:space="preserve">同帧读码照片，绿色条码定位框</sys:String>
+  <sys:String x:Key="Debug.WaitImage" xml:space="preserve">等待本轮扫码照片</sys:String>
+  <sys:String x:Key="Debug.Fit" xml:space="preserve">适应窗口</sys:String>
+  <sys:String x:Key="Debug.ZoomIn" xml:space="preserve">放大</sys:String>
+  <sys:String x:Key="Debug.ZoomOut" xml:space="preserve">缩小</sys:String>
+  <sys:String x:Key="Debug.Overlay" xml:space="preserve">条码标注</sys:String>
+  <sys:String x:Key="Debug.Capture" xml:space="preserve">本轮读码照片</sys:String>
+  <sys:String x:Key="Debug.Calibration" xml:space="preserve">空托盘校准</sys:String>
+  <sys:String x:Key="Debug.ConfirmTray" xml:space="preserve">确认空托盘并校准</sys:String>
+  <sys:String x:Key="Debug.FullBarcode" xml:space="preserve">本轮完整条码，可选择复制</sys:String>
+  <sys:String x:Key="Debug.SampleScan" xml:space="preserve">连续试扫</sys:String>
+  <sys:String x:Key="Debug.RcsTest" xml:space="preserve">RCS 请求测试</sys:String>
+  <sys:String x:Key="Debug.Prepare" xml:space="preserve">准备请求</sys:String>
+  <sys:String x:Key="Debug.Send" xml:space="preserve">发送请求</sys:String>
+  <sys:String x:Key="Debug.SendHelp" xml:space="preserve">实际发送会接管所选小车的本次到位，请先核对报文。</sys:String>
+  <sys:String x:Key="Debug.RequestBarcode" xml:space="preserve">请求条码</sys:String>
+  <sys:String x:Key="Debug.InputHelp" xml:space="preserve">可扫码或手工输入条码</sys:String>
+  <sys:String x:Key="Debug.RequestPayload" xml:space="preserve">请求报文</sys:String>
+  <sys:String x:Key="Debug.CurrentPayload" xml:space="preserve">本轮请求报文</sys:String>
+  <sys:String x:Key="Debug.RcsReply" xml:space="preserve">RCS 回包</sys:String>
+  <sys:String x:Key="Debug.CopyRaw" xml:space="preserve">复制原文</sys:String>
+  <sys:String x:Key="Debug.NotSent" xml:space="preserve">尚未发送请求</sys:String>
+  <sys:String x:Key="Debug.RawResponse" xml:space="preserve">本轮回包正文</sys:String>
+  <sys:String x:Key="Debug.Records" xml:space="preserve">调试记录</sys:String>
+  <sys:String x:Key="Work.WaitingConfiguration" xml:space="preserve">等待供包台配置</sys:String>
+  <sys:String x:Key="Work.RcsOnlineDetail" xml:space="preserve">RCS 服务：在线</sys:String>
+  <sys:String x:Key="Work.RcsOfflineDetail" xml:space="preserve">RCS 服务：离线</sys:String>
+  <sys:String x:Key="Work.RcsSimulationDetail" xml:space="preserve">RCS 服务：模拟</sys:String>
+  <sys:String x:Key="Work.RcsNotConfiguredDetail" xml:space="preserve">RCS 服务：待配置</sys:String>
+  <sys:String x:Key="Work.RcsConfirmDetail" xml:space="preserve">RCS 服务：等待连接确认</sys:String>
+  <sys:String x:Key="Work.RcsUnknownDetail" xml:space="preserve">RCS 服务：状态未知</sys:String>
+  <sys:String x:Key="Work.RcsOnline" xml:space="preserve">RCS：在线</sys:String>
+  <sys:String x:Key="Work.RcsOffline" xml:space="preserve">RCS：离线</sys:String>
+  <sys:String x:Key="Work.RcsSimulated" xml:space="preserve">RCS：模拟连接</sys:String>
+  <sys:String x:Key="Work.RcsNotConfigured" xml:space="preserve">RCS：待配置</sys:String>
+  <sys:String x:Key="Work.RcsPending" xml:space="preserve">RCS：待确认</sys:String>
+  <sys:String x:Key="Work.RcsChecking" xml:space="preserve">RCS：检查中</sys:String>
+  <sys:String x:Key="Work.RcsReplyReceived" xml:space="preserve">已收到 RCS 心跳响应。</sys:String>
+  <sys:String x:Key="Work.RcsReplyMissing" xml:space="preserve">未收到有效的 RCS 心跳响应，请检查 RCS 连接后重试。</sys:String>
+  <sys:String x:Key="Work.RcsMissingCameraCode" xml:space="preserve">没有可发送心跳的相机编码，请检查 RCS 相机编码配置。</sys:String>
+  <sys:String x:Key="Work.RcsCheckWaiting" xml:space="preserve">正在检查 RCS 心跳，请稍候。</sys:String>
+  <sys:String x:Key="Work.RcsCheckUnavailable" xml:space="preserve">当前无法检查 RCS 心跳，请稍后重试。</sys:String>
+  <sys:String x:Key="Work.RcsCheckIncomplete" xml:space="preserve">RCS 心跳检查未完成，请稍后重试。</sys:String>
+  <sys:String x:Key="Work.Simulation" xml:space="preserve">模拟模式</sys:String>
+  <sys:String x:Key="Work.Production" xml:space="preserve">生产模式</sys:String>
+  <sys:String x:Key="Work.ModeUnknown" xml:space="preserve">模式未确认</sys:String>
+  <sys:String x:Key="Work.SafetySuffix" xml:space="preserve"> · 软件暂停不是安全急停</sys:String>
+  <sys:String x:Key="Work.NotInstalledPage" xml:space="preserve">未安装的页面</sys:String>
+  <sys:String x:Key="Work.Stats" xml:space="preserve">统计与班次</sys:String>
+  <sys:String x:Key="Work.Exceptions" xml:space="preserve">异常处理</sys:String>
+  <sys:String x:Key="Work.DeviceDiagnostics" xml:space="preserve">设备与诊断</sys:String>
+  <sys:String x:Key="Work.Debug" xml:space="preserve">调试</sys:String>
+  <sys:String x:Key="Work.Log" xml:space="preserve">日志</sys:String>
+  <sys:String x:Key="Work.Station" xml:space="preserve">供包工作台</sys:String>
+  <sys:String x:Key="Work.Flow" xml:space="preserve">扫码 → 上游格口</sys:String>
+  <sys:String x:Key="Work.LaneNotReady" xml:space="preserve">本位状态未就绪</sys:String>
+  <sys:String x:Key="Work.QueryLane" xml:space="preserve">查询本位作业结果</sys:String>
+  <sys:String x:Key="Work.CannotContinue" xml:space="preserve">当前作业不能继续</sys:String>
+  <sys:String x:Key="Work.ContinueLane" xml:space="preserve">继续本位未尝试阶段</sys:String>
+  <sys:String x:Key="Debug.CalibrationRejected" xml:space="preserve">校准未开始。请核对本位状态和相机连接后再试。</sys:String>
+  <sys:String x:Key="Work.ReadDetailFailed" xml:space="preserve">作业详情读取失败：</sys:String>
+  <sys:String x:Key="Work.ReferenceRejected" xml:space="preserve">当前位不可接纳参考输入</sys:String>
+  <sys:String x:Key="Work.ReferenceAccepted" xml:space="preserve">模拟扫描已提交，等待处理结果。</sys:String>
+  <sys:String x:Key="Work.ReferenceNotAccepted" xml:space="preserve">模拟扫描未受理，请查看本位受阻原因。</sys:String>
+  <sys:String x:Key="Work.SimulateRead" xml:space="preserve">模拟本位读码</sys:String>
+  <sys:String x:Key="Work.LeftLane" xml:space="preserve">左投递位</sys:String>
+  <sys:String x:Key="Work.RightLane" xml:space="preserve">右投递位</sys:String>
+  <sys:String x:Key="Work.Vehicle" xml:space="preserve">小车</sys:String>
+  <sys:String x:Key="Work.VehiclePending" xml:space="preserve">小车：待确认</sys:String>
+  <sys:String x:Key="Work.CanLoad" xml:space="preserve">可投包</sys:String>
+  <sys:String x:Key="Work.VehicleNotReady" xml:space="preserve">待就绪</sys:String>
+  <sys:String x:Key="Work.VehicleBusy" xml:space="preserve">作业中</sys:String>
+  <sys:String x:Key="Common.NotConfigured" xml:space="preserve">未配置</sys:String>
+  <sys:String x:Key="Common.ConfigurePending" xml:space="preserve">待配置</sys:String>
+  <sys:String x:Key="Work.AddressMissing" xml:space="preserve">尚未配置地址</sys:String>
+  <sys:String x:Key="Work.CameraNeedsTray" xml:space="preserve">相机：在线 · 未校空盘</sys:String>
+  <sys:String x:Key="Work.CalibrationAfterReconnect" xml:space="preserve">重启或重连后需由运维校准空托盘。未校准期间，取下异常包裹后请按“已取下包裹”。</sys:String>
+  <sys:String x:Key="Work.OldChuteInvalid" xml:space="preserve">旧格口已失效</sys:String>
+  <sys:String x:Key="Work.NotReceived" xml:space="preserve">未取得</sys:String>
+  <sys:String x:Key="Work.StaleChute" xml:space="preserve">状态中断，旧格口已失效。</sys:String>
+  <sys:String x:Key="Work.WaitSnapshot" xml:space="preserve">等待状态读取。</sys:String>
+  <sys:String x:Key="Work.CameraDisabledManual" xml:space="preserve">相机未启用，可手动输入条码。</sys:String>
+  <sys:String x:Key="Work.RcsContact" xml:space="preserve">RCS 未配置，请联系维护人员。</sys:String>
+  <sys:String x:Key="Work.UnavailableContact" xml:space="preserve">本位暂不能供包，请联系维护人员。</sys:String>
+  <sys:String x:Key="Common.Expired" xml:space="preserve">已失效</sys:String>
+  <sys:String x:Key="Work.NoObservation" xml:space="preserve">尚无观察</sys:String>
+  <sys:String x:Key="Work.NoBarcodeDetected" xml:space="preserve">未识别到条码</sys:String>
+  <sys:String x:Key="Work.ValidBarcodeSuffix" xml:space="preserve"> · 有效条码 </sys:String>
+  <sys:String x:Key="Work.WaitCameraInput" xml:space="preserve">等待相机输入</sys:String>
+  <sys:String x:Key="Work.OldBarcodePolicy" xml:space="preserve">旧单码规则 · </sys:String>
+  <sys:String x:Key="Work.NotSelected" xml:space="preserve">未选中</sys:String>
+  <sys:String x:Key="Work.ScanOrType" xml:space="preserve">等待相机扫码或输入条码</sys:String>
+  <sys:String x:Key="Work.PdaInput" xml:space="preserve">PDA键盘输入 </sys:String>
+  <sys:String x:Key="Work.KeyboardInput" xml:space="preserve">手动键盘输入 </sys:String>
+  <sys:String x:Key="Work.CameraReadPrefix" xml:space="preserve">相机读取 </sys:String>
+  <sys:String x:Key="Work.BarcodeCount" xml:space="preserve"> · 条码 </sys:String>
+  <sys:String x:Key="Work.CountItems" xml:space="preserve"> 项</sys:String>
+  <sys:String x:Key="Work.CameraSession" xml:space="preserve">连接周期 </sys:String>
+  <sys:String x:Key="Work.Sequence" xml:space="preserve"> · 本周期序号 </sys:String>
+  <sys:String x:Key="Work.RcsNotDelivered" xml:space="preserve">RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。</sys:String>
+  <sys:String x:Key="Work.ManualDecision" xml:space="preserve">请取下包裹后人工判断，停用本位，等RCS撤车确认后再启用并等待新车。</sys:String>
+  <sys:String x:Key="Work.UnpackNoReload" xml:space="preserve">勿重复上件：按拆包明细检查包裹，处理完再继续。</sys:String>
+  <sys:String x:Key="Work.UnpackReview" xml:space="preserve">检查包裹后填写检查说明，再点“继续处理”。</sys:String>
+  <sys:String x:Key="Common.Initializing" xml:space="preserve">正在初始化</sys:String>
+  <sys:String x:Key="Work.StatusInterrupted" xml:space="preserve">状态中断</sys:String>
+  <sys:String x:Key="Work.DuplicateScan" xml:space="preserve">重复扫描</sys:String>
+  <sys:String x:Key="Work.ChuteConflict" xml:space="preserve">格口结果矛盾</sys:String>
+  <sys:String x:Key="Work.Destination" xml:space="preserve">投递格口</sys:String>
+  <sys:String x:Key="Work.GettingChute" xml:space="preserve">正在获取格口</sys:String>
+  <sys:String x:Key="Work.NotDelivered" xml:space="preserve">RCS未连接 · 本次未送达</sys:String>
+  <sys:String x:Key="Work.ChuteTimeout" xml:space="preserve">取格口超时</sys:String>
+  <sys:String x:Key="Work.ChutePending" xml:space="preserve">格口未确认</sys:String>
+  <sys:String x:Key="Work.ChuteNotAssigned" xml:space="preserve">未分配格口</sys:String>
+  <sys:String x:Key="Work.SupplyUnavailable" xml:space="preserve">暂不能供包</sys:String>
+  <sys:String x:Key="Work.WaitScanOrType" xml:space="preserve">等待扫码或输入条码</sys:String>
+  <sys:String x:Key="Work.RelatedTask" xml:space="preserve">关联原作业 </sys:String>
+  <sys:String x:Key="Work.NoDeviceStatus" xml:space="preserve">设备状态未取得</sys:String>
+  <sys:String x:Key="Work.CameraPendingStatus" xml:space="preserve">相机：状态待确认</sys:String>
+  <sys:String x:Key="Work.UseReturnedChute" xml:space="preserve">按格口投递；扫描下一件后自动更新。</sys:String>
+  <sys:String x:Key="Work.RcsNoChuteSetAside" xml:space="preserve">RCS 未返回格口：包裹暂放一旁，通知维护人员。</sys:String>
+  <sys:String x:Key="Work.DoNotRescan" xml:space="preserve">等待格口返回，勿重复扫描。</sys:String>
+  <sys:String x:Key="Work.NotifyMaintenance" xml:space="preserve">暂不能供包，请通知维护人员。</sys:String>
+  <sys:String x:Key="Work.LoadOrEnter" xml:space="preserve">放上包裹由相机扫码，或输入完整条码后按回车。</sys:String>
+  <sys:String x:Key="Work.WaitStatus" xml:space="preserve">等待状态更新</sys:String>
+  <sys:String x:Key="Work.NotCreated" xml:space="preserve">未创建</sys:String>
+  <sys:String x:Key="Work.TaskScanPrefix" xml:space="preserve">作业扫描：</sys:String>
+  <sys:String x:Key="Work.NoTask" xml:space="preserve">尚无作业</sys:String>
+  <sys:String x:Key="Work.OriginalTime" xml:space="preserve">
+原结果时间：</sys:String>
+  <sys:String x:Key="Work.NoResponse" xml:space="preserve">尚无返回</sys:String>
+  <sys:String x:Key="Work.AcquisitionPrefix" xml:space="preserve">采集 </sys:String>
+  <sys:String x:Key="Work.UploadSuffix" xml:space="preserve"> · 上传 </sys:String>
+  <sys:String x:Key="Work.NoCapture" xml:space="preserve">未参与采集</sys:String>
+  <sys:String x:Key="Work.CameraAddress" xml:space="preserve">相机地址：</sys:String>
+  <sys:String x:Key="Work.CameraInterrupted" xml:space="preserve">相机：状态中断</sys:String>
+  <sys:String x:Key="Work.CameraNotConfigured" xml:space="preserve">相机：待配置</sys:String>
+  <sys:String x:Key="Work.CameraDisconnectLane" xml:space="preserve">相机：已断开（本位停用）</sys:String>
+  <sys:String x:Key="Work.CameraConnecting" xml:space="preserve">相机：等待连接</sys:String>
+  <sys:String x:Key="Work.CameraRestoring" xml:space="preserve">相机：离线或恢复中</sys:String>
+  <sys:String x:Key="Work.CameraChecking" xml:space="preserve">相机：待确认</sys:String>
+  <sys:String x:Key="Work.CameraSimulation" xml:space="preserve">相机：模拟连接</sys:String>
+  <sys:String x:Key="Work.CameraOnline" xml:space="preserve">相机：在线</sys:String>
+  <sys:String x:Key="Work.CameraOffline" xml:space="preserve">相机：离线</sys:String>
+  <sys:String x:Key="Work.CameraLastConfirmed" xml:space="preserve"> · 最后确认 </sys:String>
+  <sys:String x:Key="Work.StatusWaitingRecovery" xml:space="preserve">状态读取中断，等待恢复</sys:String>
+  <sys:String x:Key="Work.ViewportTooSmall" xml:space="preserve">窗口过小，请最大化窗口</sys:String>
+  <sys:String x:Key="Work.LaneDisabled" xml:space="preserve">本投递位未启用</sys:String>
+  <sys:String x:Key="Work.LaneStatusReading" xml:space="preserve">正在读取投递位状态</sys:String>
+  <sys:String x:Key="Work.TaskConflictPrefix" xml:space="preserve">本位作业信息不一致，已停止新操作并重新读取（作业 </sys:String>
+  <sys:String x:Key="Work.NotEnabled" xml:space="preserve">未启用</sys:String>
+  <sys:String x:Key="Work.TaskConflictRereading" xml:space="preserve">作业信息不一致 · 正在重新读取</sys:String>
+  <sys:String x:Key="Work.ChuteReceived" xml:space="preserve">格口已取得</sys:String>
+  <sys:String x:Key="Work.ChuteNoReload" xml:space="preserve">格口未确认 · 勿重复上件</sys:String>
+  <sys:String x:Key="Work.UnpackRequired" xml:space="preserve">需拆包检查</sys:String>
+  <sys:String x:Key="Work.Pending" xml:space="preserve">待处理</sys:String>
+  <sys:String x:Key="Work.Blocked" xml:space="preserve">已受阻</sys:String>
+  <sys:String x:Key="Work.WaitWeight" xml:space="preserve">等待本件有效重量</sys:String>
+  <sys:String x:Key="Work.WeightTimeout" xml:space="preserve">本件称重超时</sys:String>
+  <sys:String x:Key="Work.UploadUnconfirmed" xml:space="preserve">图片上传未确认</sys:String>
+  <sys:String x:Key="Work.ImageRejected" xml:space="preserve">图像阶段拒绝</sys:String>
+  <sys:String x:Key="Work.ImageInProgress" xml:space="preserve">正在采集本件图像</sys:String>
+  <sys:String x:Key="Work.UploadingOriginal" xml:space="preserve">正在上传原图</sys:String>
+  <sys:String x:Key="Work.CancelledUnsent" xml:space="preserve">未发送 · 已撤销</sys:String>
+  <sys:String x:Key="Work.StagePrefix" xml:space="preserve">阶段：</sys:String>
+  <sys:String x:Key="Work.UnknownLocked" xml:space="preserve">结果未确认 · 本位已锁定</sys:String>
+  <sys:String x:Key="Work.ConflictLocked" xml:space="preserve">格口结果冲突 · 本位已锁定</sys:String>
+  <sys:String x:Key="Work.ConflictDoNotUse" xml:space="preserve">返回结果与原请求存在冲突，请勿盲目投递</sys:String>
+  <sys:String x:Key="Work.TimeoutNoResend" xml:space="preserve">取格口响应超时，系统不会自动重发，请勿重复扫码</sys:String>
+  <sys:String x:Key="Work.UnknownNoResend" xml:space="preserve">取格口结果未确认，系统不会自动重发，请勿重复扫码</sys:String>
+  <sys:String x:Key="Work.FullBarcodePrefix" xml:space="preserve">完整条码：</sys:String>
+  <sys:String x:Key="Work.LastFourPrefix" xml:space="preserve">后 4 位：</sys:String>
+  <sys:String x:Key="Work.UnknownStepKeep" xml:space="preserve">2. 保留当前包裹与单据</sys:String>
+  <sys:String x:Key="Work.UnknownStepFull" xml:space="preserve">2. 记下完整条码</sys:String>
+  <sys:String x:Key="Work.UnknownStepFour" xml:space="preserve">2. 记下条码后 4 位</sys:String>
+  <sys:String x:Key="Work.ChuteRequestNotDelivered" xml:space="preserve">取格口请求未送达</sys:String>
+  <sys:String x:Key="Work.ChuteResultConflict" xml:space="preserve">格口结果有冲突</sys:String>
+  <sys:String x:Key="Work.ChuteResultUnconfirmed" xml:space="preserve">格口结果未确认</sys:String>
+  <sys:String x:Key="Work.TaskResultUnconfirmed" xml:space="preserve">作业结果未确认</sys:String>
+  <sys:String x:Key="Work.CheckingTray" xml:space="preserve">正在确认托盘是否清空</sys:String>
+  <sys:String x:Key="Work.ScanUnsent" xml:space="preserve">本次扫码未发送请求</sys:String>
+  <sys:String x:Key="Work.ChuteResponseTimeout" xml:space="preserve">等待取格口响应超时</sys:String>
+  <sys:String x:Key="Work.NoChuteAvailable" xml:space="preserve">本件没有可用格口</sys:String>
+  <sys:String x:Key="Work.TakeOffThenConfirm" xml:space="preserve">请先取下包裹，再确认</sys:String>
+  <sys:String x:Key="Work.RemoveUntilResume" xml:space="preserve">请取下包裹，供包恢复后再上件</sys:String>
+  <sys:String x:Key="Work.RemoveUntilRcs" xml:space="preserve">请取下包裹，RCS 连接恢复后再上件</sys:String>
+  <sys:String x:Key="Work.RemoveUntilLane" xml:space="preserve">
+多次出现请通知维护人员</sys:String>
+  <sys:String x:Key="Work.StaleRead" xml:space="preserve">本次读码已失效</sys:String>
+  <sys:String x:Key="Work.RemoveTrayPaused" xml:space="preserve">供包已暂停，请将包裹移出托盘</sys:String>
+  <sys:String x:Key="Work.DisablingNoInput" xml:space="preserve">本位停用中，暂不接收新条码</sys:String>
+  <sys:String x:Key="Work.RemoveUntilRcsShort" xml:space="preserve">请取下包裹，RCS 恢复后再上件</sys:String>
+  <sys:String x:Key="Work.RescanWithoutDelivery" xml:space="preserve">本件暂勿投递，请重新扫码</sys:String>
+  <sys:String x:Key="Work.RemoveReload" xml:space="preserve">请取下包裹后重新上件</sys:String>
+  <sys:String x:Key="Work.ReviewImageReload" xml:space="preserve">请查看图片核对条码，取下包裹后再上件</sys:String>
+  <sys:String x:Key="Work.ReviewBarcodeReload" xml:space="preserve">请核对包裹条码，取下包裹后再上件</sys:String>
+  <sys:String x:Key="Work.RemoveAndClick" xml:space="preserve">请取下包裹，并点击下方“已取下包裹”</sys:String>
+  <sys:String x:Key="Work.Remove" xml:space="preserve">请取下包裹</sys:String>
+  <sys:String x:Key="Work.ManualDestination" xml:space="preserve">
+请人工判断包裹去向</sys:String>
+  <sys:String x:Key="Work.DisableNoInputSuffix" xml:space="preserve">
+停用中，暂不接收新条码</sys:String>
+  <sys:String x:Key="Work.StillPaused" xml:space="preserve">供包仍暂停</sys:String>
+  <sys:String x:Key="Work.RcsNotRecovered" xml:space="preserve">RCS连接未恢复</sys:String>
+  <sys:String x:Key="Work.MemberReview" xml:space="preserve">本位心跳成员仍待核对</sys:String>
+  <sys:String x:Key="Work.ProcessThenLoad" xml:space="preserve">，处理完成后再上件</sys:String>
+  <sys:String x:Key="Work.ConfirmThenNext" xml:space="preserve">
+确认后即可继续处理下一件</sys:String>
+  <sys:String x:Key="Work.RecoveryUnavailable" xml:space="preserve">上次运行的数据无法自动恢复</sys:String>
+  <sys:String x:Key="Work.RcsStillUnavailable" xml:space="preserve">RCS 连接尚未恢复</sys:String>
+  <sys:String x:Key="Work.ScannedNotRequested" xml:space="preserve">条码已读到，尚未请求格口</sys:String>
+  <sys:String x:Key="Work.NewParcelHeld" xml:space="preserve">新包裹暂不受理</sys:String>
+  <sys:String x:Key="Work.MaintenanceDataInstruction" xml:space="preserve">请联系维护人员检查运行数据，操作工无需进入运维工具。</sys:String>
+  <sys:String x:Key="Work.ResumeInstruction" xml:space="preserve">确认现场后，点击顶部“恢复供包”。</sys:String>
+  <sys:String x:Key="Work.CheckEquipmentBeforeReload" xml:space="preserve">请通知维护人员检查设备，恢复后再上件。</sys:String>
+  <sys:String x:Key="Work.InFlightFull" xml:space="preserve">本位在途资源已满</sys:String>
+  <sys:String x:Key="Work.ContinueReading" xml:space="preserve">继续识读</sys:String>
+  <sys:String x:Key="Work.ReadIssueManual" xml:space="preserve">识读异常，可补录</sys:String>
+  <sys:String x:Key="Work.Reading" xml:space="preserve">正在识读</sys:String>
+  <sys:String x:Key="Work.StatusReadInterrupted" xml:space="preserve">状态读取中断</sys:String>
+  <sys:String x:Key="Work.NoChuteFromRcs" xml:space="preserve">RCS 未分配格口</sys:String>
+  <sys:String x:Key="Work.NoValidChute" xml:space="preserve">未取得有效格口</sys:String>
+  <sys:String x:Key="Work.NeedsUnpacking" xml:space="preserve">需要拆包检查</sys:String>
+  <sys:String x:Key="Work.CannotHandleParcel" xml:space="preserve">本件暂不能处理</sys:String>
+  <sys:String x:Key="Work.Disabled" xml:space="preserve">已停用</sys:String>
+  <sys:String x:Key="Work.LaneNotConfigured" xml:space="preserve">本位未配置</sys:String>
+  <sys:String x:Key="Work.RequestReview" xml:space="preserve">请求待核对</sys:String>
+  <sys:String x:Key="Work.InductionPaused" xml:space="preserve">供包已暂停</sys:String>
+  <sys:String x:Key="Work.LoadUnavailable" xml:space="preserve">暂不能投包</sys:String>
+  <sys:String x:Key="Work.WaitVehicle" xml:space="preserve">等待小车确认</sys:String>
+  <sys:String x:Key="Work.WaitRemovalConfirmation" xml:space="preserve">等待取件确认</sys:String>
+  <sys:String x:Key="Work.OriginalClosing" xml:space="preserve">原请求正在收尾</sys:String>
+  <sys:String x:Key="Work.WaitRemoval" xml:space="preserve">等待取件</sys:String>
+  <sys:String x:Key="Work.CameraManualAvailable" xml:space="preserve">相机不可用，可人工扫码</sys:String>
+  <sys:String x:Key="Work.WaitingToLoad" xml:space="preserve">等待投包</sys:String>
+  <sys:String x:Key="Work.ReadByPlacing" xml:space="preserve">放上包裹自动读码</sys:String>
+  <sys:String x:Key="Work.TypeFullCode" xml:space="preserve">可输入完整条码</sys:String>
+  <sys:String x:Key="Work.ScanGunOrKeyboard" xml:space="preserve">或使用扫码枪 / 键盘输入条码</sys:String>
+  <sys:String x:Key="Work.Disabling" xml:space="preserve">停用中，不再接收新条码</sys:String>
+  <sys:String x:Key="Work.DisabledNoInput" xml:space="preserve">本位已停用，不接收条码</sys:String>
+  <sys:String x:Key="Work.CameraOfflineCanEnter" xml:space="preserve">相机离线，可扫码枪或键盘输入条码</sys:String>
+  <sys:String x:Key="Work.CameraOfflinePlain" xml:space="preserve">相机离线</sys:String>
+  <sys:String x:Key="Work.MultipleViewImage" xml:space="preserve">本次读到多个条码，请查看图片</sys:String>
+  <sys:String x:Key="Work.RetryOrPda" xml:space="preserve">同件继续识读，可PDA补录</sys:String>
+  <sys:String x:Key="Work.TimeoutPda" xml:space="preserve">识读超时，可原位PDA补录</sys:String>
+  <sys:String x:Key="Work.ReadingAdjust" xml:space="preserve">正在识读，可调整标签或PDA补录</sys:String>
+  <sys:String x:Key="Work.RoundCode" xml:space="preserve">本轮条码</sys:String>
+  <sys:String x:Key="Work.ProcessingDots" xml:space="preserve">处理中…</sys:String>
+  <sys:String x:Key="Work.PreviousChute" xml:space="preserve">上一件格口</sys:String>
+  <sys:String x:Key="Work.ScanPaused" xml:space="preserve">已读到条码，供包已暂停</sys:String>
+  <sys:String x:Key="Work.WaitInput" xml:space="preserve">等待输入条码</sys:String>
+  <sys:String x:Key="Work.WaitForAdmission" xml:space="preserve">等待供包条件就绪</sys:String>
+  <sys:String x:Key="Work.WaitRescan" xml:space="preserve">等待重新扫码</sys:String>
+  <sys:String x:Key="Work.Processing" xml:space="preserve">处理中</sys:String>
+  <sys:String x:Key="Work.NoChute" xml:space="preserve">未取得格口</sys:String>
+  <sys:String x:Key="Work.PreviousChuteReadOnly" xml:space="preserve">上一件格口，仅供查看</sys:String>
+  <sys:String x:Key="Work.ChuteNotYetAvailable" xml:space="preserve">本次处理中，尚未取得有效格口</sys:String>
+  <sys:String x:Key="Work.CurrentChuteCopy" xml:space="preserve">本次有效格口，可选择复制</sys:String>
+  <sys:String x:Key="Work.PreviousChuteStatus" xml:space="preserve">上一件：格口已取得 · 仅供查看</sys:String>
+  <sys:String x:Key="Work.StateExpired" xml:space="preserve">状态已失效</sys:String>
+  <sys:String x:Key="Work.NoNewCode" xml:space="preserve">暂不能接收条码</sys:String>
+  <sys:String x:Key="Work.ProcessingCurrent" xml:space="preserve">本次处理中</sys:String>
+  <sys:String x:Key="Work.NotSentViewImage" xml:space="preserve">本次扫码未发送请求，可查看本次图片。</sys:String>
+  <sys:String x:Key="Work.EnterBarcodeManually" xml:space="preserve">可用扫码枪或键盘输入完整条码。</sys:String>
+  <sys:String x:Key="Work.ReconnectedScanning" xml:space="preserve">相机已重连，正在重新扫码。</sys:String>
+  <sys:String x:Key="Work.ReadNotConfirmed" xml:space="preserve">已读到条码，正在保存，尚未确认接收。</sys:String>
+  <sys:String x:Key="Work.NowCanScanLoad" xml:space="preserve">当前：可以扫码投包</sys:String>
+  <sys:String x:Key="Work.NowCanManual" xml:space="preserve">当前：可人工扫码</sys:String>
+  <sys:String x:Key="Work.NowPrefix" xml:space="preserve">当前：</sys:String>
+  <sys:String x:Key="Work.PausedPrefix" xml:space="preserve">供包已暂停；</sys:String>
+  <sys:String x:Key="Work.CheckImageBeforeNext" xml:space="preserve">查看图片核对条码；将包裹移出托盘后，再放下一件。</sys:String>
+  <sys:String x:Key="Work.SubmitFullBarcode" xml:space="preserve">输入完整条码后按回车或点击提交。</sys:String>
+  <sys:String x:Key="Work.RescanPendingResult" xml:space="preserve">本件暂勿投递；请重新扫描并等待有效格口，未确认的原请求仍需核对。</sys:String>
+  <sys:String x:Key="Work.NoPreviousDelivery" xml:space="preserve">等待本件格口，勿按上一件格口投递。</sys:String>
+  <sys:String x:Key="Work.SkippedRemoveReload" xml:space="preserve">本件已跳过，请取下包裹后重新上件。</sys:String>
+  <sys:String x:Key="Work.NoChuteCheckImage" xml:space="preserve">本件未取得格口，请查看图片核对条码；将包裹移出托盘后，再放下一件。</sys:String>
+  <sys:String x:Key="Work.ReadWaitingResult" xml:space="preserve">已读到条码，等待处理结果。</sys:String>
+  <sys:String x:Key="Work.PreviousBarcodeTask" xml:space="preserve">上一件条码：{0}　任务号：{1}</sys:String>
+  <sys:String x:Key="Settings.Theme" xml:space="preserve">界面主题</sys:String>
+  <sys:String x:Key="Settings.ThemeHelp" xml:space="preserve">仅影响当前 Windows 用户界面配色，使用底部“保存设置”立即生效，不影响供包业务。</sys:String>
+  <sys:String x:Key="Settings.Language" xml:space="preserve">界面语言</sys:String>
+  <sys:String x:Key="Settings.LanguageHelp" xml:space="preserve">仅影响当前 Windows 用户的界面文字。点击“保存设置”立即生效。</sys:String>
+  <sys:String x:Key="Settings.Light" xml:space="preserve">工业浅色（默认）</sys:String>
+  <sys:String x:Key="Settings.Dark" xml:space="preserve">工业深色（高对比）</sys:String>
+  <sys:String x:Key="Settings.DisplayTitle" xml:space="preserve">显示偏好</sys:String>
+  <sys:String x:Key="Settings.DisplayGuide" xml:space="preserve">设置本机窗口的打开方式和布局。</sys:String>
+  <sys:String x:Key="Settings.Pace" xml:space="preserve">效率显示</sys:String>
+  <sys:String x:Key="Settings.PaceToggle" xml:space="preserve">显示本班取得格口次数与近十分钟速度</sys:String>
+  <sys:String x:Key="Settings.PaceHelp" xml:space="preserve">仅影响当前Windows用户；使用底部“保存设置”，与窗口方式和提示音一同保存。</sys:String>
+  <sys:String x:Key="Settings.WindowMode" xml:space="preserve">默认打开方式</sys:String>
+  <sys:String x:Key="Settings.Windowed" xml:space="preserve">窗口</sys:String>
+  <sys:String x:Key="Settings.FullScreen" xml:space="preserve">最大化（全屏）</sys:String>
+  <sys:String x:Key="Settings.AutoStart" xml:space="preserve">开机自动启动供包台</sys:String>
+  <sys:String x:Key="Settings.AutoStartToggle" xml:space="preserve">登录后自动启动</sys:String>
+  <sys:String x:Key="Settings.AutoStartHelp" xml:space="preserve">仅在当前 Windows 用户登录后启动。使用底部“保存设置”应用。</sys:String>
+  <sys:String x:Key="Settings.AudioVolume" xml:space="preserve">提示音音量</sys:String>
+  <sys:String x:Key="Settings.AudioVolumeHelp" xml:space="preserve">默认 80%，0 为静音，100 为最大。仅影响本软件提示音，按当前 Windows 用户保存；试听不会自动保存。</sys:String>
+  <sys:String x:Key="Settings.CueRead" xml:space="preserve">试听读到</sys:String>
+  <sys:String x:Key="Settings.CueSuccess" xml:space="preserve">试听成功</sys:String>
+  <sys:String x:Key="Settings.CueRejected" xml:space="preserve">试听拒绝</sys:String>
+  <sys:String x:Key="Settings.Immediate" xml:space="preserve">立即生效</sys:String>
+  <sys:String x:Key="Settings.Reconnect" xml:space="preserve">重连生效</sys:String>
+  <sys:String x:Key="Settings.Restart" xml:space="preserve">需重启生效</sys:String>
+  <sys:String x:Key="Settings.DisplayWork" xml:space="preserve">暂回作业</sys:String>
+  <sys:String x:Key="Settings.Advanced" xml:space="preserve">高级设置</sys:String>
+  <sys:String x:Key="Settings.StationRcs" xml:space="preserve">本站与 RCS</sys:String>
+  <sys:String x:Key="Settings.Cameras" xml:space="preserve">左右相机</sys:String>
+  <sys:String x:Key="Settings.Sorting" xml:space="preserve">分拣规则</sys:String>
+  <sys:String x:Key="Settings.Scan" xml:space="preserve">识读规则</sys:String>
+  <sys:String x:Key="Settings.Maintenance" xml:space="preserve">系统维护</sys:String>
+  <sys:String x:Key="Settings.Review" xml:space="preserve">检查与完成</sys:String>
+  <sys:String x:Key="Settings.Site" xml:space="preserve">本站接入</sys:String>
+  <sys:String x:Key="Settings.Camera" xml:space="preserve">相机</sys:String>
+  <sys:String x:Key="Settings.Unsaved" xml:space="preserve">有未保存的更改</sys:String>
+  <sys:String x:Key="Settings.NoChanges" xml:space="preserve">没有未保存的更改</sys:String>
+  <sys:String x:Key="Settings.CloseEdit" xml:space="preserve">结束编辑</sys:String>
+  <sys:String x:Key="Settings.ReviewChanges" xml:space="preserve">查看改动</sys:String>
+  <sys:String x:Key="Ops.Connected" xml:space="preserve">工作站已连接</sys:String>
+  <sys:String x:Key="Ops.VerifiedTime" xml:space="preserve">本机只读状态连接已核验 · 状态时间 {0}</sys:String>
+  <sys:String x:Key="Ops.StationName" xml:space="preserve">站点 {0}</sys:String>
+  <sys:String x:Key="Ops.PendingYes" xml:space="preserve">有待生效设置</sys:String>
+  <sys:String x:Key="Ops.PendingNo" xml:space="preserve">无待生效设置</sys:String>
+  <sys:String x:Key="Ops.Executing" xml:space="preserve">在途请求 {0}</sys:String>
+  <sys:String x:Key="Ops.RuntimeInfo" xml:space="preserve">运行实例：{0}
+快照修订：{1}</sys:String>
+  <sys:String x:Key="Ops.LeftPosition" xml:space="preserve">左投递位</sys:String>
+  <sys:String x:Key="Ops.RightPosition" xml:space="preserve">右投递位</sys:String>
+  <sys:String x:Key="Ops.NoPosition" xml:space="preserve">工作站尚未提供本位状态。</sys:String>
+  <sys:String x:Key="Ops.CanInduct" xml:space="preserve">正常准入</sys:String>
+  <sys:String x:Key="Ops.CannotInduct" xml:space="preserve">暂不能供包</sys:String>
+  <sys:String x:Key="Ops.ManualAllowed" xml:space="preserve">允许</sys:String>
+  <sys:String x:Key="Ops.ManualLimited" xml:space="preserve">受限</sys:String>
+  <sys:String x:Key="Ops.NoDetection" xml:space="preserve">暂无检测记录</sys:String>
+  <sys:String x:Key="Ops.Online" xml:space="preserve">在线正常</sys:String>
+  <sys:String x:Key="Ops.LastChecked" xml:space="preserve">上次检测 {0}</sys:String>
+  <sys:String x:Key="Ops.WaitStorage" xml:space="preserve">剩余空间待检测</sys:String>
+  <sys:String x:Key="Ops.StorageOnDisk" xml:space="preserve">剩余 {0:F1} GiB</sys:String>
+  <sys:String x:Key="Ops.StorageFloor" xml:space="preserve">警戒下限 {0:F1} GiB</sys:String>
+  <sys:String x:Key="Ops.PrepareBoth" xml:space="preserve">可自动读码或人工扫码</sys:String>
+  <sys:String x:Key="Ops.PrepareAutomatic" xml:space="preserve">可自动读码</sys:String>
+  <sys:String x:Key="Ops.CheckLane" xml:space="preserve">请查看工作站本位提示。</sys:String>
+  <sys:String x:Key="Work.RemoveWhileOffline" xml:space="preserve">请取下包裹，等本位恢复后再上件
+多次出现请通知维护人员</sys:String>
+  <sys:String x:Key="Startup.Starting" xml:space="preserve">正在启动供包台</sys:String>
+  <sys:String x:Key="Startup.Preparing" xml:space="preserve">正在准备启动，请稍候。</sys:String>
+  <sys:String x:Key="Startup.MaintenanceDone" xml:space="preserve">维护已结束 · 供包台未启动</sys:String>
+  <sys:String x:Key="Startup.StartOrExit" xml:space="preserve">点击“启动供包台”后连接相机和 RCS；也可以直接退出。</sys:String>
+  <sys:String x:Key="Startup.Launch" xml:space="preserve">启动供包台</sys:String>
+  <sys:String x:Key="Startup.ActionFailed" xml:space="preserve">操作没有完成，请查看下方诊断后重试。</sys:String>
+  <sys:String x:Key="Startup.UninstallNotOpened" xml:space="preserve">卸载入口未打开</sys:String>
+  <sys:String x:Key="Startup.UninstallRetry" xml:space="preserve">尚未删除程序或数据。请关闭原供包台窗口后重试；维护缓存无法核验时，使用完整安装包修复。</sys:String>
+  <sys:String x:Key="Startup.RetryUninstaller" xml:space="preserve">重试打开卸载</sys:String>
+  <sys:String x:Key="Startup.Failed" xml:space="preserve">供包台没有启动成功</sys:String>
+  <sys:String x:Key="Startup.FailureActions" xml:space="preserve">原因见下方。可以重试启动，或修改参数、进入离线维护；需要支持时复制诊断交给维护人员。尚未开始作业。</sys:String>
+  <sys:String x:Key="Startup.CopyDiagnostics" xml:space="preserve">复制诊断</sys:String>
+  <sys:String x:Key="Startup.CopyFailed" xml:space="preserve">复制失败，可选择诊断文本复制：</sys:String>
+  <sys:String x:Key="Startup.StopExit" xml:space="preserve">停止并退出</sys:String>
+  <sys:String x:Key="Startup.Retry" xml:space="preserve">重试启动</sys:String>
+  <sys:String x:Key="Startup.RepairSettings" xml:space="preserve">修改参数 / 离线维护</sys:String>
+  <sys:String x:Key="Startup.BuildIdentity" xml:space="preserve">软件版本和 Git 提交</sys:String>
+  <sys:String x:Key="Startup.BuildLabel" xml:space="preserve">版本 {0} · Git {1}</sys:String>
+  <sys:String x:Key="Startup.StopIncomplete" xml:space="preserve">
+
+停止未完成：</sys:String>
+  <sys:String x:Key="Startup.UninstallOpenFailure" xml:space="preserve">
+
+卸载入口未打开：</sys:String>
+  <sys:String x:Key="Startup.ActionIncomplete" xml:space="preserve">
+
+操作未完成：</sys:String>
+  <sys:String x:Key="First.NotSaved" xml:space="preserve">未保存</sys:String>
+  <sys:String x:Key="First.Admin" xml:space="preserve">进入管理模式…</sys:String>
+  <sys:String x:Key="First.Exit" xml:space="preserve">退出配置</sys:String>
+  <sys:String x:Key="First.SaveDraft" xml:space="preserve">暂存草稿</sys:String>
+  <sys:String x:Key="First.SaveDraftHelp" xml:space="preserve">保存已填写内容并退出，下次可继续。</sys:String>
+  <sys:String x:Key="First.ExitHelp" xml:space="preserve">退出首次配置。未保存内容将在退出前提示处理。</sys:String>
+  <sys:String x:Key="First.Import" xml:space="preserve">导入配置</sys:String>
+  <sys:String x:Key="First.ImportPreview" xml:space="preserve">导入配置预览</sys:String>
+  <sys:String x:Key="First.ApplyDraft" xml:space="preserve">应用到当前填写内容</sys:String>
+  <sys:String x:Key="First.AdvancedLinks" xml:space="preserve">备份、诊断与修复</sys:String>
+  <sys:String x:Key="First.FullDiagnostics" xml:space="preserve">查看完整诊断…</sys:String>
+  <sys:String x:Key="First.Diagnostics" xml:space="preserve">启动诊断</sys:String>
+  <sys:String x:Key="First.ConfigInfo" xml:space="preserve">配置信息</sys:String>
+  <sys:String x:Key="First.CannotReadConfiguration" xml:space="preserve">无法读取配置，请查看诊断后使用启动修复。原文件保留。</sys:String>
+  <sys:String x:Key="First.ReviewChanges" xml:space="preserve">本次更改与配置详情</sys:String>
+  <sys:String x:Key="First.CheckDetails" xml:space="preserve">配置检查诊断详情</sys:String>
+  <sys:String x:Key="First.EditRequired" xml:space="preserve">还有参数需要修改，请按检查结果逐项修正。</sys:String>
+  <sys:String x:Key="Debug.ScanStopped" xml:space="preserve">本轮扫码已停止，可再次扫码。</sys:String>
+  <sys:String x:Key="Debug.NotSentPrefix" xml:space="preserve">请求尚未发出：</sys:String>
+  <sys:String x:Key="Debug.WaitStopped" xml:space="preserve">已停止等待。请求可能已发出，调试状态未变；请查看本轮结果。</sys:String>
+  <sys:String x:Key="Debug.AnotherRound" xml:space="preserve">其他窗口已开始另一轮；本窗保留原轮次照片和请求。点击再次扫码明确开始本窗新一轮。</sys:String>
+  <sys:String x:Key="Debug.ReadFailure" xml:space="preserve">调试状态读取失败；调试状态和请求保持不变。</sys:String>
+  <sys:String x:Key="Debug.PhotoOverwritten" xml:space="preserve">本轮图片已被覆盖，不会用其他图片替代；可在历史记录中查看。</sys:String>
+  <sys:String x:Key="Debug.CopiedResponse" xml:space="preserve">已复制 RCS 原始回包。</sys:String>
+  <sys:String x:Key="Debug.Clipboard" xml:space="preserve">剪贴板暂不可用，请稍后重试。</sys:String>
+  <sys:String x:Key="Debug.CopyNeedsAuthorization" xml:space="preserve">管理授权已失效，请重新授权后复制。</sys:String>
+  <sys:String x:Key="Debug.NotSentYet" xml:space="preserve">尚未发送请求</sys:String>
+  <sys:String x:Key="Debug.WaitPhoto" xml:space="preserve">等待本轮对应读码照片…</sys:String>
+  <sys:String x:Key="Debug.WaitPhotoHint" xml:space="preserve">等待本轮扫码照片
+点击“触发扫码”开始读取。</sys:String>
+  <sys:String x:Key="Debug.ManualRequest" xml:space="preserve">本次为手工输入请求。</sys:String>
+  <sys:String x:Key="Debug.ReconcileFirst" xml:space="preserve">请先在本位核对原调试命令结果，再切换相机。</sys:String>
+  <sys:String x:Key="Ops.EnterDebug" xml:space="preserve">进入设备调试（暂停整站供包）</sys:String>
+  <sys:String x:Key="Ops.LeaveDebug" xml:space="preserve">结束调试并恢复</sys:String>
+  <sys:String x:Key="Ops.DebugRecords" xml:space="preserve">调试记录</sys:String>
+  <sys:String x:Key="Ops.ConnectionDiagnostics" xml:space="preserve">查看连接诊断</sys:String>
+  <sys:String x:Key="Ops.BrowseDiagnostics" xml:space="preserve">浏览连接诊断</sys:String>
+  <sys:String x:Key="Ops.CancelExport" xml:space="preserve">取消导出</sys:String>
+  <sys:String x:Key="Ops.BackupPlan" xml:space="preserve">备份计划与执行状态</sys:String>
+  <sys:String x:Key="Ops.OfflineMaintenanceNotice" xml:space="preserve">离线维护前须先完全关闭工作站；点击后本工具将退出并启动独立维护程序。</sys:String>
+  <sys:String x:Key="Ops.ViewBackupResult" xml:space="preserve">查看备份结果</sys:String>
+  <sys:String x:Key="Ops.CreateBackup" xml:space="preserve">创建完整备份…</sys:String>
+  <sys:String x:Key="Ops.TechnicalDetails" xml:space="preserve">技术详情</sys:String>
+  <sys:String x:Key="Ops.CalibrateEmpty" xml:space="preserve">确认空托盘并校准</sys:String>
+  <sys:String x:Key="Ops.WaitRead" xml:space="preserve">等待读取</sys:String>
+  <sys:String x:Key="Ops.StorageSettings" xml:space="preserve">数据与记录设置</sys:String>
+  <sys:String x:Key="Ops.LogNotConfirmed" xml:space="preserve">详细日志状态未确认</sys:String>
+  <sys:String x:Key="Ops.EnableVerbose" xml:space="preserve">开启详细日志 30 分钟</sys:String>
+  <sys:String x:Key="Ops.RetryingDetails" xml:space="preserve">详情读取中断，旧指标已失效；正在自动重试。</sys:String>
+  <sys:String x:Key="Settings.FullScreenHelp" xml:space="preserve">保存后立即生效，并记住下次打开方式。最大化（全屏）时隐藏标题栏并铺满屏幕；可最小化到任务栏，恢复后仍保持全屏；Esc 和 F11 不退出全屏。</sys:String>
+  <sys:String x:Key="Settings.WindowedHelp" xml:space="preserve">保存后立即生效，并记住下次打开方式。按 F11 临时切换，按 Esc 返回窗口。</sys:String>
+  <sys:String x:Key="Settings.Show" xml:space="preserve">显示</sys:String>
+  <sys:String x:Key="Settings.Hide" xml:space="preserve">隐藏</sys:String>
+  <sys:String x:Key="Settings.Mute" xml:space="preserve">静音</sys:String>
+  <sys:String x:Key="Settings.GrantUntil" xml:space="preserve">编辑授权至 {0}</sys:String>
+  <sys:String x:Key="Settings.GrantPending" xml:space="preserve">授权待核对 · 草稿保留</sys:String>
+  <sys:String x:Key="Settings.AwaitEffective" xml:space="preserve">尚未取得有效设置，请等待工作站状态读取。</sys:String>
+  <sys:String x:Key="Settings.PendingRevision" xml:space="preserve">设置版本 #{0} · 有待生效变更</sys:String>
+  <sys:String x:Key="Settings.EffectiveRevision" xml:space="preserve">当前生效版本 #{0} · 无待生效变更</sys:String>
+  <sys:String x:Key="Settings.ZoneLabel" xml:space="preserve">仓 ID</sys:String>
+  <sys:String x:Key="Settings.LineLabel" xml:space="preserve">生产线 ID</sys:String>
+  <sys:String x:Key="Settings.StationLabel" xml:space="preserve">本站</sys:String>
+  <sys:String x:Key="Settings.StationCode" xml:space="preserve">供包台编号</sys:String>
+  <sys:String x:Key="Settings.RcsHost" xml:space="preserve">RCS 主机</sys:String>
+  <sys:String x:Key="Settings.CameraSerial" xml:space="preserve">物理序列号</sys:String>
+  <sys:String x:Key="Settings.CameraCode" xml:space="preserve">RCS 相机编码</sys:String>
+  <sys:String x:Key="Settings.NotSavedSeparately" xml:space="preserve">未单独保存</sys:String>
+  <sys:String x:Key="Settings.LaneDisabled" xml:space="preserve">本位停用</sys:String>
+  <sys:String x:Key="Param.HeadingStation" xml:space="preserve">1. 本站与 RCS</sys:String>
+  <sys:String x:Key="Param.HeadingCameras" xml:space="preserve">2. 左右相机</sys:String>
+  <sys:String x:Key="Param.HeadingDisplay" xml:space="preserve">3. 显示与提示音</sys:String>
+  <sys:String x:Key="Param.StationIdentity" xml:space="preserve">本站身份</sys:String>
+  <sys:String x:Key="Param.StationHeader" xml:space="preserve">供包台标识</sys:String>
+  <sys:String x:Key="Param.StationHint" xml:space="preserve">填写 RCS 分配的仓、生产线和供包台编号。</sys:String>
+  <sys:String x:Key="Param.StationCode" xml:space="preserve">供包台编码 *</sys:String>
+  <sys:String x:Key="Param.StationCodeHint" xml:space="preserve">RCS 分配给整台供包台的编码，左右取格口和心跳共用。</sys:String>
+  <sys:String x:Key="Param.RcsService" xml:space="preserve">RCS 服务</sys:String>
+  <sys:String x:Key="Param.RcsProtocol" xml:space="preserve">协议与心跳</sys:String>
+  <sys:String x:Key="Param.RcsBoth" xml:space="preserve">左右投递位共用这个 RCS 地址。保存后按提示重连或重启。</sys:String>
+  <sys:String x:Key="Param.TargetRequired" xml:space="preserve">服务地址 *</sys:String>
+  <sys:String x:Key="Param.Target" xml:space="preserve">服务地址</sys:String>
+  <sys:String x:Key="Param.AddressHelp" xml:space="preserve">HTTP(S) 地址，路径为 /rcs/sorter/api。</sys:String>
+  <sys:String x:Key="Param.Warehouse" xml:space="preserve">仓ID</sys:String>
+  <sys:String x:Key="Param.WarehouseHint" xml:space="preserve">RCS 分配的仓库编号。</sys:String>
+  <sys:String x:Key="Param.Line" xml:space="preserve">生产线ID</sys:String>
+  <sys:String x:Key="Param.LineHint" xml:space="preserve">RCS 分配的产线编号。</sys:String>
+  <sys:String x:Key="Param.CameraLeftCode" xml:space="preserve">左相机编码</sys:String>
+  <sys:String x:Key="Param.CameraRightCode" xml:space="preserve">右相机编码</sys:String>
+  <sys:String x:Key="Param.Heartbeat" xml:space="preserve">心跳间隔</sys:String>
+  <sys:String x:Key="Param.RequestTimeout" xml:space="preserve">取格口请求超时</sys:String>
+  <sys:String x:Key="Param.MissingChute" xml:space="preserve">无可用格口时</sys:String>
+  <sys:String x:Key="Param.CameraIp" xml:space="preserve">相机网络地址</sys:String>
+  <sys:String x:Key="Param.CameraIpHelp" xml:space="preserve">相机的 IP 地址（软件不会修改相机设置）。</sys:String>
+  <sys:String x:Key="Param.CameraSerial" xml:space="preserve">相机序列号</sys:String>
+  <sys:String x:Key="Param.CameraSerialHelp" xml:space="preserve">根据 IP 自动读取并随设置保存；已有设备身份保持不变。更换同一 IP 的相机后，可点击“重新读取”。</sys:String>
+  <sys:String x:Key="Param.CameraChoice" xml:space="preserve">识码方式</sys:String>
+  <sys:String x:Key="Param.CameraIpLabel" xml:space="preserve">IP 地址</sys:String>
+  <sys:String x:Key="Param.CameraConnection" xml:space="preserve">相机连接方式</sys:String>
+  <sys:String x:Key="Param.CameraPrompt" xml:space="preserve">填写相机 IP</sys:String>
+  <sys:String x:Key="Param.CameraChoose" xml:space="preserve">填写要使用的相机</sys:String>
+  <sys:String x:Key="Param.CameraAutoRead" xml:space="preserve">填写相机 IP，保存时自动读取序列号。不用的相机请清空 IP。</sys:String>
+  <sys:String x:Key="Param.CameraFeed" xml:space="preserve">实时预览</sys:String>
+  <sys:String x:Key="Param.BarcodeFilter" xml:space="preserve">条码筛选</sys:String>
+  <sys:String x:Key="Param.BarcodeRules" xml:space="preserve">条码筛选规则</sys:String>
+  <sys:String x:Key="Param.BarcodeExclude" xml:space="preserve">条码排除规则</sys:String>
+  <sys:String x:Key="Param.BarcodeMatch" xml:space="preserve">匹配规则（可选）</sys:String>
+  <sys:String x:Key="Param.BarcodeExcludeOptional" xml:space="preserve">排除规则（可选）</sys:String>
+  <sys:String x:Key="Param.BarcodeMatchHelp" xml:space="preserve">条码需完整匹配此规则（正则表达式）；留空则不筛选。</sys:String>
+  <sys:String x:Key="Param.MultipleCodes" xml:space="preserve">拒绝多个有效条码</sys:String>
+  <sys:String x:Key="Param.MultiCodeSeparator" xml:space="preserve">多条码分隔符</sys:String>
+  <sys:String x:Key="Param.ReadTimeout" xml:space="preserve">自动识读期限</sys:String>
+  <sys:String x:Key="Param.DataRecords" xml:space="preserve">数据与记录</sys:String>
+  <sys:String x:Key="Param.ArchiveLimit" xml:space="preserve">运行记录归档阈值</sys:String>
+  <sys:String x:Key="Param.StorageReserve" xml:space="preserve">磁盘预留</sys:String>
+  <sys:String x:Key="Param.LogDays" xml:space="preserve">日志最长保留时间</sys:String>
+  <sys:String x:Key="Param.CleanupDays" xml:space="preserve">已结记录清理期限</sys:String>
+  <sys:String x:Key="Param.ConfigurationDir" xml:space="preserve">配置目录</sys:String>
+  <sys:String x:Key="Param.StorageLocation" xml:space="preserve">存储位置</sys:String>
+  <sys:String x:Key="Param.AutoBackup" xml:space="preserve">自动备份</sys:String>
+  <sys:String x:Key="Param.EnableBackup" xml:space="preserve">启用自动备份</sys:String>
+  <sys:String x:Key="Param.BackupPlan" xml:space="preserve">备份计划</sys:String>
+  <sys:String x:Key="Param.BackupDirectory" xml:space="preserve">备份目录</sys:String>
+  <sys:String x:Key="Param.BackupInterval" xml:space="preserve">备份间隔</sys:String>
+  <sys:String x:Key="Param.BackupLimit" xml:space="preserve">计划备份份数上限</sys:String>
+  <sys:String x:Key="Param.FullBackup" xml:space="preserve">手动备份</sys:String>
+  <sys:String x:Key="Param.CleanupZone" xml:space="preserve">清理时区</sys:String>
+  <sys:String x:Key="Param.CleanupTime" xml:space="preserve">清理时刻</sys:String>
+  <sys:String x:Key="Param.Advanced" xml:space="preserve">高级</sys:String>
+  <sys:String x:Key="Param.ExpandMaintenance" xml:space="preserve">维护与显示（使用默认值，按需展开）</sys:String>
+  <sys:String x:Key="Param.ConnectOnStart" xml:space="preserve">启动时连接</sys:String>
+  <sys:String x:Key="Param.AutoReconnect" xml:space="preserve">修改后自动重连生效</sys:String>
+  <sys:String x:Key="Param.FirstStep" xml:space="preserve">第 {0} / {1} 步</sys:String>
+  <sys:String x:Key="Param.NoPage" xml:space="preserve">尚未选择配置页</sys:String>
+  <sys:String x:Key="Param.Steps" xml:space="preserve">前进时检查前置页面，返回保留输入</sys:String>
+  <sys:String x:Key="Param.CheckReady" xml:space="preserve">尚未发现字段错误。请逐步检查；相机和 RCS 可留待以后配置。</sys:String>
+  <sys:String x:Key="Param.ValidateFailure" xml:space="preserve">有参数尚未设置或格式不正确，请修正标出的字段。</sys:String>
+  <sys:String x:Key="Param.PatternFailure" xml:space="preserve">条码规则格式不正确，请检查括号、符号和转义。</sys:String>
+  <sys:String x:Key="Param.ValidationFallback" xml:space="preserve">参数检查未通过，请查看诊断详情并修正输入。</sys:String>
+  <sys:String x:Key="Startup.OpenUninstaller" xml:space="preserve">正在打开卸载程序</sys:String>
+  <sys:String x:Key="Startup.VerifyMaintenance" xml:space="preserve">正在核验维护入口并等待原窗口退出；尚未删除程序或数据。</sys:String>
+  <sys:String x:Key="Startup.CheckCamera" xml:space="preserve">检查相机依赖</sys:String>
+  <sys:String x:Key="Startup.Dependencies" xml:space="preserve">正在检查相机组件与系统运行库。缺失时从同版维护缓存恢复，系统安装可能需要 Windows 授权。</sys:String>
+  <sys:String x:Key="Startup.CheckingCamera" xml:space="preserve">开始核验相机启动依赖</sys:String>
+  <sys:String x:Key="Startup.CameraRecovered" xml:space="preserve">相机依赖已恢复</sys:String>
+  <sys:String x:Key="Startup.ContinueChecking" xml:space="preserve">正在继续启动检查，尚未连接设备。</sys:String>
+  <sys:String x:Key="Startup.CameraRechecked" xml:space="preserve">相机启动依赖已恢复并复查</sys:String>
+  <sys:String x:Key="Startup.LoadConfiguration" xml:space="preserve">读取配置与本地记录</sys:String>
+  <sys:String x:Key="Startup.CheckPending" xml:space="preserve">正在检查配置和上次未处理完的作业，尚未开始供包。</sys:String>
+  <sys:String x:Key="Startup.ConfigRoute" xml:space="preserve">启动配置入口已判定</sys:String>
+  <sys:String x:Key="Startup.ResumeEquipment" xml:space="preserve">正在启动设备并恢复未完成的作业</sys:String>
+  <sys:String x:Key="Startup.ApplicationStart" xml:space="preserve">正在调用应用启动流程。设备、存储、身份和未决请求由 Application 判定。</sys:String>
+  <sys:String x:Key="Startup.SelectionLoaded" xml:space="preserve">配置和页面选择已读取</sys:String>
+  <sys:String x:Key="Startup.ReadRunning" xml:space="preserve">读取当前运行状态</sys:String>
+  <sys:String x:Key="Startup.StartComplete" xml:space="preserve">启动完成，正在读取状态。</sys:String>
+  <sys:String x:Key="Startup.StartReturned" xml:space="preserve">启动流程已返回</sys:String>
+  <sys:String x:Key="Startup.CreateWork" xml:space="preserve">创建工作窗口</sys:String>
+  <sys:String x:Key="Startup.AppStatus" xml:space="preserve">应用状态：</sys:String>
+  <sys:String x:Key="Startup.RuntimeObtained" xml:space="preserve">已取得运行实例 </sys:String>
+  <sys:String x:Key="Work.Restart" xml:space="preserve">重启供包台</sys:String>
+  <sys:String x:Key="Work.RestartPrompt" xml:space="preserve">确认重启供包台？</sys:String>
+  <sys:String x:Key="Work.RestartScope" xml:space="preserve">将停止当前供包业务，关闭相关窗口，再重新打开以应用配置。</sys:String>
+  <sys:String x:Key="Work.ContinueRestart" xml:space="preserve">继续重启</sys:String>
+  <sys:String x:Key="Work.LocalPrefNotice" xml:space="preserve">本机偏好通知</sys:String>
+  <sys:String x:Key="Work.LocalPrefDetails" xml:space="preserve">本机偏好通知详情</sys:String>
+  <sys:String x:Key="Ops.NotConnected" xml:space="preserve">未连接工作站</sys:String>
+  <sys:String x:Key="Ops.StatusUnavailable" xml:space="preserve">实时状态不可用</sys:String>
+  <sys:String x:Key="Ops.OfflineExplanation" xml:space="preserve">实时状态不可用。可查看离线运行日志。请核对工作站是否已打开；未连接不代表已停机。</sys:String>
+  <sys:String x:Key="Ops.LocalDiagnostic" xml:space="preserve">本机连接诊断：
+</sys:String>
+  <sys:String x:Key="Settings.Back" xml:space="preserve">返回设置</sys:String>
+  <sys:String x:Key="Settings.RetainDraft" xml:space="preserve">未保存的修改会保留</sys:String>
+  <sys:String x:Key="Settings.MoreTools" xml:space="preserve">更多工具</sys:String>
+  <sys:String x:Key="Settings.PasswordTools" xml:space="preserve">管理模式与密码…</sys:String>
+  <sys:String x:Key="Settings.ImportTemplate" xml:space="preserve">导入设置模板…</sys:String>
+  <sys:String x:Key="Settings.ExportTemplate" xml:space="preserve">导出设置模板…</sys:String>
+  <sys:String x:Key="Settings.Stash" xml:space="preserve">暂存未完成的设置</sys:String>
+  <sys:String x:Key="Settings.ResumeDraft" xml:space="preserve">继续编辑暂存的设置</sys:String>
+  <sys:String x:Key="Settings.LoadAgain" xml:space="preserve">重新读取设置…</sys:String>
+  <sys:String x:Key="Settings.AdvancedTools" xml:space="preserve">高级工具</sys:String>
+  <sys:String x:Key="Settings.LastSave" xml:space="preserve">查看上次保存结果</sys:String>
+  <sys:String x:Key="Settings.ReconnectAll" xml:space="preserve">重新连接全部设备和服务</sys:String>
+  <sys:String x:Key="Settings.SaveUnconfirmed" xml:space="preserve">保存结果未确认</sys:String>
+  <sys:String x:Key="Lane.PriorCall" xml:space="preserve">本轮尚未提交；本位旧调用仍在收尾</sys:String>
+  <sys:String x:Key="Lane.Multiple" xml:space="preserve">本轮有多个有效条码，尚未请求RCS</sys:String>
+  <sys:String x:Key="Lane.NoBarcode" xml:space="preserve">本轮尚未取得可提交条码，尚未请求RCS</sys:String>
+  <sys:String x:Key="Lane.InvalidChute" xml:space="preserve">本次没有有效格口</sys:String>
+  <sys:String x:Key="Lane.ManualInspection" xml:space="preserve">本件需人工检查</sys:String>
+  <sys:String x:Key="Lane.ChuteUnavailable" xml:space="preserve">本件暂不能分配格口</sys:String>
+  <sys:String x:Key="Lane.NoScan" xml:space="preserve">不接收条码</sys:String>
+  <sys:String x:Key="Lane.PlacementEnded" xml:space="preserve">本车放置已结束，未发送请求</sys:String>
+  <sys:String x:Key="Lane.AcceptedNotSent" xml:space="preserve">本件已接纳但未发送</sys:String>
+  <sys:String x:Key="Lane.RcsOffline" xml:space="preserve">RCS 服务离线</sys:String>
+  <sys:String x:Key="Lane.VehicleChecking" xml:space="preserve">正在核对本位小车，输入已保留</sys:String>
+  <sys:String x:Key="Lane.Finalizing" xml:space="preserve">正在等待本轮请求及结果保存结束</sys:String>
+  <sys:String x:Key="Lane.WaitChute" xml:space="preserve">正在等待本件格口</sys:String>
+  <sys:String x:Key="Lane.NewCodesBlocked" xml:space="preserve">本位暂不接收新条码</sys:String>
+  <sys:String x:Key="Lane.CameraBoundary" xml:space="preserve">正在确认相机新画面，可人工补录</sys:String>
+  <sys:String x:Key="Lane.AutoReadUsed" xml:space="preserve">本次自动识读机会已使用</sys:String>
+  <sys:String x:Key="Lane.WaitForCall" xml:space="preserve">请等待本位在途调用收尾后重新提交；另一位仍可独立供包</sys:String>
+  <sys:String x:Key="Lane.SlowerReading" xml:space="preserve">原包裹持续在位，正在降频识读；也可PDA补录或取下包裹</sys:String>
+  <sys:String x:Key="Lane.PdaOrRemove" xml:space="preserve">可原位PDA补录或取下；可靠空盘自动结束，视觉不可靠时确认取下</sys:String>
+  <sys:String x:Key="Lane.AdjustLabel" xml:space="preserve">请调整标签，或使用PDA补录；本轮识读期限不会刷新</sys:String>
+  <sys:String x:Key="Lane.WaitForLiveStatus" xml:space="preserve">请等待状态恢复，暂勿按旧格口投递</sys:String>
+  <sys:String x:Key="Lane.CheckDetailsCall" xml:space="preserve">本件暂勿投递，请查看详情并通知维护人员</sys:String>
+  <sys:String x:Key="Lane.Unpack" xml:space="preserve">请查看拆包明细，处理完再继续</sys:String>
+  <sys:String x:Key="Lane.CheckDetails" xml:space="preserve">本件暂勿投递，请查看详情</sys:String>
+  <sys:String x:Key="Lane.SetCameraCode" xml:space="preserve">请前往“设置”填写本位相机编码后再启用</sys:String>
+  <sys:String x:Key="Lane.WaitForVehicleRemoval" xml:space="preserve">等待RCS撤车确认；启用后须确认新车</sys:String>
+  <sys:String x:Key="Lane.CheckOriginalRcs" xml:space="preserve">请停用本位，联系维护核对客户RCS原请求及调度状态</sys:String>
+  <sys:String x:Key="Lane.WaitEmptyTray" xml:space="preserve">请取下包裹，等待可信空盘确认</sys:String>
+  <sys:String x:Key="Lane.RemoveThenContinue" xml:space="preserve">请取下包裹结束本件，再处理下一件</sys:String>
+  <sys:String x:Key="Lane.ReconnectThenSubmit" xml:space="preserve">请检查连接，恢复后再提交</sys:String>
+  <sys:String x:Key="Lane.VehicleThenCurrent" xml:space="preserve">确认后可处理当前件；同次放置不会重复请求</sys:String>
+  <sys:String x:Key="Lane.AutoDisable" xml:space="preserve">本轮处理结束后自动停用，无需确认空托盘</sys:String>
+  <sys:String x:Key="Lane.WaitWithNextParcel" xml:space="preserve">请等待结果后再上件</sys:String>
+  <sys:String x:Key="Lane.CheckLane" xml:space="preserve">请核对本位状态，必要时通知维护人员</sys:String>
+  <sys:String x:Key="Lane.WaitForRemoval" xml:space="preserve">等待可信物理边界和本位安全准入，勿重复请求</sys:String>
+  <sys:String x:Key="Lane.FollowLocalRecovery" xml:space="preserve">请按本位到位或人工恢复提示处理，勿重复请求</sys:String>
+  <sys:String x:Key="Lane.WaitCameraVehicle" xml:space="preserve">等待相机换车确认</sys:String>
+  <sys:String x:Key="Lane.CameraBoundaryRestore" xml:space="preserve">相机边界完成后自动恢复；合法人工补录仍可用</sys:String>
+  <sys:String x:Key="Lane.CameraUnconfirmed" xml:space="preserve">相机连接未确认</sys:String>
+  <sys:String x:Key="Lane.WaitCamera" xml:space="preserve">请等待相机自动恢复，再重新上件</sys:String>
+  <sys:String x:Key="Lane.RcsNotReady" xml:space="preserve">RCS 连接未就绪</sys:String>
+  <sys:String x:Key="Lane.WaitRcs" xml:space="preserve">请等待 RCS 连接恢复，再重新上件</sys:String>
+  <sys:String x:Key="Lane.LookingUpChute" xml:space="preserve">本位正在获取格口</sys:String>
+  <sys:String x:Key="Lane.WaitForLane" xml:space="preserve">请等待本位处理结束，再重新上件</sys:String>
+  <sys:String x:Key="Lane.ChuteUnconfirmed" xml:space="preserve">本位有格口结果尚未确认</sys:String>
+  <sys:String x:Key="Lane.RemoveAndFollow" xml:space="preserve">请取下包裹，按本位提示处理</sys:String>
+  <sys:String x:Key="Lane.UnfinishedWork" xml:space="preserve">本位作业尚未结束</sys:String>
+  <sys:String x:Key="Lane.ReadLaneDetails" xml:space="preserve">请查看本位详情，处理后再上件</sys:String>
+  <sys:String x:Key="Lane.ResumeThenLoad" xml:space="preserve">确认现场后恢复供包，再重新上件</sys:String>
+  <sys:String x:Key="Lane.Diagnostics" xml:space="preserve">设备调试正在进行</sys:String>
+  <sys:String x:Key="Lane.AwaitDiagnostics" xml:space="preserve">请联系运维人员结束设备调试后再上件</sys:String>
+  <sys:String x:Key="Lane.DisabledOrDisabling" xml:space="preserve">本位已停用或正在停用</sys:String>
+  <sys:String x:Key="Lane.EnableThenLoad" xml:space="preserve">请启用本投递位后再上件</sys:String>
+  <sys:String x:Key="Lane.VerifyStationSettings" xml:space="preserve">本站配置需要核对</sys:String>
+  <sys:String x:Key="Lane.VerifyLogin" xml:space="preserve">SM 不使用操作员登录，请在工作站设置核对本站配置</sys:String>
+  <sys:String x:Key="Lane.LocalService" xml:space="preserve">本位设备正在维护</sys:String>
+  <sys:String x:Key="Lane.WaitRecovery" xml:space="preserve">请等待设备恢复后再上件</sys:String>
+  <sys:String x:Key="Lane.WorkstationMaintenance" xml:space="preserve">供包台正在保存设置或备份</sys:String>
+  <sys:String x:Key="Lane.WaitForMaintenance" xml:space="preserve">请等待操作结束后再上件</sys:String>
+  <sys:String x:Key="Lane.WorkstationNotReady" xml:space="preserve">供包台尚未就绪</sys:String>
+  <sys:String x:Key="Lane.WaitForStartup" xml:space="preserve">请等待供包台启动完成</sys:String>
+  <sys:String x:Key="Lane.CameraNotConfigured" xml:space="preserve">本位相机未配置</sys:String>
+  <sys:String x:Key="Lane.CheckCameraSettings" xml:space="preserve">请通知维护人员检查相机设置</sys:String>
+  <sys:String x:Key="Lane.ConnectionNotConfigured" xml:space="preserve">业务连接尚未配置</sys:String>
+  <sys:String x:Key="Lane.CheckConnectionSettings" xml:space="preserve">请通知维护人员检查连接设置</sys:String>
+  <sys:String x:Key="Lane.ConfigurationUnconfirmed" xml:space="preserve">当前设置尚未确认生效</sys:String>
+  <sys:String x:Key="Lane.ConfirmConfiguration" xml:space="preserve">请通知维护人员核对当前设置</sys:String>
+  <sys:String x:Key="Lane.RestoreUnconfirmed" xml:space="preserve">恢复的数据尚未核对</sys:String>
+  <sys:String x:Key="Lane.ConfirmRecovery" xml:space="preserve">请通知维护人员核对恢复结果</sys:String>
+  <sys:String x:Key="Lane.InstallationNotReady" xml:space="preserve">当前安装状态未就绪</sys:String>
+  <sys:String x:Key="Lane.CheckInstall" xml:space="preserve">请通知维护人员检查安装状态</sys:String>
+  <sys:String x:Key="Lane.RuntimeFault" xml:space="preserve">供包台运行故障</sys:String>
+  <sys:String x:Key="Lane.RemoveNotify" xml:space="preserve">请取下包裹并通知维护人员</sys:String>
+  <sys:String x:Key="Lane.CapabilityUnavailable" xml:space="preserve">本位所需设备尚未就绪</sys:String>
+  <sys:String x:Key="Lane.WaitDevice" xml:space="preserve">请等待设备恢复，持续出现时通知维护人员</sys:String>
+  <sys:String x:Key="Lane.StorageUnavailable" xml:space="preserve">供包台存储不可用</sys:String>
+  <sys:String x:Key="Lane.CheckStorage" xml:space="preserve">请通知维护人员检查剩余空间和存储状态</sys:String>
+  <sys:String x:Key="Lane.CapacityReached" xml:space="preserve">当前作业已达容量上限</sys:String>
+  <sys:String x:Key="Lane.WaitCapacity" xml:space="preserve">请等待请求处理完成，或按本位提示确认包裹已取下</sys:String>
+  <sys:String x:Key="Lane.ImageCapacity" xml:space="preserve">图片处理容量不足</sys:String>
+  <sys:String x:Key="Lane.ImageRecovery" xml:space="preserve">请等待本位恢复，持续出现时通知维护人员</sys:String>
+  <sys:String x:Key="Lane.ScanBacklog" xml:space="preserve">本位扫码积压</sys:String>
+  <sys:String x:Key="Lane.RemoveReload" xml:space="preserve">请取下包裹，等待本位恢复后重新上件</sys:String>
+  <sys:String x:Key="Lane.InterruptedScan" xml:space="preserve">本位有中断的扫码记录</sys:String>
+  <sys:String x:Key="Lane.CheckInterrupted" xml:space="preserve">请通知维护人员检查中断记录</sys:String>
+  <sys:String x:Key="Lane.IdentityConflict" xml:space="preserve">本次读码与原记录冲突</sys:String>
+  <sys:String x:Key="Lane.CheckOriginal" xml:space="preserve">请取下包裹并通知维护人员核对记录</sys:String>
+  <sys:String x:Key="Lane.RepeatedScan" xml:space="preserve">重复读到了旧扫码记录</sys:String>
+  <sys:String x:Key="Lane.DiagnosticScan" xml:space="preserve">本次读码来自相机调试</sys:String>
+  <sys:String x:Key="Lane.EndDiagnosticsThenReload" xml:space="preserve">结束调试后再重新上件</sys:String>
+  <sys:String x:Key="Lane.ConditionsChanged" xml:space="preserve">提交期间本位条件已变化</sys:String>
+  <sys:String x:Key="Lane.VerifyParcel" xml:space="preserve">请核对本位状态和当前包裹后再提交</sys:String>
+  <sys:String x:Key="Lane.NoRejectionReason" xml:space="preserve">本次扫码原因未记录</sys:String>
+  <sys:String x:Key="Lane.CheckLogs" xml:space="preserve">请取下包裹，持续出现时通知维护人员查看日志</sys:String>
+  <sys:String x:Key="Settings.HideDraft" xml:space="preserve">隐藏设置窗，保留当前输入与编辑授权</sys:String>
+  <sys:String x:Key="Settings.HideAndReturn" xml:space="preserve">隐藏设置窗，返回工作站</sys:String>
+  <sys:String x:Key="Settings.CloseEndGrant" xml:space="preserve">关闭设置窗并结束本次授权</sys:String>
+  <sys:String x:Key="Settings.CloseWindow" xml:space="preserve">关闭设置窗</sys:String>
+  <sys:String x:Key="Settings.OpenMode" xml:space="preserve">窗口方式</sys:String>
+  <sys:String x:Key="Settings.Cues" xml:space="preserve">提示音</sys:String>
+  <sys:String x:Key="Settings.PrefReadFailure" xml:space="preserve">偏好未能读取，原文件保留；请检查本机设置文件与访问权限。</sys:String>
+  <sys:String x:Key="Settings.Unreadable" xml:space="preserve">未能读取</sys:String>
+  <sys:String x:Key="Settings.Edit" xml:space="preserve">设置编辑</sys:String>
+  <sys:String x:Key="Settings.GrantRecheck" xml:space="preserve">尚未确认本窗编辑授权，请重新验证。</sys:String>
+  <sys:String x:Key="Settings.LoadDraft" xml:space="preserve">读取完整设置草稿</sys:String>
+  <sys:String x:Key="Settings.LoadFailed" xml:space="preserve">设置读取未完成，原配置保留，请核对状态后重试。</sys:String>
+  <sys:String x:Key="Settings.EditNotOpened" xml:space="preserve">设置编辑尚未打开，原配置和输入保留。</sys:String>
+  <sys:String x:Key="Settings.CloseIncomplete" xml:space="preserve">设置窗口尚未关闭，原授权和输入保留：</sys:String>
+  <sys:String x:Key="Settings.CloseRetry" xml:space="preserve">授权结束或原操作收尾未确认，请再次关闭重试。</sys:String>
+  <sys:String x:Key="Settings.CloseWait" xml:space="preserve">设置窗口仍有授权或关闭操作，请等待原结果。</sys:String>
+  <sys:String x:Key="Settings.CheckSave" xml:space="preserve">查看保存结果…</sys:String>
+  <sys:String x:Key="Common.DisabledSetting" xml:space="preserve">关闭</sys:String>
+  <sys:String x:Key="History.SearchBarcode" xml:space="preserve">查询完整条码</sys:String>
+  <sys:String x:Key="History.CopiedComplete" xml:space="preserve">已复制作业、请求与 RCS 返回的完整数据。</sys:String>
+  <sys:String x:Key="History.LastFifty" xml:space="preserve">读取最新50条</sys:String>
+  <sys:String x:Key="History.FirstPageSameScope" xml:space="preserve">同一范围首屏</sys:String>
+  <sys:String x:Key="History.ExportFiltered" xml:space="preserve">导出当前筛选</sys:String>
+  <sys:String x:Key="Debug.Incomplete" xml:space="preserve">本轮调试未完成，请查看采集诊断并核对原轮次；请求结果未确认时不要重复发送。</sys:String>
+  <sys:String x:Key="Debug.CameraUnsupported" xml:space="preserve">当前业务不支持相机调试。</sys:String>
+  <sys:String x:Key="Debug.ScanUnsupported" xml:space="preserve">当前业务不提供按轮扫码及手动请求。</sys:String>
+  <sys:String x:Key="Debug.AwaitLive" xml:space="preserve">请等待当前相机的实时画面，再确认空托盘。</sys:String>
+  <sys:String x:Key="Debug.RestoreStatus" xml:space="preserve">请先恢复当前运行状态读取。</sys:String>
+  <sys:String x:Key="Debug.CheckOriginalLane" xml:space="preserve">请返回原投递位核对上次准备结果；不把原命令用于当前投递位。</sys:String>
+  <sys:String x:Key="Debug.CheckPrepare" xml:space="preserve">上次准备结果未确认，请先查看本轮结果；不会重复创建请求。</sys:String>
+  <sys:String x:Key="Debug.SingleScan" xml:space="preserve">单次扫码调试</sys:String>
+  <sys:String x:Key="Debug.NoSession" xml:space="preserve">未读取到当前调试会话。</sys:String>
+  <sys:String x:Key="Debug.WrongCamera" xml:space="preserve">原扫码命令属于另一相机或会话，请核对原轮次。</sys:String>
+  <sys:String x:Key="Debug.OtherRound" xml:space="preserve">原扫码命令已结束，当前是另一轮；请查看原记录。</sys:String>
+  <sys:String x:Key="Debug.RestoreRound" xml:space="preserve">请先恢复轮次读取，再查看本轮请求。</sys:String>
+  <sys:String x:Key="Debug.PrepareBarcode" xml:space="preserve">请先准备当前条码的请求；扫码请求还需查看本轮图片。</sys:String>
+  <sys:String x:Key="Debug.NoOtherRoundSend" xml:space="preserve">原发送结果须按原轮次核对，不能转投当前轮次。</sys:String>
+  <sys:String x:Key="Debug.CameraNotTriggered" xml:space="preserve">所选相机尚未触发扫码。</sys:String>
+  <sys:String x:Key="Debug.ScanIncomplete" xml:space="preserve">本轮扫码未完成，未发送请求。请点击“再次扫码”重读。</sys:String>
+  <sys:String x:Key="Debug.ResultLockedWait" xml:space="preserve">结果已锁定，等待手动发送或再次扫码。</sys:String>
+  <sys:String x:Key="Debug.PreparingRequest" xml:space="preserve">等待本轮请求准备完成</sys:String>
+  <sys:String x:Key="Debug.SendToRcs" xml:space="preserve">发送到当前RCS：</sys:String>
+  <sys:String x:Key="Debug.ImageMismatch" xml:space="preserve">原图与本轮身份不一致，拒绝显示。</sys:String>
+  <sys:String x:Key="Debug.LockedFrame" xml:space="preserve">已锁定本轮照片 · 帧 </sys:String>
+  <sys:String x:Key="Debug.KeepImage" xml:space="preserve">
+下一件不会覆盖。</sys:String>
+  <sys:String x:Key="Debug.NoBody" xml:space="preserve">回包接收不完整，无可显示的正文。</sys:String>
+  <sys:String x:Key="Debug.PartialBody" xml:space="preserve">回包接收不完整，仅显示已收到的部分。</sys:String>
+  <sys:String x:Key="Debug.NotText" xml:space="preserve">回包正文无法按文本读取。</sys:String>
+  <sys:String x:Key="Debug.EmptyBody" xml:space="preserve">RCS 返回了空正文。</sys:String>
+  <sys:String x:Key="Debug.ReceivedResponse" xml:space="preserve">已收到回包，请核对结果（调试不自动重发）</sys:String>
+  <sys:String x:Key="Debug.NotSentDetail" xml:space="preserve">尚未发送 · </sys:String>
+  <sys:String x:Key="Debug.SendingStatus" xml:space="preserve">正在发送，等待 RCS 回包。</sys:String>
+  <sys:String x:Key="Debug.MissingBody" xml:space="preserve">未收到 RCS 回包正文，请核对本轮请求结果。</sys:String>
+  <sys:String x:Key="Debug.ManualNoPhoto" xml:space="preserve">本次为手工输入请求，无扫码照片。</sys:String>
+  <sys:String x:Key="Debug.NoBarcodeHint" xml:space="preserve">无条码
+请调整包裹或条码朝向。</sys:String>
+  <sys:String x:Key="Debug.ReadingHint" xml:space="preserve">正在读取本轮条码…
+读到单码后自动锁定照片。</sys:String>
+  <sys:String x:Key="Debug.MissingPhotoHint" xml:space="preserve">本轮照片不可用
+图片可能已被清理。</sys:String>
+  <sys:String x:Key="Debug.CheckTrigger" xml:space="preserve">触发时检查相机连接</sys:String>
+  <sys:String x:Key="Debug.ScanNotStarted" xml:space="preserve">尚未开始扫码</sys:String>
+  <sys:String x:Key="Debug.ManualCommand" xml:space="preserve">人工请求</sys:String>
+  <sys:String x:Key="Debug.Reading" xml:space="preserve">正在读取</sys:String>
+  <sys:String x:Key="Debug.LockedBarcode" xml:space="preserve">读码已锁定</sys:String>
+  <sys:String x:Key="Debug.Sending" xml:space="preserve">正在发送</sys:String>
+  <sys:String x:Key="Debug.ReadError" xml:space="preserve">读取异常</sys:String>
+  <sys:String x:Key="Debug.ManualNoImage" xml:space="preserve">人工请求，无扫码照片</sys:String>
+  <sys:String x:Key="Debug.NoCode" xml:space="preserve">无条码</sys:String>
+  <sys:String x:Key="Debug.ResultLocked" xml:space="preserve">结果已锁定</sys:String>
+  <sys:String x:Key="Debug.DraftChanged" xml:space="preserve">输入已更改，请准备当前条码的请求。</sys:String>
+  <sys:String x:Key="Debug.CameraRead" xml:space="preserve">相机读码</sys:String>
+  <sys:String x:Key="Debug.TriggerCheck" xml:space="preserve">检查触发</sys:String>
+  <sys:String x:Key="Debug.Scanning" xml:space="preserve">扫码中…</sys:String>
+  <sys:String x:Key="Debug.Trigger" xml:space="preserve">触发扫码</sys:String>
+  <sys:String x:Key="Debug.ScanAgain" xml:space="preserve">再次扫码</sys:String>
+  <sys:String x:Key="Debug.ScanningNoSend" xml:space="preserve">触发时由供包台核对实际连接；读码不额外发送请求。</sys:String>
+  <sys:String x:Key="Debug.ConfigureCamera" xml:space="preserve">请先配置并启用本位相机；可在下方手工输入条码。</sys:String>
+  <sys:String x:Key="Debug.PrepareRequest" xml:space="preserve">准备请求</sys:String>
+  <sys:String x:Key="Debug.CheckPrepared" xml:space="preserve">查看准备结果</sys:String>
+  <sys:String x:Key="Debug.SendRequest" xml:space="preserve">发送请求</sys:String>
+  <sys:String x:Key="Debug.CheckSent" xml:space="preserve">查看发送结果</sys:String>
+  <sys:String x:Key="Debug.SwitchLive" xml:space="preserve">请切到实时画面并等待当前相机的新画面。</sys:String>
+  <sys:String x:Key="Header.StatusInterrupted" xml:space="preserve">状态读取中断</sys:String>
+  <sys:String x:Key="Header.Ready" xml:space="preserve">可以供包</sys:String>
+  <sys:String x:Key="Header.Hold" xml:space="preserve">暂不能供包</sys:String>
+  <sys:String x:Key="Header.RcsOffline" xml:space="preserve">RCS 离线，连接恢复后自动继续</sys:String>
+  <sys:String x:Key="Header.ResumeInstruction" xml:space="preserve">确认现场后点击“恢复供包”</sys:String>
+  <sys:String x:Key="Header.DebugActive" xml:space="preserve">运维调试中，请等待调试结束</sys:String>
+  <sys:String x:Key="Header.WaitCalls" xml:space="preserve">不再接收新包裹，正在等待本位请求结束</sys:String>
+  <sys:String x:Key="Header.BothDisabled" xml:space="preserve">左右投递位均未启用，请先配置或启用工位</sys:String>
+  <sys:String x:Key="Header.ConfigureRcs" xml:space="preserve">请在“设置”填写 RCS 地址</sys:String>
+  <sys:String x:Key="Header.AwaitRcs" xml:space="preserve">等待 RCS 心跳确认</sys:String>
+  <sys:String x:Key="Header.Stopping" xml:space="preserve">工作站正在停止</sys:String>
+  <sys:String x:Key="Header.RightUnavailable" xml:space="preserve">右投递位暂不能供包</sys:String>
+  <sys:String x:Key="Header.LeftUnavailable" xml:space="preserve">左投递位暂不能供包</sys:String>
+  <sys:String x:Key="Header.LeftContinues" xml:space="preserve">左位照常作业，请按右卡提示处理</sys:String>
+  <sys:String x:Key="Header.RightContinues" xml:space="preserve">右位照常作业，请按左卡提示处理</sys:String>
+  <sys:String x:Key="Header.CheckLanes" xml:space="preserve">请按投递位卡片上的提示处理</sys:String>
+  <sys:String x:Key="Header.Connections" xml:space="preserve">还差 {0} 项连接配置</sys:String>
+  <sys:String x:Key="Header.ConfigureRcsFirst" xml:space="preserve">配置并启用 RCS 后，可手动输入条码取格口；不要求配置或连接相机。</sys:String>
+  <sys:String x:Key="Work.SimSafety" xml:space="preserve">模拟模式 · 软件暂停不是安全急停 · 不操作真实设备</sys:String>
+  <sys:String x:Key="Work.ProductionSafety" xml:space="preserve">生产模式 · 软件暂停不是安全急停，紧急情况请按现场急停按钮</sys:String>
+  <sys:String x:Key="Work.Safety" xml:space="preserve">软件暂停不是安全急停，紧急情况请按现场急停按钮</sys:String>
+  <sys:String x:Key="Work.PaceInitial" xml:space="preserve">本班格口 —</sys:String>
+  <sys:String x:Key="Work.PaceMissing" xml:space="preserve">本班格口 — · 近10分 —</sys:String>
+  <sys:String x:Key="Work.Pace" xml:space="preserve">本班格口 {0:N0} 次 · 近10分 {1}</sys:String>
+  <sys:String x:Key="Work.PaceCompactMissing" xml:space="preserve">本班 — · — 次/分</sys:String>
+  <sys:String x:Key="Work.PaceCompact" xml:space="preserve">本班 {0:N0} 次 · {1} 次/分</sys:String>
+  <sys:String x:Key="Work.PacePerMinute" xml:space="preserve">{0:F1} 次/分</sys:String>
+  <sys:String x:Key="Work.LanePaceMissing" xml:space="preserve">本位本班格口 —</sys:String>
+  <sys:String x:Key="Work.LanePace" xml:space="preserve">本位本班格口 {0:N0} 次</sys:String>
+  <sys:String x:Key="Work.DisablingShort" xml:space="preserve">停用中…</sys:String>
+  <sys:String x:Key="Work.CurrentLaneEnabled" xml:space="preserve">本位已启用</sys:String>
+  <sys:String x:Key="Work.CurrentLaneDisabling" xml:space="preserve">本位停用中</sys:String>
+  <sys:String x:Key="Work.CurrentLaneDisabled" xml:space="preserve">本位已停用</sys:String>
+  <sys:String x:Key="Work.EnablePosition" xml:space="preserve">启用{0}</sys:String>
+  <sys:String x:Key="Work.DisablingExplain" xml:space="preserve">停用中：不再接收新条码。本轮请求及结果保存结束后自动停用。点“启用”可取消。</sys:String>
+  <sys:String x:Key="Work.DisabledExplain" xml:space="preserve">本位已停用，不接收条码。</sys:String>
+  <sys:String x:Key="Work.NoCameraCode" xml:space="preserve">相机编码未配置，本位停用；在设置填写后可启用。</sys:String>
+  <sys:String x:Key="Work.CompactScanHint" xml:space="preserve">等待相机扫码或输入条码</sys:String>
+  <sys:String x:Key="Work.CompactCanLoad" xml:space="preserve">可投包</sys:String>
+  <sys:String x:Key="Ops.Permissions" xml:space="preserve">管理授权</sys:String>
+  <sys:String x:Key="Ops.VerifyPassword" xml:space="preserve">验证管理密码</sys:String>
+  <sys:String x:Key="Settings.InstalledOnly" xml:space="preserve">请从已安装的供包台打开设置。</sys:String>
+  <sys:String x:Key="Settings.PreferenceApplied" xml:space="preserve">已保存并生效</sys:String>
+  <sys:String x:Key="Settings.SavedSeparately" xml:space="preserve">业务配置与本机偏好分别保存。</sys:String>
+  <sys:String x:Key="Settings.PreferenceResult" xml:space="preserve">{0}：{1}</sys:String>
+  <sys:String x:Key="Ops.Version" xml:space="preserve">业务版本 {0}</sys:String>
+  <sys:String x:Key="Ops.ReadOnly" xml:space="preserve">未授权（只读）</sys:String>
+  <sys:String x:Key="Ops.VerifyForActions" xml:space="preserve">验证本站管理密码后可执行运维操作。</sys:String>
+  <sys:String x:Key="Ops.Running" xml:space="preserve">运行中</sys:String>
+  <sys:String x:Key="Ops.SoftwarePaused" xml:space="preserve">软件暂停</sys:String>
+  <sys:String x:Key="Ops.TaskCount" xml:space="preserve">{0} 件</sys:String>
+  <sys:String x:Key="Ops.NoCurrent" xml:space="preserve">无</sys:String>
+  <sys:String x:Key="Ops.Storage" xml:space="preserve">存储</sys:String>
+  <sys:String x:Key="Ops.VehicleIdle" xml:space="preserve">空闲</sys:String>
+  <sys:String x:Key="Ops.VehicleTasking" xml:space="preserve">工作中</sys:String>
+  <sys:String x:Key="Ops.VehiclePending" xml:space="preserve">状态待确认</sys:String>
+  <sys:String x:Key="Ops.LostControl" xml:space="preserve">控制未连接</sys:String>
+  <sys:String x:Key="Ops.CheckControl" xml:space="preserve">工作站控制连接已中断，请恢复连接后核对操作结果。</sys:String>
+  <sys:String x:Key="Ops.AuthorizationPending" xml:space="preserve">授权未确认</sys:String>
+  <sys:String x:Key="Ops.EndedAuthorization" xml:space="preserve">本窗授权已结束或未确认。请验证管理密码，编辑输入保留。</sys:String>
+  <sys:String x:Key="Ops.DebugPaused" xml:space="preserve">调试中 · 整站暂停</sys:String>
+  <sys:String x:Key="Ops.ConfirmDebugEnd" xml:space="preserve">设备调试已暂停整站供包及人工提交。按原调试会话结束并核对恢复。</sys:String>
+  <sys:String x:Key="Ops.Authorized" xml:space="preserve">已授权</sys:String>
+  <sys:String x:Key="Ops.GrantExpires" xml:space="preserve">已授权 · {0} 到期</sys:String>
+  <sys:String x:Key="Ops.ViewEdit" xml:space="preserve">浏览与编辑不暂停供包。</sys:String>
+  <sys:String x:Key="Ops.GrantReview" xml:space="preserve">授权状态待核对</sys:String>
+</ResourceDictionary>

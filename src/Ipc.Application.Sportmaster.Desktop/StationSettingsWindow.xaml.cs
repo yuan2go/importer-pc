@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using System.ComponentModel;
 using System.Windows;
 using Ipc.Application.Contracts;
@@ -31,7 +32,8 @@ public partial class StationSettingsWindow : Window
     }
     void Changed(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(model.Snapshot) or nameof(model.IsManagementMode) or nameof(model.ManagementStatus) or nameof(model.Fresh)) UpdateState();
+        if (e.PropertyName is null) RefreshSavedPreferences();
+        if (e.PropertyName is null or nameof(model.Snapshot) or nameof(model.IsManagementMode) or nameof(model.ManagementStatus) or nameof(model.Fresh)) UpdateState();
     }
     void UpdateState()
     {
@@ -41,34 +43,34 @@ public partial class StationSettingsWindow : Window
         ReadOnlyBody.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;
         EditSettings.Visibility = granted ? Visibility.Collapsed : Visibility.Visible;
         EditActions.Visibility = SettingsDraft.Visibility = granted ? Visibility.Visible : Visibility.Collapsed;
-        ReturnToWorkstation.Content = granted ? "暂回作业" : "返回作业";
-        ReturnToWorkstation.ToolTip = granted ? "隐藏设置窗，保留当前输入与编辑授权" : "隐藏设置窗，返回工作站";
-        CloseSettings.Content = granted ? "结束编辑" : "关闭";
-        CloseSettings.ToolTip = granted ? "关闭设置窗并结束本次授权" : "关闭设置窗";
-        AuthorizationText.Text = granted ? $"编辑授权至 {model.ManagementStatus.ExpiresAt?.ToLocalTime():HH:mm}" :
-            session is null ? "只读模式" : "授权待核对 · 草稿保留";
+        ReturnToWorkstation.Content = granted ? UiText.Get("Settings.DisplayWork") : UiText.Get("Settings.ReturnWork");
+        ReturnToWorkstation.ToolTip = granted ? UiText.Get("Settings.HideDraft") : UiText.Get("Settings.HideAndReturn");
+        CloseSettings.Content = granted ? UiText.Get("Settings.CloseEdit") : UiText.Get("Common.Close");
+        CloseSettings.ToolTip = granted ? UiText.Get("Settings.CloseEndGrant") : UiText.Get("Settings.CloseWindow");
+        AuthorizationText.Text = granted ? UiText.Format("Settings.GrantUntil", model.ManagementStatus.ExpiresAt?.ToLocalTime().ToString("HH:mm")) :
+            session is null ? UiText.Get("Settings.ReadOnly") : "授权待核对 · 草稿保留";
         EffectiveSettingsCards.Visibility = model.Fresh && model.Snapshot is not null ? Visibility.Visible : Visibility.Collapsed;
         if (!model.Fresh || model.Snapshot is not { } snapshot)
         {
-            ReadOnlySettings.Text = "尚未取得有效设置，请等待工作站状态读取。";
+            ReadOnlySettings.Text = UiText.Get("Settings.AwaitEffective");
             return;
         }
 
         var configuration = snapshot.Configuration.Effective;
         var rcs = configuration.Wcs;
         var host = rcs is not null && Uri.TryCreate(rcs.Target, UriKind.Absolute, out var uri)
-            ? new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri.GetLeftPart(UriPartial.Authority) : "待配置";
+            ? new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri.GetLeftPart(UriPartial.Authority) : UiText.Get("Common.ConfigurePending");
         var revision = snapshot.Configuration.Revision.ToString();
         ReadOnlySettings.Text = snapshot.HasPendingConfiguration == true
-            ? $"设置版本 #{revision} · 有待生效变更"
-            : $"当前生效版本 #{revision} · 无待生效变更";
+            ? UiText.Format("Settings.PendingRevision", revision)
+            : UiText.Format("Settings.EffectiveRevision", revision);
         UpdateFields(StationFields,
         [
             new("本站", configuration.StationId, "StationSettings.StationId"),
-            new("供包台编号", string.IsNullOrWhiteSpace(configuration.StationCode) ? "待配置" : configuration.StationCode, "StationSettings.StationCode"),
+            new("供包台编号", string.IsNullOrWhiteSpace(configuration.StationCode) ? UiText.Get("Common.ConfigurePending") : configuration.StationCode, "StationSettings.StationCode"),
             new("RCS 主机", host, "StationSettings.RcsHost"),
-            new("仓 ID", rcs?.Parameters.GetValueOrDefault("zone-id") ?? "未单独保存", "StationSettings.Zone"),
-            new("生产线 ID", rcs?.Parameters.GetValueOrDefault("project-id") ?? "未单独保存", "StationSettings.Project")
+            new("仓 ID", rcs?.Parameters.GetValueOrDefault("zone-id") ?? UiText.Get("Settings.NotSavedSeparately"), "StationSettings.Zone"),
+            new("生产线 ID", rcs?.Parameters.GetValueOrDefault("project-id") ?? UiText.Get("Settings.NotSavedSeparately"), "StationSettings.Project")
         ]);
         UpdateFields(LeftCameraFields, CameraFields("left"));
         UpdateFields(RightCameraFields, CameraFields("right"));
@@ -81,14 +83,15 @@ public partial class StationSettingsWindow : Window
             var prefix = "StationSettings.Camera." + position;
             return
             [
-                new("IP", reader?.Parameters?.GetValueOrDefault("device.ip") is { Length: > 0 } ip ? ip : "未配置", prefix + ".Ip"),
-                new("物理序列号", reader?.Parameters?.GetValueOrDefault("device.serial") is { Length: > 0 } serial ? serial : "未配置", prefix + ".Serial"),
-                new("RCS 相机编码", rcs?.Parameters.GetValueOrDefault(position + "-bcr-code") is { Length: > 0 } code ? code : "本位停用", prefix + ".Code")
+                new("IP", reader?.Parameters?.GetValueOrDefault("device.ip") is { Length: > 0 } ip ? ip : UiText.Get("Common.NotConfigured"), prefix + ".Ip"),
+                new("物理序列号", reader?.Parameters?.GetValueOrDefault("device.serial") is { Length: > 0 } serial ? serial : UiText.Get("Common.NotConfigured"), prefix + ".Serial"),
+                new("RCS 相机编码", rcs?.Parameters.GetValueOrDefault(position + "-bcr-code") is { Length: > 0 } code ? code : UiText.Get("Settings.LaneDisabled"), prefix + ".Code")
             ];
         }
     }
     static void UpdateFields(System.Windows.Controls.ItemsControl target, DisplayField[] fields)
     {
+        fields = fields.Select(field => field with { Label = UiText.Authored(field.Label) }).ToArray();
         if (target.ItemsSource is not DisplayField[] current || !current.SequenceEqual(fields))
             target.ItemsSource = fields;
     }
@@ -98,17 +101,19 @@ public partial class StationSettingsWindow : Window
         var saved = new SmDisplayPreferenceDraft();
         PreferenceFields.ItemsSource = new DisplayField[]
         {
-            new("默认打开方式", Value("WindowOpeningMode", saved.OpeningMode == PresentationPreferences.WindowOpeningMode.FullScreen ? "最大化（全屏）" : "窗口"), "StationSettings.WindowMode"),
-            new("效率显示", Value("ShowPace", saved.ShowPace ? "显示" : "隐藏"), "StationSettings.Pace"),
-            new("提示音音量", Value("CueVolume", saved.CueVolume == 0 ? "静音" : $"{saved.CueVolume}%"), "StationSettings.CueVolume"),
-            new("开机自动启动供包台", saved.CanEdit("AutoStart") ? saved.AutoStart ? "开启" : "关闭" : saved.ReadFailure("AutoStart"), "StationSettings.AutoStart")
+            new(UiText.Get("Settings.WindowMode"), Value("WindowOpeningMode", saved.OpeningMode == PresentationPreferences.WindowOpeningMode.FullScreen ? UiText.Get("Settings.FullScreen") : UiText.Get("Settings.Windowed")), "StationSettings.WindowMode"),
+            new(UiText.Get("Settings.Pace"), Value("ShowPace", saved.ShowPace ? UiText.Get("Settings.Show") : UiText.Get("Settings.Hide")), "StationSettings.Pace"),
+            new(UiText.Get("Settings.AudioVolume"), Value("CueVolume", saved.CueVolume == 0 ? UiText.Get("Settings.Mute") : $"{saved.CueVolume}%"), "StationSettings.CueVolume"),
+            new(UiText.Get("Settings.Theme"), saved.ReadFailure(nameof(saved.ThemeId)) is { Length: > 0 } themeError ? themeError : UiText.Get(saved.ThemeId == WorkstationThemeManager.IndustrialDarkId ? "Settings.Dark" : "Settings.Light"), "StationSettings.Theme.ReadOnly"),
+            new(UiText.Get("Settings.Language"), saved.ReadFailure(nameof(saved.Language)) is { Length: > 0 } languageError ? languageError : WorkstationLocalizationManager.Languages.Single(item => item.Code == saved.Language).NativeName, "StationSettings.Language.ReadOnly"),
+            new(UiText.Get("Setup.AutoStart"), saved.CanEdit("AutoStart") ? saved.AutoStart ? UiText.Get("Common.Enabled") : UiText.Get("Common.DisabledSetting") : saved.ReadFailure("AutoStart"), "StationSettings.AutoStart")
         };
         string Value(string path, string value)
         {
             var key = path switch { "WindowOpeningMode" => "window", "ShowPace" => "pace", _ => "audio" };
-            var name = path switch { "WindowOpeningMode" => "窗口方式", "ShowPace" => "效率显示", _ => "提示音" };
-            model.SetPreferenceNotice(key, saved.CanEdit(path) ? null : name + "偏好未能读取，原文件保留；请检查本机设置文件与访问权限。");
-            return saved.CanEdit(path) ? value : "未能读取";
+            var name = path switch { "WindowOpeningMode" => UiText.Get("Settings.OpenMode"), "ShowPace" => UiText.Get("Settings.Pace"), _ => UiText.Get("Settings.Cues") };
+            model.SetPreferenceNotice(key, saved.CanEdit(path) ? null : name + UiText.Get("Settings.PrefReadFailure"));
+            return saved.CanEdit(path) ? value : UiText.Get("Settings.Unreadable");
         }
     }
     async void Edit_Click(object sender, RoutedEventArgs e)
@@ -117,7 +122,7 @@ public partial class StationSettingsWindow : Window
         authenticating = true; EditSettings.IsEnabled = false;
         try
         {
-            var password = new ManagementModeWindow(authority, "设置编辑", bindSession: true) { Owner = this };
+            var password = new ManagementModeWindow(authority, UiText.Get("Settings.Edit"), bindSession: true) { Owner = this };
             password.ShowDialog();
             // A grant may exist even when its follow-up observation failed and
             // the password window was canceled. Retain its identity for exit.
@@ -125,13 +130,13 @@ public partial class StationSettingsWindow : Window
             if (!password.Entered) return;
             await model.RefreshManagementModeAsync();
             if (!model.IsManagementMode || password.EnteredSessionId is not { Length: > 0 } id || model.ManagementStatus.SessionId != id)
-                throw new UnauthorizedAccessException("尚未确认本窗编辑授权，请重新验证。");
+                throw new UnauthorizedAccessException(UiText.Get("Settings.GrantRecheck"));
             session = id;
-            await model.RunAsync(model.EnsureMaintenanceLoadedAsync, "读取完整设置草稿");
-            if (!model.HasLoadedConfiguration) throw new InvalidOperationException("设置读取未完成，原配置保留，请核对状态后重试。");
+            await model.RunAsync(model.EnsureMaintenanceLoadedAsync, UiText.Get("Settings.LoadDraft"));
+            if (!model.HasLoadedConfiguration) throw new InvalidOperationException(UiText.Get("Settings.LoadFailed"));
             EditorHost.Content = editor; UpdateState();
         }
-        catch (Exception error) { model.Message = ChineseInterfaceText.ParameterMessage(error.Message, "设置编辑尚未打开，原配置和输入保留。"); }
+        catch (Exception error) { model.Message = ChineseInterfaceText.ParameterMessage(error.Message, UiText.Get("Settings.EditNotOpened")); }
         finally { authenticating = false; EditSettings.IsEnabled = true; }
     }
     async void ClosingSettings(object? sender, CancelEventArgs e)
@@ -144,12 +149,12 @@ public partial class StationSettingsWindow : Window
             await System.Windows.Threading.Dispatcher.Yield();
             await CloseAfterDrainAsync();
         }
-        catch (Exception error) { model.Message = "设置窗口尚未关闭，原授权和输入保留：" + ChineseInterfaceText.ParameterMessage(error.Message, "授权结束或原操作收尾未确认，请再次关闭重试。"); }
+        catch (Exception error) { model.Message = UiText.Get("Settings.CloseIncomplete") + ChineseInterfaceText.ParameterMessage(error.Message, UiText.Get("Settings.CloseRetry")); }
         finally { closing = false; IsEnabled = true; }
     }
     internal async Task CloseForOwnerStopAsync()
     {
-        if (closing || authenticating) throw new InvalidOperationException("设置窗口仍有授权或关闭操作，请等待原结果。");
+        if (closing || authenticating) throw new InvalidOperationException(UiText.Get("Settings.CloseWait"));
         closing = true; IsEnabled = false;
         try { await CloseAfterDrainAsync(); }
         finally { closing = false; IsEnabled = true; }

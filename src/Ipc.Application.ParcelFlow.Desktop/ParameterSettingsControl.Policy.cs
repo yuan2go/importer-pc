@@ -90,7 +90,10 @@ public sealed partial class ParameterSettingsControl
         if (m.DesktopProfile.UsesStationDisplayPreferences)
         {
             var preferences = m.DisplayPreferences ??= RuntimeContext?.SmPreferences ?? new(m.ApplicationId);
-            var pace = new CheckBox { Content = "显示本班取得格口次数与近十分钟速度", MinHeight = 44, IsEnabled = preferences.CanEdit("ShowPace") };
+            var pace = new CheckBox { MinHeight = 44, IsEnabled = preferences.CanEdit("ShowPace") };
+            var paceLabel = new TextBlock { TextWrapping = TextWrapping.Wrap };
+            WorkstationLocalizationManager.Bind(paceLabel, TextBlock.TextProperty, "Settings.PaceToggle");
+            pace.Content = paceLabel;
             pace.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(preferences.ShowPace)) { Source = preferences, Mode = BindingMode.TwoWay });
             Field(appearance, "效率显示", pace, "仅影响当前Windows用户；使用底部“保存设置”，与窗口方式和提示音一同保存。", "ShowPace", display);
             if (FirstConfiguration && preferences.ReadFailure("ShowPace").Length > 0) display.Body.Children.Add(Text(preferences.ReadFailure("ShowPace")));
@@ -107,7 +110,7 @@ public sealed partial class ParameterSettingsControl
             AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Polite); display.Body.Children.Add(feedback);
         }
         if (!m.DesktopProfile.UsesStationDisplayPreferences) display.Body.Children.Add(Text("窗口布局", true));
-        var opening = new ComboBox { ItemsSource = new[] { new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.Window, "窗口"), new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.FullScreen, "最大化（全屏）") }, DisplayMemberPath = "Label", SelectedValuePath = "Mode", MinHeight = 40 };
+        var opening = new ComboBox { ItemsSource = new[] { new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.Window, "窗口"), new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.FullScreen, "最大化（全屏）") }, ItemTemplate = (DataTemplate)Resources["WindowModeTemplate"], SelectedValuePath = "Mode", MinHeight = 40 };
         var modeStatus = Text("");
         AutomationProperties.SetLiveSetting(modeStatus, AutomationLiveSetting.Polite);
         bool modeReadable = true;
@@ -156,6 +159,7 @@ public sealed partial class ParameterSettingsControl
         {
             var preferences = m.DisplayPreferences ??= RuntimeContext?.SmPreferences ?? new(m.ApplicationId);
             ThemePreference(display, appearance, m.DesktopProfile, preferences);
+            LanguagePreference(display, appearance, preferences);
         }
         var layoutStatus = Text("小窗口会自动使用紧凑布局。");
         if (RuntimeContext is { } layoutContext) layoutStatus.SetBinding(TextBlock.TextProperty, new Binding(nameof(ParcelViewModel.LayoutDescription)) { Source = layoutContext });

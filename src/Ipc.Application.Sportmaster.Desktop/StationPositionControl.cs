@@ -1,3 +1,4 @@
+using Ipc.Presentation.Wpf;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 
@@ -53,12 +54,12 @@ public sealed partial class SupplyStationPositionViewModel
             catch (Exception error) { owner.MarkReadFailure("取下确认后的状态读取失败：" + error.Message); }
         }
     }
-    public string DisableLabel => SupplyDisabling ? "停用中…" : "停用";
-    public string SupplyStateText => SupplyEnabled ? "本位已启用" : SupplyDisabling ? "本位停用中" : "本位已停用";
-    public string EnableLabel => "启用" + Heading;
+    public string DisableLabel => SupplyDisabling ? UiText.Get("Work.DisablingShort") : UiText.Get("Work.Disable");
+    public string SupplyStateText => SupplyEnabled ? UiText.Get("Work.CurrentLaneEnabled") : SupplyDisabling ? UiText.Get("Work.CurrentLaneDisabling") : UiText.Get("Work.CurrentLaneDisabled");
+    public string EnableLabel => UiText.Format("Work.EnablePosition", Heading);
     public string SupplyNotice => SupplyDisabling
-        ? "停用中：不再接收新条码。本轮请求及结果保存结束后自动停用。点“启用”可取消。"
-        : SupplyConfigured ? "本位已停用，不接收条码。" : "相机编码未配置，本位停用；在设置填写后可启用。";
+        ? UiText.Get("Work.DisablingExplain")
+        : SupplyConfigured ? UiText.Get("Work.DisabledExplain") : UiText.Get("Work.NoCameraCode");
     public string EnableBackgroundKey => SupplyEnabled ? "Accent" : "Surface";
     public string EnableForegroundKey => SupplyEnabled ? "OnAccent" : "Muted";
     public string DisableBackgroundKey => SupplyEnabled ? "Surface" : SupplyDisabling ? "OperatorWarning" : "OperatorInactive";

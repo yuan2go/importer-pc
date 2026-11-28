@@ -78,6 +78,14 @@ internal static partial class Program
                 await NativeClientSize.Set(window, (FrameworkElement)window.Content, 1280, 760);
                 await Until(() => ((TextBlock)window.FindName("ConnectionText")).Text == "工作站已连接");
                 Capture("operations-overview");
+                if (smoke)
+                {
+                    PresentationPreferences.SaveLanguage(installation.Location.ApplicationId, "ru-RU");
+                    await Until(() => ((TextBlock)window.FindName("ConnectionText")).Text == "Станция подключена");
+                    Capture("operations-overview-ru");
+                    PresentationPreferences.SaveLanguage(installation.Location.ApplicationId, "zh-CN");
+                    await Until(() => ((TextBlock)window.FindName("ConnectionText")).Text == "工作站已连接");
+                }
                 tabs.SelectedIndex = 1;
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                 if (smoke)

@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using Ipc.Presentation.Wpf;
 using System.Windows;
 using System.IO;
 using System.Windows.Automation;
@@ -29,15 +31,15 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     readonly TextBlock authorizationNotice = Text("");
     readonly TextBox message = new() { MaxHeight = 72, Margin = new(0, 4, 0, 4) };
     readonly TextBox technicalFailure = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 140, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-    readonly Button enterDebug = new() { Content = "进入设备调试（暂停整站供包）", MinHeight = 44 };
-    readonly Button leaveDebug = new() { Content = "结束调试并恢复", MinHeight = 44, Visibility = Visibility.Collapsed };
+    readonly Button enterDebug = new() { Content = UiText.Get("Ops.EnterDebug"), MinHeight = 44 };
+    readonly Button leaveDebug = new() { Content = UiText.Get("Ops.LeaveDebug"), MinHeight = 44, Visibility = Visibility.Collapsed };
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1) };
     string window = Wire.Id();
     readonly DockPanel device = new();
-    readonly Button evidenceViewToggle = new() { Content = "调试记录", Visibility = Visibility.Collapsed };
+    readonly Button evidenceViewToggle = new() { Content = UiText.Get("Debug.Records"), Visibility = Visibility.Collapsed };
     readonly TextBlock deviceHeading = Text("浏览连接诊断");
     readonly ContentControl deviceView = new();
-    readonly Button deviceViewToggle = new() { Content = "查看连接诊断", MinHeight = 44 };
+    readonly Button deviceViewToggle = new() { Content = UiText.Get("Ops.ConnectionDiagnostics"), MinHeight = 44 };
     readonly List<Button> actionButtons = [];
     readonly ContentControl diagnostic = new(), debugHost = new();
     StationDebugControl? debug;
@@ -86,6 +88,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         AuthorizationAction.Padding = new(16, 0, 16, 0);
         UpdateAuthorizationAction(authorized: false);
         var authorizePage = Action("验证管理密码", Authenticate);
+        WorkstationLocalizationManager.Bind(authorizePage, ContentControl.ContentProperty, "Ops.VerifyPassword");
         authorizePage.HorizontalAlignment = HorizontalAlignment.Left;
         authorizePage.Margin = new(0, 10, 0, 0);
         authorizePage.SetResourceReference(StyleProperty, "Primary");
@@ -100,6 +103,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top };
         authorizationGuide.SetResourceReference(StyleProperty, "WorkstationCard");
         AutomationProperties.SetAutomationId(AuthorizationAction, "Operations.Authorize");
+        PropertyChangedEventManager.AddHandler(UiText.Current, OnLanguageChanged, "Item[]");
 
         var details = new StackPanel();
         details.Children.Add(authorizationNotice);
@@ -158,9 +162,15 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     bool HasConfirmedGrant => grant is not null && connected() && model.IsManagementMode &&
         model.ManagementStatus.SessionId == grant;
 
+    void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        AuthorizationAction.Content = UiText.Get(HasConfirmedGrant ? "Ops.Permissions" : "Ops.VerifyPassword");
+        model.RefreshLanguage();
+    }
+
     void UpdateAuthorizationAction(bool authorized)
     {
-        AuthorizationAction.Content = authorized ? "管理授权" : "验证管理密码";
+        AuthorizationAction.Content = UiText.Get(authorized ? "Ops.Permissions" : "Ops.VerifyPassword");
         if (authorized) AuthorizationAction.ClearValue(StyleProperty);
         else
         {
@@ -171,8 +181,9 @@ public sealed partial class OperationsWorkspaceControl : UserControl
 
     void SetAuthorizationStatus(string label, string detail, string tone = "Muted")
     {
-        status.Text = label;
-        status.ToolTip = authorizationNotice.Text = detail;
+        WorkstationLocalizationManager.BindAuthored(status, TextBlock.TextProperty, label);
+        WorkstationLocalizationManager.BindAuthored(status, ToolTipProperty, detail);
+        WorkstationLocalizationManager.BindAuthored(authorizationNotice, TextBox.TextProperty, detail);
         status.SetResourceReference(TextBlock.ForegroundProperty, tone);
         statusPill.SetResourceReference(Border.BackgroundProperty, tone == "Muted" ? "Soft" : tone + "Background");
     }
@@ -254,7 +265,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
             else
             {
                 var expiry = model.ManagementStatus.ExpiresAt?.ToLocalTime().ToString("HH:mm");
-                SetAuthorizationStatus(expiry is null ? "已授权" : "已授权 · " + expiry + " 到期", "浏览与编辑不暂停供包。", "Success");
+                SetAuthorizationStatus(expiry is null ? "已授权" : UiText.Format("Ops.GrantExpires", expiry), "浏览与编辑不暂停供包。", "Success");
             }
             if (ReferenceEquals(page.Content, authorizationGuide)) ShowPage(selected);
             parameters.IsEnabled = model.Fresh;
@@ -375,7 +386,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         debug.SetStationDebug(workspace);
         debugHost.Content = debug;
         deviceView.Content = debugHost;
-        deviceViewToggle.Content = "查看连接诊断";
+        deviceViewToggle.Content = UiText.Get("Ops.ConnectionDiagnostics");
         evidenceViewToggle.Visibility = workspace ? Visibility.Visible : Visibility.Collapsed;
         deviceHeading.Text = workspace ? "扫码调试" : "相机画面与校准";
         enterDebug.Visibility = workspace ? Visibility.Collapsed : Visibility.Visible;
@@ -386,7 +397,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         deviceView.Content = diagnostic;
         evidenceViewToggle.Visibility = Visibility.Collapsed;
         deviceViewToggle.Content = workspace ? "返回调试画面" : "查看相机画面";
-        deviceHeading.Text = "浏览连接诊断";
+        deviceHeading.Text = UiText.Get("Ops.BrowseDiagnostics");
         enterDebug.Visibility = workspace ? Visibility.Collapsed : Visibility.Visible;
         leaveDebug.Visibility = workspace ? Visibility.Visible : Visibility.Collapsed;
     }
@@ -436,7 +447,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         daily.Children.Add(dailyActions);
         backupAction = Action(pendingBackup is null ? "创建完整备份…" : "查看备份结果", Backup);
         AutomationProperties.SetAutomationId(backupAction, "CompleteBackup.Operations");
-        var cancelExport = new Button { Content = "取消导出", MinHeight = 44, Visibility = Visibility.Collapsed };
+        var cancelExport = new Button { Content = UiText.Get("History.CancelExport"), MinHeight = 44, Visibility = Visibility.Collapsed };
         cancelExport.Click += (_, _) => { diagnosticExport?.Cancel(); cancelExport.IsEnabled = false; model.Message = "正在取消诊断导出，请稍候。"; };
         AddTile(dailyActions, Action("导出诊断包…", async () =>
         {
@@ -466,7 +477,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         daily.Children.Add(backupOutcome);
         var original = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MaxHeight = 160 };
         original.SetBinding(TextBox.TextProperty, new Binding(nameof(model.BackupStatusText)) { Source = model, Mode = BindingMode.OneWay });
-        daily.Children.Add(new Expander { Header = "备份计划与执行状态", Content = original, Margin = new(4, 4, 4, 0) });
+        daily.Children.Add(new Expander { Header = UiText.Get("Ops.BackupPlan"), Content = original, Margin = new(4, 4, 4, 0) });
 
         var responsibility = Group("异常与任务核对", "Operations.Maintenance.Responsibilities");
         var laneActions = new UniformGrid { Columns = 2 };
@@ -502,7 +513,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         }), "按任务号联查作业记录与运行日志。");
 
         var danger = Group("高危离线维护", "DangerZoneCard", danger: true);
-        var offlineNotice = new TextBox { Text = "离线维护前须先完全关闭工作站；点击后本工具将退出并启动独立维护程序。", IsTabStop = true };
+        var offlineNotice = new TextBox { Text = UiText.Get("Ops.OfflineMaintenanceNotice"), IsTabStop = true };
         offlineNotice.SetResourceReference(StyleProperty, "ReadonlyValue");
         offlineNotice.Margin = new(4, 0, 4, 4);
         offlineNotice.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
@@ -528,19 +539,19 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         await model.PauseAsync("运维创建完整备份前暂停"); await model.RefreshAsync();
         if (model.Snapshot?.Paused != true || !model.Fresh) throw new InvalidOperationException("暂停尚未确认，未创建备份。");
         pendingBackup = picker.FileName; latestBackupDirectory = Path.GetDirectoryName(pendingBackup);
-        backupAction!.Content = "查看备份结果";
+        backupAction!.Content = UiText.Get("Ops.ViewBackupResult");
         backupOutcome.Text = "原目标：" + pendingBackup + "\n正在等待原工作站执行完整备份；完成前保持暂停。";
         try
         {
             var receipt = await model.Application.BackupAsync(pendingBackup);
             model.Message = receipt.Status + " · " + receipt.Reason;
             backupOutcome.Text = "原目标：" + pendingBackup + "\n" + model.Message;
-            if (receipt.Status is "BackupCreated" or "Rejected") { pendingBackup = null; backupAction.Content = "创建完整备份…"; }
+            if (receipt.Status is "BackupCreated" or "Rejected") { pendingBackup = null; backupAction.Content = UiText.Get("Ops.CreateBackup"); }
         }
         catch (MaintenanceNotStartedException error)
         {
             backupOutcome.Text = "原目标：" + pendingBackup + "\n原命令尚未提交：" + DiagnosticText.Protect(error.Message);
-            pendingBackup = null; backupAction.Content = "创建完整备份…"; throw;
+            pendingBackup = null; backupAction.Content = UiText.Get("Ops.CreateBackup"); throw;
         }
         catch
         {
@@ -586,7 +597,7 @@ public sealed partial class OperationsWorkspaceControl : UserControl
         dialog.SetResourceReference(BackgroundProperty, "Surface");
         UiTypography.Apply(dialog);
         var body = new DockPanel(); var footer = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new(16) };
-        var close = new Button { Content = "关闭", MinHeight = 44, IsCancel = true }; close.Click += (_, _) => dialog.Close(); footer.Children.Add(close);
+        var close = new Button { Content = UiText.Get("Common.Close"), MinHeight = 44, IsCancel = true }; close.Click += (_, _) => dialog.Close(); footer.Children.Add(close);
         DockPanel.SetDock(footer, Dock.Bottom); body.Children.Add(footer);
         body.Children.Add(new TextBox { Text = model.Details, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, AcceptsReturn = true,
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new(16), BorderThickness = new(0) });

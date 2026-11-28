@@ -59,6 +59,8 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/WindowPreferenceDraft.cs" Link="Client/WindowPreferenceDraft.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/BusinessDesktopProfile.cs" Link="Client/BusinessDesktopProfile.cs"/>
  <Compile Include="../../src/Ipc.Presentation.Wpf/UiThemeDescriptor.cs" Link="Client/UiThemeDescriptor.cs"/>
+ <Compile Include="../../src/Ipc.Presentation.Wpf/Localization/UiText.cs" Link="Client/UiText.cs"/>
+ <EmbeddedResource Include="../../src/Ipc.Presentation.Wpf/Localization/Strings.*.xaml" WithCulture="false" LogicalName="Ipc.Ui%(Filename)%(Extension)"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/SmDisplayPreferenceDraft.cs" Link="Client/SmDisplayPreferenceDraft.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ChineseInterfaceText.cs" Link="Client/ChineseInterfaceText.cs"/>
 </ItemGroup><ItemGroup><Compile Include="../../src/Ipc.Presentation.Wpf/TypographyScale.cs" Link="Client/TypographyScale.cs"/><Using Include="Ipc.Presentation.Wpf"/></ItemGroup><ItemGroup><ProjectReference Include="../../src/Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj"/></ItemGroup><ItemGroup><EmbeddedResource Include="../../docs/ui/tokens/tokens.json" LogicalName="Ipc.OperatorTokens.json"/></ItemGroup><ItemGroup><Compile Include="../../src/Ipc.Presentation.Wpf/OperatorTokens.cs" Link="Client/OperatorTokens.cs"/></ItemGroup><ItemGroup><Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/OperatorCopy.cs" Link="Client/OperatorCopy.cs"/></ItemGroup></Project>

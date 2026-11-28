@@ -16,14 +16,20 @@ static partial class Program
         panel.SetResourceReference(Panel.BackgroundProperty, "Surface");
         TextBlock Sample(string text, FontFamily family, FontWeight weight)
         {
-            var block = new TextBlock { Text = text, FontFamily = family, FontSize = 24, FontWeight = weight, Margin = new Thickness(0, 4, 0, 8) };
+            var block = new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, FontFamily = family, FontSize = 24, FontWeight = weight, Margin = new Thickness(0, 4, 0, 8) };
             panel.Children.Add(block); return block;
         }
         var regular = Sample("供包台 当前格口 包裹 异常 参数 保存核对 0123456789", UiTypography.Interface, FontWeights.Normal);
         var medium = Sample("供包台 当前格口 包裹 异常 参数 保存核对 0123456789", UiTypography.Interface, FontWeights.Medium);
         var code = Sample("I l 1 | O 0 8 B S 5 Z 2 · 条码与日志原文", UiTypography.Code, FontWeights.Normal);
         var codeMedium = Sample("000123456789 · 任务与格口", UiTypography.Code, FontWeights.Medium);
-        var window = new Window { Title = "Typography synthetic verification", Width = 1000, Height = 360, Content = panel };
+        const string latin = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        const string cyrillic = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+        var englishRegular = Sample(latin, UiTypography.Interface, FontWeights.Normal);
+        var englishMedium = Sample(latin, UiTypography.Interface, FontWeights.Medium);
+        var russianRegular = Sample(cyrillic, UiTypography.Interface, FontWeights.Normal);
+        var russianMedium = Sample(cyrillic, UiTypography.Interface, FontWeights.Medium);
+        var window = new Window { Title = "Typography synthetic verification", Width = 1260, Height = 600, Content = panel };
         UiTypography.Apply(window); window.Show(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         var fontRows = new List<object>();
         var manager = new WorkstationThemeManager();
@@ -33,13 +39,18 @@ static partial class Program
             await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             foreach (var (block, name, expectedFile, expectedWeight) in new[] {
                 (regular, "regular", "notosanscjksc-regular.otf", 400), (medium, "medium", "notosanscjksc-medium.otf", 500),
-                (code, "code", "notosanscjksc-regular.otf", 400), (codeMedium, "code-medium", "notosanscjksc-medium.otf", 500) })
+                (code, "code", "notosanscjksc-regular.otf", 400), (codeMedium, "code-medium", "notosanscjksc-medium.otf", 500),
+                (englishRegular, "Latin regular", "notosanscjksc-regular.otf", 400), (englishMedium, "Latin medium", "notosanscjksc-medium.otf", 500),
+                (russianRegular, "Cyrillic regular", "notosanscjksc-regular.otf", 400), (russianMedium, "Cyrillic medium", "notosanscjksc-medium.otf", 500) })
             {
                 block.UpdateLayout();
                 var runs = GlyphRuns(block).ToArray();
                 Check(runs.Length > 0 && runs.All(r => r.GlyphIndices.All(g => g != 0)), theme.Id + " " + name + " has actual glyphs without .notdef");
                 Check(runs.Any(r => r.GlyphTypeface.FontUri.ToString().Contains(expectedFile, StringComparison.OrdinalIgnoreCase) && r.GlyphTypeface.Weight.ToOpenTypeWeight() == expectedWeight), theme.Id + " " + name + " resolves expected font file and real weight");
                 Check(runs.All(r => r.GlyphTypeface.FontUri.ToString().Contains(expectedFile, StringComparison.OrdinalIgnoreCase)), theme.Id + " " + name + " uses only the shipped face, including identifiers and technical text");
+                if (ReferenceEquals(block, russianRegular) || ReferenceEquals(block, russianMedium))
+                    Check(cyrillic.Length == 66 && cyrillic.All(character => runs[0].GlyphTypeface.CharacterToGlyphMap.TryGetValue(character, out var glyph) && glyph != 0),
+                        theme.Id + " " + name + " provides all 66 Cyrillic letters");
                 foreach (var run in runs) fontRows.Add(new { Theme = theme.Id, Role = name, Sample = block.Text, Characters = run.Characters is null ? null : new string(run.Characters.ToArray()), FontUri = run.GlyphTypeface.FontUri.ToString(), Weight = run.GlyphTypeface.Weight.ToOpenTypeWeight(), run.GlyphTypeface.Version, GlyphCount = run.GlyphIndices.Count });
             }
             CaptureInternal(evidence, theme.Id == WorkstationThemeManager.IndustrialLightId ? "typography-font-resolution" : "typography-font-resolution-dark", panel, lines);

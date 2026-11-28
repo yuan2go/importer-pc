@@ -138,7 +138,8 @@ internal static partial class Program
                 var originalPage = pageChoice.SelectedValue;
                 Check(pageChoice.IsEnabled && pageChoice.Items.Count == 3 && pageChoice.ActualHeight >= 44,
                     "professional parameters offer both workstation pages and the installer default");
-                pageChoice.SelectedValue = "tote-station";
+                var alternatePage = Equals(originalPage, "tote-station") ? "supply-station" : "tote-station";
+                pageChoice.SelectedValue = alternatePage;
                 await Until(() => model.HasUnsavedConfiguration);
                 pageChoice.SelectedValue = originalPage;
                 await Until(() => !model.HasUnsavedConfiguration);

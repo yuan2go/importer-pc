@@ -181,13 +181,9 @@ public partial class App : System.Windows.Application
             if (runtime is not null) throw new InvalidOperationException("原实例尚未完成停止，不创建第二个运行实例");
             startup.BeginAttempt();
             var options = selected!; var launch = options.Business;
-            var ordinaryArguments = new List<string>();
-            ordinaryArguments.AddRange(["--config", Path.GetFullPath(launch.ConfigurationDirectory), "--data-root", Path.GetFullPath(launch.DataRoot), "--ui", options.Ui]);
-            if (launch.View is not null) ordinaryArguments.AddRange(["--view", launch.View]);
-            if (launch.Layout is not null) ordinaryArguments.AddRange(["--layout", launch.Layout]);
             // Reuse the same-user bootstrap before configuration or supervision.
             // A supervised child must never replace its registered process ID.
-            if (!recoveryChild && OrdinaryRuntimeProcess.RelaunchCurrentIfElevated(ordinaryArguments.ToArray()))
+            if (!recoveryChild && OrdinaryRuntimeProcess.RelaunchCurrentIfElevated(options.OrdinaryArguments()))
             { startup.AllowClose = true; Shutdown(0); return; }
             if (DeploymentProfile.RequiresBundledCameraDependencies)
             {
@@ -200,10 +196,7 @@ public partial class App : System.Windows.Application
                 Path.GetFullPath(launch.DataRoot).Equals(Path.GetFullPath(installed.DataRoot), StringComparison.OrdinalIgnoreCase) &&
                 Path.GetFullPath(launch.ConfigurationDirectory).Equals(Path.GetFullPath(installed.ConfigurationDirectory), StringComparison.OrdinalIgnoreCase))
             {
-                var presentation = new List<string> { "--ui", options.Ui };
-                if (launch.View is not null) presentation.AddRange(["--view", launch.View]);
-                if (launch.Layout is not null) presentation.AddRange(["--layout", launch.Layout]);
-                if (await Task.Run(() => DesktopRecoverySupervisor.StartForInstalledDesktop(installed, presentation.ToArray()))) { startup.AllowClose = true; Shutdown(0); return; }
+                if (await Task.Run(() => DesktopRecoverySupervisor.StartForInstalledDesktop(installed, options.PresentationArguments()))) { startup.AllowClose = true; Shutdown(0); return; }
             }
             if (!firstConfigurationReviewed)
             {
@@ -252,7 +245,9 @@ public partial class App : System.Windows.Application
             crashDiagnostics.SetProgressFile(Path.Combine(launch.DataRoot, effective.Mode.ToString(), effective.StationId, effective.ApplicationId, "runtime-progress.json"));
             startup.Phase(UiText.Get("Startup.CreateWork"), UiText.Get("Startup.AppStatus") + initial.State + "\n" + string.Join("\n", initial.BlockingReasons), UiText.Get("Startup.RuntimeObtained") + initial.RuntimeId);
 #if SPORTMASTER
-            var window = Ipc.Application.Sportmaster.Desktop.Presentation.Create(application, launch.View, launch.Layout, options.Ui, StopAsync);
+            var page = BusinessDesktopCatalog.ResolveWorkstationPage(ApplicationId, options.UiOverride, effective.WorkstationPage, DesktopLaunchOptions.DefaultUi(ApplicationId));
+            var window = Ipc.Application.Sportmaster.Desktop.Presentation.Create(application, launch.View, launch.Layout, page, StopAsync,
+                followEffectivePage: options.UiOverride is null);
 #elif DIRECTPLC
             var window = Ipc.Application.DirectPlc.Desktop.Presentation.Create(application, launch.View, launch.Layout);
 #else

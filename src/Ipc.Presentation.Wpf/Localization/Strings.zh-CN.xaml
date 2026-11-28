@@ -1267,4 +1267,16 @@
   <sys:String x:Key="Ops.GrantExpires" xml:space="preserve">已授权 · {0} 到期</sys:String>
   <sys:String x:Key="Ops.ViewEdit" xml:space="preserve">浏览与编辑不暂停供包。</sys:String>
   <sys:String x:Key="Ops.GrantReview" xml:space="preserve">授权状态待核对</sys:String>
+    <sys:String x:Key="Page.WhenIdle">空闲时切换</sys:String>
+    <sys:String x:Key="Page.Classic">经典作业页</sys:String>
+    <sys:String x:Key="Page.ClassicDescription">标准作业布局</sys:String>
+    <sys:String x:Key="Page.Supply">经典大格口供包页</sys:String>
+    <sys:String x:Key="Page.SupplyDescription">突出显示左右投递位的格口号</sys:String>
+    <sys:String x:Key="Page.Tote">料箱拆包双位供包页</sys:String>
+    <sys:String x:Key="Page.ToteDescription">双工位扫码、拆包核对与本地料箱计数</sys:String>
+    <sys:String x:Key="Page.Setting">作业界面</sys:String>
+    <sys:String x:Key="Page.FollowPackage">随安装包默认（{0}）</sys:String>
+    <sys:String x:Key="Page.Help">空闲时切换作业界面。有在途包裹时等待本件结束，相机、RCS 与历史记录保持原样。</sys:String>
+    <sys:String x:Key="Page.Invalid">当前业务不支持作业界面“{0}”。</sys:String>
+    <sys:String x:Key="Page.Effective">作业界面已保存，工作站空闲时切换。</sys:String>
 </ResourceDictionary>

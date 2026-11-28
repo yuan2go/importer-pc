@@ -24,6 +24,7 @@ namespace System.Windows
         public Threading.Dispatcher Dispatcher { get; } = new();
         public object? DataContext { get; set; }
         public Window? Owner { get; set; }
+        public Window[] OwnedWindows => [];
         public bool IsEnabled { get; set; } = true;
         public bool IsVisible { get; private set; }
         public double ActualWidth { get; set; } = 1440;
@@ -57,7 +58,7 @@ namespace System.Windows.Controls
 {
     public class TextBlock { public string Text { get; set; } = ""; public object? ToolTip { get; set; } public System.Windows.Visibility Visibility { get; set; } }
     public class ColumnDefinition;
-    public class Grid
+    public class Grid : System.Windows.FrameworkElement
     {
         public List<ColumnDefinition> ColumnDefinitions { get; } = [];
         public List<object> Children { get; } = [];
@@ -137,6 +138,11 @@ namespace Ipc.Application.Sportmaster.Desktop
     {
         public Task CloseForOwnerStopAsync() { Close(); return Task.CompletedTask; }
     }
+    public static class Presentation
+    {
+        public static string BuildDefaultWorkstationPage => Ipc.Application.Contracts.WorkstationPages.SupplyStation;
+    }
+
     public partial class SupplyStationWindow
     {
         object PositionHistory() => history;

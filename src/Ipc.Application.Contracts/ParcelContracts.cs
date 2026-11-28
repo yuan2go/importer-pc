@@ -76,6 +76,10 @@ public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId
     // runtime default must not change the identity of an already confirmed document.
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? ReadTimeoutMs { get; init; }
+
+    // Omitted in legacy schema3 configs; null falls back to the build-time default page.
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? WorkstationPage { get; init; }
     [JsonIgnore]
     public int EffectiveReadTimeoutMs => ReadTimeoutMs ?? SystemParameterDefaults.ReadTimeoutMs;
 }

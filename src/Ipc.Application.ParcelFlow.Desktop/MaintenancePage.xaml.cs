@@ -11,6 +11,12 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public enum MaintenanceTool { Bindings, Candidate, Running, Modules, Inventory, RestoreHandoff, Installation, Recovery, Backup, Display }
 public partial class MaintenancePage : UserControl
 {
+    public string? BuildDefaultWorkstationPage
+    {
+        get => MainParameterEditor.BuildDefaultWorkstationPage;
+        set => MainParameterEditor.BuildDefaultWorkstationPage = value;
+    }
+
     public SmParameterAudience Audience
     {
         get => MainParameterEditor.Audience;

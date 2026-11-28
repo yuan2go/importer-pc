@@ -99,7 +99,7 @@ public sealed class StartupConfigurationDraft
     public StartupEditorState Capture()
     {
         Dictionary<string, string> values = new();
-        foreach (var property in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite)) values["policy." + property.Name] = property.GetValue(Policy)?.ToString() ?? "";
+        foreach (var property in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite && p.Name != nameof(ConfigurationPolicyDraft.WorkstationPage))) values["policy." + property.Name] = property.GetValue(Policy)?.ToString() ?? "";
         foreach (var (draft, index) in Readers.Concat(Capabilities).Select((d, i) => (d, i)))
         {
             var prefix = "cap." + index + ".";
@@ -116,7 +116,7 @@ public sealed class StartupConfigurationDraft
     {
         var v = state.Values;
         if (BusinessDesktopCatalog.For(original.ApplicationId).SupportsThemePreference && v.Keys.Any(k => k.StartsWith("preference.", StringComparison.Ordinal))) (DisplayPreferences ??= new(original.ApplicationId)).Restore(v);
-        foreach (var property in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite))
+        foreach (var property in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite && p.Name != nameof(ConfigurationPolicyDraft.WorkstationPage)))
             if (v.TryGetValue("policy." + property.Name, out var value)) property.SetValue(Policy, property.PropertyType.IsEnum ? Enum.Parse(property.PropertyType, value) : property.PropertyType == typeof(bool) ? bool.Parse(value) : value);
         foreach (var (draft, index) in Readers.Concat(Capabilities).Select((d, i) => (d, i)))
         {

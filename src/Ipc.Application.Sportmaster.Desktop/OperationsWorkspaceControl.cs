@@ -25,7 +25,11 @@ public sealed partial class OperationsWorkspaceControl : UserControl
     readonly ContentControl page = new();
     readonly Border authorizationGuide;
     readonly TextBlock guideHeading = Text("");
-    readonly MaintenancePage parameters = new() { Audience = SmParameterAudience.Technical };
+    readonly MaintenancePage parameters = new()
+    {
+        Audience = SmParameterAudience.Technical,
+        BuildDefaultWorkstationPage = Presentation.BuildDefaultWorkstationPage
+    };
     readonly TextBlock status = new() { FontSize = UiTypography.Label };
     readonly Border statusPill = new() { CornerRadius = new(12), Padding = new(9, 4, 9, 4) };
     readonly TextBlock authorizationNotice = Text("");

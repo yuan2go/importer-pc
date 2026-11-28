@@ -277,7 +277,8 @@ public sealed partial class ParcelRuntime
             {
                 RetainReleasedSmUnknowns();
             }
-            var activationBlock = Id == "sportmaster" ? SmConfigurationBlock() : null;
+            var pageOnly = ConfigurationActivation.WorkstationPageOnly(Id, Effective, configuration.Current.Pending, candidate);
+            var activationBlock = Id == "sportmaster" ? SmConfigurationBlock(waitForOpenRound: !pageOnly) : null;
             if (activationBlock is null && ConfigurationActivation.RulesOnly(Id, Effective, configuration.Current.Pending, candidate))
             {
                 // No queued observation may silently acquire a new interpretation.
@@ -287,8 +288,8 @@ public sealed partial class ParcelRuntime
                 configuration.ApplyLive(expectedRevision, candidate);
                 audit = audit with { AfterRevision = configuration.Current.Revision, Status = "Effective", Result = "Live rules confirmed; prior operations retain frozen rules" };
                 repository.Commit(null, "ConfigurationLiveApplied", Wire.Encode(audit), configurationAudit: audit);
-                Diagnostic("参数", "条码规则已生效", detail: "Revision=" + configuration.Current.Revision);
-                return new("Effective", "条码规则已保存并生效；已受理作业及原请求保持原规则。", repository.Revision);
+                Diagnostic("参数", pageOnly ? "WorkstationPage" : "条码规则已生效", detail: "Revision=" + configuration.Current.Revision);
+                return new("Effective", pageOnly ? "WorkstationPageEffective" : "条码规则已保存并生效；已受理作业及原请求保持原规则。", repository.Revision);
             }
             // Camera/RCS-only changes reconnect just those devices; anything else restarts as before.
             if (activationBlock is null && definition.AutomaticConfigurationQuiescence && ConfigurationActivation.LiveDevices(Id, Effective, configuration.Current.Pending, candidate) is { } live &&

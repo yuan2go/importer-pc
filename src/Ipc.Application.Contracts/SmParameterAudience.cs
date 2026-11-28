@@ -40,6 +40,7 @@ public static class SmParameterOwnership
             StationCode = field ? edited.StationCode : original.StationCode,
             DeferredConnections = field ? edited.DeferredConnections : original.DeferredConnections,
             ReadTimeoutMs = field ? original.ReadTimeoutMs : edited.ReadTimeoutMs,
+            WorkstationPage = field ? original.WorkstationPage : edited.WorkstationPage,
             BarcodeFilter = field ? original.BarcodeFilter : edited.BarcodeFilter,
             Retention = field ? original.Retention : edited.Retention,
             BackupSchedule = field ? original.BackupSchedule : edited.BackupSchedule,

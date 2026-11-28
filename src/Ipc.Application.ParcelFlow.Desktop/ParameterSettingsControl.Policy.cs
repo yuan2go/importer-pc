@@ -203,8 +203,36 @@ public sealed partial class ParameterSettingsControl
             => value is CapabilityChoice { Capability: { } capability } ? model.ComponentName(capability) : "不要求操作员登录";
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) => Binding.DoNothing;
     }
+    public string? BuildDefaultWorkstationPage { get; set; }
+
     void BuildBusiness(ParameterEditorModel m)
     {
+        if (!FirstConfiguration && Audience == SmParameterAudience.Technical && m.DesktopProfile.SupportedWorkstationPages.Count > 1)
+        {
+            var appearance = Page(1, UiText.Get("Page.Setting"), "");
+            var pages = m.DesktopProfile.SupportedWorkstationPages;
+            var defaultId = BusinessDesktopCatalog.ResolveWorkstationPage(m.ApplicationId, null, null, BuildDefaultWorkstationPage);
+            var defaultKey = pages.Single(choice => choice.Id == defaultId).TitleKey;
+            var selector = new ComboBox { SelectedValuePath = "Id", DisplayMemberPath = "Text", MinHeight = 44 };
+            void LocalizeChoices()
+            {
+                var current = m.Policy.WorkstationPage ?? "";
+                selector.ItemsSource = new[] { new { Id = "", Text = UiText.Format("Page.FollowPackage", UiText.Get(defaultKey)) } }
+                    .Concat(pages.Select(choice => new { choice.Id, Text = UiText.Get(choice.TitleKey) + " (" + choice.Id + ")" })).ToArray();
+                selector.SelectedValue = current;
+            }
+            LocalizeChoices();
+            EventHandler<PropertyChangedEventArgs> localize = (_, _) => LocalizeChoices();
+            PropertyChangedEventManager.AddHandler(UiText.Current, localize, "Item[]");
+            unsubscribe.Add(() => PropertyChangedEventManager.RemoveHandler(UiText.Current, localize, "Item[]"));
+            selector.SelectionChanged += (_, _) =>
+            {
+                if (selector.SelectedValue is string id) m.Policy.WorkstationPage = id.Length == 0 ? null : id;
+            };
+            Field(Form(appearance), UiText.Get("Page.Setting"), selector, UiText.Get("Page.Help"), nameof(m.Policy.WorkstationPage), appearance);
+            selector.ClearValue(HeightProperty);
+            AutomationProperties.SetAutomationId(selector, "Technical.WorkstationPage");
+        }
         if (m.DesktopProfile.UsesLegacyWeightAndQueueFields)
         {
             var login = Page(1, "作业登录", "操作员登录用于记录作业人员，与管理密码无关。");

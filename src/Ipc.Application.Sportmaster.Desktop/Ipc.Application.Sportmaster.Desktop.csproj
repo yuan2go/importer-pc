@@ -1,5 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting></PropertyGroup>
+  <PropertyGroup>
+    <DefaultWorkstationPage Condition="'$(DefaultWorkstationPage)' == ''">supply-station</DefaultWorkstationPage>
+  </PropertyGroup>
+  <ItemGroup>
+    <AssemblyMetadata Include="Ipc.DefaultWorkstationPage" Value="$(DefaultWorkstationPage)"/>
+  </ItemGroup>
+  <Target Name="CheckDefaultWorkstationPage" BeforeTargets="PrepareForBuild">
+    <Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(DefaultWorkstationPage)', '\A(supply-station|tote-station)\z'))" Text="DefaultWorkstationPage must be supply-station or tote-station for Sportmaster."/>
+  </Target>
   <ItemGroup><ProjectReference Include="../Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj"/></ItemGroup>
   <ItemGroup><Using Include="Ipc.Presentation.Wpf"/></ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@ public static class ChineseInterfaceText
         "queue" or "QueueCapacity" => "扫码消息缓冲上限",
         "timeout" or "TimeoutMs" => "外部服务等待时间",
         "ReadTimeoutMs" => UiText.Get("Param.ReadTimeout"),
+        "WorkstationPage" => UiText.Get("Page.Setting"),
         "operations" or "MaximumOperations" => "待处理作业上限",
         "resident" or "ResidentHistory" => UiText.Get("Param.ArchiveLimit"),
         "reserveMiB" or "MinimumFreeMiB" => UiText.Get("Param.StorageReserve"),
@@ -154,6 +155,9 @@ public static class ChineseInterfaceText
     };
     public static string Notice(string value)
     {
+        if (value == "WorkstationPageEffective") return UiText.Get("Page.Effective");
+        const string invalidPage = "WorkstationPage: ";
+        if (value.StartsWith(invalidPage, StringComparison.Ordinal)) return UiText.Format("Page.Invalid", value[invalidPage.Length..]);
         if (Enum.TryParse<ParcelInputBlockReason>(value, out var block) && value == block.ToString() && ParcelInputReasons.ActionableNotice(block) is { } notice) return UiText.Authored(notice);
         // Match only our complete local receipts; never translate remote identifiers.
         const string noIntent = "; no operation or external intent created";

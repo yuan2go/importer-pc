@@ -24,9 +24,14 @@ public partial class SupplyStationWindow : Window
     bool compact, closing, closeReady, closed;
     long closeGeneration;
     public SupplyStationViewModel ViewModel { get; }
+    public string ActiveWorkstationPage { get; private set; }
+    readonly bool followEffectivePage;
 
-    public SupplyStationWindow(IParcelApplication application, string? view, string? layout, Func<Task>? stopOwner = null, SupplyStationWindow? owner = null)
+    public SupplyStationWindow(IParcelApplication application, string? view, string? layout, Func<Task>? stopOwner = null,
+        SupplyStationWindow? owner = null, string workstationPage = WorkstationPages.SupplyStation, bool followEffectivePage = false)
     {
+        ActiveWorkstationPage = workstationPage;
+        this.followEffectivePage = followEffectivePage;
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
         maintenance.Audience = SmParameterAudience.Field;
         TestInstallationLabel.Visibility = InstallationIdentity.IsTest ? Visibility.Visible : Visibility.Collapsed;
@@ -66,6 +71,7 @@ public partial class SupplyStationWindow : Window
             UpdateStationClock();
             ViewModel.RefreshFreshness();
             EnforceManagementModeView();
+            FollowWorkstationPage();
             if (ViewModel.Application is not IParcelPresentationSource && pendingRefresh.IsCompleted && !closing && !closed) pendingRefresh = RefreshAsync();
         };
         Loaded += async (_, _) =>
@@ -92,7 +98,26 @@ public partial class SupplyStationWindow : Window
     {
         if (page is not ("workstation" or "history")) throw new ArgumentException("工作站仅提供作业与记录；现场设置使用独立非模态窗口。");
         ViewModel.SelectedPage = page; ApplyLayout();
-        PageHost.Content = page == "history" ? PositionHistory() : workContent;
+        PageHost.Content = page == "history" ? PositionHistory() : WorkstationContent();
+    }
+
+    FrameworkElement WorkstationContent() => workContent;
+
+    void FollowWorkstationPage()
+    {
+        if (!followEffectivePage || closing || closed || settingsWindow is not null || !IsEnabled ||
+            !ViewModel.Fresh || ViewModel.Snapshot is not { Positions: { Length: 2 } positions } snapshot ||
+            positions.Any(position => position.CurrentRoundId is not null) ||
+            OwnedWindows.Cast<Window>().Any(window => window.IsVisible)) return;
+        var target = BusinessDesktopCatalog.ResolveWorkstationPage(snapshot.ApplicationId, null,
+            snapshot.Configuration.Effective.WorkstationPage, Presentation.BuildDefaultWorkstationPage);
+        if (target == ActiveWorkstationPage) return;
+        ActiveWorkstationPage = target;
+        if (ViewModel.SelectedPage == "workstation")
+        {
+            PageHost.Content = WorkstationContent();
+            RestoreBarcodeFocus();
+        }
     }
     void UpdateStationClock()
     {

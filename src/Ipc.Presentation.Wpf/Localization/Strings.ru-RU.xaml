@@ -1267,4 +1267,16 @@
   <sys:String x:Key="Ops.GrantExpires" xml:space="preserve">Доступ до {0}</sys:String>
   <sys:String x:Key="Ops.ViewEdit" xml:space="preserve">Просмотр и редактирование не прерывают подачу.</sys:String>
   <sys:String x:Key="Ops.GrantReview" xml:space="preserve">Проверьте доступ</sys:String>
+    <sys:String x:Key="Page.WhenIdle">Когда позиции свободны</sys:String>
+    <sys:String x:Key="Page.Classic">Классическое рабочее место</sys:String>
+    <sys:String x:Key="Page.ClassicDescription">Стандартный рабочий экран</sys:String>
+    <sys:String x:Key="Page.Supply">Подача в крупные ячейки</sys:String>
+    <sys:String x:Key="Page.SupplyDescription">Крупные номера ячеек для обеих позиций</sys:String>
+    <sys:String x:Key="Page.Tote">Разбор короба на двух постах</sys:String>
+    <sys:String x:Key="Page.ToteDescription">Сканирование на двух позициях, разбор и локальный учёт короба</sys:String>
+    <sys:String x:Key="Page.Setting">Рабочий экран</sys:String>
+    <sys:String x:Key="Page.FollowPackage">По умолчанию ({0})</sys:String>
+    <sys:String x:Key="Page.Help">Экран меняется, когда обе позиции свободны. Сначала завершите текущие отправления. Камеры, RCS и история сохраняются.</sys:String>
+    <sys:String x:Key="Page.Invalid">Приложение не поддерживает рабочий экран «{0}».</sys:String>
+    <sys:String x:Key="Page.Effective">Рабочий экран сохранён. Он сменится, когда обе позиции будут свободны.</sys:String>
 </ResourceDictionary>

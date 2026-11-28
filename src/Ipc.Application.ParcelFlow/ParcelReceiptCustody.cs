@@ -69,7 +69,7 @@ public sealed partial class ParcelRuntime
             operations.Values.All(op => IsSettled(op) || repository!.CustodyOnly(op, Id)) && repository!.PendingReceipts().All(x => repository.HasReceiptOutcomeBasis(x.Id));
     }
     // Check active calls and pending receipts before classifying placement on live activation or restart.
-    ParcelInputBlockReason? SmConfigurationBlock()
+    ParcelInputBlockReason? SmConfigurationBlock(bool waitForOpenRound = true)
     {
         if (fatalStorage.Task.IsCompleted) return ParcelInputBlockReason.StorageUnavailable;
         if (failure is not null) return ParcelInputBlockReason.RuntimeFault;
@@ -92,7 +92,7 @@ public sealed partial class ParcelRuntime
             if (IsSettled(op) || repository.CustodyOnly(op, Id) || CanRetainSmUnknown(op)) continue;
             return PriorWorkBlock(op);
         }
-        return smCurrentRounds.Count != 0 ? ParcelInputBlockReason.PreviousWorkBlocked : null;
+        return waitForOpenRound && smCurrentRounds.Count != 0 ? ParcelInputBlockReason.PreviousWorkBlocked : null;
     }
 
     bool RequiresOriginalExecution(ParcelOperation op) => !releasedPlacements.Contains(op.Id) && !IsSettled(op) && !repository!.CustodyOnly(op, Id);

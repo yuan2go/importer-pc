@@ -335,7 +335,9 @@ public sealed partial class ParameterSettingsControl : UserControl
             {
                 var activation = fieldKey is "WindowOpeningMode" or "ShowPace" or "CueVolume" or "AutoStart" or nameof(SmDisplayPreferenceDraft.ThemeId) or nameof(SmDisplayPreferenceDraft.Language) or "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator"
                     ? "立即生效" : draft?.Kind == "observation" || draft is not null && ParameterOwnership.IsRcs(draft) || fieldKey == "StationCode" ? "重连生效" : "需重启生效";
-                var badge = ActivationBadge(activation, activation == "需重启生效" ? "Soft" : "AccentBackground");
+                var pageSelection = fieldKey == nameof(ParcelConfiguration.WorkstationPage);
+                var badge = ActivationBadge(pageSelection ? "" : activation, activation == "需重启生效" && !pageSelection ? "Soft" : "AccentBackground");
+                if (pageSelection) WorkstationLocalizationManager.Bind((TextBlock)badge.Child, TextBlock.TextProperty, "Page.WhenIdle");
                 Grid.SetColumn(badge, 1); field.Children.Add(badge);
                 if (activation == "重连生效") reconnectBadges.Add(card, badge);
             }

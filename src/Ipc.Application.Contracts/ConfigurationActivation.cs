@@ -12,7 +12,11 @@ public static class ConfigurationActivation
 {
     public static bool RulesOnly(string application, ParcelConfiguration effective, ParcelConfiguration? pending, ParcelConfiguration candidate)
         => application == "sportmaster" && pending is null &&
-           Wire.Encode(candidate with { BarcodeFilter = effective.BarcodeFilter }) == Wire.Encode(effective);
+           Wire.Encode(candidate with { BarcodeFilter = effective.BarcodeFilter, WorkstationPage = effective.WorkstationPage }) == Wire.Encode(effective);
+
+    public static bool WorkstationPageOnly(string application, ParcelConfiguration effective, ParcelConfiguration? pending, ParcelConfiguration candidate)
+        => application == "sportmaster" && pending is null && candidate.WorkstationPage != effective.WorkstationPage &&
+           Wire.Encode(candidate with { WorkstationPage = effective.WorkstationPage }) == Wire.Encode(effective);
 
     // A live swap preserves logical device IDs, roles and drivers. A configured camera may change IP or serial.
     public static LiveDeviceChange? LiveDevices(string application, ParcelConfiguration effective, ParcelConfiguration? pending, ParcelConfiguration candidate)

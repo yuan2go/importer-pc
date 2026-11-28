@@ -1267,4 +1267,16 @@ It may have been removed during cleanup.</sys:String>
   <sys:String x:Key="Ops.GrantExpires" xml:space="preserve">Access until {0}</sys:String>
   <sys:String x:Key="Ops.ViewEdit" xml:space="preserve">Viewing and editing leave induction running.</sys:String>
   <sys:String x:Key="Ops.GrantReview" xml:space="preserve">Verify access</sys:String>
+    <sys:String x:Key="Page.WhenIdle">Changes when idle</sys:String>
+    <sys:String x:Key="Page.Classic">Classic workstation</sys:String>
+    <sys:String x:Key="Page.ClassicDescription">Standard workstation layout</sys:String>
+    <sys:String x:Key="Page.Supply">Large-slot supply view</sys:String>
+    <sys:String x:Key="Page.SupplyDescription">Highlights the destination slots for both lanes</sys:String>
+    <sys:String x:Key="Page.Tote">Dual-lane tote view</sys:String>
+    <sys:String x:Key="Page.ToteDescription">Dual-lane scanning, unpack checks, and local tote counts</sys:String>
+    <sys:String x:Key="Page.Setting">Workstation view</sys:String>
+    <sys:String x:Key="Page.FollowPackage">Installer default ({0})</sys:String>
+    <sys:String x:Key="Page.Help">The view changes when both lanes are idle. Active parcels finish first. Cameras, RCS, and history are unaffected.</sys:String>
+    <sys:String x:Key="Page.Invalid">This application does not support workstation view “{0}”.</sys:String>
+    <sys:String x:Key="Page.Effective">Workstation view saved. The view changes when both lanes are idle.</sys:String>
 </ResourceDictionary>

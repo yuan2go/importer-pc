@@ -24,6 +24,7 @@ static partial class Program
 
     static async Task SmokeScreenshots(string root, string evidence, List<string> lines)
     {
+        await CaptureToteStation(root, evidence, lines);
         await CaptureInstaller(evidence, lines);
         await CaptureWorkstation(root, evidence, lines);
         await CaptureFirstConfiguration(evidence, lines);
@@ -44,6 +45,15 @@ static partial class Program
         foreach (var png in Directory.EnumerateFiles(operationsEvidence, "operations-*.png"))
             File.Copy(png, Path.Combine(evidence, Path.GetFileName(png)));
 
+        using (var toteArchive = ZipFile.Open(Path.Combine(evidence, "PR5-tote-multipage-125dpi.zip"), ZipArchiveMode.Create))
+        {
+            foreach (var name in new[]
+            {
+                "tote-station-zh-light", "tote-station-en-light", "tote-station-ru-dark", "tote-station-unpack-card-en",
+                "tote-station-end-supply-modal-ru", "operations-workstation-page-switch-zh", "operations-workstation-page-switch-ru"
+            })
+                toteArchive.CreateEntryFromFile(Path.Combine(evidence, name + ".png"), name + ".png", CompressionLevel.Optimal);
+        }
         if (File.Exists(Path.Combine(evidence, "setup-step1-ru.png")))
         {
             using var archive = ZipFile.Open(Path.Combine(evidence, "PR4-i18n-125dpi.zip"), ZipArchiveMode.Create);

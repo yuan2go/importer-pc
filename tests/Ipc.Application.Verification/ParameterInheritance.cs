@@ -74,6 +74,12 @@ static class ParameterInheritance
             Check(vm.DisplayNameDraft == "未应用草稿" && vm.TargetEfficiencyDraft == "0" && !vm.HasUnsavedDisplayPreferences && vm.StationDisplaySummary.Contains("1800"), "shared encrypted draft retains optional raw display values while SM no longer treats removed display inputs as unsaved work");
             var access = (IParcelConfigurationDraftApplication)app;
             var originalDraft = (await access.ReadEditorDraftAsync())!;
+            var previousFields = new Dictionary<string, string>(originalDraft.Editor.Values);
+            previousFields.Remove("policy.WorkstationPage");
+            var legacy = await access.SaveEditorDraftAsync(originalDraft.BaseConfigurationHash, originalDraft.DraftHash, new(previousFields));
+            await vm.ContinueIncompleteEditorAsync();
+            Check(vm.StructuredPolicy!.WorkstationPage is null, "legacy encrypted draft without a workstation page still follows the package default");
+            originalDraft = await access.SaveEditorDraftAsync(legacy.BaseConfigurationHash, legacy.DraftHash, originalDraft.Editor);
             var draftFile = Directory.EnumerateFiles(launch.DataRoot, "editor-draft.bin", SearchOption.AllDirectories).Single();
             foreach (var key in new[] { "display.identity", "display.name", "display.target", "policy.TimeoutMs" })
             {

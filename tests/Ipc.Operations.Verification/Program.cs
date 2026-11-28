@@ -250,7 +250,10 @@ internal static partial class Program
                 {
                     var snapshot = await h.App.SnapshotAsync();
                     var before = snapshot.Configuration.Pending ?? snapshot.Configuration.Effective;
-                    var result = await h.App.StageConfigurationAsync(snapshot.Configuration.Revision, before with { StationCode = "SYNTH-FIELD-CHANGED" }, "现场配置并发验证");
+                    var forged = before with { StationCode = "SYNTH-FIELD-CHANGED", WorkstationPage = WorkstationPages.SupplyStation };
+                    var field = SmParameterOwnership.ProjectCandidate(before, forged, SmParameterAudience.Field);
+                    Check(field.WorkstationPage == before.WorkstationPage, "field edits cannot replace the chosen page");
+                    var result = await h.App.StageConfigurationAsync(snapshot.Configuration.Revision, field, "现场配置并发验证");
                     Check(result.Status is "Staged" or "Applied" or "PendingRestart" or "Saved", "the original owner accepts its field configuration candidate: " + result.Status);
                 }
                 Console.WriteLine("DONE");
@@ -344,6 +347,27 @@ internal static partial class Program
                 "the isolated calibration route reaches the application guard without acquiring a production pause");
             await Reject(() => remote.StageConfigurationAsync(snapshot.Configuration.Revision, before with { StationCode = "ILLEGAL-TECHNICAL-IDENTITY" }),
                 "technical control rejects changes to field-owned station identity before save");
+            var invalid = await remote.ValidateConfigurationAsync(before with { WorkstationPage = WorkstationPages.Classic });
+            Check(invalid.Status != "Validated" && invalid.Reason.Contains(nameof(before.WorkstationPage), StringComparison.Ordinal),
+                "configuration refuses a page belonging to another business");
+            var ownerId = snapshot.RuntimeId;
+            var connectionEpochs = snapshot.Devices!.Select(device => (device.DeviceId, device.Epoch)).ToArray();
+            foreach (var next in new[] { WorkstationPages.ToteStation, WorkstationPages.SupplyStation, WorkstationPages.ToteStation })
+            {
+                var page = before with { WorkstationPage = next };
+                OperationsParameterBoundary.RequireTechnical(before, page);
+                var saved = await remote.StageConfigurationAsync(snapshot.Configuration.Revision, page, "WorkstationPage");
+                Check(saved.Status == "Effective", $"technical page-only CAS is live: {saved.Status} {saved.Reason}");
+                var refreshed = await remote.SnapshotAsync();
+                Check(refreshed.Configuration.Effective.WorkstationPage == next &&
+                    refreshed.Configuration.Revision > snapshot.Configuration.Revision &&
+                    refreshed.RuntimeId == ownerId && refreshed.Paused == snapshot.Paused &&
+                    Wire.Encode(refreshed.Configuration.Effective.Wcs) == Wire.Encode(before.Wcs) &&
+                    refreshed.Devices!.Select(device => (device.DeviceId, device.Epoch)).SequenceEqual(connectionEpochs),
+                    "technical page save keeps the runtime owner, connection epochs and RCS binding");
+                snapshot = refreshed;
+                before = refreshed.Configuration.Effective;
+            }
             var candidate = before with { ReadTimeoutMs = before.EffectiveReadTimeoutMs + 100 };
             await remote.StageConfigurationAsync(snapshot.Configuration.Revision, candidate, "专业参数跨进程验证");
             var after = await remote.SnapshotAsync(); var actual = after.Configuration.Pending ?? after.Configuration.Effective;
@@ -352,6 +376,9 @@ internal static partial class Program
                 "technical CAS save preserves every hidden RCS and camera field");
             var stale = after.Configuration.Revision;
             await Command(owner, "field-save");
+            var fieldSaved = await remote.SnapshotAsync();
+            Check((fieldSaved.Configuration.Pending ?? fieldSaved.Configuration.Effective).WorkstationPage == WorkstationPages.ToteStation,
+                "field save retains the technical page under its original CAS");
             await Reject(() => remote.StageConfigurationAsync(stale, actual with { ReadTimeoutMs = 1800 }),
                 "a concurrent field save prevents the old technical draft overwriting hidden fields");
             await Reject(() => ((ICameraReadRounds)remote).PrepareManualRcsRequestAsync(new(Wire.Id(), snapshot.RuntimeId,

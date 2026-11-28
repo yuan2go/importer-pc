@@ -35,6 +35,7 @@
 | --- | --- |
 | 字体与语义尺度 | [TYPOGRAPHY-01](design/typography-01.md) |
 | 定稿原型与视觉令牌 | [工作站与运维原型](ui-v4/importer_pc_ui_v5.html) · [ThemeTokens.xaml](ui-v4/ThemeTokens.xaml) |
+| 料箱供包信息架构 | [料箱拆包页原型](ui-v4/sm_tote_station_prototype.html)。原型使用演示数据，工作站显示实际设备和 RCS 状态。 |
 | WPF 审查方法 | [项目审查规范](design/wpf-ui-review.md) · [hallmark-wpf](../.agents/skills/hallmark-wpf/SKILL.md) |
 | 作业与导航行为 | [作业卡各状态](design/work-card-states.md) · [工作站与运维导航](design/operator-navigation-20261103.md) |
 | 编译输入 | [tokens.json](ui/tokens/tokens.json) 以 Ipc.OperatorTokens.json 嵌入 WPF 程序和验证工程；配色与字体分别查定稿和 TYPOGRAPHY-01。 |

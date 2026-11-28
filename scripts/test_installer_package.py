@@ -85,6 +85,42 @@ class InstallerPackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             installer.inspect_medium(self.path, self.source, False)
 
+    def test_build_variant_options(self):
+        from release_build import resolve_channel, resolve_default_page
+
+        self.assertEqual(resolve_channel(None, False), 'formal')
+        self.assertEqual(resolve_channel(None, True), 'test')
+        self.assertEqual(resolve_channel('test', True), 'test')
+        with self.assertRaisesRegex(ValueError, 'conflicts'):
+            resolve_channel('formal', True)
+        self.assertEqual(resolve_default_page('sportmaster', None), 'supply-station')
+        self.assertEqual(resolve_default_page('sportmaster', 'tote-station'), 'tote-station')
+        self.assertEqual(resolve_default_page('direct-plc', None), 'classic')
+        for application, page in [('sportmaster', 'invalid-page'), ('wcs-to-plc', 'tote-station')]:
+            with self.subTest(application=application, page=page), self.assertRaisesRegex(ValueError, '--default-page'):
+                resolve_default_page(application, page)
+
+    def test_attests_media_channel_and_default_page_in_both_build_info_formats(self):
+        from release_provenance import publish
+
+        workspace = self.path.parent / 'verified'
+        (workspace / 'app').mkdir(parents=True)
+        (workspace / 'desktop').mkdir()
+        base = json.loads(self.files['BUILD-INFO.json'])
+        base.update(SourceCommitUtc='2026-11-28', PackagedUtc='2026-11-28', SourceRepository='synthetic',
+                    InstallationChannel='Formal', DefaultWorkstationPage='tote-station')
+        publish(workspace, base)
+        for area in ('', 'app/', 'desktop/'):
+            json_name = area + 'BUILD-INFO.json'
+            self.files[json_name] = (workspace / json_name).read_bytes()
+            info = json.loads(self.files[json_name])
+            self.assertEqual((info['InstallationChannel'], info['DefaultWorkstationPage']), ('Formal', 'tote-station'))
+            self.assertIn('DefaultWorkstationPage: tote-station', (workspace / area / 'BUILD-INFO.txt').read_text(encoding='utf-8'))
+        self.write()
+        self.assertEqual(installer.inspect_medium(self.path, self.source)['DefaultWorkstationPage'], 'tote-station')
+        with self.assertRaisesRegex(ValueError, 'default page differs'):
+            installer.inspect_medium(self.path, self.source, default_page='supply-station')
+
     def test_production_channel_cannot_be_wrapped_as_test(self):
         self.write()
         with self.assertRaises(ValueError):

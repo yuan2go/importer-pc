@@ -70,6 +70,9 @@ Windows 开发先在当前 PowerShell 会话执行 `. ./scripts/project-environm
 - 文档变更检查索引覆盖、仓库内链接、故障码、SM 手册版本及交付源路径。四份现场手册是编译输入。CI 按真实路径选取任务，选择逻辑的测试必须保留内嵌资源和未知路径的覆盖。PR 和 main 的自动 CI 使用只读权限，当前选择规则见 [CI 策略](docs/runtime/industrial-ci-policy-01.md)。
 - 变更在开发分支提交，经 PR 合入 main，不强推。日常维护直接更新现行专题，无需新建工作包。仅正式出发布包时按仓库脚本刷新 `docs/manifest.json` 和 `docs/manifest.sha256`，小改不刷新。
 
+- SM 的两套作业页为 `supply-station` 和 `tote-station`。独立运维的专业参数保存作业界面，工作台现场设置保留该字段。空闲且无设置或确认窗口时，工作站替换作业区，继续使用同一业务实例和设备连接。主题与语言保存在当前 Windows 用户的工作台显示偏好。料箱计数和结束操作属于本地会话，按原作业事实计数。
+- 使用 `python scripts/build-sm-installer.py --channel test --default-page tote-station --output <D盘新目录>` 生成测试介质及安装器。正式发布使用 `formal`。封装时核对介质来源、通道、默认页与共享 DLL 哈希。
+
 ## 5. 交付与汇报规范
 
 汇报绑定分支、来源提交和实际执行环境。先说明本次影响的操作与数据，再按以下边界列出结果和余项；没有执行的写“未运行”。

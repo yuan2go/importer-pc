@@ -9,6 +9,8 @@
   <ItemGroup>
     <Using Include="System.IO" />
     <ProjectReference Include="../../src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj" />
+    <ProjectReference Include="../../src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj" />
+    <Compile Include="../../src/Ipc.Desktop/DesktopLaunchOptions.cs" Link="Production/DesktopLaunchOptions.cs" />
     <ProjectReference Include="../../src/Ipc.Platform/Ipc.Platform.csproj" />
     <ProjectReference Include="../../src/Ipc.Operations/Ipc.Operations.csproj" />
     <Compile Include="../Ipc.Verification/CommercialRemovalVerification.cs" Link="CommercialRemovalVerification.cs" />
